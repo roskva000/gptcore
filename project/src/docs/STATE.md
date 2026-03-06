@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #3
+Updated By: Agent Run #4
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik sadece dokumanlardan ibaret degil; `project/game` altinda calisan ilk oynanabilir prototype kuruldu.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren ve spawn fairness'i dar kapsamda filtreleyen bir build'e sahip.
 
-Amac bu turda:
-- proje gercek durumunu tespit etmek
-- ilk core gameplay loopunu ayaga kaldirmak
-- sonraki iterasyonlar icin daha dogru bir durum kaydi birakmakti
+Bu turun amaci:
+- first death time ve retry davranisini olculebilir hale getirmek
+- unfair hissedilen yakin spawn durumlarini tek bir dusuk riskli tuning ile azaltmak
+- sonraki turu veri odakli balance pass icin hazirlamakti
 
 ---
 
@@ -21,20 +21,21 @@ Amac bu turda:
 - oyun motoru: Phaser 3.90.0
 - frontend/build: Vite 7 + TypeScript 5.9
 - deploy: henuz yok
-- repo durumu: oyun kodu bu turda `project/game` altinda bootstrap edildi
+- repo durumu: calisan oyun kodu `project/game` altinda, living docs `project/src/docs` altinda
 
 ## Gameplay Status
-- core loop: oynanabilir; bekleme -> hayatta kalma -> game over -> aninda restart akisi var
-- difficulty: zamanla lineer artan spawn hizi ve obstacle hizi mevcut, fakat henuz veriyle balance edilmedi
-- player controls: keyboard (WASD + arrows) ve basili tutulan pointer/touch ile hareket calisiyor
-- collision system: Phaser Arcade overlap ile player-obstacle carpisma algilaniyor
-- score system: skor yasama suresi olarak saniye bazli gosteriliyor
+- core loop: oynanabilir; waiting -> survival -> game over -> instant restart akisi korunuyor
+- difficulty: spawn delay ve obstacle speed zamanla artiyor; buyuk tuning pass henuz yapilmadi
+- fairness tuning: obstacle spawn'i oyuncuya fazla yakin dogarsa en fazla 6 kez reroll ediliyor; uygun aday bulunamazsa en iyi aday kullaniliyor
+- controls: keyboard (WASD + arrows) ve basili pointer/touch steering calisiyor
+- collision/score: Phaser Arcade overlap ile olum algilaniyor, skor yasama suresi olarak saniye bazli gosteriliyor
 
-## UI/UX Status
-- main menu: yok; oyun arena ekraninda basliyor
-- onboarding: ekranda kisa kontrol ve baslatma metni var
-- game over screen: var; final sure ve aninda replay yonlendirmesi gosteriliyor
-- replay flow: Space, Enter veya tap ile restart; dusuk friction hedefi icin yeterince hizli
+## Telemetry / UX Status
+- telemetry: oyun icinde local telemetry blogu var; run count, avg survival, `<10s` early death orani, avg retry gap, recent death times ve spawn reroll sayilari gosteriliyor
+- persistence: telemetry localStorage key `survive-60-seconds-telemetry-v1` altinda tutuluyor
+- game over screen: final sureye ek olarak avg survival, early death orani ve retry/spawn summary gosteriliyor
+- onboarding: kontrol metni var; artik oyuncuya telemetry block'u izlemesi de soyleniyor
+- replay flow: Space, Enter veya tap ile restart; build'e gore hizli akis korunuyor
 
 ---
 
@@ -43,42 +44,44 @@ Amac bu turda:
 - [Run #2] `project/game` altinda minimal Vite + Phaser oyun projesi kuruldu
 - [Run #2] ilk oynanabilir core gameplay loopu, zaman skoru, difficulty ramp ve replay akisi eklendi
 - [Run #2] state ve roadmap dokumanlari repo gercegine gore yeniden yazildi
-- [Run #2] `npm run build` basarili calisti
 - [Run #3] deploy'u kiren WASD input bug'i duzeltildi; oyun artik ilk frame'de crash olmuyor
+- [Run #4] local telemetry paneli, console eventleri ve localStorage persistence eklendi
+- [Run #4] game over overlay'i avg survival, early death ve retry/spawn summary ile genislendi
+- [Run #4] obstacle spawn'lari icin yakin dogumlari azaltan fairness reroll tuning'i eklendi
+- [Run #4] `npm run build` tekrar basarili calisti
 
 ---
 
 # Active Problems
 
-- difficulty ramp tamamen sezgisel; first death time ve fairness henuz olculmedi
-- obstacle spawn'lari ekran kenarindan geldiginde bazi durumlarda unfair hissedilebilir
-- ses, hit feedback, pause ve menu gibi temel polish unsurlari yok
-- analytics / telemetri olmadigi icin oynanis kalitesi sadece manuel gozlemle degerlendirilebiliyor
-- deploy sonrasi gorunen kritik runtime crash kapandi, fakat gameplay fairness halen ayarsiz
+- telemetry altyapisi hazir, ama henuz 5-10 run'lik manuel baseline verisi toplanmadi
+- mevcut fairness tuning sadece yakin spawn filtresi; spawn telegraph, hit feedback ve daha derin zorluk ayari henuz yok
+- ses, pause, menu ve polish katmanlari yok
+- gameplay sabitleri artik gozlenebilir olsa da henuz veriyle kalibre edilmedi
 
 ---
 
 # Technical Debt
 
 - automated test yok
-- gameplay sabitleri `GameScene.ts` icinde; ileride ayri config/balance dosyasina alinabilir
-- UI ve oyun mantigi tek scene icinde; su an icin kabul edilebilir ama kapsam buyurse ayrisma gerekecek
-- production bundle ilk build'de buyuk cikti; Phaser tek chunk olarak geliyor
+- gameplay, telemetry ve UI metinleri hala `GameScene.ts` icinde toplu duruyor
+- balance sabitleri ayri config dosyasina alinmadi
+- production bundle buyuk; Phaser tek chunk olarak geliyor
 
 ---
 
 # Known Risks
 
-- ilk prototype mobil tarayicida build alacak durumda, ama gercek cihaz testi yapilmadi
-- spawn telegraph olmadigi icin yuksek zorlukta okunabilirlik dusuk kalabilir
-- mevcut metrikler kaydedilmedigi icin balancing kararlarinda yanlis sezgi riski var
+- telemetry sadece local browser storage'da; cihazlar arasi tasinmiyor ve sifirlanabilir
+- manuel gameplay sample olmadigi icin fairness tuning'in gercek etkisi henuz dogrulanmadi
+- mobil cihaz testi yapilmadi
+- spawn telegraph olmadigi icin yuksek zorlukta okunabilirlik hala sinirli olabilir
 - build warning'i bundle boyutunun ileride optimize edilmesi gerektigini gosteriyor
 
 ---
 
 # Observations
 
-- repo ilk incelemede sadece dokumanlardan olusuyordu; onceki STATE ve ROADMAP gercek implementasyonu yansitmiyordu
-- ilk anlamli ilerleme yeni feature degil, oynanabilir bir referans loop kurmakti
-- sonraki turda en dogru odak yeni feature eklemek degil; gameplay fairness ve olculebilirlik olacak
-- Vercel'de bos ekranin nedeni build degil, runtime'da `isDown` uzerinden dusen input baglama hatasiydi
+- `first_death_time > 10s` hedefi artik oyun ici telemetry ile dogrudan gozlenebilir durumda
+- fairness iyilestirmesi bilincli olarak dar tutuldu; tum difficulty curve yeniden yazilmadi
+- sonraki mantikli adim yeni feature eklemek degil, telemetry ile birkac run oynayip balance kararini veriyle vermek

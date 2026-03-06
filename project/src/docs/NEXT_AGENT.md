@@ -2,27 +2,28 @@
 
 ## Recommended Next Task
 
-Ilk prototype uzerine gameplay telemetry ve fairness tuning ekle.
+Yeni telemetry paneli uzerinden manuel balance pass yap.
 
 Ozellikle:
-- run baslangici, olum zamani ve restart davranisini local olarak olc
-- unfair hissedilen spawn durumlarini azaltacak kucuk bir iyilestirme yap
-- first death time hedefini kontrol etmek icin gozlenebilir bir cikti birak
+- en az 5 local run oyna ve telemetry panelindeki first death time, avg survival ve avg retry degerlerini not et
+- gerekirse sadece tek bir parametre grubunu tune et: spawn delay, obstacle speed veya safe spawn distance
+- degisikligi yine telemetry ile karsilastir ve hangi tuning'in ise yaradigini yazili biraktir
 
 ---
 
 ## Why This Is Next
 
-Runtime deploy crash'i kapandi. Artik oynanabilir bir loop var, fakat zorluk ve adalet tamamen sezgisel durumda. Yeni feature eklemek yerine once neden olundugunu ve oyuncunun ne kadar erken kaybettigini olcmek daha dogru.
+Runtime crash kapandi, telemetry de eklendi. Artik eksik olan sey altyapi degil; bu veriyi kullanip oyunun gercekten hedefledigi first death time ve instant replay hissine yaklasip yaklasmadigini gormek.
 
 ---
 
 ## Success Criteria
 
-- en az bir telemetry cikisi veya debug ozeti eklenmis olmali
-- spawn fairness veya ilk 10 saniye hayatta kalma oranini etkileyen tek bir iyilestirme yapilmali
+- telemetry panelinde en az 5 run gorulmeli
+- `first_death_time > 10s` hedefi icin ya sayisal dogrulama ya da tek net tuning karari cikmali
+- replay akisinin hala hizli oldugu not edilmeli
 - build tekrar alinmali
-- STATE.md ve ROADMAP.md yeni bulgulara gore guncellenmeli
+- STATE.md, ROADMAP.md ve METRICS.md gercek sayilarla guncellenmeli
 
 ---
 
@@ -31,6 +32,7 @@ Runtime deploy crash'i kapandi. Artik oynanabilir bir loop var, fakat zorluk ve 
 - AGENT.md
 - STATE.md
 - ROADMAP.md
+- METRICS.md
 - DECISIONS.md
 - PROJECT.md
 - GAME_DESIGN.md
@@ -40,14 +42,15 @@ Runtime deploy crash'i kapandi. Artik oynanabilir bir loop var, fakat zorluk ve 
 
 ## Constraints / Warnings
 
-- tek ana hedef sec; telemetry ve balance disinda yeni feature alanlari acma
+- tek ana hedef sec; telemetry-driven balance disinda yeni feature alanlari acma
 - buyuk refactor yapma; gerekmedikce tek scene yapisini koru
-- difficulty kararlarini olcum veya net gozlem olmadan verme
+- difficulty kararlarini telemetry veya net gozlem olmadan verme
+- localStorage telemetry'sini sifirlamak gerekiyorsa bunu not dus
 
 ---
 
 ## Do Not
 
 - powerup, leaderboard veya progression gibi scope buyuten islere gecme
-- sadece dokuman guncelleyip kod tarafini degistirmeden bu hedefi tamamlanmis sayma
+- sadece telemetry ekranina bakip tuning yapmadan bu hedefi tamamlanmis sayma
 - replay hizini bozan agir UI akislari ekleme

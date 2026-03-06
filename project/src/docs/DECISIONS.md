@@ -67,3 +67,35 @@ Vercel deploy'unda gorulen bos ekran sorunu kapandi ve keyboard kontrolleri bekl
 
 Rollback Condition:
 Input sistemi daha soyut bir kontrol katmanina tasinirse bu map scene icinden alinabilir.
+
+---
+
+### [Run #4]
+
+Decision:
+Early gameplay telemetry oyun ici debug paneli ve localStorage uzerinden tutuldu.
+
+Reason:
+External analytics entegrasyonuna girmeden first death time, retry davranisi ve tekrar edilen run'lari hemen olcmek gerekiyordu.
+
+Impact:
+Balancing kararlari artik sadece sezgiye degil, oyun icinde gorulen lokal metriklere dayanabilir.
+
+Rollback Condition:
+Ileride harici analytics eklenirse bu telemetry dev-mode'a alinabilir veya daha hafif bir panele indirgenebilir.
+
+---
+
+### [Run #4]
+
+Decision:
+Spawn fairness icin oyuncuya fazla yakin obstacle dogumlari sinirli reroll ile filtrelendi.
+
+Reason:
+En dusuk riskli fairness iyilestirmesi, erken oyunda bedava olum hissi yaratan yakin edge spawn'lari azaltmaktir.
+
+Impact:
+Tum difficulty curve degismeden ilk saniyelerdeki unavoidable death riski dusuruldu ve kac spawn'in kurtarildigi telemetry'ye eklendi.
+
+Rollback Condition:
+Telemetry veya manuel oyun testi oyunu gereksiz kolaylastirdigini gosterirse gerekli minimum mesafe veya reroll sayisi azaltilabilir.

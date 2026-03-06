@@ -4,21 +4,21 @@
 
 # NOW (Highest Priority)
 
-- first playable prototype uzerinde difficulty fairness'i test et ve ayarla
-- first death time, average survival time ve retry davranisi icin en azindan local gameplay telemetry ekle
-- unfair hissettiren spawn durumlarini azaltmak icin spawn telegraph veya grace tuning uygula
+- telemetry paneli ile en az 5 local run oynayip first death time, avg survival ve retry gap baseline'i cikar
+- eger avg survival veya first death time hedefin altinda kalirsa yalnizca tek bir balance grubu uzerinde tuning yap
+- mevcut spawn reroll tuning'inin replay hizini veya mobil hissi bozmadigini manuel olarak kontrol et
 
 Basari olcutleri:
-- ilk olum ortalamasi 10 saniyenin altinda kalmiyorsa
-- art arda restart akisi 3 saniyenin altinda korunuyorsa
-- en az bir balancing karari gozlem veya telemetry ile destekleniyorsa
+- telemetry ozetinde en az 5 run gorulmesi
+- `first_death_time > 10s` hedefinin ya yakalanmasi ya da neden kacirildiginin tek net tuning karariyla aciklanmasi
+- art arda restart akisinin 3 saniyenin altinda korunmasi
 
 ---
 
 # NEXT
 
 - hit feedback ve basic sound effects ekle
-- basit ama rahatsiz etmeyen tutorial/hint akisini iyilestir
+- spawn telegraph ihtiyacini telemetry sonucuna gore degerlendir
 - mobil kontrol hissini test edip gerekiyorsa pointer steering ayari yap
 
 ---
@@ -43,6 +43,7 @@ Basari olcutleri:
 # BLOCKERS
 
 - gercek oyuncu verisi yok
+- manuel telemetry sample'i henuz toplanmadi
 - otomatik test ve regression guvencesi yok
 - mobil cihaz dogrulamasi yapilmadi
 
@@ -50,7 +51,7 @@ Basari olcutleri:
 
 # SUCCESS METRICS
 
-- first_death_time > 10s
-- retry_rate high
+- in-game telemetry uzerinde first_death_time > 10s
+- avg retry gap < 3s
 - average_survival_time runlar arasinda yukseliyor
-- unfair death gozlemleri azaliyor
+- unfair death gozlemleri ve yakin spawn kurtarmalari daha anlamli hale geliyor

@@ -23,3 +23,13 @@
 
 - Vercel deploy'unda bos ekran yaratan WASD input mapping hatasi duzeltildi
 - `movementKeys` isimlendirilmis key map ile guvenli hale getirildi
+
+---
+
+## Run #4
+
+- `project/game/src/game/GameScene.ts` icine local telemetry paneli eklendi
+- run start, death time, retry gap ve recent death times localStorage + console ile izlenebilir hale geldi
+- game over overlay'i avg survival, early death orani ve spawn reroll ozeti gosterecek sekilde guncellendi
+- obstacle spawn'lari icin yakin dogumlari azaltan fairness reroll tuning'i eklendi
+- `npm run build` tekrar basarili calisti

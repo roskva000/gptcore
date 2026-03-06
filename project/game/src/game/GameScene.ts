@@ -7,6 +7,11 @@ const ARENA_HEIGHT = 600;
 const PLAYER_SPEED = 260;
 const SPAWN_MARGIN = 56;
 const OFFSCREEN_CULL_MARGIN = 96;
+const TARGET_FIRST_DEATH_SECONDS = 10;
+const MAX_SPAWN_REROLLS = 6;
+const RETRY_GAP_TRACK_WINDOW_MS = 15000;
+const TELEMETRY_RECENT_RUN_LIMIT = 4;
+const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -14,6 +19,38 @@ type MovementKeys = {
   left: Phaser.Input.Keyboard.Key;
   right: Phaser.Input.Keyboard.Key;
 };
+
+type GameplayTelemetry = {
+  totalRuns: number;
+  totalDeaths: number;
+  totalSurvivalTime: number;
+  earlyDeathsUnderTarget: number;
+  totalRetryDelayMs: number;
+  retryCount: number;
+  totalSpawnRerolls: number;
+  recentDeathTimes: number[];
+  lastDeathAt: number | null;
+  lastRetryDelayMs: number | null;
+  lastRunStartedAt: number | null;
+  lastRunSpawnRerolls: number;
+  lastSurvivalTime: number | null;
+};
+
+const createEmptyTelemetry = (): GameplayTelemetry => ({
+  totalRuns: 0,
+  totalDeaths: 0,
+  totalSurvivalTime: 0,
+  earlyDeathsUnderTarget: 0,
+  totalRetryDelayMs: 0,
+  retryCount: 0,
+  totalSpawnRerolls: 0,
+  recentDeathTimes: [],
+  lastDeathAt: null,
+  lastRetryDelayMs: null,
+  lastRunStartedAt: null,
+  lastRunSpawnRerolls: 0,
+  lastSurvivalTime: null,
+});
 
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
@@ -23,11 +60,14 @@ export class GameScene extends Phaser.Scene {
   private movementKeys!: MovementKeys;
   private scoreText!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
+  private telemetryText!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
   private overlayTitle!: Phaser.GameObjects.Text;
   private overlayBody!: Phaser.GameObjects.Text;
   private runStartedAt = 0;
   private survivalTime = 0;
+  private runSpawnRerolls = 0;
+  private telemetry = createEmptyTelemetry();
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
 
   constructor() {
@@ -128,6 +168,19 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setVisible(false);
 
+    this.telemetry = this.loadTelemetry();
+    this.telemetryText = this.add
+      .text(ARENA_WIDTH - 24, 20, '', {
+        align: 'right',
+        color: '#8db7cb',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '15px',
+        lineSpacing: 6,
+      })
+      .setDepth(4)
+      .setOrigin(1, 0);
+    this.updateTelemetryText();
+
     keyboard.on('keydown-SPACE', this.handlePrimaryAction, this);
     keyboard.on('keydown-ENTER', this.handlePrimaryAction, this);
     this.input.on('pointerdown', this.handlePrimaryAction, this);
@@ -215,8 +268,10 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
+    this.runSpawnRerolls = 0;
     this.scoreText.setText('0.0s');
     this.hintText.setText('Survive the rush. The arena gets harder every few seconds.');
+    this.recordRunStart();
 
     this.time.delayedCall(1400, () => {
       if (this.phase === 'playing') {
@@ -278,6 +333,33 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnPoint(): Phaser.Math.Vector2 {
+    let selectedSpawnPoint = this.rollSpawnPoint();
+    let bestScore = this.getSpawnFairnessScore(selectedSpawnPoint);
+
+    if (bestScore >= 0) {
+      return selectedSpawnPoint;
+    }
+
+    for (let attempt = 0; attempt < MAX_SPAWN_REROLLS; attempt += 1) {
+      this.runSpawnRerolls += 1;
+
+      const candidate = this.rollSpawnPoint();
+      const candidateScore = this.getSpawnFairnessScore(candidate);
+
+      if (candidateScore > bestScore) {
+        selectedSpawnPoint = candidate;
+        bestScore = candidateScore;
+      }
+
+      if (candidateScore >= 0) {
+        return candidate;
+      }
+    }
+
+    return selectedSpawnPoint;
+  }
+
+  private rollSpawnPoint(): Phaser.Math.Vector2 {
     const edge = Phaser.Math.Between(0, 3);
 
     if (edge === 0) {
@@ -293,6 +375,18 @@ export class GameScene extends Phaser.Scene {
     }
 
     return new Phaser.Math.Vector2(-SPAWN_MARGIN, Phaser.Math.Between(0, ARENA_HEIGHT));
+  }
+
+  private getSpawnFairnessScore(spawnPoint: Phaser.Math.Vector2): number {
+    const requiredDistance = Phaser.Math.Clamp(210 - this.survivalTime * 7, 140, 210);
+    const actualDistance = Phaser.Math.Distance.Between(
+      spawnPoint.x,
+      spawnPoint.y,
+      this.player.x,
+      this.player.y,
+    );
+
+    return actualDistance - requiredDistance;
   }
 
   private hasMovementInput(): boolean {
@@ -381,6 +475,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'gameOver';
     this.nextSpawnTimer?.remove(false);
     this.player.setVelocity(0, 0);
+    this.recordRunEnd();
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -393,11 +488,187 @@ export class GameScene extends Phaser.Scene {
     this.overlayTitle.setVisible(true);
     this.overlayBody
       .setText(
-        `You survived ${this.survivalTime.toFixed(1)} seconds.\nPress Space, Enter, or tap to retry instantly.`,
+        [
+          `You survived ${this.survivalTime.toFixed(1)} seconds.`,
+          `Avg survival: ${this.getAverageSurvivalTime().toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate()}%`,
+          `Avg retry: ${this.getAverageRetryDelayText()} | Spawn saves this run: ${this.runSpawnRerolls}`,
+          'Press Space, Enter, or tap to retry instantly.',
+        ].join('\n'),
       )
       .setVisible(true);
     this.hintText
-      .setText('Retry should be immediate. Restart and look for unfair deaths.')
+      .setText('Retry should stay instant. Watch the telemetry block for early deaths under 10s.')
       .setVisible(true);
+  }
+
+  private loadTelemetry(): GameplayTelemetry {
+    const fallback = createEmptyTelemetry();
+
+    try {
+      const rawTelemetry = window.localStorage.getItem(TELEMETRY_STORAGE_KEY);
+
+      if (!rawTelemetry) {
+        return fallback;
+      }
+
+      const parsedTelemetry = JSON.parse(rawTelemetry) as Partial<GameplayTelemetry>;
+
+      return {
+        totalRuns: this.readNumber(parsedTelemetry.totalRuns),
+        totalDeaths: this.readNumber(parsedTelemetry.totalDeaths),
+        totalSurvivalTime: this.readNumber(parsedTelemetry.totalSurvivalTime),
+        earlyDeathsUnderTarget: this.readNumber(parsedTelemetry.earlyDeathsUnderTarget),
+        totalRetryDelayMs: this.readNumber(parsedTelemetry.totalRetryDelayMs),
+        retryCount: this.readNumber(parsedTelemetry.retryCount),
+        totalSpawnRerolls: this.readNumber(parsedTelemetry.totalSpawnRerolls),
+        recentDeathTimes: this.readRecentDeathTimes(parsedTelemetry.recentDeathTimes),
+        lastDeathAt: this.readNullableNumber(parsedTelemetry.lastDeathAt),
+        lastRetryDelayMs: this.readNullableNumber(parsedTelemetry.lastRetryDelayMs),
+        lastRunStartedAt: this.readNullableNumber(parsedTelemetry.lastRunStartedAt),
+        lastRunSpawnRerolls: this.readNumber(parsedTelemetry.lastRunSpawnRerolls),
+        lastSurvivalTime: this.readNullableNumber(parsedTelemetry.lastSurvivalTime),
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
+  private saveTelemetry(): void {
+    try {
+      window.localStorage.setItem(TELEMETRY_STORAGE_KEY, JSON.stringify(this.telemetry));
+    } catch {
+      // Local telemetry is best-effort only.
+    }
+  }
+
+  private readNumber(value: unknown): number {
+    return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+  }
+
+  private readNullableNumber(value: unknown): number | null {
+    return typeof value === 'number' && Number.isFinite(value) ? value : null;
+  }
+
+  private readRecentDeathTimes(value: unknown): number[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value
+      .filter((entry): entry is number => typeof entry === 'number' && Number.isFinite(entry))
+      .slice(0, TELEMETRY_RECENT_RUN_LIMIT)
+      .map((entry) => Number(entry.toFixed(1)));
+  }
+
+  private recordRunStart(): void {
+    const startedAt = Date.now();
+    let retryDelayMs: number | null = null;
+
+    if (
+      this.telemetry.lastDeathAt !== null &&
+      startedAt - this.telemetry.lastDeathAt <= RETRY_GAP_TRACK_WINDOW_MS
+    ) {
+      retryDelayMs = startedAt - this.telemetry.lastDeathAt;
+      this.telemetry.totalRetryDelayMs += retryDelayMs;
+      this.telemetry.retryCount += 1;
+    }
+
+    this.telemetry.totalRuns += 1;
+    this.telemetry.lastRunStartedAt = startedAt;
+    this.telemetry.lastRetryDelayMs = retryDelayMs;
+    this.saveTelemetry();
+    this.updateTelemetryText();
+
+    console.info('[telemetry] run_start', {
+      startedAt,
+      runNumber: this.telemetry.totalRuns,
+      retryDelayMs,
+    });
+  }
+
+  private recordRunEnd(): void {
+    const roundedSurvivalTime = Number(this.survivalTime.toFixed(1));
+
+    this.telemetry.totalDeaths += 1;
+    this.telemetry.totalSurvivalTime += roundedSurvivalTime;
+    this.telemetry.lastDeathAt = Date.now();
+    this.telemetry.lastSurvivalTime = roundedSurvivalTime;
+    this.telemetry.lastRunSpawnRerolls = this.runSpawnRerolls;
+    this.telemetry.totalSpawnRerolls += this.runSpawnRerolls;
+
+    if (roundedSurvivalTime < TARGET_FIRST_DEATH_SECONDS) {
+      this.telemetry.earlyDeathsUnderTarget += 1;
+    }
+
+    this.telemetry.recentDeathTimes = [
+      roundedSurvivalTime,
+      ...this.telemetry.recentDeathTimes,
+    ].slice(0, TELEMETRY_RECENT_RUN_LIMIT);
+
+    this.saveTelemetry();
+    this.updateTelemetryText();
+
+    console.info('[telemetry] run_end', {
+      survivalTime: roundedSurvivalTime,
+      averageSurvivalTime: this.getAverageSurvivalTime(),
+      earlyDeathRate: this.getEarlyDeathRate(),
+      retryAverageSeconds: this.getAverageRetryDelaySeconds(),
+      spawnRerollsThisRun: this.runSpawnRerolls,
+    });
+  }
+
+  private updateTelemetryText(): void {
+    this.telemetryText.setText(
+      [
+        'Local telemetry',
+        `Runs: ${this.telemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime().toFixed(1)}s`,
+        `Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate()}%`,
+        `Avg retry: ${this.getAverageRetryDelayText()}`,
+        `Spawn saves: ${this.telemetry.totalSpawnRerolls} total / ${this.telemetry.lastRunSpawnRerolls} last`,
+        `Recent deaths: ${this.getRecentDeathTimesText()}`,
+      ].join('\n'),
+    );
+  }
+
+  private getAverageSurvivalTime(): number {
+    if (this.telemetry.totalDeaths === 0) {
+      return 0;
+    }
+
+    return this.telemetry.totalSurvivalTime / this.telemetry.totalDeaths;
+  }
+
+  private getAverageRetryDelaySeconds(): number | null {
+    if (this.telemetry.retryCount === 0) {
+      return null;
+    }
+
+    return this.telemetry.totalRetryDelayMs / this.telemetry.retryCount / 1000;
+  }
+
+  private getAverageRetryDelayText(): string {
+    const averageRetryDelaySeconds = this.getAverageRetryDelaySeconds();
+
+    if (averageRetryDelaySeconds === null) {
+      return 'n/a';
+    }
+
+    return `${averageRetryDelaySeconds.toFixed(1)}s`;
+  }
+
+  private getEarlyDeathRate(): number {
+    if (this.telemetry.totalDeaths === 0) {
+      return 0;
+    }
+
+    return Math.round((this.telemetry.earlyDeathsUnderTarget / this.telemetry.totalDeaths) * 100);
+  }
+
+  private getRecentDeathTimesText(): string {
+    if (this.telemetry.recentDeathTimes.length === 0) {
+      return 'n/a';
+    }
+
+    return this.telemetry.recentDeathTimes.map((time) => `${time.toFixed(1)}s`).join(', ');
   }
 }

@@ -7,15 +7,15 @@
 ## Gameplay
 
 average_session_time:
-current: unknown
+current: instrumented locally, no manual sample yet
 target: 120s
 
 retry_rate:
-current: unknown
+current: inferred locally from run count and retry gap, no sample yet
 target: high
 
 average_survival_time:
-current: unknown
+current: instrumented locally, no baseline sample yet
 target: increasing
 
 ---
@@ -23,13 +23,15 @@ target: increasing
 # Player Behavior
 
 first_death_time:
-unknown
+current: visible in in-game telemetry, baseline not sampled yet
+target: > 10s
 
 rage_quit_indicator:
-unknown
+current: approximated by missing quick retries, no sample yet
 
 ---
 
 # Notes
 
-Agent her turda mümkünse metrikleri güncellemelidir.
+- source: in-game telemetry panel + console logs + localStorage key `survive-60-seconds-telemetry-v1`
+- next step: en az 5 manual run oynayip sayisal baseline'i bu dosyaya yaz
