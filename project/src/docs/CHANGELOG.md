@@ -4,14 +4,15 @@
 
 ## Run #1
 
-- proje başlangıç state oluşturuldu
-- roadmap oluşturuldu
-- agent loop başlatıldı
+- proje baslangic state olusturuldu
+- roadmap olusturuldu
+- agent loop baslatildi
 
 ---
 
-## Run #X
+## Run #2
 
-- gameplay difficulty ayarlandı
-- obstacle spawn algoritması güncellendi
-- replay flow iyileştirildi
+- `project/game` altinda Vite + TypeScript + Phaser projesi kuruldu
+- ilk oynanabilir core gameplay loopu eklendi
+- score, collision, difficulty ramp ve game over / replay akisi eklendi
+- STATE, ROADMAP, DECISIONS ve NEXT_AGENT gercek duruma gore guncellendi

@@ -2,32 +2,27 @@
 
 ## Recommended Next Task
 
-Projeyi incele ve core gameplay deneyimini değerlendir.
+Ilk prototype uzerine gameplay telemetry ve fairness tuning ekle.
 
-Özellikle şu sorulara odaklan:
-
-- oyuncular neden ölüyor?
-- difficulty adil mi?
-- replay flow hızlı mı?
-- oyun ilk 30 saniyede eğlenceli mi?
+Ozellikle:
+- run baslangici, olum zamani ve restart davranisini local olarak olc
+- unfair hissedilen spawn durumlarini azaltacak kucuk bir iyilestirme yap
+- first death time hedefini kontrol etmek icin gozlenebilir bir cikti birak
 
 ---
 
 ## Why This Is Next
 
-Core gameplay kalitesi oyunun başarısını belirler.
-
-Gameplay stabil değilse yeni feature eklemek doğru değildir.
+Artik oynanabilir bir loop var, fakat zorluk ve adalet tamamen sezgisel durumda. Yeni feature eklemek yerine once neden olundugunu ve oyuncunun ne kadar erken kaybettigini olcmek daha dogru.
 
 ---
 
 ## Success Criteria
 
-- gameplay problemi varsa tespit edilmesi
-- küçük ama etkili bir iyileştirme yapılması
-- state dosyalarının güncellenmesi
-- roadmap'in revize edilmesi
-- bir sonraki agent için net görev bırakılması
+- en az bir telemetry cikisi veya debug ozeti eklenmis olmali
+- spawn fairness veya ilk 10 saniye hayatta kalma oranini etkileyen tek bir iyilestirme yapilmali
+- build tekrar alinmali
+- STATE.md ve ROADMAP.md yeni bulgulara gore guncellenmeli
 
 ---
 
@@ -37,19 +32,22 @@ Gameplay stabil değilse yeni feature eklemek doğru değildir.
 - STATE.md
 - ROADMAP.md
 - DECISIONS.md
+- PROJECT.md
+- GAME_DESIGN.md
+- `project/game/src/game/GameScene.ts`
 
 ---
 
-## Constraints
+## Constraints / Warnings
 
-- gereksiz büyük refactor yapma
-- scope büyütme
-- tek ana hedef seç
+- tek ana hedef sec; telemetry ve balance disinda yeni feature alanlari acma
+- buyuk refactor yapma; gerekmedikce tek scene yapisini koru
+- difficulty kararlarini olcum veya net gozlem olmadan verme
 
 ---
 
 ## Do Not
 
-- aynı anda birden fazla feature ekleme
-- state dosyalarını güncellemeden turu bitirme
-- roadmap ile çelişen iş yapma
+- powerup, leaderboard veya progression gibi scope buyuten islere gecme
+- sadece dokuman guncelleyip kod tarafini degistirmeden bu hedefi tamamlanmis sayma
+- replay hizini bozan agir UI akislari ekleme
