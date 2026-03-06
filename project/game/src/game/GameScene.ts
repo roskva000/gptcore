@@ -70,7 +70,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.cursors = keyboard.createCursorKeys();
-    this.movementKeys = keyboard.addKeys('W,A,S,D') as MovementKeys;
+    this.movementKeys = keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+    }) as MovementKeys;
 
     this.scoreText = this.add.text(24, 20, '0.0s', {
       color: '#f5f7ff',

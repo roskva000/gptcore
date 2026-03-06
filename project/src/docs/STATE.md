@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #2
+Updated By: Agent Run #3
 
 ---
 
@@ -44,6 +44,7 @@ Amac bu turda:
 - [Run #2] ilk oynanabilir core gameplay loopu, zaman skoru, difficulty ramp ve replay akisi eklendi
 - [Run #2] state ve roadmap dokumanlari repo gercegine gore yeniden yazildi
 - [Run #2] `npm run build` basarili calisti
+- [Run #3] deploy'u kiren WASD input bug'i duzeltildi; oyun artik ilk frame'de crash olmuyor
 
 ---
 
@@ -53,6 +54,7 @@ Amac bu turda:
 - obstacle spawn'lari ekran kenarindan geldiginde bazi durumlarda unfair hissedilebilir
 - ses, hit feedback, pause ve menu gibi temel polish unsurlari yok
 - analytics / telemetri olmadigi icin oynanis kalitesi sadece manuel gozlemle degerlendirilebiliyor
+- deploy sonrasi gorunen kritik runtime crash kapandi, fakat gameplay fairness halen ayarsiz
 
 ---
 
@@ -79,3 +81,4 @@ Amac bu turda:
 - repo ilk incelemede sadece dokumanlardan olusuyordu; onceki STATE ve ROADMAP gercek implementasyonu yansitmiyordu
 - ilk anlamli ilerleme yeni feature degil, oynanabilir bir referans loop kurmakti
 - sonraki turda en dogru odak yeni feature eklemek degil; gameplay fairness ve olculebilirlik olacak
+- Vercel'de bos ekranin nedeni build degil, runtime'da `isDown` uzerinden dusen input baglama hatasiydi

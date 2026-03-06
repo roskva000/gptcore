@@ -13,7 +13,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Artik oynanabilir bir loop var, fakat zorluk ve adalet tamamen sezgisel durumda. Yeni feature eklemek yerine once neden olundugunu ve oyuncunun ne kadar erken kaybettigini olcmek daha dogru.
+Runtime deploy crash'i kapandi. Artik oynanabilir bir loop var, fakat zorluk ve adalet tamamen sezgisel durumda. Yeni feature eklemek yerine once neden olundugunu ve oyuncunun ne kadar erken kaybettigini olcmek daha dogru.
 
 ---
 

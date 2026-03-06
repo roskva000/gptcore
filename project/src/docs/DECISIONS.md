@@ -51,3 +51,19 @@ Hizli iterasyon kolaylasti, fakat sistemler buyurse ayrisma ihtiyaci dogacak.
 
 Rollback Condition:
 Scene icerisindeki logic yeni obstacle tipleri, telemetry veya UI state'i ile okunamaz hale gelirse modul ayrisma yapilacak.
+
+---
+
+### [Run #3]
+
+Decision:
+Keyboard input mapping'i string listesi yerine isimlendirilmis key map ile kuruldu.
+
+Reason:
+`addKeys('W,A,S,D')` donusunde `W/A/S/D` alanlari geliyor; kod ise `up/down/left/right` bekliyordu. Bu uyumsuzluk production'da ilk update frame'inde runtime crash uretti.
+
+Impact:
+Vercel deploy'unda gorulen bos ekran sorunu kapandi ve keyboard kontrolleri beklenen isimlerle guvenli hale geldi.
+
+Rollback Condition:
+Input sistemi daha soyut bir kontrol katmanina tasinirse bu map scene icinden alinabilir.
