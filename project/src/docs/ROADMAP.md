@@ -4,13 +4,14 @@
 
 # NOW (Highest Priority)
 
-- telemetry paneli ile en az 5 local run oynayip first death time, avg survival ve retry gap baseline'i cikar
-- eger avg survival veya first death time hedefin altinda kalirsa yalnizca tek bir balance grubu uzerinde tuning yap
-- mevcut spawn reroll tuning'inin replay hizini veya mobil hissi bozmadigini manuel olarak kontrol et
+- tuned spawn delay'i gercek manual input ile 5-10 run boyunca validate et
+- eger manual sample hala `first_death_time < 10s` veya early death >20% gosterirse yalnizca obstacle speed uzerinde ikinci, dar bir tuning karari cikar
+- replay akisinin gercek inputta hala hizli kaldigini not et
 
 Basari olcutleri:
-- telemetry ozetinde en az 5 run gorulmesi
-- `first_death_time > 10s` hedefinin ya yakalanmasi ya da neden kacirildiginin tek net tuning karariyla aciklanmasi
+- manual telemetry ozetinde en az 5 run gorulmesi
+- `first_death_time > 10s` hedefinin manuel sample'da korunmasi
+- early death rate'in `%20` civarina veya altina inmesi
 - art arda restart akisinin 3 saniyenin altinda korunmasi
 
 ---
@@ -18,7 +19,7 @@ Basari olcutleri:
 # NEXT
 
 - hit feedback ve basic sound effects ekle
-- spawn telegraph ihtiyacini telemetry sonucuna gore degerlendir
+- spawn telegraph ihtiyacini manual telemetry sonucuna gore degerlendir
 - mobil kontrol hissini test edip gerekiyorsa pointer steering ayari yap
 
 ---
@@ -43,7 +44,7 @@ Basari olcutleri:
 # BLOCKERS
 
 - gercek oyuncu verisi yok
-- manuel telemetry sample'i henuz toplanmadi
+- post-tune sample scripted; manual human sample henuz yok
 - otomatik test ve regression guvencesi yok
 - mobil cihaz dogrulamasi yapilmadi
 
@@ -53,5 +54,6 @@ Basari olcutleri:
 
 - in-game telemetry uzerinde first_death_time > 10s
 - avg retry gap < 3s
-- average_survival_time runlar arasinda yukseliyor
+- average_survival_time 10.8s baseline uzerinden yukselmeye devam ediyor
+- early death rate scripted sample'daki 20% seviyesinin ustune cikmiyor
 - unfair death gozlemleri ve yakin spawn kurtarmalari daha anlamli hale geliyor

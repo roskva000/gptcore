@@ -99,3 +99,35 @@ Tum difficulty curve degismeden ilk saniyelerdeki unavoidable death riski dusuru
 
 Rollback Condition:
 Telemetry veya manuel oyun testi oyunu gereksiz kolaylastirdigini gosterirse gerekli minimum mesafe veya reroll sayisi azaltilabilir.
+
+---
+
+### [Run #5]
+
+Decision:
+Bu turda balance karsilastirmasi ayni steering policy ile alinan 5-run scripted local telemetry sample uzerinden yapildi.
+
+Reason:
+Calisma ortami manuel oyun testini guvenilir sekilde desteklemiyordu. Yine de tek parametre degisikliginin etkisini ayni kosullarda karsilastirmak gerekiyordu.
+
+Impact:
+Baseline ve post-tune sample ayni metodoloji ile alinabildi; karar sezgi yerine sayisal fark uzerinden verildi.
+
+Rollback Condition:
+Manual/human sample scripted sonuclardan anlamli sekilde saparsa bu metod yalnizca yardimci sinyal olarak tutulmali.
+
+---
+
+### [Run #5]
+
+Decision:
+Erken zorluk icin yalnizca spawn delay grubu tune edildi; initial spawn delay 900ms yerine 1050ms yapildi.
+
+Reason:
+5-run baseline sample first death'i 8.7s, avg survival'i 10.8s ve early death oranini 60% gosterdi. Ayni sample'da spawn reroll sayisi 0 oldugu icin asil problem yakin spawn degil, erken obstacle yogunluguydu.
+
+Impact:
+Ayni telemetry sample sonrasi first death 11.0s, avg survival 14.3s ve early death 20% oldu. Retry gap 2.0s ile hedefin altinda kaldi.
+
+Rollback Condition:
+Manual sample oyunun fazla bosladigini, tempo kaybettigini veya scripted sample kazancinin gercek oyunda tekrarlanmadigini gosterirse spawn delay tabani tekrar asagi cekilebilir.

@@ -33,3 +33,13 @@
 - game over overlay'i avg survival, early death orani ve spawn reroll ozeti gosterecek sekilde guncellendi
 - obstacle spawn'lari icin yakin dogumlari azaltan fairness reroll tuning'i eklendi
 - `npm run build` tekrar basarili calisti
+
+---
+
+## Run #5
+
+- ayni steering policy ile 5-run scripted local telemetry baseline'i alindi
+- baseline sonucu first death 8.7s, avg survival 10.8s ve early death 60% oldugu icin yalnizca spawn delay grubu tune edildi
+- `project/game/src/game/GameScene.ts` icinde initial spawn delay 900ms yerine 1050ms yapildi
+- tuning sonrasi ayni telemetry sample ile first death 11.0s, avg survival 14.3s ve early death 20% olarak tekrar olculdu
+- `npm run build` tekrar basarili calisti

@@ -7,6 +7,7 @@ const ARENA_HEIGHT = 600;
 const PLAYER_SPEED = 260;
 const SPAWN_MARGIN = 56;
 const OFFSCREEN_CULL_MARGIN = 96;
+const INITIAL_SPAWN_DELAY_MS = 1050;
 const TARGET_FIRST_DEATH_SECONDS = 10;
 const MAX_SPAWN_REROLLS = 6;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
@@ -300,7 +301,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnDelayMs(): number {
-    return Phaser.Math.Clamp(900 - this.survivalTime * 8, 320, 900);
+    return Phaser.Math.Clamp(INITIAL_SPAWN_DELAY_MS - this.survivalTime * 8, 320, INITIAL_SPAWN_DELAY_MS);
   }
 
   private getObstacleSpeed(): number {
