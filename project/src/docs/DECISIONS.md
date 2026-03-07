@@ -25,368 +25,109 @@ Core gameplay yeterince stabil hale gelirse roadmap genisletilebilir.
 ### [Run #2]
 
 Decision:
-Ilk uygulama turunda feature genisletmek yerine oynanabilir minimum vertical slice kuruldu.
+Ilk prototype tek scene icinde ve dar scope ile kuruldu.
 
 Reason:
-Repo gercekte sadece dokumanlardan olusuyordu. Difficulty, replay friction veya fairness hakkinda anlamli karar verebilmek icin once referans alinacak calisan bir oyun loopu gerekiyordu.
+Calisan bir oyun loopu olmadan balancing veya UX karari vermek anlamsizdi.
 
 Impact:
-Artik proje uzerinde build alinabiliyor ve core gameplay tartismasi varsayim yerine gercek implementasyon uzerinden yapilabiliyor.
+Projede artik build alinabiliyor ve gameplay gercek kod uzerinden iterate edilebiliyor.
 
 Rollback Condition:
-Eger bu prototype mimariyi zorlarsa veya Phaser secimi terk edilirse bootstrap katmani yeniden kurulabilir.
-
----
-
-### [Run #2]
-
-Decision:
-Ilk prototype tek scene icinde tutuldu; ayrik sistemlere simdilik bolunmedi.
-
-Reason:
-Kapsam dar tutulmak istendi. Erken asamada Player, Spawner, UI ve ScoreSystem icin ayri soyutlamalar kurmak overengineering olurdu.
-
-Impact:
-Hizli iterasyon kolaylasti, fakat sistemler buyurse ayrisma ihtiyaci dogacak.
-
-Rollback Condition:
-Scene icerisindeki logic yeni obstacle tipleri, telemetry veya UI state'i ile okunamaz hale gelirse modul ayrisma yapilacak.
-
----
-
-### [Run #3]
-
-Decision:
-Keyboard input mapping'i string listesi yerine isimlendirilmis key map ile kuruldu.
-
-Reason:
-`addKeys('W,A,S,D')` donusunde `W/A/S/D` alanlari geliyor; kod ise `up/down/left/right` bekliyordu. Bu uyumsuzluk production'da ilk update frame'inde runtime crash uretti.
-
-Impact:
-Vercel deploy'unda gorulen bos ekran sorunu kapandi ve keyboard kontrolleri beklenen isimlerle guvenli hale geldi.
-
-Rollback Condition:
-Input sistemi daha soyut bir kontrol katmanina tasinirse bu map scene icinden alinabilir.
+Scene okunamaz hale gelirse modul ayrisma yapilir.
 
 ---
 
 ### [Run #4]
 
 Decision:
-Early gameplay telemetry oyun ici debug paneli ve localStorage uzerinden tutuldu.
+Early gameplay telemetry oyun ici panel ve local storage ile tutulacak.
 
 Reason:
-External analytics entegrasyonuna girmeden first death time, retry davranisi ve tekrar edilen run'lari hemen olcmek gerekiyordu.
+Harici analytics eklemeden first death, retry ve survival sinyallerini hemen olcmek gerekiyordu.
 
 Impact:
-Balancing kararlari artik sadece sezgiye degil, oyun icinde gorulen lokal metriklere dayanabilir.
+Balancing kararlarinin sezgi yerine lokal metriklere dayanmasi saglandi.
 
 Rollback Condition:
-Ileride harici analytics eklenirse bu telemetry dev-mode'a alinabilir veya daha hafif bir panele indirgenebilir.
-
----
-
-### [Run #4]
-
-Decision:
-Spawn fairness icin oyuncuya fazla yakin obstacle dogumlari sinirli reroll ile filtrelendi.
-
-Reason:
-En dusuk riskli fairness iyilestirmesi, erken oyunda bedava olum hissi yaratan yakin edge spawn'lari azaltmaktir.
-
-Impact:
-Tum difficulty curve degismeden ilk saniyelerdeki unavoidable death riski dusuruldu ve kac spawn'in kurtarildigi telemetry'ye eklendi.
-
-Rollback Condition:
-Telemetry veya manuel oyun testi oyunu gereksiz kolaylastirdigini gosterirse gerekli minimum mesafe veya reroll sayisi azaltilabilir.
+Harici analytics gelirse bu panel hafifletilebilir.
 
 ---
 
 ### [Run #5]
 
 Decision:
-Bu turda balance karsilastirmasi ayni steering policy ile alinan 5-run scripted local telemetry sample uzerinden yapildi.
+Erken zorluk icin spawn delay tune edildi; ayni sample metodolojisi ile once/sonra karsilastirma yapildi.
 
 Reason:
-Calisma ortami manuel oyun testini guvenilir sekilde desteklemiyordu. Yine de tek parametre degisikliginin etkisini ayni kosullarda karsilastirmak gerekiyordu.
+En net erken olum sinyali spawn yogunlugundaydi.
 
 Impact:
-Baseline ve post-tune sample ayni metodoloji ile alinabildi; karar sezgi yerine sayisal fark uzerinden verildi.
+Scripted sample first death `8.7s -> 11.0s`, avg survival `10.8s -> 14.3s`, early death `60% -> 20%` tasindi.
 
 Rollback Condition:
-Manual/human sample scripted sonuclardan anlamli sekilde saparsa bu metod yalnizca yardimci sinyal olarak tutulmali.
-
----
-
-### [Run #5]
-
-Decision:
-Erken zorluk icin yalnizca spawn delay grubu tune edildi; initial spawn delay 900ms yerine 1050ms yapildi.
-
-Reason:
-5-run baseline sample first death'i 8.7s, avg survival'i 10.8s ve early death oranini 60% gosterdi. Ayni sample'da spawn reroll sayisi 0 oldugu icin asil problem yakin spawn degil, erken obstacle yogunluguydu.
-
-Impact:
-Ayni telemetry sample sonrasi first death 11.0s, avg survival 14.3s ve early death 20% oldu. Retry gap 2.0s ile hedefin altinda kaldi.
-
-Rollback Condition:
-Manual sample oyunun fazla bosladigini, tempo kaybettigini veya scripted sample kazancinin gercek oyunda tekrarlanmadigini gosterirse spawn delay tabani tekrar asagi cekilebilir.
-
----
-
-### [Run #6]
-
-Decision:
-Bu turda balance'a tekrar dokunmak yerine telemetry yuzeyi session ve lifetime sample'i ayiracak sekilde guclendirildi.
-
-Reason:
-Calisma ortaminda tarayici bulunmadigi icin gercek manual input sample'i bu agent tarafinda dogrulanamadi. Buna ragmen bir sonraki insan/agent testinin tarihi localStorage verisinden etkilenmeden olculebilmesi gerekiyordu.
-
-Impact:
-Manual validation artik `R` ile sifirdan baslatilabiliyor, panelde session metrikleri lifetime veriden ayri okunuyor ve `C` ile console'a acik bir ozet cikarilabiliyor.
-
-Rollback Condition:
-Ileride harici analytics veya repo-ici telemetry harness bu akisi gereksiz kilarsa session/lifetime cift gosterim sadelestirilebilir.
-
----
-
-### [Run #7]
-
-Decision:
-Balance formulleri Phaser scene icinden ayrilarak paylasilan saf helper modulu ve repo-ici deterministic snapshot scripti olarak disari alindi.
-
-Reason:
-Bu ortamda tarayici olmadigi icin manual validation veya headless browser sample'i agent tarafinda koşturulamiyor. Buna ragmen balance tuning'in pacing ve speed egirisini her tur ayni sekilde okuyabilmek gerekiyordu.
-
-Impact:
-`npm run telemetry:snapshot` ile ilk spawn zamani, spawn yogunlugu ve speed/fairness curve browser disinda alinabiliyor. Gelecek tuning kararlarinda ayni formuller scene ve script tarafinda ortak kullaniliyor.
-
-Rollback Condition:
-Repo icine gercek browser steering harness veya daha zengin test altyapisi gelirse bu snapshot scripti yalnizca hizli smoke-check olarak tutulabilir ya da kaldirilabilir.
-
----
-
-### [Run #8]
-
-Decision:
-Manual validation bloklu kaldigi icin ikinci karar sinyali olarak repo-ici deterministic survival snapshot harness'i eklendi; spawn fairness secimi de scene ve script tarafinda ortak helper'da birlestirildi.
-
-Reason:
-Yalnizca pacing snapshot'i spawn yogunlugunu gosteriyordu ama erken olum riski hakkinda sinyal vermiyordu. Tarayici olmadigi icin human sample toplanamazken obstacle-speed tuning'i tamamen sezgiyle devam ettirmek riskliydi.
-
-Impact:
-`npm run telemetry:survival-snapshot` artik 24 deterministic seed uzerinde avg survival, first death ve early death oranini uretiyor. Bu, scripted telemetry ile manual sample arasindaki boslukta dar bir regression guard olarak kullanilabilir.
-
-Rollback Condition:
-Eger browser tabanli steering harness veya genis manual sample survival snapshot ile anlamli korelasyon gostermezse bu script yalnizca destekleyici sinyal olarak tutulmali; balance kararlarini tek basina yonetmemeli.
+Manual sample bu kazanci dogrulamazsa spawn delay tekrar ayarlanir.
 
 ---
 
 ### [Run #9]
 
 Decision:
-Bu turda yalnizca obstacle speed egirisi hafifletildi; spawn delay ve spawn fairness aynen korundu.
+Yalnizca obstacle speed egirisi hafifletildi; pacing korunarak survival proxy iyilestirildi.
 
 Reason:
-Run #8 sonunda pacing baseline'i kabul edilebilir durumdaydi ve survival snapshot erken olum riskinin hala speed tarafinda dar tuning gerektirdigini gosteriyordu. Ayni turda birden fazla parametreyi degistirmek sinyali bulandirirdi.
+Bir turda birden fazla balance eksenine dokunmak sinyali bulandirirdi.
 
 Impact:
-`npm run telemetry:snapshot` pacing'i 10s/30s/60s icin 10/32/76 spawn olarak korurken `npm run telemetry:survival-snapshot` sonucu avg survival'i 21.5s -> 22.3s, first death'i 3.4s -> 5.0s ve early death oranini 21% -> 8% tasidi.
+Deterministic survival snapshot `avg 22.3s / first death 5.0s / early death 8%` baseline'ina ulasti.
 
 Rollback Condition:
-Manual validation bu yeni speed curve'un oyunu gereksiz kolaylastirdigini veya human sample'da farkli bir erken-olum deseni oldugunu gosterirse obstacle speed egirisi yeniden ayarlanmalidir; ancak spawn delay ve fairness ile ayni anda degistirilmemelidir.
-
----
-
-### [Run #10]
-
-Decision:
-Bu turda balance tuning acilmadi; bunun yerine manual validation icin telemetry'de explicit `first death` ve sample ilerleme durumu gorunur hale getirildi.
-
-Reason:
-Roadmap ve NEXT_AGENT balance degisikligi degil manual validation istiyordu. Ancak mevcut telemetry `first death` sinyalini basari kriteri olarak acik tasimiyordu; tester bunu recent deaths listesinden cikarimla okumak zorunda kalirdi.
-
-Impact:
-Session sample artik HUD, game over overlay ve `C` console summary uzerinden dogrudan `first death` ve `5 run` ilerlemesini gosteriyor. Bu, bir sonraki insan testini daha hizli ve daha az hataya acik hale getiriyor.
-
-Rollback Condition:
-Eger telemetry paneli fazla kalabaliklasir veya harici analytics/manual harness bunu gereksiz kilarsa validation progress satiri sadeleştirilebilir; fakat `first death` sinyali baska bir yuzeyde korunmalidir.
-
----
-
-### [Run #11]
-
-Decision:
-Bu turda manual validation bloklu kalirken balance'a tekrar dokunmak yerine deterministic telemetry snapshot'lari assertion tabanli regression guard'a baglandi.
-
-Reason:
-Run #9 ve Run #10 ile olusan pacing/survival baseline'lari artik kritik referans haline geldi. Ancak bunlar sadece JSON rapor olarak uretiliyordu; istemsiz bir balance drift'i otomatik yakalanmiyordu.
-
-Impact:
-`npm run telemetry:check` tek komutta balance pacing ve survival baseline'larini assert ediyor. Snapshot scriptleri de ortak `telemetry-reports.ts` uzerinden ayni hesaplari kullandigi icin scriptler arasi drift riski azaldi.
-
-Rollback Condition:
-Intentional bir balance degisikligi yapilirsa bu guard'in beklenen degerleri bilincli sekilde guncellenmeli; eger daha zengin test altyapisi gelirse bu script smoke/regression check rolune indirgenebilir.
-
----
-
-### [Run #12]
-
-Decision:
-Bu turda da balance tuning acilmadi; bunun yerine session telemetry sample'ini tek satirlik bir validation report olarak export eden `V` kisayolu eklendi.
-
-Reason:
-Tarayici bu ortamda hala yok, dolayisiyla agent manuel sample toplayamadi. Fakat onceki telemetry akisi console objesine dayaniyordu ve insan tester'in sonucu dokumana tasimasi gereksiz friction yaratiyordu.
-
-Impact:
-Manual validator artik `R` ile sample'i sifirlayip runlari oynadiktan sonra `V` ile avg survival, first death, early death, retry ve deterministic baseline referansini tek satirda kopyalayabiliyor. Clipboard yoksa ayni rapor console'a yaziliyor ve localStorage'a kaydediliyor.
-
-Rollback Condition:
-Eger validation export metni telemetry yuzeyini gereksiz kalabaliklastirir veya daha iyi bir browser tabanli raporlama araci gelirse `V` akisi sadeleştirilebilir; ancak session sample'i console inspection olmadan tasima ihtiyaci korunmalidir.
-
----
-
-### [Run #13]
-
-Decision:
-Bu turda da gameplay balance'a veya telemetry yuzeyine dokunulmayip yalnizca deterministic regression guard ve production build tekrar dogrulandi; tarayici eksigi resmi blokaj olarak korundu.
-
-Reason:
-NEXT_AGENT'in ana hedefi manual validation'di, ancak mevcut ortamda tarayici yok. Bu kosulda yeni tuning yapmak veya telemetry akisina tekrar dokunmak sinyali bulandirirdi. En yuksek etkili dar adim, baseline'in drift etmedigini teyit edip insan testi ihtiyacini netlestirmekti.
-
-Impact:
-`npm run telemetry:check` tekrar pacing `10/32/76` ve survival `22.3s / 5.0s / 8%` baseline'ini korudugunu gosterdi. `npm run build` basarili kaldi. Sonraki agent icin tek mantikli ana hedef tarayicili ortamda manual sample toplamak olarak netlesmis oldu.
-
-Rollback Condition:
-Eger tarayicili ve insan-inputlu bir ortam daha sonra acilirse bu karar yalnizca o tur icin gecersiz olur; o noktada ana hedef tekrar manual validation'a donmelidir.
-
----
-
-### [Run #19]
-
-Decision:
-Bu turda balance veya telemetry UI yerine browser validation hazirligini tek komutta raporlayan `telemetry:validation-ready` orchestration komutu eklendi.
-
-Reason:
-Manual validation bu sandbox'ta hala loopback `EPERM` ile bloklu. Ayrik `telemetry:check`, `telemetry:validation-snapshot` ve `telemetry:browser-preflight` adimlarini her seferinde elle zincirlemek sonraki agent icin gereksiz operasyonel churn yaratiyordu.
-
-Impact:
-Bir sonraki agent veya insan validator tek komutla deterministic guard durumunu, validation snapshot baseline'ini ve browser preflight blokajini ayni JSON ciktida gorebiliyor. Socket izinli ortamda ayni entry point `--with-smoke` ile smoke'a da ilerleyebiliyor.
-
-Rollback Condition:
-Eger bu orchestration script'i mevcut ayrik komutlardan daha fazla bakim yuku olusturursa veya validation akisi gelecekte tamamen degisirse kaldirilabilir; ancak guard + readiness sinyallerinin tek yerde gorulebilmesi ihtiyaci korunmalidir.
-Interaktif browser erisimi ve insan input'u saglandiginda bu blokaj kaydi daraltilip manual validation sonucuna geri donulmelidir.
-Tarayicili ortam acilir ve manuel sample toplanirsa bu karar yerini insan verisine dayali bir sonraki dar iterasyona birakabilir.
-
----
-
-### [Run #20]
-
-Decision:
-Bu turda browser validation blocker'ini kaldirmaya calismak yerine preflight/readiness mesajlari runner-specific olacak sekilde daraltildi.
-
-Reason:
-`NEXT_AGENT.md` icindeki human note sunucu shell'inde loopback bind'in calisabildigini soyluyor, fakat agent runtime icinde ayni probe `EPERM` veriyor. Repo ciktisi bunu genel environment gercegi gibi anlatiyordu; bu da sonraki agentin problemi yanlis katmanda aramasina neden olabilirdi.
-
-Impact:
-`telemetry:browser-preflight` artik `socketProbeHost` ve tekrar kullanilabilir `socketProbeCommand` alanlarini veriyor. `loopbackError` ve `validation-ready.nextAction` blocker'i "current agent runtime" seviyesinde tarif ediyor ve host shell ayni probe'u gecerse smoke/manual validation'in oradan kosulmasi gerektigini acikca soyluyor.
-
-Rollback Condition:
-Eger ileride smoke harness loopback soketi gerektirmeyecek sekilde degisirse bu dil sadeleştirilebilir; ancak blocker'in hangi runtime'ta gozlendigi bilgisi korunmalidir.
-
----
-
-### [Run #21]
-
-Decision:
-Bu turda yeni balance veya validation altyapisi eklemek yerine preflight/readiness ciktisina yapilandirilmis `nextSteps` ve `blockerScope` alanlari eklendi.
-
-Reason:
-Asil blokaj teknik olarak zaten ayristirilmisti, fakat sonraki agent veya insan validator host shell'de hangi komutu hangi sirayla kosacagini hala metinden cikarimla buluyordu. Tek ana hedefi dar tutup operasyonel churn'u azaltmanin en dogru yolu, ayni JSON ciktinin host-shell workflow'u dogrudan tasimasiydi.
-
-Impact:
-`telemetry:browser-preflight` ve `telemetry:validation-ready` artik sadece "neden blocked" degil, "sirada ne kosulacak" bilgisini de makinece okunur veriyor. Host shell probe -> readiness -> smoke -> manual sample akisi artik repo ciktisinda net.
-
-Rollback Condition:
-Eger ileride validation akisi tamamen degisirse veya smoke/manual sample farkli bir entry point'e tasinirse `nextSteps` helper'i yeni workflow'a gore sadeleştirilmeli; ancak blocker scope ve sirali aksiyon bilgisi korunmalidir.
-
----
-
-### [Run #14]
-
-Decision:
-Bu turda da balance'a dokunulmayip son `V` validation export'unun oyun ici telemetry yuzeylerinde gorunurlugu artirildi.
-
-Reason:
-Tarayici blokaji devam ederken yeni tuning yapmak sinyali bulandirirdi. Buna karsin mevcut `V` export yalnizca clipboard, console veya localStorage uzerinden okunabiliyordu; bu da sonraki manuel validator icin fallback durumunda ek friction yaratiyordu.
-
-Impact:
-Son kaydedilen validation export artik oyun acildiginda localStorage'dan okunuyor ve telemetry HUD ile game over overlay'de `Last export` ozeti olarak gorunuyor. Boylece clipboard olmasa bile sample'in kaydedildigi oyun icinde dogrulanabiliyor.
-
-Rollback Condition:
-Eger bu ek satirlar telemetry yuzeyini fazla kalabaliklastirir veya daha iyi bir browser tabanli validation akisi gelirse `Last export` ozeti sadeleştirilebilir; ancak kaydin oyun icinde gorulebilir olmasi korunmalidir.
-Tarayici erisimi saglandiginda bu blokaj kalkar; o noktada ayni guard korunarak manual validation sample'i toplanmali ve sadece bu veriye dayanarak yeni balance karari degerlendirilmelidir.
+Manual sample veya daha guclu telemetry bu curve'un yanlis oldugunu gosterirse yeniden ayarlanir.
 
 ---
 
 ### [Run #15]
 
 Decision:
-Bu turda balance'a veya yeni bir gameplay feature'ina dokunmak yerine validation export builder/parser'i ortak helper'a tasindi ve deterministic export kontrati regression guard'a baglandi.
+Validation export kontrati ortak helper ve deterministic snapshot ile guard altina alindi.
 
 Reason:
-Tarayici blokaji devam ederken en degerli dar ilerleme, bir sonraki insan testinin kullanacagi `V` export satirinin kirilmadigini repo icinde dogrulamakti. Yeni `telemetry:validation-snapshot` komutu bu kontrati browser olmadan test ederken parser'in `validation` alanindaki `|` ayirici yuzunden son durumu truncation ile kaybettigini ortaya cikardi.
+Manual sample sonucu console inspection'a bagli kalmamaliydi.
 
 Impact:
-`validation_sample` satiri artik oyun ici ve script tarafinda ayni helper ile uretiliyor; `Last export` ozeti `5/5 runs, target met` gibi tam validation durumunu dogru okuyabiliyor. `npm run telemetry:check` bu kontrati da assert ettigi icin future telemetry/export degisiklikleri sessizce bozulamayacak.
+`V` export akisi ve parser kontrati artik regression guard altinda.
 
 Rollback Condition:
-Ileride export formati bilincli olarak degisecekse ortak helper ve deterministic validation baseline'i ayni turda birlikte guncellenmeli; UI tarafinda farkli string birlestirme ile lokal patch yapilmamalidir.
+Daha iyi raporlama yolu gelirse export formatina yeniden bakilabilir.
 
 ---
 
-### [Run #16]
+### [Run #21]
 
 Decision:
-Bu turda da balance veya telemetry yuzeyine dokunulmayip yalnizca deterministic telemetry guard'lari ile production build tekrar dogrulandi; manual validation blokaji "browser yok" yerine "interaktif sample alinmadi" seklinde kayda gecirildi.
+Browser validation preflight/readiness ciktilari runtime-scoped blocker dili ve `nextSteps` ile zenginlestirildi.
 
 Reason:
-Run #15 sonrasi en yuksek etkili dar adim, validation export kontratinin ve baseline'in drift etmedigini teyit etmekti. Ortamda `chromium` binary'si bulunsa da bu CLI turunda insan input'u veya oyun ici interaktif sample yoktu; bu kosulda yeni tuning sinyali uretmek hatali olurdu.
+Mevcut runtime blokajini host geneli gibi gostermek operasyonel churn yaratiyordu.
 
 Impact:
-`npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar temiz gecti. Sonraki agent icin hedef, artik tarayici binary'si aramak degil, gercekten interaktif bir oturumda `R`/`V` manual sample toplamak olarak daha net tanimlandi.
+Loopback `EPERM` daha net raporlanir hale geldi.
 
 Rollback Condition:
-Eger sonraki turda interaktif manual sample alinabilirse bu operasyonel blokaj kaydi kaldirilip balance kararlarina insan telemetry'si uzerinden devam edilmelidir.
+Browser validation operasyonu baska bir mekanizmaya tasinirse bu helper'lar sadeleştirilebilir.
 
 ---
 
-### [Run #17]
+### [Run #22]
 
 Decision:
-Bu turda gameplay balance'a dokunulmayip gercek Chromium validation akisina bakacak repo-ici browser smoke harness eklendi; harness loopback socket yoksa fail-fast veriyor.
+Bu turda gameplay balance baseline'i korunup deterministic survival snapshot'a bucket dagilimi eklendi; validation altyapisina yeni katman eklenmedi.
 
 Reason:
-NEXT_AGENT'in asil hedefi manual validation idi, fakat mevcut sandbox'ta ne interaktif insan input'u ne de local socket ile static server/CDP acmak mumkundu. En yuksek etkili dar adim, `R`/`V`/`Last export` akisinin browser tarafini test edilebilir hale getirip operasyonel blokaji acik hata mesaji ile kayda gecirmekti.
+Validation katmani yeterince genislemis durumda. Mevcut survival proxy sadece avg/first-death sinyali veriyor ve asil baski bandini gizliyordu.
 
 Impact:
-`npm run telemetry:browser-validation-smoke` uygun ortamda gercek Chromium validation akisina bakabilecek. Kisitli sandbox'ta ise agent bekleyip asili kalmak yerine `listen EPERM 127.0.0.1` seviyesinde acik bir blokaj raporu aliyor. Bu, "browser binary var" ile "browser automation gercekten calisiyor" durumlarini ayiriyor.
+`npm run telemetry:survival-snapshot` artik olumleri `<10s`, `10-20s`, `20-30s` ve `30s cap` olarak ayiriyor. `npm run telemetry:check` bu dagilimi assert ediyor. Sonraki tuning turu artik `10-20s` bandina odaklanabilir.
 
 Rollback Condition:
-Ileride daha basit bir browser automation araci veya CI browser provider'i eklenirse bu custom CDP harness sadeleştirilebilir; ancak `R`/`V` validation akisinin browser tarafini production build'e yakin bir ortamda smoke-test etme ihtiyaci korunmalidir.
-
----
-
-### [Run #18]
-
-Decision:
-Bu turda gameplay balance'a yine dokunulmayip browser validation icin ayri bir readiness preflight komutu eklendi; smoke harness bu ortak helper'i kullanacak sekilde baglandi.
-
-Reason:
-NEXT_AGENT'in istedigi asil is hala socket izinli ortamda smoke + manual validation. Fakat mevcut sandbox'ta smoke komutunu calistirmak bile yalnizca tek hata satiri uretiyordu; chromium binary, build hazirligi ve loopback socket durumu ayri ayri okunmuyordu. En yuksek etkili dar adim, environment blocker'ini tek JSON cikti ile olculebilir hale getirmekti.
-
-Impact:
-`npm run telemetry:browser-preflight` artik `/usr/bin/chromium`, `dist/index.html` ve loopback socket durumunu tek komutta raporluyor. Sonraki agent once bu komutla ortam uygun mu degil mi anlayip ancak sonra smoke veya manual sample'a gecebilir. Smoke komutu da ayni helper uzerinden erken fail ettigi icin blokaj daha tutarli raporlaniyor.
-
-Rollback Condition:
-Ileride browser smoke farkli bir automation stack'e tasinirse bu preflight helper yeni stack'in gereksinimlerine gore guncellenmeli; fakat smoke oncesi environment readiness'i ayrica olcme ihtiyaci korunmalidir.
+Manual browser sample deterministic bucket dagilimi ile korele olmazsa bu sinyal yardimci metrik olarak tutulur ve baska gameplay telemetry'leri eklenir.

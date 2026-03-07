@@ -73,6 +73,12 @@ export type SurvivalSnapshotReport = {
   firstDeathTimeSeconds: number;
   bestSurvivalTimeSeconds: number;
   earlyDeathRatePercent: number;
+  survivalBuckets: {
+    under10Seconds: number;
+    between10And20Seconds: number;
+    between20And30Seconds: number;
+    reached30SecondsCap: number;
+  };
   averageSpawnCount: number;
   averageSpawnRerolls: number;
   sampleRuns: SessionResult[];
@@ -291,6 +297,20 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
     firstDeathTimeSeconds: Math.min(...survivalTimes),
     bestSurvivalTimeSeconds: Math.max(...survivalTimes),
     earlyDeathRatePercent: Math.round((earlyDeaths / results.length) * 100),
+    survivalBuckets: {
+      under10Seconds: results.filter((result) => result.survivalTimeSeconds < 10).length,
+      between10And20Seconds: results.filter(
+        (result) =>
+          result.survivalTimeSeconds >= 10 && result.survivalTimeSeconds < 20,
+      ).length,
+      between20And30Seconds: results.filter(
+        (result) =>
+          result.survivalTimeSeconds >= 20 && result.survivalTimeSeconds < MAX_SIMULATION_SECONDS,
+      ).length,
+      reached30SecondsCap: results.filter(
+        (result) => result.survivalTimeSeconds >= MAX_SIMULATION_SECONDS,
+      ).length,
+    },
     averageSpawnCount: round(results.reduce((total, result) => total + result.spawns, 0) / results.length),
     averageSpawnRerolls: round(
       results.reduce((total, result) => total + result.spawnRerolls, 0) / results.length,

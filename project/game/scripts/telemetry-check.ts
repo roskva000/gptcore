@@ -40,6 +40,16 @@ assert.equal(survivalReport.averageSurvivalTimeSeconds, 22.3, 'Average survival 
 assert.equal(survivalReport.firstDeathTimeSeconds, 5, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 8, 'Early death rate snapshot regressed.');
+assert.deepEqual(
+  survivalReport.survivalBuckets,
+  {
+    under10Seconds: 2,
+    between10And20Seconds: 8,
+    between20And30Seconds: 4,
+    reached30SecondsCap: 10,
+  },
+  'Survival bucket distribution regressed.',
+);
 assert.equal(survivalReport.averageSpawnCount, 23.1, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0, 'Spawn reroll snapshot changed unexpectedly.');
 assert.equal(
