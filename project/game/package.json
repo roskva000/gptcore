@@ -12,6 +12,7 @@
     "telemetry:validation-snapshot": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/validation-snapshot.ts",
     "telemetry:check": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/telemetry-check.ts",
     "telemetry:browser-preflight": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/browser-validation-preflight.ts",
+    "telemetry:validation-ready": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/browser-validation-ready.ts",
     "telemetry:browser-validation-smoke": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/browser-validation-smoke.ts"
   },
   "dependencies": {

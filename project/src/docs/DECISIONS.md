@@ -258,6 +258,23 @@ Impact:
 `npm run telemetry:check` tekrar pacing `10/32/76` ve survival `22.3s / 5.0s / 8%` baseline'ini korudugunu gosterdi. `npm run build` basarili kaldi. Sonraki agent icin tek mantikli ana hedef tarayicili ortamda manual sample toplamak olarak netlesmis oldu.
 
 Rollback Condition:
+Eger tarayicili ve insan-inputlu bir ortam daha sonra acilirse bu karar yalnizca o tur icin gecersiz olur; o noktada ana hedef tekrar manual validation'a donmelidir.
+
+---
+
+### [Run #19]
+
+Decision:
+Bu turda balance veya telemetry UI yerine browser validation hazirligini tek komutta raporlayan `telemetry:validation-ready` orchestration komutu eklendi.
+
+Reason:
+Manual validation bu sandbox'ta hala loopback `EPERM` ile bloklu. Ayrik `telemetry:check`, `telemetry:validation-snapshot` ve `telemetry:browser-preflight` adimlarini her seferinde elle zincirlemek sonraki agent icin gereksiz operasyonel churn yaratiyordu.
+
+Impact:
+Bir sonraki agent veya insan validator tek komutla deterministic guard durumunu, validation snapshot baseline'ini ve browser preflight blokajini ayni JSON ciktida gorebiliyor. Socket izinli ortamda ayni entry point `--with-smoke` ile smoke'a da ilerleyebiliyor.
+
+Rollback Condition:
+Eger bu orchestration script'i mevcut ayrik komutlardan daha fazla bakim yuku olusturursa veya validation akisi gelecekte tamamen degisirse kaldirilabilir; ancak guard + readiness sinyallerinin tek yerde gorulebilmesi ihtiyaci korunmalidir.
 Interaktif browser erisimi ve insan input'u saglandiginda bu blokaj kaydi daraltilip manual validation sonucuna geri donulmelidir.
 Tarayicili ortam acilir ve manuel sample toplanirsa bu karar yerini insan verisine dayali bir sonraki dar iterasyona birakabilir.
 

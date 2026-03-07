@@ -54,6 +54,11 @@ current: Run #18'de `npm run telemetry:browser-preflight` `status: blocked` sonu
 baseline: uygun ortamda `status: ok`, chromium=true, dist=true, loopback=true
 target: smoke veya manual validation'dan once ortamin browser validation icin hazir olup olmadigini tek komutta gostermek
 
+browser_validation_readiness:
+current: Run #19'da `npm run telemetry:validation-ready` `status: blocked` sonucu ile guard=true, validation summary=`5 runs | first death 30.0s | early 20% | 5/5 runs, target met`, chromium=true, dist=true, loopback=false raporu uretti
+baseline: uygun ortamda `status: ready`; `--with-smoke` ile smoke calisirsa `status: smoke-passed`
+target: bir sonraki validator deterministic guard drift'i ve environment blokajini tek JSON cikti ile gorup sonraki adimi hemen secebilmeli
+
 ---
 
 # Player Behavior
@@ -157,4 +162,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - yeni komut chromium executable, `dist/index.html` okunabilirligi ve loopback socket izinlerini ayni JSON cikti icinde raporluyor
   - mevcut sandbox sonucu: `status: blocked`, `chromiumAvailable: true`, `distReady: true`, `loopbackSocketsAvailable: false`
   - smoke komutu ayni helper'i kullandigi icin hata satiri ile preflight JSON ayni blokaji isaret ediyor
-- next step: socket izinli ortamda once `npm run telemetry:browser-preflight` ile readiness'i teyit et, sonra `npm run telemetry:browser-validation-smoke` gecir; smoke temizse bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla
+- Run #19 browser readiness details:
+  - yeni orchestration komutu once `telemetry:check`'i geciriyor, sonra deterministic validation summary ve browser preflight sonucunu ayni JSON ciktida topluyor
+  - mevcut sandbox sonucu: `status: blocked`, `guard.ok: true`, `validationSummary: 5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
+  - `nextAction` alani socket izinli ortama gecip ayni komutu orada tekrar calistirma talimati veriyor
+- next step: socket izinli ortamda once `npm run telemetry:validation-ready` ile guard + readiness'i birlikte teyit et; status `ready` ise `--with-smoke` veya `npm run telemetry:browser-validation-smoke` gecir, smoke temizse bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla

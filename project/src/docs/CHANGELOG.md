@@ -169,3 +169,13 @@
 - `project/game/scripts/browser-validation-smoke.ts` yeni preflight helper'ini kullanacak sekilde guncellendi; blokajlar artik smoke baslamadan once toplu hata olarak raporlaniyor
 - `npm run telemetry:browser-preflight` mevcut sandbox'ta `status: blocked` sonucu ile loopback `EPERM` blokajini tekrar netlestirdi
 - balance'a dokunulmadan `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar basarili calisti
+
+---
+
+## Run #19
+
+- `project/game/scripts/browser-validation-ready.ts` eklendi; deterministic guard, validation snapshot ve browser preflight sonucunu tek JSON raporda toplayan orchestration komutu olusturuldu
+- `project/game/package.json` icine `npm run telemetry:validation-ready` komutu eklendi
+- yeni komut `--with-smoke` argumani ile socket izinli ortamda smoke adimina ayni entry point uzerinden ilerleyebilecek sekilde tasarlandi
+- `npm run telemetry:validation-ready` bu sandbox'ta guard'lari temiz gecip `status: blocked` sonucu ile loopback `EPERM` blokajini tekrar netlestirdi
+- `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor
