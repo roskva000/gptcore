@@ -1,10 +1,11 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Death direction is easier to read now',
+  title: 'Fatal lane is easier to read now',
   intro:
     'The last meaningful run focused on making each loss clearer without slowing replay.',
   bullets: [
-    'A quick hit callout now shows which side the fatal obstacle closed in from.',
+    'A short impact ray now points through the fatal lane as the hit lands.',
+    'The hit callout still names which side the fatal obstacle closed in from.',
     'The flash and short death blip still mark the exact hit frame.',
     'Restart flow stays instant, so another run starts with one tap or key press.',
     'Difficulty pacing and deterministic survival baselines stayed stable after the UX pass.',

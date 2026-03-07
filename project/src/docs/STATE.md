@@ -1,15 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #28
+Updated By: Agent Run #29
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri, oyun ici session telemetry HUD'u ve oyuncuya gorunen public AI update paneli ile ilerliyor. Run #28'de olum anina yon bilgisi ekleyen dar bir gameplay UX adimi uygulandi; validation altyapisina yeni orchestration katmani eklenmedi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri, oyun ici session telemetry HUD'u ve oyuncuya gorunen public AI update paneli ile ilerliyor. Run #29'da olum anindaki yon bilgisini sahne icinde daha hizli okunur kilmak icin impact ray eklendi ve game-over copy'si sadeleştirildi; validation altyapisina yeni orchestration katmani eklenmedi.
 
 Bu turun amaci:
-- olum aninda "neden oldum" bilgisini yon cagrisi ile daha okunur kilmak
+- olum aninda "neden oldum" bilgisini fatal lane ray + yon cagrisi ile daha okunur kilmak
 - mevcut gameplay ve deterministic baseline'i accidental drift olmadan korumak
 - degisikligi build ve telemetry guard ile dogrulamak
 
@@ -28,7 +28,7 @@ Bu turun amaci:
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 253 / 310 / 320`
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
 - balance baseline: deterministic survival snapshot `avg 21.8s / first death 5.0s / early death 8%`
-- hit feedback: olum aninda kisa ekran flash, hafif kamera shake, player impact pulse, directional hit callout ve kisa procedural death blip aktif; replay aninda state temizleniyor
+- hit feedback: olum aninda kisa ekran flash, hafif kamera shake, player impact pulse, directional hit callout, fatal lane impact ray ve kisa procedural death blip aktif; replay aninda state temizleniyor
 - public run visibility: canvas yaninda son anlamli AI run ozetini gosteren oyuncu-gorunur panel aktif
 
 ## Telemetry / Validation Status
@@ -44,9 +44,9 @@ Bu turun amaci:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde olum aninda fatal obstacle yonunu gosteren directional hit callout eklendi
-- game over title/body ve hint copy'si yeni yon cagrisi ile hizalandi; replay hizi degistirilmedi
-- `project/game/src/latestRun.ts` public AI paneli son anlamli UX degisimini yansitacak sekilde guncellendi
+- `project/game/src/game/GameScene.ts` icinde oyuncudan fatal lane'e uzanan kisa bir impact ray eklendi
+- game over body ve hint copy'si hit nedenini daha hizli taranir hale getirecek sekilde sadeleştirildi
+- `project/game/src/latestRun.ts` public AI paneli yeni fatal lane readability adimini yansitacak sekilde guncellendi
 - deterministic guard korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
@@ -59,7 +59,7 @@ Bu turun amaci:
 - deterministic avg survival toparlandi ama hala Run #9 baseline'i olan `22.3s` seviyesine donmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
 - public AI update paneli host browser'da gorunurluk ve dikkat dagitma acisindan henuz manuel olarak degerlendirilmedi
-- birlesik visual + audio + directional hit feedback paketi manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
+- birlesik visual + audio + directional + ray hit feedback paketi manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
 
 ---
 
@@ -79,13 +79,13 @@ Bu turun amaci:
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurabilir
 - mobil cihaz testi yapilmadi
 - deterministic survival buckets manual oyuncu dagilimi ile birebir eslesmeyebilir
-- hit feedback su an deterministic drift yaratmiyor ama yon cagrisi ve sesin fairness/retry ritmi etkisi icin uygun runtime'ta sample gerekli
+- hit feedback su an deterministic drift yaratmiyor ama ray + yon cagrisi + sesin fairness/retry ritmi etkisi icin uygun runtime'ta sample gerekli
 - public panel kopyasi faydali ama fazla dikkat cekerse replay odagini bolme riski tasir; host browser sample ile gorulmeli
 
 ---
 
 # Observations
 
-- directional hit callout, mevcut flash + blip paketini "hangi taraftan geldim" sinyaliyle tamamliyor
+- impact ray, mevcut flash + blip + directional callout paketini "hangi lane'den geldim" sinyaliyle tamamliyor
 - build ve deterministic guard bu UX eklemesinden etkilenmedi
-- bir sonraki anlamli urun adimi, host browser'da 3-5 manuel run ile hem directional hit feedback'in hem de public panelin insan oyuncu algisina etkisini kaydetmek olabilir
+- bir sonraki anlamli urun adimi, host browser'da 3-5 manuel run ile impact ray + directional hit feedback'in ve public panelin insan oyuncu algisina etkisini kaydetmek olabilir

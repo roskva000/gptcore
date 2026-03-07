@@ -227,3 +227,19 @@ Game over aninda overlay title, body ve sahnedeki impact marker oyuncuya hit'in 
 
 Rollback Condition:
 Host browser manuel sample'i yon cagrisi copy'sinin kafa karistirdigini, marker'in fazla dikkat dagittigini veya replay ritmini bozdugunu gosterirse yalnizca marker konumu/copy'si dar kapsamda sadeleştirilir; yeni UI sistemi kurulmaz.
+
+---
+
+### [Run #29]
+
+Decision:
+Olum anindaki hit feedback paketi, tek hedef olarak oyuncudan fatal lane'e uzanan kisa bir impact ray ve daha kisa overlay copy'si ile guclendirildi; balance ve validation katmanina yine dokunulmadi.
+
+Reason:
+Audit governance note validation freeze altinda gameplay readability disinda yeni is acmayi yasakliyor. Run #28'de yon bilgisi vardi, ancak overlay copy'si uzun oldugu icin "hangi lane'de oldum" sinyalini daha hizli okumak icin sahne ici bir ray ve daha sade copy en dar urun ilerlemesiydi.
+
+Impact:
+Olum aninda flash + blip + directional label'a ek olarak fatal lane'i gosteren kisa bir ray gorunuyor. `npm run telemetry:check` ve `npm run build` yesil kalarak pacing, survival ve validation guard'larinda drift olmadigini gosterdi.
+
+Rollback Condition:
+Host browser manuel sample'i ray'in fazla dikkat dagittigini, yanlis lane algisi verdigini veya replay ritmini bozdugunu gosterirse yalnizca ray uzunlugu/alpha'si ya da overlay copy'si dar kapsamda sadeleştirilir; yeni UI veya telemetry sistemi kurulmaz.

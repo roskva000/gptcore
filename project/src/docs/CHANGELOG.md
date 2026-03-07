@@ -2,6 +2,15 @@
 
 ---
 
+## Run #29
+
+- `project/game/src/game/GameScene.ts` icinde oyuncudan fatal lane'e uzanan kisa bir impact ray eklendi
+- game over body ve hint copy'si olum nedenini daha hizli taranir hale getirmek icin sadeleştirildi
+- `project/game/src/latestRun.ts` public AI update paneli yeni fatal lane readability adimini yansitacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #28
 
 - `project/game/src/game/GameScene.ts` icinde olum anina fatal obstacle yonunu gosteren directional hit callout, impact marker ve guncel game over copy'si eklendi

@@ -61,6 +61,7 @@ export class GameScene extends Phaser.Scene {
   private hintText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
   private hitFlash!: Phaser.GameObjects.Rectangle;
+  private impactRay!: Phaser.GameObjects.Line;
   private impactMarker!: Phaser.GameObjects.Arc;
   private impactMarkerLabel!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
@@ -149,6 +150,14 @@ export class GameScene extends Phaser.Scene {
       .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0xff8a73, 0)
       .setDepth(8)
       .setBlendMode(Phaser.BlendModes.ADD)
+      .setVisible(false);
+
+    this.impactRay = this.add
+      .line(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 0, 0, 0, -84, 0xffb29f, 0.95)
+      .setDepth(9)
+      .setLineWidth(5, 5)
+      .setOrigin(0, 0)
+      .setAlpha(0)
       .setVisible(false);
 
     this.impactMarker = this.add
@@ -368,6 +377,7 @@ export class GameScene extends Phaser.Scene {
     this.player.setAlpha(1);
     this.player.setScale(1);
     this.hitFlash.setAlpha(0).setVisible(false);
+    this.impactRay.setAlpha(0).setVisible(false);
     this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
     this.impactMarkerLabel.setAlpha(0).setVisible(false);
     this.phase = 'playing';
@@ -535,7 +545,13 @@ export class GameScene extends Phaser.Scene {
 
     this.phase = 'gameOver';
     this.nextSpawnTimer?.remove(false);
-    this.tweens.killTweensOf([this.player, this.hitFlash, this.impactMarker, this.impactMarkerLabel]);
+    this.tweens.killTweensOf([
+      this.player,
+      this.hitFlash,
+      this.impactRay,
+      this.impactMarker,
+      this.impactMarkerLabel,
+    ]);
     this.player.setVelocity(0, 0);
     this.player.setTint(0xffd6cf);
     this.recordRunEnd();
@@ -576,28 +592,35 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
-          `Cause readout: ${hitDirection.sentence}.`,
-          'Impact flash and death blip mark the hit frame so the cause reads instantly.',
-          `Session avg: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
-          `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
-          `Lifetime avg: ${getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${getAverageRetryDelayText(this.sessionTelemetry)}`,
-          `Last export: ${this.getLastValidationReportSummaryText()}`,
-          `Spawn saves this run: ${this.runSpawnRerolls} | Press R to reset, C to log, V to copy summary`,
+          `Cause: ${hitDirection.sentence}.`,
+          'Ray + flash + blip mark the fatal lane at the hit frame.',
+          '',
+          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}%`,
+          `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation ${getValidationProgressText(this.sessionTelemetry)}`,
+          `Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
+          `Last export ${this.getLastValidationReportSummaryText()}`,
           'Press Space, Enter, or tap to retry instantly.',
         ].join('\n'),
       )
       .setVisible(true);
     this.hintText
       .setText(
-        `Death callout now marks ${hitDirection.label} pressure. Retry should stay instant.`,
+        `Fatal pressure came from ${hitDirection.label}. Retry should stay instant.`,
       )
       .setVisible(true);
   }
 
   private showImpactMarker(hitDirection: HitDirection): void {
+    const rayLength = 94;
+    const rayEndX = this.player.x + hitDirection.offsetX * rayLength;
+    const rayEndY = this.player.y + hitDirection.offsetY * rayLength;
     const markerX = Phaser.Math.Clamp(this.player.x + hitDirection.offsetX * 54, 48, ARENA_WIDTH - 48);
     const markerY = Phaser.Math.Clamp(this.player.y + hitDirection.offsetY * 54, 48, ARENA_HEIGHT - 48);
 
+    this.impactRay
+      .setTo(this.player.x, this.player.y, rayEndX, rayEndY)
+      .setAlpha(0.95)
+      .setVisible(true);
     this.impactMarker
       .setPosition(markerX, markerY)
       .setScale(0.72)
@@ -609,6 +632,12 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(1)
       .setVisible(true);
 
+    this.tweens.add({
+      targets: this.impactRay,
+      alpha: 0.2,
+      duration: 180,
+      ease: 'Quad.Out',
+    });
     this.tweens.add({
       targets: this.impactMarker,
       scale: 1,

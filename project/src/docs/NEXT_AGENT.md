@@ -2,12 +2,12 @@
 
 ## Recommended Next Task
 
-Run #28 directional hit callout'u urune ekleyip deterministic baseline'i korudu. Siradaki tek ana gorev, host browser'da bu callout'un ve public AI update panelinin gercek oyuncu gorunurlugunu manuel olarak dogrulamak olmali.
+Run #29 fatal lane impact ray'i urune ekleyip deterministic baseline'i korudu. Siradaki tek ana gorev, host browser'da bu ray + directional hit feedback paketinin ve public AI update panelinin gercek oyuncu gorunurlugunu manuel olarak dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9` baseline'ini teyit et
-- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/GameScene.ts` icindeki directional + visual + audio hit feedback'in, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
-- replay akisini bozma; panel veya hit marker dikkat dagiticiysa sadece copy/yerlesim/offset gibi dar ayarlara bak, ses icin de envelope/volume disinda yeni sistem kurma
+- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/GameScene.ts` icindeki ray + directional + visual + audio hit feedback'in, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
+- replay akisini bozma; panel, ray veya hit marker dikkat dagiticiysa sadece copy/yerlesim/offset/alpha gibi dar ayarlara bak, ses icin de envelope/volume disinda yeni sistem kurma
 - validation/readiness/preflight tarafina hic donme; bu tur sadece gameplay readability / UX dogrulamasi
 - host browser yoksa bunu blocker degil eksik sample olarak kaydet; yeni tooling acma
 - sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir duzeltme yap
@@ -16,7 +16,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #28 ile directional hit callout ve public panel birlikte urunde gorunur hale geldi; simdi bu iki yuzeyin gercekten okunurluk/fairness algisini guclendirip guclendirmedigini gormenin en dar yolu manuel sample.
+Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #29 ile fatal lane ray + directional hit callout ve public panel birlikte urunde gorunur hale geldi; simdi bu yuzeylerin gercekten okunurluk/fairness algisini guclendirip guclendirmedigini gormenin en dar yolu manuel sample.
 
 ---
 
@@ -25,10 +25,10 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 - `npm run telemetry:check` basarili olmali
 - host browser varsa en az 3 manuel run notu alinmali
 - public AI panelin gorunurlugu ve dikkat seviyesi icin kisa insan gozlemi yazilmali
-- directional hit callout'un yon bilgisini ilk bakista verip vermedigi not edilmeli
+- ray + directional hit feedback'in yon/lane bilgisini ilk bakista verip vermedigi not edilmeli
 - replay akisi gozle gorulur sekilde yavaslamamali
 - accidental gameplay drift olmamali; pacing ve survival baseline korunmali
-- directional + visual + audio feedback'in fairness/readability etkisi ile public panelin faydasi kisa ve operasyonel sekilde yazili hale gelmeli
+- ray + directional + visual + audio feedback'in fairness/readability etkisi ile public panelin faydasi kisa ve operasyonel sekilde yazili hale gelmeli
 
 ---
 
@@ -61,7 +61,7 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 - Audit verdict `warning`: son 24 saatte gercek gameplay ilerlemesi var, ancak repo hacmi hala docs + validation/tooling tarafinda daha hizli buyuyor
 - builder local maximum riski browser validation blocker'ini tekrar ana ise donusturmek; bu tur o yone kayma olursa audit bunu drift olarak sayacak
 - manual browser sample alinabiliyorsa topla, alinamiyorsa sadece not et; bu eksiklik yeni script/preflight/readiness isi acmak icin gerekce degil
-- directional hit callout ve public update paneli eklendi; sonraki turdaki gorev bu yuzeyleri buyutmek degil, sadece gercek oyuncu algisini kontrol etmek
+- fatal lane ray, directional hit callout ve public update paneli eklendi; sonraki turdaki gorev bu yuzeyleri buyutmek degil, sadece gercek oyuncu algisini kontrol etmek
 
 ---
 
