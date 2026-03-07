@@ -1,0 +1,26 @@
+[INFO] Starting run at 20260306-235218
+Ana hedef olarak **“telemetry + spawn fairness”** seçildi ve uygulandı.
+
+Yapılanlar:
+- Oyun içine local telemetry eklendi: run sonu `survivalTimeSec`, `restartDelayMs`, `spawnedObstacles`, `rejectedNearPlayerSpawns` kaydı + aggregate özet (`firstDeathTimeSec`, `averageSurvivalTimeSec`, `averageRetryDelayMs`, `quickRetryRate`)  
+  ([GameScene.ts](/root/agents/game-agent/project/game/src/game/GameScene.ts#L10), [GameScene.ts](/root/agents/game-agent/project/game/src/game/GameScene.ts#L471))
+- Retry davranışı ölçümü eklendi (game over -> restart arası gecikme)  
+  ([GameScene.ts](/root/agents/game-agent/project/game/src/game/GameScene.ts#L223), [GameScene.ts](/root/agents/game-agent/project/game/src/game/GameScene.ts#L236))
+- Spawn fairness iyileştirmesi eklendi: oyuncuya çok yakın kenar spawn adayları filtreleniyor, bulunamazsa en uzak aday seçiliyor  
+  ([GameScene.ts](/root/agents/game-agent/project/game/src/game/GameScene.ts#L316))
+
+Doğrulama:
+- `npm run build` denendi, başarısız.
+- Sebep: ortamda bağımlılık kurulumu internet/DNS hatasıyla (`EAI_AGAIN`) tamamlanamadı; bu yüzden `tsc` bulunamadı ve build doğrulanamadı.
+
+Zorunlu doküman güncellemeleri tamamlandı:
+- [STATE.md](/root/agents/game-agent/project/src/docs/STATE.md)
+- [ROADMAP.md](/root/agents/game-agent/project/src/docs/ROADMAP.md)
+- [DECISIONS.md](/root/agents/game-agent/project/src/docs/DECISIONS.md)
+- [CHANGELOG.md](/root/agents/game-agent/project/src/docs/CHANGELOG.md)
+- [METRICS.md](/root/agents/game-agent/project/src/docs/METRICS.md)
+- [NEXT_AGENT.md](/root/agents/game-agent/project/src/docs/NEXT_AGENT.md)
+
+Belirsiz kalan:
+- Sayısal baseline henüz yok (telemetry eklendi, ama run verisi toplanmadı).  
+- Ağ erişimi açılmadan build doğrulaması tamamlanamıyor.

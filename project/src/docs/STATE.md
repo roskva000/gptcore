@@ -1,17 +1,16 @@
 # STATE.md
-Last Updated: 2026-03-07
-Updated By: Agent Run #2
+Last Updated: 2026-03-06
+Updated By: Agent Run #3
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik sadece dokumanlardan ibaret degil; `project/game` altinda calisan ilk oynanabilir prototype kuruldu.
+Survive 60 Seconds oynanabilir prototype asamasinda ve bu turda odak telemetry + fairness oldu.
 
-Amac bu turda:
-- proje gercek durumunu tespit etmek
-- ilk core gameplay loopunu ayaga kaldirmak
-- sonraki iterasyonlar icin daha dogru bir durum kaydi birakmakti
+Bu turdaki ana hedef:
+- run/death/retry davranisini local olarak olculebilir hale getirmek
+- erken ve unfair hissedilen spawn durumlarini tek bir kural ile azaltmak
 
 ---
 
@@ -21,61 +20,56 @@ Amac bu turda:
 - oyun motoru: Phaser 3.90.0
 - frontend/build: Vite 7 + TypeScript 5.9
 - deploy: henuz yok
-- repo durumu: oyun kodu bu turda `project/game` altinda bootstrap edildi
+- telemetry: localStorage tabanli run ozeti eklendi (`survive60.telemetry.v1`)
 
 ## Gameplay Status
-- core loop: oynanabilir; bekleme -> hayatta kalma -> game over -> aninda restart akisi var
-- difficulty: zamanla lineer artan spawn hizi ve obstacle hizi mevcut, fakat henuz veriyle balance edilmedi
-- player controls: keyboard (WASD + arrows) ve basili tutulan pointer/touch ile hareket calisiyor
-- collision system: Phaser Arcade overlap ile player-obstacle carpisma algilaniyor
-- score system: skor yasama suresi olarak saniye bazli gosteriliyor
+- core loop: waiting -> playing -> game over -> instant restart akisi korunuyor
+- difficulty: spawn delay ve obstacle speed lineer artiyor (mevcut model korunuyor)
+- fairness tuning: spawn seciminde oyuncuya cok yakin kenar noktalar filtreleniyor; uygun nokta bulunamazsa en uzak aday seciliyor
+- retry flow: restart tetigi oldugunda gecikme olculmeye baslandi
 
-## UI/UX Status
-- main menu: yok; oyun arena ekraninda basliyor
-- onboarding: ekranda kisa kontrol ve baslatma metni var
-- game over screen: var; final sure ve aninda replay yonlendirmesi gosteriliyor
-- replay flow: Space, Enter veya tap ile restart; dusuk friction hedefi icin yeterince hizli
+## Observability Status
+- run sonunda konsola telemetry ozeti yaziliyor (`[Survive60][Telemetry]`)
+- kayitlanan alanlar: survivalTimeSec, restartDelayMs, spawnedObstacles, rejectedNearPlayerSpawns
+- aggregate alanlar: totalRuns, firstDeathTimeSec, averageSurvivalTimeSec, averageRetryDelayMs, quickRetryRate
 
 ---
 
 # Recently Completed Work
 
-- [Run #2] `project/game` altinda minimal Vite + Phaser oyun projesi kuruldu
-- [Run #2] ilk oynanabilir core gameplay loopu, zaman skoru, difficulty ramp ve replay akisi eklendi
-- [Run #2] state ve roadmap dokumanlari repo gercegine gore yeniden yazildi
-- [Run #2] `npm run build` basarili calisti
+- [Run #3] `GameScene.ts` icine local telemetry state (load/save/record) eklendi
+- [Run #3] game over ve restart gecislerine retry latency olcumu eklendi
+- [Run #3] oyuncuya yakin spawn noktalarini azaltan fairness filtresi eklendi
+- [Run #3] run sonunda debug/telemetry console outputu eklendi
 
 ---
 
 # Active Problems
 
-- difficulty ramp tamamen sezgisel; first death time ve fairness henuz olculmedi
-- obstacle spawn'lari ekran kenarindan geldiginde bazi durumlarda unfair hissedilebilir
-- ses, hit feedback, pause ve menu gibi temel polish unsurlari yok
-- analytics / telemetri olmadigi icin oynanis kalitesi sadece manuel gozlemle degerlendirilebiliyor
+- telemetry mevcut ama henuz baseline run verisi toplanmadi
+- fairness filtresi sabit esik (220px) kullaniyor; veriyle kalibre edilmesi gerekiyor
+- otomatik test yok
+- ses/hit feedback gibi game-feel katmani hala eksik
 
 ---
 
 # Technical Debt
 
-- automated test yok
-- gameplay sabitleri `GameScene.ts` icinde; ileride ayri config/balance dosyasina alinabilir
-- UI ve oyun mantigi tek scene icinde; su an icin kabul edilebilir ama kapsam buyurse ayrisma gerekecek
-- production bundle ilk build'de buyuk cikti; Phaser tek chunk olarak geliyor
+- gameplay sabitleri hala tek scene icinde (simdilik kabul edilebilir)
+- telemetry schema versioning yok (tek key uzerinden ilerliyor)
+- build pipeline bu ortamda ag kisiti nedeniyle tam dogrulanamadi
 
 ---
 
 # Known Risks
 
-- ilk prototype mobil tarayicida build alacak durumda, ama gercek cihaz testi yapilmadi
-- spawn telegraph olmadigi icin yuksek zorlukta okunabilirlik dusuk kalabilir
-- mevcut metrikler kaydedilmedigi icin balancing kararlarinda yanlis sezgi riski var
-- build warning'i bundle boyutunun ileride optimize edilmesi gerektigini gosteriyor
+- local telemetry sadece ayni tarayici/profilde tutuluyor
+- uzun sureli tuning icin export/report mekanizmasi yok
+- bu turda `npm install`/`npm ci` internet DNS hatasi (`EAI_AGAIN`) nedeniyle tamamlanamadi; `npm run build` bu nedenle dogrulanamadi
 
 ---
 
 # Observations
 
-- repo ilk incelemede sadece dokumanlardan olusuyordu; onceki STATE ve ROADMAP gercek implementasyonu yansitmiyordu
-- ilk anlamli ilerleme yeni feature degil, oynanabilir bir referans loop kurmakti
-- sonraki turda en dogru odak yeni feature eklemek degil; gameplay fairness ve olculebilirlik olacak
+- tek ana hedef kapsami korundu: telemetry + fairness disinda yeni feature acilmadi
+- sonraki en dogru adim yeni mekanik degil, toplanan telemetry ile threshold tuning yapmaktir

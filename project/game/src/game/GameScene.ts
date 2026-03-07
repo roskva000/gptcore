@@ -7,12 +7,36 @@ const ARENA_HEIGHT = 600;
 const PLAYER_SPEED = 260;
 const SPAWN_MARGIN = 56;
 const OFFSCREEN_CULL_MARGIN = 96;
+const MIN_SPAWN_DISTANCE_FROM_PLAYER = 220;
+const SPAWN_POINT_ATTEMPTS = 10;
+const TELEMETRY_STORAGE_KEY = 'survive60.telemetry.v1';
+const TELEMETRY_RUN_HISTORY_LIMIT = 30;
+const QUICK_RETRY_THRESHOLD_MS = 3000;
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
   down: Phaser.Input.Keyboard.Key;
   left: Phaser.Input.Keyboard.Key;
   right: Phaser.Input.Keyboard.Key;
+};
+
+type RunSample = {
+  survivalTimeSec: number;
+  restartDelayMs: number | null;
+  spawnedObstacles: number;
+  rejectedNearPlayerSpawns: number;
+  endedAtIso: string;
+};
+
+type TelemetryState = {
+  totalRuns: number;
+  totalDeaths: number;
+  quickRetries: number;
+  firstDeathTimeSec: number | null;
+  lastRun: RunSample | null;
+  recentRuns: RunSample[];
+  pendingRetryRequestedAtMs: number | null;
+  updatedAtIso: string;
 };
 
 export class GameScene extends Phaser.Scene {
@@ -29,12 +53,17 @@ export class GameScene extends Phaser.Scene {
   private runStartedAt = 0;
   private survivalTime = 0;
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
+  private runSpawnCount = 0;
+  private runRejectedNearPlayerSpawns = 0;
+  private runRestartDelayMs: number | null = null;
+  private telemetryState!: TelemetryState;
 
   constructor() {
     super('GameScene');
   }
 
   create(): void {
+    this.telemetryState = this.loadTelemetryState();
     this.createTextures();
     this.createBackdrop();
 
@@ -198,6 +227,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (this.phase === 'gameOver') {
+      this.telemetryState.pendingRetryRequestedAtMs = Date.now();
+      this.saveTelemetryState(this.telemetryState);
       this.scene.restart();
     }
   }
@@ -207,9 +238,17 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    const pendingRetryRequestedAtMs = this.telemetryState.pendingRetryRequestedAtMs;
+    this.runRestartDelayMs =
+      pendingRetryRequestedAtMs === null ? null : Math.max(0, Date.now() - pendingRetryRequestedAtMs);
+    this.telemetryState.pendingRetryRequestedAtMs = null;
+    this.saveTelemetryState(this.telemetryState);
+
     this.phase = 'playing';
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
+    this.runSpawnCount = 0;
+    this.runRejectedNearPlayerSpawns = 0;
     this.scoreText.setText('0.0s');
     this.hintText.setText('Survive the rush. The arena gets harder every few seconds.');
 
@@ -257,6 +296,8 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.runSpawnCount += 1;
+
     obstacle
       .setActive(true)
       .setVisible(true)
@@ -273,6 +314,34 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnPoint(): Phaser.Math.Vector2 {
+    let bestPoint = this.getRandomEdgeSpawnPoint();
+    let bestDistance = Phaser.Math.Distance.Between(bestPoint.x, bestPoint.y, this.player.x, this.player.y);
+
+    for (let attempt = 0; attempt < SPAWN_POINT_ATTEMPTS; attempt += 1) {
+      const candidate = this.getRandomEdgeSpawnPoint();
+      const candidateDistance = Phaser.Math.Distance.Between(
+        candidate.x,
+        candidate.y,
+        this.player.x,
+        this.player.y,
+      );
+
+      if (candidateDistance >= MIN_SPAWN_DISTANCE_FROM_PLAYER) {
+        return candidate;
+      }
+
+      this.runRejectedNearPlayerSpawns += 1;
+
+      if (candidateDistance > bestDistance) {
+        bestPoint = candidate;
+        bestDistance = candidateDistance;
+      }
+    }
+
+    return bestPoint;
+  }
+
+  private getRandomEdgeSpawnPoint(): Phaser.Math.Vector2 {
     const edge = Phaser.Math.Between(0, 3);
 
     if (edge === 0) {
@@ -373,6 +442,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.survivalTime = (this.time.now - this.runStartedAt) / 1000;
     this.phase = 'gameOver';
     this.nextSpawnTimer?.remove(false);
     this.player.setVelocity(0, 0);
@@ -394,5 +464,127 @@ export class GameScene extends Phaser.Scene {
     this.hintText
       .setText('Retry should be immediate. Restart and look for unfair deaths.')
       .setVisible(true);
+
+    this.recordRunTelemetry();
+  }
+
+  private createDefaultTelemetryState(): TelemetryState {
+    return {
+      totalRuns: 0,
+      totalDeaths: 0,
+      quickRetries: 0,
+      firstDeathTimeSec: null,
+      lastRun: null,
+      recentRuns: [],
+      pendingRetryRequestedAtMs: null,
+      updatedAtIso: new Date().toISOString(),
+    };
+  }
+
+  private loadTelemetryState(): TelemetryState {
+    const storage = this.getLocalStorage();
+
+    if (!storage) {
+      return this.createDefaultTelemetryState();
+    }
+
+    try {
+      const raw = storage.getItem(TELEMETRY_STORAGE_KEY);
+
+      if (!raw) {
+        return this.createDefaultTelemetryState();
+      }
+
+      const parsed = JSON.parse(raw) as Partial<TelemetryState>;
+
+      if (!Array.isArray(parsed.recentRuns)) {
+        return this.createDefaultTelemetryState();
+      }
+
+      return {
+        totalRuns: typeof parsed.totalRuns === 'number' ? parsed.totalRuns : 0,
+        totalDeaths: typeof parsed.totalDeaths === 'number' ? parsed.totalDeaths : 0,
+        quickRetries: typeof parsed.quickRetries === 'number' ? parsed.quickRetries : 0,
+        firstDeathTimeSec:
+          typeof parsed.firstDeathTimeSec === 'number' ? parsed.firstDeathTimeSec : null,
+        lastRun: parsed.lastRun ?? null,
+        recentRuns: parsed.recentRuns.slice(0, TELEMETRY_RUN_HISTORY_LIMIT),
+        pendingRetryRequestedAtMs:
+          typeof parsed.pendingRetryRequestedAtMs === 'number' ? parsed.pendingRetryRequestedAtMs : null,
+        updatedAtIso:
+          typeof parsed.updatedAtIso === 'string' ? parsed.updatedAtIso : new Date().toISOString(),
+      };
+    } catch {
+      return this.createDefaultTelemetryState();
+    }
+  }
+
+  private saveTelemetryState(state: TelemetryState): void {
+    const storage = this.getLocalStorage();
+
+    if (!storage) {
+      return;
+    }
+
+    try {
+      storage.setItem(TELEMETRY_STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Ignore storage write failures; gameplay should continue.
+    }
+  }
+
+  private getLocalStorage(): Storage | null {
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
+  }
+
+  private recordRunTelemetry(): void {
+    const runSample: RunSample = {
+      survivalTimeSec: Number(this.survivalTime.toFixed(2)),
+      restartDelayMs: this.runRestartDelayMs,
+      spawnedObstacles: this.runSpawnCount,
+      rejectedNearPlayerSpawns: this.runRejectedNearPlayerSpawns,
+      endedAtIso: new Date().toISOString(),
+    };
+
+    const recentRuns = [runSample, ...this.telemetryState.recentRuns].slice(0, TELEMETRY_RUN_HISTORY_LIMIT);
+    const nextState: TelemetryState = {
+      totalRuns: this.telemetryState.totalRuns + 1,
+      totalDeaths: this.telemetryState.totalDeaths + 1,
+      quickRetries:
+        this.telemetryState.quickRetries +
+        (runSample.restartDelayMs !== null && runSample.restartDelayMs <= QUICK_RETRY_THRESHOLD_MS ? 1 : 0),
+      firstDeathTimeSec:
+        this.telemetryState.firstDeathTimeSec === null
+          ? runSample.survivalTimeSec
+          : this.telemetryState.firstDeathTimeSec,
+      lastRun: runSample,
+      recentRuns,
+      pendingRetryRequestedAtMs: null,
+      updatedAtIso: new Date().toISOString(),
+    };
+    this.telemetryState = nextState;
+    this.saveTelemetryState(nextState);
+
+    const averageSurvivalTimeSec = recentRuns.reduce((sum, run) => sum + run.survivalTimeSec, 0) / recentRuns.length;
+    const retryRuns = recentRuns.filter((run) => run.restartDelayMs !== null);
+    const averageRetryDelayMs =
+      retryRuns.length > 0
+        ? retryRuns.reduce((sum, run) => sum + (run.restartDelayMs ?? 0), 0) / retryRuns.length
+        : null;
+
+    console.info('[Survive60][Telemetry]', {
+      runsTracked: nextState.recentRuns.length,
+      totalRuns: nextState.totalRuns,
+      firstDeathTimeSec: nextState.firstDeathTimeSec,
+      averageSurvivalTimeSec: Number(averageSurvivalTimeSec.toFixed(2)),
+      averageRetryDelayMs: averageRetryDelayMs === null ? null : Number(averageRetryDelayMs.toFixed(0)),
+      quickRetryRate:
+        nextState.totalRuns > 0 ? Number((nextState.quickRetries / nextState.totalRuns).toFixed(2)) : 0,
+      lastRun: runSample,
+    });
   }
 }

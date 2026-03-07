@@ -4,22 +4,22 @@
 
 # NOW (Highest Priority)
 
-- first playable prototype uzerinde difficulty fairness'i test et ve ayarla
-- first death time, average survival time ve retry davranisi icin en azindan local gameplay telemetry ekle
-- unfair hissettiren spawn durumlarini azaltmak icin spawn telegraph veya grace tuning uygula
+- telemetry acikken en az 10-20 manuel run topla ve first_death_time / average_survival_time baseline cikar
+- `MIN_SPAWN_DISTANCE_FROM_PLAYER` ve `SPAWN_POINT_ATTEMPTS` degerlerini bu baseline'a gore tek turda yeniden tune et
+- replay akisinin <3s kaldigini telemetry retry verisiyle kontrol et
 
 Basari olcutleri:
-- ilk olum ortalamasi 10 saniyenin altinda kalmiyorsa
-- art arda restart akisi 3 saniyenin altinda korunuyorsa
-- en az bir balancing karari gozlem veya telemetry ile destekleniyorsa
+- first_death_time median >= 10s
+- average_retry_delay_ms <= 3000
+- unfair death gozlemleri azalirken average_survival_time gerilemiyor
 
 ---
 
 # NEXT
 
 - hit feedback ve basic sound effects ekle
-- basit ama rahatsiz etmeyen tutorial/hint akisini iyilestir
-- mobil kontrol hissini test edip gerekiyorsa pointer steering ayari yap
+- basit tutorial copy'sini telemetry bulgularina gore netlestir
+- mobil kontrol hissini gercek cihazda test et
 
 ---
 
@@ -36,15 +36,15 @@ Basari olcutleri:
 
 - visual polish
 - background effects
-- combo / near-miss gibi tekrar oynama motivasyonu artiran skor katmanlari
+- combo / near-miss bonus gibi tekrar oynama motivasyonu artiran skor katmanlari
 
 ---
 
 # BLOCKERS
 
-- gercek oyuncu verisi yok
+- bu ortamda internet erisimi olmadigi icin bagimlilik kurulumu ve build dogrulamasi kisitli
 - otomatik test ve regression guvencesi yok
-- mobil cihaz dogrulamasi yapilmadi
+- gercek oyuncu verisi yok
 
 ---
 
