@@ -130,3 +130,14 @@
 - `V` sonrasi hint metni artik son kaydedilen export ozetini de gosterecek sekilde guncellendi
 - balance'a dokunulmadan `npm run telemetry:check` tekrar temiz gecirildi
 - `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor
+
+---
+
+## Run #15
+
+- `project/game/src/game/telemetry.ts` eklenerek telemetry hesaplari ile validation export builder/parser'i ortak modüle tasindi
+- `project/game/src/game/GameScene.ts` validation export, summary parse ve telemetry hesaplari icin bu ortak helper'i kullanacak sekilde sadeleştirildi
+- `project/game/scripts/validation-snapshot.ts` ve `npm run telemetry:validation-snapshot` eklendi; deterministic 5-run sample ile `validation_sample` kontrati browser disinda uretilebilir hale geldi
+- validation export parser'inin `validation` alanindaki `|` ayirici yuzunden durumu truncation ile kaybetmesi, export'ta safe separator kullanilarak duzeltildi
+- `project/game/scripts/telemetry-check.ts` deterministic validation export summary ve full report string'ini assert edecek sekilde genisletildi
+- balance'a dokunulmadan `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti; buyuk bundle warning'i devam ediyor

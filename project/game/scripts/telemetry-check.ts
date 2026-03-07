@@ -3,9 +3,11 @@ import {
   createBalanceSnapshotReport,
   createSurvivalSnapshotReport,
 } from './telemetry-reports.ts';
+import { createValidationSnapshotReport } from './validation-snapshot.ts';
 
 const balanceReport = createBalanceSnapshotReport();
 const survivalReport = createSurvivalSnapshotReport();
+const validationReport = createValidationSnapshotReport();
 
 const speedAt = (seconds: number): number => {
   const point = balanceReport.balanceCurve.find((entry) => entry.seconds === seconds);
@@ -40,6 +42,16 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 8, 'Early death rate snapshot regressed.');
 assert.equal(survivalReport.averageSpawnCount, 23.1, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0, 'Spawn reroll snapshot changed unexpectedly.');
+assert.equal(
+  validationReport.validationSummary,
+  '5 runs | first death 30.0s | early 20% | 5/5 runs, target met',
+  'Validation export summary regressed.',
+);
+assert.equal(
+  validationReport.validationReport,
+  'validation_sample | runs=5 | deaths=5 | avg_survival=18.2s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=26.8s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early',
+  'Validation export contract changed unexpectedly.',
+);
 
 console.log(
   JSON.stringify(
@@ -53,6 +65,9 @@ console.log(
         averageSurvivalTimeSeconds: survivalReport.averageSurvivalTimeSeconds,
         firstDeathTimeSeconds: survivalReport.firstDeathTimeSeconds,
         earlyDeathRatePercent: survivalReport.earlyDeathRatePercent,
+      },
+      validation: {
+        validationSummary: validationReport.validationSummary,
       },
     },
     null,

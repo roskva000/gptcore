@@ -276,3 +276,19 @@ Son kaydedilen validation export artik oyun acildiginda localStorage'dan okunuyo
 Rollback Condition:
 Eger bu ek satirlar telemetry yuzeyini fazla kalabaliklastirir veya daha iyi bir browser tabanli validation akisi gelirse `Last export` ozeti sadeleştirilebilir; ancak kaydin oyun icinde gorulebilir olmasi korunmalidir.
 Tarayici erisimi saglandiginda bu blokaj kalkar; o noktada ayni guard korunarak manual validation sample'i toplanmali ve sadece bu veriye dayanarak yeni balance karari degerlendirilmelidir.
+
+---
+
+### [Run #15]
+
+Decision:
+Bu turda balance'a veya yeni bir gameplay feature'ina dokunmak yerine validation export builder/parser'i ortak helper'a tasindi ve deterministic export kontrati regression guard'a baglandi.
+
+Reason:
+Tarayici blokaji devam ederken en degerli dar ilerleme, bir sonraki insan testinin kullanacagi `V` export satirinin kirilmadigini repo icinde dogrulamakti. Yeni `telemetry:validation-snapshot` komutu bu kontrati browser olmadan test ederken parser'in `validation` alanindaki `|` ayirici yuzunden son durumu truncation ile kaybettigini ortaya cikardi.
+
+Impact:
+`validation_sample` satiri artik oyun ici ve script tarafinda ayni helper ile uretiliyor; `Last export` ozeti `5/5 runs, target met` gibi tam validation durumunu dogru okuyabiliyor. `npm run telemetry:check` bu kontrati da assert ettigi icin future telemetry/export degisiklikleri sessizce bozulamayacak.
+
+Rollback Condition:
+Ileride export formati bilincli olarak degisecekse ortak helper ve deterministic validation baseline'i ayni turda birlikte guncellenmeli; UI tarafinda farkli string birlestirme ile lokal patch yapilmamalidir.

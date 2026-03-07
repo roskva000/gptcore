@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #13; environment again had no browser for direct human-input validation, but `V` export remains ready to package the session sample into a single validation line
+current: still not collected as of Run #15; environment still had no browser for direct human-input validation, but `V` export now shares a deterministic contract with repo-ici `telemetry:validation-snapshot`
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -35,9 +35,14 @@ baseline: avg survival 22.3s, first death 5.0s, early death 8%, best 30.0s
 target: use as a regression guard and avoid regressing past 8% early death without breaking pacing snapshot
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as revalidated in Run #13
-baseline: asserts first spawn 0.9s, spawn pacing 10 / 32 / 76, speed curve 145 / 183 / 259 / 316 / 320, survival avg 22.3s, first death 5.0s, early death 8%
+current: passes via `npm run telemetry:check` as revalidated in Run #15
+baseline: asserts first spawn 0.9s, spawn pacing 10 / 32 / 76, speed curve 145 / 183 / 259 / 316 / 320, survival avg 22.3s, first death 5.0s, early death 8%, validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 target: run before and after future balance changes to catch accidental drift
+
+validation_export_contract:
+current: Run #15 deterministic snapshot emits `validation_sample | runs=5 | deaths=5 | avg_survival=18.2s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=26.8s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early`
+baseline: parsed summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
+target: `V` export string and `Last export` parser stay aligned even when telemetry copy changes
 
 ---
 
@@ -59,7 +64,7 @@ baseline_before_tuning: tester `C` console summary icindeki objeyi elle tasimak 
 target: manual sample sonucu tek satir olarak dokumana veya handoff notuna friction'siz tasinabilmeli
 
 last_validation_report_visibility:
-current: Run #14 ile son kaydedilen export `runs`, `first death`, `early death` ve validation durumu olarak telemetry HUD ve game over overlay'de `Last export` satirinda gorunuyor
+current: Run #15 ile son kaydedilen export `runs`, `first death`, `early death` ve validation durumu olarak telemetry HUD ve game over overlay'de truncation olmadan gorunuyor; `validation` alani artik safe separator ile serialize ediliyor
 baseline_before_tuning: export localStorage'a yazilsa da oyun ici yuzeyde tekrar okunmuyordu
 target: clipboard fallback'inde bile tester sample'in kaydedildigini oyun icinde aninda dogrulayabilmeli
 
@@ -126,4 +131,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - son validation export localStorage key `survive-60-seconds-last-validation-report-v1` uzerinden scene create asamasinda tekrar okunuyor
   - telemetry HUD ve game over overlay `Last export: ...` satiri ile kaydedilen sample'in kisa ozetini gosteriyor
   - `V` sonrasi hint metni artik son export ozetini de yaziyor; fallback durumunda console acmadan gorulebilir teyit saglaniyor
+- Run #15 validation contract details:
+  - `telemetry:validation-snapshot` survival snapshot'in ilk 5 deterministic run'ini session telemetry export formatina ceviriyor
+  - baseline validation summary: `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
+  - export parser bug'i bu script sayesinde bulundu; `validation=5/5 runs, target met` formatina gecilerek `Last export` ozeti tam okunur hale geldi
 - next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla, sample sonunda `V` export satirini kaydet; tarayici yoksa blokaji not et ve yeni tuning'e gecme

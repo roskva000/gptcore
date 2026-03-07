@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #14
+Updated By: Agent Run #15
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak uc repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #14'te balance'a yine dokunulmadi; son `V` validation export'u oyun ici telemetry HUD'i ve game over overlay'inde ozetlenecek sekilde gorunur hale getirildi, deterministic guard ve production build tekrar dogrulandi.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak dort repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #15'te balance'a yine dokunulmadi; `V` validation export kontrati ortak helper'a tasindi, deterministic bir `telemetry:validation-snapshot` komutu eklendi ve export parser'inin `validation` alanindaki `|` ayirici yuzunden son durumu dusurmesi hatasi kapatildi.
 
 Bu turun amaci:
-- manual validation export'unun clipboard veya console disinda da oyun icinde gorulebilir olmasini saglamak
-- mevcut deterministic telemetry baseline'inin bozulmadigini tekrar dogrulamak
-- production build'in hala temiz alinabildigini teyit etmek
+- manual validation export formatini oyun ici ve script tarafinda ortaklastirmak
+- validation export parser'inin kontratini deterministic olarak dogrulamak
+- mevcut deterministic telemetry baseline'inin ve production build'in bozulmadigini tekrar teyit etmek
 
 ---
 
@@ -36,12 +36,15 @@ Bu turun amaci:
 - telemetry readability: Run #10 ile session ve lifetime icin `first death` degeri tutuluyor; HUD ve game over ozetinde sample'in `0/5` -> `5/5 | target met/review early deaths` ilerleme durumu gorunuyor
 - validation export: Run #12 ile `V` kisayolu session telemetry'den tek satirlik bir `validation_sample` ozeti uretip clipboard'a kopyalamayi deniyor; clipboard yoksa ayni ozet console'a yaziliyor ve localStorage key `survive-60-seconds-last-validation-report-v1` altina kaydediliyor
 - validation export visibility: Run #14 ile son kaydedilen `validation_sample` ozetinden `runs`, `first death`, `early death` ve validation durumu parse edilip telemetry HUD ve game over overlay icinde gorunur hale getirildi; boylece clipboard veya console acmadan da son sample'in kaydedilip kaydedilmedigi okunabiliyor
+- validation export contract: Run #15 ile validation report builder/parser ortak `project/game/src/game/telemetry.ts` modulune alindi; export satirindaki `validation` alani artik `5/5 runs, target met` gibi tek parca serialize ediliyor ve summary parser'i durumu truncation olmadan okuyabiliyor
 - persistence: lifetime telemetry localStorage key `survive-60-seconds-telemetry-v1`, ayni tab icindeki session sample ise sessionStorage key `survive-60-seconds-session-telemetry-v1` altinda tutuluyor
 - manual validation controls: `R` tum telemetry sample'ini sifirliyor, `C` session + lifetime summary'yi console'a basiyor
 - manual validation ergonomics: onboarding, in-game HUD ve game over overlay artik `V` export akisini da acikca gosteriyor; tester sample sonucunu dokumana veya handoff notuna console acmadan tasiyabilir
 - repo-ici balance harness: `npm run telemetry:snapshot` balance curve, ilk spawn zamani, 10s/30s/60s spawn adetleri ve ilk 10 spawn zamanini browser disinda uretiyor
 - repo-ici survival harness: `npm run telemetry:survival-snapshot` ayni spawn delay/speed/fairness kurallari ile 24 deterministic seed uzerinden basit bir kacis controller'i calistirip avg survival, first death ve early death oranini browser disinda veriyor
+- repo-ici validation harness: Run #15 ile `npm run telemetry:validation-snapshot` deterministic survival sample'in ilk 5 run'ini session telemetry formatina cevirip ayni `validation_sample` satirini ve parse edilmis ozetini browser disinda uretiyor
 - regression guard: Run #11 ile `npm run telemetry:check` mevcut deterministic pacing (`0.9s`, `10/32/76 spawn`, `145/183/259/316/320 speed`) ve survival (`avg 22.3s`, `first death 5.0s`, `early death 8%`) baseline'larini assert ediyor
+- validation guard: Run #15 ile `npm run telemetry:check` artik deterministic validation export ozetini de assert ediyor; baseline `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 - latest guard verification: Run #13'te `npm run telemetry:check` tekrar basarili calisti; pacing `10/32/76`, survival `22.3s / 5.0s / 8%` baseline'i korundu
 - snapshot scripts: balance ve survival scriptleri artik ortak `scripts/telemetry-reports.ts` modulunden ayni rapor uretimini kullaniyor
 - game over screen: final sureye ek olarak session avg survival, early death, retry ve spawn summary gosteriliyor
@@ -110,6 +113,10 @@ Bu turun amaci:
 - [Run #14] `project/game/src/game/GameScene.ts` icinde son validation export localStorage'dan tekrar okunup telemetry HUD ve game over overlay'e kisa ozet olarak eklendi
 - [Run #14] `V` export sonrasi hint metni artik son kaydedilen export ozetini gosterecek sekilde guncellendi
 - [Run #14] `npm run telemetry:check` ve `npm run build` tekrar basarili calisti
+- [Run #15] `project/game/src/game/telemetry.ts` eklenerek telemetry hesaplari ve validation export builder/parser'i ortak modüle tasindi
+- [Run #15] `project/game/scripts/validation-snapshot.ts` ve `npm run telemetry:validation-snapshot` eklendi; deterministic 5-run sample ile export kontrati browser disinda okunabilir hale geldi
+- [Run #15] validation export parser'inin `validation=5/5 runs | target met` alanini yanlis parcali okumasi, export'ta safe separator kullanilarak duzeltildi
+- [Run #15] `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` basarili calisti
 
 ---
 
@@ -120,6 +127,7 @@ Bu turun amaci:
 - Run #13 ortaminda da tarayici bulunmadigi icin `R`/`V` manual validation akisi uygulanamadi
 - validation export eklense de gercek sample halen tarayici ve insan input gerektiriyor; bu turda agent tarafinda sample toplanamadi
 - son validation export artik oyun icinde okunabiliyor ama yine de gercek sample tarayici ve insan input gerektiriyor
+- deterministic validation snapshot manuel sample degil; yalnizca export kontratinin ve parser'inin kirilmadigini gosteriyor
 - deterministic survival snapshot iyilesti ama ilk olum halen 5.0s; bu sinyal human sample degil ve erken-game riskinin tamamen kapandigini kanitlamiyor
 - deterministic snapshot spawn yogunlugunu gorunur kilsa da oyuncu davranisini ve unfair death hissini tek basina kanitlamiyor
 - mevcut fairness tuning sadece yakin spawn filtresi; spawn telegraph, hit feedback ve daha derin zorluk ayari henuz yok
@@ -135,6 +143,7 @@ Bu turun amaci:
 - balance sabitleri ayri config dosyasina alinmadi
 - production bundle buyuk; Phaser tek chunk olarak geliyor
 - browser tabanli scripted steering sample hala repoda yok; bunun yerine deterministic balance + survival snapshot repoda mevcut
+- telemetry helper'i ayristi ama `GameScene.ts` hala buyuk; gameplay ve UI davranisi ayni scene icinde toplu duruyor
 
 ---
 
@@ -167,3 +176,4 @@ Bu turun amaci:
 - `V` export sayesinde bir sonraki tester session sample'i tek satirda dokumana tasiyabilir; manuel validation sonucu artik console objesi yerine kolay paylasilan bir metin olarak kaydedilebilir
 - Run #14 gorunurluk iyilestirmesi sayesinde tester clipboard fallback'e dustugunde bile son export'un kaydoldugunu HUD veya game over ekranindan dogrulayabilir
 - Run #13 sonucu yeni teknik risk degil, operasyonel blokaj teyit edildi: tarayici olmadigi surece balance hakkinda yeni karar uretmek yerine manual validation beklenmeli
+- Run #15 deterministic export guard'i validation summary truncation bug'ini erken yakaladi; tarayici olsa bile export satirinin dogru parse edildigini simdi repo-ici komutla kontrol etmek mumkun

@@ -10,13 +10,28 @@ import {
   ARENA_WIDTH,
   selectSpawnPoint,
 } from './spawn';
+import {
+  TELEMETRY_RECENT_RUN_LIMIT,
+  buildTelemetrySummary,
+  buildValidationReport,
+  createEmptyTelemetry,
+  formatValidationReportSummaryText,
+  getAverageRetryDelaySeconds,
+  getAverageRetryDelayText,
+  getAverageSurvivalTime,
+  getEarlyDeathRate,
+  getFirstDeathTimeText,
+  getRecentDeathTimesText,
+  getValidationProgressText,
+  type GameplayTelemetry,
+  type TelemetrySummary,
+} from './telemetry.ts';
 
 type GamePhase = 'waiting' | 'playing' | 'gameOver';
 
 const PLAYER_SPEED = 260;
 const OFFSCREEN_CULL_MARGIN = 96;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
-const TELEMETRY_RECENT_RUN_LIMIT = 4;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
 const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
@@ -27,60 +42,6 @@ type MovementKeys = {
   left: Phaser.Input.Keyboard.Key;
   right: Phaser.Input.Keyboard.Key;
 };
-
-type GameplayTelemetry = {
-  totalRuns: number;
-  totalDeaths: number;
-  totalSurvivalTime: number;
-  firstDeathTime: number | null;
-  earlyDeathsUnderTarget: number;
-  totalRetryDelayMs: number;
-  retryCount: number;
-  totalSpawnRerolls: number;
-  recentDeathTimes: number[];
-  lastDeathAt: number | null;
-  lastRetryDelayMs: number | null;
-  lastRunStartedAt: number | null;
-  lastRunSpawnRerolls: number;
-  lastSurvivalTime: number | null;
-};
-
-type TelemetrySummary = {
-  label: string;
-  runs: number;
-  deaths: number;
-  firstDeathTime: number | null;
-  averageSurvivalTime: number;
-  earlyDeathRate: number;
-  averageRetryDelaySeconds: number | null;
-  totalSpawnRerolls: number;
-  recentDeathTimes: number[];
-  lastSurvivalTime: number | null;
-};
-
-type ValidationReportSummary = {
-  runs: string;
-  firstDeath: string;
-  earlyDeathRate: string;
-  validation: string;
-};
-
-const createEmptyTelemetry = (): GameplayTelemetry => ({
-  totalRuns: 0,
-  totalDeaths: 0,
-  totalSurvivalTime: 0,
-  firstDeathTime: null,
-  earlyDeathsUnderTarget: 0,
-  totalRetryDelayMs: 0,
-  retryCount: 0,
-  totalSpawnRerolls: 0,
-  recentDeathTimes: [],
-  lastDeathAt: null,
-  lastRetryDelayMs: null,
-  lastRunStartedAt: null,
-  lastRunSpawnRerolls: 0,
-  lastSurvivalTime: null,
-});
 
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
@@ -325,7 +286,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handleValidationExport(): void {
-    const validationReport = this.buildValidationReport();
+    const validationReport = buildValidationReport(this.sessionTelemetry);
     this.saveValidationReport(validationReport);
 
     if (!navigator.clipboard?.writeText) {
@@ -538,9 +499,9 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
-          `Session avg: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}%`,
-          `Session first death: ${this.getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${this.getValidationProgressText(this.sessionTelemetry)}`,
-          `Lifetime avg: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
+          `Session avg: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
+          `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
+          `Lifetime avg: ${getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${getAverageRetryDelayText(this.sessionTelemetry)}`,
           `Last export: ${this.getLastValidationReportSummaryText()}`,
           `Spawn saves this run: ${this.runSpawnRerolls} | Press R to reset, C to log, V to copy summary`,
           'Press Space, Enter, or tap to retry instantly.',
@@ -700,9 +661,9 @@ export class GameScene extends Phaser.Scene {
 
     console.info('[telemetry] run_end', {
       survivalTime: roundedSurvivalTime,
-      averageSurvivalTime: this.getAverageSurvivalTime(this.sessionTelemetry),
-      earlyDeathRate: this.getEarlyDeathRate(this.sessionTelemetry),
-      retryAverageSeconds: this.getAverageRetryDelaySeconds(this.sessionTelemetry),
+      averageSurvivalTime: getAverageSurvivalTime(this.sessionTelemetry),
+      earlyDeathRate: getEarlyDeathRate(this.sessionTelemetry),
+      retryAverageSeconds: getAverageRetryDelaySeconds(this.sessionTelemetry),
       spawnRerollsThisRun: this.runSpawnRerolls,
     });
   }
@@ -711,106 +672,22 @@ export class GameScene extends Phaser.Scene {
     this.telemetryText.setText(
       [
         'Local telemetry',
-        `Session runs: ${this.sessionTelemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
-        `Session first death: ${this.getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${this.getValidationProgressText(this.sessionTelemetry)}`,
-        `Session early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}% | Retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
-        `Lifetime runs: ${this.telemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s`,
-        `Lifetime first death: ${this.getFirstDeathTimeText(this.telemetry)}`,
-        `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.telemetry)}%`,
+        `Session runs: ${this.sessionTelemetry.totalRuns} | Avg life: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+        `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
+        `Session early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}% | Retry: ${getAverageRetryDelayText(this.sessionTelemetry)}`,
+        `Lifetime runs: ${this.telemetry.totalRuns} | Avg life: ${getAverageSurvivalTime(this.telemetry).toFixed(1)}s`,
+        `Lifetime first death: ${getFirstDeathTimeText(this.telemetry)}`,
+        `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.telemetry)}%`,
         `Last export: ${this.getLastValidationReportSummaryText()}`,
         `Spawn saves: ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`,
         'Export current sample: press V',
-        `Recent session deaths: ${this.getRecentDeathTimesText(this.sessionTelemetry)}`,
+        `Recent session deaths: ${getRecentDeathTimesText(this.sessionTelemetry)}`,
       ].join('\n'),
     );
   }
 
-  private getAverageSurvivalTime(telemetry: GameplayTelemetry): number {
-    if (telemetry.totalDeaths === 0) {
-      return 0;
-    }
-
-    return telemetry.totalSurvivalTime / telemetry.totalDeaths;
-  }
-
-  private getAverageRetryDelaySeconds(telemetry: GameplayTelemetry): number | null {
-    if (telemetry.retryCount === 0) {
-      return null;
-    }
-
-    return telemetry.totalRetryDelayMs / telemetry.retryCount / 1000;
-  }
-
-  private getAverageRetryDelayText(telemetry: GameplayTelemetry): string {
-    const averageRetryDelaySeconds = this.getAverageRetryDelaySeconds(telemetry);
-
-    if (averageRetryDelaySeconds === null) {
-      return 'n/a';
-    }
-
-    return `${averageRetryDelaySeconds.toFixed(1)}s`;
-  }
-
-  private getFirstDeathTimeText(telemetry: GameplayTelemetry): string {
-    if (telemetry.firstDeathTime === null) {
-      return 'n/a';
-    }
-
-    return `${telemetry.firstDeathTime.toFixed(1)}s`;
-  }
-
-  private getValidationProgressText(telemetry: GameplayTelemetry): string {
-    if (telemetry.totalRuns === 0) {
-      return '0/5 runs';
-    }
-
-    const runCountText = `${Math.min(telemetry.totalRuns, 5)}/5 runs`;
-
-    if (telemetry.totalRuns < 5) {
-      return runCountText;
-    }
-
-    const firstDeathTime = telemetry.firstDeathTime;
-
-    if (firstDeathTime === null) {
-      return `${runCountText} | no death yet`;
-    }
-
-    const firstDeathStatus =
-      firstDeathTime >= TARGET_FIRST_DEATH_SECONDS ? 'target met' : 'review early deaths';
-
-    return `${runCountText} | ${firstDeathStatus}`;
-  }
-
-  private getEarlyDeathRate(telemetry: GameplayTelemetry): number {
-    if (telemetry.totalDeaths === 0) {
-      return 0;
-    }
-
-    return Math.round((telemetry.earlyDeathsUnderTarget / telemetry.totalDeaths) * 100);
-  }
-
-  private getRecentDeathTimesText(telemetry: GameplayTelemetry): string {
-    if (telemetry.recentDeathTimes.length === 0) {
-      return 'n/a';
-    }
-
-    return telemetry.recentDeathTimes.map((time) => `${time.toFixed(1)}s`).join(', ');
-  }
-
   private buildTelemetrySummary(label: string, telemetry: GameplayTelemetry): TelemetrySummary {
-    return {
-      label,
-      runs: telemetry.totalRuns,
-      deaths: telemetry.totalDeaths,
-      firstDeathTime: telemetry.firstDeathTime,
-      averageSurvivalTime: Number(this.getAverageSurvivalTime(telemetry).toFixed(1)),
-      earlyDeathRate: this.getEarlyDeathRate(telemetry),
-      averageRetryDelaySeconds: this.getAverageRetryDelaySeconds(telemetry),
-      totalSpawnRerolls: telemetry.totalSpawnRerolls,
-      recentDeathTimes: telemetry.recentDeathTimes,
-      lastSurvivalTime: telemetry.lastSurvivalTime,
-    };
+    return buildTelemetrySummary(label, telemetry);
   }
 
   private getTelemetryReport(): { session: TelemetrySummary; lifetime: TelemetrySummary } {
@@ -818,26 +695,6 @@ export class GameScene extends Phaser.Scene {
       session: this.buildTelemetrySummary('session', this.sessionTelemetry),
       lifetime: this.buildTelemetrySummary('lifetime', this.telemetry),
     };
-  }
-
-  private buildValidationReport(): string {
-    const sessionSummary = this.buildTelemetrySummary('session', this.sessionTelemetry);
-    const lastRunText =
-      sessionSummary.lastSurvivalTime === null ? 'n/a' : `${sessionSummary.lastSurvivalTime.toFixed(1)}s`;
-
-    return [
-      'validation_sample',
-      `runs=${sessionSummary.runs}`,
-      `deaths=${sessionSummary.deaths}`,
-      `avg_survival=${sessionSummary.averageSurvivalTime.toFixed(1)}s`,
-      `first_death=${this.getFirstDeathTimeText(this.sessionTelemetry)}`,
-      `early_death_rate=${sessionSummary.earlyDeathRate}%`,
-      `avg_retry=${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
-      `spawn_saves=${sessionSummary.totalSpawnRerolls}`,
-      `last_run=${lastRunText}`,
-      `validation=${this.getValidationProgressText(this.sessionTelemetry)}`,
-      'baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early',
-    ].join(' | ');
   }
 
   private saveValidationReport(report: string): void {
@@ -860,43 +717,7 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private getLastValidationReportSummary(): ValidationReportSummary | null {
-    if (!this.lastValidationReport) {
-      return null;
-    }
-
-    const parts = this.lastValidationReport.split(' | ');
-
-    const readValue = (key: string): string | null => {
-      const prefix = `${key}=`;
-      const part = parts.find((entry) => entry.startsWith(prefix));
-      return part ? part.slice(prefix.length) : null;
-    };
-
-    const runs = readValue('runs');
-    const firstDeath = readValue('first_death');
-    const earlyDeathRate = readValue('early_death_rate');
-    const validation = readValue('validation');
-
-    if (!runs || !firstDeath || !earlyDeathRate || !validation) {
-      return null;
-    }
-
-    return {
-      runs,
-      firstDeath,
-      earlyDeathRate,
-      validation,
-    };
-  }
-
   private getLastValidationReportSummaryText(): string {
-    const summary = this.getLastValidationReportSummary();
-
-    if (!summary) {
-      return 'not saved yet';
-    }
-
-    return `${summary.runs} runs | first death ${summary.firstDeath} | early ${summary.earlyDeathRate} | ${summary.validation}`;
+    return formatValidationReportSummaryText(this.lastValidationReport);
   }
 }
