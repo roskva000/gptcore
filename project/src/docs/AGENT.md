@@ -91,6 +91,7 @@ Her çalışma turunun başında şu dosyaları oku ve birbirleriyle tutarlılı
 - `METRICS.md` veya `metrics.json` → metrikler / sonuçlar
 - varsa `TODO.md`, `IDEAS.md`, `CHANGELOG.md`
 - ilgili source code, config ve test dosyaları
+- `AUDIT.md` → son denetim kararlari / drift ve loop uyarilari
 
 Bu dosyalar arasında çelişki varsa:
 1. önce çelişkiyi tespit et,
@@ -402,10 +403,11 @@ README dışarıdan gelen bir insan için yazılmalıdır.
 
 Her yeni çalışma turu başladığında:
 1. önce bu dosyayı oku,
-2. sonra `NEXT_AGENT.md` oku,
-3. sonra diğer state dosyalarını doğrula,
-4. ardından kendi turunun tek ana hedefini seç,
-5. sonra işe koyul.
+2. sonra `AUDIT.md` oku,
+3. sonra `NEXT_AGENT.md` oku,
+4. sonra diğer state dosyalarını doğrula,
+5. ardından kendi turunun tek ana hedefini seç,
+6. sonra işe koyul.
 
 ---
 
