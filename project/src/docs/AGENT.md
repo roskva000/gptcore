@@ -77,6 +77,23 @@ Aşağıdaki kriterlere göre iş seç:
 - Bir turda birden fazla büyük hedef üstlenme.
 - Belirsizliği gizleme.
 
+### 3.5 Exploration istisnası
+
+Bazı durumlarda en yüksek değer küçük optimizasyonlardan değil,
+yeni bir fikir veya mechanic denemekten gelebilir.
+
+Agent aşağıdaki durumlarda roadmap dışı bir keşif (exploration) işi seçebilir:
+
+- mevcut geliştirme döngüsü tekrar etmeye başladıysa
+- aynı metrikler etrafında sürekli küçük ayarlar yapılıyorsa
+- kullanıcı deneyiminde büyük sıçrama potansiyeli olan bir fikir görülüyorsa
+- proje yaratıcı olarak stagnasyon belirtileri gösteriyorsa
+
+Bu tür durumlarda agent kontrollü şekilde daha deneysel bir adım atabilir.
+
+Amaç kaos yaratmak değil,
+**daha yüksek etki potansiyeline sahip fikirleri denemektir.**
+
 ---
 
 # 4) PROJECT CONTEXT CONTRACT
@@ -114,6 +131,12 @@ Her turda aşağıdaki zinciri takip et.
 
 ## STEP 2 — Tek ana hedef seç
 Bu tur için **yalnızca bir ana hedef** belirle.
+Not:
+Bazı run'larda ana hedef bir bug fix veya küçük iyileştirme yerine
+yeni bir gameplay mechanic, sistem veya deneysel fikir olabilir.
+
+Bu tür run'lar kontrollü şekilde yapılabilir
+ve proje için keşif (exploration) run'ları olarak kabul edilir.
 
 Hedef şuna benzemeli:
 - "Oyuncunun ilk 30 saniyede ölme oranını azalt"
@@ -287,6 +310,9 @@ olanı seç.
 - önce ölçüm,
 - sonra core experience,
 - sonra polish.
+
+Eğer proje uzun süre yalnızca ölçüm ve doğrulama araçları üretmeye başlarsa,
+agent bir sonraki run'da gameplay tarafında doğrudan değer üreten bir değişikliği tercih etmelidir.
 
 ---
 
@@ -542,3 +568,28 @@ Eger arayuz zaten varsa:
 - urun gercegini yansittigindan emin ol
 
 Public-facing update surface ile README ayni amaca hizmet eder; README repo ziyaretcisi icin, in-product update surface ise oyuncu icin son durumu anlatir.
+
+# 18) CONTROLLED EXPERIMENTATION
+
+Bu proje yalnızca stabil iyileştirmeler yapmak için değil,
+AI tarafından yönlendirilen bir ürün evrim deneyidir.
+
+Bu nedenle agent zaman zaman
+küçük optimizasyonlar yerine **daha yaratıcı adımlar** atabilir.
+
+Örnekler:
+- yeni gameplay mechanic
+- alternatif scoring sistemi
+- yeni obstacle davranışları
+- farklı input veya control fikirleri
+- oyuncu davranışını değiştiren risk/reward sistemleri
+- küçük oyun modu varyasyonları
+
+Bu tür değişiklikler yapılırken:
+
+- aynı turda birden fazla radikal değişiklik yapılmamalı
+- core oyun tamamen kırılmamalı
+- mümkünse build ve temel oynanabilirlik korunmalı
+
+Amaç sadece stabilite değil,
+**daha ilginç ve daha güçlü bir oyun deneyimine ulaşmaktır.**
