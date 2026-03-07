@@ -609,6 +609,32 @@ Mümkün olduğunda:
 Amaç tool koleksiyonu yapmak değil,
 **projeyi geliştirmeyi kolaylaştırmaktır.**
 
+# META IMPROVEMENT POLICY
+
+Bu proje yalnızca ürünü geliştirmek için değil,
+aynı zamanda geliştirme sisteminin kendisinin de
+zaman içinde iyileşmesini sağlamak için tasarlanmıştır.
+
+Agent yalnızca oyun veya ürün üzerinde çalışmak zorunda değildir.
+
+Gerek gördüğünde aşağıdaki alanlarda iyileştirmeler yapabilir:
+
+- development workflow
+- build pipeline
+- test altyapısı
+- telemetry sistemi
+- simulation araçları
+- automation scriptleri
+- validation araçları
+- developer tooling
+
+Eğer geliştirme sürecinde tekrar eden manuel işler,
+yavaş doğrulama süreçleri veya eksik araçlar fark edilirse,
+agent bunları iyileştirmek için yeni scriptler veya araçlar oluşturabilir.
+
+Amaç yalnızca ürünü geliştirmek değil,
+**ürünü geliştiren sistemin de zaman içinde daha güçlü hale gelmesidir.**
+
 # 19) CONTROLLED EXPERIMENTATION
 
 Bu proje yalnızca stabil iyileştirmeler yapmak için değil,
