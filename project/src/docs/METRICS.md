@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #9; environment had no browser for direct human-input validation
+current: still not collected as of Run #10; environment had no browser for direct human-input validation
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -42,6 +42,11 @@ first_death_time:
 current: 11.0s after spawn-delay tuning
 baseline_before_tuning: 8.7s
 target: > 10s
+
+session_first_death_visibility:
+current: Run #10 ile HUD, game over overlay ve `C` summary uzerinde explicit olarak gorunuyor
+baseline_before_tuning: yalnizca recent deaths listesinden cikarim yapiliyordu
+target: manual validator `first death` sinyalini dogrudan okuyabilmeli
 
 rage_quit_indicator:
 current: low in scripted sample; all observed retries stayed near 2.0s
@@ -88,4 +93,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - method ayni tutuldu; yalnizca obstacle speed egirisi degisti
   - sample run times: 30.0s, 14.7s, 6.2s, 13.1s, 26.8s, 27.3s, 30.0s, 16.3s
   - average spawn count 23.1, average spawn rerolls 0
-- next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla; tarayici yoksa blokaji not et ve yeni tuning'e gecme
+- Run #10 telemetry validation details:
+  - session ve lifetime telemetry artik `firstDeathTime` sakliyor
+  - HUD validation satiri `0/5 runs` ile basliyor, 5 run sonrasinda `target met` veya `review early deaths` sinyali veriyor
+  - console summary `session.firstDeathTime` ve `lifetime.firstDeathTime` alanlarini raporluyor
+- next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla; explicit `first death` alanini esas al, tarayici yoksa blokaji not et ve yeni tuning'e gecme

@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #9
+Updated By: Agent Run #10
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak iki repo-ici browserless harness'i olan bir build'e sahip. Run #9'da yalnizca obstacle speed egirisi daraltildi ve early-game proxy riski pacing bozulmadan dusuruldu.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak iki repo-ici browserless harness'i olan bir build'e sahip. Run #10'da balance'a dokunulmadi; bunun yerine manual validation icin kritik olan `first death` ve sample ilerleme sinyali telemetry yuzeyinde acik hale getirildi.
 
 Bu turun amaci:
-- `telemetry:snapshot` pacing baseline'ini korurken yalnizca obstacle speed egirisinde tek dar tuning denemesi yapmak
-- `telemetry:survival-snapshot` uzerindeki erken-olum proxy sinyalini iyilestirmek
-- sonraki agent icin manual validation odakli daha guclu bir baseline birakmak
+- manual validation blocker'i devam ederken yeni tuning acmadan telemetry'yi daha okunabilir hale getirmek
+- session sample icin `first death` ve `5 run` ilerlemesini HUD, game over ve console summary'de belirginlestirmek
+- mevcut pacing/survival baseline'larinin kod degisikligi sonrasi bozulmadigini tekrar dogrulamak
 
 ---
 
@@ -33,6 +33,7 @@ Bu turun amaci:
 
 ## Telemetry / UX Status
 - telemetry: oyun icinde telemetry blogu artik session ve lifetime sample'i ayri gosteriyor; run count, avg survival, `<10s` early death orani, avg retry gap, recent death times ve spawn reroll sayilari session bazinda okunabiliyor
+- telemetry readability: Run #10 ile session ve lifetime icin `first death` degeri tutuluyor; HUD ve game over ozetinde sample'in `0/5` -> `5/5 | target met/review early deaths` ilerleme durumu gorunuyor
 - persistence: lifetime telemetry localStorage key `survive-60-seconds-telemetry-v1`, ayni tab icindeki session sample ise sessionStorage key `survive-60-seconds-session-telemetry-v1` altinda tutuluyor
 - manual validation controls: `R` tum telemetry sample'ini sifirliyor, `C` session + lifetime summary'yi console'a basiyor
 - repo-ici balance harness: `npm run telemetry:snapshot` balance curve, ilk spawn zamani, 10s/30s/60s spawn adetleri ve ilk 10 spawn zamanini browser disinda uretiyor
@@ -86,12 +87,16 @@ Bu turun amaci:
 - [Run #9] `npm run telemetry:snapshot` pacing baseline'i 10/32/76 spawn olarak korunurken speed curve 145/183/259/316/320 seviyesine cekildi
 - [Run #9] `npm run telemetry:survival-snapshot` sonucu avg survival 22.3s, first death 5.0s ve early death 8% olarak iyilesti
 - [Run #9] `npm run build` tekrar basarili calisti
+- [Run #10] `project/game/src/game/GameScene.ts` icinde telemetry modeline session/lifetime `firstDeathTime` alani eklendi
+- [Run #10] telemetry HUD ve game over overlay'i manual validation icin `first death` ve `5 run` ilerleme durumunu gosterecek sekilde guncellendi
+- [Run #10] `C` ile alinan console summary artik `firstDeathTime` bilgisini de tasiyor
+- [Run #10] `npm run build`, `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` tekrar basarili calisti
 
 ---
 
 # Active Problems
 
-- henuz gercek manual/human telemetry sample toplanmadi
+- henuz gercek manual/human telemetry sample toplanmadi; telemetry yuzeyi daha net ama insan verisi hala eksik
 - deterministic survival snapshot iyilesti ama ilk olum halen 5.0s; bu sinyal human sample degil ve erken-game riskinin tamamen kapandigini kanitlamiyor
 - deterministic snapshot spawn yogunlugunu gorunur kilsa da oyuncu davranisini ve unfair death hissini tek basina kanitlamiyor
 - mevcut fairness tuning sadece yakin spawn filtresi; spawn telegraph, hit feedback ve daha derin zorluk ayari henuz yok
@@ -114,6 +119,7 @@ Bu turun amaci:
 
 - telemetry browser storage tabanli; cihazlar arasi tasinmiyor ve sifirlanabilir
 - bu turda calisma ortaminda tarayici olmadigi icin manual sample toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
+- Run #10 telemetry iyilestirmesi manual sample toplama friction'ini azaltti ama blocker'i kaldirmadi; sample'in gercekten alinmasi hala bir sonraki adim
 - scripted sample runlar arasi page reload ve 18s cap kullandigi icin replay metrigi icin muhafazakar ama yapay bir ust sinir tasiyor
 - deterministic balance snapshot dogrudan survival sonucu vermiyor; yalnizca pacing/speed eğrisini sabit bir referans olarak sagliyor
 - deterministic survival snapshot gercek oyuncu degil; controller heuristigi nedeniyle absolute truth sayilmamali, ama seed bazli erken-olum riskini karsilastirmak icin kullanisli
@@ -130,4 +136,5 @@ Bu turun amaci:
 - spawn reroll sayisi 0 kaldigi icin bu turdaki problem yogunluktu, spawn fairness degil
 - snapshot harness mevcut tuning'in ilk 10 saniyede 10 spawn ve 30 saniyede 32 spawn pacing'ini korurken speed egirisinin hissedilir sekilde yumusatildigini kayda gecirdi
 - survival harness mevcut ayarda 24 seed'in yalnizca %8'inde 10s alti olum verdi; obstacle speed tuning'i browserless proxy'de olumlu sinyal uretti
+- telemetry'de explicit `first death` tutuldugu icin sonraki insan testinde basari kriteri artik recent deaths listesinden elle cikarim yapmadan okunabilecek
 - sonraki mantikli adim yeni feature eklemek degil, bu yeni speed curve'u session telemetry ile insan inputunda caprazlamaktir

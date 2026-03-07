@@ -31,6 +31,7 @@ type GameplayTelemetry = {
   totalRuns: number;
   totalDeaths: number;
   totalSurvivalTime: number;
+  firstDeathTime: number | null;
   earlyDeathsUnderTarget: number;
   totalRetryDelayMs: number;
   retryCount: number;
@@ -47,6 +48,7 @@ type TelemetrySummary = {
   label: string;
   runs: number;
   deaths: number;
+  firstDeathTime: number | null;
   averageSurvivalTime: number;
   earlyDeathRate: number;
   averageRetryDelaySeconds: number | null;
@@ -59,6 +61,7 @@ const createEmptyTelemetry = (): GameplayTelemetry => ({
   totalRuns: 0,
   totalDeaths: 0,
   totalSurvivalTime: 0,
+  firstDeathTime: null,
   earlyDeathsUnderTarget: 0,
   totalRetryDelayMs: 0,
   retryCount: 0,
@@ -489,6 +492,7 @@ export class GameScene extends Phaser.Scene {
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
           `Session avg: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}%`,
+          `Session first death: ${this.getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${this.getValidationProgressText(this.sessionTelemetry)}`,
           `Lifetime avg: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
           `Spawn saves this run: ${this.runSpawnRerolls} | Press R to reset sample, C to log summary`,
           'Press Space, Enter, or tap to retry instantly.',
@@ -521,6 +525,7 @@ export class GameScene extends Phaser.Scene {
         totalRuns: this.readNumber(parsedTelemetry.totalRuns),
         totalDeaths: this.readNumber(parsedTelemetry.totalDeaths),
         totalSurvivalTime: this.readNumber(parsedTelemetry.totalSurvivalTime),
+        firstDeathTime: this.readNullableNumber(parsedTelemetry.firstDeathTime),
         earlyDeathsUnderTarget: this.readNumber(parsedTelemetry.earlyDeathsUnderTarget),
         totalRetryDelayMs: this.readNumber(parsedTelemetry.totalRetryDelayMs),
         retryCount: this.readNumber(parsedTelemetry.retryCount),
@@ -609,6 +614,7 @@ export class GameScene extends Phaser.Scene {
 
     this.telemetry.totalDeaths += 1;
     this.telemetry.totalSurvivalTime += roundedSurvivalTime;
+    this.telemetry.firstDeathTime ??= roundedSurvivalTime;
     this.telemetry.lastDeathAt = Date.now();
     this.telemetry.lastSurvivalTime = roundedSurvivalTime;
     this.telemetry.lastRunSpawnRerolls = this.runSpawnRerolls;
@@ -625,6 +631,7 @@ export class GameScene extends Phaser.Scene {
 
     this.sessionTelemetry.totalDeaths += 1;
     this.sessionTelemetry.totalSurvivalTime += roundedSurvivalTime;
+    this.sessionTelemetry.firstDeathTime ??= roundedSurvivalTime;
     this.sessionTelemetry.lastDeathAt = this.telemetry.lastDeathAt;
     this.sessionTelemetry.lastSurvivalTime = roundedSurvivalTime;
     this.sessionTelemetry.lastRunSpawnRerolls = this.runSpawnRerolls;
@@ -657,8 +664,10 @@ export class GameScene extends Phaser.Scene {
       [
         'Local telemetry',
         `Session runs: ${this.sessionTelemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+        `Session first death: ${this.getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${this.getValidationProgressText(this.sessionTelemetry)}`,
         `Session early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}% | Retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
         `Lifetime runs: ${this.telemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s`,
+        `Lifetime first death: ${this.getFirstDeathTimeText(this.telemetry)}`,
         `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.telemetry)}%`,
         `Spawn saves: ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`,
         `Recent session deaths: ${this.getRecentDeathTimesText(this.sessionTelemetry)}`,
@@ -692,6 +701,37 @@ export class GameScene extends Phaser.Scene {
     return `${averageRetryDelaySeconds.toFixed(1)}s`;
   }
 
+  private getFirstDeathTimeText(telemetry: GameplayTelemetry): string {
+    if (telemetry.firstDeathTime === null) {
+      return 'n/a';
+    }
+
+    return `${telemetry.firstDeathTime.toFixed(1)}s`;
+  }
+
+  private getValidationProgressText(telemetry: GameplayTelemetry): string {
+    if (telemetry.totalRuns === 0) {
+      return '0/5 runs';
+    }
+
+    const runCountText = `${Math.min(telemetry.totalRuns, 5)}/5 runs`;
+
+    if (telemetry.totalRuns < 5) {
+      return runCountText;
+    }
+
+    const firstDeathTime = telemetry.firstDeathTime;
+
+    if (firstDeathTime === null) {
+      return `${runCountText} | no death yet`;
+    }
+
+    const firstDeathStatus =
+      firstDeathTime >= TARGET_FIRST_DEATH_SECONDS ? 'target met' : 'review early deaths';
+
+    return `${runCountText} | ${firstDeathStatus}`;
+  }
+
   private getEarlyDeathRate(telemetry: GameplayTelemetry): number {
     if (telemetry.totalDeaths === 0) {
       return 0;
@@ -713,6 +753,7 @@ export class GameScene extends Phaser.Scene {
       label,
       runs: telemetry.totalRuns,
       deaths: telemetry.totalDeaths,
+      firstDeathTime: telemetry.firstDeathTime,
       averageSurvivalTime: Number(this.getAverageSurvivalTime(telemetry).toFixed(1)),
       earlyDeathRate: this.getEarlyDeathRate(telemetry),
       averageRetryDelaySeconds: this.getAverageRetryDelaySeconds(telemetry),

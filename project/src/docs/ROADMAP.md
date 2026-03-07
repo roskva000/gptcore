@@ -4,13 +4,14 @@
 
 # NOW (Highest Priority)
 
-- Run #9 speed curve baseline'ini esas alip tarayici varsa `R` reset sonrasi 5-10 manual run topla
+- Run #10 telemetry netligini kullanip tarayici varsa `R` reset sonrasi 5-10 manual run topla
 - session telemetry ile first death, avg survival ve early death oranini yeni browserless baseline'a karsi caprazla
+- HUD / game over / `C` summary uzerindeki explicit `first death` sinyalini esas al; recent deaths listesinden elle cikarim yapma
 - manual sample yoksa blokaji acikca not et; bu durumda yeni balance tuning'ine gecme
 
 Basari olcutleri:
 - session telemetry uzerinde en az 5 run gorulmeli
-- manual sample'da first death mumkunse 10s uzerine cikmali; cikmiyorsa hangi olumu modelin kacirdigi yazilmali
+- manual sample'da explicit session first death mumkunse 10s uzerine cikmali; cikmiyorsa hangi olumu modelin kacirdigi yazilmali
 - mevcut browserless baseline'lar referans alinmali: pacing 10/32/76 spawn, survival snapshot avg 22.3s / first death 5.0s / early death 8%
 - build ve gerekirse iki snapshot scripti tekrar basarili calismali
 - tarayici varsa `R` sonrasi session telemetry ozetinde en az 5 run gorulmeli
@@ -46,6 +47,7 @@ Basari olcutleri:
 
 - gercek oyuncu verisi yok
 - calisma ortaminda tarayici olmadigi icin agent tarafinda manual input dogrudan toplanamadi
+- manual validation artik daha okunabilir ama yine de tarayici / insan input gerektiriyor
 - browser tabanli steering harness hala repo-ici degil
 - otomatik test ve regression guvencesi yok
 - mobil cihaz dogrulamasi yapilmadi

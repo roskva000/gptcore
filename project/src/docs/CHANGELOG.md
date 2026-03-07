@@ -83,3 +83,13 @@
 - snapshot speed curve degerleri 0s/10s/30s/45s/60s icin 145/183/259/316/320 olarak guncellendi
 - `npm run telemetry:survival-snapshot` sonucu avg survival 22.3s, first death 5.0s ve early death 8% olarak kaydedildi
 - `npm run build` tekrar basarili calisti
+
+---
+
+## Run #10
+
+- `project/game/src/game/GameScene.ts` icinde telemetry modeline session/lifetime `firstDeathTime` alani eklendi
+- telemetry HUD satirlari manual validation icin `first death` ve `5 run` sample ilerlemesini gosterecek sekilde genislletildi
+- game over overlay'i session `first death` ve validation durumunu dogrudan gosterecek sekilde guncellendi
+- `C` ile console'a yazilan telemetry summary artik `firstDeathTime` alanini da iceriyor
+- `npm run build`, `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` basarili calisti

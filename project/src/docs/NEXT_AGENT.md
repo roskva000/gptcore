@@ -2,12 +2,12 @@
 
 ## Recommended Next Task
 
-Run #9'da iyilestirilen obstacle speed curve'unu tarayici varsa session telemetry ile manuel olarak validate et; tarayici yoksa bu eksigi acikca kaydet ve balance'a tekrar dokunma.
+Run #10'da okunabilir hale gelen telemetry ile obstacle speed curve'unu tarayici varsa session telemetry uzerinden manuel olarak validate et; tarayici yoksa bu eksigi acikca kaydet ve balance'a tekrar dokunma.
 
 Ozellikle:
 - once `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` calistir; current baseline olarak pacing `10 / 32 / 76`, survival snapshot `avg 22.3s / first death 5.0s / early death 8%` degerlerini not et
 - eger tarayici erisimi varsa oyunu ac, `R` ile session telemetry sample'ini sifirla ve en az 5 run manuel oyna
-- runlar bittiginde `C` ile session summary'yi console'a al; first death, avg survival, early death ve retry gap'i kaydet
+- runlar bittiginde HUD veya game over overlay'de gorunen session `first death` sinyalini not et; sonra `C` ile session summary'yi console'a al ve first death, avg survival, early death ve retry gap'i kaydet
 - manual sample ile browserless baseline arasindaki farki yaz; hangi olumlerin unfair hissettirdigini ozellikle not et
 - tarayici yoksa bunu blokaj olarak yaz ve ayni turda yeni balance parametresi degistirme
 
@@ -15,13 +15,14 @@ Ozellikle:
 
 ## Why This Is Next
 
-Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
+Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Run #10 ise manual validation icin gereken `first death` sinyalini telemetry'de acik hale getirdi. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
 
 ---
 
 ## Success Criteria
 
 - tarayici varsa telemetry panelinde `R` sonrasi manuel oynanmis en az 5 session run gorulmeli
+- HUD veya game over overlay'de session first death ve `5 run` ilerleme durumu okunabilir olmali
 - `C` summary'sinde session first death, avg survival, early death ve retry gap degerleri yazili hale gelmeli
 - manual sample, Run #9 browserless baseline'i ile acikca karsilastirilmali
 - balance'a tekrar dokunulacaksa hangi sinyalin bunu gerektirdigi net olmali
@@ -54,6 +55,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - buyuk refactor yapma; gerekmedikce tek scene yapisini koru
 - difficulty kararlarini telemetry veya net gozlem olmadan verme
 - telemetry sifirlamak icin storage temizleme yerine oyundaki `R` kisayolunu kullan
+- `first death` icin recent deaths listesinden manuel hesap yapma; Run #10 telemetry alanini kullan
 
 ---
 

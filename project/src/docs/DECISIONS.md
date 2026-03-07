@@ -195,3 +195,19 @@ Impact:
 
 Rollback Condition:
 Manual validation bu yeni speed curve'un oyunu gereksiz kolaylastirdigini veya human sample'da farkli bir erken-olum deseni oldugunu gosterirse obstacle speed egirisi yeniden ayarlanmalidir; ancak spawn delay ve fairness ile ayni anda degistirilmemelidir.
+
+---
+
+### [Run #10]
+
+Decision:
+Bu turda balance tuning acilmadi; bunun yerine manual validation icin telemetry'de explicit `first death` ve sample ilerleme durumu gorunur hale getirildi.
+
+Reason:
+Roadmap ve NEXT_AGENT balance degisikligi degil manual validation istiyordu. Ancak mevcut telemetry `first death` sinyalini basari kriteri olarak acik tasimiyordu; tester bunu recent deaths listesinden cikarimla okumak zorunda kalirdi.
+
+Impact:
+Session sample artik HUD, game over overlay ve `C` console summary uzerinden dogrudan `first death` ve `5 run` ilerlemesini gosteriyor. Bu, bir sonraki insan testini daha hizli ve daha az hataya acik hale getiriyor.
+
+Rollback Condition:
+Eger telemetry paneli fazla kalabaliklasir veya harici analytics/manual harness bunu gereksiz kilarsa validation progress satiri sadeleştirilebilir; fakat `first death` sinyali baska bir yuzeyde korunmalidir.
