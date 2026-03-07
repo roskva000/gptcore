@@ -42,8 +42,8 @@ baseline: same
 target: keep `V` export and parser aligned
 
 hit_feedback_status:
-current: visual death feedback, fatal lane impact ray, directional hit callout, dedicated fatal-lane callout, and short procedural death blip active after user interaction
-baseline: expanded in Run #31 without changing deterministic telemetry baselines
+current: visual death feedback, fatal lane impact ray, directional hit callout, dedicated fatal-lane callout, two-layer death summary, and short procedural death blip active after user interaction
+baseline: expanded in Run #32 without changing deterministic telemetry baselines
 target: keep death cause instantly readable at first glance without slowing retry cadence or triggering audio policy friction
 
 replay_flow_status:
@@ -53,15 +53,15 @@ target: keep replay under the project's `< 3s` expectation with no extra tap/key
 
 public_ai_update_surface:
 current: visible beside the game canvas with 1 title, 1 intro, and 5 short bullets about the latest meaningful run
-baseline: copy refreshed in Run #31 to match the fatal-lane callout readability pass
+baseline: copy refreshed in Run #32 to match the two-layer death summary readability pass
 target: keep visible in build and validate manually that it helps orientation without distracting from replay or competing with the death callout
 
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action and whether fatal-lane callout + ray + directional hit feedback improve fairness/readability
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action and whether two-layer death summary + fatal-lane callout + ray + directional hit feedback improve fairness/readability
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #31
+current: passes via `npm run telemetry:check` as of Run #32
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -72,4 +72,4 @@ target: run before and after any future balance change
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 30.0, 22.8, 21.0, 16.4`
-- current tuning signal: deterministic survival baseline korunurken olum aninin okunurlugu dedicated fatal-lane callout + visual + audio + directional + ray feedback ile guclendi ve son AI degisimi oyuncuya gorunur; replay hissi/fairness/panel algisi icin manuel sample hala gerekli
+- current tuning signal: deterministic survival baseline korunurken olum aninin okunurlugu two-layer death summary + dedicated fatal-lane callout + visual + audio + directional + ray feedback ile guclendi ve son AI degisimi oyuncuya gorunur; replay hissi/fairness/panel algisi icin manuel sample hala gerekli

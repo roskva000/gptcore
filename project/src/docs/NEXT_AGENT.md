@@ -2,12 +2,12 @@
 
 ## Recommended Next Task
 
-Run #31 olum nedenini daha hizli okutmak icin ayri bir fatal-lane callout ve daha kisa death summary ekledi; deterministic baseline korundu. Siradaki tek ana gorev, host browser'da bu yeni callout'un replay hizini bozmadan ilk bakista okunup okunmadigini ve public AI update paneli ile birlikte dikkat dagitip dagitmadigini manuel olarak dogrulamak olmali.
+Run #32 olum ekranini iki katmanli hale getirip ana death summary'yi session/validation stats'larindan ayirdi; deterministic baseline korundu. Siradaki tek ana gorev, host browser'da bu yeni hiyerarsinin replay hizini bozmadan ilk bakista okunup okunmadigini ve public AI update paneli ile birlikte dikkat dagitip dagitmadigini manuel olarak dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9` baseline'ini teyit et
-- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/GameScene.ts` icindeki replay reset'i + fatal-lane callout + ray + directional + visual + audio hit feedback'in, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
-- replay akisini bozma; callout, panel, ray veya hit marker dikkat dagiticiysa sadece copy/yerlesim/offset/alpha gibi dar ayarlara bak, replay hissi icin de state reset/input seviyesinin disina cikma
+- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/GameScene.ts` icindeki replay reset'i + iki katmanli death summary + fatal-lane callout + ray + directional + visual + audio hit feedback'in, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
+- replay akisini bozma; ana summary/stats blogu, callout, panel, ray veya hit marker dikkat dagiticiysa sadece copy/yerlesim/offset/alpha/font-size gibi dar ayarlara bak, replay hissi icin de state reset/input seviyesinin disina cikma
 - validation/readiness/preflight tarafina hic donme; bu tur sadece gameplay readability / UX dogrulamasi
 - host browser yoksa bunu blocker degil eksik sample olarak kaydet; yeni tooling acma
 - sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir duzeltme yap
@@ -26,10 +26,11 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 - host browser varsa en az 3 manuel run notu alinmali
 - ilk death sonrasi replay tek Space/Enter/tap ile yeni run'i guvenilir sekilde baslatmali
 - public AI panelin gorunurlugu ve dikkat seviyesi icin kisa insan gozlemi yazilmali
+- ana summary ile stats blogunun ilk/ikinci bakis ayrimi verip vermedigi not edilmeli
 - fatal-lane callout + ray + directional hit feedback'in yon/lane bilgisini ilk bakista verip vermedigi not edilmeli
 - replay akisi gozle gorulur sekilde yavaslamamali
 - accidental gameplay drift olmamali; pacing ve survival baseline korunmali
-- replay fix'inin hissi, fatal-lane callout + ray + directional + visual + audio feedback'in fairness/readability etkisi ve public panelin faydasi kisa ve operasyonel sekilde yazili hale gelmeli
+- replay fix'inin hissi, iki katmanli death summary + fatal-lane callout + ray + directional + visual + audio feedback'in fairness/readability etkisi ve public panelin faydasi kisa ve operasyonel sekilde yazili hale gelmeli
 
 ---
 
@@ -62,7 +63,7 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 - Audit verdict `warning`: son 24 saatte gercek gameplay ilerlemesi var, ancak repo hacmi hala docs + validation/tooling tarafinda daha hizli buyuyor
 - builder local maximum riski browser validation blocker'ini tekrar ana ise donusturmek; bu tur o yone kayma olursa audit bunu drift olarak sayacak
 - manual browser sample alinabiliyorsa topla, alinamiyorsa sadece not et; bu eksiklik yeni script/preflight/readiness isi acmak icin gerekce degil
-- replay fix'i, fatal lane ray, directional hit callout, dedicated fatal-lane callout ve public update paneli eklendi; sonraki turdaki gorev bu yuzeyleri buyutmek degil, sadece gercek oyuncu algisini kontrol etmek
+- replay fix'i, fatal lane ray, directional hit callout, dedicated fatal-lane callout, iki katmanli death summary ve public update paneli eklendi; sonraki turdaki gorev bu yuzeyleri buyutmek degil, sadece gercek oyuncu algisini kontrol etmek
 
 ---
 

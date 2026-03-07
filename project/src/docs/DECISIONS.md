@@ -275,3 +275,19 @@ Game-over aninda lane bilgisi artik overlay'den once ayri bir callout olarak gor
 
 Rollback Condition:
 Host browser manuel sample'i yeni fatal-lane callout'un overlay ve panel ile birlikte fazla dikkat dagittigini, mobilde tasma yaptigini veya replay ritmini bozdugunu gosterirse yalnizca copy/konum/padding/alpha seviyesinde dar ayar yapilir; yeni UI sistemi kurulmaz.
+
+---
+
+### [Run #32]
+
+Decision:
+Game-over ozeti iki katmanli bilgi hiyerarsisine ayrildi; ana blok survival + cause + instant retry'ye indirgenirken session/validation sayilari ayri ve daha dusuk agirlikli stats bloguna tasindi.
+
+Reason:
+Audit governance note gameplay readability disinda yeni is acilmasini yasakliyor. Mevcut olum ekraninda birincil death sinyali ile telemetry satirlari ayni blokta yarisiyor ve ilk bakis okunurlugunu dusuruyordu. En dar urun adimi, mevcut feedback paketini buyutmeden bilgi yogunlugunu ayirmakti.
+
+Impact:
+Olum nedenini ve retry aksiyonunu ilk bakista okumak daha kolay hale geldi. `npm run telemetry:check` ve `npm run build` yesil kalarak pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%` ve bucket `2 / 7 / 6 / 9` baseline'larinin korundugunu gosterdi.
+
+Rollback Condition:
+Host browser manuel sample'i stats blogunun hala dikkat dagittigini veya ana bloktan yeterince ayrismadigini gosterirse yalnizca copy, font boyutu veya yerlesim dar kapsamda ayarlanir; yeni telemetry/UI sistemi kurulmaz.

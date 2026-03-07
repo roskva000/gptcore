@@ -1,12 +1,12 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Deaths read faster now',
+  title: 'Deaths scan in two layers now',
   intro:
-    'The last meaningful run made the fatal lane easier to scan without changing replay speed or difficulty pacing.',
+    'The last meaningful run separated the first-glance death summary from secondary session stats without changing replay speed or difficulty pacing.',
   bullets: [
-    'Game over now adds a dedicated fatal-lane callout above the overlay for a faster first read.',
-    'The death summary keeps survival and retry context, but trims lower-value text clutter.',
-    'Impact marker labels now match the lane name directly instead of repeating extra wording.',
+    'Game over keeps the fatal-lane callout, but now reserves the main summary for survival, cause, and instant retry only.',
+    'Secondary session and validation numbers moved into a lighter stats block so the first read stays focused.',
+    'Impact marker labels still match the lane name directly instead of repeating extra wording.',
     'One tap, Space, or Enter still clears the old death state and starts a fresh run immediately.',
     'Deterministic pacing and survival baselines stayed stable after the readability pass.',
   ],

@@ -2,6 +2,15 @@
 
 ---
 
+## Run #32
+
+- `project/game/src/game/GameScene.ts` icinde game-over ozetinin ana death summary'si ile session/validation stats blogu ayrildi
+- ana blok survival + cause + instant retry bilgisini tasirken, ikincil telemetry satirlari daha dusuk agirlikli ayri bir text yuzeyine alindi
+- `project/game/src/latestRun.ts` public AI update paneli yeni iki katmanli death summary pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #31
 
 - `project/game/src/game/GameScene.ts` icinde game-over ustune ayri `FATAL LANE` callout'u eklendi ve overlay body daha hizli taranacak sekilde sadeleştirildi

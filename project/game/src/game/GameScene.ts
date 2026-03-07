@@ -68,6 +68,7 @@ export class GameScene extends Phaser.Scene {
   private fatalCallout!: Phaser.GameObjects.Text;
   private overlayTitle!: Phaser.GameObjects.Text;
   private overlayBody!: Phaser.GameObjects.Text;
+  private overlayStats!: Phaser.GameObjects.Text;
   private runStartedAt = 0;
   private survivalTime = 0;
   private runSpawnRerolls = 0;
@@ -220,6 +221,18 @@ export class GameScene extends Phaser.Scene {
         fontFamily: 'Trebuchet MS',
         fontSize: '22px',
         lineSpacing: 8,
+      })
+      .setDepth(11)
+      .setOrigin(0.5)
+      .setVisible(false);
+
+    this.overlayStats = this.add
+      .text(ARENA_WIDTH / 2, 404, '', {
+        align: 'center',
+        color: '#8db7cb',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '16px',
+        lineSpacing: 6,
       })
       .setDepth(11)
       .setOrigin(0.5)
@@ -434,6 +447,7 @@ export class GameScene extends Phaser.Scene {
     this.fatalCallout.setVisible(false).setText('');
     this.overlayTitle.setVisible(false);
     this.overlayBody.setVisible(false);
+    this.overlayStats.setVisible(false).setText('');
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -639,12 +653,18 @@ export class GameScene extends Phaser.Scene {
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
           `Cause: ${hitDirection.sentence}.`,
-          'Ray, marker, flash, and blip freeze the hit lane for a quick read.',
           '',
+          'Press Space, Enter, or tap to retry instantly.',
+        ].join('\n'),
+      )
+      .setVisible(true);
+    this.overlayStats
+      .setText(
+        [
+          'Quick read locked by ray, marker, flash, and blip.',
           `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
           `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
           `Validation ${getValidationProgressText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
-          'Press Space, Enter, or tap to retry instantly.',
         ].join('\n'),
       )
       .setVisible(true);
