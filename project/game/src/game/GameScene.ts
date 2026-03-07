@@ -69,6 +69,8 @@ export class GameScene extends Phaser.Scene {
   private impactRay!: Phaser.GameObjects.Line;
   private impactMarker!: Phaser.GameObjects.Arc;
   private impactMarkerLabel!: Phaser.GameObjects.Text;
+  private fatalSpotlight!: Phaser.GameObjects.Arc;
+  private fatalSpotlightLabel!: Phaser.GameObjects.Text;
   private escapeRay!: Phaser.GameObjects.Line;
   private escapeMarker!: Phaser.GameObjects.Arc;
   private escapeMarkerLabel!: Phaser.GameObjects.Text;
@@ -187,6 +189,30 @@ export class GameScene extends Phaser.Scene {
         fontStyle: 'bold',
       })
       .setDepth(9)
+      .setOrigin(0.5)
+      .setVisible(false);
+
+    this.fatalSpotlight = this.add
+      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 26)
+      .setDepth(11)
+      .setStrokeStyle(5, 0xfff0c7, 0.98)
+      .setFillStyle(0x000000, 0)
+      .setVisible(false);
+
+    this.fatalSpotlightLabel = this.add
+      .text(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, '', {
+        align: 'center',
+        backgroundColor: '#4c2414',
+        color: '#fff3d1',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '16px',
+        fontStyle: 'bold',
+        padding: {
+          x: 10,
+          y: 6,
+        },
+      })
+      .setDepth(11)
       .setOrigin(0.5)
       .setVisible(false);
 
@@ -486,6 +512,8 @@ export class GameScene extends Phaser.Scene {
       this.impactRay,
       this.impactMarker,
       this.impactMarkerLabel,
+      this.fatalSpotlight,
+      this.fatalSpotlightLabel,
       this.escapeRay,
       this.escapeMarker,
       this.escapeMarkerLabel,
@@ -500,6 +528,8 @@ export class GameScene extends Phaser.Scene {
     this.impactRay.setAlpha(0).setVisible(false);
     this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
     this.impactMarkerLabel.setAlpha(0).setVisible(false).setText('');
+    this.fatalSpotlight.setAlpha(0).setScale(0.72).setVisible(false);
+    this.fatalSpotlightLabel.setAlpha(0).setVisible(false).setText('');
     this.escapeRay.setAlpha(0).setVisible(false);
     this.escapeMarker.setAlpha(0).setScale(0.78).setVisible(false);
     this.escapeMarkerLabel.setAlpha(0).setVisible(false).setText('');
@@ -673,6 +703,8 @@ export class GameScene extends Phaser.Scene {
       this.impactRay,
       this.impactMarker,
       this.impactMarkerLabel,
+      this.fatalSpotlight,
+      this.fatalSpotlightLabel,
       this.escapeRay,
       this.escapeMarker,
       this.escapeMarkerLabel,
@@ -717,6 +749,7 @@ export class GameScene extends Phaser.Scene {
       ease: 'Cubic.Out',
     });
     this.showImpactMarker(hitDirection);
+    this.showFatalSpotlight(obstacle, hitDirection);
     this.showEscapeGuide(hitDirection, escapePrompt.title);
 
     this.overlay.setVisible(true);
@@ -791,6 +824,41 @@ export class GameScene extends Phaser.Scene {
       targets: this.impactMarkerLabel,
       alpha: 0.84,
       duration: 150,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private showFatalSpotlight(
+    obstacle: Phaser.Physics.Arcade.Image,
+    hitDirection: HitDirection,
+  ): void {
+    const spotlightX = Phaser.Math.Clamp(obstacle.x, 44, ARENA_WIDTH - 44);
+    const spotlightY = Phaser.Math.Clamp(obstacle.y, 44, ARENA_HEIGHT - 44);
+    const labelY = Phaser.Math.Clamp(spotlightY - 36, 36, ARENA_HEIGHT - 36);
+
+    this.fatalSpotlight
+      .setPosition(spotlightX, spotlightY)
+      .setScale(0.72)
+      .setAlpha(1)
+      .setVisible(true);
+    this.fatalSpotlightLabel
+      .setPosition(spotlightX, labelY)
+      .setText(`KILLER\n${hitDirection.label.toUpperCase()}`)
+      .setAlpha(1)
+      .setVisible(true);
+
+    this.tweens.add({
+      targets: this.fatalSpotlight,
+      scale: 1.18,
+      alpha: 0.42,
+      duration: 240,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.fatalSpotlightLabel,
+      y: labelY - 8,
+      alpha: 0.86,
+      duration: 220,
       ease: 'Quad.Out',
     });
   }

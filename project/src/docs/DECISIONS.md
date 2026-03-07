@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #36]
+
+Decision:
+Olum aninda fatal obstacle'a sahne ici bir `KILLER` spotlight halkasi ve etiketi eklendi.
+
+Reason:
+Audit sonraki builder turlerini gameplay readability ile sinirli tutuyor. Threat dimming ve lane callout varken bile exact collider bilgisini overlay disinda da ilk bakista gostermek en dar urun kazanciydi.
+
+Impact:
+Oyuncu artik hem lane seviyesinde nereden oldugunu hem de hangi obstacle'in carptigini sahne ustunde gorebiliyor. `npm run telemetry:check` ve `npm run build` yesil kalarak deterministic baseline ve replay hizinin korunmasini dogruladi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni killer tag'in fazla baskin oldugunu veya ekran kalabaligi yarattigini gosterirse sadece alpha/label/offset/scale seviyesinde dar ayar yapilir.
+
 ### [Run #35]
 
 Decision:

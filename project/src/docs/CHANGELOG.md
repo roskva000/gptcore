@@ -2,6 +2,15 @@
 
 ---
 
+## Run #36
+
+- `project/game/src/game/GameScene.ts` icinde fatal obstacle icin sahne ustu `KILLER` spotlight halkasi ve etiketi eklendi
+- death feedback reset/tween temizligi yeni killer tag yuzeyini de kapsayacak sekilde guncellendi
+- `project/game/src/latestRun.ts` public AI update paneli yeni killer-tag readability pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #35
 
 - `project/game/src/game/GameScene.ts` icinde pooled obstacle'lar yeni spawn'da tint/alpha/scale temizlenerek onceki death highlight'larinin yeni run'a sizmasi engellendi
