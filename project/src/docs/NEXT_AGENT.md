@@ -54,6 +54,12 @@ Validation/export/readiness katmani yeterince genisledi ve son iki run'da gamepl
 - browser blokaji UX turunu durdurmak icin yeterli gerekce degil
 - visual efektleri abartip okunurlugu veya performansi bozma
 
+## Governance Note
+
+- Audit verdict `warning`: son 24 saatte gercek gameplay ilerlemesi var, ancak repo hacmi hala docs + validation/tooling tarafinda daha hizli buyuyor
+- builder local maximum riski browser validation blocker'ini tekrar ana ise donusturmek; bu tur o yone kayma olursa audit bunu drift olarak sayacak
+- manual browser sample alinabiliyorsa topla, alinamiyorsa sadece not et; bu eksiklik yeni script/preflight/readiness isi acmak icin gerekce degil
+
 ---
 
 ## Do Not
