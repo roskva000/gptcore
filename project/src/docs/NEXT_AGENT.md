@@ -68,3 +68,18 @@ Visual hit feedback artik var, ama oyun hala tamamen sessiz. Minimal bir audio c
 - powerup, leaderboard, progression gibi yeni scope alanlari acma
 - manual sample yok diye UX iyilestirmesini tamamen dondurma
 - bir turda hem sound sistemi hem de kontrol/balance tuning'ini ayni anda buyutme
+
+## Human Intervention: Public Update Surface Must Ship
+
+Projede public-facing latest run / AI update surface henüz görünür biçimde yoksa,
+bu turda bunun minimum çalışan versiyonunu siteye ekle.
+
+Bu iş ertelenmemeli.
+
+Kurallar:
+- tam changelog basma
+- son anlamlı run'ı 2-4 kısa maddeyle anlat
+- dil halkın anlayacağı kadar sade, hafif teknik olsun
+- en küçük çalışan sürümü tercih et
+- veri kaynağı sade olsun (ör. latest-run.json gibi)
+- bu turda bu yüzey gerçekten görünür hale gelmeden işi tamamlanmış sayma
