@@ -1,157 +1,151 @@
-# GPTCore — Autonomous Game Development Experiment
+# GPTCore — Otonom Oyun Geliştirme Deneyi
 
-An autonomous coding agent building and evolving a browser game in continuous runs.
+Bu repository, bir yapay zekâ ajanının bir tarayıcı oyununu **adım adım geliştirerek büyüttüğü** uzun süreli bir yazılım deneyini içerir.
 
-This repository documents a long-running experiment where an AI agent iteratively develops a game, validates its behavior, and refines the project over time.
+Projede çalışan bir agent, belirli aralıklarla:
 
-The agent runs on a schedule, analyzes the current project state, performs a small improvement, and updates the repository history.
+* mevcut proje durumunu analiz eder
+* küçük bir geliştirme hedefi seçer
+* kodu günceller
+* doğrulama testlerini çalıştırır
+* proje dokümantasyonunu günceller
 
-The result is a living codebase that grows run by run.
+Bu süreç sürekli tekrar eder ve proje **run run ilerleyerek evrilir**.
 
 ---
 
-# Project Overview
+# Proje Hakkında
 
-The project currently contains a small browser game built with:
+Projede geliştirilen oyun şu teknolojilerle yazılmıştır:
 
 * **Vite**
 * **TypeScript**
 * **Phaser**
 
-The game loop is simple:
+Oyun mekaniği basit bir hayatta kalma oyunudur:
 
-> Survive as long as possible while obstacles spawn and increase in difficulty.
+> Oyuncu ekranda kalmaya çalışır, engeller zamanla hızlanır ve yoğunlaşır.
 
-The interesting part is **not the game itself** — it is **how the game evolves**.
+Ancak bu projenin asıl amacı oyun yapmak değil, şu soruyu araştırmaktır:
 
-Every iteration of development is performed by an autonomous agent.
+> Bir yapay zekâ ajanı, minimum insan müdahalesiyle bir yazılım projesini zaman içinde geliştirebilir mi?
 
 ---
 
-# Autonomous Development Loop
+# Otonom Geliştirme Döngüsü
 
-A scheduled agent performs development cycles.
+Ajan düzenli aralıklarla bir geliştirme döngüsü çalıştırır.
 
-Each cycle:
+Her döngü şu adımlardan oluşur:
 
-1. Reads project state files
-2. Chooses a single improvement
-3. Implements it
-4. Runs validation scripts
-5. Updates project documentation
-
-Typical run flow:
-
-```
-read state
+```text
+proje durumunu oku
 ↓
-choose task
+tek bir geliştirme hedefi seç
 ↓
-implement change
+kodu güncelle
 ↓
-run telemetry / validation
+telemetry / validation çalıştır
 ↓
-update state files
+state dosyalarını güncelle
 ↓
-commit
+commit oluştur
 ```
 
-Runs are recorded in `CHANGELOG.md`.
+Her çalışma turu `CHANGELOG.md` içinde kayıt altına alınır.
 
 ---
 
-# State-Driven Development
+# State Tabanlı Geliştirme
 
-Instead of traditional issue trackers, the agent relies on structured state files.
+Bu projede klasik issue tracker yerine **state dosyaları** kullanılır.
 
-Core files:
+Ajanın hafızası şu dosyalardan oluşur:
 
-| File            | Purpose                        |
-| --------------- | ------------------------------ |
-| `STATE.md`      | Current project status         |
-| `ROADMAP.md`    | Future direction               |
-| `NEXT_AGENT.md` | Task for the next run          |
-| `DECISIONS.md`  | Important design decisions     |
-| `METRICS.md`    | Gameplay and telemetry metrics |
-| `CHANGELOG.md`  | History of agent runs          |
+| Dosya           | Açıklama                    |
+| --------------- | --------------------------- |
+| `STATE.md`      | Projenin mevcut durumu      |
+| `ROADMAP.md`    | Gelecek planı               |
+| `NEXT_AGENT.md` | Bir sonraki ajan için görev |
+| `DECISIONS.md`  | Önemli teknik kararlar      |
+| `METRICS.md`    | Oyun telemetry verileri     |
+| `CHANGELOG.md`  | Ajan run geçmişi            |
 
-These documents act as the **memory system** for the agent.
+Bu dosyalar birlikte çalışarak ajan için **uzun süreli hafıza sistemi** oluşturur.
 
 ---
 
-# Telemetry and Validation
+# Telemetry ve Oyun Dengesi
 
-The project contains a telemetry system used to evaluate gameplay.
+Oyun davranışı deterministik telemetry ölçümleri ile değerlendirilir.
 
-Important metrics:
+Ölçülen bazı metrikler:
 
-* survival time
-* early death rate
+* hayatta kalma süresi
+* erken ölüm oranı
 * spawn pacing
 * retry gap
 * first death time
 
-Telemetry allows the agent to tune gameplay balance in a deterministic way.
+Bu metrikler oyun dengesinin bozulup bozulmadığını anlamak için kullanılır.
 
-Example validation scripts:
+Örnek validation komutları:
 
-```
+```bash
 npm run telemetry:check
 npm run telemetry:snapshot
 npm run telemetry:survival-snapshot
 npm run telemetry:validation-snapshot
 ```
 
-These ensure gameplay changes do not regress core metrics.
-
 ---
 
-# Browser Validation System
+# Tarayıcı Doğrulama Sistemi
 
-The repository also contains an experimental browser validation harness.
+Repository içinde ayrıca bir **browser validation sistemi** bulunur.
 
-Purpose:
+Amaç:
 
-* simulate gameplay sessions
-* validate runtime behavior
-* collect telemetry automatically
+* oyunu gerçek tarayıcı ortamında test etmek
+* otomatik gameplay doğrulaması yapmak
+* telemetry verisi toplamak
 
-Scripts:
+İlgili komutlar:
 
-```
+```bash
 npm run telemetry:browser-preflight
 npm run telemetry:browser-validation-smoke
 npm run telemetry:validation-ready
 ```
 
-This system prepares the ground for automated gameplay testing using a headless browser.
+Bu sistem ileride headless browser kullanarak otomatik gameplay simülasyonu yapılmasına zemin hazırlar.
 
 ---
 
-# Governance Layer
+# Governance (Denetim) Katmanı
 
-To prevent the agent from getting stuck in loops, the project includes a governance layer.
+Ajanın aynı probleme takılıp kalmasını önlemek için projede bir denetim katmanı bulunur.
 
-A daily **audit agent** reviews recent runs and evaluates:
+Günlük çalışan bir **audit agent** şu konuları değerlendirir:
 
-* product progress
-* validation/tooling growth
-* potential development loops
-* roadmap alignment
+* son run’larda gerçek ilerleme var mı
+* gereksiz tooling artışı var mı
+* development loop oluştu mu
+* roadmap ile gerçek ilerleme uyumlu mu
 
-Audit results are stored in:
+Denetim sonuçları şu dosyada tutulur:
 
 ```
 AUDIT.md
 ```
 
-The builder agent reads these notes in subsequent runs.
+Builder agent yeni run başlatırken bu dosyayı okuyarak yönünü belirler.
 
 ---
 
-# Repository Structure
+# Repository Yapısı
 
-```
+```text
 project/
   game/
     src/
@@ -171,7 +165,7 @@ project/
       browser-validation-ready.ts
 ```
 
-Documentation:
+Dokümantasyon dosyaları:
 
 ```
 STATE.md
@@ -185,45 +179,45 @@ AUDIT.md
 
 ---
 
-# Running the Game
+# Oyunu Çalıştırma
 
-```
+```bash
 cd project/game
 npm install
 npm run dev
 ```
 
-Build:
+Build almak için:
 
-```
+```bash
 npm run build
 ```
 
 ---
 
-# Development Philosophy
+# Deneyin Amacı
 
-This project explores questions such as:
+Bu proje şu sorulara cevap arar:
 
-* Can an AI agent iteratively build software with minimal human intervention?
-* How can a codebase act as the memory system for an autonomous developer?
-* What governance mechanisms are required to prevent development loops?
-* How do telemetry and deterministic validation affect autonomous iteration?
+* Bir yapay zekâ ajanı kendi başına bir yazılım projesini geliştirebilir mi?
+* Bir repository aynı zamanda bir ajan için hafıza sistemi olabilir mi?
+* Telemetry ve deterministik validation otonom geliştirmeyi nasıl etkiler?
+* Governance katmanları development loop’larını engelleyebilir mi?
 
 ---
 
-# Experiment Status
+# Deney Durumu
 
-The project is actively evolving through agent runs.
+Proje aktif olarak gelişmektedir.
 
-Each run:
+Her run:
 
-* modifies code
-* improves telemetry
-* refines validation
-* updates documentation
+* kod değiştirir
+* telemetry sistemini geliştirir
+* validation araçlarını genişletir
+* state dosyalarını günceller
 
-Follow progress in:
+İlerlemeyi şu dosyadan takip edebilirsiniz:
 
 ```
 CHANGELOG.md
@@ -231,20 +225,18 @@ CHANGELOG.md
 
 ---
 
-# Disclaimer
+# Not
 
-This repository is part of an experiment in autonomous software development.
+Bu repository bir **otonom yazılım geliştirme deneyi** olduğu için:
 
-Expect:
+* commit geçmişi alışılmışın dışında olabilir
+* mimari zaman içinde değişebilir
+* bazen tooling katmanları büyüyebilir
 
-* unusual commit history
-* rapidly evolving architecture
-* occasional tooling detours
-
-That is part of the experiment.
+Bunlar deneyin doğal parçalarıdır.
 
 ---
 
-# License
+# Lisans
 
 MIT License.
