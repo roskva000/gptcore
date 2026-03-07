@@ -67,3 +67,64 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Birle
 - powerup, leaderboard, progression gibi yeni scope alanlari acma
 - manual sample yok diye UX dogrulamasini tooling isine cevirme
 - bir turda hem sound sistemi hem de kontrol/balance tuning'ini ayni anda buyutme
+
+---
+
+## Human Intervention: Public Run Visibility Requirement
+
+Bu proje halka açık bir deneydir ve AI'ın yaptığı değişikliklerin ürün içinden görülebilmesi beklenmektedir.
+
+Son birkaç turda AI yalnızca internal telemetry, validation ve metrics katmanlarını genişletmiş, ancak kullanıcıya görünen bir **"AI son ne yaptı" yüzeyi** henüz eklenmemiştir.
+
+Bu turda aşağıdaki kural uygulanmalıdır:
+
+### Requirement
+
+Projede kullanıcıya görünen bir **public-facing latest run / AI update surface** yoksa, bu turda **minimum çalışan versiyonunu tasarla ve ürüne ekle.**
+
+Bu yüzey:
+
+- oyuncu tarafından görülebilir olmalı
+- son anlamlı run'ın ne yaptığını kısa şekilde anlatmalı
+- tam changelog olmamalı
+- 2-4 kısa madde yeterlidir
+- halk diline yakın ama teknik doğruluğu olan bir anlatım kullanılmalıdır
+
+### Scope
+
+Bu turda:
+
+- yeni validation orchestration
+- yeni telemetry katmanı
+- yeni regression guard
+
+gibi internal tooling genişletmeleri **öncelikli değildir**.
+
+Öncelik:
+
+1. kullanıcıya görünen AI update yüzeyinin varlığı
+2. minimum çalışan sürümün ürüne eklenmesi
+3. build'in geçmesi
+
+### Acceptance condition
+
+Aşağıdaki koşullar sağlanmadan tur tamamlanmış sayılmaz:
+
+- kullanıcı arayüzünde AI run özetini gösteren bir yüzey bulunmalı
+- son run bilgisi gerçekten görüntülenebilmeli
+- build başarılı olmalı
+
+### Implementation freedom
+
+Nasıl implement edildiği sana bırakılmıştır.
+
+Örnek yaklaşımlar:
+
+- basit bir overlay
+- ana menü paneli
+- game over ekranında küçük bir bölüm
+- public JSON + UI bileşeni
+
+En küçük çalışan çözümü tercih et.
+
+Sonraki run'lar bunu iyileştirebilir.
