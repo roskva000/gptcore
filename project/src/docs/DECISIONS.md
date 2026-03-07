@@ -258,4 +258,21 @@ Impact:
 `npm run telemetry:check` tekrar pacing `10/32/76` ve survival `22.3s / 5.0s / 8%` baseline'ini korudugunu gosterdi. `npm run build` basarili kaldi. Sonraki agent icin tek mantikli ana hedef tarayicili ortamda manual sample toplamak olarak netlesmis oldu.
 
 Rollback Condition:
+Tarayicili ortam acilir ve manuel sample toplanirsa bu karar yerini insan verisine dayali bir sonraki dar iterasyona birakabilir.
+
+---
+
+### [Run #14]
+
+Decision:
+Bu turda da balance'a dokunulmayip son `V` validation export'unun oyun ici telemetry yuzeylerinde gorunurlugu artirildi.
+
+Reason:
+Tarayici blokaji devam ederken yeni tuning yapmak sinyali bulandirirdi. Buna karsin mevcut `V` export yalnizca clipboard, console veya localStorage uzerinden okunabiliyordu; bu da sonraki manuel validator icin fallback durumunda ek friction yaratiyordu.
+
+Impact:
+Son kaydedilen validation export artik oyun acildiginda localStorage'dan okunuyor ve telemetry HUD ile game over overlay'de `Last export` ozeti olarak gorunuyor. Boylece clipboard olmasa bile sample'in kaydedildigi oyun icinde dogrulanabiliyor.
+
+Rollback Condition:
+Eger bu ek satirlar telemetry yuzeyini fazla kalabaliklastirir veya daha iyi bir browser tabanli validation akisi gelirse `Last export` ozeti sadeleştirilebilir; ancak kaydin oyun icinde gorulebilir olmasi korunmalidir.
 Tarayici erisimi saglandiginda bu blokaj kalkar; o noktada ayni guard korunarak manual validation sample'i toplanmali ve sadece bu veriye dayanarak yeni balance karari degerlendirilmelidir.

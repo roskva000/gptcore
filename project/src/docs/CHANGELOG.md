@@ -121,3 +121,12 @@
 - deterministic baseline'in pacing `10/32/76` ve survival `22.3s / 5.0s / 8%` olarak korundugu dogrulandi
 - `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor
 - calisma ortaminda tarayici olmadigi icin manual validation sample'inin halen bloklu oldugu kayda gecirildi
+
+---
+
+## Run #14
+
+- `project/game/src/game/GameScene.ts` icinde son `V` validation export'u localStorage'dan okunup telemetry HUD ve game over overlay'e `Last export` ozeti olarak eklendi
+- `V` sonrasi hint metni artik son kaydedilen export ozetini de gosterecek sekilde guncellendi
+- balance'a dokunulmadan `npm run telemetry:check` tekrar temiz gecirildi
+- `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor

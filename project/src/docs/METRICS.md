@@ -54,9 +54,14 @@ baseline_before_tuning: yalnizca recent deaths listesinden cikarim yapiliyordu
 target: manual validator `first death` sinyalini dogrudan okuyabilmeli
 
 manual_validation_export:
-current: Run #12 ile `V` kisayolu session sample'i `validation_sample | runs=...` formatinda clipboard'a kopyalamayi deniyor; fallback olarak console + localStorage kullaniliyor
+current: Run #14 itibariyla `V` kisayolu session sample'i `validation_sample | runs=...` formatinda clipboard'a kopyalamayi deniyor; fallback olarak console + localStorage kullaniliyor ve son export ozetinin HUD/game over uzerinde gorunurlugu var
 baseline_before_tuning: tester `C` console summary icindeki objeyi elle tasimak zorundaydi
 target: manual sample sonucu tek satir olarak dokumana veya handoff notuna friction'siz tasinabilmeli
+
+last_validation_report_visibility:
+current: Run #14 ile son kaydedilen export `runs`, `first death`, `early death` ve validation durumu olarak telemetry HUD ve game over overlay'de `Last export` satirinda gorunuyor
+baseline_before_tuning: export localStorage'a yazilsa da oyun ici yuzeyde tekrar okunmuyordu
+target: clipboard fallback'inde bile tester sample'in kaydedildigini oyun icinde aninda dogrulayabilmeli
 
 rage_quit_indicator:
 current: low in scripted sample; all observed retries stayed near 2.0s
@@ -117,4 +122,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - `npm run telemetry:check` sonucu tekrar `status: ok` dondu
   - confirmed balance baseline: first spawn 0.9s, pacing 10 / 32 / 76
   - confirmed survival baseline: avg 22.3s, first death 5.0s, early death 8%
+- Run #14 validation visibility details:
+  - son validation export localStorage key `survive-60-seconds-last-validation-report-v1` uzerinden scene create asamasinda tekrar okunuyor
+  - telemetry HUD ve game over overlay `Last export: ...` satiri ile kaydedilen sample'in kisa ozetini gosteriyor
+  - `V` sonrasi hint metni artik son export ozetini de yaziyor; fallback durumunda console acmadan gorulebilir teyit saglaniyor
 - next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla, sample sonunda `V` export satirini kaydet; tarayici yoksa blokaji not et ve yeni tuning'e gecme

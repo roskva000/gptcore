@@ -6,6 +6,7 @@
 
 - Run #13'te tekrar temiz gecen `npm run telemetry:check` sonucunu baseline olarak koru; intentional tuning disinda bu guard'i guncelleme
 - tarayici olan bir ortamda Run #12 export akisini kullanip `R` reset sonrasi 5-10 manual run topla ve sample sonunda `V` ile validation report'u kopyala
+- Run #14 gorunurluk ekini kullanarak HUD veya game over overlay'de `Last export` satirinin doldugunu teyit et; clipboard yoksa fallback'in kaydi gorunur olmali
 - session telemetry ile first death, avg survival ve early death oranini yeni browserless baseline'a karsi caprazla
 - HUD / game over / `C` summary uzerindeki explicit `first death` sinyalini esas al; recent deaths listesinden elle cikarim yapma
 - clipboard yoksa `V` fallback'inin console + localStorage export'unu kullanarak sample'i yine yazili hale getir
@@ -18,6 +19,7 @@ Basari olcutleri:
 - build ve `telemetry:check` tekrar basarili calismali
 - tarayici varsa `R` sonrasi session telemetry ozetinde en az 5 run gorulmeli
 - sample sonunda `validation_sample` satiri dokumana veya handoff notuna aynen tasinmali
+- `Last export` ozeti HUD veya game over overlay'de `not saved yet` yerine dolu bir sample gostermeli
 
 ---
 

@@ -58,6 +58,13 @@ type TelemetrySummary = {
   lastSurvivalTime: number | null;
 };
 
+type ValidationReportSummary = {
+  runs: string;
+  firstDeath: string;
+  earlyDeathRate: string;
+  validation: string;
+};
+
 const createEmptyTelemetry = (): GameplayTelemetry => ({
   totalRuns: 0,
   totalDeaths: 0,
@@ -92,6 +99,7 @@ export class GameScene extends Phaser.Scene {
   private runSpawnRerolls = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
+  private lastValidationReport: string | null = null;
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
 
   constructor() {
@@ -194,6 +202,7 @@ export class GameScene extends Phaser.Scene {
 
     this.telemetry = this.loadTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage);
     this.sessionTelemetry = this.loadTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage);
+    this.lastValidationReport = this.loadValidationReport();
     this.telemetryText = this.add
       .text(ARENA_WIDTH - 24, 20, '', {
         align: 'right',
@@ -323,7 +332,7 @@ export class GameScene extends Phaser.Scene {
       console.info('[telemetry] validation_report', validationReport);
       this.hintText
         .setText(
-          'Clipboard unavailable here.\nValidation summary saved locally and logged to console.',
+          `Clipboard unavailable here.\nValidation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
         )
         .setVisible(true);
       return;
@@ -335,7 +344,7 @@ export class GameScene extends Phaser.Scene {
         console.info('[telemetry] validation_report', validationReport);
         this.hintText
           .setText(
-            'Validation summary copied.\nPaste it into STATE.md or your handoff notes after the sample.',
+            `Validation summary copied.\nLatest export: ${this.getLastValidationReportSummaryText()}`,
           )
           .setVisible(true);
       })
@@ -343,7 +352,7 @@ export class GameScene extends Phaser.Scene {
         console.info('[telemetry] validation_report', validationReport);
         this.hintText
           .setText(
-            'Clipboard copy failed.\nValidation summary saved locally and logged to console.',
+            `Clipboard copy failed.\nValidation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
           )
           .setVisible(true);
       });
@@ -532,6 +541,7 @@ export class GameScene extends Phaser.Scene {
           `Session avg: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}%`,
           `Session first death: ${this.getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${this.getValidationProgressText(this.sessionTelemetry)}`,
           `Lifetime avg: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
+          `Last export: ${this.getLastValidationReportSummaryText()}`,
           `Spawn saves this run: ${this.runSpawnRerolls} | Press R to reset, C to log, V to copy summary`,
           'Press Space, Enter, or tap to retry instantly.',
         ].join('\n'),
@@ -707,6 +717,7 @@ export class GameScene extends Phaser.Scene {
         `Lifetime runs: ${this.telemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s`,
         `Lifetime first death: ${this.getFirstDeathTimeText(this.telemetry)}`,
         `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.telemetry)}%`,
+        `Last export: ${this.getLastValidationReportSummaryText()}`,
         `Spawn saves: ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`,
         'Export current sample: press V',
         `Recent session deaths: ${this.getRecentDeathTimesText(this.sessionTelemetry)}`,
@@ -830,10 +841,62 @@ export class GameScene extends Phaser.Scene {
   }
 
   private saveValidationReport(report: string): void {
+    this.lastValidationReport = report;
+
     try {
       window.localStorage.setItem(VALIDATION_REPORT_STORAGE_KEY, report);
     } catch {
       // Validation export persistence is best-effort only.
     }
+
+    this.updateTelemetryText();
+  }
+
+  private loadValidationReport(): string | null {
+    try {
+      return window.localStorage.getItem(VALIDATION_REPORT_STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  private getLastValidationReportSummary(): ValidationReportSummary | null {
+    if (!this.lastValidationReport) {
+      return null;
+    }
+
+    const parts = this.lastValidationReport.split(' | ');
+
+    const readValue = (key: string): string | null => {
+      const prefix = `${key}=`;
+      const part = parts.find((entry) => entry.startsWith(prefix));
+      return part ? part.slice(prefix.length) : null;
+    };
+
+    const runs = readValue('runs');
+    const firstDeath = readValue('first_death');
+    const earlyDeathRate = readValue('early_death_rate');
+    const validation = readValue('validation');
+
+    if (!runs || !firstDeath || !earlyDeathRate || !validation) {
+      return null;
+    }
+
+    return {
+      runs,
+      firstDeath,
+      earlyDeathRate,
+      validation,
+    };
+  }
+
+  private getLastValidationReportSummaryText(): string {
+    const summary = this.getLastValidationReportSummary();
+
+    if (!summary) {
+      return 'not saved yet';
+    }
+
+    return `${summary.runs} runs | first death ${summary.firstDeath} | early ${summary.earlyDeathRate} | ${summary.validation}`;
   }
 }
