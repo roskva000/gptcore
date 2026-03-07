@@ -1,6 +1,10 @@
 import { spawn, type ChildProcess } from 'node:child_process';
 import { appendFile, writeFile } from 'node:fs/promises';
-import net from 'node:net';
+import {
+  assertLoopbackSocketsAvailable,
+  getBrowserValidationBlockingIssues,
+  runBrowserValidationPreflight,
+} from './browser-validation-support.ts';
 
 const SERVER_PORT = 4173;
 const DEBUG_PORT = 9222;
@@ -124,26 +128,6 @@ const waitForHttp = async (url: string, timeoutMs: number): Promise<void> => {
 
   throw new Error(`Timed out waiting for ${url}.`);
 };
-
-const assertLoopbackSocketsAvailable = async (): Promise<void> =>
-  new Promise((resolve, reject) => {
-    const server = net.createServer();
-
-    server.once('error', (error) => {
-      server.close();
-      reject(
-        new Error(
-          `Loopback socket bind failed in this environment. Browser validation smoke needs local HTTP/CDP ports. Original error: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-        ),
-      );
-    });
-
-    server.listen(0, '127.0.0.1', () => {
-      server.close(() => resolve());
-    });
-  });
 
 const waitForProcessExit = async (process: ChildProcess): Promise<void> =>
   new Promise((resolve) => {
@@ -303,8 +287,15 @@ const main = async (): Promise<void> => {
   try {
     await writeFile(LOG_PATH, '');
     await logStep('started');
+    const preflight = await runBrowserValidationPreflight();
+    const blockingIssues = getBrowserValidationBlockingIssues(preflight);
+
+    if (blockingIssues.length > 0) {
+      throw new Error(`Browser validation preflight failed: ${blockingIssues.join(' | ')}`);
+    }
+
     await assertLoopbackSocketsAvailable();
-    await logStep('loopback_socket_preflight_ok');
+    await logStep('browser_preflight_ok');
     server = startStaticServer();
     chromium = startChromium();
     server.once('exit', (code, signal) => {

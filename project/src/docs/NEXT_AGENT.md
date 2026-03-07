@@ -2,9 +2,10 @@
 
 ## Recommended Next Task
 
-Run #17'de eklenen browser smoke harness'i socket izinli bir ortamda once gercekten calistir, sonra obstacle speed curve'unu interaktif browser oturumunda session telemetry uzerinden manuel olarak validate et. Sadece browser binary'sinin varligi yeterli degil; bu turda sandbox `127.0.0.1` icin `listen EPERM` verdigi icin browser smoke ve gercek `R`/`V` akisi burada tamamlanamadi. Uygun ortamda once smoke'u gecir, sonra oynanmis run'larla manual sample topla.
+Run #18'de eklenen browser preflight komutunu once socket izinli bir ortamda calistir; `status: ok` cikmadan browser smoke veya manual validation deneme. Preflight temizse Run #17 smoke harness'ini gercekten calistir, sonra obstacle speed curve'unu interaktif browser oturumunda session telemetry uzerinden manuel olarak validate et. Bu turda sandbox `127.0.0.1` icin hala `listen EPERM` verdigi icin smoke ve gercek `R`/`V` akisi burada tamamlanamadi.
 
 Ozellikle:
+- once `npm run telemetry:browser-preflight` calistir; `chromiumAvailable=true`, `distReady=true`, `loopbackSocketsAvailable=true` ve `status: ok` gormeden smoke'a gecme
 - once `npm run telemetry:check` calistir; baseline hala `10 / 32 / 76` ve `22.3s / 5.0s / 8%`, fail verirse manual teste gecmeden once drift'i anla
 - sonra `npm run telemetry:validation-snapshot` calistir; validation baseline'i `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olmali
 - sonra `npm run telemetry:browser-validation-smoke` calistir; bu komut uygun ortamda gercek Chromium validation akisina girecek, mevcut sandbox'ta ise beklemeden `listen EPERM 127.0.0.1` blokajini verir
@@ -27,6 +28,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 ## Success Criteria
 
 - `npm run telemetry:check` basarili olmali
+- `npm run telemetry:browser-preflight` uygun ortamda `status: ok` vermeli; kisitli sandbox'ta ise `status: blocked` ve nedeni acikca yazmali
 - `npm run telemetry:validation-snapshot` basarili olmali ve validation summary baseline'i korunmali
 - `npm run telemetry:browser-validation-smoke` socket izinli ortamda basarili olmali; kisitli sandbox'ta ise acik loopback blokaji vermeli
 - interaktif tarayici varsa telemetry panelinde `R` sonrasi manuel oynanmis en az 5 session run gorulmeli
@@ -52,6 +54,8 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - `project/game/scripts/telemetry-check.ts`
 - `project/game/scripts/validation-snapshot.ts`
 - `project/game/scripts/browser-validation-smoke.ts`
+- `project/game/scripts/browser-validation-preflight.ts`
+- `project/game/scripts/browser-validation-support.ts`
 - `project/game/scripts/telemetry-reports.ts`
 - `project/game/src/game/balance.ts`
 - `project/game/src/game/GameScene.ts`
@@ -63,6 +67,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 
 - scripted sample gecmis turda page reload + 18s cap ile alindi; survival snapshot ile ayni sey degil
 - Run #17 browser smoke icin local HTTP + CDP socket gerekiyor; mevcut sandbox `127.0.0.1` bind denemesini `EPERM` ile reddediyor
+- Run #18 preflight chromium ve dist'i ayri raporluyor; bu yuzden `status: blocked` ise once hangi alanin fail ettigini not et
 - deterministic balance snapshot gameplay sonucu degil pacing referansidir
 - deterministic survival snapshot insan testi degil; controller heuristigini overfit etme
 - `telemetry:check` intentional balance degisikliginde fail verir; bilincli tuning yaparsan guard baseline'ini da ayni turda guncelle
@@ -77,6 +82,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - `V` fallback'inde console'a bakmadan once oyun ici `Last export` satirinin guncellendigini kontrol et; bu Run #14 degisikliginin amacidir
 - bu turda browser binary'si goruldu diye manual sample alinmis varsayma; interaktif oynanis yoksa blokaji acikca yaz
 - browser smoke fail-fast sonucunu gecmis bir validation olarak sayma; smoke sadece browser akisinin calisabildigini gosterir, manual sample yerine gecmez
+- preflight `status: ok` olmadan smoke'u tekrar tekrar calistirip ayni blokaji churn etme
 
 ---
 

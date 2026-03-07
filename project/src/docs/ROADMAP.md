@@ -4,6 +4,7 @@
 
 # NOW (Highest Priority)
 
+- once `npm run telemetry:browser-preflight` calistir; sonuc `status: ok` olmadan browser smoke veya manual sample'a gecme
 - Run #17'de eklenen `npm run telemetry:browser-validation-smoke` komutunu loopback socket ve Chromium erisimi olan bir ortamda calistir; browser smoke gecmeden manual sample'a gecme
 - `npm run telemetry:check` sonucunu baseline olarak koru; intentional tuning disinda bu guard'i guncelleme
 - browser smoke gectikten sonra interaktif browser erisimi olan bir ortamda `R` reset sonrasi 5-10 manual run topla ve sample sonunda `V` ile validation report'u kopyala
@@ -20,6 +21,7 @@ Basari olcutleri:
 - mevcut browserless baseline'lar referans alinmali: pacing 10/32/76 spawn, survival snapshot avg 22.3s / first death 5.0s / early death 8%
 - build, `telemetry:check` ve `telemetry:validation-snapshot` tekrar basarili calismali
 - `telemetry:browser-validation-smoke` socket izinli ortamda gecmeli; sandboxli ortamda ise hizli ve acik blokaj vermeli
+- `telemetry:browser-preflight` chromium + dist + loopback durumunu tek JSON cikti ile net gostermeli
 - `telemetry:validation-snapshot` deterministic export satirini ve parse edilen ozeti temiz uretmeli
 - tarayici varsa `R` sonrasi session telemetry ozetinde en az 5 run gorulmeli
 - sample sonunda `validation_sample` satiri dokumana veya handoff notuna aynen tasinmali
@@ -61,6 +63,7 @@ Basari olcutleri:
 - manual validation export kontrati artik guard altinda, fakat insan sample'in kendisi hala yok
 - formal test suite yok; mevcut regression guvencesi deterministic `telemetry:check` ile sinirli
 - browser smoke harness yeni eklendi ama sadece socket izinli ortamlarda calisabilir
+- yeni preflight komutu blokaji hizli tespit ediyor ama blokaji kendi basina kaldirmiyor
 - mobil cihaz dogrulamasi yapilmadi
 
 ---
@@ -72,6 +75,7 @@ Basari olcutleri:
 - average_survival_time manual veya scripted sample'da 14.3s eski baseline'in altina dusmuyor
 - early death rate browserless survival snapshot'taki 8% ve scripted sample'daki 20% referanslarini asiri asmiyor
 - `npm run telemetry:check` deterministic baseline sapmalarinda fail veriyor
+- `npm run telemetry:browser-preflight` socket izinli ortamda `status: ok`, bu sandbox'ta ise `status: blocked` vermeli
 - deterministic snapshot'ta 10s/30s pacing beklenen 10 / 32 spawn seviyesinde kaliyor
 - survival snapshot'ta first death 5.0s baseline'i korunuyor veya iyilesiyor, early death 8% referansi bozulmuyor
 - unfair death gozlemleri ve yakin spawn kurtarmalari daha anlamli hale geliyor

@@ -325,3 +325,19 @@ Impact:
 
 Rollback Condition:
 Ileride daha basit bir browser automation araci veya CI browser provider'i eklenirse bu custom CDP harness sadeleştirilebilir; ancak `R`/`V` validation akisinin browser tarafini production build'e yakin bir ortamda smoke-test etme ihtiyaci korunmalidir.
+
+---
+
+### [Run #18]
+
+Decision:
+Bu turda gameplay balance'a yine dokunulmayip browser validation icin ayri bir readiness preflight komutu eklendi; smoke harness bu ortak helper'i kullanacak sekilde baglandi.
+
+Reason:
+NEXT_AGENT'in istedigi asil is hala socket izinli ortamda smoke + manual validation. Fakat mevcut sandbox'ta smoke komutunu calistirmak bile yalnizca tek hata satiri uretiyordu; chromium binary, build hazirligi ve loopback socket durumu ayri ayri okunmuyordu. En yuksek etkili dar adim, environment blocker'ini tek JSON cikti ile olculebilir hale getirmekti.
+
+Impact:
+`npm run telemetry:browser-preflight` artik `/usr/bin/chromium`, `dist/index.html` ve loopback socket durumunu tek komutta raporluyor. Sonraki agent once bu komutla ortam uygun mu degil mi anlayip ancak sonra smoke veya manual sample'a gecebilir. Smoke komutu da ayni helper uzerinden erken fail ettigi icin blokaj daha tutarli raporlaniyor.
+
+Rollback Condition:
+Ileride browser smoke farkli bir automation stack'e tasinirse bu preflight helper yeni stack'in gereksinimlerine gore guncellenmeli; fakat smoke oncesi environment readiness'i ayrica olcme ihtiyaci korunmalidir.

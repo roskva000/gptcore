@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #17; `/usr/bin/chromium` mevcut olsa da bu sandbox `127.0.0.1` loopback socket'ini `EPERM` ile reddettigi icin browser smoke veya interaktif human-input validation yapilamadi, ancak `V` export kontrati repo-ici `telemetry:validation-snapshot` ile tekrar dogrulandi
+current: still not collected as of Run #18; `/usr/bin/chromium` ve `dist/index.html` mevcut, fakat yeni `telemetry:browser-preflight` bu sandbox'in `127.0.0.1` loopback socket'ini `EPERM` ile reddettigini acikca raporladi, bu yuzden browser smoke veya interaktif human-input validation yapilamadi
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -35,7 +35,7 @@ baseline: avg survival 22.3s, first death 5.0s, early death 8%, best 30.0s
 target: use as a regression guard and avoid regressing past 8% early death without breaking pacing snapshot
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as revalidated in Run #17
+current: passes via `npm run telemetry:check` as revalidated in Run #18
 baseline: asserts first spawn 0.9s, spawn pacing 10 / 32 / 76, speed curve 145 / 183 / 259 / 316 / 320, survival avg 22.3s, first death 5.0s, early death 8%, validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 target: run before and after future balance changes to catch accidental drift
 
@@ -45,9 +45,14 @@ baseline: parsed summary `5 runs | first death 30.0s | early 20% | 5/5 runs, tar
 target: `V` export string and `Last export` parser stay aligned even when telemetry copy changes
 
 browser_validation_smoke:
-current: Run #17'de `npm run telemetry:browser-validation-smoke` mevcut sandbox'ta fail-fast `listen EPERM: operation not permitted 127.0.0.1` verdi; komut artik hanging yerine acik operasyonel blokaj raporu uretiyor
+current: Run #18'de `npm run telemetry:browser-validation-smoke` yeni preflight helper uzerinden erken `Browser validation preflight failed: ... listen EPERM: operation not permitted 127.0.0.1` hatasi verdi
 baseline: uygun ortamda gercek Chromium icinde `R` reset, sample injection, `V` export ve reload sonrasi `Last export` rehydration dogrulanmali
 target: socket izinli ortamda smoke komutu basarili calissin; kisitli sandbox'ta 10 saniye bekleyip asilmak yerine net hata versin
+
+browser_validation_preflight:
+current: Run #18'de `npm run telemetry:browser-preflight` `status: blocked` sonucu ile chromium=true, dist=true, loopback=false raporu uretti
+baseline: uygun ortamda `status: ok`, chromium=true, dist=true, loopback=true
+target: smoke veya manual validation'dan once ortamin browser validation icin hazir olup olmadigini tek komutta gostermek
 
 ---
 
@@ -148,4 +153,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - yeni komut once `127.0.0.1` uzerinde ephemeral loopback bind deniyor; sandbox izin vermiyorsa browser smoke'u hic baslatmadan fail-fast cikariyor
   - mevcut sandbox sonucu: `Loopback socket bind failed in this environment ... listen EPERM: operation not permitted 127.0.0.1`
   - bu sayede blokaj "chromium binary'si eksik" yerine "loopback socket / CDP yasak" olarak ayrildi
-- next step: socket izinli ortamda once `npm run telemetry:browser-validation-smoke` gecir, sonra bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla; sadece browser binary'si gormek yeterli kabul edilmemeli
+- Run #18 browser preflight details:
+  - yeni komut chromium executable, `dist/index.html` okunabilirligi ve loopback socket izinlerini ayni JSON cikti icinde raporluyor
+  - mevcut sandbox sonucu: `status: blocked`, `chromiumAvailable: true`, `distReady: true`, `loopbackSocketsAvailable: false`
+  - smoke komutu ayni helper'i kullandigi icin hata satiri ile preflight JSON ayni blokaji isaret ediyor
+- next step: socket izinli ortamda once `npm run telemetry:browser-preflight` ile readiness'i teyit et, sonra `npm run telemetry:browser-validation-smoke` gecir; smoke temizse bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla

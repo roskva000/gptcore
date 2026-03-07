@@ -159,3 +159,13 @@
 - `project/game/package.json` icine `npm run telemetry:browser-validation-smoke` komutu eklendi
 - balance'a dokunulmadan `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar basarili calisti
 - `npm run telemetry:browser-validation-smoke` mevcut sandbox'ta hizli sekilde `listen EPERM 127.0.0.1` blokajini raporlayacak hale getirildi; hanging davranisi kaldirildi
+
+---
+
+## Run #18
+
+- `project/game/scripts/browser-validation-support.ts` eklenerek browser validation icin ortak preflight helper'i olusturuldu
+- `project/game/scripts/browser-validation-preflight.ts` ve `npm run telemetry:browser-preflight` eklendi; chromium binary, `dist` hazirligi ve loopback socket durumu tek JSON cikti ile raporlanir hale geldi
+- `project/game/scripts/browser-validation-smoke.ts` yeni preflight helper'ini kullanacak sekilde guncellendi; blokajlar artik smoke baslamadan once toplu hata olarak raporlaniyor
+- `npm run telemetry:browser-preflight` mevcut sandbox'ta `status: blocked` sonucu ile loopback `EPERM` blokajini tekrar netlestirdi
+- balance'a dokunulmadan `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar basarili calisti
