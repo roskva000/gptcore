@@ -65,6 +65,7 @@ export class GameScene extends Phaser.Scene {
   private impactMarker!: Phaser.GameObjects.Arc;
   private impactMarkerLabel!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
+  private fatalCallout!: Phaser.GameObjects.Text;
   private overlayTitle!: Phaser.GameObjects.Text;
   private overlayBody!: Phaser.GameObjects.Text;
   private runStartedAt = 0;
@@ -182,6 +183,23 @@ export class GameScene extends Phaser.Scene {
     this.overlay = this.add
       .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0x02050a, 0.84)
       .setDepth(10)
+      .setVisible(false);
+
+    this.fatalCallout = this.add
+      .text(ARENA_WIDTH / 2, 156, '', {
+        align: 'center',
+        backgroundColor: '#2f0d12',
+        color: '#ffd9d2',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '18px',
+        fontStyle: 'bold',
+        padding: {
+          x: 14,
+          y: 8,
+        },
+      })
+      .setDepth(11)
+      .setOrigin(0.5)
       .setVisible(false);
 
     this.overlayTitle = this.add
@@ -413,6 +431,7 @@ export class GameScene extends Phaser.Scene {
     this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
     this.impactMarkerLabel.setAlpha(0).setVisible(false).setText('');
     this.overlay.setVisible(false);
+    this.fatalCallout.setVisible(false).setText('');
     this.overlayTitle.setVisible(false);
     this.overlayBody.setVisible(false);
 
@@ -611,25 +630,27 @@ export class GameScene extends Phaser.Scene {
     this.showImpactMarker(hitDirection);
 
     this.overlay.setVisible(true);
+    this.fatalCallout
+      .setText(`FATAL LANE  ${hitDirection.label.toUpperCase()}`)
+      .setVisible(true);
     this.overlayTitle.setText(`Hit from ${hitDirection.label}`).setVisible(true);
     this.overlayBody
       .setText(
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
           `Cause: ${hitDirection.sentence}.`,
-          'Ray + flash + blip mark the fatal lane at the hit frame.',
+          'Ray, marker, flash, and blip freeze the hit lane for a quick read.',
           '',
-          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}%`,
-          `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation ${getValidationProgressText(this.sessionTelemetry)}`,
-          `Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
-          `Last export ${this.getLastValidationReportSummaryText()}`,
+          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
+          `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
+          `Validation ${getValidationProgressText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
           'Press Space, Enter, or tap to retry instantly.',
         ].join('\n'),
       )
       .setVisible(true);
     this.hintText
       .setText(
-        `Fatal pressure came from ${hitDirection.label}. Retry should stay instant.`,
+        `Fatal lane: ${hitDirection.label}. Retry should stay instant.`,
       )
       .setVisible(true);
   }
@@ -652,7 +673,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.impactMarkerLabel
       .setPosition(markerX, markerY - 34)
-      .setText(`${hitDirection.label.toUpperCase()} HIT`)
+      .setText(hitDirection.label.toUpperCase())
       .setAlpha(1)
       .setVisible(true);
 

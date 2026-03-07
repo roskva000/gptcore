@@ -2,6 +2,15 @@
 
 ---
 
+## Run #31
+
+- `project/game/src/game/GameScene.ts` icinde game-over ustune ayri `FATAL LANE` callout'u eklendi ve overlay body daha hizli taranacak sekilde sadeleştirildi
+- impact marker etiketi fazla kelime tekrarini kaldiracak sekilde yalnizca lane adini gosterecek hale getirildi
+- `project/game/src/latestRun.ts` public AI update paneli yeni readability pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #30
 
 - `project/game/src/game/GameScene.ts` icinde game-over sonrasi `scene.restart()` kaldirildi; retry artik ayni scene icinde resetlenip tek Space/Enter/tap ile yeni run'i dogrudan baslatiyor

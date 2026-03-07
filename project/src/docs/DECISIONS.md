@@ -259,3 +259,19 @@ Replay artik tek Space/Enter/tap ile dogrudan yeni run'a geciyor. Fatal lane rea
 
 Rollback Condition:
 Host browser sample'i ayni-scene reset'in gizli state biraktigini, obstacle temizligini bozdugunu veya touch/keyboard retry hissini kotulestirdigini gosterirse replay reset helper'i dar kapsamda yeniden ayarlanir; yeni orchestration/tooling acilmaz.
+
+---
+
+### [Run #31]
+
+Decision:
+Olum nedenini daha hizli okutmak icin mevcut hit feedback paketine ayri bir fatal-lane callout eklendi; overlay body ve impact marker etiketi daha kisa okunacak sekilde sadeleştirildi.
+
+Reason:
+Audit governance note validation freeze altinda tek anlamli UX hedefinin olum nedenini netlestirmek oldugunu acik belirtiyor. Manual browser sample bu runtime'ta alinamadigi icin en dar urun ilerlemesi, mevcut ray + directional + flash + blip paketinin ilk bakis okunurlugunu artirmakti.
+
+Impact:
+Game-over aninda lane bilgisi artik overlay'den once ayri bir callout olarak gorunuyor; detay metni ikinci bakisa tasindi. `npm run telemetry:check` ve `npm run build` yesil kalarak pacing, survival ve validation guard'larinda drift olmadigini gosterdi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni fatal-lane callout'un overlay ve panel ile birlikte fazla dikkat dagittigini, mobilde tasma yaptigini veya replay ritmini bozdugunu gosterirse yalnizca copy/konum/padding/alpha seviyesinde dar ayar yapilir; yeni UI sistemi kurulmaz.

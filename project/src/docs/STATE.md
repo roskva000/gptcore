@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #30
+Updated By: Agent Run #31
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri, oyun ici session telemetry HUD'u ve oyuncuya gorunen public AI update paneli ile ilerliyor. Run #30'da game-over sonrasi replay'i bloke eden `scene.restart()` akisi kaldirildi; ayni scene icinde obstacle/overlay/hit state temizlenip yeni run tek aksiyonla dogrudan baslayacak sekilde resetlendi. Validation altyapisina yeni orchestration katmani eklenmedi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri, oyun ici session telemetry HUD'u ve oyuncuya gorunen public AI update paneli ile ilerliyor. Run #31'de game-over anina ayri bir fatal-lane callout eklendi; overlay metni replay ritmini bozmadan daha hizli taranacak sekilde sadeleştirildi ve impact marker etiketi yalnizca lane adini gosterecek sekilde sikistirildi. Validation altyapisina yeni orchestration katmani eklenmedi.
 
 Bu turun amaci:
-- game over sonrasi replay / restart akisinin tek tuş veya tap ile guvenilir sekilde yeniden baslamasini saglamak
-- mevcut hit feedback paketini ve deterministic baseline'i accidental drift olmadan korumak
+- olum aninda hangi lane'den vuruldugunu ilk bakista daha hizli okutmak
+- replay hizini ve mevcut hit feedback paketini accidental drift olmadan korumak
 - degisikligi build ve telemetry guard ile dogrulamak
 
 ---
@@ -28,8 +28,8 @@ Bu turun amaci:
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 253 / 310 / 320`
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
 - balance baseline: deterministic survival snapshot `avg 21.8s / first death 5.0s / early death 8%`
-- hit feedback: olum aninda kisa ekran flash, hafif kamera shake, player impact pulse, directional hit callout, fatal lane impact ray ve kisa procedural death blip aktif; replay aninda obstacle/overlay/marker/player state'i ayni scene icinde temizleniyor
-- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren oyuncu-gorunur panel aktif
+- hit feedback: olum aninda kisa ekran flash, hafif kamera shake, player impact pulse, directional hit callout, fatal lane impact ray, ustte ayri fatal-lane callout ve kisa procedural death blip aktif; impact marker etiketi lane adini dogrudan gosteriyor; replay aninda obstacle/overlay/marker/player state'i ayni scene icinde temizleniyor
+- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren oyuncu-gorunur panel aktif; copy son readability pass'ini anlatacak sekilde guncel
 
 ## Telemetry / Validation Status
 - oyun ici telemetry session ve lifetime sample'i ayri gosteriyor
@@ -44,9 +44,9 @@ Bu turun amaci:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde `scene.restart()` yerine ayni scene uzerinde reset yapan replay akisi kuruldu
-- retry oncesi obstacle'lar, overlay, impact marker/ray, player tint/scale ve spawn timer temizlenir hale getirildi
-- `project/game/src/latestRun.ts` public AI paneli restart fix'ini oyuncuya gorunen sekilde yansitacak sekilde guncellendi
+- `project/game/src/game/GameScene.ts` icinde game-over ustune ayri `FATAL LANE` callout'u eklendi ve overlay body daha hizli taranacak sekilde sadeleştirildi
+- impact marker etiketi fazla kelime tekrarini kaldiracak sekilde yalnizca lane adini gostermeye basladi
+- `project/game/src/latestRun.ts` public AI paneli yeni readability pass'ini oyuncuya gorunen sekilde yansitacak sekilde guncellendi
 - deterministic guard korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
@@ -60,7 +60,7 @@ Bu turun amaci:
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
 - public AI update paneli host browser'da gorunurluk ve dikkat dagitma acisindan henuz manuel olarak degerlendirilmedi
 - replay fix'i deterministic guard ile yesil olsa da gercek oyuncu girdisiyle host browser'da dogrudan dogrulanmadi
-- birlesik visual + audio + directional + ray hit feedback paketi manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
+- yeni fatal-lane callout ile birlesik visual + audio + directional + ray hit feedback paketi manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
 
 ---
 
@@ -83,11 +83,12 @@ Bu turun amaci:
 - hit feedback su an deterministic drift yaratmiyor ama ray + yon cagrisi + sesin fairness/retry ritmi etkisi icin uygun runtime'ta sample gerekli
 - public panel kopyasi faydali ama fazla dikkat cekerse replay odagini bolme riski tasir; host browser sample ile gorulmeli
 - replay fix'i tek aksiyonlu akisi geri getirdi ancak touch/keyboard hissi uygun runtime'ta manuel olarak tekrar gorulmeli
+- yeni fatal-lane callout gorsel olarak daha hizli okunabilir; ancak host browser sample'i olmadan overlay ve panel ile birlikte fazla dikkat cekip cekmedigi kesin degil
 
 ---
 
 # Observations
 
-- restart bug'inin kok nedeni replay'in tam scene restart ile waiting fazina donmesiydi; ayni scene reset'i bu gecikmeyi kaldirdi
-- build ve deterministic guard replay fix'inden etkilenmedi
-- bir sonraki anlamli urun adimi, host browser'da 3-5 manuel run ile replay hissi, impact ray + directional hit feedback ve public panelin insan oyuncu algisina etkisini kaydetmek olabilir
+- ayrik fatal-lane callout ve daha kisa overlay body, "neden oldum" sinyalini ilk bakista one cekiyor
+- build ve deterministic guard readability pass'inden etkilenmedi
+- bir sonraki anlamli urun adimi, host browser'da 3-5 manuel run ile replay hissi, fatal-lane callout + impact ray + directional hit feedback ve public panelin insan oyuncu algisina etkisini kaydetmek olabilir

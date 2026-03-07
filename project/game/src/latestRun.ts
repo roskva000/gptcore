@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Replay starts reliably again',
+  title: 'Deaths read faster now',
   intro:
-    'The last meaningful run fixed the post-death restart path without changing difficulty pacing.',
+    'The last meaningful run made the fatal lane easier to scan without changing replay speed or difficulty pacing.',
   bullets: [
-    'Retry no longer depends on a full scene restart that dropped the next run into a waiting state.',
-    'One tap, Space, or Enter now clears the old death state and starts a fresh run immediately.',
-    'Obstacles, overlay text, impact markers, and player tint all reset before the replay begins.',
-    'Fatal lane ray, directional hit callout, flash, and death blip remain in place for readability.',
-    'Deterministic pacing and survival baselines stayed stable after the replay fix.',
+    'Game over now adds a dedicated fatal-lane callout above the overlay for a faster first read.',
+    'The death summary keeps survival and retry context, but trims lower-value text clutter.',
+    'Impact marker labels now match the lane name directly instead of repeating extra wording.',
+    'One tap, Space, or Enter still clears the old death state and starts a fresh run immediately.',
+    'Deterministic pacing and survival baselines stayed stable after the readability pass.',
   ],
-  footer: 'Current build target: keep replay instant while making losses readable and fair.',
+  footer: 'Current build target: keep losses readable at first glance while replay stays instant.',
 } as const;
