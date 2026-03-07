@@ -163,3 +163,19 @@ Deterministic survival snapshot `avg 21.6s -> 21.8s`, bucket dagilimi `2 / 7 / 7
 
 Rollback Condition:
 Sonraki manual sample veya gameplay hissi bu rampanin oyunu fazla sertlestirdigini gosterirse `20s+` breakpoint'leri yeniden ayarlanir; ancak yeni tuning yine tek eksenli kalmalidir.
+
+---
+
+### [Run #25]
+
+Decision:
+Olum anini daha okunur kilmak icin tek bir dar gameplay UX paketi secildi: ekran flash, hafif kamera shake ve player impact pulse; balance/validation katmanina dokunulmadi.
+
+Reason:
+Audit governance note bir sonraki anlamli adimin hit feedback oldugunu, validation/readiness alaninin ise freeze'de kaldigini acik belirtti. Replay istegini bozmayacak en kucuk urun adimi bu visual feedback paketiydi.
+
+Impact:
+Oyuncuya "neden oldum" sinyali daha net veriliyor. `npm run telemetry:check` ve `npm run build` basarili kalarak deterministic pacing ve survival baseline'inin korunmasi dogrulandi.
+
+Rollback Condition:
+Manual sample veya cihaz performansi bu efektlerin okunurlugu bozdugunu, fazla dikkat dagittigini ya da replay friction yarattigini gosterirse shake siddeti ve flash suresi azaltilir veya paket sadeleştirilir.

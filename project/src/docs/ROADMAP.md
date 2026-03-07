@@ -4,15 +4,15 @@
 
 # NOW (Highest Priority)
 
-- gameplay readability tarafinda tek bir UX adimi sec: olum / temas anini daha okunur kilacak hit feedback ekle
+- gameplay readability tarafinda visual hit feedback tamamlandi; simdi ayni dar kapsamda olum/retry anina minimal ses geri bildirimi ekle
 - mevcut deterministic baseline'i koru: pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9`
-- replay hizini bozmadan oyuncuya "neden oldum" sinyalini guclendir
+- replay hizini bozmadan olum okunurlugunu audio ile tamamla
 - degisiklik sonrasi en az `npm run telemetry:check` ve `npm run build` calistir
 - validation/readiness/orchestration katmanina yeni alan ekleme
 
 Basari olcutleri:
 - replay akisi ani ve sade kaliyor
-- olum veya hasar aninda ekranda net bir geri bildirim var
+- olum veya retry aninda net ama kisa bir ses geri bildirimi var
 - deterministic baseline accidental drift olmadan korunuyor
 - `npm run telemetry:check` ve `npm run build` basarili kaliyor
 
@@ -20,7 +20,7 @@ Basari olcutleri:
 
 # NEXT
 
-- basic sound effects ekle
+- host browser varsa 3-5 manuel run alip yeni hit feedback'in fairness algisina etkisini not et
 - mobil kontrol hissini test edip gerekiyorsa pointer steering ayari yap
 - manual browser sample alinabiliyorsa deterministic bucket dagilimi ile caprazla
 

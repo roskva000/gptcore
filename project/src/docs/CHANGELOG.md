@@ -2,6 +2,14 @@
 
 ---
 
+## Run #25
+
+- `project/game/src/game/GameScene.ts` olum anina kisa ekran flash, hafif kamera shake ve player impact pulse eklenerek hit feedback dar bir UX paketi halinde eklendi
+- replay baslangicinda player tint/scale ve flash state'i sifirlanarak instant restart akisi korundu
+- balance, pacing ve validation kontratina dokunulmadan `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #24
 
 - `project/game/src/game/balance.ts` obstacle speed curve'u `10-20s` yumusak kalacak, `20s+` ise lineer baseline'a daha yakin toparlanacak sekilde tuning edildi

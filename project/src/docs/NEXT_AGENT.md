@@ -2,21 +2,21 @@
 
 ## Recommended Next Task
 
-Run #24 deterministic speed tuning ile tradeoff'u kismen toparladi: buckets `2 / 7 / 6 / 9`, average survival `21.8s`, pacing `10 / 32 / 76`. Siradaki tek ana gorev gameplay/UX tarafinda olum anini daha okunur hale getiren hit feedback eklemek olmali.
+Run #25 visual hit feedback'i ekledi ve deterministic baseline'i korudu. Siradaki tek ana gorev gameplay/UX tarafinda bu okunurlugu replay hizini bozmadan minimal audio feedback ile tamamlamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9` baseline'ini teyit et
-- sonra `project/game/src/game/GameScene.ts` ve ilgili UI/visual kodda olum aninda kisa ama net bir feedback ekle: ekran flash, player tint, kısa freeze/pulse gibi tek bir dar paket sec
-- replay akisini bozma; feedback anlik olmali ve restart friction yaratmamali
+- sonra `project/game/src/game/GameScene.ts` etrafinda olum veya retry anina tek bir dar ses geri bildirimi ekle: kısa death blip veya retry chirp gibi bir secenek sec, scope'u buyutme
+- replay akisini bozma; ses anlik olmali, autoplay/policy hatasi yaratmamali ve mute fallback dusunulmeli
 - validation/readiness/preflight tarafina hic donme; bu tur sadece gameplay readability / UX
-- degisiklik sonrasi en az `npm run telemetry:check` ve `npm run build` calistir; eger feedback gameplay timing'e dokunuyorsa `npm run telemetry:survival-snapshot` da calistir
-- eger host browser erisimi varsa 3-5 manuel run alip feedback'in olumu daha anlasilir kilip kilmadigini not et; yoksa bu eksikligi sadece belgele
+- degisiklik sonrasi en az `npm run telemetry:check` ve `npm run build` calistir
+- eger host browser erisimi varsa 3-5 manuel run alip visual+audio feedback'in olumu daha anlasilir kilip kilmadigini not et; yoksa bu eksikligi sadece belgele
 
 ---
 
 ## Why This Is Next
 
-Validation/export/readiness katmani yeterince genisledi ve son iki run'da gameplay tuning tekrar ilerledi. Simdi core loop teknik olarak stabil; oyuncuya "neden oldum" sinyalini guclendirmek replay istegini ve fairness algisini artiracak en dar urun adimi.
+Visual hit feedback artik var, ama oyun hala tamamen sessiz. Minimal bir audio cue, mevcut visual paketi tamamlayarak olum anini ve retry ritmini daha net hissettirecek bir sonraki en dar urun adimi.
 
 ---
 
@@ -25,7 +25,7 @@ Validation/export/readiness katmani yeterince genisledi ve son iki run'da gamepl
 - `npm run telemetry:check` basarili olmali
 - `npm run build` basarili olmali
 - replay akisi gozle gorulur sekilde yavaslamamali
-- olum aninda oyuncuya net bir visual feedback verilmeli
+- olum veya retry aninda oyuncuya net ama kisa bir ses geri bildirimi verilmeli
 - accidental gameplay drift olmamali; pacing ve survival baseline korunmali
 - manual sample alinabilirse feedback'in fairness algisina etkisi yazili olarak not edilmeli
 
@@ -52,7 +52,7 @@ Validation/export/readiness katmani yeterince genisledi ve son iki run'da gamepl
 - tek ana hedef sec; ayni turda yeniden balance tuning baslatma
 - feedback implementasyonu gameplay state makinesini karmasiklastirmamali
 - browser blokaji UX turunu durdurmak icin yeterli gerekce degil
-- visual efektleri abartip okunurlugu veya performansi bozma
+- audio policy veya performans riski yaratan buyuk sistem kurma
 
 ## Governance Note
 
@@ -67,4 +67,4 @@ Validation/export/readiness katmani yeterince genisledi ve son iki run'da gamepl
 - validation katmanini yeniden buyutme
 - powerup, leaderboard, progression gibi yeni scope alanlari acma
 - manual sample yok diye UX iyilestirmesini tamamen dondurma
-- bir turda hem hit feedback hem sound hem de kontrol tuning'ini ayni anda buyutme
+- bir turda hem sound sistemi hem de kontrol/balance tuning'ini ayni anda buyutme

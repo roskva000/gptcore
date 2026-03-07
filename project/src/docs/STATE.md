@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #24
+Updated By: Agent Run #25
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri ve manuel validation icin oyun ici session telemetry yuzeyi ile birlikte ilerliyor. Run #24'te tek eksenli gameplay tuning ile obstacle speed curve'un `20s+` rampasi toparlandi; validation altyapisina yeni orchestration katmani eklenmedi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri ve manuel validation icin oyun ici session telemetry yuzeyi ile birlikte ilerliyor. Run #25'te gameplay readability icin olum anina kisa ekran flash, kamera shake ve player impact pulse eklendi; validation altyapisina yeni orchestration katmani eklenmedi.
 
 Bu turun amaci:
-- `10-20s` bucket kazancini korurken deterministic average survival'i toparlamak
-- pacing baseline'ini koruyarak tek parametreli bir tuning yapmak
-- ortaya cikan yeni baseline'i telemetry ve living docs ile hizalamak
+- replay hizini bozmadan olum nedenini daha okunur hale getirmek
+- mevcut deterministic baseline'i accidental drift olmadan korumak
+- gameplay UX degisikligini telemetry/build ile dogrulamak
 
 ---
 
@@ -28,6 +28,7 @@ Bu turun amaci:
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 253 / 310 / 320`
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
 - balance baseline: deterministic survival snapshot `avg 21.8s / first death 5.0s / early death 8%`
+- hit feedback: olum aninda kisa ekran flash, hafif kamera shake ve player impact pulse aktif; replay aninda state temizleniyor
 
 ## Telemetry / Validation Status
 - oyun ici telemetry session ve lifetime sample'i ayri gosteriyor
@@ -42,11 +43,10 @@ Bu turun amaci:
 
 # Completed This Run
 
-- `project/game/src/game/balance.ts` obstacle speed curve'u `10-20s` yumusak, `20s+` ise toparlanmis bir rampaya cekilecek sekilde tuning edildi
-- deterministic survival buckets `2 / 7 / 7 / 8` -> `2 / 7 / 6 / 9` tasindi
-- deterministic average survival `21.6s` -> `21.8s`, average spawn count `22.3` -> `22.5` tasindi
-- `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` yeni deterministic baseline ile hizalandi
-- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+- `project/game/src/game/GameScene.ts` icinde olum anina kisa ekran flash, kamera shake ve player impact pulse eklendi
+- restart oncesi player tint/scale/flash state'i temizlenerek replay akisinin anlik kalmasi saglandi
+- deterministic guard korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+- gameplay UX degisikligi living docs'a islenerek roadmap/state yeni onceliklerle hizalandi
 
 ---
 
@@ -57,6 +57,7 @@ Bu turun amaci:
 - deterministic proxy artik daha yonlendirici olsa da insan oyuncu hissini tek basina kanitlamaz
 - deterministic avg survival toparlandi ama hala Run #9 baseline'i olan `22.3s` seviyesine donmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
+- hit feedback manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
 
 ---
 
@@ -75,13 +76,13 @@ Bu turun amaci:
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurabilir
 - mobil cihaz testi yapilmadi
 - deterministic survival buckets manual oyuncu dagilimi ile birebir eslesmeyebilir
-- speed curve hala yalnizca deterministic controller ile optimize ediliyor; insan oyuncu hissi icin manuel sample gerekli
+- hit feedback su an deterministic drift yaratmiyor ama manuel oyuncu hissi icin uygun runtime'ta sample gerekli
 
 ---
 
 # Observations
 
-- yalnizca `20s+` speed rampasini toparlamak, `10-20s` guard'ini bozmadan `30s cap` conversion'i `8`den `9`a cikardi
-- mevcut curve, Run #23 tradeoff'unu kismen geri aldi ama hala eski `10` cap seviyesinin altinda
+- olum anina eklenen dar visual feedback, replay friction eklemeden "neden oldum" sinyalini guclendirdi
+- mevcut hit feedback paketi balance ve telemetry baseline'ina dokunmadan calisti
 - validation altyapisini buyutmeden gameplay iteration'a donmek hala dogru yon
-- bir sonraki anlamli urun adimi, oyuncu olumunu daha okunur ve tatmin edici hale getiren hit feedback/polish turu olabilir
+- bir sonraki anlamli urun adimi, bu visual feedback'i tamamlayan minimal ses geri bildirimi veya host browser'da manuel his kontrolu olabilir

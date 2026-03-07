@@ -52,6 +52,7 @@ export class GameScene extends Phaser.Scene {
   private scoreText!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
+  private hitFlash!: Phaser.GameObjects.Rectangle;
   private overlay!: Phaser.GameObjects.Rectangle;
   private overlayTitle!: Phaser.GameObjects.Text;
   private overlayBody!: Phaser.GameObjects.Text;
@@ -132,6 +133,12 @@ export class GameScene extends Phaser.Scene {
       )
       .setDepth(3)
       .setOrigin(0.5, 0);
+
+    this.hitFlash = this.add
+      .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0xff8a73, 0)
+      .setDepth(8)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setVisible(false);
 
     this.overlay = this.add
       .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0x02050a, 0.84)
@@ -324,6 +331,11 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.tweens.killTweensOf([this.player, this.hitFlash]);
+    this.player.clearTint();
+    this.player.setAlpha(1);
+    this.player.setScale(1);
+    this.hitFlash.setAlpha(0).setVisible(false);
     this.phase = 'playing';
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
@@ -483,7 +495,9 @@ export class GameScene extends Phaser.Scene {
 
     this.phase = 'gameOver';
     this.nextSpawnTimer?.remove(false);
+    this.tweens.killTweensOf([this.player, this.hitFlash]);
     this.player.setVelocity(0, 0);
+    this.player.setTint(0xffd6cf);
     this.recordRunEnd();
 
     this.obstacles.children.each((child) => {
@@ -493,12 +507,34 @@ export class GameScene extends Phaser.Scene {
       return true;
     });
 
+    this.cameras.main.shake(90, 0.0035);
+    this.hitFlash.setAlpha(0.55).setVisible(true);
+    this.tweens.add({
+      targets: this.hitFlash,
+      alpha: 0,
+      duration: 160,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        this.hitFlash.setVisible(false);
+      },
+    });
+    this.tweens.add({
+      targets: this.player,
+      scaleX: 1.22,
+      scaleY: 0.82,
+      alpha: 0.88,
+      duration: 85,
+      yoyo: true,
+      ease: 'Cubic.Out',
+    });
+
     this.overlay.setVisible(true);
     this.overlayTitle.setVisible(true);
     this.overlayBody
       .setText(
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
+          'Impact feedback marks the death frame so the cause reads instantly.',
           `Session avg: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
           `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
           `Lifetime avg: ${getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${getAverageRetryDelayText(this.sessionTelemetry)}`,
