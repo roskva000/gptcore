@@ -10,6 +10,8 @@ export type BrowserValidationPreflight = {
   chromiumAvailable: boolean;
   distIndexPath: string;
   distReady: boolean;
+  socketProbeHost: string;
+  socketProbeCommand: string;
   loopbackSocketsAvailable: boolean;
   loopbackError: string | null;
 };
@@ -23,6 +25,11 @@ const canAccess = async (path: string, mode: number): Promise<boolean> => {
   }
 };
 
+const SOCKET_PROBE_HOST = '127.0.0.1';
+
+export const LOOPBACK_PROBE_COMMAND =
+  `node -e 'require("node:net").createServer().listen(0,"127.0.0.1",()=>{console.log("ok"); process.exit(0);}).on("error",(err)=>{console.error(err.message); process.exit(1);})'`;
+
 export const assertLoopbackSocketsAvailable = async (): Promise<void> =>
   new Promise((resolve, reject) => {
     const server = net.createServer();
@@ -31,14 +38,14 @@ export const assertLoopbackSocketsAvailable = async (): Promise<void> =>
       server.close();
       reject(
         new Error(
-          `Loopback socket bind failed in this environment. Browser validation smoke needs local HTTP/CDP ports. Original error: ${
+          `Loopback socket bind failed in the current agent runtime while probing ${SOCKET_PROBE_HOST}. Browser validation smoke needs local HTTP/CDP ports. If the host shell succeeds outside this runtime, treat this as a runner-specific blocker. Original error: ${
             error instanceof Error ? error.message : String(error)
           }`,
         ),
       );
     });
 
-    server.listen(0, '127.0.0.1', () => {
+    server.listen(0, SOCKET_PROBE_HOST, () => {
       server.close(() => resolve());
     });
   });
@@ -62,6 +69,8 @@ export const runBrowserValidationPreflight = async (): Promise<BrowserValidation
     chromiumAvailable,
     distIndexPath: DIST_INDEX_PATH.pathname,
     distReady,
+    socketProbeHost: SOCKET_PROBE_HOST,
+    socketProbeCommand: LOOPBACK_PROBE_COMMAND,
     loopbackSocketsAvailable,
     loopbackError,
   };

@@ -179,3 +179,12 @@
 - yeni komut `--with-smoke` argumani ile socket izinli ortamda smoke adimina ayni entry point uzerinden ilerleyebilecek sekilde tasarlandi
 - `npm run telemetry:validation-ready` bu sandbox'ta guard'lari temiz gecip `status: blocked` sonucu ile loopback `EPERM` blokajini tekrar netlestirdi
 - `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor
+
+---
+
+## Run #20
+
+- `project/game/scripts/browser-validation-support.ts` loopback hata dilini `current agent runtime` seviyesine daraltti; `socketProbeHost` ve `socketProbeCommand` alanlari JSON ciktiya eklendi
+- `project/game/scripts/browser-validation-ready.ts` `nextAction` metni host shell probe'unu ilk adim yapacak sekilde guncellendi
+- `npm run telemetry:browser-preflight` ve `npm run telemetry:validation-ready` tekrar calistirildi; blocker host geneli gibi degil mevcut runtime'a ozgu olarak raporlandi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; buyuk bundle warning'i devam ediyor

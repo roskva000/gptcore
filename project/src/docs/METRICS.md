@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #18; `/usr/bin/chromium` ve `dist/index.html` mevcut, fakat yeni `telemetry:browser-preflight` bu sandbox'in `127.0.0.1` loopback socket'ini `EPERM` ile reddettigini acikca raporladi, bu yuzden browser smoke veya interaktif human-input validation yapilamadi
+current: still not collected as of Run #20; `/usr/bin/chromium` ve `dist/index.html` mevcut, fakat `telemetry:browser-preflight` ve `telemetry:validation-ready` mevcut agent runtime'in `127.0.0.1` loopback socket'ini `EPERM` ile reddettigini runtime-scoped sekilde raporladi, bu yuzden browser smoke veya interaktif human-input validation yapilamadi
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -50,14 +50,14 @@ baseline: uygun ortamda gercek Chromium icinde `R` reset, sample injection, `V` 
 target: socket izinli ortamda smoke komutu basarili calissin; kisitli sandbox'ta 10 saniye bekleyip asilmak yerine net hata versin
 
 browser_validation_preflight:
-current: Run #18'de `npm run telemetry:browser-preflight` `status: blocked` sonucu ile chromium=true, dist=true, loopback=false raporu uretti
+current: Run #20'de `npm run telemetry:browser-preflight` `status: blocked` sonucu ile chromium=true, dist=true, loopback=false raporu uretti; cikti artik `socketProbeHost=127.0.0.1` ve tekrar calistirilabilir `socketProbeCommand` veriyor, blocker'i de `current agent runtime` seviyesinde anlatıyor
 baseline: uygun ortamda `status: ok`, chromium=true, dist=true, loopback=true
-target: smoke veya manual validation'dan once ortamin browser validation icin hazir olup olmadigini tek komutta gostermek
+target: smoke veya manual validation'dan once ortamin browser validation icin hazir olup olmadigini tek komutta gostermek ve blocker scope'unu host geneli ile karistirmamak
 
 browser_validation_readiness:
-current: Run #19'da `npm run telemetry:validation-ready` `status: blocked` sonucu ile guard=true, validation summary=`5 runs | first death 30.0s | early 20% | 5/5 runs, target met`, chromium=true, dist=true, loopback=false raporu uretti
+current: Run #20'de `npm run telemetry:validation-ready` `status: blocked` sonucu ile guard=true, validation summary=`5 runs | first death 30.0s | early 20% | 5/5 runs, target met`, chromium=true, dist=true, loopback=false raporu uretti; `nextAction` host shell'de ayni probe komutunu once dogrulama talimati veriyor
 baseline: uygun ortamda `status: ready`; `--with-smoke` ile smoke calisirsa `status: smoke-passed`
-target: bir sonraki validator deterministic guard drift'i ve environment blokajini tek JSON cikti ile gorup sonraki adimi hemen secebilmeli
+target: bir sonraki validator deterministic guard drift'i ve runtime-scoped blokaji tek JSON cikti ile gorup sonraki adimi hemen secebilmeli
 
 ---
 
@@ -162,8 +162,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - yeni komut chromium executable, `dist/index.html` okunabilirligi ve loopback socket izinlerini ayni JSON cikti icinde raporluyor
   - mevcut sandbox sonucu: `status: blocked`, `chromiumAvailable: true`, `distReady: true`, `loopbackSocketsAvailable: false`
   - smoke komutu ayni helper'i kullandigi icin hata satiri ile preflight JSON ayni blokaji isaret ediyor
-- Run #19 browser readiness details:
-  - yeni orchestration komutu once `telemetry:check`'i geciriyor, sonra deterministic validation summary ve browser preflight sonucunu ayni JSON ciktida topluyor
-  - mevcut sandbox sonucu: `status: blocked`, `guard.ok: true`, `validationSummary: 5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
-  - `nextAction` alani socket izinli ortama gecip ayni komutu orada tekrar calistirma talimati veriyor
-- next step: socket izinli ortamda once `npm run telemetry:validation-ready` ile guard + readiness'i birlikte teyit et; status `ready` ise `--with-smoke` veya `npm run telemetry:browser-validation-smoke` gecir, smoke temizse bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla
+- Run #20 browser blocker scope details:
+  - preflight JSON artik `socketProbeHost` ve `socketProbeCommand` alanlarini tasiyor
+  - mevcut runtime sonucu: `Loopback socket bind failed in the current agent runtime while probing 127.0.0.1`
+  - readiness `nextAction` once host shell'de ayni probe komutunu denemeyi, probe gecerse smoke/manual validation'i o shell'den kosmayi soyluyor
+- next step: host shell'de once `socketProbeCommand` veya ayni komutu calistir; probe gecerse `npm run telemetry:validation-ready` ile guard + readiness'i birlikte teyit et; status `ready` ise `--with-smoke` veya `npm run telemetry:browser-validation-smoke` gecir, smoke temizse bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla

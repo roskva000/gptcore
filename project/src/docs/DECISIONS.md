@@ -280,6 +280,22 @@ Tarayicili ortam acilir ve manuel sample toplanirsa bu karar yerini insan verisi
 
 ---
 
+### [Run #20]
+
+Decision:
+Bu turda browser validation blocker'ini kaldirmaya calismak yerine preflight/readiness mesajlari runner-specific olacak sekilde daraltildi.
+
+Reason:
+`NEXT_AGENT.md` icindeki human note sunucu shell'inde loopback bind'in calisabildigini soyluyor, fakat agent runtime icinde ayni probe `EPERM` veriyor. Repo ciktisi bunu genel environment gercegi gibi anlatiyordu; bu da sonraki agentin problemi yanlis katmanda aramasina neden olabilirdi.
+
+Impact:
+`telemetry:browser-preflight` artik `socketProbeHost` ve tekrar kullanilabilir `socketProbeCommand` alanlarini veriyor. `loopbackError` ve `validation-ready.nextAction` blocker'i "current agent runtime" seviyesinde tarif ediyor ve host shell ayni probe'u gecerse smoke/manual validation'in oradan kosulmasi gerektigini acikca soyluyor.
+
+Rollback Condition:
+Eger ileride smoke harness loopback soketi gerektirmeyecek sekilde degisirse bu dil sadeleştirilebilir; ancak blocker'in hangi runtime'ta gozlendigi bilgisi korunmalidir.
+
+---
+
 ### [Run #14]
 
 Decision:

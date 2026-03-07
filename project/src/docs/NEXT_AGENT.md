@@ -2,20 +2,21 @@
 
 ## Recommended Next Task
 
-Run #19'da eklenen validation readiness komutunu once socket izinli bir ortamda calistir; `status: ready` veya `--with-smoke` kullaniliyorsa `smoke-passed` cikmadan browser smoke veya manual validation deneme. Readiness temizse Run #17 smoke harness'ini gercekten calistir, sonra obstacle speed curve'unu interaktif browser oturumunda session telemetry uzerinden manuel olarak validate et. Bu turda sandbox `127.0.0.1` icin hala `listen EPERM` verdigi icin smoke ve gercek `R`/`V` akisi burada tamamlanamadi.
+Run #20 sonrasi once host shell'de preflight JSON'inin verdigi `socketProbeCommand` ile loopback bind'i dogrula; bu probe agent runtime disinda basari vermezse browser smoke veya manual validation deneme. Probe host shell'de gecerse ayni shell'de `npm run telemetry:validation-ready` calistir; `status: ready` veya `--with-smoke` kullaniliyorsa `smoke-passed` cikmadan browser smoke veya manual validation deneme. Readiness temizse Run #17 smoke harness'ini gercekten calistir, sonra obstacle speed curve'unu interaktif browser oturumunda session telemetry uzerinden manuel olarak validate et. Bu turda agent runtime `127.0.0.1` icin hala `listen EPERM` verdigi icin smoke ve gercek `R`/`V` akisi burada tamamlanamadi.
 
 Ozellikle:
+- once host shell'de preflight JSON'indaki `socketProbeCommand` komutunu calistir; bu probe gecmeden readiness veya smoke sonucunu host seviyesi icin gecerli sayma
 - once `npm run telemetry:validation-ready` calistir; `guard.ok=true`, validation summary baseline'i `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`, `chromiumAvailable=true`, `distReady=true`, `loopbackSocketsAvailable=true` ve `status: ready` gormeden smoke'a gecme
 - once `npm run telemetry:check` calistir; baseline hala `10 / 32 / 76` ve `22.3s / 5.0s / 8%`, fail verirse manual teste gecmeden once drift'i anla
 - sonra `npm run telemetry:validation-snapshot` calistir; validation baseline'i `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olmali
-- sonra `npm run telemetry:validation-ready -- --with-smoke` veya `npm run telemetry:browser-validation-smoke` calistir; bu komut uygun ortamda gercek Chromium validation akisina girecek, mevcut sandbox'ta ise beklemeden `listen EPERM 127.0.0.1` blokajini verir
+- sonra `npm run telemetry:validation-ready -- --with-smoke` veya `npm run telemetry:browser-validation-smoke` calistir; bu komut uygun ortamda gercek Chromium validation akisina girecek, agent runtime'ta ise beklemeden `listen EPERM 127.0.0.1` blokajini verir
 - gerekirse `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` ile detay raporu ac; current baseline olarak pacing `10 / 32 / 76`, survival snapshot `avg 22.3s / first death 5.0s / early death 8%` degerlerini not et
 - eger interaktif tarayici erisimi varsa oyunu ac, `R` ile session telemetry sample'ini sifirla ve en az 5 run manuel oyna
 - runlar sirasinda telemetry HUD veya game over overlay'deki `Last export` satirinin `not saved yet` durumundan cikabildigini de teyit et
 - runlar bittiginde HUD veya game over overlay'de gorunen session `first death` sinyalini not et; sonra `V` ile validation summary'yi kopyala ve first death, avg survival, early death ve retry gap'i bu export satirindan kaydet
 - clipboard calismazsa `V` fallback'i sonucu console'a yazacak ve localStorage'da `survive-60-seconds-last-validation-report-v1` altina saklayacak; bu durumda HUD veya game over overlay'deki `Last export` ozetini de gorup kaydin olustugunu teyit et ve yine ayni satiri kaydet
 - manual sample ile browserless baseline arasindaki farki yaz; hangi olumlerin unfair hissettirdigini ozellikle not et
-- browser smoke `listen EPERM` veya benzeri socket blokaji verirse bunu operasyonel blokaj olarak yaz ve ayni turda yeni balance parametresi degistirme
+- browser smoke `listen EPERM` veya benzeri socket blokaji verirse once ayni shell'de `socketProbeCommand` sonucunu not et; probe host shell'de gecerken smoke yine fail veriyorsa blocker'i harness/CDP tarafina daralt ve ayni turda yeni balance parametresi degistirme
 
 ## Environment Reality Check (Bu section önceki agent tarafından yazılmamıştır. Bir döngüye girildiği gözlemlendiği için insan müdahalesi içermektedir. Akışı bozmamak adına önceki agentin yukarıda yazmış olduğu taske dokunulmamıştır.)
 
@@ -93,6 +94,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - scripted sample gecmis turda page reload + 18s cap ile alindi; survival snapshot ile ayni sey degil
 - Run #17 browser smoke icin local HTTP + CDP socket gerekiyor; mevcut sandbox `127.0.0.1` bind denemesini `EPERM` ile reddediyor
 - Run #18 preflight chromium ve dist'i ayri raporluyor; bu yuzden `status: blocked` ise once hangi alanin fail ettigini not et
+- Run #20 sonrasi preflight/readiness blocker dili host geneli degil `current agent runtime` seviyesi icin yaziliyor; host shell probe'unu okumadan environment-level sonuc cikarma
 - Run #19 readiness komutu guard + snapshot + preflight'i tek yerde gosterdigi icin once onun `nextAction` alanini oku; yine de blokaj varsa ayni turda balance parametresi degistirme
 - deterministic balance snapshot gameplay sonucu degil pacing referansidir
 - deterministic survival snapshot insan testi degil; controller heuristigini overfit etme

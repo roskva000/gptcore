@@ -78,7 +78,7 @@ const buildNextAction = (
   }
 
   if (!preflight.loopbackSocketsAvailable) {
-    return 'Move to a socket-permitted environment; run telemetry:validation-ready there before manual browser validation.';
+    return `This agent runtime cannot bind ${preflight.socketProbeHost}. Verify the same probe in the host shell with "${preflight.socketProbeCommand}"; if it passes there, run telemetry:validation-ready and smoke/manual validation from that shell instead.`;
   }
 
   if (!preflight.chromiumAvailable || !preflight.distReady) {
