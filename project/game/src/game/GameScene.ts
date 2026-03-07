@@ -560,9 +560,12 @@ export class GameScene extends Phaser.Scene {
     obstacle
       .setActive(true)
       .setVisible(true)
+      .clearTint()
+      .setAlpha(1)
       .setDepth(2)
       .setPosition(spawnPoint.x, spawnPoint.y)
       .setCircle(12)
+      .setScale(1)
       .setVelocity(0, 0);
 
     const target = new Phaser.Math.Vector2(this.player.x, this.player.y);
@@ -681,7 +684,13 @@ export class GameScene extends Phaser.Scene {
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
+      const isFatalObstacle = obstacle === obstacleGameObject;
+
       obstacle.setVelocity(0, 0);
+
+      if (!isFatalObstacle) {
+        obstacle.clearTint().setAlpha(0.24);
+      }
 
       return true;
     });

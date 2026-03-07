@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #35]
+
+Decision:
+Olum aninda killer obstacle spotlight'ta tutuldu, diger aktif threat'ler dimlendi ve pooled obstacle'lar her spawn'da gorsel olarak sifirlandi.
+
+Reason:
+Audit gameplay readability disinda yeni alan acmayi yasakliyor. Mevcut death feedback paketi icinde en dar urun kazanci, hangi obstacle'in oldurdugunu daha hizli ayristirmak ve onceki run highlight'larinin yeni spawn'lara sizmasini engellemekti.
+
+Impact:
+Death screen'deki cause feedback daha temiz okunan bir spotlight hiyerarsisine kavustu. `npm run telemetry:check` ve `npm run build` yesil kalarak deterministic baseline ve replay akisinin korunmasini dogruladi.
+
+Rollback Condition:
+Host browser manuel sample'i threat dimming'in fazla agresif oldugunu veya killer spotlight'inin yeterince ayristirmadigini gosterirse sadece alpha/tint seviyesinde dar ayar yapilir.
+
 ### [Run #34]
 
 Decision:

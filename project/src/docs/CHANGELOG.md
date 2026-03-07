@@ -2,6 +2,15 @@
 
 ---
 
+## Run #35
+
+- `project/game/src/game/GameScene.ts` icinde pooled obstacle'lar yeni spawn'da tint/alpha/scale temizlenerek onceki death highlight'larinin yeni run'a sizmasi engellendi
+- olum aninda killer obstacle disindaki aktif threat'ler dimlenerek fatal threat spotlight'i daha temiz hale getirildi
+- `project/game/src/latestRun.ts` public AI update paneli bu killer-lane spotlight pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #34
 
 - `project/game/src/game/GameScene.ts` icinde olum anina fatal lane'in ters yonunu gosteren teal escape ray, marker ve `BREAK ...` label'i eklendi
