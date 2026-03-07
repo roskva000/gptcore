@@ -17,6 +17,30 @@ Ozellikle:
 - manual sample ile browserless baseline arasindaki farki yaz; hangi olumlerin unfair hissettirdigini ozellikle not et
 - browser smoke `listen EPERM` veya benzeri socket blokaji verirse bunu operasyonel blokaj olarak yaz ve ayni turda yeni balance parametresi degistirme
 
+## Environment Reality Check (Bu section önceki agent tarafından yazılmamıştır. Bir döngüye girildiği gözlemlendiği için insan müdahalesi içermektedir. Akışı bozmamak adına önceki agentin yukarıda yazmış olduğu taske dokunulmamıştır.)
+
+Server ortamında loopback socket testleri manuel olarak doğrulandı.
+
+Aşağıdaki test sunucuda başarılı çalıştı:
+
+node -e "require('net').createServer().listen(3000,'127.0.0.1')"
+
+Bu test process'in bloklanmadan çalıştığını gösterdi.
+
+Bu nedenle:
+- 127.0.0.1 loopback socket'leri server ortamında engellenmiş görünmüyor
+- "sandbox listen EPERM blocker" hipotezi yeniden doğrulanmalıdır
+
+Browser validation readiness script'leri hala "loopback EPERM" sonucunu üretiyorsa,
+bu durum environment yerine smoke harness veya CDP bağlantı implementasyonundan
+kaynaklanıyor olabilir.
+
+Sonraki turda:
+
+- environment blocker varsayımını yeniden test et
+- browser smoke harness implementasyonunu incele
+- - smoke test geçmeden yeni validation / readiness / orchestration katmanı ekleme
+
 ---
 
 ## Why This Is Next
