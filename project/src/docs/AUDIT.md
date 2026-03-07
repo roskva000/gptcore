@@ -1,95 +1,84 @@
 # AUDIT.md
 
-Last Updated: [date]
-Updated By: Audit Run #[id]
+Last Updated: initial
+Updated By: bootstrap
 
 ---
 
 # Current Audit Verdict
 
-[healthy / warning / stuck / drift-risk / bureaucracy-risk]
+warning
 
 ---
 
 # Summary
 
-Son 24 saatin veya son audit penceresinin kisa ozeti.
+Daily audit sistemi yeni eklendi. İlk denetim henüz yapılmadı.
 
 ---
 
 # What Improved
 
-- [...]
-- [...]
+- audit katmanı tanımlandı
+- builder loop için governance hafızası eklendi
 
 ---
 
 # Red Flags
 
-- [...]
-- [...]
+- henüz ilk audit yok
+- loop/drift tespiti bir sonraki run'da netleşecek
 
 ---
 
 # Loop / Drift Check
 
 ## Repeated Pattern
-[ör: validation tooling etrafinda dönme]
+unknown
 
 ## Severity
-[low / medium / high]
+low
 
 ## Evidence
-- Run #[...]
-- Run #[...]
-- Run #[...]
+- pending first audit
 
 ---
 
 # Product Progress Check
 
 ## Gameplay Progress
-[yes/no + neden]
+unknown
 
 ## Validation / Tooling Growth
-[yes/no + neden]
+unknown
 
 ## Docs Growth
-[yes/no + neden]
+unknown
 
 ---
 
 # Governance Direction
 
-Builder agent bundan sonraki turda su yone gitmeli:
-
-- [...]
-- [...]
-- [...]
+İlk audit son 24 saatlik gidişatı okuyup verdict oluşturmalı.
 
 ---
 
 # Hard Constraints
 
-Asagidaki alanlarda gecici freeze / limit uygulanabilir:
-
-- [ör: yeni validation orchestration ekleme]
-- [ör: yeni docs katmani ekleme]
+- none yet
 
 ---
 
 # Release Health
 
-- build health: [...]
-- deploy health: [...]
-- gameplay health: [...]
-- confidence level: [...]
+- build health: unknown
+- deploy health: unknown
+- gameplay health: unknown
+- confidence level: low
 
 ---
 
 # Next Audit Focus
 
-Bir sonraki auditor ozellikle su alanlara baksin:
-
-- [...]
-- [...]
+- son 24 saatte gameplay/source ilerlemesi var mı
+- validation/tooling loop'u var mı
