@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "telemetry:snapshot": "node --experimental-strip-types scripts/balance-snapshot.ts"
+    "telemetry:snapshot": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/balance-snapshot.ts",
+    "telemetry:survival-snapshot": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/survival-snapshot.ts"
   },
   "dependencies": {
     "phaser": "^3.90.0"

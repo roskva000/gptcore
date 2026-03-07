@@ -163,3 +163,19 @@ Impact:
 
 Rollback Condition:
 Repo icine gercek browser steering harness veya daha zengin test altyapisi gelirse bu snapshot scripti yalnizca hizli smoke-check olarak tutulabilir ya da kaldirilabilir.
+
+---
+
+### [Run #8]
+
+Decision:
+Manual validation bloklu kaldigi icin ikinci karar sinyali olarak repo-ici deterministic survival snapshot harness'i eklendi; spawn fairness secimi de scene ve script tarafinda ortak helper'da birlestirildi.
+
+Reason:
+Yalnizca pacing snapshot'i spawn yogunlugunu gosteriyordu ama erken olum riski hakkinda sinyal vermiyordu. Tarayici olmadigi icin human sample toplanamazken obstacle-speed tuning'i tamamen sezgiyle devam ettirmek riskliydi.
+
+Impact:
+`npm run telemetry:survival-snapshot` artik 24 deterministic seed uzerinde avg survival, first death ve early death oranini uretiyor. Bu, scripted telemetry ile manual sample arasindaki boslukta dar bir regression guard olarak kullanilabilir.
+
+Rollback Condition:
+Eger browser tabanli steering harness veya genis manual sample survival snapshot ile anlamli korelasyon gostermezse bu script yalnizca destekleyici sinyal olarak tutulmali; balance kararlarini tek basina yonetmemeli.

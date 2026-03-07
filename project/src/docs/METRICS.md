@@ -29,6 +29,11 @@ deterministic_balance_snapshot:
 current: collected in Run #7 via `npm run telemetry:snapshot`
 target: keep pacing baseline explicit before manual balance changes
 
+deterministic_survival_snapshot:
+current: 24-seed browserless heuristic sample collected in Run #8 via `npm run telemetry:survival-snapshot`
+baseline: avg survival 21.5s, first death 3.4s, early death 21%, best 30.0s
+target: use as a regression guard and push early death below 21% without breaking pacing snapshot
+
 ---
 
 # Player Behavior
@@ -54,6 +59,10 @@ obstacle_speed_curve:
 current: 150 at 0s, 190 at 10s, 270 at 30s, capped 320 by 45s
 target: keep first 10s readable while preserving late-run pressure
 
+browserless_first_death_proxy:
+current: 3.4s in deterministic survival snapshot
+target: increase while keeping 10s/30s pacing baseline intact
+
 ---
 
 # Notes
@@ -68,4 +77,8 @@ target: keep first 10s readable while preserving late-run pressure
   - first spawn at 0.9s
   - first ten spawn times: 0.9s, 1.9s, 3.0s, 4.0s, 5.0s, 6.0s, 7.0s, 8.0s, 9.0s, 10.0s
   - required spawn distance floor reaches 140 by 10s and stays there
-- next step: `R` ile sample'i sifirlayip gercek manual sample ile bu iyilestirmenin scripted sample disinda da korundugunu, snapshot baseline'inden gereksiz sapma olmadigini dogrula
+- Run #8 deterministic survival snapshot details:
+  - method: 24 seed, 30s cap, same spawn delay/speed/fairness rules, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
+  - sample run times: 28.3s, 10.8s, 6.1s, 30.0s, 24.2s, 30.0s, 28.9s, 6.1s
+  - average spawn count 22.5, average spawn rerolls 0
+- next step: survival snapshot ile scripted telemetry arasindaki farki not ederek yalnizca obstacle speed uzerinde dar bir tuning dene; tarayici olursa bunu `R` sonrasi manual sample ile caprazla

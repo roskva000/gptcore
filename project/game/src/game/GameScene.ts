@@ -1,20 +1,20 @@
 import Phaser from 'phaser';
 import {
-  INITIAL_SPAWN_DELAY_MS,
+  FIRST_SPAWN_DELAY_MS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
-  getRequiredSpawnDistance,
   getSpawnDelayMs,
 } from './balance';
+import {
+  ARENA_HEIGHT,
+  ARENA_WIDTH,
+  selectSpawnPoint,
+} from './spawn';
 
 type GamePhase = 'waiting' | 'playing' | 'gameOver';
 
-const ARENA_WIDTH = 800;
-const ARENA_HEIGHT = 600;
 const PLAYER_SPEED = 260;
-const SPAWN_MARGIN = 56;
 const OFFSCREEN_CULL_MARGIN = 96;
-const MAX_SPAWN_REROLLS = 6;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const TELEMETRY_RECENT_RUN_LIMIT = 4;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
@@ -329,7 +329,7 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    this.scheduleNextSpawn(900);
+    this.scheduleNextSpawn(FIRST_SPAWN_DELAY_MS);
   }
 
   private scheduleNextSpawn(delay: number): void {
@@ -358,7 +358,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private spawnObstacle(): void {
-    const spawnPoint = this.getSpawnPoint();
+    const { point: spawnPoint, rerollsUsed } = selectSpawnPoint({
+      survivalTimeSeconds: this.survivalTime,
+      playerPosition: { x: this.player.x, y: this.player.y },
+      randomInt: Phaser.Math.Between,
+    });
+    this.runSpawnRerolls += rerollsUsed;
     const obstacle = this.obstacles.get(spawnPoint.x, spawnPoint.y, 'obstacle') as
       | Phaser.Physics.Arcade.Image
       | null;
@@ -380,63 +385,6 @@ export class GameScene extends Phaser.Scene {
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     obstacleBody.enable = true;
     obstacle.setVelocity(velocity.x, velocity.y);
-  }
-
-  private getSpawnPoint(): Phaser.Math.Vector2 {
-    let selectedSpawnPoint = this.rollSpawnPoint();
-    let bestScore = this.getSpawnFairnessScore(selectedSpawnPoint);
-
-    if (bestScore >= 0) {
-      return selectedSpawnPoint;
-    }
-
-    for (let attempt = 0; attempt < MAX_SPAWN_REROLLS; attempt += 1) {
-      this.runSpawnRerolls += 1;
-
-      const candidate = this.rollSpawnPoint();
-      const candidateScore = this.getSpawnFairnessScore(candidate);
-
-      if (candidateScore > bestScore) {
-        selectedSpawnPoint = candidate;
-        bestScore = candidateScore;
-      }
-
-      if (candidateScore >= 0) {
-        return candidate;
-      }
-    }
-
-    return selectedSpawnPoint;
-  }
-
-  private rollSpawnPoint(): Phaser.Math.Vector2 {
-    const edge = Phaser.Math.Between(0, 3);
-
-    if (edge === 0) {
-      return new Phaser.Math.Vector2(Phaser.Math.Between(0, ARENA_WIDTH), -SPAWN_MARGIN);
-    }
-
-    if (edge === 1) {
-      return new Phaser.Math.Vector2(ARENA_WIDTH + SPAWN_MARGIN, Phaser.Math.Between(0, ARENA_HEIGHT));
-    }
-
-    if (edge === 2) {
-      return new Phaser.Math.Vector2(Phaser.Math.Between(0, ARENA_WIDTH), ARENA_HEIGHT + SPAWN_MARGIN);
-    }
-
-    return new Phaser.Math.Vector2(-SPAWN_MARGIN, Phaser.Math.Between(0, ARENA_HEIGHT));
-  }
-
-  private getSpawnFairnessScore(spawnPoint: Phaser.Math.Vector2): number {
-    const requiredDistance = getRequiredSpawnDistance(this.survivalTime);
-    const actualDistance = Phaser.Math.Distance.Between(
-      spawnPoint.x,
-      spawnPoint.y,
-      this.player.x,
-      this.player.y,
-    );
-
-    return actualDistance - requiredDistance;
   }
 
   private hasMovementInput(): boolean {

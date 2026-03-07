@@ -62,3 +62,14 @@
 - snapshot sonucu ilk spawn 0.9s, 10s icinde 10 spawn, 30s icinde 32 spawn ve 60s icinde 76 spawn olarak kaydedildi
 - `project/game/src/game/GameScene.ts` ortak balance modülünü kullanacak sekilde guncellendi
 - `npm run telemetry:snapshot` ve `npm run build` basarili calisti
+
+---
+
+## Run #8
+
+- `project/game/src/game/spawn.ts` eklenerek spawn fairness ve reroll secimi ortak helper'a tasindi
+- `project/game/scripts/survival-snapshot.ts` ve `npm run telemetry:survival-snapshot` ile browserless deterministic survival baseline akisi eklendi
+- survival snapshot baseline'i 24 seed uzerinde avg survival 21.5s, first death 3.4s ve early death 21% olarak kaydedildi
+- `project/game/src/game/GameScene.ts` ortak spawn helper'ini kullanacak sekilde guncellendi
+- `project/game/tsconfig.json` icine `allowImportingTsExtensions` eklendi; source ve node strip-types uyumu saglandi
+- `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
