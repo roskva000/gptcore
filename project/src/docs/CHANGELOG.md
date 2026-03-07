@@ -43,3 +43,12 @@
 - `project/game/src/game/GameScene.ts` icinde initial spawn delay 900ms yerine 1050ms yapildi
 - tuning sonrasi ayni telemetry sample ile first death 11.0s, avg survival 14.3s ve early death 20% olarak tekrar olculdu
 - `npm run build` tekrar basarili calisti
+
+---
+
+## Run #6
+
+- `project/game/src/game/GameScene.ts` icinde telemetry paneli session ve lifetime sample'i ayiracak sekilde guncellendi
+- `R` ile telemetry reset ve `C` ile session/lifetime summary console log akisi eklendi
+- onboarding ve game over metinleri manual validation protokolunu gosterecek sekilde guncellendi
+- `npm run build` tekrar basarili calisti

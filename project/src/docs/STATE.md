@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #5
+Updated By: Agent Run #6
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren ve telemetry-driven erken oyun balance tuning'i gecmis bir build'e sahip.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclari eklenmis bir build'e sahip.
 
 Bu turun amaci:
-- tekrarlanabilir lokal telemetry sample ile ilk 10 saniyeyi olcmek
-- yalnizca tek bir balance grubu secip erken olumleri azaltmak
-- sonraki agent icin manual validation odakli net handoff birakmak
+- manual validation'i tarihi local sample'dan ayiracak session telemetry araclarini eklemek
+- sample reset ve console summary akisiyla insan testini daha temiz hale getirmek
+- sonraki agent icin uygulanabilir manual test protokolu birakmak
 
 ---
 
@@ -25,16 +25,17 @@ Bu turun amaci:
 
 ## Gameplay Status
 - core loop: oynanabilir; waiting -> survival -> game over -> instant restart akisi korunuyor
-- difficulty: obstacle speed ayni; spawn delay bu turda 900ms tabanindan 1050ms tabanina cekildi, yani ilk saniyelerde obstacle yogunlugu dusuruldu
+- difficulty: obstacle speed ayni; spawn delay Run #5'te 900ms tabanindan 1050ms tabanina cekildi, yani ilk saniyelerde obstacle yogunlugu dusuruldu
 - fairness tuning: obstacle spawn'i oyuncuya fazla yakin dogarsa en fazla 6 kez reroll ediliyor; uygun aday bulunamazsa en iyi aday kullaniliyor
 - controls: keyboard (WASD + arrows) ve basili pointer/touch steering calisiyor
 - collision/score: Phaser Arcade overlap ile olum algilaniyor, skor yasama suresi olarak saniye bazli gosteriliyor
 
 ## Telemetry / UX Status
-- telemetry: oyun icinde local telemetry blogu var; run count, avg survival, `<10s` early death orani, avg retry gap, recent death times ve spawn reroll sayilari gosteriliyor
-- persistence: telemetry localStorage key `survive-60-seconds-telemetry-v1` altinda tutuluyor
-- game over screen: final sureye ek olarak avg survival, early death orani ve retry/spawn summary gosteriliyor
-- onboarding: kontrol metni var; artik oyuncuya telemetry block'u izlemesi de soyleniyor
+- telemetry: oyun icinde telemetry blogu artik session ve lifetime sample'i ayri gosteriyor; run count, avg survival, `<10s` early death orani, avg retry gap, recent death times ve spawn reroll sayilari session bazinda okunabiliyor
+- persistence: lifetime telemetry localStorage key `survive-60-seconds-telemetry-v1`, ayni tab icindeki session sample ise sessionStorage key `survive-60-seconds-session-telemetry-v1` altinda tutuluyor
+- manual validation controls: `R` tum telemetry sample'ini sifirliyor, `C` session + lifetime summary'yi console'a basiyor
+- game over screen: final sureye ek olarak session avg survival, early death, retry ve spawn summary gosteriliyor
+- onboarding: kontrol metni artik oyuncuya sample reset ve telemetry summary shortcut'larini da soyliyor
 - replay flow: Space, Enter veya tap ile restart; build'e gore hizli akis korunuyor
 - latest scripted telemetry comparison:
   - method: headless local Chromium, ayni steering policy, runlar arasi page reload, 18s cap; cap'a ulasan run script tarafinda kapatildi
@@ -57,6 +58,10 @@ Bu turun amaci:
 - [Run #5] yalnizca spawn delay grubu tune edildi; initial spawn delay 1050ms'e cekildi
 - [Run #5] ayni telemetry sample ile tuning sonrasi first death 11.0s ve avg survival 14.3s olarak tekrar olculdu
 - [Run #5] `npm run build` tekrar basarili calisti
+- [Run #6] telemetry paneli session ve lifetime sample'lari ayiracak sekilde guncellendi
+- [Run #6] `R` ile telemetry reset ve `C` ile session/lifetime summary console export akisi eklendi
+- [Run #6] game over ve onboarding metinleri manual validation akisina gore yenilendi
+- [Run #6] `npm run build` tekrar basarili calisti
 
 ---
 
@@ -76,14 +81,14 @@ Bu turun amaci:
 - gameplay, telemetry ve UI metinleri hala `GameScene.ts` icinde toplu duruyor
 - balance sabitleri ayri config dosyasina alinmadi
 - production bundle buyuk; Phaser tek chunk olarak geliyor
-- telemetry sample scripti repoya alinmadi; bu turdaki olcum tekrarlanabilir ama harici calisma adimi olarak yapildi
+- telemetry sample scripti repoya alinmadi; scripted olcum hala harici calisma adimi olarak yapiliyor
 
 ---
 
 # Known Risks
 
-- telemetry sadece local browser storage'da; cihazlar arasi tasinmiyor ve sifirlanabilir
-- bu turdaki sample manual degil; headless steering policy gercek oyuncu davranisini bire bir temsil etmiyor
+- telemetry browser storage tabanli; cihazlar arasi tasinmiyor ve sifirlanabilir
+- bu turda calisma ortaminda tarayici olmadigi icin manual sample toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
 - scripted sample runlar arasi page reload ve 18s cap kullandigi icin replay metrigi icin muhafazakar ama yapay bir ust sinir tasiyor
 - mobil cihaz testi yapilmadi
 - spawn telegraph olmadigi icin yuksek zorlukta okunabilirlik hala sinirli olabilir
@@ -96,4 +101,4 @@ Bu turun amaci:
 - ayni telemetry senaryosunda spawn delay tuning'i first death'i 8.7s -> 11.0s, avg survival'i 10.8s -> 14.3s ve early death oranini 60% -> 20% tasidi
 - retry gap 2.0s ile hedefin altinda kaldi; replay hizi bu muhafazakar reset modelinde bile kabul edilebilir
 - spawn reroll sayisi 0 kaldigi icin bu turdaki problem yogunluktu, spawn fairness degil
-- sonraki mantikli adim yeni feature eklemek degil, bu iyilestirmeyi manual input ile dogrulamaktir
+- session telemetry ayrimi ve reset/log akisiyla sonraki mantikli adim yeni feature eklemek degil, manual input sample'ini temiz sekilde toplamaktir

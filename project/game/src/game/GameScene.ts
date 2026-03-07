@@ -13,6 +13,7 @@ const MAX_SPAWN_REROLLS = 6;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const TELEMETRY_RECENT_RUN_LIMIT = 4;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
+const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -34,6 +35,18 @@ type GameplayTelemetry = {
   lastRetryDelayMs: number | null;
   lastRunStartedAt: number | null;
   lastRunSpawnRerolls: number;
+  lastSurvivalTime: number | null;
+};
+
+type TelemetrySummary = {
+  label: string;
+  runs: number;
+  deaths: number;
+  averageSurvivalTime: number;
+  earlyDeathRate: number;
+  averageRetryDelaySeconds: number | null;
+  totalSpawnRerolls: number;
+  recentDeathTimes: number[];
   lastSurvivalTime: number | null;
 };
 
@@ -69,6 +82,7 @@ export class GameScene extends Phaser.Scene {
   private survivalTime = 0;
   private runSpawnRerolls = 0;
   private telemetry = createEmptyTelemetry();
+  private sessionTelemetry = createEmptyTelemetry();
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
 
   constructor() {
@@ -129,7 +143,7 @@ export class GameScene extends Phaser.Scene {
       .text(
         ARENA_WIDTH / 2,
         78,
-        'WASD / arrows to move\nHold click or touch to steer\nPress Space, Enter, or tap to start',
+        'WASD / arrows to move\nHold click or touch to steer\nPress Space, Enter, or tap to start\nPress R to reset sample, C to log telemetry summary',
         {
           align: 'center',
           color: '#b8cde0',
@@ -169,7 +183,8 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setVisible(false);
 
-    this.telemetry = this.loadTelemetry();
+    this.telemetry = this.loadTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage);
+    this.sessionTelemetry = this.loadTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage);
     this.telemetryText = this.add
       .text(ARENA_WIDTH - 24, 20, '', {
         align: 'right',
@@ -184,6 +199,8 @@ export class GameScene extends Phaser.Scene {
 
     keyboard.on('keydown-SPACE', this.handlePrimaryAction, this);
     keyboard.on('keydown-ENTER', this.handlePrimaryAction, this);
+    keyboard.on('keydown-R', this.handleTelemetryReset, this);
+    keyboard.on('keydown-C', this.handleTelemetryLog, this);
     this.input.on('pointerdown', this.handlePrimaryAction, this);
   }
 
@@ -259,6 +276,33 @@ export class GameScene extends Phaser.Scene {
     if (this.phase === 'gameOver') {
       this.scene.restart();
     }
+  }
+
+  private handleTelemetryReset(): void {
+    this.telemetry = createEmptyTelemetry();
+    this.sessionTelemetry = createEmptyTelemetry();
+    this.saveTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage, this.telemetry);
+    this.saveTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage, this.sessionTelemetry);
+    this.updateTelemetryText();
+
+    this.hintText
+      .setText(
+        'Telemetry sample reset.\nPlay 5-10 runs, then press C and inspect the console summary.',
+      )
+      .setVisible(true);
+
+    console.info('[telemetry] reset', this.getTelemetryReport());
+  }
+
+  private handleTelemetryLog(): void {
+    const report = this.getTelemetryReport();
+
+    console.info('[telemetry] summary', report);
+    this.hintText
+      .setText(
+        'Telemetry summary logged to console.\nUse session metrics for the current validation sample.',
+      )
+      .setVisible(true);
   }
 
   private startRun(): void {
@@ -491,22 +535,28 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
-          `Avg survival: ${this.getAverageSurvivalTime().toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate()}%`,
-          `Avg retry: ${this.getAverageRetryDelayText()} | Spawn saves this run: ${this.runSpawnRerolls}`,
+          `Session avg: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}%`,
+          `Lifetime avg: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
+          `Spawn saves this run: ${this.runSpawnRerolls} | Press R to reset sample, C to log summary`,
           'Press Space, Enter, or tap to retry instantly.',
         ].join('\n'),
       )
       .setVisible(true);
     this.hintText
-      .setText('Retry should stay instant. Watch the telemetry block for early deaths under 10s.')
+      .setText(
+        'Retry should stay instant. Track session telemetry for early deaths under 10s, not lifetime totals.',
+      )
       .setVisible(true);
   }
 
-  private loadTelemetry(): GameplayTelemetry {
+  private loadTelemetry(
+    storageKey: string,
+    storage: Pick<Storage, 'getItem'>,
+  ): GameplayTelemetry {
     const fallback = createEmptyTelemetry();
 
     try {
-      const rawTelemetry = window.localStorage.getItem(TELEMETRY_STORAGE_KEY);
+      const rawTelemetry = storage.getItem(storageKey);
 
       if (!rawTelemetry) {
         return fallback;
@@ -534,9 +584,13 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private saveTelemetry(): void {
+  private saveTelemetry(
+    storageKey: string,
+    storage: Pick<Storage, 'setItem'>,
+    telemetry: GameplayTelemetry,
+  ): void {
     try {
-      window.localStorage.setItem(TELEMETRY_STORAGE_KEY, JSON.stringify(this.telemetry));
+      storage.setItem(storageKey, JSON.stringify(telemetry));
     } catch {
       // Local telemetry is best-effort only.
     }
@@ -577,7 +631,17 @@ export class GameScene extends Phaser.Scene {
     this.telemetry.totalRuns += 1;
     this.telemetry.lastRunStartedAt = startedAt;
     this.telemetry.lastRetryDelayMs = retryDelayMs;
-    this.saveTelemetry();
+    this.sessionTelemetry.totalRuns += 1;
+    this.sessionTelemetry.lastRunStartedAt = startedAt;
+    this.sessionTelemetry.lastRetryDelayMs = retryDelayMs;
+
+    if (retryDelayMs !== null) {
+      this.sessionTelemetry.totalRetryDelayMs += retryDelayMs;
+      this.sessionTelemetry.retryCount += 1;
+    }
+
+    this.saveTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage, this.telemetry);
+    this.saveTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage, this.sessionTelemetry);
     this.updateTelemetryText();
 
     console.info('[telemetry] run_start', {
@@ -606,14 +670,31 @@ export class GameScene extends Phaser.Scene {
       ...this.telemetry.recentDeathTimes,
     ].slice(0, TELEMETRY_RECENT_RUN_LIMIT);
 
-    this.saveTelemetry();
+    this.sessionTelemetry.totalDeaths += 1;
+    this.sessionTelemetry.totalSurvivalTime += roundedSurvivalTime;
+    this.sessionTelemetry.lastDeathAt = this.telemetry.lastDeathAt;
+    this.sessionTelemetry.lastSurvivalTime = roundedSurvivalTime;
+    this.sessionTelemetry.lastRunSpawnRerolls = this.runSpawnRerolls;
+    this.sessionTelemetry.totalSpawnRerolls += this.runSpawnRerolls;
+
+    if (roundedSurvivalTime < TARGET_FIRST_DEATH_SECONDS) {
+      this.sessionTelemetry.earlyDeathsUnderTarget += 1;
+    }
+
+    this.sessionTelemetry.recentDeathTimes = [
+      roundedSurvivalTime,
+      ...this.sessionTelemetry.recentDeathTimes,
+    ].slice(0, TELEMETRY_RECENT_RUN_LIMIT);
+
+    this.saveTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage, this.telemetry);
+    this.saveTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage, this.sessionTelemetry);
     this.updateTelemetryText();
 
     console.info('[telemetry] run_end', {
       survivalTime: roundedSurvivalTime,
-      averageSurvivalTime: this.getAverageSurvivalTime(),
-      earlyDeathRate: this.getEarlyDeathRate(),
-      retryAverageSeconds: this.getAverageRetryDelaySeconds(),
+      averageSurvivalTime: this.getAverageSurvivalTime(this.sessionTelemetry),
+      earlyDeathRate: this.getEarlyDeathRate(this.sessionTelemetry),
+      retryAverageSeconds: this.getAverageRetryDelaySeconds(this.sessionTelemetry),
       spawnRerollsThisRun: this.runSpawnRerolls,
     });
   }
@@ -622,33 +703,34 @@ export class GameScene extends Phaser.Scene {
     this.telemetryText.setText(
       [
         'Local telemetry',
-        `Runs: ${this.telemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime().toFixed(1)}s`,
-        `Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate()}%`,
-        `Avg retry: ${this.getAverageRetryDelayText()}`,
-        `Spawn saves: ${this.telemetry.totalSpawnRerolls} total / ${this.telemetry.lastRunSpawnRerolls} last`,
-        `Recent deaths: ${this.getRecentDeathTimesText()}`,
+        `Session runs: ${this.sessionTelemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+        `Session early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}% | Retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
+        `Lifetime runs: ${this.telemetry.totalRuns} | Avg life: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s`,
+        `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.telemetry)}%`,
+        `Spawn saves: ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`,
+        `Recent session deaths: ${this.getRecentDeathTimesText(this.sessionTelemetry)}`,
       ].join('\n'),
     );
   }
 
-  private getAverageSurvivalTime(): number {
-    if (this.telemetry.totalDeaths === 0) {
+  private getAverageSurvivalTime(telemetry: GameplayTelemetry): number {
+    if (telemetry.totalDeaths === 0) {
       return 0;
     }
 
-    return this.telemetry.totalSurvivalTime / this.telemetry.totalDeaths;
+    return telemetry.totalSurvivalTime / telemetry.totalDeaths;
   }
 
-  private getAverageRetryDelaySeconds(): number | null {
-    if (this.telemetry.retryCount === 0) {
+  private getAverageRetryDelaySeconds(telemetry: GameplayTelemetry): number | null {
+    if (telemetry.retryCount === 0) {
       return null;
     }
 
-    return this.telemetry.totalRetryDelayMs / this.telemetry.retryCount / 1000;
+    return telemetry.totalRetryDelayMs / telemetry.retryCount / 1000;
   }
 
-  private getAverageRetryDelayText(): string {
-    const averageRetryDelaySeconds = this.getAverageRetryDelaySeconds();
+  private getAverageRetryDelayText(telemetry: GameplayTelemetry): string {
+    const averageRetryDelaySeconds = this.getAverageRetryDelaySeconds(telemetry);
 
     if (averageRetryDelaySeconds === null) {
       return 'n/a';
@@ -657,19 +739,40 @@ export class GameScene extends Phaser.Scene {
     return `${averageRetryDelaySeconds.toFixed(1)}s`;
   }
 
-  private getEarlyDeathRate(): number {
-    if (this.telemetry.totalDeaths === 0) {
+  private getEarlyDeathRate(telemetry: GameplayTelemetry): number {
+    if (telemetry.totalDeaths === 0) {
       return 0;
     }
 
-    return Math.round((this.telemetry.earlyDeathsUnderTarget / this.telemetry.totalDeaths) * 100);
+    return Math.round((telemetry.earlyDeathsUnderTarget / telemetry.totalDeaths) * 100);
   }
 
-  private getRecentDeathTimesText(): string {
-    if (this.telemetry.recentDeathTimes.length === 0) {
+  private getRecentDeathTimesText(telemetry: GameplayTelemetry): string {
+    if (telemetry.recentDeathTimes.length === 0) {
       return 'n/a';
     }
 
-    return this.telemetry.recentDeathTimes.map((time) => `${time.toFixed(1)}s`).join(', ');
+    return telemetry.recentDeathTimes.map((time) => `${time.toFixed(1)}s`).join(', ');
+  }
+
+  private buildTelemetrySummary(label: string, telemetry: GameplayTelemetry): TelemetrySummary {
+    return {
+      label,
+      runs: telemetry.totalRuns,
+      deaths: telemetry.totalDeaths,
+      averageSurvivalTime: Number(this.getAverageSurvivalTime(telemetry).toFixed(1)),
+      earlyDeathRate: this.getEarlyDeathRate(telemetry),
+      averageRetryDelaySeconds: this.getAverageRetryDelaySeconds(telemetry),
+      totalSpawnRerolls: telemetry.totalSpawnRerolls,
+      recentDeathTimes: telemetry.recentDeathTimes,
+      lastSurvivalTime: telemetry.lastSurvivalTime,
+    };
+  }
+
+  private getTelemetryReport(): { session: TelemetrySummary; lifetime: TelemetrySummary } {
+    return {
+      session: this.buildTelemetrySummary('session', this.sessionTelemetry),
+      lifetime: this.buildTelemetrySummary('lifetime', this.telemetry),
+    };
   }
 }

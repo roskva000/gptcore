@@ -131,3 +131,19 @@ Ayni telemetry sample sonrasi first death 11.0s, avg survival 14.3s ve early dea
 
 Rollback Condition:
 Manual sample oyunun fazla bosladigini, tempo kaybettigini veya scripted sample kazancinin gercek oyunda tekrarlanmadigini gosterirse spawn delay tabani tekrar asagi cekilebilir.
+
+---
+
+### [Run #6]
+
+Decision:
+Bu turda balance'a tekrar dokunmak yerine telemetry yuzeyi session ve lifetime sample'i ayiracak sekilde guclendirildi.
+
+Reason:
+Calisma ortaminda tarayici bulunmadigi icin gercek manual input sample'i bu agent tarafinda dogrulanamadi. Buna ragmen bir sonraki insan/agent testinin tarihi localStorage verisinden etkilenmeden olculebilmesi gerekiyordu.
+
+Impact:
+Manual validation artik `R` ile sifirdan baslatilabiliyor, panelde session metrikleri lifetime veriden ayri okunuyor ve `C` ile console'a acik bir ozet cikarilabiliyor.
+
+Rollback Condition:
+Ileride harici analytics veya repo-ici telemetry harness bu akisi gereksiz kilarsa session/lifetime cift gosterim sadelestirilebilir.

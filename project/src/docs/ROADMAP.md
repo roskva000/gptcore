@@ -4,12 +4,13 @@
 
 # NOW (Highest Priority)
 
-- tuned spawn delay'i gercek manual input ile 5-10 run boyunca validate et
+- yeni session telemetry akisi ile `R` reset sonrasi gercek manual input'u 5-10 run boyunca validate et
 - eger manual sample hala `first_death_time < 10s` veya early death >20% gosterirse yalnizca obstacle speed uzerinde ikinci, dar bir tuning karari cikar
+- `C` console summary'sinden session ve lifetime sayilarini ayri not et
 - replay akisinin gercek inputta hala hizli kaldigini not et
 
 Basari olcutleri:
-- manual telemetry ozetinde en az 5 run gorulmesi
+- `R` sonrasi session telemetry ozetinde en az 5 run gorulmesi
 - `first_death_time > 10s` hedefinin manuel sample'da korunmasi
 - early death rate'in `%20` civarina veya altina inmesi
 - art arda restart akisinin 3 saniyenin altinda korunmasi
@@ -44,7 +45,7 @@ Basari olcutleri:
 # BLOCKERS
 
 - gercek oyuncu verisi yok
-- post-tune sample scripted; manual human sample henuz yok
+- calisma ortaminda tarayici olmadigi icin agent tarafinda manual input dogrudan toplanamadi
 - otomatik test ve regression guvencesi yok
 - mobil cihaz dogrulamasi yapilmadi
 
@@ -52,7 +53,7 @@ Basari olcutleri:
 
 # SUCCESS METRICS
 
-- in-game telemetry uzerinde first_death_time > 10s
+- session telemetry uzerinde first_death_time > 10s
 - avg retry gap < 3s
 - average_survival_time 10.8s baseline uzerinden yukselmeye devam ediyor
 - early death rate scripted sample'daki 20% seviyesinin ustune cikmiyor

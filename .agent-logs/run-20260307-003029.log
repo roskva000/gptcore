@@ -1,0 +1,7 @@
+[INFO] Starting run at 20260307-003029
+[INFO] SSH remote OK: git@github.com:roskva000/gptcore.git
+M	.agent-logs/run-20260306-235218.log
+M	run_agent.sh
+Your branch is up to date with 'origin/agent-loop'.
+[INFO] Running Codex
+[ERROR] Run failed with exit code 2
