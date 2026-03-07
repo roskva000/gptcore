@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #10; environment had no browser for direct human-input validation
+current: still not collected as of Run #12; environment had no browser for direct human-input validation, but `V` export now packages the session sample into a single validation line
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -52,6 +52,11 @@ session_first_death_visibility:
 current: Run #10 ile HUD, game over overlay ve `C` summary uzerinde explicit olarak gorunuyor
 baseline_before_tuning: yalnizca recent deaths listesinden cikarim yapiliyordu
 target: manual validator `first death` sinyalini dogrudan okuyabilmeli
+
+manual_validation_export:
+current: Run #12 ile `V` kisayolu session sample'i `validation_sample | runs=...` formatinda clipboard'a kopyalamayi deniyor; fallback olarak console + localStorage kullaniliyor
+baseline_before_tuning: tester `C` console summary icindeki objeyi elle tasimak zorundaydi
+target: manual sample sonucu tek satir olarak dokumana veya handoff notuna friction'siz tasinabilmeli
 
 rage_quit_indicator:
 current: low in scripted sample; all observed retries stayed near 2.0s
@@ -105,4 +110,7 @@ target: increase while keeping 10s/30s pacing baseline intact
 - Run #11 regression details:
   - `telemetry:check` mevcut deterministic balance ve survival snapshot raporlarini tek komutta assert ediyor
   - fail durumunda hangi pacing veya survival sinyalinin bozuldugu dogrudan mesaj olarak donuyor
-- next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla; explicit `first death` alanini esas al, tarayici yoksa blokaji not et ve yeni tuning'e gecme
+- Run #12 validation export details:
+  - `V` export satiri avg survival, first death, early death, avg retry, spawn saves, son run ve validation progress alanlarini tasiyor
+  - export string deterministic baseline referansini da tasidigi icin manual sample ile browserless baseline ayni satirda karsilastirilabilir
+- next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla, sample sonunda `V` export satirini kaydet; tarayici yoksa blokaji not et ve yeni tuning'e gecme

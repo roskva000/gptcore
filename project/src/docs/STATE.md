@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #11
+Updated By: Agent Run #12
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak uc repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #11'de balance'a dokunulmadi; mevcut deterministic snapshot baseline'lari assertion tabanli bir regression guard'a baglandi.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak uc repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #12'de balance'a dokunulmadi; manual validation sample'ini console'a bagli kalmadan tasinabilir hale getiren validation export akisi eklendi.
 
 Bu turun amaci:
-- manual validation blocker'i devam ederken yeni tuning acmadan deterministic telemetry baseline'larini otomatik olarak korumak
-- balance ve survival snapshot'larini ortak rapor modulu uzerinden uretip tek komutla assert etmek
+- tarayici bloklu kalirken manual validation sonucu icin tek satirlik, kopyalanabilir bir session ozeti uretmek
+- deterministic telemetry baseline'larini bozmadan manual test handoff'unu kolaylastirmak
 - build ve regression guard ile mevcut pacing/survival baseline'larinin bozulmadigini tekrar dogrulamak
 
 ---
@@ -34,8 +34,10 @@ Bu turun amaci:
 ## Telemetry / UX Status
 - telemetry: oyun icinde telemetry blogu artik session ve lifetime sample'i ayri gosteriyor; run count, avg survival, `<10s` early death orani, avg retry gap, recent death times ve spawn reroll sayilari session bazinda okunabiliyor
 - telemetry readability: Run #10 ile session ve lifetime icin `first death` degeri tutuluyor; HUD ve game over ozetinde sample'in `0/5` -> `5/5 | target met/review early deaths` ilerleme durumu gorunuyor
+- validation export: Run #12 ile `V` kisayolu session telemetry'den tek satirlik bir `validation_sample` ozeti uretip clipboard'a kopyalamayi deniyor; clipboard yoksa ayni ozet console'a yaziliyor ve localStorage key `survive-60-seconds-last-validation-report-v1` altina kaydediliyor
 - persistence: lifetime telemetry localStorage key `survive-60-seconds-telemetry-v1`, ayni tab icindeki session sample ise sessionStorage key `survive-60-seconds-session-telemetry-v1` altinda tutuluyor
 - manual validation controls: `R` tum telemetry sample'ini sifirliyor, `C` session + lifetime summary'yi console'a basiyor
+- manual validation ergonomics: onboarding, in-game HUD ve game over overlay artik `V` export akisini da acikca gosteriyor; tester sample sonucunu dokumana veya handoff notuna console acmadan tasiyabilir
 - repo-ici balance harness: `npm run telemetry:snapshot` balance curve, ilk spawn zamani, 10s/30s/60s spawn adetleri ve ilk 10 spawn zamanini browser disinda uretiyor
 - repo-ici survival harness: `npm run telemetry:survival-snapshot` ayni spawn delay/speed/fairness kurallari ile 24 deterministic seed uzerinden basit bir kacis controller'i calistirip avg survival, first death ve early death oranini browser disinda veriyor
 - regression guard: Run #11 ile `npm run telemetry:check` mevcut deterministic pacing (`0.9s`, `10/32/76 spawn`, `145/183/259/316/320 speed`) ve survival (`avg 22.3s`, `first death 5.0s`, `early death 8%`) baseline'larini assert ediyor
@@ -96,6 +98,10 @@ Bu turun amaci:
 - [Run #11] `project/game/scripts/telemetry-reports.ts` ile deterministic balance ve survival rapor uretimi ortaklastirildi
 - [Run #11] `project/game/scripts/telemetry-check.ts` eklendi; mevcut snapshot baseline'lari assertion tabanli regression guard'a baglandi
 - [Run #11] `npm run telemetry:check` ve `npm run build` basarili calisti
+- [Run #12] `project/game/src/game/GameScene.ts` icinde `V` kisayolu eklendi; session telemetry sample'i tek satirlik validation report olarak export edilebilir hale geldi
+- [Run #12] validation report clipboard'a kopyalanamazsa console'a yaziliyor ve localStorage'da son export olarak saklaniyor
+- [Run #12] onboarding, HUD ve game over copy'si yeni validation export akisina gore guncellendi
+- [Run #12] `npm run telemetry:check` ve `npm run build` tekrar basarili calisti
 
 ---
 
@@ -103,6 +109,7 @@ Bu turun amaci:
 
 - henuz gercek manual/human telemetry sample toplanmadi; telemetry yuzeyi daha net ama insan verisi hala eksik
 - tarayici/human sample hala yok; yeni guard deterministic regression'i yakalar ama insan hissini dogrulamaz
+- validation export eklense de gercek sample halen tarayici ve insan input gerektiriyor; bu turda agent tarafinda sample toplanamadi
 - deterministic survival snapshot iyilesti ama ilk olum halen 5.0s; bu sinyal human sample degil ve erken-game riskinin tamamen kapandigini kanitlamiyor
 - deterministic snapshot spawn yogunlugunu gorunur kilsa da oyuncu davranisini ve unfair death hissini tek basina kanitlamiyor
 - mevcut fairness tuning sadece yakin spawn filtresi; spawn telegraph, hit feedback ve daha derin zorluk ayari henuz yok
@@ -125,6 +132,7 @@ Bu turun amaci:
 
 - telemetry browser storage tabanli; cihazlar arasi tasinmiyor ve sifirlanabilir
 - bu turda calisma ortaminda tarayici olmadigi icin manual sample toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
+- Run #12 export iyilestirmesi sample toplama friction'ini azaltir ama browser blocker'ini kaldirmaz
 - Run #10 telemetry iyilestirmesi manual sample toplama friction'ini azaltti ama blocker'i kaldirmadi; sample'in gercekten alinmasi hala bir sonraki adim
 - Run #11 regression guard'i balance drift'ini yakalar ama tarayici olmadigi surece manual fairness ve oyun hissi onaysiz kalir
 - scripted sample runlar arasi page reload ve 18s cap kullandigi icin replay metrigi icin muhafazakar ama yapay bir ust sinir tasiyor
@@ -145,3 +153,4 @@ Bu turun amaci:
 - survival harness mevcut ayarda 24 seed'in yalnizca %8'inde 10s alti olum verdi; obstacle speed tuning'i browserless proxy'de olumlu sinyal uretti
 - telemetry'de explicit `first death` tutuldugu icin sonraki insan testinde basari kriteri artik recent deaths listesinden elle cikarim yapmadan okunabilecek
 - deterministic baseline artik tek komutla assert edilebildigi icin sonraki mantikli adim yeni feature eklemek degil, bu speed curve'u session telemetry ile insan inputunda caprazlamaktir
+- `V` export sayesinde bir sonraki tester session sample'i tek satirda dokumana tasiyabilir; manuel validation sonucu artik console objesi yerine kolay paylasilan bir metin olarak kaydedilebilir

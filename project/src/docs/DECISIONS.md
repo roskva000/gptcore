@@ -227,3 +227,19 @@ Impact:
 
 Rollback Condition:
 Intentional bir balance degisikligi yapilirsa bu guard'in beklenen degerleri bilincli sekilde guncellenmeli; eger daha zengin test altyapisi gelirse bu script smoke/regression check rolune indirgenebilir.
+
+---
+
+### [Run #12]
+
+Decision:
+Bu turda da balance tuning acilmadi; bunun yerine session telemetry sample'ini tek satirlik bir validation report olarak export eden `V` kisayolu eklendi.
+
+Reason:
+Tarayici bu ortamda hala yok, dolayisiyla agent manuel sample toplayamadi. Fakat onceki telemetry akisi console objesine dayaniyordu ve insan tester'in sonucu dokumana tasimasi gereksiz friction yaratiyordu.
+
+Impact:
+Manual validator artik `R` ile sample'i sifirlayip runlari oynadiktan sonra `V` ile avg survival, first death, early death, retry ve deterministic baseline referansini tek satirda kopyalayabiliyor. Clipboard yoksa ayni rapor console'a yaziliyor ve localStorage'a kaydediliyor.
+
+Rollback Condition:
+Eger validation export metni telemetry yuzeyini gereksiz kalabaliklastirir veya daha iyi bir browser tabanli raporlama araci gelirse `V` akisi sadeleştirilebilir; ancak session sample'i console inspection olmadan tasima ihtiyaci korunmalidir.

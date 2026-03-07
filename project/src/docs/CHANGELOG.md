@@ -103,3 +103,12 @@
 - `project/game/package.json` icine `npm run telemetry:check` komutu eklendi
 - `project/game/scripts/balance-snapshot.ts` ve `project/game/scripts/survival-snapshot.ts` ortak rapor modulunu kullanacak sekilde sadeleştirildi
 - `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
+## Run #12
+
+- `project/game/src/game/GameScene.ts` icine `V` kisayolu eklendi; session telemetry sample'i tek satirlik validation summary olarak export edilebilir hale geldi
+- validation summary clipboard kullanilamayan ortamlarda console'a yazilip localStorage key `survive-60-seconds-last-validation-report-v1` altina kaydedilecek sekilde fallback ile guclendirildi
+- onboarding metni, telemetry HUD ve game over overlay yeni `V` export akisini gosterecek sekilde guncellendi
+- balance'a dokunulmadan `npm run telemetry:check` ve `npm run build` tekrar basarili calisti

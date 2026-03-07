@@ -19,6 +19,7 @@ const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const TELEMETRY_RECENT_RUN_LIMIT = 4;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
+const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -151,7 +152,7 @@ export class GameScene extends Phaser.Scene {
       .text(
         ARENA_WIDTH / 2,
         78,
-        'WASD / arrows to move\nHold click or touch to steer\nPress Space, Enter, or tap to start\nPress R to reset sample, C to log telemetry summary',
+        'WASD / arrows to move\nHold click or touch to steer\nPress Space, Enter, or tap to start\nPress R to reset sample, C to log telemetry summary, V to copy validation summary',
         {
           align: 'center',
           color: '#b8cde0',
@@ -209,6 +210,7 @@ export class GameScene extends Phaser.Scene {
     keyboard.on('keydown-ENTER', this.handlePrimaryAction, this);
     keyboard.on('keydown-R', this.handleTelemetryReset, this);
     keyboard.on('keydown-C', this.handleTelemetryLog, this);
+    keyboard.on('keydown-V', this.handleValidationExport, this);
     this.input.on('pointerdown', this.handlePrimaryAction, this);
   }
 
@@ -295,7 +297,7 @@ export class GameScene extends Phaser.Scene {
 
     this.hintText
       .setText(
-        'Telemetry sample reset.\nPlay 5-10 runs, then press C and inspect the console summary.',
+        'Telemetry sample reset.\nPlay 5-10 runs, then press V to copy the validation summary.',
       )
       .setVisible(true);
 
@@ -308,9 +310,43 @@ export class GameScene extends Phaser.Scene {
     console.info('[telemetry] summary', report);
     this.hintText
       .setText(
-        'Telemetry summary logged to console.\nUse session metrics for the current validation sample.',
+        'Telemetry summary logged to console.\nUse session metrics for the current validation sample or press V to copy it.',
       )
       .setVisible(true);
+  }
+
+  private handleValidationExport(): void {
+    const validationReport = this.buildValidationReport();
+    this.saveValidationReport(validationReport);
+
+    if (!navigator.clipboard?.writeText) {
+      console.info('[telemetry] validation_report', validationReport);
+      this.hintText
+        .setText(
+          'Clipboard unavailable here.\nValidation summary saved locally and logged to console.',
+        )
+        .setVisible(true);
+      return;
+    }
+
+    void navigator.clipboard
+      .writeText(validationReport)
+      .then(() => {
+        console.info('[telemetry] validation_report', validationReport);
+        this.hintText
+          .setText(
+            'Validation summary copied.\nPaste it into STATE.md or your handoff notes after the sample.',
+          )
+          .setVisible(true);
+      })
+      .catch(() => {
+        console.info('[telemetry] validation_report', validationReport);
+        this.hintText
+          .setText(
+            'Clipboard copy failed.\nValidation summary saved locally and logged to console.',
+          )
+          .setVisible(true);
+      });
   }
 
   private startRun(): void {
@@ -323,7 +359,9 @@ export class GameScene extends Phaser.Scene {
     this.survivalTime = 0;
     this.runSpawnRerolls = 0;
     this.scoreText.setText('0.0s');
-    this.hintText.setText('Survive the rush. The arena gets harder every few seconds.');
+    this.hintText.setText(
+      'Survive the rush. The arena gets harder every few seconds.\nPress V after a sample to copy the validation summary.',
+    );
     this.recordRunStart();
 
     this.time.delayedCall(1400, () => {
@@ -494,7 +532,7 @@ export class GameScene extends Phaser.Scene {
           `Session avg: ${this.getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.sessionTelemetry)}%`,
           `Session first death: ${this.getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${this.getValidationProgressText(this.sessionTelemetry)}`,
           `Lifetime avg: ${this.getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
-          `Spawn saves this run: ${this.runSpawnRerolls} | Press R to reset sample, C to log summary`,
+          `Spawn saves this run: ${this.runSpawnRerolls} | Press R to reset, C to log, V to copy summary`,
           'Press Space, Enter, or tap to retry instantly.',
         ].join('\n'),
       )
@@ -670,6 +708,7 @@ export class GameScene extends Phaser.Scene {
         `Lifetime first death: ${this.getFirstDeathTimeText(this.telemetry)}`,
         `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${this.getEarlyDeathRate(this.telemetry)}%`,
         `Spawn saves: ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`,
+        'Export current sample: press V',
         `Recent session deaths: ${this.getRecentDeathTimesText(this.sessionTelemetry)}`,
       ].join('\n'),
     );
@@ -768,5 +807,33 @@ export class GameScene extends Phaser.Scene {
       session: this.buildTelemetrySummary('session', this.sessionTelemetry),
       lifetime: this.buildTelemetrySummary('lifetime', this.telemetry),
     };
+  }
+
+  private buildValidationReport(): string {
+    const sessionSummary = this.buildTelemetrySummary('session', this.sessionTelemetry);
+    const lastRunText =
+      sessionSummary.lastSurvivalTime === null ? 'n/a' : `${sessionSummary.lastSurvivalTime.toFixed(1)}s`;
+
+    return [
+      'validation_sample',
+      `runs=${sessionSummary.runs}`,
+      `deaths=${sessionSummary.deaths}`,
+      `avg_survival=${sessionSummary.averageSurvivalTime.toFixed(1)}s`,
+      `first_death=${this.getFirstDeathTimeText(this.sessionTelemetry)}`,
+      `early_death_rate=${sessionSummary.earlyDeathRate}%`,
+      `avg_retry=${this.getAverageRetryDelayText(this.sessionTelemetry)}`,
+      `spawn_saves=${sessionSummary.totalSpawnRerolls}`,
+      `last_run=${lastRunText}`,
+      `validation=${this.getValidationProgressText(this.sessionTelemetry)}`,
+      'baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early',
+    ].join(' | ');
+  }
+
+  private saveValidationReport(report: string): void {
+    try {
+      window.localStorage.setItem(VALIDATION_REPORT_STORAGE_KEY, report);
+    } catch {
+      // Validation export persistence is best-effort only.
+    }
   }
 }
