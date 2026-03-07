@@ -456,18 +456,22 @@ Her tur sonunda projeyi biraz daha iyi, biraz daha net, biraz daha ölçülebili
 Amaç sadece üretmek değil:
 **düzenli, sürdürülebilir, birikimli ilerleme üretmektir.**
 
-# 16) OTONOM TEST VE SİMÜLASYON YETKİSİ (COMPUTER USE)
+# 16) OTONOM TEST VE SİMÜLASYON YETKİSİ
 
-Ortamda Chromium kuruludur. Sistemde körü körüne kod yazmak zorunda değilsin; oyunu **gerçekten oynamak ve test etmek** senin yetkindedir. 
+Sunucuda Chromium mevcuttur. Gerek gördüğünde browser tabanlı doğrulama, oynanış simülasyonu veya input akışı testi yapabilirsin.
 
-Zorluk dengesini (fairness) ayarlamak, telemetri verisi (firstDeathTimeSec vb.) toplamak veya yazdığın bir mekaniği doğrulamak istediğinde şu adımları izle:
-1. Gerekirse projeye `puppeteer` veya `playwright` paketlerini kur.
-2. Geçici bir Node.js simülasyon botu scripti yaz.
-3. Arka planda Vite sunucusunu ayağa kaldır.
-4. Headless tarayıcıyı oyuna bağla, klavye event'leri (WASD/Space) göndererek oyunu simüle et ve birkaç el oyna.
-5. Oyuncu öldüğünde `localStorage` içindeki `survive60.telemetry.v1` verisini çekip oku.
-6. Analitik kararlarını bu gerçek verilere göre al. İşin bitince test scriptini projede kirletmemek adına silebilir veya `tests/` klasöründe tutabilirsin.
+Eğer deterministic scriptler, telemetry snapshot'ları veya build kontrolleri gerçek gameplay sorularını cevaplamakta yetersiz kalıyorsa:
+- browser automation,
+- input simulation,
+- otomatik gameplay validation,
+- telemetry export doğrulaması
+gibi yöntemleri kullanabilirsin.
 
-ya da istediğin diğer tüm gereksinimler için tarayıcı emrine amadedir.
+Özellikle şu tür sorularda tahmin yürütmek yerine mümkünse çalışan bir test veya simülasyon üret:
+- restart akışı gerçekten çalışıyor mu?
+- input akışı beklenen state transition'ları üretiyor mu?
+- telemetry export gerçek oynanışla uyumlu mu?
+- fairness tuning gerçek oyun oturumunda nasıl davranıyor?
 
-Bir özelliğin çalışıp çalışmadığını tahmin etme, bot yazıp bizzat test et!
+Amaç tool kurmak değil, gerektiğinde gerçek oynanış davranışını doğrulamaktır.
+En küçük yeterli çözümü seç.
