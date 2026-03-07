@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #16; `/usr/bin/chromium` mevcut olsa da bu turda interaktif human-input validation yapilmadi, ancak `V` export kontrati repo-ici `telemetry:validation-snapshot` ile tekrar dogrulandi
+current: still not collected as of Run #17; `/usr/bin/chromium` mevcut olsa da bu sandbox `127.0.0.1` loopback socket'ini `EPERM` ile reddettigi icin browser smoke veya interaktif human-input validation yapilamadi, ancak `V` export kontrati repo-ici `telemetry:validation-snapshot` ile tekrar dogrulandi
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -35,7 +35,7 @@ baseline: avg survival 22.3s, first death 5.0s, early death 8%, best 30.0s
 target: use as a regression guard and avoid regressing past 8% early death without breaking pacing snapshot
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as revalidated in Run #16
+current: passes via `npm run telemetry:check` as revalidated in Run #17
 baseline: asserts first spawn 0.9s, spawn pacing 10 / 32 / 76, speed curve 145 / 183 / 259 / 316 / 320, survival avg 22.3s, first death 5.0s, early death 8%, validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 target: run before and after future balance changes to catch accidental drift
 
@@ -43,6 +43,11 @@ validation_export_contract:
 current: Run #16 deterministic snapshot tekrar `validation_sample | runs=5 | deaths=5 | avg_survival=18.2s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=26.8s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early` uretti
 baseline: parsed summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 target: `V` export string and `Last export` parser stay aligned even when telemetry copy changes
+
+browser_validation_smoke:
+current: Run #17'de `npm run telemetry:browser-validation-smoke` mevcut sandbox'ta fail-fast `listen EPERM: operation not permitted 127.0.0.1` verdi; komut artik hanging yerine acik operasyonel blokaj raporu uretiyor
+baseline: uygun ortamda gercek Chromium icinde `R` reset, sample injection, `V` export ve reload sonrasi `Last export` rehydration dogrulanmali
+target: socket izinli ortamda smoke komutu basarili calissin; kisitli sandbox'ta 10 saniye bekleyip asilmak yerine net hata versin
 
 ---
 
@@ -139,4 +144,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - `npm run telemetry:check` sonucu tekrar `status: ok` dondu
   - `npm run telemetry:validation-snapshot` sample run seeds `1,2,3,4,5` ve sample run times `30.0, 14.7, 6.2, 13.1, 26.8` ile ayni export kontratini yeniden uretti
   - build tekrar basarili kaldi; chunk size warning'i degismedi
-- next step: bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla, sample sonunda `V` export satirini kaydet; sadece browser binary'si gormek yeterli kabul edilmemeli
+- Run #17 browser smoke details:
+  - yeni komut once `127.0.0.1` uzerinde ephemeral loopback bind deniyor; sandbox izin vermiyorsa browser smoke'u hic baslatmadan fail-fast cikariyor
+  - mevcut sandbox sonucu: `Loopback socket bind failed in this environment ... listen EPERM: operation not permitted 127.0.0.1`
+  - bu sayede blokaj "chromium binary'si eksik" yerine "loopback socket / CDP yasak" olarak ayrildi
+- next step: socket izinli ortamda once `npm run telemetry:browser-validation-smoke` gecir, sonra bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla; sadece browser binary'si gormek yeterli kabul edilmemeli

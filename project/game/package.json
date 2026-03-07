@@ -10,7 +10,8 @@
     "telemetry:snapshot": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/balance-snapshot.ts",
     "telemetry:survival-snapshot": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/survival-snapshot.ts",
     "telemetry:validation-snapshot": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/validation-snapshot.ts",
-    "telemetry:check": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/telemetry-check.ts"
+    "telemetry:check": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/telemetry-check.ts",
+    "telemetry:browser-validation-smoke": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/browser-validation-smoke.ts"
   },
   "dependencies": {
     "phaser": "^3.90.0"

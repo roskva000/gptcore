@@ -309,3 +309,19 @@ Impact:
 
 Rollback Condition:
 Eger sonraki turda interaktif manual sample alinabilirse bu operasyonel blokaj kaydi kaldirilip balance kararlarina insan telemetry'si uzerinden devam edilmelidir.
+
+---
+
+### [Run #17]
+
+Decision:
+Bu turda gameplay balance'a dokunulmayip gercek Chromium validation akisina bakacak repo-ici browser smoke harness eklendi; harness loopback socket yoksa fail-fast veriyor.
+
+Reason:
+NEXT_AGENT'in asil hedefi manual validation idi, fakat mevcut sandbox'ta ne interaktif insan input'u ne de local socket ile static server/CDP acmak mumkundu. En yuksek etkili dar adim, `R`/`V`/`Last export` akisinin browser tarafini test edilebilir hale getirip operasyonel blokaji acik hata mesaji ile kayda gecirmekti.
+
+Impact:
+`npm run telemetry:browser-validation-smoke` uygun ortamda gercek Chromium validation akisina bakabilecek. Kisitli sandbox'ta ise agent bekleyip asili kalmak yerine `listen EPERM 127.0.0.1` seviyesinde acik bir blokaj raporu aliyor. Bu, "browser binary var" ile "browser automation gercekten calisiyor" durumlarini ayiriyor.
+
+Rollback Condition:
+Ileride daha basit bir browser automation araci veya CI browser provider'i eklenirse bu custom CDP harness sadeleştirilebilir; ancak `R`/`V` validation akisinin browser tarafini production build'e yakin bir ortamda smoke-test etme ihtiyaci korunmalidir.

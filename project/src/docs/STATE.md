@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #16
+Updated By: Agent Run #17
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak dort repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #16'da balance'a yine dokunulmadi; deterministic telemetry guard'lari ve production build tekrar dogrulandi, yerel ortamda `chromium` binary'sinin var oldugu goruldu ama bu CLI turunda interaktif manual sample yine toplanamadi.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak browser validation smoke dahil bes repo-ici telemetry komutuna sahip bir build'e sahip. Run #17'de gameplay balance'a yine dokunulmadi; bunun yerine gercek Chromium icinde `R` reset, `V` export ve reload sonrasi `Last export` rehydration akisina bakacak repo-ici browser smoke harness'i eklendi. Mevcut sandbox loopback socket acmaya izin vermedigi icin harness bu ortamda `listen EPERM: operation not permitted 127.0.0.1` hatasini hizli sekilde veriyor.
 
 Bu turun amaci:
 - mevcut deterministic telemetry baseline'inin ve validation export kontratinin bozulmadigini tekrar teyit etmek
-- production build'in temiz kaldigini dogrulamak
-- manual validation blokajini "browser yok" yerine "interaktif sample bu turda alinmadi" seklinde daha dogru kayda gecirmek
+- browser tarafindaki validation akisina repo-ici bir smoke harness eklemek
+- manual validation blokajini "browser binary var" seviyesinden "loopback socket + interaktif browser erisimi yok" seviyesine daraltmak
 
 ---
 
@@ -43,9 +43,11 @@ Bu turun amaci:
 - repo-ici balance harness: `npm run telemetry:snapshot` balance curve, ilk spawn zamani, 10s/30s/60s spawn adetleri ve ilk 10 spawn zamanini browser disinda uretiyor
 - repo-ici survival harness: `npm run telemetry:survival-snapshot` ayni spawn delay/speed/fairness kurallari ile 24 deterministic seed uzerinden basit bir kacis controller'i calistirip avg survival, first death ve early death oranini browser disinda veriyor
 - repo-ici validation harness: Run #15 ile `npm run telemetry:validation-snapshot` deterministic survival sample'in ilk 5 run'ini session telemetry formatina cevirip ayni `validation_sample` satirini ve parse edilmis ozetini browser disinda uretiyor
+- repo-ici browser validation smoke: Run #17 ile `npm run telemetry:browser-validation-smoke` eklendi; komut once loopback socket preflight'i yapiyor, izin varsa local static server + Chromium CDP ile `R`/`V`/reload akisina bakiyor
 - regression guard: Run #11 ile `npm run telemetry:check` mevcut deterministic pacing (`0.9s`, `10/32/76 spawn`, `145/183/259/316/320 speed`) ve survival (`avg 22.3s`, `first death 5.0s`, `early death 8%`) baseline'larini assert ediyor
 - validation guard: Run #15 ile `npm run telemetry:check` artik deterministic validation export ozetini de assert ediyor; baseline `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 - latest guard verification: Run #16'da `npm run telemetry:check` tekrar basarili calisti; pacing `10/32/76`, survival `22.3s / 5.0s / 8%` ve validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` baseline'lari korundu
+- latest browser validation smoke result: Run #17'de `npm run telemetry:browser-validation-smoke` mevcut sandbox'ta hizli sekilde `Loopback socket bind failed ... listen EPERM: operation not permitted 127.0.0.1` hatasi verdi
 - snapshot scripts: balance ve survival scriptleri artik ortak `scripts/telemetry-reports.ts` modulunden ayni rapor uretimini kullaniyor
 - game over screen: final sureye ek olarak session avg survival, early death, retry ve spawn summary gosteriliyor
 - onboarding: kontrol metni artik oyuncuya sample reset ve telemetry summary shortcut'larini da soyliyor
@@ -118,6 +120,9 @@ Bu turun amaci:
 - [Run #15] validation export parser'inin `validation=5/5 runs | target met` alanini yanlis parcali okumasi, export'ta safe separator kullanilarak duzeltildi
 - [Run #15] `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` basarili calisti
 - [Run #16] balance'a dokunulmadan `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar basarili calisti
+- [Run #17] `project/game/scripts/browser-validation-smoke.ts` ve `npm run telemetry:browser-validation-smoke` eklendi; komut loopback socket preflight'i sonrasi uygun ortamda gercek Chromium validation akisina bakacak sekilde kuruldu
+- [Run #17] `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar basarili calisti
+- [Run #17] mevcut sandbox'in `127.0.0.1` loopback bind denemesini `EPERM` ile reddettigi dogrulandi; browser smoke ve interaktif manual sample bu ortamda yine alinmadi ama blokaj net hata mesaji ile kayda gecti
 - [Run #16] ortamda `/usr/bin/chromium` binary'sinin oldugu teyit edildi; ancak bu CLI turunda oyun ici interaktif manual telemetry sample'i yine alinmadi
 
 ---
@@ -126,6 +131,7 @@ Bu turun amaci:
 
 - henuz gercek manual/human telemetry sample toplanmadi; telemetry yuzeyi daha net ama insan verisi hala eksik
 - deterministic guard'lar temiz, fakat bu turda interaktif browser kontrolu veya insan input'u ile `R`/`V` manual validation sample'i alinmadi
+- mevcut sandbox `127.0.0.1` loopback socket acmaya izin vermedigi icin browser smoke harness bile burada static server/CDP asamasina gecemiyor
 - validation export eklense de gercek sample halen tarayici ve insan input gerektiriyor; bu turda agent tarafinda sample toplanamadi
 - son validation export artik oyun icinde okunabiliyor ama yine de gercek sample tarayici ve insan input gerektiriyor
 - deterministic validation snapshot manuel sample degil; yalnizca export kontratinin ve parser'inin kirilmadigini gosteriyor
@@ -144,6 +150,7 @@ Bu turun amaci:
 - balance sabitleri ayri config dosyasina alinmadi
 - production bundle buyuk; Phaser tek chunk olarak geliyor
 - browser tabanli scripted steering sample hala repoda yok; bunun yerine deterministic balance + survival snapshot repoda mevcut
+- browser validation smoke harness local HTTP + CDP socket gerektiriyor; sandboxli ortamlarda fail-fast olsa da sample uretemiyor
 - telemetry helper'i ayristi ama `GameScene.ts` hala buyuk; gameplay ve UI davranisi ayni scene icinde toplu duruyor
 
 ---
@@ -151,7 +158,7 @@ Bu turun amaci:
 # Known Risks
 
 - telemetry browser storage tabanli; cihazlar arasi tasinmiyor ve sifirlanabilir
-- bu turda `/usr/bin/chromium` binary'si goruldu ancak oyun ici interaktif sample yine toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
+- bu turda `/usr/bin/chromium` binary'si goruldu ancak sandbox loopback socket'i reddettigi icin browser smoke veya oyun ici interaktif sample yine toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
 - Run #16 deterministic guard ve build tekrar dogrulamasini yapabildi; manual telemetry sample'i hala interaktif browser oturumu gerektiriyor
 - Run #12 export iyilestirmesi sample toplama friction'ini azaltir ama browser blocker'ini kaldirmaz
 - Run #10 telemetry iyilestirmesi manual sample toplama friction'ini azaltti ama blocker'i kaldirmadi; sample'in gercekten alinmasi hala bir sonraki adim
@@ -179,3 +186,4 @@ Bu turun amaci:
 - Run #13 sonucu yeni teknik risk degil, operasyonel blokaj teyit edildi: tarayici olmadigi surece balance hakkinda yeni karar uretmek yerine manual validation beklenmeli
 - Run #15 deterministic export guard'i validation summary truncation bug'ini erken yakaladi; tarayici olsa bile export satirinin dogru parse edildigini simdi repo-ici komutla kontrol etmek mumkun
 - Run #16 sonucu blokaj tanimini netlestirdi: browser binary'si mevcut olsa da bu agent turunda interaktif oynanis sample'i uretilmedigi surece yeni balance karari acilmamali
+- Run #17 sonucu operasyonel blokaji daha da netlestirdi: browser binary'si tek basina yeterli degil; browser smoke icin loopback socket izni ve manual validation icin interaktif input da gerekiyor

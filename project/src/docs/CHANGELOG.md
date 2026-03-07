@@ -150,3 +150,12 @@
 - `npm run telemetry:validation-snapshot` tekrar calistirildi; validation export kontrati ve parse edilen summary baseline ile uyumlu kaldi
 - `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor
 - ortamda `/usr/bin/chromium` binary'si goruldu, ancak bu turda interaktif manual telemetry sample'i yine alinmadigi icin blokaj dokumanlarda bu sekilde netlestirildi
+
+---
+
+## Run #17
+
+- `project/game/scripts/browser-validation-smoke.ts` eklendi; gercek Chromium validation akisina gitmeden once loopback socket preflight'i yapan repo-ici browser smoke harness olusturuldu
+- `project/game/package.json` icine `npm run telemetry:browser-validation-smoke` komutu eklendi
+- balance'a dokunulmadan `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar basarili calisti
+- `npm run telemetry:browser-validation-smoke` mevcut sandbox'ta hizli sekilde `listen EPERM 127.0.0.1` blokajini raporlayacak hale getirildi; hanging davranisi kaldirildi
