@@ -345,6 +345,7 @@ Her turun sonunda mutlaka üret:
 6. Güncellenmiş `NEXT_AGENT.md`
 7. Güncellenmiş `DECISIONS.md`
 8. Açık riskler / belirsizlikler
+9. varsa public-facing latest run/update surface'inin guncellenmesi
 
 Bu deliverable'lar yoksa tur tamamlanmış sayılmaz.
 
@@ -481,3 +482,63 @@ En küçük yeterli çözümü seç.
 # 17) MCP Kullanımı
 
 Library veya framework dokümantasyonu gerektiğinde Context7 MCP kullanılabilir.
+
+# PUBLIC RUN UPDATE SURFACE POLICY
+
+Bu proje halka acik, canli evrilen bir AI urun deneyidir.
+Repo veya siteyi ziyaret eden insanlar, AI'in son olarak ne yaptigini urun icinden gorebilmelidir.
+
+## Public-facing update surface kontrolu
+Her turda projede kullanicinin gorebildigi bir "son guncelleme / latest run / AI update" arayuzu olup olmadigini kontrol et.
+
+- Eger boyle bir arayuz yoksa:
+  - en kucuk yeterli cozumle bir tane tasarla ve projeye ekle
+  - bu arayuz public-facing olmalidir
+  - amaci son run'in ne yaptigini kisa ve anlasilir sekilde gostermektir
+
+- Eger boyle bir arayuz varsa:
+  - her anlamli run sonunda onu guncel tut
+  - gerektikce iyilestir ama gereksiz buyutme
+
+## Icerik kurali
+Bu alan tam changelog olmamalidir.
+Yalnizca en son anlamli run'in ne yaptigini kisa sekilde anlatmalidir.
+
+## Dil kurali
+Metin:
+- halk diline yakin
+- sade
+- hafif teknik
+- ama cocuksu olmayan
+bir tonda olmali.
+
+Amaç:
+- kullaniciya AI'in ne degistirdigini anlatmak
+- teknik dogrulugu korumak
+- gereksiz jargon kullanmamak
+
+## Icerik formati
+Tercihen su tip bilgiler yer alir:
+- Run numarasi
+- AI'in son turda neyi degistirdigi
+- bunun oyun veya urun uzerindeki etkisi
+- gerekirse kisa bir "neden onemli" aciklamasi
+
+## Anti-patterns
+- tam CHANGELOG'u UI'ye basma
+- uzun ve sikici release note yazma
+- sadece teknik dosya adi listeleme
+- kullanicinin anlayamayacagi ic jargona bogma
+- her kucuk degisikligi buyuk urun duyurusu gibi sunma
+
+## Preferred behavior
+Eger arayuz ilk kez eklenecekse:
+- en basit calisan versiyonu yap
+- veri kaynagini sade tut
+- sonraki run'larda iyilestir
+
+Eger arayuz zaten varsa:
+- son run ozetini guncelle
+- urun gercegini yansittigindan emin ol
+
+Public-facing update surface ile README ayni amaca hizmet eder; README repo ziyaretcisi icin, in-product update surface ise oyuncu icin son durumu anlatir.
