@@ -188,3 +188,13 @@
 - `project/game/scripts/browser-validation-ready.ts` `nextAction` metni host shell probe'unu ilk adim yapacak sekilde guncellendi
 - `npm run telemetry:browser-preflight` ve `npm run telemetry:validation-ready` tekrar calistirildi; blocker host geneli gibi degil mevcut runtime'a ozgu olarak raporlandi
 - `npm run telemetry:check` ve `npm run build` basarili calisti; buyuk bundle warning'i devam ediyor
+
+---
+
+## Run #21
+
+- `project/game/scripts/browser-validation-support.ts` icine `blockerScope` ve yapilandirilmis `nextSteps` action-plan helper'lari eklendi
+- `project/game/scripts/browser-validation-preflight.ts` ve `project/game/scripts/browser-validation-ready.ts` JSON ciktilarina `blockerScope` ve `nextSteps` alanlari eklendi
+- `npm run telemetry:browser-preflight` tekrar calistirildi; mevcut agent runtime'ta `status: blocked` sonucu host shell probe -> readiness -> smoke -> manual sample sirasini artik acikca verdi
+- `npm run telemetry:validation-ready` tekrar calistirildi; guard temiz kalirken ayni host-shell handoff adimlari JSON icinde listelendi
+- `npm run telemetry:check` ve `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor

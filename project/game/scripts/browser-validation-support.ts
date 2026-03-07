@@ -16,6 +16,19 @@ export type BrowserValidationPreflight = {
   loopbackError: string | null;
 };
 
+export type BrowserValidationRuntimeScope =
+  | 'ready'
+  | 'current-agent-runtime'
+  | 'missing-dependencies';
+
+export type BrowserValidationActionStep = {
+  id: string;
+  title: string;
+  command: string;
+  runIn: 'host-shell' | 'current-runtime' | 'browser';
+  successSignal: string;
+};
+
 const canAccess = async (path: string, mode: number): Promise<boolean> => {
   try {
     await access(path, mode);
@@ -94,4 +107,108 @@ export const getBrowserValidationBlockingIssues = (
   }
 
   return issues;
+};
+
+export const getBrowserValidationRuntimeScope = (
+  preflight: BrowserValidationPreflight,
+): BrowserValidationRuntimeScope => {
+  if (!preflight.loopbackSocketsAvailable) {
+    return 'current-agent-runtime';
+  }
+
+  if (!preflight.chromiumAvailable || !preflight.distReady) {
+    return 'missing-dependencies';
+  }
+
+  return 'ready';
+};
+
+export const getBrowserValidationActionPlan = (
+  preflight: BrowserValidationPreflight,
+): BrowserValidationActionStep[] => {
+  const steps: BrowserValidationActionStep[] = [];
+
+  if (!preflight.loopbackSocketsAvailable) {
+    steps.push({
+      id: 'host-loopback-probe',
+      title: 'Verify loopback bind outside the agent runtime',
+      command: preflight.socketProbeCommand,
+      runIn: 'host-shell',
+      successSignal: 'Command prints "ok".',
+    });
+    steps.push({
+      id: 'host-readiness',
+      title: 'Re-run readiness from the host shell',
+      command: 'npm run telemetry:validation-ready',
+      runIn: 'host-shell',
+      successSignal: 'JSON status becomes "ready" instead of "blocked".',
+    });
+    steps.push({
+      id: 'host-smoke',
+      title: 'Run browser smoke from the same host shell',
+      command: 'npm run telemetry:validation-ready -- --with-smoke',
+      runIn: 'host-shell',
+      successSignal: 'JSON status becomes "smoke-passed".',
+    });
+    steps.push({
+      id: 'manual-sample',
+      title: 'Collect manual gameplay sample after smoke passes',
+      command: 'Open the game, press R, play 5 runs, then press V.',
+      runIn: 'browser',
+      successSignal:
+        'Session telemetry shows at least 5 runs and Last export is no longer "not saved yet".',
+    });
+
+    return steps;
+  }
+
+  if (!preflight.chromiumAvailable || !preflight.distReady) {
+    if (!preflight.distReady) {
+      steps.push({
+        id: 'build-dist',
+        title: 'Build the game bundle',
+        command: 'npm run build',
+        runIn: 'current-runtime',
+        successSignal: 'dist/index.html exists and the build exits successfully.',
+      });
+    }
+
+    if (!preflight.chromiumAvailable) {
+      steps.push({
+        id: 'install-chromium',
+        title: 'Provide an executable Chromium binary',
+        command: 'Ensure /usr/bin/chromium is installed and executable.',
+        runIn: 'host-shell',
+        successSignal: 'telemetry:browser-preflight reports chromiumAvailable=true.',
+      });
+    }
+
+    steps.push({
+      id: 'rerun-preflight',
+      title: 'Re-run readiness after fixing prerequisites',
+      command: 'npm run telemetry:validation-ready',
+      runIn: 'current-runtime',
+      successSignal: 'JSON status becomes "ready".',
+    });
+
+    return steps;
+  }
+
+  steps.push({
+    id: 'run-smoke',
+    title: 'Run browser smoke',
+    command: 'npm run telemetry:validation-ready -- --with-smoke',
+    runIn: 'current-runtime',
+    successSignal: 'JSON status becomes "smoke-passed".',
+  });
+  steps.push({
+    id: 'manual-sample',
+    title: 'Collect manual gameplay sample',
+    command: 'Open the game, press R, play 5 runs, then press V.',
+    runIn: 'browser',
+    successSignal:
+      'Session telemetry shows at least 5 runs and Last export is no longer "not saved yet".',
+  });
+
+  return steps;
 };

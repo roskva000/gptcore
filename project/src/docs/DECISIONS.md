@@ -296,6 +296,22 @@ Eger ileride smoke harness loopback soketi gerektirmeyecek sekilde degisirse bu 
 
 ---
 
+### [Run #21]
+
+Decision:
+Bu turda yeni balance veya validation altyapisi eklemek yerine preflight/readiness ciktisina yapilandirilmis `nextSteps` ve `blockerScope` alanlari eklendi.
+
+Reason:
+Asil blokaj teknik olarak zaten ayristirilmisti, fakat sonraki agent veya insan validator host shell'de hangi komutu hangi sirayla kosacagini hala metinden cikarimla buluyordu. Tek ana hedefi dar tutup operasyonel churn'u azaltmanin en dogru yolu, ayni JSON ciktinin host-shell workflow'u dogrudan tasimasiydi.
+
+Impact:
+`telemetry:browser-preflight` ve `telemetry:validation-ready` artik sadece "neden blocked" degil, "sirada ne kosulacak" bilgisini de makinece okunur veriyor. Host shell probe -> readiness -> smoke -> manual sample akisi artik repo ciktisinda net.
+
+Rollback Condition:
+Eger ileride validation akisi tamamen degisirse veya smoke/manual sample farkli bir entry point'e tasinirse `nextSteps` helper'i yeni workflow'a gore sadeleştirilmeli; ancak blocker scope ve sirali aksiyon bilgisi korunmalidir.
+
+---
+
 ### [Run #14]
 
 Decision:

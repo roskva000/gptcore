@@ -1,17 +1,18 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #20
+Updated By: Agent Run #21
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak browser validation smoke dahil yedi repo-ici telemetry komutuna sahip bir build'e sahip. Run #20'de gameplay balance'a yine dokunulmadi; bunun yerine browser validation preflight/readiness ciktilari host ortam genellemesi yapmayacak sekilde daraltildi. Komutlar artik loopback `EPERM` sonucunu "current agent runtime" seviyesinde raporluyor, probe host/komut bilgisini JSON'a ekliyor ve host shell ayni probe'u gecerse blokajin runner-specific sayilmasi gerektigini acikca soyluyor.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak browser validation smoke dahil yedi repo-ici telemetry komutuna sahip bir build'e sahip. Run #21'de gameplay balance'a yine dokunulmadi; bunun yerine browser validation preflight/readiness ciktilari host shell handoff'unu yapilandirilmis sekilde tasiyacak bicimde guclendirildi. Komutlar artik loopback `EPERM` sonucunu `blockerScope=current-agent-runtime` olarak raporluyor ve host shell probe -> readiness -> smoke -> manual sample sirasini `nextSteps` dizisinde veriyor.
 
 Bu turun amaci:
 - mevcut deterministic telemetry baseline'inin ve validation export kontratinin bozulmadigini tek orchestration komutunda tekrar teyit etmek
 - browser validation oncesi guard + readiness adimlarini tek entry point'te toplamak
 - manual validation blokajini bir sonraki agent icin daha az operasyonel churn ile gorunur kilmak
+- host shell'de kosulacak sonraki adimlari repo ciktisinda makinece okunur hale getirmek
 
 ---
 
@@ -44,14 +45,14 @@ Bu turun amaci:
 - repo-ici survival harness: `npm run telemetry:survival-snapshot` ayni spawn delay/speed/fairness kurallari ile 24 deterministic seed uzerinden basit bir kacis controller'i calistirip avg survival, first death ve early death oranini browser disinda veriyor
 - repo-ici validation harness: Run #15 ile `npm run telemetry:validation-snapshot` deterministic survival sample'in ilk 5 run'ini session telemetry formatina cevirip ayni `validation_sample` satirini ve parse edilmis ozetini browser disinda uretiyor
 - repo-ici browser validation smoke: Run #17 ile `npm run telemetry:browser-validation-smoke` eklendi; komut once loopback socket preflight'i yapiyor, izin varsa local static server + Chromium CDP ile `R`/`V`/reload akisina bakiyor
-- repo-ici browser validation preflight: Run #18 ile `npm run telemetry:browser-preflight` eklendi; Run #20 ile JSON ciktiya `socketProbeHost` ve tekrar kullanilabilir `socketProbeCommand` eklendi. Komut `/usr/bin/chromium` executable mi, `dist/index.html` hazir mi ve mevcut agent runtime `127.0.0.1` loopback socket acabiliyor mu diye bakip `ok`/`blocked` JSON sonucu uretiyor
-- repo-ici browser validation readiness: Run #19 ile `npm run telemetry:validation-ready` eklendi; Run #20 ile `nextAction` host shell probe adimini acikca verecek sekilde guncellendi. Komut deterministic `telemetry:check`, validation snapshot summary ve browser preflight sonucunu tek JSON raporda birlestiriyor, isterse `--with-smoke` ile smoke'u ayni entry point'ten tetikleyebiliyor
+- repo-ici browser validation preflight: Run #18 ile `npm run telemetry:browser-preflight` eklendi; Run #20 ile JSON ciktiya `socketProbeHost` ve tekrar kullanilabilir `socketProbeCommand` eklendi. Run #21 ile buna `blockerScope` ve yapilandirilmis `nextSteps` listesi de eklendi. Komut `/usr/bin/chromium` executable mi, `dist/index.html` hazir mi ve mevcut agent runtime `127.0.0.1` loopback socket acabiliyor mu diye bakip `ok`/`blocked` JSON sonucu uretiyor
+- repo-ici browser validation readiness: Run #19 ile `npm run telemetry:validation-ready` eklendi; Run #20 ile `nextAction` host shell probe adimini acikca verecek sekilde guncellendi. Run #21 ile ciktiya `blockerScope` ve yapilandirilmis `nextSteps` listesi eklendi. Komut deterministic `telemetry:check`, validation snapshot summary ve browser preflight sonucunu tek JSON raporda birlestiriyor, isterse `--with-smoke` ile smoke'u ayni entry point'ten tetikleyebiliyor
 - regression guard: Run #11 ile `npm run telemetry:check` mevcut deterministic pacing (`0.9s`, `10/32/76 spawn`, `145/183/259/316/320 speed`) ve survival (`avg 22.3s`, `first death 5.0s`, `early death 8%`) baseline'larini assert ediyor
 - validation guard: Run #15 ile `npm run telemetry:check` artik deterministic validation export ozetini de assert ediyor; baseline `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 - latest guard verification: Run #16'da `npm run telemetry:check` tekrar basarili calisti; pacing `10/32/76`, survival `22.3s / 5.0s / 8%` ve validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` baseline'lari korundu
 - latest browser validation smoke result: Run #17'de `npm run telemetry:browser-validation-smoke` mevcut sandbox'ta hizli sekilde `Loopback socket bind failed ... listen EPERM: operation not permitted 127.0.0.1` hatasi verdi
-- latest browser validation preflight result: Run #20'de `npm run telemetry:browser-preflight` `/usr/bin/chromium` ve `dist/index.html` hazir oldugu halde mevcut agent runtime'in `127.0.0.1` icin `EPERM` verdigini `status: blocked` JSON sonucu ile raporladi; cikti artik host shell probe komutunu da tasiyor
-- latest browser validation readiness result: Run #20'de `npm run telemetry:validation-ready` guard'lari temiz gecti, validation snapshot summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olarak korundu ve `nextAction` host shell'de ayni probe komutunu calistirip blokajin runner-specific olup olmadigini once dogrulama talimati verdi
+- latest browser validation preflight result: Run #21'de `npm run telemetry:browser-preflight` yine `status: blocked` verdi; `/usr/bin/chromium` ve `dist/index.html` hazir, loopback ise mevcut agent runtime'ta `EPERM`. Cikti artik `blockerScope=current-agent-runtime` ve host shell probe/readiness/smoke/manual sample sirasini `nextSteps` dizisinde veriyor
+- latest browser validation readiness result: Run #21'de `npm run telemetry:validation-ready` guard'lari temiz gecti, validation snapshot summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olarak korundu ve JSON cikti `nextAction` yaninda ayni host shell workflow'unu `nextSteps` olarak makinece okunur sekilde verdi
 - snapshot scripts: balance ve survival scriptleri artik ortak `scripts/telemetry-reports.ts` modulunden ayni rapor uretimini kullaniyor
 - game over screen: final sureye ek olarak session avg survival, early death, retry ve spawn summary gosteriliyor
 - onboarding: kontrol metni artik oyuncuya sample reset ve telemetry summary shortcut'larini da soyliyor
@@ -139,6 +140,10 @@ Bu turun amaci:
 - [Run #20] `project/game/scripts/browser-validation-ready.ts` `nextAction` metni host shell probe'u onceleyen runner-specific blocker teshisine gore guncellendi
 - [Run #20] `npm run telemetry:check` ve `npm run build` tekrar basarili calisti
 - [Run #20] `npm run telemetry:browser-preflight` ile `npm run telemetry:validation-ready` mevcut agent runtime'ta yeniden `status: blocked` verdi; blocker artik host genellemesi yapmadan runtime-scoped olarak raporlandi
+- [Run #21] `project/game/scripts/browser-validation-support.ts` icine `blockerScope` ve yapilandirilmis validation `nextSteps` helper'lari eklendi
+- [Run #21] `project/game/scripts/browser-validation-preflight.ts` ve `project/game/scripts/browser-validation-ready.ts` JSON ciktisina `blockerScope` ve `nextSteps` alanlari eklendi
+- [Run #21] `npm run telemetry:check` ve `npm run build` tekrar basarili calisti
+- [Run #21] `npm run telemetry:browser-preflight` ile `npm run telemetry:validation-ready` mevcut agent runtime'ta yeniden `status: blocked` verdi; ayni ciktida host shell probe -> readiness -> smoke -> manual sample sirasi artik acikca listeleniyor
 
 ---
 
@@ -150,6 +155,7 @@ Bu turun amaci:
 - uygun ortam kararini smoke calistirmadan once veren bir komut artik var, ancak interaktif browser ve insan input'u bu turda yine mevcut degildi
 - uygun ortam kararini ve deterministic guard durumunu tek komutta veren bir orchestration artik var, ancak interaktif browser ve insan input'u bu turda yine mevcut degildi
 - blocker dili artik runner-specific, fakat host shell tarafinda smoke'u gercekten geciren bir sonuc halen kayda alinmadi
+- blocker artik yapilandirilmis adimlar halinde export ediliyor, fakat host shell tarafinda bu adimlarin gercekten kosulduguna dair sonuc halen kayda alinmadi
 - validation export eklense de gercek sample halen tarayici ve insan input gerektiriyor; bu turda agent tarafinda sample toplanamadi
 - son validation export artik oyun icinde okunabiliyor ama yine de gercek sample tarayici ve insan input gerektiriyor
 - deterministic validation snapshot manuel sample degil; yalnizca export kontratinin ve parser'inin kirilmadigini gosteriyor
@@ -171,6 +177,7 @@ Bu turun amaci:
 - browser validation smoke harness local HTTP + CDP socket gerektiriyor; sandboxli ortamlarda fail-fast olsa da sample uretemiyor
 - browser readiness helper eklendi, ancak manual validation hala environment-level bir operasyonel ihtiyac
 - browser readiness helper ve orchestration eklendi, ancak manual validation hala host shell ve interaktif browser gerektiren operasyonel bir ihtiyac
+- readiness/preflight ciktisi artik daha operasyonel, ancak hala otomatik host-shell execution yapmiyor
 - telemetry helper'i ayristi ama `GameScene.ts` hala buyuk; gameplay ve UI davranisi ayni scene icinde toplu duruyor
 
 ---
@@ -211,3 +218,4 @@ Bu turun amaci:
 - Run #17 sonucu operasyonel blokaji daha da netlestirdi: browser binary'si tek basina yeterli degil; browser smoke icin loopback socket izni ve manual validation icin interaktif input da gerekiyor
 - Run #18 sonucu sonraki adimi daha da daraltti: once `telemetry:browser-preflight` temiz gecmeli, ancak ondan sonra smoke ve manuel sample denenmeli
 - Run #19 sonucu sonraki adimi daha da operasyonel hale getirdi: once `telemetry:validation-ready` ile guard + preflight birlikte gorulmeli, sonra socket izinli ortamda gerekirse `--with-smoke` veya dogrudan smoke ve manuel sample denenmeli
+- Run #21 sonucu sonraki adimi daha da uygulanabilir hale getirdi: artik ayni JSON cikti hangi komutun hangi ortamda kosulacagini ve hangi sinyalin basari sayilacagini acikca listeliyor

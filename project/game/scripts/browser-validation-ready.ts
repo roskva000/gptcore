@@ -1,7 +1,9 @@
 import { spawn } from 'node:child_process';
 import { createValidationSnapshotReport } from './validation-snapshot.ts';
 import {
+  getBrowserValidationActionPlan,
   getBrowserValidationBlockingIssues,
+  getBrowserValidationRuntimeScope,
   runBrowserValidationPreflight,
   type BrowserValidationPreflight,
 } from './browser-validation-support.ts';
@@ -143,6 +145,7 @@ const main = async (): Promise<void> => {
   const output = {
     status,
     smokeRequested,
+    blockerScope: getBrowserValidationRuntimeScope(preflight),
     guard: {
       ok: true,
     },
@@ -157,6 +160,7 @@ const main = async (): Promise<void> => {
       blockingIssues,
     },
     smoke,
+    nextSteps: getBrowserValidationActionPlan(preflight),
     nextAction: buildNextAction(status, preflight, smokeRequested),
   };
 

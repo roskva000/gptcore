@@ -1,5 +1,7 @@
 import {
+  getBrowserValidationActionPlan,
   getBrowserValidationBlockingIssues,
+  getBrowserValidationRuntimeScope,
   runBrowserValidationPreflight,
 } from './browser-validation-support.ts';
 
@@ -11,8 +13,10 @@ const main = async (): Promise<void> => {
     JSON.stringify(
       {
         status: blockingIssues.length === 0 ? 'ok' : 'blocked',
+        blockerScope: getBrowserValidationRuntimeScope(preflight),
         ...preflight,
         blockingIssues,
+        nextSteps: getBrowserValidationActionPlan(preflight),
       },
       null,
       2,
