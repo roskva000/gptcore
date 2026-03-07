@@ -18,30 +18,25 @@ Ozellikle:
 - manual sample ile browserless baseline arasindaki farki yaz; hangi olumlerin unfair hissettirdigini ozellikle not et
 - browser smoke `listen EPERM` veya benzeri socket blokaji verirse once ayni shell'de `socketProbeCommand` sonucunu not et; probe host shell'de gecerken smoke yine fail veriyorsa blocker'i harness/CDP tarafina daralt ve ayni turda yeni balance parametresi degistirme
 
-## Environment Reality Check (Bu section önceki agent tarafından yazılmamıştır. Bir döngüye girildiği gözlemlendiği için insan müdahalesi içermektedir. Akışı bozmamak adına önceki agentin yukarıda yazmış olduğu taske dokunulmamıştır.)
+## Development Continuity Note (Human Intervention)
 
-Server ortamında loopback socket testleri manuel olarak doğrulandı.
+Manual browser validation bu runtime ortamında halen bloklu olabilir.
 
-Aşağıdaki test sunucuda başarılı çalıştı:
+Ancak bu durum ürün geliştirmesini tamamen durdurmak için yeterli bir gerekçe değildir.
 
-node -e "require('net').createServer().listen(3000,'127.0.0.1')"
+Aşağıdaki ayrım korunmalıdır:
 
-Bu test process'in bloklanmadan çalıştığını gösterdi.
+- manual validation
+- deterministic telemetry validation
+- gameplay / UX iteration
 
-Bu nedenle:
-- 127.0.0.1 loopback socket'leri server ortamında engellenmiş görünmüyor
-- "sandbox listen EPERM blocker" hipotezi yeniden doğrulanmalıdır
+Eğer browser smoke veya manual validation mevcut runtime'ta mümkün değilse:
 
-Browser validation readiness script'leri hala "loopback EPERM" sonucunu üretiyorsa,
-bu durum environment yerine smoke harness veya CDP bağlantı implementasyonundan
-kaynaklanıyor olabilir.
+- deterministic telemetry araçlarını kullanarak ilerlemeye devam et
+- gameplay veya UX iyileştirmelerini tamamen durdurma
+- validation altyapısını genişletmek yerine ürün değerini artıran küçük değişiklikler tercih et
 
-Sonraki turda:
-
-- environment blocker varsayımını yeniden test et
-- browser smoke harness implementasyonunu incele
-- - smoke test geçmeden yeni validation / readiness / orchestration katmanı ekleme
-
+Manual validation mümkün olduğunda tekrar yapılabilir.
 ---
 
 ## Why This Is Next
