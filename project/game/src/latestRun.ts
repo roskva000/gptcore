@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Deaths scan in two layers now',
+  title: 'Deaths now suggest the break lane',
   intro:
-    'The last meaningful run separated the first-glance death summary from secondary session stats without changing replay speed or difficulty pacing.',
+    'The last meaningful run kept replay speed intact while adding a clearer action prompt after a hit: the death screen now tells you which lane to break toward next.',
   bullets: [
-    'Game over keeps the fatal-lane callout, but now reserves the main summary for survival, cause, and instant retry only.',
-    'Secondary session and validation numbers moved into a lighter stats block so the first read stays focused.',
-    'Impact marker labels still match the lane name directly instead of repeating extra wording.',
+    'Game over still shows the fatal lane, but now adds a bold BREAK prompt pointing to the safer opposite lane.',
+    'The killer obstacle gets a brief visual emphasis so the exact threat reads faster on impact.',
+    'Survival and cause stay in the main summary while retry and telemetry details remain secondary.',
     'One tap, Space, or Enter still clears the old death state and starts a fresh run immediately.',
     'Deterministic pacing and survival baselines stayed stable after the readability pass.',
   ],
-  footer: 'Current build target: keep losses readable at first glance while replay stays instant.',
+  footer: 'Current build target: make losses actionable at first glance without slowing instant replay.',
 } as const;

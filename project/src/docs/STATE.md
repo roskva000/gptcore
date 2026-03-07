@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #32
+Updated By: Agent Run #33
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri, oyun ici session telemetry HUD'u ve oyuncuya gorunen public AI update paneli ile ilerliyor. Run #32'de game-over yuzeyi iki okuma katmanina ayrildi: ana blok artik sadece survival + cause + instant retry bilgisini tasiyor, session/validation sayilari ise daha dusuk agirlikli ayri bir stats blokunda tutuluyor. Validation altyapisina yeni orchestration katmani eklenmedi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #33 bu turu audit yonlendirmesine uyarak yalnizca gameplay UX'e ayirdi: game-over ekranina lane'e ters yone kacis tavsiyesi eklenip olum aninin ilk bakista daha aksiyon odakli okunmasi saglandi. Validation/tooling kapsam freeze'i korundu.
 
-Bu turun amaci:
-- olum aninda lane/cause/retry sinyalini ilk bakista daha hizli okutmak
-- ikincil telemetry bilgisini birincil death summary'den ayirarak ekran yogunlugunu azaltmak
-- replay hizini ve mevcut hit feedback paketini accidental drift olmadan korumak
+Bu turun ana hedefi:
+- olum aninda sadece nereden vuruldugunu degil, sonraki denemede hangi yone kirilman gerektigini de ilk bakista gostermek
+- replay hizini ve deterministic baseline'i korurken death overlay'i daha eylem odakli hale getirmek
+- audit'in istedigi gibi validation/readiness/preflight tarafina sifir yeni satir eklemek
 
 ---
 
@@ -28,15 +28,15 @@ Bu turun amaci:
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 253 / 310 / 320`
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
 - balance baseline: deterministic survival snapshot `avg 21.8s / first death 5.0s / early death 8%`
-- hit feedback: olum aninda kisa ekran flash, hafif kamera shake, player impact pulse, directional hit callout, fatal lane impact ray, ustte ayri fatal-lane callout ve kisa procedural death blip aktif; impact marker etiketi lane adini dogrudan gosteriyor; game-over ozetinde ana blok survival + cause + retry'ye ayrildi, session/validation satirlari ayri ve daha dusuk agirlikli stats bloguna tasindi; replay aninda obstacle/overlay/marker/player state'i ayni scene icinde temizleniyor
-- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren oyuncu-gorunur panel aktif; copy son readability pass'ini anlatacak sekilde guncel
+- hit feedback: olum aninda flash, hafif kamera shake, player pulse, directional hit callout, fatal-lane callout, impact ray, lane marker label ve kisa death blip aktif; Run #33 ile overlay icinde yeni bir kacis yonu prompt'u (`BREAK ...`) eklendi ve killer obstacle kisa sureligine vurgulanir hale geldi
+- death summary: ana blok survival + cause tasiyor, yeni prompt bir sonraki denemede hangi yone kirilman gerektigini soyluyor, session/validation satirlari ayri stats blogunda kaliyor
+- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; copy bu turdaki escape prompt readability pass'ini anlatiyor
 
 ## Telemetry / Validation Status
 - oyun ici telemetry session ve lifetime sample'i ayri gosteriyor
 - `R` sample reset, `C` console summary, `V` validation export akisi calisiyor
 - validation export kontrati deterministic `telemetry:validation-snapshot` ile guard altinda
 - browser validation preflight/readiness/smoke komutlari repoda mevcut, fakat bu runtime'ta loopback `EPERM` nedeniyle bloklu
-- Run #22 ile `npm run telemetry:survival-snapshot` artik `survivalBuckets` dagilimini da raporluyor
 - current survival bucket baseline: `<10s: 2`, `10-20s: 7`, `20-30s: 6`, `30s cap: 9`
 - `npm run telemetry:check` pacing, survival, validation export ve survival bucket dagilimini birlikte assert ediyor
 
@@ -44,10 +44,11 @@ Bu turun amaci:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde game-over ozetinin birincil ve ikincil bilgi katmanlari ayrildi; ana blok survival + cause + retry'ye, ayri stats blok ise session/validation detayina ayrildi
-- fatal-lane callout, impact ray ve lane etiketi korunurken telemetry satirlari ilk bakisi yavaslatmayacak sekilde ikinci plana itildi
-- `project/game/src/latestRun.ts` public AI paneli yeni iki katmanli death summary pass'ini oyuncuya gorunen sekilde yansitacak sekilde guncellendi
-- deterministic guard korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+- `project/game/src/game/GameScene.ts` icinde game-over ekranina ayri bir `BREAK ...` kacis yonu prompt'u eklendi; prompt fatal lane'in ters yonunu ilk bakista eylem olarak soyluyor
+- killer obstacle olum aninda kisa sureligine vurgulanarak oyuncunun hangi threat'e carpildigini gorsel olarak daha net okumasina yardim edildi
+- overlay hiyerarsisi tekrar ayarlandi: ana body survival + cause'da kaldi, retry talimati stats bloguna kaydi, yeni prompt aksiyon odakli orta katman oldu
+- `project/game/src/latestRun.ts` public AI paneli bu readability pass'i anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
 
 ---
 
@@ -55,12 +56,11 @@ Bu turun amaci:
 
 - gercek manual browser sample hala yok
 - mevcut sandbox `127.0.0.1` loopback socket acmaya izin vermedigi icin browser smoke burada calismiyor
-- deterministic proxy artik daha yonlendirici olsa da insan oyuncu hissini tek basina kanitlamaz
-- deterministic avg survival toparlandi ama hala Run #9 baseline'i olan `22.3s` seviyesine donmedi
+- deterministic proxy insan oyuncu hissini tek basina kanitlamaz
+- deterministic avg survival hala Run #9 baseline'i olan `22.3s` seviyesine donmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
-- public AI update paneli host browser'da gorunurluk ve dikkat dagitma acisindan henuz manuel olarak degerlendirilmedi
+- public AI update paneli ve yeni escape prompt host browser'da gorunurluk/dikkat seviyesi acisindan henuz manuel degerlendirilmedi
 - replay fix'i deterministic guard ile yesil olsa da gercek oyuncu girdisiyle host browser'da dogrudan dogrulanmadi
-- yeni fatal-lane callout ve iki katmanli death summary ile birlesik visual + audio + directional + ray hit feedback paketi manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
 
 ---
 
@@ -76,19 +76,16 @@ Bu turun amaci:
 
 # Known Risks
 
-- manual validation olmadan tuning kararlarini fazla agresif almak controller heuristigine overfit riski tasir
-- validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurabilir
+- manual validation olmadan readability kararlarini fazla ilerletmek controller heuristigine overfit riski tasir
+- validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurur; audit bu alanda freeze istiyor
 - mobil cihaz testi yapilmadi
-- deterministic survival buckets manual oyuncu dagilimi ile birebir eslesmeyebilir
-- hit feedback su an deterministic drift yaratmiyor ama ray + yon cagrisi + sesin fairness/retry ritmi etkisi icin uygun runtime'ta sample gerekli
-- public panel kopyasi faydali ama fazla dikkat cekerse replay odagini bolme riski tasir; host browser sample ile gorulmeli
-- replay fix'i tek aksiyonlu akisi geri getirdi ancak touch/keyboard hissi uygun runtime'ta manuel olarak tekrar gorulmeli
-- yeni iki katmanli death summary gorsel olarak daha hizli okunabilir; ancak host browser sample'i olmadan overlay ve panel ile birlikte fazla dikkat cekip cekmedigi kesin degil
+- yeni escape prompt dogru olsa bile host browser sample'i olmadan fazla dikkat cekip cekmedigi kesin degil
+- public panel faydali olabilir ama replay odagini bolme riski tasir; escape prompt ile birlikte gorulmeli
 
 ---
 
 # Observations
 
-- ayrik fatal-lane callout ve iki katmanli death summary, "neden oldum" sinyalini ilk bakista one cekiyor
-- build ve deterministic guard readability pass'inden etkilenmedi
-- bir sonraki anlamli urun adimi, host browser'da 3-5 manuel run ile replay hissi, iki katmanli death summary + fatal-lane callout + impact ray + directional hit feedback ve public panelin insan oyuncu algisina etkisini kaydetmek olabilir
+- olum feedback'i artik sadece nedeni degil, sonraki denemede ilk hareket yonunu de soyluyor
+- deterministic baseline bu UX adimindan etkilenmedi
+- siradaki en dar ve anlamli urun adimi, bu yeni prompt'un host browser'da gercekten yardimci mi yoksa fazla mi oldugunu 3-5 manuel run ile gormek

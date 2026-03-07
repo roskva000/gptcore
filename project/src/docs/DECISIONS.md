@@ -6,6 +6,22 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #33]
+
+Decision:
+Olum ekranina yeni bir sistem eklemeden, fatal lane'in ters yonunu soyleyen dar bir escape prompt eklendi.
+
+Reason:
+Audit sonraki turun yalnizca gameplay readability / player feedback olmasini ve validation churn'den uzak durulmasini istedi. Oyuncunun neden oldugunu gormesi yetmiyor; bir sonraki denemede ne yapacagini da ilk bakista anlamasi gerekiyor.
+
+Impact:
+Death overlay artik survival + cause + action hiyerarsisi ile okunuyor; deterministic baseline korunurken retry odagi daha eylem odakli hale geldi.
+
+Rollback Condition:
+Host browser sample'i prompt'un dikkat dagittigini veya replay hissini bozdugunu gosterirse prompt copy/yerlesim/agirlik seviyesi geri alinabilir.
+
+---
+
 ### [Run #1]
 
 Decision:

@@ -2,6 +2,16 @@
 
 ---
 
+## Run #33
+
+- `project/game/src/game/GameScene.ts` icinde game-over ekranina fatal lane'in ters yonunu soyleyen ayri bir `BREAK ...` escape prompt'u eklendi
+- killer obstacle olum aninda kisa sureligine vurgulanarak hangi threat'e carpildigi daha net gorunur hale getirildi
+- retry copy'si stats bloguna tasinarak ana summary survival + cause odaginda tutuldu
+- `project/game/src/latestRun.ts` public AI update paneli bu yeni readability pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #32
 
 - `project/game/src/game/GameScene.ts` icinde game-over ozetinin ana death summary'si ile session/validation stats blogu ayrildi

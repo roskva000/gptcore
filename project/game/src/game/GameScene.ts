@@ -51,6 +51,11 @@ type HitDirection = {
   offsetY: number;
 };
 
+type EscapePrompt = {
+  title: string;
+  sentence: string;
+};
+
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
   private player!: Phaser.Physics.Arcade.Image;
@@ -68,6 +73,7 @@ export class GameScene extends Phaser.Scene {
   private fatalCallout!: Phaser.GameObjects.Text;
   private overlayTitle!: Phaser.GameObjects.Text;
   private overlayBody!: Phaser.GameObjects.Text;
+  private overlayPrompt!: Phaser.GameObjects.Text;
   private overlayStats!: Phaser.GameObjects.Text;
   private runStartedAt = 0;
   private survivalTime = 0;
@@ -226,8 +232,26 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setVisible(false);
 
+    this.overlayPrompt = this.add
+      .text(ARENA_WIDTH / 2, 382, '', {
+        align: 'center',
+        backgroundColor: '#123f36',
+        color: '#d8fff4',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '20px',
+        fontStyle: 'bold',
+        lineSpacing: 6,
+        padding: {
+          x: 16,
+          y: 10,
+        },
+      })
+      .setDepth(11)
+      .setOrigin(0.5)
+      .setVisible(false);
+
     this.overlayStats = this.add
-      .text(ARENA_WIDTH / 2, 404, '', {
+      .text(ARENA_WIDTH / 2, 452, '', {
         align: 'center',
         color: '#8db7cb',
         fontFamily: 'Trebuchet MS',
@@ -447,6 +471,7 @@ export class GameScene extends Phaser.Scene {
     this.fatalCallout.setVisible(false).setText('');
     this.overlayTitle.setVisible(false);
     this.overlayBody.setVisible(false);
+    this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
 
     this.obstacles.children.each((child) => {
@@ -599,6 +624,7 @@ export class GameScene extends Phaser.Scene {
 
     const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
     const hitDirection = this.getHitDirection(obstacle);
+    const escapePrompt = this.getEscapePrompt(hitDirection);
 
     this.phase = 'gameOver';
     this.nextSpawnTimer?.remove(false);
@@ -612,6 +638,7 @@ export class GameScene extends Phaser.Scene {
     this.player.setVelocity(0, 0);
     this.player.setTint(0xffd6cf);
     this.recordRunEnd();
+    obstacle.setTint(0xfff0c7).setScale(1.12).setAlpha(1);
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -653,15 +680,16 @@ export class GameScene extends Phaser.Scene {
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
           `Cause: ${hitDirection.sentence}.`,
-          '',
-          'Press Space, Enter, or tap to retry instantly.',
         ].join('\n'),
       )
+      .setVisible(true);
+    this.overlayPrompt
+      .setText(`${escapePrompt.title}\n${escapePrompt.sentence}`)
       .setVisible(true);
     this.overlayStats
       .setText(
         [
-          'Quick read locked by ray, marker, flash, and blip.',
+          'Press Space, Enter, or tap to retry instantly.',
           `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
           `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
           `Validation ${getValidationProgressText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
@@ -670,7 +698,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.hintText
       .setText(
-        `Fatal lane: ${hitDirection.label}. Retry should stay instant.`,
+        `${escapePrompt.title}. Retry should stay instant.`,
       )
       .setVisible(true);
   }
@@ -759,6 +787,24 @@ export class GameScene extends Phaser.Scene {
       sentence: 'the impact overlapped your center line',
       offsetX: 0,
       offsetY: -1,
+    };
+  }
+
+  private getEscapePrompt(hitDirection: HitDirection): EscapePrompt {
+    const horizontal = hitDirection.offsetX < 0 ? 'right' : hitDirection.offsetX > 0 ? 'left' : '';
+    const vertical = hitDirection.offsetY < 0 ? 'down' : hitDirection.offsetY > 0 ? 'up' : '';
+    const direction = [vertical, horizontal].filter(Boolean).join('-');
+
+    if (direction) {
+      return {
+        title: `BREAK ${direction.toUpperCase()}`,
+        sentence: `On the retry, clear space toward the ${direction} lane first.`,
+      };
+    }
+
+    return {
+      title: 'RESET CENTER',
+      sentence: 'On the retry, move off the center line before the next rush closes in.',
     };
   }
 
