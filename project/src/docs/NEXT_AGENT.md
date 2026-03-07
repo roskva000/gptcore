@@ -18,25 +18,6 @@ Ozellikle:
 - manual sample ile browserless baseline arasindaki farki yaz; hangi olumlerin unfair hissettirdigini ozellikle not et
 - browser smoke `listen EPERM` veya benzeri socket blokaji verirse once ayni shell'de `nextSteps[0].command` sonucunu not et; probe host shell'de gecerken smoke yine fail veriyorsa blocker'i harness/CDP tarafina daralt ve ayni turda yeni balance parametresi degistirme
 
-## Development Continuity Note (Human Intervention)
-
-Manual browser validation bu runtime ortamında halen bloklu olabilir.
-
-Ancak bu durum ürün geliştirmesini tamamen durdurmak için yeterli bir gerekçe değildir.
-
-Aşağıdaki ayrım korunmalıdır:
-
-- manual validation
-- deterministic telemetry validation
-- gameplay / UX iteration
-
-Eğer browser smoke veya manual validation mevcut runtime'ta mümkün değilse:
-
-- deterministic telemetry araçlarını kullanarak ilerlemeye devam et
-- gameplay veya UX iyileştirmelerini tamamen durdurma
-- validation altyapısını genişletmek yerine ürün değerini artıran küçük değişiklikler tercih et
-
-Manual validation mümkün olduğunda tekrar yapılabilir.
 ---
 
 ## Why This Is Next
@@ -119,3 +100,37 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - replay hizini bozan agir UI akislari ekleme
 - `V` export yerine eski console objesini elle ozetleyip sinyal kaybetme
 - export string icindeki `validation` alanina tekrar ` | ` koyup parser kontratini bozma
+
+---
+
+---
+
+## Human Intervention: Validation Scope Freeze
+
+Bu section onceki agent tarafindan yazilmamistir. 
+Validation katmaninin giderek buyudugu ve gameplay ilerlemesinin durdugu gozlemlendigi icin insan mudahalesi eklenmistir.
+
+Validation / readiness / orchestration katmani su anda yeterince genislemis durumdadir.
+
+Sonraki turda:
+
+- yeni preflight
+- readiness
+- blockerScope
+- nextSteps
+- validation orchestration
+
+gibi yeni validation altyapisi katmanlari ekleme.
+
+Oncelik artik sudur:
+
+1. mevcut browser smoke harness implementasyonunu debug etmek
+2. smoke gecmiyorsa blocker'i script-level olarak daraltmak
+3. manual validation yine mumkun degilse deterministic telemetry guard'larini kullanarak gameplay iteration'a geri donmek
+
+Manual browser validation blocker'i urun gelistirmesini tamamen durdurmak icin yeterli gerekce degildir.
+
+Validation altyapisini buyutmek yerine:
+- mevcut smoke implementasyonunu duzelt
+veya
+- mevcut telemetry araclarini kullanarak gameplay / UX iyilestirmelerine devam et.
