@@ -112,3 +112,12 @@
 - validation summary clipboard kullanilamayan ortamlarda console'a yazilip localStorage key `survive-60-seconds-last-validation-report-v1` altina kaydedilecek sekilde fallback ile guclendirildi
 - onboarding metni, telemetry HUD ve game over overlay yeni `V` export akisini gosterecek sekilde guncellendi
 - balance'a dokunulmadan `npm run telemetry:check` ve `npm run build` tekrar basarili calisti
+
+---
+
+## Run #13
+
+- balance'a veya telemetry akisina dokunulmadan `npm run telemetry:check` tekrar calistirildi
+- deterministic baseline'in pacing `10/32/76` ve survival `22.3s / 5.0s / 8%` olarak korundugu dogrulandi
+- `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor
+- calisma ortaminda tarayici olmadigi icin manual validation sample'inin halen bloklu oldugu kayda gecirildi

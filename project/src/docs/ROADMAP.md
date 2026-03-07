@@ -4,8 +4,8 @@
 
 # NOW (Highest Priority)
 
-- `npm run telemetry:check` komutunu balance degisikliginden once/sonra kosup deterministic pacing ve survival baseline'inin bozulmadigini dogrula
-- Run #12 export akisini kullanip tarayici varsa `R` reset sonrasi 5-10 manual run topla ve sample sonunda `V` ile validation report'u kopyala
+- Run #13'te tekrar temiz gecen `npm run telemetry:check` sonucunu baseline olarak koru; intentional tuning disinda bu guard'i guncelleme
+- tarayici olan bir ortamda Run #12 export akisini kullanip `R` reset sonrasi 5-10 manual run topla ve sample sonunda `V` ile validation report'u kopyala
 - session telemetry ile first death, avg survival ve early death oranini yeni browserless baseline'a karsi caprazla
 - HUD / game over / `C` summary uzerindeki explicit `first death` sinyalini esas al; recent deaths listesinden elle cikarim yapma
 - clipboard yoksa `V` fallback'inin console + localStorage export'unu kullanarak sample'i yine yazili hale getir
@@ -50,6 +50,7 @@ Basari olcutleri:
 
 - gercek oyuncu verisi yok
 - calisma ortaminda tarayici olmadigi icin agent tarafinda manual input dogrudan toplanamadi
+- Run #13 ortaminda da tarayici yoktu; blokaj devam ediyor
 - manual validation artik daha okunabilir ama yine de tarayici / insan input gerektiriyor
 - validation export iyilesti ama hala insanin oyunu acip run bitirmesi gerekiyor
 - browser tabanli steering harness hala repo-ici degil

@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #12; environment had no browser for direct human-input validation, but `V` export now packages the session sample into a single validation line
+current: still not collected as of Run #13; environment again had no browser for direct human-input validation, but `V` export remains ready to package the session sample into a single validation line
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -35,7 +35,7 @@ baseline: avg survival 22.3s, first death 5.0s, early death 8%, best 30.0s
 target: use as a regression guard and avoid regressing past 8% early death without breaking pacing snapshot
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check`
+current: passes via `npm run telemetry:check` as revalidated in Run #13
 baseline: asserts first spawn 0.9s, spawn pacing 10 / 32 / 76, speed curve 145 / 183 / 259 / 316 / 320, survival avg 22.3s, first death 5.0s, early death 8%
 target: run before and after future balance changes to catch accidental drift
 
@@ -113,4 +113,8 @@ target: increase while keeping 10s/30s pacing baseline intact
 - Run #12 validation export details:
   - `V` export satiri avg survival, first death, early death, avg retry, spawn saves, son run ve validation progress alanlarini tasiyor
   - export string deterministic baseline referansini da tasidigi icin manual sample ile browserless baseline ayni satirda karsilastirilabilir
+- Run #13 verification details:
+  - `npm run telemetry:check` sonucu tekrar `status: ok` dondu
+  - confirmed balance baseline: first spawn 0.9s, pacing 10 / 32 / 76
+  - confirmed survival baseline: avg 22.3s, first death 5.0s, early death 8%
 - next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla, sample sonunda `V` export satirini kaydet; tarayici yoksa blokaji not et ve yeni tuning'e gecme

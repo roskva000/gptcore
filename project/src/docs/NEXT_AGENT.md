@@ -2,10 +2,10 @@
 
 ## Recommended Next Task
 
-Run #12'de eklenen `V` export akisini kullanarak obstacle speed curve'unu tarayici varsa session telemetry uzerinden manuel olarak validate et; tarayici yoksa bu eksigi acikca kaydet ve balance'a tekrar dokunma.
+Run #13'te tekrar dogrulanan deterministic baseline'i referans alip obstacle speed curve'unu tarayici varsa session telemetry uzerinden manuel olarak validate et; tarayici yoksa bu eksigi acikca kaydet ve balance'a tekrar dokunma.
 
 Ozellikle:
-- once `npm run telemetry:check` calistir; fail verirse manual teste gecmeden once baseline drift'ini anla
+- once `npm run telemetry:check` calistir; Run #13 baseline'i hala `10 / 32 / 76` ve `22.3s / 5.0s / 8%`, fail verirse manual teste gecmeden once drift'i anla
 - gerekirse `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` ile detay raporu ac; current baseline olarak pacing `10 / 32 / 76`, survival snapshot `avg 22.3s / first death 5.0s / early death 8%` degerlerini not et
 - eger tarayici erisimi varsa oyunu ac, `R` ile session telemetry sample'ini sifirla ve en az 5 run manuel oyna
 - runlar bittiginde HUD veya game over overlay'de gorunen session `first death` sinyalini not et; sonra `V` ile validation summary'yi kopyala ve first death, avg survival, early death ve retry gap'i bu export satirindan kaydet
@@ -17,7 +17,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Run #10 manual validation icin gereken `first death` sinyalini telemetry'de acik hale getirdi. Run #11 ise bu deterministic baseline'i `npm run telemetry:check` ile otomatik koruma altina aldi. Run #12 de manuel tester'in sonucu console objesinden cikarmak zorunda kalmamasi icin `V` export akisina gecildi. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
+Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Run #10 manual validation icin gereken `first death` sinyalini telemetry'de acik hale getirdi. Run #11 ise bu deterministic baseline'i `npm run telemetry:check` ile otomatik koruma altina aldi. Run #12 de manuel tester'in sonucu console objesinden cikarmak zorunda kalmamasi icin `V` export akisina gecildi. Run #13 tarayici olmayan ortamda bu baseline'i tekrar dogruladi ve yeni tuning'e girmedi. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
 
 ---
 

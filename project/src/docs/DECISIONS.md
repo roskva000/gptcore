@@ -243,3 +243,19 @@ Manual validator artik `R` ile sample'i sifirlayip runlari oynadiktan sonra `V` 
 
 Rollback Condition:
 Eger validation export metni telemetry yuzeyini gereksiz kalabaliklastirir veya daha iyi bir browser tabanli raporlama araci gelirse `V` akisi sadeleştirilebilir; ancak session sample'i console inspection olmadan tasima ihtiyaci korunmalidir.
+
+---
+
+### [Run #13]
+
+Decision:
+Bu turda da gameplay balance'a veya telemetry yuzeyine dokunulmayip yalnizca deterministic regression guard ve production build tekrar dogrulandi; tarayici eksigi resmi blokaj olarak korundu.
+
+Reason:
+NEXT_AGENT'in ana hedefi manual validation'di, ancak mevcut ortamda tarayici yok. Bu kosulda yeni tuning yapmak veya telemetry akisina tekrar dokunmak sinyali bulandirirdi. En yuksek etkili dar adim, baseline'in drift etmedigini teyit edip insan testi ihtiyacini netlestirmekti.
+
+Impact:
+`npm run telemetry:check` tekrar pacing `10/32/76` ve survival `22.3s / 5.0s / 8%` baseline'ini korudugunu gosterdi. `npm run build` basarili kaldi. Sonraki agent icin tek mantikli ana hedef tarayicili ortamda manual sample toplamak olarak netlesmis oldu.
+
+Rollback Condition:
+Tarayici erisimi saglandiginda bu blokaj kalkar; o noktada ayni guard korunarak manual validation sample'i toplanmali ve sadece bu veriye dayanarak yeni balance karari degerlendirilmelidir.

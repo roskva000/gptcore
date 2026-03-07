@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #12
+Updated By: Agent Run #13
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak uc repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #12'de balance'a dokunulmadi; manual validation sample'ini console'a bagli kalmadan tasinabilir hale getiren validation export akisi eklendi.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak uc repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #13'te balance'a yine dokunulmadi; deterministic guard ve production build tekrar dogrulandi, tarayici eksigi aktif blokaj olarak yeniden kayda gecirildi.
 
 Bu turun amaci:
-- tarayici bloklu kalirken manual validation sonucu icin tek satirlik, kopyalanabilir bir session ozeti uretmek
-- deterministic telemetry baseline'larini bozmadan manual test handoff'unu kolaylastirmak
-- build ve regression guard ile mevcut pacing/survival baseline'larinin bozulmadigini tekrar dogrulamak
+- mevcut deterministic telemetry baseline'inin bozulmadigini tekrar dogrulamak
+- production build'in hala temiz alinabildigini teyit etmek
+- tarayici eksigini yeni balance degisikligine girmeden acik blokaj olarak guncellemek
 
 ---
 
@@ -41,6 +41,7 @@ Bu turun amaci:
 - repo-ici balance harness: `npm run telemetry:snapshot` balance curve, ilk spawn zamani, 10s/30s/60s spawn adetleri ve ilk 10 spawn zamanini browser disinda uretiyor
 - repo-ici survival harness: `npm run telemetry:survival-snapshot` ayni spawn delay/speed/fairness kurallari ile 24 deterministic seed uzerinden basit bir kacis controller'i calistirip avg survival, first death ve early death oranini browser disinda veriyor
 - regression guard: Run #11 ile `npm run telemetry:check` mevcut deterministic pacing (`0.9s`, `10/32/76 spawn`, `145/183/259/316/320 speed`) ve survival (`avg 22.3s`, `first death 5.0s`, `early death 8%`) baseline'larini assert ediyor
+- latest guard verification: Run #13'te `npm run telemetry:check` tekrar basarili calisti; pacing `10/32/76`, survival `22.3s / 5.0s / 8%` baseline'i korundu
 - snapshot scripts: balance ve survival scriptleri artik ortak `scripts/telemetry-reports.ts` modulunden ayni rapor uretimini kullaniyor
 - game over screen: final sureye ek olarak session avg survival, early death, retry ve spawn summary gosteriliyor
 - onboarding: kontrol metni artik oyuncuya sample reset ve telemetry summary shortcut'larini da soyliyor
@@ -102,6 +103,9 @@ Bu turun amaci:
 - [Run #12] validation report clipboard'a kopyalanamazsa console'a yaziliyor ve localStorage'da son export olarak saklaniyor
 - [Run #12] onboarding, HUD ve game over copy'si yeni validation export akisina gore guncellendi
 - [Run #12] `npm run telemetry:check` ve `npm run build` tekrar basarili calisti
+- [Run #13] balance degisikligi yapilmadan `npm run telemetry:check` tekrar kosuldu; deterministic pacing ve survival baseline'lari temiz gecti
+- [Run #13] `npm run build` tekrar basarili calisti; bundle warning'i degismedi
+- [Run #13] calisma ortaminda tarayici hala olmadigi icin manual validation sample'i yine toplanamadi ve blokaj yeniden kayda gecirildi
 
 ---
 
@@ -109,6 +113,7 @@ Bu turun amaci:
 
 - henuz gercek manual/human telemetry sample toplanmadi; telemetry yuzeyi daha net ama insan verisi hala eksik
 - tarayici/human sample hala yok; yeni guard deterministic regression'i yakalar ama insan hissini dogrulamaz
+- Run #13 ortaminda da tarayici bulunmadigi icin `R`/`V` manual validation akisi uygulanamadi
 - validation export eklense de gercek sample halen tarayici ve insan input gerektiriyor; bu turda agent tarafinda sample toplanamadi
 - deterministic survival snapshot iyilesti ama ilk olum halen 5.0s; bu sinyal human sample degil ve erken-game riskinin tamamen kapandigini kanitlamiyor
 - deterministic snapshot spawn yogunlugunu gorunur kilsa da oyuncu davranisini ve unfair death hissini tek basina kanitlamiyor
@@ -132,6 +137,7 @@ Bu turun amaci:
 
 - telemetry browser storage tabanli; cihazlar arasi tasinmiyor ve sifirlanabilir
 - bu turda calisma ortaminda tarayici olmadigi icin manual sample toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
+- Run #13 sadece deterministic guard ve build tekrar dogrulamasini yapabildi; manual telemetry sample'i hala dis ortam gerektiriyor
 - Run #12 export iyilestirmesi sample toplama friction'ini azaltir ama browser blocker'ini kaldirmaz
 - Run #10 telemetry iyilestirmesi manual sample toplama friction'ini azaltti ama blocker'i kaldirmadi; sample'in gercekten alinmasi hala bir sonraki adim
 - Run #11 regression guard'i balance drift'ini yakalar ama tarayici olmadigi surece manual fairness ve oyun hissi onaysiz kalir
@@ -154,3 +160,4 @@ Bu turun amaci:
 - telemetry'de explicit `first death` tutuldugu icin sonraki insan testinde basari kriteri artik recent deaths listesinden elle cikarim yapmadan okunabilecek
 - deterministic baseline artik tek komutla assert edilebildigi icin sonraki mantikli adim yeni feature eklemek degil, bu speed curve'u session telemetry ile insan inputunda caprazlamaktir
 - `V` export sayesinde bir sonraki tester session sample'i tek satirda dokumana tasiyabilir; manuel validation sonucu artik console objesi yerine kolay paylasilan bir metin olarak kaydedilebilir
+- Run #13 sonucu yeni teknik risk degil, operasyonel blokaj teyit edildi: tarayici olmadigi surece balance hakkinda yeni karar uretmek yerine manual validation beklenmeli
