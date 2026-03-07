@@ -458,7 +458,7 @@ Amaç sadece üretmek değil:
 
 # 16) OTONOM TEST VE SİMÜLASYON YETKİSİ
 
-Sunucuda Chromium mevcuttur. Gerek gördüğünde browser tabanlı doğrulama, oynanış simülasyonu veya input akışı testi yapabilirsin.
+Ortamda Chromium mevcuttur. Gerek gördüğünde browser tabanlı doğrulama, oynanış simülasyonu veya input akışı testi yapabilirsin.
 
 Eğer deterministic scriptler, telemetry snapshot'ları veya build kontrolleri gerçek gameplay sorularını cevaplamakta yetersiz kalıyorsa:
 - browser automation,
