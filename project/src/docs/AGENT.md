@@ -349,6 +349,55 @@ Bu deliverable'lar yoksa tur tamamlanmış sayılmaz.
 
 ---
 
+# README POLICY
+
+`README.md` bu projenin public-facing özetidir.
+Repo'yu ziyaret eden bir insan, projeyi ve mevcut durumu önce README üzerinden anlamalıdır.
+
+## README amacı
+README:
+- projenin ne olduğunu,
+- nasıl çalıştığını,
+- şu an hangi durumda olduğunu,
+- en son önemli ilerlemenin ne olduğunu
+kısa ve net şekilde anlatmalıdır.
+
+README tam changelog olmamalıdır.
+
+## README güncelleme kuralı
+Her tur sonunda agent, yapılan değişiklik README'de görülecek kadar anlamlıysa `README.md` dosyasını da güncellemelidir.
+
+Özellikle şu durumlarda README güncellenmelidir:
+- core gameplay değiştiyse
+- canlı demo / deploy davranışı değiştiyse
+- önemli yeni mechanic eklendiyse
+- public-facing proje açıklaması artık eski kaldıysa
+- "Latest Iteration" özeti değişmeyi hak edecek kadar önemliyse
+
+## README formatı
+README kısa tutulmalıdır.
+Tam tarihçe README içinde tutulmamalıdır.
+Detaylı geçmiş için `CHANGELOG.md` kullanılmalıdır.
+
+README içinde en fazla şunlar bulunmalıdır:
+- kısa proje açıklaması
+- canlı link
+- sistemin nasıl çalıştığına dair kısa özet
+- mevcut durum / latest iteration özeti
+- changelog referansı
+
+## README yazım prensibi
+README dışarıdan gelen bir insan için yazılmalıdır.
+İç operasyon dili yerine anlaşılır, kısa ve net açıklamalar kullanılmalıdır.
+
+## README anti-patterns
+- README'yi changelog'a çevirmek
+- her küçük değişiklikte gereksiz büyütmek
+- iç state dosyalarındaki tüm detayları README'ye taşımak
+- tekrar eden açıklamalarla README'yi şişirmek
+
+---
+
 # 13) FIRST ACTION ON EVERY NEW RUN
 
 Her yeni çalışma turu başladığında:
