@@ -475,3 +475,7 @@ gibi yöntemleri kullanabilirsin.
 
 Amaç tool kurmak değil, gerektiğinde gerçek oynanış davranışını doğrulamaktır.
 En küçük yeterli çözümü seç.
+
+# 17) MCP Kullanımı
+
+Library veya framework dokümantasyonu gerektiğinde Context7 MCP kullanılabilir.
