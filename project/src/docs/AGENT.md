@@ -381,6 +381,14 @@ Aşağıdaki yapıyı kullan:
 - ROADMAP.md
 - DECISIONS.md
 - [ilgili dosyalar]
+  
+---
+
+### Memory Policy
+
+State ve context dosyalarının yönetimi için `MEMORY_POLICY.md` dosyasındaki kurallara uy.
+
+---
 
 ## Constraints / Warnings
 - [...]
