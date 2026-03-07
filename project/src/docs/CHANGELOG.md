@@ -52,3 +52,13 @@
 - `R` ile telemetry reset ve `C` ile session/lifetime summary console log akisi eklendi
 - onboarding ve game over metinleri manual validation protokolunu gosterecek sekilde guncellendi
 - `npm run build` tekrar basarili calisti
+
+---
+
+## Run #7
+
+- `project/game/src/game/balance.ts` eklenerek spawn delay, obstacle speed ve spawn fairness distance formulleri ortak modüle tasindi
+- `project/game/scripts/balance-snapshot.ts` ve `npm run telemetry:snapshot` ile browser gerektirmeyen deterministic balance snapshot akisi eklendi
+- snapshot sonucu ilk spawn 0.9s, 10s icinde 10 spawn, 30s icinde 32 spawn ve 60s icinde 76 spawn olarak kaydedildi
+- `project/game/src/game/GameScene.ts` ortak balance modülünü kullanacak sekilde guncellendi
+- `npm run telemetry:snapshot` ve `npm run build` basarili calisti

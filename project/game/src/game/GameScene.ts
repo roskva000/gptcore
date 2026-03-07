@@ -1,4 +1,11 @@
 import Phaser from 'phaser';
+import {
+  INITIAL_SPAWN_DELAY_MS,
+  TARGET_FIRST_DEATH_SECONDS,
+  getObstacleSpeed,
+  getRequiredSpawnDistance,
+  getSpawnDelayMs,
+} from './balance';
 
 type GamePhase = 'waiting' | 'playing' | 'gameOver';
 
@@ -7,8 +14,6 @@ const ARENA_HEIGHT = 600;
 const PLAYER_SPEED = 260;
 const SPAWN_MARGIN = 56;
 const OFFSCREEN_CULL_MARGIN = 96;
-const INITIAL_SPAWN_DELAY_MS = 1050;
-const TARGET_FIRST_DEATH_SECONDS = 10;
 const MAX_SPAWN_REROLLS = 6;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const TELEMETRY_RECENT_RUN_LIMIT = 4;
@@ -345,11 +350,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnDelayMs(): number {
-    return Phaser.Math.Clamp(INITIAL_SPAWN_DELAY_MS - this.survivalTime * 8, 320, INITIAL_SPAWN_DELAY_MS);
+    return getSpawnDelayMs(this.survivalTime);
   }
 
   private getObstacleSpeed(): number {
-    return Phaser.Math.Clamp(150 + this.survivalTime * 4, 150, 320);
+    return getObstacleSpeed(this.survivalTime);
   }
 
   private spawnObstacle(): void {
@@ -423,7 +428,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnFairnessScore(spawnPoint: Phaser.Math.Vector2): number {
-    const requiredDistance = Phaser.Math.Clamp(210 - this.survivalTime * 7, 140, 210);
+    const requiredDistance = getRequiredSpawnDistance(this.survivalTime);
     const actualDistance = Phaser.Math.Distance.Between(
       spawnPoint.x,
       spawnPoint.y,

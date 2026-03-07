@@ -25,6 +25,10 @@ manual_validation_sample:
 current: not yet collected in Run #6; environment had no browser for direct human-input validation
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
+deterministic_balance_snapshot:
+current: collected in Run #7 via `npm run telemetry:snapshot`
+target: keep pacing baseline explicit before manual balance changes
+
 ---
 
 # Player Behavior
@@ -42,6 +46,14 @@ current: 20% after spawn-delay tuning
 baseline_before_tuning: 60%
 target: <= 20%
 
+predicted_spawn_count:
+current: 10 by 10s, 32 by 30s, 76 by 60s
+target: adjust only when telemetry or manual sample justifies a pacing change
+
+obstacle_speed_curve:
+current: 150 at 0s, 190 at 10s, 270 at 30s, capped 320 by 45s
+target: keep first 10s readable while preserving late-run pressure
+
 ---
 
 # Notes
@@ -52,4 +64,8 @@ target: <= 20%
 - pre-tune run times: 8.7s, 12.4s, 5.8s, 8.9s, 18.1s
 - spawn reroll totali her iki karsilastirmada da 0 kaldi; bu tuning pass yogunluga odaklandi
 - Run #6 instrumentation update: session telemetry artik sessionStorage key `survive-60-seconds-session-telemetry-v1` altinda ayri tutuluyor; `R` reset, `C` summary log
-- next step: `R` ile sample'i sifirlayip gercek manual sample ile bu iyilestirmenin scripted sample disinda da korundugunu dogrula
+- Run #7 deterministic snapshot details:
+  - first spawn at 0.9s
+  - first ten spawn times: 0.9s, 1.9s, 3.0s, 4.0s, 5.0s, 6.0s, 7.0s, 8.0s, 9.0s, 10.0s
+  - required spawn distance floor reaches 140 by 10s and stays there
+- next step: `R` ile sample'i sifirlayip gercek manual sample ile bu iyilestirmenin scripted sample disinda da korundugunu, snapshot baseline'inden gereksiz sapma olmadigini dogrula

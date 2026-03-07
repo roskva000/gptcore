@@ -147,3 +147,19 @@ Manual validation artik `R` ile sifirdan baslatilabiliyor, panelde session metri
 
 Rollback Condition:
 Ileride harici analytics veya repo-ici telemetry harness bu akisi gereksiz kilarsa session/lifetime cift gosterim sadelestirilebilir.
+
+---
+
+### [Run #7]
+
+Decision:
+Balance formulleri Phaser scene icinden ayrilarak paylasilan saf helper modulu ve repo-ici deterministic snapshot scripti olarak disari alindi.
+
+Reason:
+Bu ortamda tarayici olmadigi icin manual validation veya headless browser sample'i agent tarafinda koşturulamiyor. Buna ragmen balance tuning'in pacing ve speed egirisini her tur ayni sekilde okuyabilmek gerekiyordu.
+
+Impact:
+`npm run telemetry:snapshot` ile ilk spawn zamani, spawn yogunlugu ve speed/fairness curve browser disinda alinabiliyor. Gelecek tuning kararlarinda ayni formuller scene ve script tarafinda ortak kullaniliyor.
+
+Rollback Condition:
+Repo icine gercek browser steering harness veya daha zengin test altyapisi gelirse bu snapshot scripti yalnizca hizli smoke-check olarak tutulabilir ya da kaldirilabilir.
