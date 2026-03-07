@@ -43,6 +43,8 @@ type MovementKeys = {
   right: Phaser.Input.Keyboard.Key;
 };
 
+type FeedbackAudioContext = AudioContext | null;
+
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
   private player!: Phaser.Physics.Arcade.Image;
@@ -63,6 +65,7 @@ export class GameScene extends Phaser.Scene {
   private sessionTelemetry = createEmptyTelemetry();
   private lastValidationReport: string | null = null;
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
+  private feedbackAudioContext: FeedbackAudioContext = null;
 
   constructor() {
     super('GameScene');
@@ -255,6 +258,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePrimaryAction(): void {
+    this.unlockFeedbackAudio();
+
     if (this.phase === 'waiting') {
       this.startRun();
       return;
@@ -508,6 +513,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.cameras.main.shake(90, 0.0035);
+    this.playDeathFeedbackTone();
     this.hitFlash.setAlpha(0.55).setVisible(true);
     this.tweens.add({
       targets: this.hitFlash,
@@ -534,7 +540,7 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
-          'Impact feedback marks the death frame so the cause reads instantly.',
+          'Impact flash and death blip mark the hit frame so the cause reads instantly.',
           `Session avg: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
           `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
           `Lifetime avg: ${getAverageSurvivalTime(this.telemetry).toFixed(1)}s | Avg retry: ${getAverageRetryDelayText(this.sessionTelemetry)}`,
@@ -549,6 +555,56 @@ export class GameScene extends Phaser.Scene {
         'Retry should stay instant. Track session telemetry for early deaths under 10s, not lifetime totals.',
       )
       .setVisible(true);
+  }
+
+  private unlockFeedbackAudio(): void {
+    const AudioContextCtor = window.AudioContext ?? null;
+
+    if (!AudioContextCtor) {
+      return;
+    }
+
+    if (!this.feedbackAudioContext) {
+      this.feedbackAudioContext = new AudioContextCtor();
+    }
+
+    if (this.feedbackAudioContext.state === 'suspended') {
+      void this.feedbackAudioContext.resume().catch(() => {
+        // Audio resume is best-effort only.
+      });
+    }
+  }
+
+  private playDeathFeedbackTone(): void {
+    const audioContext = this.feedbackAudioContext;
+
+    if (!audioContext || audioContext.state !== 'running') {
+      return;
+    }
+
+    const now = audioContext.currentTime;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(220, now);
+    oscillator.frequency.exponentialRampToValueAtTime(124, now + 0.11);
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(920, now);
+    filter.Q.setValueAtTime(1.8, now);
+
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.045, now + 0.012);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.14);
   }
 
   private loadTelemetry(

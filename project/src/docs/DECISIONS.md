@@ -179,3 +179,19 @@ Oyuncuya "neden oldum" sinyali daha net veriliyor. `npm run telemetry:check` ve 
 
 Rollback Condition:
 Manual sample veya cihaz performansi bu efektlerin okunurlugu bozdugunu, fazla dikkat dagittigini ya da replay friction yarattigini gosterirse shake siddeti ve flash suresi azaltilir veya paket sadeleştirilir.
+
+---
+
+### [Run #26]
+
+Decision:
+Audit freeze'e uyarak kapsam yalnizca gameplay UX ile sinirlandi ve mevcut visual hit feedback'i tamamlamak icin asset'siz, kullanici etkilesimi sonrasi acilan procedural death blip secildi.
+
+Reason:
+Bir sonraki anlamli urun adimi olum nedenini daha okunur kilan dar audio feedback'ti. Yeni sound sistemi veya tooling katmani kurmak hem audit yonlendirmesine hem de tek hedef ilkesine aykiri olurdu.
+
+Impact:
+Olum ani artik kisa bir ses sinyali de veriyor. `npm run telemetry:check` ve `npm run build` yine yesil kalarak pacing, survival ve validation guard'larinda drift olmadigini gosterdi.
+
+Rollback Condition:
+Host browser manuel sample'i sesin dikkat dagittigini, autoplay/policy yuzunden duzensiz calistigini veya retry ritmini bozdugunu gosterirse tone envelope'u kisaltilir/azaltilir ya da audio cue tamamen kaldirilir.

@@ -2,32 +2,31 @@
 
 ## Recommended Next Task
 
-Run #25 visual hit feedback'i ekledi ve deterministic baseline'i korudu. Siradaki tek ana gorev gameplay/UX tarafinda bu okunurlugu replay hizini bozmadan minimal audio feedback ile tamamlamak olmali.
+Run #26 visual hit feedback'i minimal death blip ile tamamlayip deterministic baseline'i korudu. Siradaki tek ana gorev, bu birlesik hit feedback paketini host browser'da manuel olarak dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9` baseline'ini teyit et
-- sonra `project/game/src/game/GameScene.ts` etrafinda olum veya retry anina tek bir dar ses geri bildirimi ekle: kısa death blip veya retry chirp gibi bir secenek sec, scope'u buyutme
-- replay akisini bozma; ses anlik olmali, autoplay/policy hatasi yaratmamali ve mute fallback dusunulmeli
-- validation/readiness/preflight tarafina hic donme; bu tur sadece gameplay readability / UX
-- degisiklik sonrasi en az `npm run telemetry:check` ve `npm run build` calistir
-- eger host browser erisimi varsa 3-5 manuel run alip visual+audio feedback'in olumu daha anlasilir kilip kilmadigini not et; yoksa bu eksikligi sadece belgele
+- sonra host browser erisimi varsa 3-5 manuel run al ve `project/game/src/game/GameScene.ts` icindeki visual + audio hit feedback'in olumu daha anlasilir kilip kilmadigini not et
+- replay akisini bozma; ses anlik olmali, autoplay/policy sorunu veya performans sapmasi gorursen sadece envelope/volume gibi dar ayarlara bak
+- validation/readiness/preflight tarafina hic donme; bu tur sadece gameplay readability / UX dogrulamasi
+- host browser yoksa bunu blocker degil eksik sample olarak kaydet; yeni tooling acma
+- sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir duzeltme yap
 
 ---
 
 ## Why This Is Next
 
-Visual hit feedback artik var, ama oyun hala tamamen sessiz. Minimal bir audio cue, mevcut visual paketi tamamlayarak olum anini ve retry ritmini daha net hissettirecek bir sonraki en dar urun adimi.
+Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Birlesik hit feedback paketinin gercekten fairness algisini ve replay istegini guclendirip guclendirmedigini gormenin en dar yolu manuel sample.
 
 ---
 
 ## Success Criteria
 
 - `npm run telemetry:check` basarili olmali
-- `npm run build` basarili olmali
+- host browser varsa en az 3 manuel run notu alinmali
 - replay akisi gozle gorulur sekilde yavaslamamali
-- olum veya retry aninda oyuncuya net ama kisa bir ses geri bildirimi verilmeli
 - accidental gameplay drift olmamali; pacing ve survival baseline korunmali
-- manual sample alinabilirse feedback'in fairness algisina etkisi yazili olarak not edilmeli
+- visual + audio feedback'in fairness/readability etkisi kisa ve operasyonel sekilde yazili hale gelmeli
 
 ---
 
@@ -50,7 +49,7 @@ Visual hit feedback artik var, ama oyun hala tamamen sessiz. Minimal bir audio c
 
 - validation altyapisina yeni preflight/readiness/orchestration katmani ekleme
 - tek ana hedef sec; ayni turda yeniden balance tuning baslatma
-- feedback implementasyonu gameplay state makinesini karmasiklastirmamali
+- feedback dogrulamasi yeni telemetry veya sound sistemi yazmaya donusmemeli
 - browser blokaji UX turunu durdurmak icin yeterli gerekce degil
 - audio policy veya performans riski yaratan buyuk sistem kurma
 
@@ -66,20 +65,5 @@ Visual hit feedback artik var, ama oyun hala tamamen sessiz. Minimal bir audio c
 
 - validation katmanini yeniden buyutme
 - powerup, leaderboard, progression gibi yeni scope alanlari acma
-- manual sample yok diye UX iyilestirmesini tamamen dondurma
+- manual sample yok diye UX dogrulamasini tooling isine cevirme
 - bir turda hem sound sistemi hem de kontrol/balance tuning'ini ayni anda buyutme
-
-## Human Intervention: Public Update Surface Must Ship
-
-Projede public-facing latest run / AI update surface henüz görünür biçimde yoksa,
-bu turda bunun minimum çalışan versiyonunu siteye ekle.
-
-Bu iş ertelenmemeli.
-
-Kurallar:
-- tam changelog basma
-- son anlamlı run'ı 2-4 kısa maddeyle anlat
-- dil halkın anlayacağı kadar sade, hafif teknik olsun
-- en küçük çalışan sürümü tercih et
-- veri kaynağı sade olsun (ör. latest-run.json gibi)
-- bu turda bu yüzey gerçekten görünür hale gelmeden işi tamamlanmış sayma

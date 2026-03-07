@@ -2,6 +2,14 @@
 
 ---
 
+## Run #26
+
+- `project/game/src/game/GameScene.ts` icinde kullanici etkilesimi sonrasi acilan procedural audio context ile kisa bir death blip eklendi
+- olum overlay kopyasi audio + visual hit feedback paketini yansitacak sekilde guncellendi
+- validation/tooling kapsam freeze'i korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #25
 
 - `project/game/src/game/GameScene.ts` olum anina kisa ekran flash, hafif kamera shake ve player impact pulse eklenerek hit feedback dar bir UX paketi halinde eklendi
