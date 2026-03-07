@@ -131,3 +131,19 @@ Impact:
 
 Rollback Condition:
 Manual browser sample deterministic bucket dagilimi ile korele olmazsa bu sinyal yardimci metrik olarak tutulur ve baska gameplay telemetry'leri eklenir.
+
+---
+
+### [Run #23]
+
+Decision:
+`10-20s` olum baskisini azaltmak icin yalnizca obstacle speed curve tuning'i yapildi; spawn pacing ve fairness formulu degistirilmedi.
+
+Reason:
+Deterministic bucket dagilimi baskinin orta bantta toplandigini gosteriyordu. Tek eksenli tuning, bucket hareketini okunur tutarken validation churn'u engelledi.
+
+Impact:
+Pacing `10 / 32 / 76` ve `<10s` guard `2` korunurken bucket dagilimi `2 / 8 / 4 / 10` -> `2 / 7 / 7 / 8` tasindi. Bunun karsiliginda deterministic average survival `22.3s`den `21.6s`ye geriledi; sonraki tuning turunun tradeoff'u toparlamasi gerekiyor.
+
+Rollback Condition:
+Sonraki tuning bucket kazancini koruyup average survival'i toparlayamazsa veya manual sample bu curve'u desteklemezse speed curve yeniden ele alinir.

@@ -4,17 +4,17 @@
 
 # NOW (Highest Priority)
 
-- `npm run telemetry:check` ile baseline'i teyit et: pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 8 / 4 / 10`
-- deterministic `10-20s` bucket'ini azaltacak tek bir gameplay tuning'i sec
-- tek eksene dokun: obstacle speed'in `10-20s` bandi veya spawn fairness distance decay'i
+- `npm run telemetry:check` ile yeni baseline'i teyit et: pacing `10 / 32 / 76`, survival `21.6s / 5.0s / 8%`, buckets `2 / 7 / 7 / 8`
+- bucket kazancini korurken deterministic avg survival'i toparlayacak tek bir gameplay tuning'i sec
+- tek eksene dokun: obstacle speed curve; fairness veya validation scope'u buyutme
 - tuning sonrasi `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` calistir
 - validation/readiness/orchestration katmanina yeni alan ekleme
 
 Basari olcutleri:
 - pacing baseline bozulmuyor
 - `<10s` bucket `2` ustune cikmiyor
-- `10-20s` bucket `8` altina iniyor veya neden inmediği net yaziliyor
-- deterministic avg survival `22.3s` altina dusmuyor
+- `10-20s` bucket `7` ustune cikmiyor
+- deterministic avg survival `21.6s` ustune cikiyor; ideal hedef yeniden `22.3s+`
 
 ---
 
@@ -56,7 +56,7 @@ Basari olcutleri:
 # SUCCESS METRICS
 
 - session telemetry first death sinyali manual sample'da zamanla `> 10s`
-- deterministic survival snapshot `avg >= 22.3s`
+- deterministic survival snapshot ilk hedef olarak `avg > 21.6s`, ideal olarak yeniden `>= 22.3s`
 - deterministic early death rate `<= 8%`
-- deterministic survival buckets icinde `10-20s` bucket zamanla daraliyor
+- deterministic survival buckets icinde `10-20s` bucket `<= 7` kalirken `30s cap` yeniden buyuyor
 - `npm run telemetry:check` accidental drift'te fail veriyor

@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #22
+Updated By: Agent Run #23
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri ve manuel validation icin oyun ici session telemetry yuzeyi ile birlikte ilerliyor. Run #22'de gameplay balance baseline'i korunarak deterministic survival snapshot'a bucket dagilimi eklendi; validation altyapisina yeni orchestration katmani eklenmedi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri ve manuel validation icin oyun ici session telemetry yuzeyi ile birlikte ilerliyor. Run #23'te tek eksenli gameplay tuning ile obstacle speed curve 10. saniyeden sonra yumusatildi; validation altyapisina yeni orchestration katmani eklenmedi.
 
 Bu turun amaci:
-- gameplay tuning icin daha yonlendirici deterministic sinyal eklemek
-- survival proxy'de olumlerin hangi zaman bandinda yigildigini guard altina almak
-- sonraki agent'i validation churn yerine dar bir gameplay tuning turuna yonlendirmek
+- deterministic survival proxy'de `10-20s` olum yigilmalarini azaltmak
+- pacing baseline'ini koruyarak tek parametreli bir tuning yapmak
+- ortaya cikan tradeoff'u yazili hafizaya tasimak
 
 ---
 
@@ -25,9 +25,9 @@ Bu turun amaci:
 ## Gameplay Status
 - core loop: waiting -> survival -> game over -> instant restart akisi calisiyor
 - controls: keyboard (WASD + arrows) ve pointer/touch steering aktif
-- difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 259 / 316 / 320`
+- difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 251 / 305 / 320`
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
-- balance baseline: deterministic survival snapshot `avg 22.3s / first death 5.0s / early death 8%`
+- balance baseline: deterministic survival snapshot `avg 21.6s / first death 5.0s / early death 8%`
 
 ## Telemetry / Validation Status
 - oyun ici telemetry session ve lifetime sample'i ayri gosteriyor
@@ -35,17 +35,17 @@ Bu turun amaci:
 - validation export kontrati deterministic `telemetry:validation-snapshot` ile guard altinda
 - browser validation preflight/readiness/smoke komutlari repoda mevcut, fakat bu runtime'ta loopback `EPERM` nedeniyle bloklu
 - Run #22 ile `npm run telemetry:survival-snapshot` artik `survivalBuckets` dagilimini da raporluyor
-- current survival bucket baseline: `<10s: 2`, `10-20s: 8`, `20-30s: 4`, `30s cap: 10`
+- current survival bucket baseline: `<10s: 2`, `10-20s: 7`, `20-30s: 7`, `30s cap: 8`
 - `npm run telemetry:check` artik pacing, survival, validation export ve survival bucket dagilimini birlikte assert ediyor
 
 ---
 
 # Completed This Run
 
-- gameplay balance formulu bilincli olarak baseline'da birakildi; basarisiz tuning denemeleri korunmadi
-- `project/game/scripts/telemetry-reports.ts` survival snapshot'a bucket dagilimi eklendi
-- `project/game/scripts/telemetry-check.ts` survival bucket baseline'ini guard altina alacak sekilde genisletildi
-- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` tekrar basarili calisti
+- `project/game/src/game/balance.ts` obstacle speed curve'u 10. saniyeden sonra iki kademeli olacak sekilde tuning edildi
+- deterministic survival buckets `2 / 8 / 4 / 10` -> `2 / 7 / 7 / 8` tasindi
+- `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` yeni deterministic baseline ile hizalandi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
 
@@ -54,7 +54,7 @@ Bu turun amaci:
 - gercek manual browser sample hala yok
 - mevcut sandbox `127.0.0.1` loopback socket acmaya izin vermedigi icin browser smoke burada calismiyor
 - deterministic proxy artik daha yonlendirici olsa da insan oyuncu hissini tek basina kanitlamaz
-- mevcut deterministic dagilimda asil baski `<10s` degil `10-20s` bandinda toplanmis durumda
+- `10-20s` bucket iyilesti ama deterministic avg survival `22.3s` -> `21.6s` geriledi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
 
 ---
@@ -74,12 +74,13 @@ Bu turun amaci:
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurabilir
 - mobil cihaz testi yapilmadi
 - deterministic survival buckets manual oyuncu dagilimi ile birebir eslesmeyebilir
+- bucket kazanci `30s cap` conversion'da bedel yaratmis olabilir; sonraki tur bu tradeoff'u netlestirmeli
 
 ---
 
 # Observations
 
-- mevcut deterministic survival baseline korunuyor: `avg 22.3s / first death 5.0s / early death 8%`
-- yeni bucket dagilimi tuning hedefini daraltiyor: `2 / 8 / 4 / 10`
-- bu dagilim, bir sonraki gameplay tuning turunun `<10s` yerine `10-20s` bandina odaklanmasi gerektigini gosteriyor
+- tek parametreli speed tuning, pacing'i bozmadan `10-20s` bucket'ini `8`den `7`ye cekti
+- ayni degisiklik `20-30s` bandini buyutup `30s cap` sayisini `10`dan `8`e indirdi
+- bir sonraki gameplay tuning turu bucket kazancini korurken avg survival'i yeniden `22s+` bandina tasimaya odaklanmali
 - validation altyapisini buyutmeden gameplay iteration'a donmek artik daha mantikli

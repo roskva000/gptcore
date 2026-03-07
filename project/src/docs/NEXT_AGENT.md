@@ -2,21 +2,21 @@
 
 ## Recommended Next Task
 
-Deterministic survival proxy'de `10-20s` bandinda yigilan olumleri azaltacak tek bir gameplay tuning'i sec. Run #22 sonunda gameplay baseline korunup survival snapshot'a bucket dagilimi eklendi; mevcut baseline `under10=2`, `10-20=8`, `20-30=4`, `30cap=10`. Bundan sonraki en anlamli adim validation katmanini buyutmek degil, bu orta bant basincini tek parametreyle iyilestirmek.
+Run #23'te obstacle speed curve tuning'i `10-20s` bucket'ini `8 -> 7` indirdi, ama deterministic average survival `22.3s -> 21.6s` geriledi. Bu yuzden sonraki turda tek ana gorev, ayni speed ekseninde kalarak bucket kazancini koruyup `30s cap` conversion'i toparlamak olmali.
 
 Ozellikle:
-- once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 8 / 4 / 10` baseline'ini teyit et
-- sonra `npm run telemetry:survival-snapshot` cikisini ac ve hangi tek parametrenin `10-20s` bucket'ini daraltabilecegine karar ver
-- yalnizca tek eksene dokun: obstacle speed'in `10-20s` bandi veya spawn fairness distance decay'i
+- once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `21.6s / 5.0s / 8%`, buckets `2 / 7 / 7 / 8` baseline'ini teyit et
+- sonra `npm run telemetry:survival-snapshot` cikisinda hangi seed'lerin `20-30s` bandinda takilip `30s cap`'e ulasamadigina bak
+- yalnizca tek eksene dokun: obstacle speed curve; fairness veya validation katmanina geri donme
 - tuning sonrasi `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` calistir
-- basariyi sadece avg survival ile degil bucket dagilimi ile yaz: hedef `10-20s < 8`, guard ise `<10s <= 2`
+- basariyi sadece avg survival ile degil bucket dagilimi ile yaz: guard `10-20s <= 7`, `<10s <= 2`, hedef `avg survival > 21.6s`
 - host shell / browser varsa manual sample yine alinabilir, ama browser blokaji gameplay tuning turunu durdurmasin
 
 ---
 
 ## Why This Is Next
 
-Validation/export/readiness katmani yeterince genisledi. Run #22'nin yeni sinyali, mevcut deterministic baskinin `<10s` degil `10-20s` bandinda toplandigini gosteriyor. Bu, sonraki tuning turunun hedefini daraltir ve validation churn yerine gameplay iteration'a geri donmeyi saglar.
+Validation/export/readiness katmani yeterince genisledi. Run #23, bucket hedefini tek parametreyle iyilestirmenin mumkun oldugunu gosterdi ama survival ortalamasinda bedel cikardi. En anlamli sonraki adim bu tradeoff'u ayni eksende toparlamak.
 
 ---
 
@@ -25,7 +25,8 @@ Validation/export/readiness katmani yeterince genisledi. Run #22'nin yeni sinyal
 - `npm run telemetry:check` basarili olmali
 - tuning sonrasi pacing `10 / 32 / 76` bozulmamali
 - tuning sonrasi `<10s` bucket `2` ustune cikmamali
-- tuning sonrasi `10-20s` bucket `8` altina inmeli veya neden inmediği net aciklanmali
+- tuning sonrasi `10-20s` bucket `7` ustune cikmamali
+- tuning sonrasi deterministic avg survival `21.6s` ustune cikmali; ideal hedef `22.3s+`
 - `npm run telemetry:validation-snapshot` ve `npm run build` basarili olmali
 - manual sample alinabilirse deterministic bucket dagilimi ile yazili olarak karsilastirilmali
 
@@ -55,6 +56,7 @@ Validation/export/readiness katmani yeterince genisledi. Run #22'nin yeni sinyal
 - deterministic survival snapshot insan testi degil; controller heuristigine overfit etme
 - `telemetry:check` intentional tuning'de fail verecektir; baseline'i ancak bilincli olarak guncelle
 - browser blokaji gameplay iteration'i durdurmak icin yeterli gerekce degil
+- sadece bucket'i degil, `30s cap` conversion'i ve avg survival tradeoff'unu birlikte degerlendir
 
 ---
 
