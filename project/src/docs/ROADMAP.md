@@ -4,23 +4,23 @@
 
 # NOW (Highest Priority)
 
-- `npm run telemetry:check` ile yeni baseline'i teyit et: pacing `10 / 32 / 76`, survival `21.6s / 5.0s / 8%`, buckets `2 / 7 / 7 / 8`
-- bucket kazancini korurken deterministic avg survival'i toparlayacak tek bir gameplay tuning'i sec
-- tek eksene dokun: obstacle speed curve; fairness veya validation scope'u buyutme
-- tuning sonrasi `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` calistir
+- gameplay readability tarafinda tek bir UX adimi sec: olum / temas anini daha okunur kilacak hit feedback ekle
+- mevcut deterministic baseline'i koru: pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9`
+- replay hizini bozmadan oyuncuya "neden oldum" sinyalini guclendir
+- degisiklik sonrasi en az `npm run telemetry:check` ve `npm run build` calistir
 - validation/readiness/orchestration katmanina yeni alan ekleme
 
 Basari olcutleri:
-- pacing baseline bozulmuyor
-- `<10s` bucket `2` ustune cikmiyor
-- `10-20s` bucket `7` ustune cikmiyor
-- deterministic avg survival `21.6s` ustune cikiyor; ideal hedef yeniden `22.3s+`
+- replay akisi ani ve sade kaliyor
+- olum veya hasar aninda ekranda net bir geri bildirim var
+- deterministic baseline accidental drift olmadan korunuyor
+- `npm run telemetry:check` ve `npm run build` basarili kaliyor
 
 ---
 
 # NEXT
 
-- hit feedback ve basic sound effects ekle
+- basic sound effects ekle
 - mobil kontrol hissini test edip gerekiyorsa pointer steering ayari yap
 - manual browser sample alinabiliyorsa deterministic bucket dagilimi ile caprazla
 
@@ -56,7 +56,7 @@ Basari olcutleri:
 # SUCCESS METRICS
 
 - session telemetry first death sinyali manual sample'da zamanla `> 10s`
-- deterministic survival snapshot ilk hedef olarak `avg > 21.6s`, ideal olarak yeniden `>= 22.3s`
+- deterministic survival snapshot mevcut guard olarak `avg >= 21.8s`; ideal olarak yeniden `>= 22.3s`
 - deterministic early death rate `<= 8%`
 - deterministic survival buckets icinde `10-20s` bucket `<= 7` kalirken `30s cap` yeniden buyuyor
 - `npm run telemetry:check` accidental drift'te fail veriyor

@@ -2,6 +2,16 @@
 
 ---
 
+## Run #24
+
+- `project/game/src/game/balance.ts` obstacle speed curve'u `10-20s` yumusak kalacak, `20s+` ise lineer baseline'a daha yakin toparlanacak sekilde tuning edildi
+- deterministic survival buckets `2 / 7 / 7 / 8` -> `2 / 7 / 6 / 9`, average survival `21.6s` -> `21.8s`, average spawn count `22.3` -> `22.5` tasindi
+- `project/game/scripts/telemetry-check.ts` yeni speed samples (`145 / 183 / 253 / 310 / 320`) ve deterministic baseline ile hizalandi
+- `project/game/src/game/telemetry.ts` validation baseline metni `21.8s avg / 5.0s first death / 8% early` olacak sekilde guncellendi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #23
 
 - `project/game/src/game/balance.ts` obstacle speed curve'u 10. saniyeden sonra iki kademeli olacak sekilde tuning edildi

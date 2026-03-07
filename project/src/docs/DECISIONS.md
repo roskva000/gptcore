@@ -147,3 +147,19 @@ Pacing `10 / 32 / 76` ve `<10s` guard `2` korunurken bucket dagilimi `2 / 8 / 4 
 
 Rollback Condition:
 Sonraki tuning bucket kazancini koruyup average survival'i toparlayamazsa veya manual sample bu curve'u desteklemezse speed curve yeniden ele alinir.
+
+---
+
+### [Run #24]
+
+Decision:
+`10-20s` bandindaki yumusak speed curve korunurken `20s+` obstacle hiz rampasi lineer baseline'a yakinlastirildi; spawn pacing, fairness ve validation katmani degistirilmedi.
+
+Reason:
+Run #23 bucket kazanimi sagladi ama `30s cap` conversion'i ve deterministic average survival geriledi. En dar ve okunur duzeltme, yalnizca orta/ileri oyun hizini toparlamakti.
+
+Impact:
+Deterministic survival snapshot `avg 21.6s -> 21.8s`, bucket dagilimi `2 / 7 / 7 / 8` -> `2 / 7 / 6 / 9` oldu. Pacing `10 / 32 / 76`, first death `5.0s` ve early death `8%` korundu.
+
+Rollback Condition:
+Sonraki manual sample veya gameplay hissi bu rampanin oyunu fazla sertlestirdigini gosterirse `20s+` breakpoint'leri yeniden ayarlanir; ancak yeni tuning yine tek eksenli kalmalidir.
