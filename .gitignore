@@ -1,2 +1,5 @@
 project/game/node_modules/
 project/game/dist/
+
+.agent-logs/
+cron.log
