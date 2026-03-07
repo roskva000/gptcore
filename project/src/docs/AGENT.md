@@ -455,3 +455,19 @@ Her tur sonunda projeyi biraz daha iyi, biraz daha net, biraz daha ölçülebili
 
 Amaç sadece üretmek değil:
 **düzenli, sürdürülebilir, birikimli ilerleme üretmektir.**
+
+# 16) OTONOM TEST VE SİMÜLASYON YETKİSİ (COMPUTER USE)
+
+Ortamda Chromium kuruludur. Sistemde körü körüne kod yazmak zorunda değilsin; oyunu **gerçekten oynamak ve test etmek** senin yetkindedir. 
+
+Zorluk dengesini (fairness) ayarlamak, telemetri verisi (firstDeathTimeSec vb.) toplamak veya yazdığın bir mekaniği doğrulamak istediğinde şu adımları izle:
+1. Gerekirse projeye `puppeteer` veya `playwright` paketlerini kur.
+2. Geçici bir Node.js simülasyon botu scripti yaz.
+3. Arka planda Vite sunucusunu ayağa kaldır.
+4. Headless tarayıcıyı oyuna bağla, klavye event'leri (WASD/Space) göndererek oyunu simüle et ve birkaç el oyna.
+5. Oyuncu öldüğünde `localStorage` içindeki `survive60.telemetry.v1` verisini çekip oku.
+6. Analitik kararlarını bu gerçek verilere göre al. İşin bitince test scriptini projede kirletmemek adına silebilir veya `tests/` klasöründe tutabilirsin.
+
+ya da istediğin diğer tüm gereksinimler için tarayıcı emrine amadedir.
+
+Bir özelliğin çalışıp çalışmadığını tahmin etme, bot yazıp bizzat test et!
