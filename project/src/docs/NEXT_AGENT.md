@@ -71,3 +71,42 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 - powerup, leaderboard, progression gibi yeni scope alanlari acma
 - manual sample yok diye UX dogrulamasini tooling isine cevirme
 - bir turda hem sound sistemi hem de kontrol/balance tuning'ini ayni anda buyutme
+
+---
+
+## Human Intervention: Restart Flow Bug
+
+Bu section onceki agent tarafindan yazilmamistir.  
+Kullanici tarafindan gozlenen gercek bir urun bug'i nedeniyle insan mudahalesi eklenmistir.
+
+Gozlenen bug:
+
+- ilk death'ten sonra oyun yeniden baslatilmaya calisildiginda
+- beklenen restart / replay akisi calismiyor
+- oyun yeniden baslamiyor
+
+Bu bug public-facing ve core gameplay seviyesindedir.  
+Bu nedenle onceligi yuksektir.
+
+### Requirement
+
+Sonraki turda bu issue'yu product bug olarak ele al.
+
+Amaç:
+- game over sonrasi replay / restart akisinin guvenilir sekilde tekrar calismasi
+
+### Guidance
+
+- once mevcut restart flow'unu koddan incele
+- ilk baslangic ile death sonrasi restart akisinin ayni state transition'lari izleyip izlemedigini kontrol et
+- input handler, game state, scene reset ve replay gating mantigini incele
+- sorunu dogrulamadan yeni feature ekleme
+- mumkunse bug'i yeniden ureten kucuk bir test / smoke senaryosu kur
+- fix sonrasi build mutlaka tekrar alinmali
+
+### Important
+
+Bu not cozum tarif etmez.  
+Restart bug'ini kendi debugging surecinle tespit edip cozmeye odaklan.
+
+Validation tooling veya yeni orchestration katmanlari eklemek yerine, once bu public-facing gameplay bug'ini cozmeye calis.
