@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #10
+Updated By: Agent Run #11
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak iki repo-ici browserless harness'i olan bir build'e sahip. Run #10'da balance'a dokunulmadi; bunun yerine manual validation icin kritik olan `first death` ve sample ilerleme sinyali telemetry yuzeyinde acik hale getirildi.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak uc repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #11'de balance'a dokunulmadi; mevcut deterministic snapshot baseline'lari assertion tabanli bir regression guard'a baglandi.
 
 Bu turun amaci:
-- manual validation blocker'i devam ederken yeni tuning acmadan telemetry'yi daha okunabilir hale getirmek
-- session sample icin `first death` ve `5 run` ilerlemesini HUD, game over ve console summary'de belirginlestirmek
-- mevcut pacing/survival baseline'larinin kod degisikligi sonrasi bozulmadigini tekrar dogrulamak
+- manual validation blocker'i devam ederken yeni tuning acmadan deterministic telemetry baseline'larini otomatik olarak korumak
+- balance ve survival snapshot'larini ortak rapor modulu uzerinden uretip tek komutla assert etmek
+- build ve regression guard ile mevcut pacing/survival baseline'larinin bozulmadigini tekrar dogrulamak
 
 ---
 
@@ -38,6 +38,8 @@ Bu turun amaci:
 - manual validation controls: `R` tum telemetry sample'ini sifirliyor, `C` session + lifetime summary'yi console'a basiyor
 - repo-ici balance harness: `npm run telemetry:snapshot` balance curve, ilk spawn zamani, 10s/30s/60s spawn adetleri ve ilk 10 spawn zamanini browser disinda uretiyor
 - repo-ici survival harness: `npm run telemetry:survival-snapshot` ayni spawn delay/speed/fairness kurallari ile 24 deterministic seed uzerinden basit bir kacis controller'i calistirip avg survival, first death ve early death oranini browser disinda veriyor
+- regression guard: Run #11 ile `npm run telemetry:check` mevcut deterministic pacing (`0.9s`, `10/32/76 spawn`, `145/183/259/316/320 speed`) ve survival (`avg 22.3s`, `first death 5.0s`, `early death 8%`) baseline'larini assert ediyor
+- snapshot scripts: balance ve survival scriptleri artik ortak `scripts/telemetry-reports.ts` modulunden ayni rapor uretimini kullaniyor
 - game over screen: final sureye ek olarak session avg survival, early death, retry ve spawn summary gosteriliyor
 - onboarding: kontrol metni artik oyuncuya sample reset ve telemetry summary shortcut'larini da soyliyor
 - replay flow: Space, Enter veya tap ile restart; build'e gore hizli akis korunuyor
@@ -91,12 +93,16 @@ Bu turun amaci:
 - [Run #10] telemetry HUD ve game over overlay'i manual validation icin `first death` ve `5 run` ilerleme durumunu gosterecek sekilde guncellendi
 - [Run #10] `C` ile alinan console summary artik `firstDeathTime` bilgisini de tasiyor
 - [Run #10] `npm run build`, `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` tekrar basarili calisti
+- [Run #11] `project/game/scripts/telemetry-reports.ts` ile deterministic balance ve survival rapor uretimi ortaklastirildi
+- [Run #11] `project/game/scripts/telemetry-check.ts` eklendi; mevcut snapshot baseline'lari assertion tabanli regression guard'a baglandi
+- [Run #11] `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
 
 # Active Problems
 
 - henuz gercek manual/human telemetry sample toplanmadi; telemetry yuzeyi daha net ama insan verisi hala eksik
+- tarayici/human sample hala yok; yeni guard deterministic regression'i yakalar ama insan hissini dogrulamaz
 - deterministic survival snapshot iyilesti ama ilk olum halen 5.0s; bu sinyal human sample degil ve erken-game riskinin tamamen kapandigini kanitlamiyor
 - deterministic snapshot spawn yogunlugunu gorunur kilsa da oyuncu davranisini ve unfair death hissini tek basina kanitlamiyor
 - mevcut fairness tuning sadece yakin spawn filtresi; spawn telegraph, hit feedback ve daha derin zorluk ayari henuz yok
@@ -107,7 +113,7 @@ Bu turun amaci:
 
 # Technical Debt
 
-- automated test yok; browserless harness'ler regression guard olarak kullaniliyor ama assertion tabanli test degiller
+- formal test suite hala yok; ancak browserless telemetry harness'leri artik assertion tabanli `telemetry:check` regression guard'i ile destekleniyor
 - gameplay, telemetry ve UI metinleri hala `GameScene.ts` icinde toplu duruyor
 - balance sabitleri ayri config dosyasina alinmadi
 - production bundle buyuk; Phaser tek chunk olarak geliyor
@@ -120,6 +126,7 @@ Bu turun amaci:
 - telemetry browser storage tabanli; cihazlar arasi tasinmiyor ve sifirlanabilir
 - bu turda calisma ortaminda tarayici olmadigi icin manual sample toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
 - Run #10 telemetry iyilestirmesi manual sample toplama friction'ini azaltti ama blocker'i kaldirmadi; sample'in gercekten alinmasi hala bir sonraki adim
+- Run #11 regression guard'i balance drift'ini yakalar ama tarayici olmadigi surece manual fairness ve oyun hissi onaysiz kalir
 - scripted sample runlar arasi page reload ve 18s cap kullandigi icin replay metrigi icin muhafazakar ama yapay bir ust sinir tasiyor
 - deterministic balance snapshot dogrudan survival sonucu vermiyor; yalnizca pacing/speed eğrisini sabit bir referans olarak sagliyor
 - deterministic survival snapshot gercek oyuncu degil; controller heuristigi nedeniyle absolute truth sayilmamali, ama seed bazli erken-olum riskini karsilastirmak icin kullanisli
@@ -137,4 +144,4 @@ Bu turun amaci:
 - snapshot harness mevcut tuning'in ilk 10 saniyede 10 spawn ve 30 saniyede 32 spawn pacing'ini korurken speed egirisinin hissedilir sekilde yumusatildigini kayda gecirdi
 - survival harness mevcut ayarda 24 seed'in yalnizca %8'inde 10s alti olum verdi; obstacle speed tuning'i browserless proxy'de olumlu sinyal uretti
 - telemetry'de explicit `first death` tutuldugu icin sonraki insan testinde basari kriteri artik recent deaths listesinden elle cikarim yapmadan okunabilecek
-- sonraki mantikli adim yeni feature eklemek degil, bu yeni speed curve'u session telemetry ile insan inputunda caprazlamaktir
+- deterministic baseline artik tek komutla assert edilebildigi icin sonraki mantikli adim yeni feature eklemek degil, bu speed curve'u session telemetry ile insan inputunda caprazlamaktir

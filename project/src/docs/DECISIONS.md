@@ -211,3 +211,19 @@ Session sample artik HUD, game over overlay ve `C` console summary uzerinden dog
 
 Rollback Condition:
 Eger telemetry paneli fazla kalabaliklasir veya harici analytics/manual harness bunu gereksiz kilarsa validation progress satiri sadeleştirilebilir; fakat `first death` sinyali baska bir yuzeyde korunmalidir.
+
+---
+
+### [Run #11]
+
+Decision:
+Bu turda manual validation bloklu kalirken balance'a tekrar dokunmak yerine deterministic telemetry snapshot'lari assertion tabanli regression guard'a baglandi.
+
+Reason:
+Run #9 ve Run #10 ile olusan pacing/survival baseline'lari artik kritik referans haline geldi. Ancak bunlar sadece JSON rapor olarak uretiliyordu; istemsiz bir balance drift'i otomatik yakalanmiyordu.
+
+Impact:
+`npm run telemetry:check` tek komutta balance pacing ve survival baseline'larini assert ediyor. Snapshot scriptleri de ortak `telemetry-reports.ts` uzerinden ayni hesaplari kullandigi icin scriptler arasi drift riski azaldi.
+
+Rollback Condition:
+Intentional bir balance degisikligi yapilirsa bu guard'in beklenen degerleri bilincli sekilde guncellenmeli; eger daha zengin test altyapisi gelirse bu script smoke/regression check rolune indirgenebilir.

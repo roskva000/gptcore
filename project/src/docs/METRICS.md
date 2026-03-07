@@ -26,13 +26,18 @@ current: still not collected as of Run #10; environment had no browser for direc
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
-current: refreshed in Run #9 via `npm run telemetry:snapshot`
-target: keep pacing baseline explicit before manual balance changes
+current: protected in Run #11 by `npm run telemetry:check`; baseline remains first spawn 0.9s, pacing 10 / 32 / 76
+target: keep pacing baseline explicit and fail fast on accidental drift before manual balance changes
 
 deterministic_survival_snapshot:
-current: 24-seed browserless heuristic sample refreshed in Run #9 via `npm run telemetry:survival-snapshot`
+current: protected in Run #11 by `npm run telemetry:check`; baseline remains avg 22.3s, first death 5.0s, early death 8%
 baseline: avg survival 22.3s, first death 5.0s, early death 8%, best 30.0s
 target: use as a regression guard and avoid regressing past 8% early death without breaking pacing snapshot
+
+telemetry_regression_check:
+current: passes via `npm run telemetry:check`
+baseline: asserts first spawn 0.9s, spawn pacing 10 / 32 / 76, speed curve 145 / 183 / 259 / 316 / 320, survival avg 22.3s, first death 5.0s, early death 8%
+target: run before and after future balance changes to catch accidental drift
 
 ---
 
@@ -97,4 +102,7 @@ target: increase while keeping 10s/30s pacing baseline intact
   - session ve lifetime telemetry artik `firstDeathTime` sakliyor
   - HUD validation satiri `0/5 runs` ile basliyor, 5 run sonrasinda `target met` veya `review early deaths` sinyali veriyor
   - console summary `session.firstDeathTime` ve `lifetime.firstDeathTime` alanlarini raporluyor
+- Run #11 regression details:
+  - `telemetry:check` mevcut deterministic balance ve survival snapshot raporlarini tek komutta assert ediyor
+  - fail durumunda hangi pacing veya survival sinyalinin bozuldugu dogrudan mesaj olarak donuyor
 - next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla; explicit `first death` alanini esas al, tarayici yoksa blokaji not et ve yeni tuning'e gecme

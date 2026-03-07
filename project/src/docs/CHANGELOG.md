@@ -93,3 +93,13 @@
 - game over overlay'i session `first death` ve validation durumunu dogrudan gosterecek sekilde guncellendi
 - `C` ile console'a yazilan telemetry summary artik `firstDeathTime` alanini da iceriyor
 - `npm run build`, `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` basarili calisti
+
+---
+
+## Run #11
+
+- `project/game/scripts/telemetry-reports.ts` eklenerek balance ve survival snapshot rapor uretimi ortak moda tasindi
+- `project/game/scripts/telemetry-check.ts` eklendi; deterministic pacing ve survival baseline'lari assertion tabanli regression guard'a baglandi
+- `project/game/package.json` icine `npm run telemetry:check` komutu eklendi
+- `project/game/scripts/balance-snapshot.ts` ve `project/game/scripts/survival-snapshot.ts` ortak rapor modulunu kullanacak sekilde sadeleştirildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti

@@ -2,10 +2,11 @@
 
 ## Recommended Next Task
 
-Run #10'da okunabilir hale gelen telemetry ile obstacle speed curve'unu tarayici varsa session telemetry uzerinden manuel olarak validate et; tarayici yoksa bu eksigi acikca kaydet ve balance'a tekrar dokunma.
+Run #11'de eklenen `npm run telemetry:check` guard'ini once calistir, sonra obstacle speed curve'unu tarayici varsa session telemetry uzerinden manuel olarak validate et; tarayici yoksa bu eksigi acikca kaydet ve balance'a tekrar dokunma.
 
 Ozellikle:
-- once `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` calistir; current baseline olarak pacing `10 / 32 / 76`, survival snapshot `avg 22.3s / first death 5.0s / early death 8%` degerlerini not et
+- once `npm run telemetry:check` calistir; fail verirse manual teste gecmeden once baseline drift'ini anla
+- gerekirse `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` ile detay raporu ac; current baseline olarak pacing `10 / 32 / 76`, survival snapshot `avg 22.3s / first death 5.0s / early death 8%` degerlerini not et
 - eger tarayici erisimi varsa oyunu ac, `R` ile session telemetry sample'ini sifirla ve en az 5 run manuel oyna
 - runlar bittiginde HUD veya game over overlay'de gorunen session `first death` sinyalini not et; sonra `C` ile session summary'yi console'a al ve first death, avg survival, early death ve retry gap'i kaydet
 - manual sample ile browserless baseline arasindaki farki yaz; hangi olumlerin unfair hissettirdigini ozellikle not et
@@ -15,12 +16,13 @@ Ozellikle:
 
 ## Why This Is Next
 
-Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Run #10 ise manual validation icin gereken `first death` sinyalini telemetry'de acik hale getirdi. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
+Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Run #10 manual validation icin gereken `first death` sinyalini telemetry'de acik hale getirdi. Run #11 ise bu deterministic baseline'i `npm run telemetry:check` ile otomatik koruma altina aldi. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
 
 ---
 
 ## Success Criteria
 
+- `npm run telemetry:check` basarili olmali
 - tarayici varsa telemetry panelinde `R` sonrasi manuel oynanmis en az 5 session run gorulmeli
 - HUD veya game over overlay'de session first death ve `5 run` ilerleme durumu okunabilir olmali
 - `C` summary'sinde session first death, avg survival, early death ve retry gap degerleri yazili hale gelmeli
@@ -40,6 +42,8 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - DECISIONS.md
 - `project/game/scripts/balance-snapshot.ts`
 - `project/game/scripts/survival-snapshot.ts`
+- `project/game/scripts/telemetry-check.ts`
+- `project/game/scripts/telemetry-reports.ts`
 - `project/game/src/game/balance.ts`
 - `project/game/src/game/GameScene.ts`
 
@@ -50,6 +54,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - scripted sample gecmis turda page reload + 18s cap ile alindi; survival snapshot ile ayni sey degil
 - deterministic balance snapshot gameplay sonucu degil pacing referansidir
 - deterministic survival snapshot insan testi degil; controller heuristigini overfit etme
+- `telemetry:check` intentional balance degisikliginde fail verir; bilincli tuning yaparsan guard baseline'ini da ayni turda guncelle
 - lifetime telemetry eski run'lari icerebilir; manual test varsa session telemetry'yi esas al
 - tek ana hedef sec; manual validation disinda yeni feature alanlari acma
 - buyuk refactor yapma; gerekmedikce tek scene yapisini koru
