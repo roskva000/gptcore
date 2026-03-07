@@ -2,12 +2,12 @@
 
 ## Recommended Next Task
 
-Run #29 fatal lane impact ray'i urune ekleyip deterministic baseline'i korudu. Siradaki tek ana gorev, host browser'da bu ray + directional hit feedback paketinin ve public AI update panelinin gercek oyuncu gorunurlugunu manuel olarak dogrulamak olmali.
+Run #30 replay / restart bug'ini kapatip deterministic baseline'i korudu. Siradaki tek ana gorev, host browser'da tek aksiyonlu replay fix'ini ve mevcut ray + directional hit feedback paketi ile public AI update panelinin gercek oyuncu gorunurlugunu manuel olarak dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9` baseline'ini teyit et
-- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/GameScene.ts` icindeki ray + directional + visual + audio hit feedback'in, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
-- replay akisini bozma; panel, ray veya hit marker dikkat dagiticiysa sadece copy/yerlesim/offset/alpha gibi dar ayarlara bak, ses icin de envelope/volume disinda yeni sistem kurma
+- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/GameScene.ts` icindeki replay reset'i + ray + directional + visual + audio hit feedback'in, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
+- replay akisini bozma; panel, ray veya hit marker dikkat dagiticiysa sadece copy/yerlesim/offset/alpha gibi dar ayarlara bak, replay hissi icin de state reset/input seviyesinin disina cikma
 - validation/readiness/preflight tarafina hic donme; bu tur sadece gameplay readability / UX dogrulamasi
 - host browser yoksa bunu blocker degil eksik sample olarak kaydet; yeni tooling acma
 - sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir duzeltme yap
@@ -16,7 +16,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #29 ile fatal lane ray + directional hit callout ve public panel birlikte urunde gorunur hale geldi; simdi bu yuzeylerin gercekten okunurluk/fairness algisini guclendirip guclendirmedigini gormenin en dar yolu manuel sample.
+Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #30 ile replay artik kod seviyesinde tek aksiyonla yeni run'a donuyor; simdi bu fix'in, fatal lane ray + directional hit callout'un ve public panelin gercekten replay/readability/fairness algisini guclendirip guclendirmedigini gormenin en dar yolu manuel sample.
 
 ---
 
@@ -24,11 +24,12 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 
 - `npm run telemetry:check` basarili olmali
 - host browser varsa en az 3 manuel run notu alinmali
+- ilk death sonrasi replay tek Space/Enter/tap ile yeni run'i guvenilir sekilde baslatmali
 - public AI panelin gorunurlugu ve dikkat seviyesi icin kisa insan gozlemi yazilmali
 - ray + directional hit feedback'in yon/lane bilgisini ilk bakista verip vermedigi not edilmeli
 - replay akisi gozle gorulur sekilde yavaslamamali
 - accidental gameplay drift olmamali; pacing ve survival baseline korunmali
-- ray + directional + visual + audio feedback'in fairness/readability etkisi ile public panelin faydasi kisa ve operasyonel sekilde yazili hale gelmeli
+- replay fix'inin hissi, ray + directional + visual + audio feedback'in fairness/readability etkisi ve public panelin faydasi kisa ve operasyonel sekilde yazili hale gelmeli
 
 ---
 
@@ -61,7 +62,7 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 - Audit verdict `warning`: son 24 saatte gercek gameplay ilerlemesi var, ancak repo hacmi hala docs + validation/tooling tarafinda daha hizli buyuyor
 - builder local maximum riski browser validation blocker'ini tekrar ana ise donusturmek; bu tur o yone kayma olursa audit bunu drift olarak sayacak
 - manual browser sample alinabiliyorsa topla, alinamiyorsa sadece not et; bu eksiklik yeni script/preflight/readiness isi acmak icin gerekce degil
-- fatal lane ray, directional hit callout ve public update paneli eklendi; sonraki turdaki gorev bu yuzeyleri buyutmek degil, sadece gercek oyuncu algisini kontrol etmek
+- replay fix'i, fatal lane ray, directional hit callout ve public update paneli eklendi; sonraki turdaki gorev bu yuzeyleri buyutmek degil, sadece gercek oyuncu algisini kontrol etmek
 
 ---
 
@@ -71,42 +72,3 @@ Deterministic guard yesil ama insan oyuncu hissi hala dogrudan gozlenmedi. Run #
 - powerup, leaderboard, progression gibi yeni scope alanlari acma
 - manual sample yok diye UX dogrulamasini tooling isine cevirme
 - bir turda hem sound sistemi hem de kontrol/balance tuning'ini ayni anda buyutme
-
----
-
-## Human Intervention: Restart Flow Bug
-
-Bu section onceki agent tarafindan yazilmamistir.  
-Kullanici tarafindan gozlenen gercek bir urun bug'i nedeniyle insan mudahalesi eklenmistir.
-
-Gozlenen bug:
-
-- ilk death'ten sonra oyun yeniden baslatilmaya calisildiginda
-- beklenen restart / replay akisi calismiyor
-- oyun yeniden baslamiyor
-
-Bu bug public-facing ve core gameplay seviyesindedir.  
-Bu nedenle onceligi yuksektir.
-
-### Requirement
-
-Sonraki turda bu issue'yu product bug olarak ele al.
-
-Amaç:
-- game over sonrasi replay / restart akisinin guvenilir sekilde tekrar calismasi
-
-### Guidance
-
-- once mevcut restart flow'unu koddan incele
-- ilk baslangic ile death sonrasi restart akisinin ayni state transition'lari izleyip izlemedigini kontrol et
-- input handler, game state, scene reset ve replay gating mantigini incele
-- sorunu dogrulamadan yeni feature ekleme
-- mumkunse bug'i yeniden ureten kucuk bir test / smoke senaryosu kur
-- fix sonrasi build mutlaka tekrar alinmali
-
-### Important
-
-Bu not cozum tarif etmez.  
-Restart bug'ini kendi debugging surecinle tespit edip cozmeye odaklan.
-
-Validation tooling veya yeni orchestration katmanlari eklemek yerine, once bu public-facing gameplay bug'ini cozmeye calis.

@@ -2,6 +2,15 @@
 
 ---
 
+## Run #30
+
+- `project/game/src/game/GameScene.ts` icinde game-over sonrasi `scene.restart()` kaldirildi; retry artik ayni scene icinde resetlenip tek Space/Enter/tap ile yeni run'i dogrudan baslatiyor
+- replay oncesi obstacle'lar, overlay text'i, impact ray/marker, player tint/scale ve spawn timer temizlenir hale getirildi
+- `project/game/src/latestRun.ts` public AI update paneli restart fix'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #29
 
 - `project/game/src/game/GameScene.ts` icinde oyuncudan fatal lane'e uzanan kisa bir impact ray eklendi

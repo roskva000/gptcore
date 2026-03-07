@@ -243,3 +243,19 @@ Olum aninda flash + blip + directional label'a ek olarak fatal lane'i gosteren k
 
 Rollback Condition:
 Host browser manuel sample'i ray'in fazla dikkat dagittigini, yanlis lane algisi verdigini veya replay ritmini bozdugunu gosterirse yalnizca ray uzunlugu/alpha'si ya da overlay copy'si dar kapsamda sadeleştirilir; yeni UI veya telemetry sistemi kurulmaz.
+
+---
+
+### [Run #30]
+
+Decision:
+Game-over sonrasi replay icin `scene.restart()` akisi kaldirildi; ayni scene icinde obstacle, overlay, hit marker/ray, player tint/scale ve spawn timer temizlenip yeni run tek aksiyonla baslatilir hale getirildi.
+
+Reason:
+Public-facing restart bug'i cekirdek gameplay seviyesindeydi. Mevcut akista retry girdisi scene'i sadece `waiting` fazina donduruyor, ayni aksiyonda yeni kosu baslamiyordu; bu da instant replay ilkesini kiriyordu.
+
+Impact:
+Replay artik tek Space/Enter/tap ile dogrudan yeni run'a geciyor. Fatal lane readability paketi korunurken `npm run telemetry:check` ve `npm run build` yesil kaldi; pacing ve deterministic survival baseline'i drift etmedi.
+
+Rollback Condition:
+Host browser sample'i ayni-scene reset'in gizli state biraktigini, obstacle temizligini bozdugunu veya touch/keyboard retry hissini kotulestirdigini gosterirse replay reset helper'i dar kapsamda yeniden ayarlanir; yeni orchestration/tooling acilmaz.

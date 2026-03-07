@@ -302,7 +302,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (this.phase === 'gameOver') {
-      this.scene.restart();
+      this.startRun();
     }
   }
 
@@ -372,14 +372,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    this.tweens.killTweensOf([this.player, this.hitFlash]);
-    this.player.clearTint();
-    this.player.setAlpha(1);
-    this.player.setScale(1);
-    this.hitFlash.setAlpha(0).setVisible(false);
-    this.impactRay.setAlpha(0).setVisible(false);
-    this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
-    this.impactMarkerLabel.setAlpha(0).setVisible(false);
+    this.resetArenaForRun();
     this.phase = 'playing';
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
@@ -397,6 +390,37 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.scheduleNextSpawn(FIRST_SPAWN_DELAY_MS);
+  }
+
+  private resetArenaForRun(): void {
+    this.nextSpawnTimer?.remove(false);
+    this.nextSpawnTimer = undefined;
+    this.tweens.killTweensOf([
+      this.player,
+      this.hitFlash,
+      this.impactRay,
+      this.impactMarker,
+      this.impactMarkerLabel,
+    ]);
+    this.player
+      .setPosition(ARENA_WIDTH / 2, ARENA_HEIGHT / 2)
+      .setVelocity(0, 0)
+      .clearTint()
+      .setAlpha(1)
+      .setScale(1);
+    this.hitFlash.setAlpha(0).setVisible(false);
+    this.impactRay.setAlpha(0).setVisible(false);
+    this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
+    this.impactMarkerLabel.setAlpha(0).setVisible(false).setText('');
+    this.overlay.setVisible(false);
+    this.overlayTitle.setVisible(false);
+    this.overlayBody.setVisible(false);
+
+    this.obstacles.children.each((child) => {
+      const obstacle = child as Phaser.Physics.Arcade.Image;
+      obstacle.disableBody(true, true);
+      return true;
+    });
   }
 
   private scheduleNextSpawn(delay: number): void {
