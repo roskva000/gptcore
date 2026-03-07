@@ -2,6 +2,15 @@
 
 ---
 
+## Run #27
+
+- `project/game/src/latestRun.ts` ile oyuncuya gorunen minimum AI latest update icerigi eklendi
+- `project/game/src/main.ts` icinde oyun canvas'i ve public update paneli ayni responsive kabukta render edilmeye baslandi; Phaser parent hedefi `game-root` oldu
+- `project/game/src/style.css` public panel ve responsive layout icin guncellendi
+- `npm run build` ve `npm run telemetry:check` basarili calisti
+
+---
+
 ## Run #26
 
 - `project/game/src/game/GameScene.ts` icinde kullanici etkilesimi sonrasi acilan procedural audio context ile kisa bir death blip eklendi

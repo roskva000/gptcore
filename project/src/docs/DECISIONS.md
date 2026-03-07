@@ -195,3 +195,19 @@ Olum ani artik kisa bir ses sinyali de veriyor. `npm run telemetry:check` ve `np
 
 Rollback Condition:
 Host browser manuel sample'i sesin dikkat dagittigini, autoplay/policy yuzunden duzensiz calistigini veya retry ritmini bozdugunu gosterirse tone envelope'u kisaltilir/azaltilir ya da audio cue tamamen kaldirilir.
+
+---
+
+### [Run #27]
+
+Decision:
+`NEXT_AGENT.md` icindeki public gorunurluk gereksinimini minimum kapsamda karsilamak icin Phaser canvas'inin yanina statik bir "AI latest update" paneli eklendi; yeni telemetry veya orchestration katmani kurulmedi.
+
+Reason:
+Bu turda tek hedef kullaniciya gorunen urun ilerlemesi uretmekti. Audit freeze validation/tooling genislemesini yasaklarken, insan mudahalesi notu da AI'in yaptigi son anlamli degisimin oyun icinden gorunur olmasini zorunlu kiliyordu. En dar cozum, mevcut oyun akisini bozmadan public panel eklemekti.
+
+Impact:
+Oyuncu artik urunde AI'in son anlamli degisimini 2-4 maddeyle gorebiliyor. `npm run build` ve `npm run telemetry:check` yesil kalarak bu UI eklemesinin build veya deterministic baseline uzerinde drift yaratmadigini gosterdi.
+
+Rollback Condition:
+Host browser manuel sample'i panelin fazla dikkat dagittigini, mobil yerlesimi bozdugunu veya replay odagini zayiflattigini gosterirse sadece panel copy/yerlesimi dar kapsamda sadeleştirilir; yeni data pipeline acilmaz.

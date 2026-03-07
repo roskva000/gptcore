@@ -4,23 +4,24 @@
 
 # NOW (Highest Priority)
 
-- public AI run update surface (user-visible) eklenmesi
-- birlesik visual + audio hit feedback paketini host browser'da 3-5 manuel run ile dogrula
+- host browser'da 3-5 manuel run alip public AI update panelinin ve birlesik hit feedback paketinin gorunurlugunu dogrula
 - mevcut deterministic baseline'i koru: pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9`
-- replay hizini bozmadan olum nedeninin insanlar icin daha okunur olup olmadigini not et
+- replay hizini bozmadan olum nedeninin ve yeni panelin insanlar icin ne kadar okunur oldugunu not et
 - validation/readiness/orchestration katmanina yeni alan ekleme
 - host browser yoksa eksikligi sadece kaydet; yeni tooling acma
 
 Basari olcutleri:
 - host browser varsa en az 3 manuel run notu alinmis oluyor
+- public AI panel oyunla birlikte net sekilde gorunuyor ve dikkat dagitici bulunmuyorsa bu not ediliyor
 - replay akisi ani ve sade kaliyor
-- olum aninin okunurlugu ve fairness algisi icin kisa bir insan gozlemi yazili hale geliyor
+- olum aninin okunurlugu, fairness algisi ve yeni panelin faydasi icin kisa bir insan gozlemi yazili hale geliyor
 - deterministic baseline accidental drift olmadan korunuyor
 
 ---
 
 # NEXT
 
+- public AI panelin konumunu/copysini sadece manuel sample sorun gosterirse dar sekilde ayarla
 - mobil kontrol hissini test edip gerekiyorsa pointer steering ayari yap
 - manual browser sample alinabiliyorsa deterministic bucket dagilimi ile caprazla
 - audio politikalari farkli cihazlarda sorun cikartirsa volume/envelope'u dusur
@@ -61,3 +62,4 @@ Basari olcutleri:
 - deterministic early death rate `<= 8%`
 - deterministic survival buckets icinde `10-20s` bucket `<= 7` kalirken `30s cap` yeniden buyuyor
 - `npm run telemetry:check` accidental drift'te fail veriyor
+- public AI update panel oyuncu tarafinda gorulebilir durumda ve build'de kalici
