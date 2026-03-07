@@ -2,6 +2,14 @@
 
 ---
 
+## Run #28
+
+- `project/game/src/game/GameScene.ts` icinde olum anina fatal obstacle yonunu gosteren directional hit callout, impact marker ve guncel game over copy'si eklendi
+- `project/game/src/latestRun.ts` public AI update paneli yeni directional feedback degisimini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #27
 
 - `project/game/src/latestRun.ts` ile oyuncuya gorunen minimum AI latest update icerigi eklendi

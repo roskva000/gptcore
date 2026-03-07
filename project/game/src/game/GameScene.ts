@@ -44,6 +44,12 @@ type MovementKeys = {
 };
 
 type FeedbackAudioContext = AudioContext | null;
+type HitDirection = {
+  label: string;
+  sentence: string;
+  offsetX: number;
+  offsetY: number;
+};
 
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
@@ -55,6 +61,8 @@ export class GameScene extends Phaser.Scene {
   private hintText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
   private hitFlash!: Phaser.GameObjects.Rectangle;
+  private impactMarker!: Phaser.GameObjects.Arc;
+  private impactMarkerLabel!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
   private overlayTitle!: Phaser.GameObjects.Text;
   private overlayBody!: Phaser.GameObjects.Text;
@@ -141,6 +149,25 @@ export class GameScene extends Phaser.Scene {
       .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0xff8a73, 0)
       .setDepth(8)
       .setBlendMode(Phaser.BlendModes.ADD)
+      .setVisible(false);
+
+    this.impactMarker = this.add
+      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 28)
+      .setDepth(9)
+      .setStrokeStyle(4, 0xffd2cb, 0.95)
+      .setFillStyle(0x000000, 0)
+      .setVisible(false);
+
+    this.impactMarkerLabel = this.add
+      .text(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, '', {
+        align: 'center',
+        color: '#ffd9d2',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '18px',
+        fontStyle: 'bold',
+      })
+      .setDepth(9)
+      .setOrigin(0.5)
       .setVisible(false);
 
     this.overlay = this.add
@@ -341,6 +368,8 @@ export class GameScene extends Phaser.Scene {
     this.player.setAlpha(1);
     this.player.setScale(1);
     this.hitFlash.setAlpha(0).setVisible(false);
+    this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
+    this.impactMarkerLabel.setAlpha(0).setVisible(false);
     this.phase = 'playing';
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
@@ -493,14 +522,20 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  private handlePlayerHit(): void {
+  private handlePlayerHit(
+    _playerGameObject: unknown,
+    obstacleGameObject: unknown,
+  ): void {
     if (this.phase !== 'playing') {
       return;
     }
 
+    const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
+    const hitDirection = this.getHitDirection(obstacle);
+
     this.phase = 'gameOver';
     this.nextSpawnTimer?.remove(false);
-    this.tweens.killTweensOf([this.player, this.hitFlash]);
+    this.tweens.killTweensOf([this.player, this.hitFlash, this.impactMarker, this.impactMarkerLabel]);
     this.player.setVelocity(0, 0);
     this.player.setTint(0xffd6cf);
     this.recordRunEnd();
@@ -533,13 +568,15 @@ export class GameScene extends Phaser.Scene {
       yoyo: true,
       ease: 'Cubic.Out',
     });
+    this.showImpactMarker(hitDirection);
 
     this.overlay.setVisible(true);
-    this.overlayTitle.setVisible(true);
+    this.overlayTitle.setText(`Hit from ${hitDirection.label}`).setVisible(true);
     this.overlayBody
       .setText(
         [
           `You survived ${this.survivalTime.toFixed(1)} seconds.`,
+          `Cause readout: ${hitDirection.sentence}.`,
           'Impact flash and death blip mark the hit frame so the cause reads instantly.',
           `Session avg: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
           `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
@@ -552,9 +589,83 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.hintText
       .setText(
-        'Retry should stay instant. Track session telemetry for early deaths under 10s, not lifetime totals.',
+        `Death callout now marks ${hitDirection.label} pressure. Retry should stay instant.`,
       )
       .setVisible(true);
+  }
+
+  private showImpactMarker(hitDirection: HitDirection): void {
+    const markerX = Phaser.Math.Clamp(this.player.x + hitDirection.offsetX * 54, 48, ARENA_WIDTH - 48);
+    const markerY = Phaser.Math.Clamp(this.player.y + hitDirection.offsetY * 54, 48, ARENA_HEIGHT - 48);
+
+    this.impactMarker
+      .setPosition(markerX, markerY)
+      .setScale(0.72)
+      .setAlpha(0.95)
+      .setVisible(true);
+    this.impactMarkerLabel
+      .setPosition(markerX, markerY - 34)
+      .setText(`${hitDirection.label.toUpperCase()} HIT`)
+      .setAlpha(1)
+      .setVisible(true);
+
+    this.tweens.add({
+      targets: this.impactMarker,
+      scale: 1,
+      alpha: 0.7,
+      duration: 150,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.impactMarkerLabel,
+      alpha: 0.84,
+      duration: 150,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private getHitDirection(obstacle: Phaser.Physics.Arcade.Image): HitDirection {
+    const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body | undefined;
+    const velocityX = obstacleBody?.velocity.x ?? 0;
+    const velocityY = obstacleBody?.velocity.y ?? 0;
+    const incomingX = velocityX === 0 ? 0 : velocityX > 0 ? -1 : 1;
+    const incomingY = velocityY === 0 ? 0 : velocityY > 0 ? -1 : 1;
+    const horizontal = incomingX < 0 ? 'left' : incomingX > 0 ? 'right' : '';
+    const vertical = incomingY < 0 ? 'top' : incomingY > 0 ? 'bottom' : '';
+
+    if (horizontal && vertical) {
+      return {
+        label: `${vertical}-${horizontal}`,
+        sentence: `the obstacle closed in from the ${vertical}-${horizontal}`,
+        offsetX: incomingX,
+        offsetY: incomingY,
+      };
+    }
+
+    if (horizontal) {
+      return {
+        label: horizontal,
+        sentence: `the obstacle closed in from the ${horizontal}`,
+        offsetX: incomingX,
+        offsetY: 0,
+      };
+    }
+
+    if (vertical) {
+      return {
+        label: vertical,
+        sentence: `the obstacle closed in from the ${vertical}`,
+        offsetX: 0,
+        offsetY: incomingY,
+      };
+    }
+
+    return {
+      label: 'center',
+      sentence: 'the impact overlapped your center line',
+      offsetX: 0,
+      offsetY: -1,
+    };
   }
 
   private unlockFeedbackAudio(): void {

@@ -1,15 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #27
+Updated By: Agent Run #28
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri, oyun ici session telemetry HUD'u ve artik oyuncuya gorunen public AI update paneli ile ilerliyor. Run #27'de `NEXT_AGENT.md` icindeki public-facing gorunurluk gereksinimi minimum kapsamda uygulandi; validation altyapisina yeni orchestration katmani eklenmedi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry harness'leri, oyun ici session telemetry HUD'u ve oyuncuya gorunen public AI update paneli ile ilerliyor. Run #28'de olum anina yon bilgisi ekleyen dar bir gameplay UX adimi uygulandi; validation altyapisina yeni orchestration katmani eklenmedi.
 
 Bu turun amaci:
-- oyunda kullaniciya gorunen minimum "AI latest update" yuzeyini eklemek
+- olum aninda "neden oldum" bilgisini yon cagrisi ile daha okunur kilmak
 - mevcut gameplay ve deterministic baseline'i accidental drift olmadan korumak
 - degisikligi build ve telemetry guard ile dogrulamak
 
@@ -28,7 +28,7 @@ Bu turun amaci:
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 253 / 310 / 320`
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
 - balance baseline: deterministic survival snapshot `avg 21.8s / first death 5.0s / early death 8%`
-- hit feedback: olum aninda kisa ekran flash, hafif kamera shake, player impact pulse ve kisa procedural death blip aktif; replay aninda state temizleniyor
+- hit feedback: olum aninda kisa ekran flash, hafif kamera shake, player impact pulse, directional hit callout ve kisa procedural death blip aktif; replay aninda state temizleniyor
 - public run visibility: canvas yaninda son anlamli AI run ozetini gosteren oyuncu-gorunur panel aktif
 
 ## Telemetry / Validation Status
@@ -38,16 +38,16 @@ Bu turun amaci:
 - browser validation preflight/readiness/smoke komutlari repoda mevcut, fakat bu runtime'ta loopback `EPERM` nedeniyle bloklu
 - Run #22 ile `npm run telemetry:survival-snapshot` artik `survivalBuckets` dagilimini da raporluyor
 - current survival bucket baseline: `<10s: 2`, `10-20s: 7`, `20-30s: 6`, `30s cap: 9`
-- `npm run telemetry:check` artik pacing, survival, validation export ve survival bucket dagilimini birlikte assert ediyor
+- `npm run telemetry:check` pacing, survival, validation export ve survival bucket dagilimini birlikte assert ediyor
 
 ---
 
 # Completed This Run
 
-- `project/game/src/main.ts`, `project/game/src/latestRun.ts` ve `project/game/src/style.css` uzerinden oyuncuya gorunen minimum AI update paneli eklendi
-- Phaser parent hedefi yeni `game-root` kapsayicisina tasindi; oyun canvas'i ve public panel ayni kabukta responsive hale getirildi
+- `project/game/src/game/GameScene.ts` icinde olum aninda fatal obstacle yonunu gosteren directional hit callout eklendi
+- game over title/body ve hint copy'si yeni yon cagrisi ile hizalandi; replay hizi degistirilmedi
+- `project/game/src/latestRun.ts` public AI paneli son anlamli UX degisimini yansitacak sekilde guncellendi
 - deterministic guard korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
-- public-facing urun degisikligi living docs'a islenerek roadmap/state yeni onceliklerle hizalandi
 
 ---
 
@@ -58,8 +58,8 @@ Bu turun amaci:
 - deterministic proxy artik daha yonlendirici olsa da insan oyuncu hissini tek basina kanitlamaz
 - deterministic avg survival toparlandi ama hala Run #9 baseline'i olan `22.3s` seviyesine donmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
-- yeni public AI update paneli host browser'da gorunurluk ve dikkat dagitma acisindan henuz manuel olarak degerlendirilmedi
-- birlesik visual + audio hit feedback paketi manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
+- public AI update paneli host browser'da gorunurluk ve dikkat dagitma acisindan henuz manuel olarak degerlendirilmedi
+- birlesik visual + audio + directional hit feedback paketi manual browser sample ile henuz insan oyuncu algisi uzerinden dogrulanmadi
 
 ---
 
@@ -79,14 +79,13 @@ Bu turun amaci:
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurabilir
 - mobil cihaz testi yapilmadi
 - deterministic survival buckets manual oyuncu dagilimi ile birebir eslesmeyebilir
-- hit feedback su an deterministic drift yaratmiyor ama sesin fairness ve retry ritmi etkisi icin uygun runtime'ta sample gerekli
+- hit feedback su an deterministic drift yaratmiyor ama yon cagrisi ve sesin fairness/retry ritmi etkisi icin uygun runtime'ta sample gerekli
 - public panel kopyasi faydali ama fazla dikkat cekerse replay odagini bolme riski tasir; host browser sample ile gorulmeli
 
 ---
 
 # Observations
 
-- minimum public-facing AI update surface artik urun icinde gorunur durumda
-- public panel, son anlamli AI degisiminin oyuncuya anlatilmasi icin telemetry veya tooling genisletmeden yeterli ilk versiyon sagladi
-- build ve deterministic guard bu UI eklemesinden etkilenmedi
-- bir sonraki anlamli urun adimi, host browser'da 3-5 manuel run ile hem hit feedback'in hem de yeni public panelin insan oyuncu algisina etkisini kaydetmek olabilir
+- directional hit callout, mevcut flash + blip paketini "hangi taraftan geldim" sinyaliyle tamamliyor
+- build ve deterministic guard bu UX eklemesinden etkilenmedi
+- bir sonraki anlamli urun adimi, host browser'da 3-5 manuel run ile hem directional hit feedback'in hem de public panelin insan oyuncu algisina etkisini kaydetmek olabilir

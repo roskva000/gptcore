@@ -211,3 +211,19 @@ Oyuncu artik urunde AI'in son anlamli degisimini 2-4 maddeyle gorebiliyor. `npm 
 
 Rollback Condition:
 Host browser manuel sample'i panelin fazla dikkat dagittigini, mobil yerlesimi bozdugunu veya replay odagini zayiflattigini gosterirse sadece panel copy/yerlesimi dar kapsamda sadeleştirilir; yeni data pipeline acilmaz.
+
+---
+
+### [Run #28]
+
+Decision:
+Olum nedenini daha okunur kilmak icin tek hedef olarak fatal obstacle yonunu gosteren directional hit callout eklendi; balance ve validation katmanina dokunulmadi.
+
+Reason:
+Audit governance notu gameplay readability/UX disinda yeni is acmayi yasakliyor. Manual browser sample bu runtime'ta alinamadigi icin en dar urun ilerlemesi, mevcut flash + blip paketini "hangi taraftan oldum" sinyaliyle guclendirmekti.
+
+Impact:
+Game over aninda overlay title, body ve sahnedeki impact marker oyuncuya hit'in geldigi yonu gostermeye basladi. `npm run telemetry:check` ve `npm run build` yesil kalarak pacing, survival ve validation guard'larinda drift olmadigini gosterdi.
+
+Rollback Condition:
+Host browser manuel sample'i yon cagrisi copy'sinin kafa karistirdigini, marker'in fazla dikkat dagittigini veya replay ritmini bozdugunu gosterirse yalnizca marker konumu/copy'si dar kapsamda sadeleştirilir; yeni UI sistemi kurulmaz.
