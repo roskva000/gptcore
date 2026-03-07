@@ -569,7 +569,47 @@ Eger arayuz zaten varsa:
 
 Public-facing update surface ile README ayni amaca hizmet eder; README repo ziyaretcisi icin, in-product update surface ise oyuncu icin son durumu anlatir.
 
-# 18) CONTROLLED EXPERIMENTATION
+# 18) TOOL USAGE POLICY
+
+Bu proje gerektiğinde yeni araçlar kullanılarak geliştirilebilir.
+
+Agent aşağıdaki durumlarda yeni tool veya script oluşturabilir:
+
+- gameplay davranışını test etmek
+- otomatik validation yapmak
+- simulation veya input automation üretmek
+- telemetry analizini kolaylaştırmak
+- build veya development sürecini iyileştirmek
+
+## Yeni tool kurma
+
+Agent gerekirse yeni tool kurabilir.
+
+Örnekler:
+- puppeteer
+- playwright
+- küçük Node.js test scriptleri
+- veri analiz scriptleri
+- development helper araçları
+
+Ama şu kurallara dikkat edilmelidir:
+
+- yalnızca gerçekten gerekli tool kurulmalıdır
+- küçük ve amaca yönelik çözümler tercih edilmelidir
+- gereksiz dependency eklemekten kaçınılmalıdır
+
+## Tercih edilen yaklaşım
+
+Mümkün olduğunda:
+
+1. küçük script yaz
+2. mevcut tool'ları kullan
+3. yalnızca gerekiyorsa yeni dependency ekle
+
+Amaç tool koleksiyonu yapmak değil,
+**projeyi geliştirmeyi kolaylaştırmaktır.**
+
+# 19) CONTROLLED EXPERIMENTATION
 
 Bu proje yalnızca stabil iyileştirmeler yapmak için değil,
 AI tarafından yönlendirilen bir ürün evrim deneyidir.
