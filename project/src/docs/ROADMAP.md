@@ -4,6 +4,7 @@
 
 # NOW (Highest Priority)
 
+- public AI run update surface (user-visible) eklenmesi
 - birlesik visual + audio hit feedback paketini host browser'da 3-5 manuel run ile dogrula
 - mevcut deterministic baseline'i koru: pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9`
 - replay hizini bozmadan olum nedeninin insanlar icin daha okunur olup olmadigini not et
