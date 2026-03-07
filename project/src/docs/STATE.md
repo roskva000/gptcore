@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #8
+Updated By: Agent Run #9
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak iki repo-ici browserless harness'i olan bir build'e sahip.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak iki repo-ici browserless harness'i olan bir build'e sahip. Run #9'da yalnizca obstacle speed egirisi daraltildi ve early-game proxy riski pacing bozulmadan dusuruldu.
 
 Bu turun amaci:
-- manual validation bloklu oldugu icin browser disinda da erken-oyun riskini olcecek ikinci bir baseline eklemek
-- spawn fairness mantigini scene ve script tarafinda ortak kullanmak
-- sonraki agent icin obstacle-speed tuning kararlarini daha dar ve karsilastirilabilir hale getirmek
+- `telemetry:snapshot` pacing baseline'ini korurken yalnizca obstacle speed egirisinde tek dar tuning denemesi yapmak
+- `telemetry:survival-snapshot` uzerindeki erken-olum proxy sinyalini iyilestirmek
+- sonraki agent icin manual validation odakli daha guclu bir baseline birakmak
 
 ---
 
@@ -25,7 +25,7 @@ Bu turun amaci:
 
 ## Gameplay Status
 - core loop: oynanabilir; waiting -> survival -> game over -> instant restart akisi korunuyor
-- difficulty: obstacle speed ayni; spawn delay Run #5'te 900ms tabanindan 1050ms tabanina cekildi, yani ilk saniyelerde obstacle yogunlugu dusuruldu
+- difficulty: spawn delay Run #5'te 900ms tabanindan 1050ms tabanina cekildi; Run #9'da obstacle speed egirisi 0s/10s/30s/45s icin 150/190/270/320 yerine 145/183/259/316 olacak sekilde hafifletildi
 - fairness tuning: obstacle spawn'i oyuncuya fazla yakin dogarsa en fazla 6 kez reroll ediliyor; uygun aday bulunamazsa en iyi aday kullaniliyor
 - spawn secimi: scene ve script tarafinda ortak `spawn.ts` helper'i kullaniliyor; spawn reroll/fairness kurali artik tek yerde tanimli
 - controls: keyboard (WASD + arrows) ve basili pointer/touch steering calisiyor
@@ -47,12 +47,12 @@ Bu turun amaci:
 - latest deterministic balance snapshot:
   - first spawn: 0.9s
   - predicted spawn count: 10s icinde 10, 30s icinde 32, 60s icinde 76 obstacle
-  - speed curve: 0s 150 -> 10s 190 -> 30s 270 -> 45s+ 320
+  - speed curve: 0s 145 -> 10s 183 -> 30s 259 -> 45s 316 -> 60s 320
   - fairness distance floor: 10s'de 140'a iniyor ve sonrasinda sabit kaliyor
 - latest deterministic survival snapshot:
   - method: 24 seed, 30s cap, 180ms reaction interval, effective player speed 214, same spawn delay/speed/fairness rules
-  - result: avg survival 21.5s, first death 3.4s, best 30.0s, early death 21%
-  - sample signal: bazi seed'lerde 6-11s olumu var; bu nedenle mevcut balance human validation beklerken bile tamamen guvenli kabul edilmemeli
+  - result: avg survival 22.3s, first death 5.0s, best 30.0s, early death 8%
+  - sample signal: 24 seed'in yalnizca %8'i 10s alti olum verdi; buna ragmen human validation hala eksik oldugu icin balance final sayilmamali
 
 ---
 
@@ -82,14 +82,17 @@ Bu turun amaci:
 - [Run #8] `npm run telemetry:survival-snapshot` ile browserless deterministic survival harness'i eklendi
 - [Run #8] survival snapshot ile avg survival 21.5s, first death 3.4s ve early death 21% baseline'i kayda alindi
 - [Run #8] `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+- [Run #9] yalnizca `project/game/src/game/balance.ts` icindeki obstacle speed egirisi hafifletildi
+- [Run #9] `npm run telemetry:snapshot` pacing baseline'i 10/32/76 spawn olarak korunurken speed curve 145/183/259/316/320 seviyesine cekildi
+- [Run #9] `npm run telemetry:survival-snapshot` sonucu avg survival 22.3s, first death 5.0s ve early death 8% olarak iyilesti
+- [Run #9] `npm run build` tekrar basarili calisti
 
 ---
 
 # Active Problems
 
-- scripted sample iyilesti ama post-tune sample'da hala 7.1s'lik bir run var
 - henuz gercek manual/human telemetry sample toplanmadi
-- yeni survival harness ilk olumun 3.4s'e kadar dusebildigini gosteriyor; bu sinyal human sample degil ama erken-game riskinin tamamen kapanmadigini isaret ediyor
+- deterministic survival snapshot iyilesti ama ilk olum halen 5.0s; bu sinyal human sample degil ve erken-game riskinin tamamen kapandigini kanitlamiyor
 - deterministic snapshot spawn yogunlugunu gorunur kilsa da oyuncu davranisini ve unfair death hissini tek basina kanitlamiyor
 - mevcut fairness tuning sadece yakin spawn filtresi; spawn telegraph, hit feedback ve daha derin zorluk ayari henuz yok
 - ses, pause, menu ve polish katmanlari yok
@@ -125,6 +128,6 @@ Bu turun amaci:
 - ayni telemetry senaryosunda spawn delay tuning'i first death'i 8.7s -> 11.0s, avg survival'i 10.8s -> 14.3s ve early death oranini 60% -> 20% tasidi
 - retry gap 2.0s ile hedefin altinda kaldi; replay hizi bu muhafazakar reset modelinde bile kabul edilebilir
 - spawn reroll sayisi 0 kaldigi icin bu turdaki problem yogunluktu, spawn fairness degil
-- snapshot harness mevcut tuning'in ilk 10 saniyede 10 spawn ve 10s'te 190 speed hedefine oturdugunu kayda gecirdi
-- survival harness mevcut ayarda 24 seed'in %21'inde 10s alti olum verdigi icin bir sonraki dar tuning karari icin obstacle speed egirisi en guclu aday haline geldi
-- session telemetry ayrimi ve iki snapshot harness ile sonraki mantikli adim yeni feature eklemek degil, dar bir speed tuning'ini bu baseline'lara karsilastirmaktir
+- snapshot harness mevcut tuning'in ilk 10 saniyede 10 spawn ve 30 saniyede 32 spawn pacing'ini korurken speed egirisinin hissedilir sekilde yumusatildigini kayda gecirdi
+- survival harness mevcut ayarda 24 seed'in yalnizca %8'inde 10s alti olum verdi; obstacle speed tuning'i browserless proxy'de olumlu sinyal uretti
+- sonraki mantikli adim yeni feature eklemek degil, bu yeni speed curve'u session telemetry ile insan inputunda caprazlamaktir

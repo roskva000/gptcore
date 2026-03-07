@@ -4,23 +4,21 @@
 
 # NOW (Highest Priority)
 
-- `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` ciktilarini birlikte baseline kabul et
-- survival snapshot'ta ilk 10 saniyedeki asiri erken olumleri azaltmak icin yalnizca obstacle speed egirisi uzerinde tek, dar tuning denemesi yap
-- tuning sonrasi her iki scripti yeniden calistir; pacing'i korurken survival snapshot'ta `firstDeathTime` ve early death oraninda iyilesme arayip scripted sample ile uyumu not et
-- tarayici bulunursa ikinci adim olarak `R` reset sonrasi gercek manual input'u 5-10 run validate et; bulunmuyorsa bu isi bloklu diye not etmeye devam et
+- Run #9 speed curve baseline'ini esas alip tarayici varsa `R` reset sonrasi 5-10 manual run topla
+- session telemetry ile first death, avg survival ve early death oranini yeni browserless baseline'a karsi caprazla
+- manual sample yoksa blokaji acikca not et; bu durumda yeni balance tuning'ine gecme
 
 Basari olcutleri:
-- snapshot baseline'i dokumante edilmis olmali: ilk spawn 0.9s, 10s icinde 10 spawn, 30s icinde 32 spawn
-- survival snapshot'ta early death rate `%21` baseline'inin altina inmeli
-- survival snapshot'ta first death 3.4s baseline'inin uzerine cikmali
-- build ve iki snapshot scripti basarili calismali
+- session telemetry uzerinde en az 5 run gorulmeli
+- manual sample'da first death mumkunse 10s uzerine cikmali; cikmiyorsa hangi olumu modelin kacirdigi yazilmali
+- mevcut browserless baseline'lar referans alinmali: pacing 10/32/76 spawn, survival snapshot avg 22.3s / first death 5.0s / early death 8%
+- build ve gerekirse iki snapshot scripti tekrar basarili calismali
 - tarayici varsa `R` sonrasi session telemetry ozetinde en az 5 run gorulmeli
 
 ---
 
 # NEXT
 
-- browser veya insan tester mevcutsa manual telemetry sample topla ve survival harness ile farki dokumante et
 - hit feedback ve basic sound effects ekle
 - spawn telegraph ihtiyacini manual telemetry sonucuna gore degerlendir
 - mobil kontrol hissini test edip gerekiyorsa pointer steering ayari yap
@@ -58,8 +56,8 @@ Basari olcutleri:
 
 - session telemetry uzerinde first_death_time > 10s
 - avg retry gap < 3s
-- average_survival_time 10.8s baseline uzerinden yukselmeye devam ediyor
-- early death rate scripted sample'daki 20% seviyesinin ustune cikmiyor
+- average_survival_time manual veya scripted sample'da 14.3s eski baseline'in altina dusmuyor
+- early death rate browserless survival snapshot'taki 8% ve scripted sample'daki 20% referanslarini asiri asmiyor
 - deterministic snapshot'ta 10s/30s pacing beklenen 10 / 32 spawn seviyesinde kaliyor
-- survival snapshot'ta first death 3.4s baseline'i ve early death 21% baseline'i asagi/yukari dogru iyilesiyor
+- survival snapshot'ta first death 5.0s baseline'i korunuyor veya iyilesiyor, early death 8% referansi bozulmuyor
 - unfair death gozlemleri ve yakin spawn kurtarmalari daha anlamli hale geliyor

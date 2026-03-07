@@ -73,3 +73,13 @@
 - `project/game/src/game/GameScene.ts` ortak spawn helper'ini kullanacak sekilde guncellendi
 - `project/game/tsconfig.json` icine `allowImportingTsExtensions` eklendi; source ve node strip-types uyumu saglandi
 - `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
+---
+
+## Run #9
+
+- `project/game/src/game/balance.ts` icinde obstacle speed egirisi `145 + survivalTimeSeconds * 3.8` olacak sekilde daraltildi
+- `npm run telemetry:snapshot` ile pacing baseline'inin 10s/30s/60s icin 10/32/76 spawn olarak korundugu dogrulandi
+- snapshot speed curve degerleri 0s/10s/30s/45s/60s icin 145/183/259/316/320 olarak guncellendi
+- `npm run telemetry:survival-snapshot` sonucu avg survival 22.3s, first death 5.0s ve early death 8% olarak kaydedildi
+- `npm run build` tekrar basarili calisti

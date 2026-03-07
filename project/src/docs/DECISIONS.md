@@ -179,3 +179,19 @@ Impact:
 
 Rollback Condition:
 Eger browser tabanli steering harness veya genis manual sample survival snapshot ile anlamli korelasyon gostermezse bu script yalnizca destekleyici sinyal olarak tutulmali; balance kararlarini tek basina yonetmemeli.
+
+---
+
+### [Run #9]
+
+Decision:
+Bu turda yalnizca obstacle speed egirisi hafifletildi; spawn delay ve spawn fairness aynen korundu.
+
+Reason:
+Run #8 sonunda pacing baseline'i kabul edilebilir durumdaydi ve survival snapshot erken olum riskinin hala speed tarafinda dar tuning gerektirdigini gosteriyordu. Ayni turda birden fazla parametreyi degistirmek sinyali bulandirirdi.
+
+Impact:
+`npm run telemetry:snapshot` pacing'i 10s/30s/60s icin 10/32/76 spawn olarak korurken `npm run telemetry:survival-snapshot` sonucu avg survival'i 21.5s -> 22.3s, first death'i 3.4s -> 5.0s ve early death oranini 21% -> 8% tasidi.
+
+Rollback Condition:
+Manual validation bu yeni speed curve'un oyunu gereksiz kolaylastirdigini veya human sample'da farkli bir erken-olum deseni oldugunu gosterirse obstacle speed egirisi yeniden ayarlanmalidir; ancak spawn delay ve fairness ile ayni anda degistirilmemelidir.

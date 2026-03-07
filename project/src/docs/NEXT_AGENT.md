@@ -2,31 +2,31 @@
 
 ## Recommended Next Task
 
-Yeni `telemetry:survival-snapshot` baseline'ini ve mevcut `telemetry:snapshot` pacing raporunu birlikte kullanarak yalnizca obstacle speed egirisinde tek dar tuning denemesi yap; tarayici varsa bunu manuel telemetry sample ile caprazla.
+Run #9'da iyilestirilen obstacle speed curve'unu tarayici varsa session telemetry ile manuel olarak validate et; tarayici yoksa bu eksigi acikca kaydet ve balance'a tekrar dokunma.
 
 Ozellikle:
-- once `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` calistir; current baseline olarak 10s/30s pacing `10 / 32`, survival snapshot `avg 21.5s / first death 3.4s / early death 21%` degerlerini not et
-- sadece `project/game/src/game/balance.ts` icindeki obstacle speed egirisine dokun; spawn delay veya fairness distance'i ayni turda degistirme
-- tuning sonrasi her iki scripti tekrar calistir ve pacing korunurken survival snapshot'ta erken olum sinyalinin iyilesip iyilesmedigini kaydet
-- eger tarayici erisimi varsa `R` ile telemetry sample'ini sifirla, en az 5 manual run oyna ve `C` ile session summary'yi cikart
-- manual sample varsa survival snapshot ile farki acikca not et; yoksa yok diye yaz
+- once `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` calistir; current baseline olarak pacing `10 / 32 / 76`, survival snapshot `avg 22.3s / first death 5.0s / early death 8%` degerlerini not et
+- eger tarayici erisimi varsa oyunu ac, `R` ile session telemetry sample'ini sifirla ve en az 5 run manuel oyna
+- runlar bittiginde `C` ile session summary'yi console'a al; first death, avg survival, early death ve retry gap'i kaydet
+- manual sample ile browserless baseline arasindaki farki yaz; hangi olumlerin unfair hissettirdigini ozellikle not et
+- tarayici yoksa bunu blokaj olarak yaz ve ayni turda yeni balance parametresi degistirme
 
 ---
 
 ## Why This Is Next
 
-Scripted telemetry comparison ilk 10 saniyeyi iyilestirdi ama gercek manual sample hala yok. Run #8'de eklenen survival snapshot, ayni pacing/fairness kurallari altinda 24 seed'in %21'inde 10s alti olum ve 3.4s'lik ilk olum verdi. Bu signal human truth degil ama obstacle speed egirisinin halen dar tuning adayi oldugunu gosteriyor. Yeni feature acmadan once en mantikli is, sadece speed grubunu bu iki baseline'a karsi ayarlamak.
+Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
 
 ---
 
 ## Success Criteria
 
-- `npm run telemetry:snapshot` ciktisinda 10s/30s pacing bozulmamali
-- `npm run telemetry:survival-snapshot` ciktisinda early death `%21` baseline'inin altina inmeli ve first death 3.4s uzerine cikmali
-- tuning yalnizca obstacle speed egirisine dokunmali
-- tarayici varsa telemetry panelinde `R` sonrasi manual oynanmis en az 5 session run gorulmeli
+- tarayici varsa telemetry panelinde `R` sonrasi manuel oynanmis en az 5 session run gorulmeli
+- `C` summary'sinde session first death, avg survival, early death ve retry gap degerleri yazili hale gelmeli
+- manual sample, Run #9 browserless baseline'i ile acikca karsilastirilmali
+- balance'a tekrar dokunulacaksa hangi sinyalin bunu gerektirdigi net olmali
 - kod degisirse build tekrar alinmali
-- STATE.md, ROADMAP.md, DECISIONS.md, CHANGELOG.md, METRICS.md ve NEXT_AGENT yeni sayilarla guncellenmeli
+- STATE.md, ROADMAP.md, DECISIONS.md, CHANGELOG.md, METRICS.md ve NEXT_AGENT guncel kalmali
 
 ---
 
@@ -40,7 +40,6 @@ Scripted telemetry comparison ilk 10 saniyeyi iyilestirdi ama gercek manual samp
 - `project/game/scripts/balance-snapshot.ts`
 - `project/game/scripts/survival-snapshot.ts`
 - `project/game/src/game/balance.ts`
-- `project/game/src/game/spawn.ts`
 - `project/game/src/game/GameScene.ts`
 
 ---
@@ -51,7 +50,7 @@ Scripted telemetry comparison ilk 10 saniyeyi iyilestirdi ama gercek manual samp
 - deterministic balance snapshot gameplay sonucu degil pacing referansidir
 - deterministic survival snapshot insan testi degil; controller heuristigini overfit etme
 - lifetime telemetry eski run'lari icerebilir; manual test varsa session telemetry'yi esas al
-- tek ana hedef sec; obstacle speed tuning'i ve gerekiyorsa manual validation disinda yeni feature alanlari acma
+- tek ana hedef sec; manual validation disinda yeni feature alanlari acma
 - buyuk refactor yapma; gerekmedikce tek scene yapisini koru
 - difficulty kararlarini telemetry veya net gozlem olmadan verme
 - telemetry sifirlamak icin storage temizleme yerine oyundaki `R` kisayolunu kullan
@@ -61,7 +60,7 @@ Scripted telemetry comparison ilk 10 saniyeyi iyilestirdi ama gercek manual samp
 ## Do Not
 
 - powerup, leaderboard veya progression gibi scope buyuten islere gecme
-- spawn delay, obstacle speed ve spawn telegraph'i ayni turda birlikte tune etme
+- manual sample olmadan yeni obstacle speed tuning turu acma
 - sadece survival snapshot'a bakip bu isi final sanma
 - snapshot spawn count'u degisti diye tek basina tuning yapma; pacing ve survival sinyalini birlikte yorumla
 - replay hizini bozan agir UI akislari ekleme

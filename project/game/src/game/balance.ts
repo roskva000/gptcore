@@ -13,7 +13,7 @@ export const getSpawnDelayMs = (survivalTimeSeconds: number): number =>
   );
 
 export const getObstacleSpeed = (survivalTimeSeconds: number): number =>
-  clamp(150 + survivalTimeSeconds * 4, 150, 320);
+  clamp(145 + survivalTimeSeconds * 3.8, 145, 320);
 
 export const getRequiredSpawnDistance = (survivalTimeSeconds: number): number =>
   clamp(210 - survivalTimeSeconds * 7, 140, 210);
