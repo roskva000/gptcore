@@ -69,6 +69,9 @@ export class GameScene extends Phaser.Scene {
   private impactRay!: Phaser.GameObjects.Line;
   private impactMarker!: Phaser.GameObjects.Arc;
   private impactMarkerLabel!: Phaser.GameObjects.Text;
+  private escapeRay!: Phaser.GameObjects.Line;
+  private escapeMarker!: Phaser.GameObjects.Arc;
+  private escapeMarkerLabel!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
   private fatalCallout!: Phaser.GameObjects.Text;
   private overlayTitle!: Phaser.GameObjects.Text;
@@ -181,6 +184,33 @@ export class GameScene extends Phaser.Scene {
         color: '#ffd9d2',
         fontFamily: 'Trebuchet MS',
         fontSize: '18px',
+        fontStyle: 'bold',
+      })
+      .setDepth(9)
+      .setOrigin(0.5)
+      .setVisible(false);
+
+    this.escapeRay = this.add
+      .line(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 0, 0, 0, 84, 0x88ffe4, 0.92)
+      .setDepth(9)
+      .setLineWidth(5, 5)
+      .setOrigin(0, 0)
+      .setAlpha(0)
+      .setVisible(false);
+
+    this.escapeMarker = this.add
+      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 30)
+      .setDepth(9)
+      .setStrokeStyle(4, 0x88ffe4, 0.95)
+      .setFillStyle(0x0a1f1a, 0.35)
+      .setVisible(false);
+
+    this.escapeMarkerLabel = this.add
+      .text(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, '', {
+        align: 'center',
+        color: '#d8fff4',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '16px',
         fontStyle: 'bold',
       })
       .setDepth(9)
@@ -456,6 +486,9 @@ export class GameScene extends Phaser.Scene {
       this.impactRay,
       this.impactMarker,
       this.impactMarkerLabel,
+      this.escapeRay,
+      this.escapeMarker,
+      this.escapeMarkerLabel,
     ]);
     this.player
       .setPosition(ARENA_WIDTH / 2, ARENA_HEIGHT / 2)
@@ -467,6 +500,9 @@ export class GameScene extends Phaser.Scene {
     this.impactRay.setAlpha(0).setVisible(false);
     this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
     this.impactMarkerLabel.setAlpha(0).setVisible(false).setText('');
+    this.escapeRay.setAlpha(0).setVisible(false);
+    this.escapeMarker.setAlpha(0).setScale(0.78).setVisible(false);
+    this.escapeMarkerLabel.setAlpha(0).setVisible(false).setText('');
     this.overlay.setVisible(false);
     this.fatalCallout.setVisible(false).setText('');
     this.overlayTitle.setVisible(false);
@@ -634,6 +670,9 @@ export class GameScene extends Phaser.Scene {
       this.impactRay,
       this.impactMarker,
       this.impactMarkerLabel,
+      this.escapeRay,
+      this.escapeMarker,
+      this.escapeMarkerLabel,
     ]);
     this.player.setVelocity(0, 0);
     this.player.setTint(0xffd6cf);
@@ -669,6 +708,7 @@ export class GameScene extends Phaser.Scene {
       ease: 'Cubic.Out',
     });
     this.showImpactMarker(hitDirection);
+    this.showEscapeGuide(hitDirection, escapePrompt.title);
 
     this.overlay.setVisible(true);
     this.fatalCallout
@@ -742,6 +782,53 @@ export class GameScene extends Phaser.Scene {
       targets: this.impactMarkerLabel,
       alpha: 0.84,
       duration: 150,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private showEscapeGuide(hitDirection: HitDirection, promptTitle: string): void {
+    const guideOffsetX =
+      hitDirection.offsetX === 0 && hitDirection.offsetY === 0 ? 0 : -hitDirection.offsetX;
+    const guideOffsetY =
+      hitDirection.offsetX === 0 && hitDirection.offsetY === 0 ? -1 : -hitDirection.offsetY;
+    const guideLength = 122;
+    const guideEndX = this.player.x + guideOffsetX * guideLength;
+    const guideEndY = this.player.y + guideOffsetY * guideLength;
+    const markerX = Phaser.Math.Clamp(this.player.x + guideOffsetX * 70, 56, ARENA_WIDTH - 56);
+    const markerY = Phaser.Math.Clamp(this.player.y + guideOffsetY * 70, 56, ARENA_HEIGHT - 56);
+
+    this.escapeRay
+      .setTo(this.player.x, this.player.y, guideEndX, guideEndY)
+      .setAlpha(0.96)
+      .setVisible(true);
+    this.escapeMarker
+      .setPosition(markerX, markerY)
+      .setScale(0.78)
+      .setAlpha(0.92)
+      .setVisible(true);
+    this.escapeMarkerLabel
+      .setPosition(markerX, markerY)
+      .setText(promptTitle.replace(' ', '\n'))
+      .setAlpha(1)
+      .setVisible(true);
+
+    this.tweens.add({
+      targets: this.escapeRay,
+      alpha: 0.34,
+      duration: 210,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.escapeMarker,
+      scale: 1,
+      alpha: 0.72,
+      duration: 180,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.escapeMarkerLabel,
+      alpha: 0.86,
+      duration: 180,
       ease: 'Quad.Out',
     });
   }

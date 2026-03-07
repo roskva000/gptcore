@@ -6,6 +6,22 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #34]
+
+Decision:
+`BREAK ...` kacis yonu prompt'u sadece overlay metni olarak birakilmadi; ayni yone bakan sahne ici teal bir ray + marker ile desteklendi.
+
+Reason:
+Audit bu turu gameplay readability ile sinirli tutmayi ve yeni tooling katmani acmamayi zorluyor. Oyuncunun bir sonraki hareketi ilk bakista anlamasi icin metni uzatmadan uzamsal bir ipucu vermek en dar urun ilerlemesiydi.
+
+Impact:
+Olum feedback'i artik "nereden oldum" ve "nereye kirilayim" sinyalini ayri renklerle ayni anda veriyor. `npm run telemetry:check` ve `npm run build` yesil kalarak deterministic baseline'in korunmasini dogruladi.
+
+Rollback Condition:
+Host browser manuel sample'i teal guide'in dikkat dagittigini, panel veya replay hissiyle catisitigini gosterirse sadece alpha/offset/line-length/label agirligi dar kapsamda geri cekilir.
+
+---
+
 ### [Run #33]
 
 Decision:

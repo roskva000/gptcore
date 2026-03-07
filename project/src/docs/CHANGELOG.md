@@ -2,6 +2,15 @@
 
 ---
 
+## Run #34
+
+- `project/game/src/game/GameScene.ts` icinde olum anina fatal lane'in ters yonunu gosteren teal escape ray, marker ve `BREAK ...` label'i eklendi
+- kacis guide'i merkez ustu carpisma fallback'inde de sifir uzunlukta kalmayacak sekilde guvenli default ile calisir hale getirildi
+- `project/game/src/latestRun.ts` public AI update paneli yeni spatial escape cue pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #33
 
 - `project/game/src/game/GameScene.ts` icinde game-over ekranina fatal lane'in ters yonunu soyleyen ayri bir `BREAK ...` escape prompt'u eklendi
