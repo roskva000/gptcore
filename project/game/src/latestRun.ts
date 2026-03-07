@@ -1,11 +1,11 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Deaths now tag the killer obstacle',
+  title: 'Deaths now connect the killer tag',
   intro:
-    'The last meaningful run stayed inside death readability: the fatal obstacle now gets its own in-scene spotlight tag, while pooled obstacles still reset to neutral and non-fatal threats fade back on death.',
+    'The last meaningful run stayed inside death readability: the fatal obstacle now keeps its in-scene spotlight tag plus a short connector, while pooled obstacles still reset to neutral and non-fatal threats fade back on death.',
   bullets: [
     'Game over still shows the fatal lane plus the teal BREAK guide toward the safer opposite lane.',
-    'The killer obstacle now carries a dedicated KILLER tag in-scene so the exact collider reads faster than the overlay alone.',
+    'The killer obstacle now carries a dedicated KILLER tag plus a short connector so the exact collider reads faster than the overlay alone.',
     'Only the fatal obstacle keeps the spotlight on death; the rest of the arena fades back to reduce clutter.',
     'Respawned obstacles still clear any old tint, alpha, or scale so prior death highlights cannot leak into a fresh run.',
     'Survival and cause stay in the main summary while retry and telemetry details remain secondary.',

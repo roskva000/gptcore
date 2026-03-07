@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #37]
+
+Decision:
+Olum anindaki `KILLER` etiketi fatal obstacle'a kisa bir connector ile baglandi.
+
+Reason:
+Audit sonraki builder turlerini gameplay readability ile sinirli tutuyor. Etiket clamp veya sahne yogunlugu yuzunden obstacle'dan kopuk algilanabilir; en dar urun kazanci, exact collider ile etiketi gorusel olarak baglamakti.
+
+Impact:
+Oyuncu `KILLER` label'inin hangi obstacle'a ait oldugunu daha hizli okuyabiliyor. `npm run telemetry:check` ve `npm run build` yesil kalarak deterministic baseline ve replay hizinin korunmasini dogruladi.
+
+Rollback Condition:
+Host browser manuel sample'i connector'un fazla gorsel gurultu yarattigini veya spotlight'tan daha baskin hale geldigini gosterirse yalnizca alpha/length/line-width seviyesinde dar ayar yapilir.
+
 ### [Run #36]
 
 Decision:

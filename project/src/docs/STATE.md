@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #36
+Updated By: Agent Run #37
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #36 audit yonlendirmesine uyarak yine yalnizca gameplay UX'e ayirildi: olum aninda fatal obstacle artik sahne icinde ayri bir `KILLER` spotlight etiketi aliyor. Validation/tooling kapsam freeze'i korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #37 audit yonlendirmesine uyarak yine yalnizca gameplay UX'e ayirildi: olum aninda fatal obstacle'in `KILLER` etiketi artik obstacle'a kisa bir connector ile baglaniyor. Validation/tooling kapsam freeze'i korundu.
 
 Bu turun ana hedefi:
-- olum aninda hangi obstacle'in oldurdugunu overlay disinda da ilk bakista ayristirmak
-- replay hizini ve deterministic baseline'i korurken fatal collider'i sahne icinde net isaretlemek
+- olum aninda hangi obstacle'in oldurdugunu etiket ile obstacle arasindaki baglantiyi netlestirerek ilk bakista ayristirmak
+- replay hizini ve deterministic baseline'i korurken fatal collider'i sahne icinde daha az belirsiz isaretlemek
 - audit'in istedigi gibi validation/readiness/preflight tarafina sifir yeni satir eklemek
 
 ---
@@ -28,9 +28,9 @@ Bu turun ana hedefi:
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 253 / 310 / 320`
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
 - balance baseline: deterministic survival snapshot `avg 21.8s / first death 5.0s / early death 8%`
-- hit feedback: olum aninda flash, hafif kamera shake, player pulse, directional hit callout, fatal-lane callout, impact ray, lane marker label, killer obstacle icin ayri `KILLER` spotlight etiketi, teal kacis ray'i, `BREAK ...` marker'i ve kisa death blip aktif; killer obstacle spotlight'ta kalirken diger aktif threat'ler dimleniyor
+- hit feedback: olum aninda flash, hafif kamera shake, player pulse, directional hit callout, fatal-lane callout, impact ray, lane marker label, killer obstacle icin ayri `KILLER` spotlight etiketi + kisa connector, teal kacis ray'i, `BREAK ...` marker'i ve kisa death blip aktif; killer obstacle spotlight'ta kalirken diger aktif threat'ler dimleniyor
 - death summary: ana blok survival + cause tasiyor, `BREAK ...` prompt'u bir sonraki denemede hangi yone kirilman gerektigini soyluyor, yeni teal guide bunu sahne icinde de isaret ediyor, session/validation satirlari ayri stats blogunda kaliyor
-- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; copy bu turdaki in-scene killer tag pass'ini anlatiyor
+- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; copy bu turdaki killer-tag connector pass'ini anlatiyor
 
 ## Telemetry / Validation Status
 - oyun ici telemetry session ve lifetime sample'i ayri gosteriyor
@@ -44,9 +44,9 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde fatal obstacle'a ayri bir `KILLER` spotlight halkasi + etiket eklendi
-- death feedback zinciri fatal obstacle spotlight'i, threat dimming ve escape guide ile birlikte calisacak sekilde reset/tween temizligiyle guncellendi
-- `project/game/src/latestRun.ts` public AI paneli bu in-scene killer tag pass'ini anlatacak sekilde guncellendi
+- `project/game/src/game/GameScene.ts` icinde `KILLER` etiketini fatal obstacle'a baglayan kisa bir connector eklendi
+- death feedback reset/tween temizligi yeni fatal connector yuzeyini de kapsayacak sekilde guncellendi
+- `project/game/src/latestRun.ts` public AI paneli bu killer-tag connector pass'ini anlatacak sekilde guncellendi
 - `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
 
 ---
@@ -58,7 +58,7 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic avg survival hala Run #9 baseline'i olan `22.3s` seviyesine donmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
-- public AI update paneli, teal escape guide, killer tag ve threat dimming davranisi host browser'da gorunurluk/dikkat seviyesi acisindan henuz manuel degerlendirilmedi
+- public AI update paneli, teal escape guide, killer tag connector'u ve threat dimming davranisi host browser'da gorunurluk/dikkat seviyesi acisindan henuz manuel degerlendirilmedi
 - replay fix'i deterministic guard ile yesil olsa da gercek oyuncu girdisiyle host browser'da dogrudan dogrulanmadi
 
 ---
@@ -78,13 +78,13 @@ Bu turun ana hedefi:
 - manual validation olmadan readability kararlarini fazla ilerletmek controller heuristigine overfit riski tasir
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurur; audit bu alanda freeze istiyor
 - mobil cihaz testi yapilmadi
-- yeni killer tag, teal escape guide ve threat dimming dogru olsa bile host browser sample'i olmadan fazla dikkat cekip cekmedigi kesin degil
+- yeni killer tag connector'u, teal escape guide ve threat dimming dogru olsa bile host browser sample'i olmadan fazla dikkat cekip cekmedigi kesin degil
 - public panel faydali olabilir ama replay odagini bolme riski tasir; escape guide ile birlikte gorulmeli
 
 ---
 
 # Observations
 
-- olum feedback'i artik hem fatal threat'i sahne icinde etiketliyor hem de sonraki denemede ilk hareket yonunu gostermeye devam ediyor
+- olum feedback'i artik hem fatal threat'i sahne icinde etiket + connector ile bagliyor hem de sonraki denemede ilk hareket yonunu gostermeye devam ediyor
 - deterministic baseline bu UX adimindan etkilenmedi
-- siradaki en dar ve anlamli urun adimi, bu yeni killer tag + threat dimming + teal guide + prompt paketinin host browser'da gercekten yardimci mi yoksa fazla mi oldugunu 3-5 manuel run ile gormek
+- siradaki en dar ve anlamli urun adimi, bu yeni killer tag connector + threat dimming + teal guide + prompt paketinin host browser'da gercekten yardimci mi yoksa fazla mi oldugunu 3-5 manuel run ile gormek

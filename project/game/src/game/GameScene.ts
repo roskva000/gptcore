@@ -70,6 +70,7 @@ export class GameScene extends Phaser.Scene {
   private impactMarker!: Phaser.GameObjects.Arc;
   private impactMarkerLabel!: Phaser.GameObjects.Text;
   private fatalSpotlight!: Phaser.GameObjects.Arc;
+  private fatalSpotlightConnector!: Phaser.GameObjects.Line;
   private fatalSpotlightLabel!: Phaser.GameObjects.Text;
   private escapeRay!: Phaser.GameObjects.Line;
   private escapeMarker!: Phaser.GameObjects.Arc;
@@ -197,6 +198,14 @@ export class GameScene extends Phaser.Scene {
       .setDepth(11)
       .setStrokeStyle(5, 0xfff0c7, 0.98)
       .setFillStyle(0x000000, 0)
+      .setVisible(false);
+
+    this.fatalSpotlightConnector = this.add
+      .line(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 0, 0, 0, -30, 0xfff0c7, 0.96)
+      .setDepth(11)
+      .setLineWidth(3, 3)
+      .setOrigin(0, 0)
+      .setAlpha(0)
       .setVisible(false);
 
     this.fatalSpotlightLabel = this.add
@@ -513,6 +522,7 @@ export class GameScene extends Phaser.Scene {
       this.impactMarker,
       this.impactMarkerLabel,
       this.fatalSpotlight,
+      this.fatalSpotlightConnector,
       this.fatalSpotlightLabel,
       this.escapeRay,
       this.escapeMarker,
@@ -529,6 +539,7 @@ export class GameScene extends Phaser.Scene {
     this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
     this.impactMarkerLabel.setAlpha(0).setVisible(false).setText('');
     this.fatalSpotlight.setAlpha(0).setScale(0.72).setVisible(false);
+    this.fatalSpotlightConnector.setAlpha(0).setVisible(false);
     this.fatalSpotlightLabel.setAlpha(0).setVisible(false).setText('');
     this.escapeRay.setAlpha(0).setVisible(false);
     this.escapeMarker.setAlpha(0).setScale(0.78).setVisible(false);
@@ -704,6 +715,7 @@ export class GameScene extends Phaser.Scene {
       this.impactMarker,
       this.impactMarkerLabel,
       this.fatalSpotlight,
+      this.fatalSpotlightConnector,
       this.fatalSpotlightLabel,
       this.escapeRay,
       this.escapeMarker,
@@ -835,11 +847,17 @@ export class GameScene extends Phaser.Scene {
     const spotlightX = Phaser.Math.Clamp(obstacle.x, 44, ARENA_WIDTH - 44);
     const spotlightY = Phaser.Math.Clamp(obstacle.y, 44, ARENA_HEIGHT - 44);
     const labelY = Phaser.Math.Clamp(spotlightY - 36, 36, ARENA_HEIGHT - 36);
+    const labelBottomY = labelY + 18;
+    const connectorEndY = Math.min(labelBottomY, spotlightY - 12);
 
     this.fatalSpotlight
       .setPosition(spotlightX, spotlightY)
       .setScale(0.72)
       .setAlpha(1)
+      .setVisible(true);
+    this.fatalSpotlightConnector
+      .setTo(spotlightX, spotlightY - 16, spotlightX, connectorEndY)
+      .setAlpha(0.96)
       .setVisible(true);
     this.fatalSpotlightLabel
       .setPosition(spotlightX, labelY)
@@ -852,6 +870,12 @@ export class GameScene extends Phaser.Scene {
       scale: 1.18,
       alpha: 0.42,
       duration: 240,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.fatalSpotlightConnector,
+      alpha: 0.48,
+      duration: 220,
       ease: 'Quad.Out',
     });
     this.tweens.add({
