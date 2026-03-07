@@ -258,6 +258,7 @@ Impact:
 `npm run telemetry:check` tekrar pacing `10/32/76` ve survival `22.3s / 5.0s / 8%` baseline'ini korudugunu gosterdi. `npm run build` basarili kaldi. Sonraki agent icin tek mantikli ana hedef tarayicili ortamda manual sample toplamak olarak netlesmis oldu.
 
 Rollback Condition:
+Interaktif browser erisimi ve insan input'u saglandiginda bu blokaj kaydi daraltilip manual validation sonucuna geri donulmelidir.
 Tarayicili ortam acilir ve manuel sample toplanirsa bu karar yerini insan verisine dayali bir sonraki dar iterasyona birakabilir.
 
 ---
@@ -292,3 +293,19 @@ Impact:
 
 Rollback Condition:
 Ileride export formati bilincli olarak degisecekse ortak helper ve deterministic validation baseline'i ayni turda birlikte guncellenmeli; UI tarafinda farkli string birlestirme ile lokal patch yapilmamalidir.
+
+---
+
+### [Run #16]
+
+Decision:
+Bu turda da balance veya telemetry yuzeyine dokunulmayip yalnizca deterministic telemetry guard'lari ile production build tekrar dogrulandi; manual validation blokaji "browser yok" yerine "interaktif sample alinmadi" seklinde kayda gecirildi.
+
+Reason:
+Run #15 sonrasi en yuksek etkili dar adim, validation export kontratinin ve baseline'in drift etmedigini teyit etmekti. Ortamda `chromium` binary'si bulunsa da bu CLI turunda insan input'u veya oyun ici interaktif sample yoktu; bu kosulda yeni tuning sinyali uretmek hatali olurdu.
+
+Impact:
+`npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar temiz gecti. Sonraki agent icin hedef, artik tarayici binary'si aramak degil, gercekten interaktif bir oturumda `R`/`V` manual sample toplamak olarak daha net tanimlandi.
+
+Rollback Condition:
+Eger sonraki turda interaktif manual sample alinabilirse bu operasyonel blokaj kaydi kaldirilip balance kararlarina insan telemetry'si uzerinden devam edilmelidir.

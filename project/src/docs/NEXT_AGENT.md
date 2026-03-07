@@ -2,13 +2,13 @@
 
 ## Recommended Next Task
 
-Run #15'te kontrati guard altina alinan validation export'u kullanarak obstacle speed curve'unu tarayici varsa session telemetry uzerinden manuel olarak validate et; tarayici yoksa once deterministic export guard'ini tekrar kos, blokaji acikca kaydet ve balance'a tekrar dokunma.
+Run #16'da tekrar temiz gecen guard'lari referans alip obstacle speed curve'unu interaktif browser oturumunda session telemetry uzerinden manuel olarak validate et; sadece browser binary'sinin varligi yeterli degil, gercekten `R`/`V` akisini oynanmis run'larla tamamla. Interaktif erisim yoksa once deterministic export guard'ini tekrar kos, blokaji acikca "manual sample alinmadi" diye kaydet ve balance'a tekrar dokunma.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; Run #13 baseline'i hala `10 / 32 / 76` ve `22.3s / 5.0s / 8%`, fail verirse manual teste gecmeden once drift'i anla
-- sonra `npm run telemetry:validation-snapshot` calistir; Run #15 validation baseline'i `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olmali
+- sonra `npm run telemetry:validation-snapshot` calistir; Run #16 validation baseline'i `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olmali
 - gerekirse `npm run telemetry:snapshot` ve `npm run telemetry:survival-snapshot` ile detay raporu ac; current baseline olarak pacing `10 / 32 / 76`, survival snapshot `avg 22.3s / first death 5.0s / early death 8%` degerlerini not et
-- eger tarayici erisimi varsa oyunu ac, `R` ile session telemetry sample'ini sifirla ve en az 5 run manuel oyna
+- eger interaktif tarayici erisimi varsa oyunu ac, `R` ile session telemetry sample'ini sifirla ve en az 5 run manuel oyna
 - runlar sirasinda telemetry HUD veya game over overlay'deki `Last export` satirinin `not saved yet` durumundan cikabildigini de teyit et
 - runlar bittiginde HUD veya game over overlay'de gorunen session `first death` sinyalini not et; sonra `V` ile validation summary'yi kopyala ve first death, avg survival, early death ve retry gap'i bu export satirindan kaydet
 - clipboard calismazsa `V` fallback'i sonucu console'a yazacak ve localStorage'da `survive-60-seconds-last-validation-report-v1` altina saklayacak; bu durumda HUD veya game over overlay'deki `Last export` ozetini de gorup kaydin olustugunu teyit et ve yine ayni satiri kaydet
@@ -19,7 +19,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Run #10 manual validation icin gereken `first death` sinyalini telemetry'de acik hale getirdi. Run #11 ise bu deterministic baseline'i `npm run telemetry:check` ile otomatik koruma altina aldi. Run #12'de manuel tester'in sonucu console objesinden cikarmak zorunda kalmamasi icin `V` export akisina gecildi. Run #14 bu export'un kaydoldugunu HUD/overlay uzerinde de gorunur kildi. Run #15 export kontratini ortak helper + deterministic snapshot ile guard altina aldi ve parser truncation bug'ini kapatti. Ancak hala gercek insan input'u yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un manual telemetry ile dogrulanmasi.
+Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degismeden survival snapshot `avg 22.3s / first death 5.0s / early death 8%` oldu. Run #10 manual validation icin gereken `first death` sinyalini telemetry'de acik hale getirdi. Run #11 ise bu deterministic baseline'i `npm run telemetry:check` ile otomatik koruma altina aldi. Run #12'de manuel tester'in sonucu console objesinden cikarmak zorunda kalmamasi icin `V` export akisina gecildi. Run #14 bu export'un kaydoldugunu HUD/overlay uzerinde de gorunur kildi. Run #15 export kontratini ortak helper + deterministic snapshot ile guard altina aldi ve parser truncation bug'ini kapatti. Run #16 bu guard'lari tekrar temiz gecirdi ve ortamda `chromium` binary'si oldugunu teyit etti; ancak hala gercek oynanis verisi yok. Bundan sonraki en anlamli adim yeni feature veya yeni tuning degil, bu speed curve'un interaktif manual telemetry ile dogrulanmasi.
 
 ---
 
@@ -27,7 +27,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 
 - `npm run telemetry:check` basarili olmali
 - `npm run telemetry:validation-snapshot` basarili olmali ve validation summary baseline'i korunmali
-- tarayici varsa telemetry panelinde `R` sonrasi manuel oynanmis en az 5 session run gorulmeli
+- interaktif tarayici varsa telemetry panelinde `R` sonrasi manuel oynanmis en az 5 session run gorulmeli
 - HUD veya game over overlay'de session first death ve `5 run` ilerleme durumu okunabilir olmali
 - `V` export satirinda session first death, avg survival, early death ve retry gap degerleri yazili hale gelmeli
 - `Last export` satiri sample sonrasi dolu olmali; clipboard fallback'inde bile kaydin olustugu gorunur olmali
@@ -71,6 +71,7 @@ Run #9 dar speed tuning'i browserless proxy'de olumlu sonuc verdi: pacing degism
 - `first death` icin recent deaths listesinden manuel hesap yapma; Run #10 telemetry alanini kullan
 - manual sample sonucu tasirken `C` console objesi yerine once `V` export satirini esas al
 - `V` fallback'inde console'a bakmadan once oyun ici `Last export` satirinin guncellendigini kontrol et; bu Run #14 degisikliginin amacidir
+- bu turda browser binary'si goruldu diye manual sample alinmis varsayma; interaktif oynanis yoksa blokaji acikca yaz
 
 ---
 

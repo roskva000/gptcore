@@ -4,8 +4,8 @@
 
 # NOW (Highest Priority)
 
-- Run #13'te tekrar temiz gecen `npm run telemetry:check` sonucunu baseline olarak koru; intentional tuning disinda bu guard'i guncelleme
-- tarayici olan bir ortamda Run #12 export akisini kullanip `R` reset sonrasi 5-10 manual run topla ve sample sonunda `V` ile validation report'u kopyala
+- Run #16'da tekrar temiz gecen `npm run telemetry:check` sonucunu baseline olarak koru; intentional tuning disinda bu guard'i guncelleme
+- interaktif browser erisimi olan bir ortamda Run #12 export akisini kullanip `R` reset sonrasi 5-10 manual run topla ve sample sonunda `V` ile validation report'u kopyala
 - Run #14 gorunurluk ekini kullanarak HUD veya game over overlay'de `Last export` satirinin doldugunu teyit et; clipboard yoksa fallback'in kaydi gorunur olmali
 - manual sample oncesi `npm run telemetry:validation-snapshot` ile export kontratinin ve parse edilen `Last export` ozetinin baseline `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olarak kaldigini dogrula
 - session telemetry ile first death, avg survival ve early death oranini yeni browserless baseline'a karsi caprazla
@@ -17,7 +17,7 @@ Basari olcutleri:
 - session telemetry uzerinde en az 5 run gorulmeli
 - manual sample'da explicit session first death mumkunse 10s uzerine cikmali; cikmiyorsa hangi olumu modelin kacirdigi yazilmali
 - mevcut browserless baseline'lar referans alinmali: pacing 10/32/76 spawn, survival snapshot avg 22.3s / first death 5.0s / early death 8%
-- build ve `telemetry:check` tekrar basarili calismali
+- build, `telemetry:check` ve `telemetry:validation-snapshot` tekrar basarili calismali
 - `telemetry:validation-snapshot` deterministic export satirini ve parse edilen ozeti temiz uretmeli
 - tarayici varsa `R` sonrasi session telemetry ozetinde en az 5 run gorulmeli
 - sample sonunda `validation_sample` satiri dokumana veya handoff notuna aynen tasinmali
@@ -53,8 +53,7 @@ Basari olcutleri:
 # BLOCKERS
 
 - gercek oyuncu verisi yok
-- calisma ortaminda tarayici olmadigi icin agent tarafinda manual input dogrudan toplanamadi
-- Run #13 ortaminda da tarayici yoktu; blokaj devam ediyor
+- bu turda `chromium` binary'si goruldu ama agent tarafinda interaktif manual input yine dogrudan toplanamadi
 - manual validation artik daha okunabilir ama yine de tarayici / insan input gerektiriyor
 - validation export iyilesti ama hala insanin oyunu acip run bitirmesi gerekiyor
 - manual validation export kontrati artik guard altinda, fakat insan sample'in kendisi hala yok

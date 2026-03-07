@@ -22,7 +22,7 @@ baseline_before_tuning: 10.8s
 target: increasing
 
 manual_validation_sample:
-current: still not collected as of Run #15; environment still had no browser for direct human-input validation, but `V` export now shares a deterministic contract with repo-ici `telemetry:validation-snapshot`
+current: still not collected as of Run #16; `/usr/bin/chromium` mevcut olsa da bu turda interaktif human-input validation yapilmadi, ancak `V` export kontrati repo-ici `telemetry:validation-snapshot` ile tekrar dogrulandi
 target: 5-10 runs tracked via session telemetry after pressing `R`
 
 deterministic_balance_snapshot:
@@ -35,12 +35,12 @@ baseline: avg survival 22.3s, first death 5.0s, early death 8%, best 30.0s
 target: use as a regression guard and avoid regressing past 8% early death without breaking pacing snapshot
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as revalidated in Run #15
+current: passes via `npm run telemetry:check` as revalidated in Run #16
 baseline: asserts first spawn 0.9s, spawn pacing 10 / 32 / 76, speed curve 145 / 183 / 259 / 316 / 320, survival avg 22.3s, first death 5.0s, early death 8%, validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 target: run before and after future balance changes to catch accidental drift
 
 validation_export_contract:
-current: Run #15 deterministic snapshot emits `validation_sample | runs=5 | deaths=5 | avg_survival=18.2s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=26.8s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early`
+current: Run #16 deterministic snapshot tekrar `validation_sample | runs=5 | deaths=5 | avg_survival=18.2s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=26.8s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early` uretti
 baseline: parsed summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
 target: `V` export string and `Last export` parser stay aligned even when telemetry copy changes
 
@@ -135,4 +135,8 @@ target: increase while keeping 10s/30s pacing baseline intact
   - `telemetry:validation-snapshot` survival snapshot'in ilk 5 deterministic run'ini session telemetry export formatina ceviriyor
   - baseline validation summary: `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
   - export parser bug'i bu script sayesinde bulundu; `validation=5/5 runs, target met` formatina gecilerek `Last export` ozeti tam okunur hale geldi
-- next step: bu speed curve'u tarayici varsa `R` reset sonrasi en az 5 manual run ile caprazla, sample sonunda `V` export satirini kaydet; tarayici yoksa blokaji not et ve yeni tuning'e gecme
+- Run #16 verification details:
+  - `npm run telemetry:check` sonucu tekrar `status: ok` dondu
+  - `npm run telemetry:validation-snapshot` sample run seeds `1,2,3,4,5` ve sample run times `30.0, 14.7, 6.2, 13.1, 26.8` ile ayni export kontratini yeniden uretti
+  - build tekrar basarili kaldi; chunk size warning'i degismedi
+- next step: bu speed curve'u interaktif browser oturumunda `R` reset sonrasi en az 5 manual run ile caprazla, sample sonunda `V` export satirini kaydet; sadece browser binary'si gormek yeterli kabul edilmemeli

@@ -141,3 +141,12 @@
 - validation export parser'inin `validation` alanindaki `|` ayirici yuzunden durumu truncation ile kaybetmesi, export'ta safe separator kullanilarak duzeltildi
 - `project/game/scripts/telemetry-check.ts` deterministic validation export summary ve full report string'ini assert edecek sekilde genisletildi
 - balance'a dokunulmadan `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti; buyuk bundle warning'i devam ediyor
+
+---
+
+## Run #16
+
+- balance'a dokunulmadan `npm run telemetry:check` tekrar calistirildi ve deterministic baseline'in pacing `10/32/76`, survival `22.3s / 5.0s / 8%` ve validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` olarak korundugu dogrulandi
+- `npm run telemetry:validation-snapshot` tekrar calistirildi; validation export kontrati ve parse edilen summary baseline ile uyumlu kaldi
+- `npm run build` tekrar basarili calisti; buyuk bundle warning'i devam ediyor
+- ortamda `/usr/bin/chromium` binary'si goruldu, ancak bu turda interaktif manual telemetry sample'i yine alinmadigi icin blokaj dokumanlarda bu sekilde netlestirildi

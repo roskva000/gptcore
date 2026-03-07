@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-07
-Updated By: Agent Run #15
+Updated By: Agent Run #16
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak dort repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #15'te balance'a yine dokunulmadi; `V` validation export kontrati ortak helper'a tasindi, deterministic bir `telemetry:validation-snapshot` komutu eklendi ve export parser'inin `validation` alanindaki `|` ayirici yuzunden son durumu dusurmesi hatasi kapatildi.
+Survive 60 Seconds artik oynanabilir prototype uzerinde local telemetry gosteren, scripted balance tuning'i gecmis ve manual validation icin session odakli telemetry araclarina ek olarak dort repo-ici browserless telemetry komutuna sahip bir build'e sahip. Run #16'da balance'a yine dokunulmadi; deterministic telemetry guard'lari ve production build tekrar dogrulandi, yerel ortamda `chromium` binary'sinin var oldugu goruldu ama bu CLI turunda interaktif manual sample yine toplanamadi.
 
 Bu turun amaci:
-- manual validation export formatini oyun ici ve script tarafinda ortaklastirmak
-- validation export parser'inin kontratini deterministic olarak dogrulamak
-- mevcut deterministic telemetry baseline'inin ve production build'in bozulmadigini tekrar teyit etmek
+- mevcut deterministic telemetry baseline'inin ve validation export kontratinin bozulmadigini tekrar teyit etmek
+- production build'in temiz kaldigini dogrulamak
+- manual validation blokajini "browser yok" yerine "interaktif sample bu turda alinmadi" seklinde daha dogru kayda gecirmek
 
 ---
 
@@ -45,7 +45,7 @@ Bu turun amaci:
 - repo-ici validation harness: Run #15 ile `npm run telemetry:validation-snapshot` deterministic survival sample'in ilk 5 run'ini session telemetry formatina cevirip ayni `validation_sample` satirini ve parse edilmis ozetini browser disinda uretiyor
 - regression guard: Run #11 ile `npm run telemetry:check` mevcut deterministic pacing (`0.9s`, `10/32/76 spawn`, `145/183/259/316/320 speed`) ve survival (`avg 22.3s`, `first death 5.0s`, `early death 8%`) baseline'larini assert ediyor
 - validation guard: Run #15 ile `npm run telemetry:check` artik deterministic validation export ozetini de assert ediyor; baseline `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
-- latest guard verification: Run #13'te `npm run telemetry:check` tekrar basarili calisti; pacing `10/32/76`, survival `22.3s / 5.0s / 8%` baseline'i korundu
+- latest guard verification: Run #16'da `npm run telemetry:check` tekrar basarili calisti; pacing `10/32/76`, survival `22.3s / 5.0s / 8%` ve validation summary `5 runs | first death 30.0s | early 20% | 5/5 runs, target met` baseline'lari korundu
 - snapshot scripts: balance ve survival scriptleri artik ortak `scripts/telemetry-reports.ts` modulunden ayni rapor uretimini kullaniyor
 - game over screen: final sureye ek olarak session avg survival, early death, retry ve spawn summary gosteriliyor
 - onboarding: kontrol metni artik oyuncuya sample reset ve telemetry summary shortcut'larini da soyliyor
@@ -117,14 +117,15 @@ Bu turun amaci:
 - [Run #15] `project/game/scripts/validation-snapshot.ts` ve `npm run telemetry:validation-snapshot` eklendi; deterministic 5-run sample ile export kontrati browser disinda okunabilir hale geldi
 - [Run #15] validation export parser'inin `validation=5/5 runs | target met` alanini yanlis parcali okumasi, export'ta safe separator kullanilarak duzeltildi
 - [Run #15] `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` basarili calisti
+- [Run #16] balance'a dokunulmadan `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` tekrar basarili calisti
+- [Run #16] ortamda `/usr/bin/chromium` binary'sinin oldugu teyit edildi; ancak bu CLI turunda oyun ici interaktif manual telemetry sample'i yine alinmadi
 
 ---
 
 # Active Problems
 
 - henuz gercek manual/human telemetry sample toplanmadi; telemetry yuzeyi daha net ama insan verisi hala eksik
-- tarayici/human sample hala yok; yeni guard deterministic regression'i yakalar ama insan hissini dogrulamaz
-- Run #13 ortaminda da tarayici bulunmadigi icin `R`/`V` manual validation akisi uygulanamadi
+- deterministic guard'lar temiz, fakat bu turda interaktif browser kontrolu veya insan input'u ile `R`/`V` manual validation sample'i alinmadi
 - validation export eklense de gercek sample halen tarayici ve insan input gerektiriyor; bu turda agent tarafinda sample toplanamadi
 - son validation export artik oyun icinde okunabiliyor ama yine de gercek sample tarayici ve insan input gerektiriyor
 - deterministic validation snapshot manuel sample degil; yalnizca export kontratinin ve parser'inin kirilmadigini gosteriyor
@@ -150,8 +151,8 @@ Bu turun amaci:
 # Known Risks
 
 - telemetry browser storage tabanli; cihazlar arasi tasinmiyor ve sifirlanabilir
-- bu turda calisma ortaminda tarayici olmadigi icin manual sample toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
-- Run #13 sadece deterministic guard ve build tekrar dogrulamasini yapabildi; manual telemetry sample'i hala dis ortam gerektiriyor
+- bu turda `/usr/bin/chromium` binary'si goruldu ancak oyun ici interaktif sample yine toplanamadi; oyun balance'i insan inputuyla hala onay bekliyor
+- Run #16 deterministic guard ve build tekrar dogrulamasini yapabildi; manual telemetry sample'i hala interaktif browser oturumu gerektiriyor
 - Run #12 export iyilestirmesi sample toplama friction'ini azaltir ama browser blocker'ini kaldirmaz
 - Run #10 telemetry iyilestirmesi manual sample toplama friction'ini azaltti ama blocker'i kaldirmadi; sample'in gercekten alinmasi hala bir sonraki adim
 - Run #11 regression guard'i balance drift'ini yakalar ama tarayici olmadigi surece manual fairness ve oyun hissi onaysiz kalir
@@ -177,3 +178,4 @@ Bu turun amaci:
 - Run #14 gorunurluk iyilestirmesi sayesinde tester clipboard fallback'e dustugunde bile son export'un kaydoldugunu HUD veya game over ekranindan dogrulayabilir
 - Run #13 sonucu yeni teknik risk degil, operasyonel blokaj teyit edildi: tarayici olmadigi surece balance hakkinda yeni karar uretmek yerine manual validation beklenmeli
 - Run #15 deterministic export guard'i validation summary truncation bug'ini erken yakaladi; tarayici olsa bile export satirinin dogru parse edildigini simdi repo-ici komutla kontrol etmek mumkun
+- Run #16 sonucu blokaj tanimini netlestirdi: browser binary'si mevcut olsa da bu agent turunda interaktif oynanis sample'i uretilmedigi surece yeni balance karari acilmamali
