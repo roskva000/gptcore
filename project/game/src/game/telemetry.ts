@@ -8,6 +8,7 @@ export type GameplayTelemetry = {
   totalRuns: number;
   totalDeaths: number;
   totalSurvivalTime: number;
+  bestSurvivalTime: number | null;
   firstDeathTime: number | null;
   earlyDeathsUnderTarget: number;
   totalRetryDelayMs: number;
@@ -25,6 +26,7 @@ export type TelemetrySummary = {
   label: string;
   runs: number;
   deaths: number;
+  bestSurvivalTime: number | null;
   firstDeathTime: number | null;
   averageSurvivalTime: number;
   earlyDeathRate: number;
@@ -45,6 +47,7 @@ export const createEmptyTelemetry = (): GameplayTelemetry => ({
   totalRuns: 0,
   totalDeaths: 0,
   totalSurvivalTime: 0,
+  bestSurvivalTime: null,
   firstDeathTime: null,
   earlyDeathsUnderTarget: 0,
   totalRetryDelayMs: 0,
@@ -64,6 +67,19 @@ export const getAverageSurvivalTime = (telemetry: GameplayTelemetry): number => 
   }
 
   return telemetry.totalSurvivalTime / telemetry.totalDeaths;
+};
+
+export const getBestSurvivalTime = (telemetry: GameplayTelemetry): number | null =>
+  telemetry.bestSurvivalTime;
+
+export const getBestSurvivalTimeText = (telemetry: GameplayTelemetry): string => {
+  const bestSurvivalTime = getBestSurvivalTime(telemetry);
+
+  if (bestSurvivalTime === null) {
+    return 'n/a';
+  }
+
+  return `${bestSurvivalTime.toFixed(1)}s`;
 };
 
 export const getAverageRetryDelaySeconds = (telemetry: GameplayTelemetry): number | null => {
@@ -138,6 +154,7 @@ export const buildTelemetrySummary = (
   label,
   runs: telemetry.totalRuns,
   deaths: telemetry.totalDeaths,
+  bestSurvivalTime: telemetry.bestSurvivalTime,
   firstDeathTime: telemetry.firstDeathTime,
   averageSurvivalTime: Number(getAverageSurvivalTime(telemetry).toFixed(1)),
   earlyDeathRate: getEarlyDeathRate(telemetry),

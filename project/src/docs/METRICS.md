@@ -53,15 +53,20 @@ target: keep replay under the project's `< 3s` expectation with no extra tap/key
 
 public_ai_update_surface:
 current: visible beside the game canvas with 1 title, 1 intro, and 9 short bullets about the latest meaningful run
-baseline: copy refreshed in Run #41 to describe the narrower 20s+ chase easing pass
+baseline: copy refreshed in Run #42 to describe the personal-best visibility pass
 target: keep visible in build and validate manually that it helps orientation without distracting from replay or competing with the death callout
+
+personal_best_visibility:
+current: lifetime best and session best are visible in the top-left HUD; game over also states whether the run set a new best or what score still stands as the target
+baseline: added in Run #42 without changing the deterministic balance baseline
+target: confirm manually that the cue is readable at first glance, reinforces retry intent, and does not make the HUD or death summary feel overloaded
 
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action and whether killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback improve fairness/readability
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether the new personal-best cue increases retry intent, and whether killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback improve fairness/readability
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #41
+current: passes via `npm run telemetry:check` as of Run #42
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 

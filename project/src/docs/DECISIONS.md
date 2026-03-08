@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #42]
+
+Decision:
+Yeni balance veya death-readability tuning'i yerine oyuncunun personal best'i HUD ve game-over ozetinde gorunur hale getirildi.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; death-readability paketine kanit olmadan geri donmek ve manual sample yokken yeni balance mikro-tuning turleri acmak yanlis local maximum riski tasiyor. Host browser sample bu runtime'ta hala yokken en dar urun ilerlemesi, instant replay'i daha hedefli hale getirecek kalici bir skor hedefi gostermekti.
+
+Impact:
+Lifetime ve session telemetry artik `bestSurvivalTime` tutuyor. Sol ust HUD `Best ... | Session ...` satiriyla her an hedef skoru gosteriyor; game-over body ve stats blogu yeni record veya mevcut hedef bilgisini yazarak retry kararini skor-hedef odakli tutuyor. Deterministic baseline `22.3s / 5.0s / 8%` ve mevcut pacing aynen korundu.
+
+Rollback Condition:
+Host browser manuel sample'i personal-best satirinin HUD'i kalabaliklastirdigini, game-over odagini bozdugunu veya replay istegine katkisi olmadigini gosterirse yalnizca copy/placement/weight seviyesinde dar bir sadeleştirme yapilir.
+
 ### [Run #41]
 
 Decision:

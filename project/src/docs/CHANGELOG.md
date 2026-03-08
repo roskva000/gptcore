@@ -2,6 +2,16 @@
 
 ---
 
+## Run #42
+
+- `project/game/src/game/telemetry.ts` icinde kalici `bestSurvivalTime` alani eklenerek lifetime ve session personal best ayni telemetry persistence akisina alindi
+- `project/game/src/game/GameScene.ts` icinde sol ust HUD'a `Best ... | Session ...` satiri eklendi; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yazacak sekilde guncellendi
+- `project/game/src/latestRun.ts` public AI update paneli personal-best visibility pass'ini anlatacak sekilde yenilendi
+- erken fairness icin spawn-distance ve first-spawn delay denemeleri olculdu ancak kabul edilebilir tradeoff vermedigi icin final duruma alinmadi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #41
 
 - `project/game/src/game/balance.ts` icinde obstacle speed curve yalnizca `20s+` bandinda dar sekilde yumusatilarak deterministic survival baseline'i tekrar `22.3s` seviyesine tasindi

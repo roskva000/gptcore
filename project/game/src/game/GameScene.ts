@@ -15,6 +15,8 @@ import {
   buildTelemetrySummary,
   buildValidationReport,
   createEmptyTelemetry,
+  getBestSurvivalTime,
+  getBestSurvivalTimeText,
   formatValidationReportSummaryText,
   getAverageRetryDelaySeconds,
   getAverageRetryDelayText,
@@ -63,6 +65,7 @@ export class GameScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private movementKeys!: MovementKeys;
   private scoreText!: Phaser.GameObjects.Text;
+  private bestText!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
   private hitFlash!: Phaser.GameObjects.Rectangle;
@@ -143,6 +146,13 @@ export class GameScene extends Phaser.Scene {
       color: '#f5f7ff',
       fontFamily: 'Trebuchet MS',
       fontSize: '28px',
+      fontStyle: 'bold',
+    });
+
+    this.bestText = this.add.text(24, 56, 'Best n/a', {
+      color: '#8db7cb',
+      fontFamily: 'Trebuchet MS',
+      fontSize: '16px',
       fontStyle: 'bold',
     });
 
@@ -723,6 +733,13 @@ export class GameScene extends Phaser.Scene {
     const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
     const hitDirection = this.getHitDirection(obstacle);
     const escapePrompt = this.getEscapePrompt(hitDirection);
+    const roundedSurvivalTime = Number(this.survivalTime.toFixed(1));
+    const previousBestSurvivalTime = getBestSurvivalTime(this.telemetry);
+    const isNewBest =
+      previousBestSurvivalTime === null || roundedSurvivalTime > previousBestSurvivalTime;
+    const bestSurvivalSummary = isNewBest
+      ? `New best ${roundedSurvivalTime.toFixed(1)}s.`
+      : `Best ${getBestSurvivalTimeText(this.telemetry)}.`;
 
     this.phase = 'gameOver';
     this.nextSpawnTimer?.remove(false);
@@ -792,7 +809,8 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody
       .setText(
         [
-          `You survived ${this.survivalTime.toFixed(1)} seconds.`,
+          bestSurvivalSummary,
+          `You survived ${roundedSurvivalTime.toFixed(1)} seconds.`,
           `Cause: ${hitDirection.sentence}.`,
         ].join('\n'),
       )
@@ -804,6 +822,7 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           'Press Space, Enter, or tap to retry instantly.',
+          `Best ${getBestSurvivalTimeText(this.telemetry)} lifetime | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
           `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
           `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
           `Validation ${getValidationProgressText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
@@ -1121,6 +1140,7 @@ export class GameScene extends Phaser.Scene {
         totalRuns: this.readNumber(parsedTelemetry.totalRuns),
         totalDeaths: this.readNumber(parsedTelemetry.totalDeaths),
         totalSurvivalTime: this.readNumber(parsedTelemetry.totalSurvivalTime),
+        bestSurvivalTime: this.readNullableNumber(parsedTelemetry.bestSurvivalTime),
         firstDeathTime: this.readNullableNumber(parsedTelemetry.firstDeathTime),
         earlyDeathsUnderTarget: this.readNumber(parsedTelemetry.earlyDeathsUnderTarget),
         totalRetryDelayMs: this.readNumber(parsedTelemetry.totalRetryDelayMs),
@@ -1210,6 +1230,7 @@ export class GameScene extends Phaser.Scene {
 
     this.telemetry.totalDeaths += 1;
     this.telemetry.totalSurvivalTime += roundedSurvivalTime;
+    this.telemetry.bestSurvivalTime = Math.max(this.telemetry.bestSurvivalTime ?? 0, roundedSurvivalTime);
     this.telemetry.firstDeathTime ??= roundedSurvivalTime;
     this.telemetry.lastDeathAt = Date.now();
     this.telemetry.lastSurvivalTime = roundedSurvivalTime;
@@ -1227,6 +1248,10 @@ export class GameScene extends Phaser.Scene {
 
     this.sessionTelemetry.totalDeaths += 1;
     this.sessionTelemetry.totalSurvivalTime += roundedSurvivalTime;
+    this.sessionTelemetry.bestSurvivalTime = Math.max(
+      this.sessionTelemetry.bestSurvivalTime ?? 0,
+      roundedSurvivalTime,
+    );
     this.sessionTelemetry.firstDeathTime ??= roundedSurvivalTime;
     this.sessionTelemetry.lastDeathAt = this.telemetry.lastDeathAt;
     this.sessionTelemetry.lastSurvivalTime = roundedSurvivalTime;
@@ -1256,6 +1281,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateTelemetryText(): void {
+    this.bestText.setText(
+      `Best ${getBestSurvivalTimeText(this.telemetry)} | Session ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
+    );
     this.telemetryText.setText(
       [
         'Local telemetry',
