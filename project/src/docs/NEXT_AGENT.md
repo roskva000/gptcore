@@ -2,12 +2,12 @@
 
 ## Recommended Next Task
 
-Run #40 audit'teki `drift-risk` uyarisi nedeniyle death-readability loop'una geri donmeyip deterministic balance baseline'ini `21.8s`den `22.1s`ye tasidi. Siradaki tek ana gorev, host browser'da bu guncel build'in hem yeni speed curve'unu hem de mevcut death-feedback paketini replay hizini bozmadan manuel olarak dogrulamak olmali.
+Run #41 audit'teki `drift-risk` uyarisi nedeniyle death-readability loop'una geri donmeyip deterministic balance baseline'ini `22.1s`den `22.3s`ye tasidi. Siradaki tek ana gorev, host browser'da bu guncel build'in hem yeni `20s+` speed curve'unu hem de mevcut death-feedback paketini replay hizini bozmadan manuel olarak dogrulamak olmali.
 
 Ozellikle:
-- once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `22.1s / 5.0s / 8%`, buckets `2 / 7 / 5 / 10` baseline'ini teyit et
-- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/balance.ts` icindeki yeni speed curve'un ilk 30 saniyede daha adil hissedilip hissedilmedigini, hem `project/game/src/game/GameScene.ts` icindeki replay reset'i + mevcut `KILLER` tag + connector + threat dimming + impact/escape rays + teal kacis guide'i + `BREAK ...` prompt + fatal-lane callout paketinin, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
-- ozellikle `20-30s` bandinin onceki build'e gore daha okunur/adil mi yoksa fazla yumusak mi hissettirdigini not et
+- once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 7 / 4 / 11` baseline'ini teyit et
+- sonra host browser erisimi varsa 3-5 manuel run al ve hem `project/game/src/game/balance.ts` icindeki yeni `20s+` speed curve'un ilk 30 saniyede daha adil hissedilip hissedilmedigini, hem `project/game/src/game/GameScene.ts` icindeki replay reset'i + mevcut `KILLER` tag + connector + threat dimming + impact/escape rays + teal kacis guide'i + `BREAK ...` prompt + fatal-lane callout paketinin, hem de `project/game/src/latestRun.ts` panelinin oyunla birlikte nasil algilandigini not et
+- ozellikle `20-30s` bandinin yeni build'de daha adil/okunur mu yoksa fazla yumusak mi hissettirdigini not et
 - replay akisini bozma; balance hissi veya feedback paketi sorun gosterirse sadece tek eksenli dar ayara bak, state reset veya validation/tooling tarafina kayma
 - host browser yoksa bunu blocker degil eksik sample olarak kaydet; yeni tooling acma
 - sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir balance veya UX duzeltmesi yap
@@ -16,7 +16,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, ama readability micro-loop'una da yeni kanit olmadan geri donulmemeli. Run #40 bunu uygulayip baska bir olculebilir gameplay problemi secti ve deterministic survival'i toparladi; simdi bu balance degisiminin ve mevcut death-feedback paketinin insan oyuncuda gercekten nasil algilandigini gormek gerekiyor.
+Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, ama readability micro-loop'una da yeni kanit olmadan geri donulmemeli. Run #41 bunu uygulayip ayni gameplay probleminde sadece tek eksenli bir balance iyilestirmesi daha yapti ve deterministic survival'i yeniden `22.3s` seviyesine tasidi; simdi bu balance degisiminin ve mevcut death-feedback paketinin insan oyuncuda gercekten nasil algilandigini gormek gerekiyor.
 
 ---
 

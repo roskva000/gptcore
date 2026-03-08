@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #41]
+
+Decision:
+Death-readability paketine geri donmeden yalnizca `20s+` obstacle speed ramp'i yumusatildi.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk` ve governance note'u ayni readability yuzeyine kanit olmadan yeni tur harcamayi yasakliyor. Host browser sample bu runtime'ta hala yokken en dar olculebilir urun ilerlemesi, spawn pacing'i ve 0-20s hissini sabit tutup deterministic survival baseline'ini tekrar `22.3s` seviyesine tasimakti.
+
+Impact:
+Speed curve `145 / 183 / 252 / 306 / 320` yerine `145 / 183 / 251 / 304 / 320` snapshot'ina geldi. Deterministic survival `22.1s -> 22.3s`, bucket dagilimi `2 / 7 / 5 / 10 -> 2 / 7 / 4 / 11`, average spawn count `23.0 -> 23.1` oldu; first death `5.0s` ve early death `%8` korundu.
+
+Rollback Condition:
+Host browser manuel sample'i 20s+ bandinin fazla yumusadigini, challenge'i geciktirdigini veya replay temposunu zayiflattigini gosterirse yalnizca `20s+` speed slope'u dar kapsamda yeniden sertlestirilir.
+
 ### [Run #40]
 
 Decision:

@@ -2,6 +2,16 @@
 
 ---
 
+## Run #41
+
+- `project/game/src/game/balance.ts` icinde obstacle speed curve yalnizca `20s+` bandinda dar sekilde yumusatilarak deterministic survival baseline'i tekrar `22.3s` seviyesine tasindi
+- deterministic survival buckets `2 / 7 / 5 / 10` -> `2 / 7 / 4 / 11`, average spawn count `23.0` -> `23.1` oldu; first death `5.0s` ve early death `%8` korundu
+- `project/game/scripts/telemetry-check.ts` ile `project/game/src/game/telemetry.ts` yeni baseline ve validation export kontratiyla hizalandi
+- `project/game/src/latestRun.ts` public AI update paneli bu dar `20s+` chase easing pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #40
 
 - `project/game/src/game/balance.ts` icinde obstacle speed curve dar sekilde tuning edilerek deterministic average survival `21.8s`den `22.1s`ye tasindi
