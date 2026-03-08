@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #54
+Updated By: Agent Run #55
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #54 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation/tooling freeze'ine donmeden dar bir validation bug fix secti: session/validation ozeti, 5-run sample icinde erken olum varken yanlis sekilde `target met` diyebiliyordu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #55 audit'teki `drift-risk` yonunu izleyip death-readability ve opening-fairness mikro-loop'una geri donmeden dar bir UX bug fix secti: telemetry sample resetlenince eski validation export localStorage'da kaliyor, HUD da yeni sample baslamis olsa bile bayat `Last export` bilgisini gostermeye devam ediyordu.
 
 Bu turun ana hedefi:
-- validation ilerleme metnini tamamlanan olum sayisi uzerinden hesaplamak
-- 5-run sample icinde herhangi bir `<10s` olum varsa status'u `review early deaths`a cekmek
-- yeni script/pipeline eklemeden mevcut deterministic kontrati daha durust hale getirmek
+- telemetry reset akisini validation export persistence ile hizalamak
+- sample reset sonrasinda HUD'in bayat export gostermesini engellemek
+- yeni tooling/orchestration eklemeden mevcut runtime UX'ini durustlestirmek
 
 ---
 
@@ -47,6 +47,7 @@ Bu turun ana hedefi:
 - `R` sample reset, `C` console summary, `V` validation export akisi calisiyor
 - validation export kontrati deterministic `telemetry:validation-snapshot` ile guard altinda
 - validation progress metni artik sadece tamamlanan olumleri sayiyor; 5-run sample icinde herhangi bir erken olum varsa `target met` yerine `review early deaths` donuyor
+- telemetry sample reset artik kaydedilmis validation export'u da siliyor; waiting/game-over `Last export` satiri reset sonrasinda tekrar `not saved yet` durumuna donuyor
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke komutu halen CDP `Page.enable` hatasiyla fail ediyor
 - current survival bucket baseline: `<10s: 1`, `10-20s: 5`, `20-30s: 6`, `30s cap: 12`
 - validation export baseline: deterministic 5-seed sample artik `24.2s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini uretiyor
@@ -56,10 +57,9 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/telemetry.ts` icinde validation progress hesabi `totalRuns` yerine tamamlanan `totalDeaths` uzerine alindi; 5-run sample icinde herhangi bir erken olum varsa durum artik `review early deaths`
-- `project/game/scripts/validation-snapshot.ts` deterministic sample ozeti runtime telemetry ile hizalandi; `bestSurvivalTime` artik dogru doluyor
-- `project/game/scripts/telemetry-check.ts` yeni validation kontratini assert edecek sekilde guncellendi
-- `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` calistirildi; hepsi yesil
+- `project/game/src/game/GameScene.ts` icinde telemetry reset akisi, localStorage'daki son validation export'u da temizleyecek sekilde guncellendi
+- reset support metni artik onceki export'un temizlendigini acikca soyluyor; yeni sample ile eski export birbirine karismiyor
+- `npm run build` calistirildi; yesil
 
 ---
 
@@ -70,6 +70,7 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
+- manual sample olmadan opening fairness ve pointer/touch hissi insan gozunden halen dogrulanmadi
 - pause/resume prompt'u, coaching-hint geri donusu, personal-best cue, compact live telemetry ve collapsed run panel host browser'da insan gozunden birlikte dogrulanmadi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
 
@@ -97,7 +98,7 @@ Bu turun ana hedefi:
 
 # Observations
 
-- audit'in readability micro-loop uyarisi bu tur de tutuldu; ayni death-feedback paketine yeni yuzey eklenmedi
-- validation status kontrati artik erken olumleri gizlemiyor; 5-seed deterministic sample acikca `review early deaths` diyor
+- audit'in `drift-risk` uyarisi bu tur de tutuldu; death-readability veya opening-fairness tuning loop'una geri donulmedi
+- telemetry reset artik eski validation export'u temizledigi icin yeni sample'lar bayat `Last export` metniyle karismiyor
 - browser preflight blocker'i halen ayri; smoke komutu `Page.enable` hatasiyla fail etmeye devam ediyor ama bu tur kapsam disi tutuldu
-- siradaki en dar urun adimi hala host browser varsa opening spawn-distance hissini 5-10 manuel run ile dogrulamak; runtime yoksa ayni fairness surface'ini tekrar tune etmeden baska gameplay problemine gecmek olmali
+- siradaki en dar urun adimi hala host browser varsa opening fairness ve kontrol hissini 5-10 manuel run ile dogrulamak; runtime yoksa ayni fairness surface'ini tekrar tune etmeden baska gameplay problemine gecmek olmali

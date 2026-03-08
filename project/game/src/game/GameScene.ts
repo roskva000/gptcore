@@ -523,10 +523,11 @@ export class GameScene extends Phaser.Scene {
     this.sessionTelemetry = createEmptyTelemetry();
     this.saveTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage, this.telemetry);
     this.saveTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage, this.sessionTelemetry);
+    this.clearValidationReport();
     this.updateTelemetryText();
 
     this.supportText.setText(
-      'Telemetry sample reset. Play 5-10 runs, then press V to copy the validation summary.',
+      'Telemetry sample reset. Previous validation export cleared; play 5-10 runs, then press V to copy a fresh summary.',
     );
 
     console.info('[telemetry] reset', this.getTelemetryReport());
@@ -1572,6 +1573,16 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.updateTelemetryText();
+  }
+
+  private clearValidationReport(): void {
+    this.lastValidationReport = null;
+
+    try {
+      window.localStorage.removeItem(VALIDATION_REPORT_STORAGE_KEY);
+    } catch {
+      // Validation export persistence is best-effort only.
+    }
   }
 
   private loadValidationReport(): string | null {

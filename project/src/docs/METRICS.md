@@ -47,9 +47,9 @@ baseline: added in Run #53 to make the existing spawn-reroll fairness helper act
 target: confirm manually that this removes crowded opening lanes without making the first seconds feel empty
 
 validation_export_contract:
-current: `5 runs | first death 24.2s | early 20% | 5/5 runs, review early deaths`
-baseline: Run #54 aligned the export with actual early-death risk; detailed report carries `avg_survival=24.1s`, `last_run=30.0s`, `spawn_saves=3`, and deterministic baseline text `24.3s avg / 6.3s first death / 4% early`
-target: keep `V` export and parser aligned, and never mark a 5-run sample as healthy while it still contains `<10s` deaths
+current: `V` export still produces `5 runs | first death 24.2s | early 20% | 5/5 runs, review early deaths`, and `R` reset now clears the saved export so HUD summary returns to `not saved yet`
+baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session
+target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, and never let a fresh reset show a stale export as if it belongs to the new sample
 
 early_spawn_target_lag:
 current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns to exact-position targeting
@@ -66,9 +66,9 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #53
+current: `npm run telemetry:check` still passes on the Run #54 baseline; Run #55 only changed runtime reset/export UX and verified with `npm run build`
 baseline: as of Run #54 asserts pacing, required spawn distance, survival, survival buckets, honest validation summary/report wording, and early spawn collision grace
-target: run before and after any future balance change
+target: run before and after any future balance change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 build_health:
 current: `npm run build` passes; Vite still reports a large chunk warning for the main bundle
