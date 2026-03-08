@@ -507,6 +507,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handleTelemetryReset(): void {
+    if (this.phase === 'playing' || this.phase === 'paused') {
+      this.supportText.setText(
+        'Finish the current run before resetting telemetry so first-death and retry samples stay coherent.',
+      );
+      return;
+    }
+
     this.telemetry = createEmptyTelemetry();
     this.sessionTelemetry = createEmptyTelemetry();
     this.saveTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage, this.telemetry);
@@ -1458,7 +1465,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getBaseSupportText(): string {
-    return 'Telemetry hotkeys: R reset sample | C log summary | V copy validation';
+    return 'Telemetry hotkeys: C log summary | V copy validation | R reset sample between runs';
   }
 
   private getPlayingHintText(): string {

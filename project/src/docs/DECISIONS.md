@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #50]
+
+Decision:
+Telemetry sample reset sadece waiting ve game-over fazlarinda calisacak; aktif run sirasinda (`playing` veya `paused`) `R` ile sample sifirlama bloke edilecek.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; death-readability paketine veya validation/readiness alanina yeni katman eklemek yasak. Host browser sample bu runtime'ta yine yok, bu nedenle tek dar ve dogrulanabilir kazanc mevcut oyun akisindaki bir sample-integrity bug'ini kapatmakti. Mevcut `handleTelemetryReset()` davranisi aktif run devam ederken first-death, retry avg ve validation sample sayaclarini sifirlayip ayni run'in sonunu yeni sample'a yazabiliyordu. Bu hem deterministik validation dilini hem de replay/telemetry guvenini kiriyordu.
+
+Impact:
+Oyuncu artik telemetry sample'ini sadece run disi fazlarda sifirlayabiliyor. Aktif run korunuyor; first-death, retry avg ve validation sample'i run ortasinda bozulmuyor. Deterministic baseline `22.3s / 5.0s / 8%` ve pacing `10 / 32 / 76` aynen korundu.
+
+Rollback Condition:
+Host browser veya sonraki run bu guard'in telemetry reset'i gereksiz zorlastirdigini gosterirse yalnizca faz kosulu/copy seviyesi dar sekilde ayarlanir; yeni telemetry sistemi veya tooling katmani acilmaz.
+
 ### [Run #49]
 
 Decision:

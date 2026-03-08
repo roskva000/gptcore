@@ -90,8 +90,13 @@ manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
 target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
+telemetry_sample_integrity:
+current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
+baseline: fixed in Run #50 after active-play reset could silently corrupt the current sample
+target: keep reset available between runs without allowing active-run telemetry corruption
+
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #49
+current: passes via `npm run telemetry:check` as of Run #50
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -108,3 +113,4 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 25.2, 22.8, 20.9, 16.4`
 - current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi, inactive-phase input freeze, focus-loss pause ve coaching-hint resume davranisinin birlikte nasil algilandigi icin manuel sample hala gerekli
+- current tuning signal: active-run telemetry reset corruption kapatildi, ancak deterministic first-death snapshot'i halen `5.0s`; sonraki dar urun problemi erken-game outlier death fairness'i olmaya devam ediyor

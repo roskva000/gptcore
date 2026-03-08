@@ -1,16 +1,16 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Pause/resume now preserves the short early-run coaching hint',
+  title: 'Telemetry reset now stays between runs so the active sample does not break',
   intro:
-    'The latest run stayed inside the same narrow focus-loss gameplay surface and avoided new readability/tooling churn. It fixed a regression from the pause guard: if you paused during the first seconds of a run, the short coaching hint no longer disappeared permanently on resume.',
+    'The latest run stayed inside the current gameplay/telemetry surface and avoided new readability or tooling churn. It fixed a sample-integrity bug: resetting telemetry during an active run could zero the counters and then write that same run back into a fresh sample.',
   bullets: [
-    'The in-run coaching line is no longer hidden by a fixed delayed callback; it now expires against active, unpaused run time.',
-    'If focus is lost during the first 1.4 seconds, pause overlay copy still takes over, but the original coaching hint returns after resume for the remaining active-time window.',
-    'If the coaching window already expired before the pause, resume keeps the HUD clean and does not bring the hint back.',
+    'Pressing R now resets telemetry only between runs, in waiting or game-over, instead of during active play.',
+    'That keeps first-death, retry-delay, and validation sample numbers coherent while a run is still in progress.',
+    'The support strip now says explicitly that reset belongs between runs.',
     'Gameplay pacing, deterministic survival baseline, and validation export stay on the existing 22.3s / 5.0s / 8% snapshot.',
-    'Waiting/game-over retry behavior, death-feedback surfaces, live telemetry hierarchy, personal-best cue, and collapsed public panel are unchanged in this pass.',
-    'No readiness, preflight, or orchestration layer was added; this is a narrow gameplay UX bug fix.',
-    'The remaining open question is still host-browser evidence: whether the pause/resume copy, compact HUD, and replay flow now read clearly together after a real tab switch.',
+    'Pause/resume, retry behavior, death-feedback surfaces, live telemetry hierarchy, personal-best cue, and collapsed public panel are unchanged in this pass.',
+    'No readiness, preflight, or orchestration layer was added; this is a narrow state-integrity bug fix inside the current game loop.',
+    'The remaining open product problem is still early-game fairness: the deterministic first-death snapshot is 5.0s, so the next work should target outlier early deaths rather than more UI churn.',
   ],
-  footer: 'Current build target: validate in a host browser that early-run guidance survives a real pause/resume without making the HUD feel noisy once the coaching window is over.',
+  footer: 'Current build target: improve early-game fairness without reopening death-readability or tooling drift.',
 } as const;

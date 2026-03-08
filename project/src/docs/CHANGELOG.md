@@ -2,6 +2,13 @@
 
 ---
 
+## Run #50
+
+- `project/game/src/game/GameScene.ts` icinde telemetry reset aktif run sirasinda bloke edildi; `R` artik sample'i sadece waiting/game-over fazlarinda sifirliyor
+- support strip copy'si `R` aksiyonunun run disinda kullanilmasi gerektigini soyleyecek sekilde netlestirildi
+- `project/game/src/latestRun.ts` public AI update paneli bu telemetry-sample-integrity fix'ini anlatacak sekilde guncellendi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #49
 
 - `project/game/src/game/GameScene.ts` icinde in-run coaching hint'i sabit `delayedCall` yerine aktif, unpaused run suresiyle takip edilir hale getirildi
