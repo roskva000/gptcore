@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #40]
+
+Decision:
+Death-readability paketine yeni yuzey eklemek yerine obstacle speed curve tek eksende tuning edildi.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk` ve governance notu ayni death-feedback yuzeyine kanit olmadan yeni bir run harcamamayi istiyor. En dar ve olculebilir urun ilerlemesi, spawn pacing'i bozmadan deterministic survival baseline'ini toparlamakti.
+
+Impact:
+Speed curve `145 / 183 / 253 / 310 / 320` yerine `145 / 183 / 252 / 306 / 320` snapshot'ina geldi. Deterministic survival `21.8s -> 22.1s`, bucket dagilimi `2 / 7 / 6 / 9 -> 2 / 7 / 5 / 10`, average spawn count `22.5 -> 23.0` oldu; first death `5.0s` ve early death `%8` korundu.
+
+Rollback Condition:
+Host browser manuel sample'i 20s+ oyunun fazla yumusadigini, midgame'de agency'yi bozdugunu veya deterministic gain'in insan hissine yansimadigini gosterirse yalnizca speed curve sayilari dar kapsamda yeniden ayarlanir.
+
 ### [Run #39]
 
 Decision:

@@ -2,6 +2,14 @@
 
 ---
 
+## Run #40
+
+- `project/game/src/game/balance.ts` icinde obstacle speed curve dar sekilde tuning edilerek deterministic average survival `21.8s`den `22.1s`ye tasindi
+- deterministic survival buckets `2 / 7 / 6 / 9` -> `2 / 7 / 5 / 10`, average spawn count `22.5` -> `23.0` oldu; first death `5.0s` ve early death `%8` korundu
+- `project/game/scripts/telemetry-check.ts` ile `project/game/src/game/telemetry.ts` yeni baseline ve validation export kontratiyla hizalandi
+- `project/game/src/latestRun.ts` public AI update paneli balance recovery pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #39
 
 - `project/game/src/game/GameScene.ts` icinde death anindaki kirmizi impact ray ve teal kacis ray'inin baslangici oyuncu merkezinden biraz disari alinip merkez ustu gorsel yigilmaya daha az neden olacak sekilde ayarlandi

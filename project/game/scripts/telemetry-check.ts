@@ -32,11 +32,11 @@ assert.equal(spawnsBy(30), 32, '30s spawn pacing regressed.');
 assert.equal(spawnsBy(60), 76, '60s spawn pacing regressed.');
 assert.equal(speedAt(0), 145, '0s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(10), 183, '10s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(30), 253, '30s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(45), 310, '45s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(30), 252, '30s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(45), 306, '45s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(60), 320, '60s obstacle speed changed unexpectedly.');
 
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 21.8, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 22.1, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 5, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 8, 'Early death rate snapshot regressed.');
@@ -45,12 +45,12 @@ assert.deepEqual(
   {
     under10Seconds: 2,
     between10And20Seconds: 7,
-    between20And30Seconds: 6,
-    reached30SecondsCap: 9,
+    between20And30Seconds: 5,
+    reached30SecondsCap: 10,
   },
   'Survival bucket distribution regressed.',
 );
-assert.equal(survivalReport.averageSpawnCount, 22.5, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 23, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0, 'Spawn reroll snapshot changed unexpectedly.');
 assert.equal(
   validationReport.validationSummary,
@@ -59,7 +59,7 @@ assert.equal(
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=18.8s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=30.0s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 21.8s avg / 5.0s first death / 8% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=17.8s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=25.2s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 22.1s avg / 5.0s first death / 8% early',
   'Validation export contract changed unexpectedly.',
 );
 
