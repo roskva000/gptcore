@@ -72,9 +72,9 @@ baseline: added in Run #47 to remove keyboard-only replay friction without reope
 target: confirm manually that keyboard replay feels more natural and never auto-fires from a key held through the death moment
 
 focus_loss_pause_fairness:
-current: active play now pauses on browser `blur` or `visibilitychange`; obstacle physics, spawn timer, movement, and survival-time accounting freeze until the player explicitly resumes after focus returns
+current: active play now pauses on browser `blur` or `visibilitychange`; obstacle physics, spawn timer, movement, and survival-time accounting freeze until the player explicitly resumes after focus returns, and the early-run coaching hint now tracks active unpaused time instead of disappearing during the pause
 baseline: added in Run #48 to prevent cheap deaths or free survival seconds when the browser loses focus mid-run
-target: confirm manually that pause triggers reliably on desktop/mobile browser focus loss, that hidden time never advances survival, and that explicit resume feels clear rather than friction-heavy
+target: confirm manually that pause triggers reliably on desktop/mobile browser focus loss, that hidden time never advances survival, that explicit resume feels clear rather than friction-heavy, and that an early pause preserves the remaining coaching-hint window
 
 personal_best_visibility:
 current: lifetime best and session best are visible in the top-left HUD; game over also states whether the run set a new best or what score still stands as the target
@@ -82,16 +82,16 @@ baseline: added in Run #42 without changing the deterministic balance baseline
 target: confirm manually that the cue is readable at first glance, reinforces retry intent, and does not make the HUD or death summary feel overloaded
 
 instructional_clarity:
-current: waiting hint now shows goal + controls + start action only; telemetry hotkeys live in a quieter bottom support strip; in-run and game-over hints are shorter and more action-led
+current: waiting hint now shows goal + controls + start action only; telemetry hotkeys live in a quieter bottom support strip; in-run and game-over hints are shorter and more action-led, and the short early-run coaching hint now survives pause/resume for the remaining active-time window
 baseline: changed in Run #43 without touching balance, replay state handling, or validation tooling
-target: confirm manually that a fresh player can parse the goal and first action in under 5 seconds, and that the support strip does not compete with HUD/death feedback on smaller screens
+target: confirm manually that a fresh player can parse the goal and first action in under 5 seconds, that the support strip does not compete with HUD/death feedback on smaller screens, and that a pause inside the first seconds does not silently swallow the coaching hint
 
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #48
+current: passes via `npm run telemetry:check` as of Run #49
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -107,4 +107,4 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 25.2, 22.8, 20.9, 16.4`
-- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve mevcut death-feedback paketinin birlikte nasil algilandigi icin manuel sample hala gerekli
+- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi, inactive-phase input freeze, focus-loss pause ve coaching-hint resume davranisinin birlikte nasil algilandigi icin manuel sample hala gerekli

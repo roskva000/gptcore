@@ -1,18 +1,16 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Focus loss now pauses the active run instead of causing a cheap death',
+  title: 'Pause/resume now preserves the short early-run coaching hint',
   intro:
-    'The latest run stayed out of the frozen validation and death-readability surfaces again. Instead it closed a web gameplay fairness gap: if the browser tab or window loses focus during play, the run now freezes cleanly until the player comes back and explicitly resumes.',
+    'The latest run stayed inside the same narrow focus-loss gameplay surface and avoided new readability/tooling churn. It fixed a regression from the pause guard: if you paused during the first seconds of a run, the short coaching hint no longer disappeared permanently on resume.',
   bullets: [
-    'Blur and `visibilitychange` now move an active run into a paused state instead of letting hidden-time deaths or free survival seconds leak into telemetry.',
-    'Obstacle physics, spawn timers, movement, and survival-time accounting all freeze together while the game is unfocused.',
-    'Resume requires an explicit Space, Enter, tap, or fresh movement-key action after focus returns, so the run does not auto-resume into held input.',
-    'Waiting/game-over replay behavior is unchanged; this is not another retry-control tuning pass.',
-    'The change stays outside the frozen death-readability package: killer tag, fatal lane callout, impact/escape rays, teal guide, and BREAK prompt are untouched.',
-    'The live telemetry hierarchy, collapsed public panel, and personal-best cue are also unchanged in this pass; this is not another readability micro-tuning loop.',
-    'Gameplay pacing, deterministic survival baseline, and validation export all stay on the existing 22.3s / 5.0s / 8% snapshot.',
-    'No readiness, preflight, or orchestration layer was added; this is a narrow gameplay bug fix.',
-    'The remaining open question is still human evidence in a host browser, especially whether the pause/resume prompt reads clearly and whether keyboard/touch resume feels natural after an actual tab switch.',
+    'The in-run coaching line is no longer hidden by a fixed delayed callback; it now expires against active, unpaused run time.',
+    'If focus is lost during the first 1.4 seconds, pause overlay copy still takes over, but the original coaching hint returns after resume for the remaining active-time window.',
+    'If the coaching window already expired before the pause, resume keeps the HUD clean and does not bring the hint back.',
+    'Gameplay pacing, deterministic survival baseline, and validation export stay on the existing 22.3s / 5.0s / 8% snapshot.',
+    'Waiting/game-over retry behavior, death-feedback surfaces, live telemetry hierarchy, personal-best cue, and collapsed public panel are unchanged in this pass.',
+    'No readiness, preflight, or orchestration layer was added; this is a narrow gameplay UX bug fix.',
+    'The remaining open question is still host-browser evidence: whether the pause/resume copy, compact HUD, and replay flow now read clearly together after a real tab switch.',
   ],
-  footer: 'Current build target: validate in a host browser whether focus-loss pause/resume feels fair while the existing HUD/panel hierarchy and replay flow still read clearly.',
+  footer: 'Current build target: validate in a host browser that early-run guidance survives a real pause/resume without making the HUD feel noisy once the coaching window is over.',
 } as const;

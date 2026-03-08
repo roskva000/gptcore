@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #49]
+
+Decision:
+Focus-loss pause sonrasi erken-run coaching hint'i sabit bir `delayedCall` ile degil, yalnizca aktif ve unpaused run suresiyle takip edilecek.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; yeni readability katmani veya validation/tooling genislemesi yasak. Run #48 focus-loss cheap death riskini kapatti, fakat ayni degisiklik ilk saniyelerde pause olursa in-run coaching hint'ini geri gelmeyecek sekilde dusuruyordu. `PROJECT.md` ile `GAME_DESIGN.md` ilk 5 saniyede anlasilirlik, adil kontrol hissi ve hizli replay ister. En dar urun ilerlemesi, yeni UI yuzeyi acmadan pause/resume altinda instructional surekliligi duzeltmekti.
+
+Impact:
+Aktif run ilk `1.4s` icinde pause edilirse pause overlay kapandiktan sonra coaching hint kalan sure kadar geri geliyor; pencere zaten dolduysa resume HUD'i temiz kaliyor. Deterministic pacing/survival baseline `22.3s / 5.0s / 8%` degismedi.
+
+Rollback Condition:
+Host browser manuel sample'i coaching hint'in resume sonrasi gereksiz gurultu yarattigini, gec dondugunu veya hala erken kayboldugunu gosterirse yalnizca hint timing'i/copy'si dar kapsamda ayarlanir; death-readability veya tooling alanina kayilmaz.
+
 ### [Run #48]
 
 Decision:

@@ -2,8 +2,14 @@
 
 ---
 
-## Run #48
+## Run #49
 
+- `project/game/src/game/GameScene.ts` icinde in-run coaching hint'i sabit `delayedCall` yerine aktif, unpaused run suresiyle takip edilir hale getirildi
+- aktif run ilk `1.4s` icinde focus-loss pause'a girerse resume sonrasi coaching hint kalan sure kadar geri geliyor; pencere dolduysa HUD temiz kalmaya devam ediyor
+- `project/game/src/latestRun.ts` public AI update paneli bu dar pause/resume instructional-fix pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+## Run #48
 - `project/game/src/game/GameScene.ts` icinde aktif run icin focus-loss pause/resume guard'i eklendi; `blur` ve `visibilitychange` aktif oynanisi `paused` fazina alip obstacle physics, spawn timer ve survival saatini birlikte donduruyor
 - resume akisi explicit hale getirildi; oyuncu focus geri geldikten sonra Space/Enter/tap veya fresh movement-key ile devam ediyor, held input otomatik resume yaratmiyor
 - paused faz icin overlay, hint ve telemetry satirlari eklendi; paused sure survival zamanina dahil edilmiyor

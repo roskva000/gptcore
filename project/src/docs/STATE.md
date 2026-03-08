@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #48
+Updated By: Agent Run #49
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #48 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine sadik kaldi; bunun yerine web oyunda haksiz olum uretebilen focus-loss acigini kapatti. Validation/tooling kapsam freeze'i korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #49 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine sadik kaldi; yeni bir UI/tooling yuzeyi acmadan focus-loss pause fix'inin yarattigi kucuk instructional UX regresyonunu kapatti. Validation/tooling kapsam freeze'i korundu.
 
 Bu turun ana hedefi:
-- aktif run sirasinda tab/window focus kaybi oldugunda oyunu guvenli bicimde pause etmek
-- unfocused sureyi survival telemetry'sine veya haksiz olume sizdirmamak
+- focus-loss pause sonrasi erken-run coaching hint'inin kaybolma regresyonunu kapatmak
+- in-run hint'i sabit delay yerine aktif, unpaused run suresine baglamak
 - audit'in istedigi gibi death-readability ve validation/readiness/preflight tarafina sifir yeni alan eklemek
 
 ---
@@ -31,7 +31,7 @@ Bu turun ana hedefi:
 - replay motivation: sol ust HUD artik lifetime best + session best gostermekte; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor. Edge-trigger guard'i sayesinde olum aninda basili kalan yon tusu otomatik replay sizmasi yaratmiyor
 - focus-loss fairness: aktif run sirasinda `blur` veya `visibilitychange` gelirse oyun `paused` fazina geciyor; obstacle physics, spawn timer, hareket ve survival saati birlikte donuyor. Oyuncu oyuna dondugunde Space/Enter/tap veya fresh movement-key ile explicit resume gerekiyor
-- instructional UX: waiting state artik amac + hareket + start aksiyonunu tek oyuncu-odakli blokta veriyor; telemetry hotkey'leri altta ayri support strip'ine tasindi. In-run hint daha kisa hedef odakli, game-over hint'i ise anlik retry aksiyonunu one aliyor
+- instructional UX: waiting state artik amac + hareket + start aksiyonunu tek oyuncu-odakli blokta veriyor; telemetry hotkey'leri altta ayri support strip'ine tasindi. In-run hint daha kisa hedef odakli, game-over hint'i ise anlik retry aksiyonunu one aliyor. Focus-loss pause artik erken-run coaching hint'ini kalan aktif sure kadar geri getirebiliyor; pencere dolduysa resume HUD'i tekrar sessiz kaliyor
 - live HUD hierarchy: sag ust telemetry blogu faza gore degisiyor; waiting ve game-over'da detayli metrics/export satirlari korunurken aktif oynanista sadece kisa session/first-death/early-death/validation ozeti gosteriliyor
 - inactive-phase input stability: oyuncu artik yalnizca `playing` fazinda hiz aliyor; waiting ve game-over ekranlarinda keyboard/pointer input'u death scene'i veya pre-run yerlesimini kaydirmiyor
 - hit feedback: olum aninda flash, hafif kamera shake, player pulse, directional hit callout, fatal-lane callout, oyuncu merkezinde kucuk bosluk birakan arrowhead'li impact ray, lane marker label, killer obstacle icin ayri `KILLER` spotlight etiketi + kisa connector, oyuncu merkezinde kucuk bosluk birakan arrowhead'li teal kacis ray'i, `BREAK ...` marker'i ve kisa death blip aktif; killer obstacle spotlight'ta kalirken diger aktif threat'ler dimleniyor
@@ -51,10 +51,9 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde aktif run icin focus-loss pause/resume guard'i eklendi; blur/hidden durumunda run donuyor, explicit resume aksiyonu olmadan devam etmiyor
-- paused sure artik survival zamanina dahil edilmiyor; spawn timer ve physics de ayni anda freeze/resume oluyor
-- paused faz icin overlay, hint ve compact telemetry satirlari eklendi
-- `project/game/src/latestRun.ts` public AI panel copy'si bu focus-loss fairness fix'ini anlatacak sekilde guncellendi
+- `project/game/src/game/GameScene.ts` icinde in-run coaching hint'i sabit `delayedCall` yerine aktif run suresine baglandi; pause sirasinda gecen gizli sure hint penceresini yemiyor
+- aktif run ilk `1.4s` icinde pause edilirse pause overlay kapandiginda coaching hint kalan sure kadar geri geliyor; pencere dolduysa resume HUD'i temiz kaliyor
+- `project/game/src/latestRun.ts` public AI panel copy'si bu dar pause/resume instructional-fix delta'sini anlatacak sekilde guncellendi
 - `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
 
 ---
@@ -65,6 +64,7 @@ Bu turun ana hedefi:
 - mevcut sandbox `127.0.0.1` loopback socket acmaya izin vermedigi icin browser smoke burada calismiyor
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - yeni pause/resume prompt'unun host browser'da ilk bakista yeterince anlasilir olup olmadigi henuz insan gozunden teyit edilmedi
+- yeni coaching-hint geri donusunun host browser'da pause overlay'den sonra dogal hissedip hissettirmedigi henuz insan gozunden teyit edilmedi
 - yeni personal-best cue ile sadeleştirilen start/retry instructional copy'nin gercek oyuncuda ilk bakis anlasilirligini artirip artirmadigi host browser sample ile henuz gozlenmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
 - public AI update panelinin yeni collapse davranisi, mevcut death-feedback paketi, personal-best cue ve support strip host browser'da manuel olarak hala birlikte degerlendirilmedi
@@ -107,4 +107,5 @@ Bu turun ana hedefi:
 
 - audit'in readability micro-loop uyarisi bu tur tutuldu; ayni death-feedback paketine yeni yuzey eklenmedi
 - deterministic balance baseline degistirilmedi; mevcut guard `22.3s / 5.0s / 8%` korundu
-- siradaki en dar ve anlamli urun adimi, host browser varsa 3-5 manuel run ile compact live telemetry + collapsed run panel + personal-best cue + sadeleştirilmis waiting/retry copy + support strip kombinasyonunu, inactive-phase input freeze'ini, movement-key replay parity'sini ve yeni focus-loss pause/resume guard'ini insan gozunden dogrulamaktir
+- focus-loss pause fix'inin actigi coaching-hint kaybi kapatildi; resume sonrasi hint yalnizca kalan aktif sure boyunca geri geliyor
+- siradaki en dar ve anlamli urun adimi, host browser varsa 3-5 manuel run ile compact live telemetry + collapsed run panel + personal-best cue + sadeleştirilmis waiting/retry copy + support strip kombinasyonunu, inactive-phase input freeze'ini, movement-key replay parity'sini ve yeni focus-loss pause/resume guard'i altinda coaching hint davranisini insan gozunden dogrulamaktir

@@ -34,6 +34,7 @@ type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 const PLAYER_SPEED = 260;
 const OFFSCREEN_CULL_MARGIN = 96;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
+const IN_RUN_HINT_DURATION_MS = 1400;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
 const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
@@ -61,6 +62,7 @@ type EscapePrompt = {
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
   private movementInputWasActive = false;
+  private playingHintHideAtElapsedMs: number | null = null;
   private pausedRunElapsedMs = 0;
   private pauseStartedAt: number | null = null;
   private readonly handleVisibilityChange = (): void => {
@@ -426,8 +428,17 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    this.survivalTime = (time - this.runStartedAt - this.pausedRunElapsedMs) / 1000;
+    const activeRunElapsedMs = this.getActiveRunElapsedMs(time);
+    this.survivalTime = activeRunElapsedMs / 1000;
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
+
+    if (
+      this.playingHintHideAtElapsedMs !== null &&
+      activeRunElapsedMs >= this.playingHintHideAtElapsedMs
+    ) {
+      this.hintText.setVisible(false);
+      this.playingHintHideAtElapsedMs = null;
+    }
   }
 
   private createTextures(): void {
@@ -559,17 +570,10 @@ export class GameScene extends Phaser.Scene {
     this.survivalTime = 0;
     this.runSpawnRerolls = 0;
     this.scoreText.setText('0.0s');
-    this.hintText.setText(
-      'Stay moving and break into open space.\nTarget: survive past 10s, then chase your best.',
-    );
+    this.hintText.setText(this.getPlayingHintText()).setVisible(true);
     this.supportText.setText(this.getBaseSupportText());
+    this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
     this.recordRunStart();
-
-    this.time.delayedCall(1400, () => {
-      if (this.phase === 'playing') {
-        this.hintText.setVisible(false);
-      }
-    });
 
     this.scheduleNextSpawn(FIRST_SPAWN_DELAY_MS);
   }
@@ -638,7 +642,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody.setVisible(false).setText('');
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
-    this.hintText.setVisible(false);
+    this.restorePlayingHintAfterPause();
     this.supportText.setText(this.getBaseSupportText());
     this.movementInputWasActive = this.hasMovementInput();
     this.updateTelemetryText();
@@ -648,6 +652,7 @@ export class GameScene extends Phaser.Scene {
     this.nextSpawnTimer?.remove(false);
     this.nextSpawnTimer = undefined;
     this.physics.world.resume();
+    this.playingHintHideAtElapsedMs = null;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
     this.tweens.killTweensOf([
@@ -1454,6 +1459,31 @@ export class GameScene extends Phaser.Scene {
 
   private getBaseSupportText(): string {
     return 'Telemetry hotkeys: R reset sample | C log summary | V copy validation';
+  }
+
+  private getPlayingHintText(): string {
+    return 'Stay moving and break into open space.\nTarget: survive past 10s, then chase your best.';
+  }
+
+  private getActiveRunElapsedMs(time: number): number {
+    return time - this.runStartedAt - this.pausedRunElapsedMs;
+  }
+
+  private restorePlayingHintAfterPause(): void {
+    if (this.playingHintHideAtElapsedMs === null) {
+      this.hintText.setVisible(false);
+      return;
+    }
+
+    const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
+
+    if (activeRunElapsedMs >= this.playingHintHideAtElapsedMs) {
+      this.hintText.setVisible(false);
+      this.playingHintHideAtElapsedMs = null;
+      return;
+    }
+
+    this.hintText.setText(this.getPlayingHintText()).setVisible(true);
   }
 
   private buildTelemetrySummary(label: string, telemetry: GameplayTelemetry): TelemetrySummary {
