@@ -2,6 +2,13 @@
 
 ---
 
+## Run #47
+
+- `project/game/src/game/GameScene.ts` icinde waiting ve game-over fazlari icin movement-key start/retry akisi fresh-press edge-trigger mantigina alindi; game-over artik yon tuslariyla da replay kabul ediyor, ancak held input otomatik restart tetiklemiyor
+- game-over overlay stats ve retry hint copy'si movement-key replay parity'sini yansitacak sekilde guncellendi
+- `project/game/src/latestRun.ts` public AI update paneli bu replay-control parity fix'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #46
 
 - `project/game/src/game/GameScene.ts` icinde movement velocity guncellemesi sadece `playing` fazina sinirlandi; waiting ve game-over ekranlarindaki input bleed kapatildi

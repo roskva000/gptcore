@@ -60,6 +60,7 @@ type EscapePrompt = {
 
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
+  private movementInputWasActive = false;
   private player!: Phaser.Physics.Arcade.Image;
   private obstacles!: Phaser.Physics.Arcade.Group;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -392,12 +393,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time: number): void {
-    if (this.phase === 'waiting' && this.hasMovementInput()) {
+    const movementInputActive = this.hasMovementInput();
+    const hasFreshMovementInput = movementInputActive && !this.movementInputWasActive;
+
+    if ((this.phase === 'waiting' || this.phase === 'gameOver') && hasFreshMovementInput) {
       this.startRun();
     }
 
     this.updatePlayerVelocity();
     this.cullObstacles();
+    this.movementInputWasActive = movementInputActive;
 
     if (this.phase !== 'playing') {
       return;
@@ -586,6 +591,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody.setVisible(false);
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
+    this.movementInputWasActive = this.hasMovementInput();
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -834,7 +840,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayStats
       .setText(
         [
-          'Press Space, Enter, or tap to retry instantly.',
+          'Press Space, Enter, tap, or a movement key to retry instantly.',
           `Best ${getBestSurvivalTimeText(this.telemetry)} lifetime | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
           `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
           `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
@@ -844,7 +850,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.hintText
       .setText(
-        `Retry now: Space, Enter, or tap.\nThen ${escapePrompt.title.toLowerCase()} on the next rush.`,
+        `Retry now: Space, Enter, tap, or a movement key.\nThen ${escapePrompt.title.toLowerCase()} on the next rush.`,
       )
       .setVisible(true);
   }

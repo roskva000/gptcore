@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #47]
+
+Decision:
+Movement key'ler waiting fazinda oldugu gibi game-over fazinda da yalnizca fresh press ile yeni run baslatacak; held movement input replay'i otomatik tetiklemeyecek.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; death-readability paketine veya validation/readiness katmanina yeni bir katman eklemek yasak. Run #46 non-playing fazlardaki fiziksel input bleed'ini kapatti ama keyboard oyuncusu icin start ve retry kontrol dili hala tutarsizdi: waiting herhangi bir movement key ile baslayabilirken game-over sadece Space/Enter/tap ile replay oluyordu. `PROJECT.md` ve `GAME_DESIGN.md` hizli replay ve kontrol hissini onceliyor. En dar urun ilerlemesi, readability veya tooling alanina girmeden keyboard replay friction'ini azaltmakti.
+
+Impact:
+Keyboard oyuncusu artik Space/Enter/tap'e ek olarak fresh movement-key press ile de replay baslatabiliyor. Edge-trigger guard'i olum aninda basili kalan yon tusunun istemsiz anlik restart uretmesini engelliyor. Deterministic pacing/survival baseline `22.3s / 5.0s / 8%` degismedi.
+
+Rollback Condition:
+Host browser manuel sample'i movement-key replay'in accidental restart, kontrol karmasasi veya istenmeyen friction urettigini gosterirse yalnizca non-playing input gating ya da retry trigger seviyesi dar kapsamda geri cekilir; death-readability veya tooling alanina kayilmaz.
+
 ### [Run #46]
 
 Decision:

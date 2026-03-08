@@ -47,9 +47,9 @@ baseline: frozen since Run #39 while Run #40 shifted focus back to measurable ba
 target: keep death cause, exact fatal collider, and next move instantly readable at first glance without slowing retry cadence, leaking old obstacle highlight state into replay, or letting the feedback package overpower balance perception
 
 replay_flow_status:
-current: post-death replay clears the prior run state inside the same scene and starts a fresh run on one Space/Enter/tap
-baseline: fixed in Run #30 after `scene.restart()` was leaving retry on a waiting-state handoff; Run #46 also froze player velocity outside `playing` so waiting/game-over inputs no longer slide the avatar between runs
-target: keep replay under the project's `< 3s` expectation with no extra tap/key press, no leftover obstacle/overlay state, and no inactive-phase movement bleed
+current: post-death replay clears the prior run state inside the same scene and starts a fresh run on one Space/Enter/tap or a fresh movement-key press
+baseline: fixed in Run #30 after `scene.restart()` was leaving retry on a waiting-state handoff; Run #46 also froze player velocity outside `playing` so waiting/game-over inputs no longer slide the avatar between runs; Run #47 aligned keyboard retry with keyboard start while guarding against held-key accidental restarts
+target: keep replay under the project's `< 3s` expectation with no extra tap/key press, no leftover obstacle/overlay state, no inactive-phase movement bleed, and no accidental auto-retry from held direction input
 
 public_ai_update_surface:
 current: visible beside the game canvas with 1 summary row plus expandable title/intro/bullet content; desktop starts open, narrower layouts start collapsed so gameplay stays first
@@ -66,6 +66,11 @@ current: player velocity updates are ignored unless the scene is in `playing`, s
 baseline: fixed in Run #46 after input was still able to move the avatar during non-playing phases
 target: confirm manually on keyboard and touch that the freeze improves death/retry clarity without making start or retry feel unresponsive
 
+movement_key_retry_parity:
+current: waiting and game-over both accept a fresh movement-key press to start the next run, while held movement input is ignored until released and pressed again
+baseline: added in Run #47 to remove keyboard-only replay friction without reopening the death-readability loop
+target: confirm manually that keyboard replay feels more natural and never auto-fires from a key held through the death moment
+
 personal_best_visibility:
 current: lifetime best and session best are visible in the top-left HUD; game over also states whether the run set a new best or what score still stands as the target
 baseline: added in Run #42 without changing the deterministic balance baseline
@@ -78,10 +83,10 @@ target: confirm manually that a fresh player can parse the goal and first action
 
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #46
+current: passes via `npm run telemetry:check` as of Run #47
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
