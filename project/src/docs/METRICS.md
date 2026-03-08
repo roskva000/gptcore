@@ -56,6 +56,11 @@ current: visible beside the game canvas with 1 summary row plus expandable title
 baseline: layout hierarchy changed in Run #44 while content remains the latest meaningful run summary surface
 target: keep visible in build and validate manually that the collapsed narrow-screen panel reduces clutter without making the latest AI context too easy to miss or distracting from replay
 
+live_telemetry_surface:
+current: top-right telemetry stays detailed in waiting and game-over, but collapses to a short session/first-death/early-death/validation summary during active play
+baseline: hierarchy changed in Run #45 without changing telemetry data, export contract, pacing, or replay flow
+target: confirm manually that the compact live state reduces clutter and preserves enough validation affordance between runs
+
 personal_best_visibility:
 current: lifetime best and session best are visible in the top-left HUD; game over also states whether the run set a new best or what score still stands as the target
 baseline: added in Run #42 without changing the deterministic balance baseline
@@ -68,10 +73,10 @@ target: confirm manually that a fresh player can parse the goal and first action
 
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #44
+current: passes via `npm run telemetry:check` as of Run #45
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -87,4 +92,4 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 25.2, 22.8, 20.9, 16.4`
-- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi ve mevcut death-feedback paketinin birlikte nasil algilandigi icin manuel sample hala gerekli
+- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi ve mevcut death-feedback paketinin birlikte nasil algilandigi icin manuel sample hala gerekli

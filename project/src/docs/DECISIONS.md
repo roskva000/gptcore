@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #45]
+
+Decision:
+Sag ust telemetry HUD'i aktif oynanista compact, waiting ve game-over fazlarinda ise detayli kalacak sekilde faza bagli hiyerarsiye alindi.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; death-readability paketine veya validation/readiness katmanina yeni yuzey eklemek yasak. `PROJECT.md` ile `GAME_DESIGN.md` ise cluttered screen anti-pattern'inden kacinmayi ve oyuncunun ilk bakista oyuna odaklanmasini istiyor. Mevcut telemetry blogu tum fazlarda ayni genislikte kalarak live gameplay sirasinda canvas'la rekabet ediyordu; en dar urun ilerlemesi, tooling'i buyutmeden ayni bilgiyi faza gore farkli yogunlukta gostermekti.
+
+Impact:
+Aktif oynanista telemetry blogu artik sadece session run/avg, first death, early death ve validation ozeti gosteriyor. Waiting ve game-over fazlari validation/export detaylarini ve recent deaths satirlarini koruyor. Deterministic baseline `22.3s / 5.0s / 8%` ve replay akisi aynen korundu.
+
+Rollback Condition:
+Host browser manuel sample'i compact live telemetry'nin validation affordance'larini fazla sakladigini, hala dikkat dagittigini veya game-over/waiting detaylarinin yetersiz kaldigini gosterirse yalnizca satir secimi, alpha veya font-size seviyesinde dar ayar yapilir.
+
 ### [Run #44]
 
 Decision:

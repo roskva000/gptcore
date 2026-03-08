@@ -1292,21 +1292,45 @@ export class GameScene extends Phaser.Scene {
     this.bestText.setText(
       `Best ${getBestSurvivalTimeText(this.telemetry)} | Session ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
     );
-    this.telemetryText.setText(
-      [
+    this.telemetryText
+      .setText(this.getTelemetryLinesForCurrentPhase().join('\n'))
+      .setAlpha(this.phase === 'playing' ? 0.9 : 1);
+  }
+
+  private getTelemetryLinesForCurrentPhase(): string[] {
+    if (this.phase === 'playing') {
+      return [
+        'Local telemetry',
+        `Session runs ${this.sessionTelemetry.totalRuns} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+        `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}%`,
+        `Validation ${getValidationProgressText(this.sessionTelemetry)} | Press V to export`,
+      ];
+    }
+
+    if (this.phase === 'gameOver') {
+      return [
         'Local telemetry',
         `Session runs: ${this.sessionTelemetry.totalRuns} | Avg life: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
-        `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
-        `Session early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}% | Retry: ${getAverageRetryDelayText(this.sessionTelemetry)}`,
-        `Lifetime runs: ${this.telemetry.totalRuns} | Avg life: ${getAverageSurvivalTime(this.telemetry).toFixed(1)}s`,
-        `Lifetime first death: ${getFirstDeathTimeText(this.telemetry)}`,
-        `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.telemetry)}%`,
-        `Last export: ${this.getLastValidationReportSummaryText()}`,
-        `Spawn saves: ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`,
-        'Export current sample: press V',
+        `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
+        `Retry avg: ${getAverageRetryDelayText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
         `Recent session deaths: ${getRecentDeathTimesText(this.sessionTelemetry)}`,
-      ].join('\n'),
-    );
+        `Last export: ${this.getLastValidationReportSummaryText()}`,
+      ];
+    }
+
+    return [
+      'Local telemetry',
+      `Session runs: ${this.sessionTelemetry.totalRuns} | Avg life: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+      `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation: ${getValidationProgressText(this.sessionTelemetry)}`,
+      `Session early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}% | Retry: ${getAverageRetryDelayText(this.sessionTelemetry)}`,
+      `Lifetime runs: ${this.telemetry.totalRuns} | Avg life: ${getAverageSurvivalTime(this.telemetry).toFixed(1)}s`,
+      `Lifetime first death: ${getFirstDeathTimeText(this.telemetry)}`,
+      `Lifetime early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.telemetry)}%`,
+      `Last export: ${this.getLastValidationReportSummaryText()}`,
+      `Spawn saves: ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`,
+      'Export current sample: press V',
+      `Recent session deaths: ${getRecentDeathTimesText(this.sessionTelemetry)}`,
+    ];
   }
 
   private getBaseSupportText(): string {

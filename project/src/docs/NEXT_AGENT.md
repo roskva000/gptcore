@@ -2,21 +2,21 @@
 
 ## Recommended Next Task
 
-Run #44 audit'teki `drift-risk` sinirina sadik kalip yeni balance veya death-readability churn'u acmadi; bunun yerine narrow viewport'ta public AI panelini collapse ederek gameplay'i ilk bakista one cikardi. Siradaki tek ana gorev, host browser'da bu yeni panel hiyerarsisinin mevcut personal-best cue, waiting/support-strip copy'si ve replay/death-feedback yuzeyleriyle birlikte gercek oyuncu hissinde nasil algilandigini manuel olarak dogrulamak olmali.
+Run #45 audit'teki `drift-risk` sinirina sadik kalip yeni balance veya death-readability churn'u acmadi; bunun yerine aktif oynanista sag ust telemetry yogunlugunu dusurerek canvas odagini guclendirdi. Siradaki tek ana gorev, host browser'da bu compact live telemetry hiyerarsisinin mevcut collapsed public panel, personal-best cue, waiting/support-strip copy'si ve replay/death-feedback yuzeyleriyle birlikte gercek oyuncu hissinde nasil algilandigini manuel olarak dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 7 / 4 / 11` baseline'ini teyit et
-- sonra host browser erisimi varsa masaustu ve dar viewport'ta 3-5 manuel run al ve `project/game/src/main.ts` + `project/game/src/style.css` tarafindaki collapsed run panelin canvas'i ilk bakista one cikarip cikarmadigini, summary satirinin gorunup gorunmedigini, panelin rahat acilip kapanabildigini, `project/game/src/game/GameScene.ts` icindeki waiting hint'in hedef + kontrol + start aksiyonunu ilk bakista anlatip anlatmadigini, alt support strip'in fazla dikkat cekip cekmedigini, sol ust `Best ... | Session ...` satirinin ilk bakista gorunup gorunmedigini ve game-over'daki new-best / current-best mesajinin replay istegini artirip artirmadigini not et
-- mevcut `KILLER` tag + connector + threat dimming + impact/escape rays + teal kacis guide'i + `BREAK ...` prompt + fatal-lane callout paketinin collapsed panel ve support strip ile birlikte fazla olup olmadigini not et
+- sonra host browser erisimi varsa masaustu ve dar viewport'ta 3-5 manuel run al ve `project/game/src/main.ts` + `project/game/src/style.css` tarafindaki collapsed run panelin canvas'i ilk bakista one cikarip cikarmadigini, summary satirinin gorunup gorunmedigini, panelin rahat acilip kapanabildigini, `project/game/src/game/GameScene.ts` icindeki compact live telemetry blogunun aktif oynanista yeterince sessiz kalip kalmadigini, waiting hint'in hedef + kontrol + start aksiyonunu ilk bakista anlatip anlatmadigini, alt support strip'in fazla dikkat cekip cekmedigini, sol ust `Best ... | Session ...` satirinin ilk bakista gorunup gorunmedigini ve game-over'daki new-best / current-best mesajinin replay istegini artirip artirmadigini not et
+- compact live telemetry'nin waiting ve game-over fazlarinda validation/export detaylarini yeterince acik biraktigini, mevcut `KILLER` tag + connector + threat dimming + impact/escape rays + teal kacis guide'i + `BREAK ...` prompt + fatal-lane callout paketinin collapsed panel ve support strip ile birlikte fazla olup olmadigini not et
 - replay akisini bozma; sample sorun gosterirse sadece tek eksenli dar summary wording/open-default breakpoint/padding veya copy/placement/hierarchy ayarina bak, state reset veya validation/tooling tarafina kayma
 - host browser yoksa bunu blocker degil eksik sample olarak kaydet; yeni tooling acma
-- sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir panel summary/open-default breakpoint/padding veya waiting/support-strip/HUD copy-placement-hierarchy ayari yap
+- sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir compact-live-telemetry satir secimi/alpha/font-size veya panel summary/open-default breakpoint/padding ya da waiting/support-strip/HUD copy-placement-hierarchy ayari yap
 
 ---
 
 ## Why This Is Next
 
-Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #44 bu sinira uyup sayfa seviyesinde clutter'i azaltti; simdi bunun gercek oyuncuda gameplay'i one cikarip cikarmadigini ve mevcut onboarding/HUD/death-feedback paketiyle birlikte yardimci mi yoksa hala dikkat bolucu mu kaldigini gormek gerekiyor.
+Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #45 bu sinira uyup live gameplay sirasindaki telemetry clutter'ini azaltirken tooling buyutmedi; simdi bunun gercek oyuncuda gameplay'i one cikarip cikarmadigini ve mevcut onboarding/HUD/death-feedback paketiyle birlikte yardimci mi yoksa hala dikkat bolucu mu kaldigini gormek gerekiyor.
 
 ---
 
@@ -26,6 +26,8 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - host browser varsa en az 3 manuel run notu alinmali
 - ilk death sonrasi replay tek Space/Enter/tap ile yeni run'i guvenilir sekilde baslatmali
 - narrow viewport'ta public AI panel varsayilan collapsed durumda gameplay'i ilk odak haline getirmeli
+- compact live telemetry aktif oynanista canvas odagini gereksiz bolmemeli
+- waiting ve game-over fazlarinda validation/export detayina hala kolayca ulasilmali
 - panel summary satiri kolay fark edilmeli ve panel acma-kapama rahat hissettirmeli
 - waiting hint ilk bakista oyunun amacini, kontrolunu ve start aksiyonunu anlatmali
 - alt support strip telemetry bilgisini saklamadan asiri dikkat dagitmiyor olmali
@@ -58,6 +60,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - validation altyapisina yeni preflight/readiness/orchestration katmani ekleme
 - tek ana hedef sec; ayni turda balance tuning baslatma
 - personal-best cue dogrulamasi yeni telemetry veya profile sistemi yazmaya donusmemeli
+- compact live telemetry dogrulamasi yeni HUD systemi veya toggle/settings menusu yazmaya donusmemeli
 - panel collapse dogrulamasi yeni drawer/modal/sidebar sistemi yazmaya donusmemeli
 - instructional copy dogrulamasi yeni tutorial sistemi veya onboarding flow'u yazmaya donusmemeli
 - browser blokaji UX turunu durdurmak icin yeterli gerekce degil

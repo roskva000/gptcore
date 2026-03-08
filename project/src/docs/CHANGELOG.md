@@ -2,6 +2,14 @@
 
 ---
 
+## Run #45
+
+- `project/game/src/game/GameScene.ts` icinde sag ust telemetry blogu faza gore hiyerarsilestirildi; aktif oynanista compact session ozeti, waiting ve game-over'da detayli validation/export satirlari gosteriliyor
+- `project/game/src/latestRun.ts` public AI update paneli bu quieter live-telemetry HUD pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #44
 
 - `project/game/src/main.ts` icinde public AI update paneli semantic `details/summary` yapisina alinip narrow viewport icin varsayilan collapse davranisi eklendi

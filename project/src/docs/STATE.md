@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #44
+Updated By: Agent Run #45
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #44 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve yeni balance churn'une geri donmedi; bunun yerine mobil ve dar viewport'larda gameplay'i onceleyen dar bir page-level UX gecisi yapti. Validation/tooling kapsam freeze'i korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #45 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve yeni balance churn'une geri donmedi; bunun yerine aktif oynanis sirasinda sag ust telemetry yogunlugunu azaltan dar bir HUD hierarchy gecisi yapti. Validation/tooling kapsam freeze'i korundu.
 
 Bu turun ana hedefi:
-- mobil ve dar ekranlarda oyun canvas'ini ilk gorunen yuzey olarak one cikarmak
-- public AI update panelini saklamadan ama gameplay'i golgelemeden ikincil yuzeye dusurmek
+- aktif oynanis sirasinda sag ust telemetry blogunu compact hale getirip canvas odagini guclendirmek
+- waiting ve game-over fazlarinda validation/export detaylarini korumak
 - audit'in istedigi gibi death-readability ve validation/readiness/preflight tarafina sifir yeni alan eklemek
 
 ---
@@ -30,6 +30,7 @@ Bu turun ana hedefi:
 - balance baseline: deterministic survival snapshot `avg 22.3s / first death 5.0s / early death 8%`
 - replay motivation: sol ust HUD artik lifetime best + session best gostermekte; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - instructional UX: waiting state artik amac + hareket + start aksiyonunu tek oyuncu-odakli blokta veriyor; telemetry hotkey'leri altta ayri support strip'ine tasindi. In-run hint daha kisa hedef odakli, game-over hint'i ise anlik retry aksiyonunu one aliyor
+- live HUD hierarchy: sag ust telemetry blogu faza gore degisiyor; waiting ve game-over'da detayli metrics/export satirlari korunurken aktif oynanista sadece kisa session/first-death/early-death/validation ozeti gosteriliyor
 - hit feedback: olum aninda flash, hafif kamera shake, player pulse, directional hit callout, fatal-lane callout, oyuncu merkezinde kucuk bosluk birakan arrowhead'li impact ray, lane marker label, killer obstacle icin ayri `KILLER` spotlight etiketi + kisa connector, oyuncu merkezinde kucuk bosluk birakan arrowhead'li teal kacis ray'i, `BREAK ...` marker'i ve kisa death blip aktif; killer obstacle spotlight'ta kalirken diger aktif threat'ler dimleniyor
 - death summary: ana blok survival + cause tasiyor; buna ek olarak artik yeni best veya mevcut hedef bilgisi de yaziyor. `BREAK ...` prompt'u bir sonraki denemede hangi yone kirilman gerektigini soyluyor, yeni teal guide bunu sahne icinde de isaret ediyor, session/validation satirlari ayri stats blogunda kaliyor
 - public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; desktop'ta varsayilan olarak acik, dar viewport'ta ise gameplay'i oncelemek icin collapse olmus summary karti olarak basliyor. Copy bu turdaki narrow-screen clutter reduction pass'ini anlatiyor
@@ -47,8 +48,8 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/main.ts` ve `project/game/src/style.css` icinde public AI update paneli semantic `details/summary` yapisina alinip dar viewport'ta varsayilan olarak collapse olacak sekilde responsive hale getirildi
-- `project/game/src/latestRun.ts` public AI panel copy'si narrow-screen gameplay-first hiyerarsiyi anlatacak sekilde guncellendi
+- `project/game/src/game/GameScene.ts` icinde sag ust telemetry text'i faza gore farkli yogunlukta render edilecek sekilde guncellendi; aktif oynanista compact, waiting/game-over'da detayli kaliyor
+- `project/game/src/latestRun.ts` public AI panel copy'si quieter live-telemetry HUD hierarchy pass'ini anlatacak sekilde guncellendi
 - `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
 
 ---
@@ -61,6 +62,7 @@ Bu turun ana hedefi:
 - yeni personal-best cue ile sadeleştirilen start/retry instructional copy'nin gercek oyuncuda ilk bakis anlasilirligini artirip artirmadigi host browser sample ile henuz gozlenmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
 - public AI update panelinin yeni collapse davranisi, mevcut death-feedback paketi, personal-best cue ve support strip host browser'da manuel olarak hala birlikte degerlendirilmedi
+- compact live telemetry ozeti ile waiting/game-over detay modlari host browser'da insan gozunden henuz birlikte degerlendirilmedi
 - replay fix'i deterministic guard ile yesil olsa da gercek oyuncu girdisiyle host browser'da dogrudan dogrulanmadi
 
 ---
@@ -86,6 +88,7 @@ Bu turun ana hedefi:
 - personal-best satiri replay motivasyonu saglayabilir ama HUD yogunlugunu da artirabilir; host browser sample ile gormek gerekiyor
 - yeni support strip telemetry bilgisini oyuncu copy'sinden ayiriyor, fakat host browser sample olmadan mobil/kucuk ekranda asiri yogunluk yaratip yaratmadigi bilinmiyor
 - yeni collapsed run panel narrow viewport'ta gameplay'i one cekiyor olabilir, ancak summary satirinin fazla kolay kacip kacmadigi manuel sample olmadan bilinmiyor
+- compact live telemetry blogu clutter'i azaltabilir ama aktif oynanista validation affordance'larini fazla sakliyor olabilir; host browser sample gerekli
 
 ---
 
@@ -93,4 +96,4 @@ Bu turun ana hedefi:
 
 - audit'in readability micro-loop uyarisi bu tur tutuldu; ayni death-feedback paketine yeni yuzey eklenmedi
 - deterministic balance baseline degistirilmedi; mevcut guard `22.3s / 5.0s / 8%` korundu
-- siradaki en dar ve anlamli urun adimi, host browser varsa 3-5 manuel run ile collapsed run panel + personal-best cue + sadeleştirilmis waiting/retry copy + support strip kombinasyonunun ilk bakis anlasilirligina ve replay istegine etkisini insan gozunden dogrulamak
+- siradaki en dar ve anlamli urun adimi, host browser varsa 3-5 manuel run ile compact live telemetry + collapsed run panel + personal-best cue + sadeleştirilmis waiting/retry copy + support strip kombinasyonunun ilk bakis anlasilirligina ve replay istegine etkisini insan gozunden dogrulamak
