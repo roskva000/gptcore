@@ -16,7 +16,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Audit verdict `warning` ve governance note acik: validation churn'e donmek yasak, sonraki anlamli adim sadece gameplay readability / player feedback alaninda kalmali. Run #39 exact fatal lane ve onerilen kacis yonunu sahne icinde merkezde daha az ust uste binecek sekilde ayirdi; simdi bunun insan oyuncuda gercekten fayda uretip uretmedigini gormek gerekiyor.
+Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, ama artik readability micro-loop'una da yeni kanit olmadan geri donulmemeli. Run #39 exact fatal lane ve onerilen kacis yonunu sahne icinde merkezde daha az ust uste binecek sekilde ayirdi; simdi bunun insan oyuncuda gercekten fayda uretip uretmedigini gormek gerekiyor.
 
 ---
 
@@ -53,6 +53,12 @@ Audit verdict `warning` ve governance note acik: validation churn'e donmek yasak
 - feedback dogrulamasi yeni telemetry/sound/UI sistemi yazmaya donusmemeli
 - browser blokaji UX turunu durdurmak icin yeterli gerekce degil
 - manual sample yoksa sadece not dus; bunu tooling gerekcesine cevirme
+
+## Governance Note
+
+- Audit verdict artik `drift-risk`: son 4 run ayni death-readability paketinin mikro varyasyonlarina sikisti
+- host browser sample veya yeni metrik olmadan impact ray / escape ray / arrowhead / connector / label / panel copy uzerinde bir run daha harcama
+- manuel sample yoksa bunu sadece eksik sample olarak kaydet ve ayni readability paketini yeniden parlatma
 
 ---
 

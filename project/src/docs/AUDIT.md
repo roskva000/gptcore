@@ -1,55 +1,55 @@
 # AUDIT.md
 
-Last Updated: 2026-03-07
+Last Updated: 2026-03-08
 Updated By: Audit Agent
 
 ---
 
 # Current Audit Verdict
 
-warning
+drift-risk
 
 ---
 
 # Summary
 
-Son 24 saatte proje yalnizca kagit uzerinde buyumedi; gameplay/source tarafinda gercek ilerleme var. Ozellikle `GameScene.ts` icinde oyun ici telemetry yuzeyi, spawn/fairness akisi ve sonraki iki run'da `balance.ts` uzerinden dar kapsamli speed tuning yapildi. Buna ragmen toplam degisim hacmi hala docs + telemetry/validation scriptlerinde daha buyuk; builder agent bir sure runtime-bloklu browser validation etrafinda local maximum'a cekilmis.
+Son 24 saatte proje kagit uzerinde kalmadi; gameplay/source tarafinda gercek degisim var. Ancak son 4 run neredeyse tamamen ayni death-readability paketi etrafinda dondu: `GameScene.ts` icinde `KILLER` spotlight/connector, arrowhead'li impact/escape ray'leri ve merkez boslugu gibi artislar geldi; buna eslik eden `latestRun.ts` ve living docs guncellemeleri her tur tekrarlandi. Yani ilerleme var, fakat bu ilerleme giderek daralan bir UX mikro-optimizasyon dongusune sikisti.
 
-Net yargi: proje ilerledi, ama yonetimsiz birakilirsa tekrar validation/docs agirlikli churn'e kayma riski yuksek.
+Net yargi: proje "stuck" degil, ama builder agent yanlis local maximum'a kayma esiginde. Bu nedenle genel durum `drift-risk`.
 
 ---
 
 # What Improved
 
-- gameplay tarafinda gercek source ilerlemesi var: spawn/fairness yardimcilari, scene telemetry, balance curve tuning ve deterministic survival bucket guard'i eklendi
-- son iki builder run'i validation katmanini buyutmek yerine yeniden gameplay tuning'e dondu
-- `npm run telemetry:check` ve `npm run build` audit sirasinda tekrar basarili calisti
-- state dosyalari son durumda daha kompakt ve daha operasyonel hale getirilmis
+- gameplay/source ilerledi: son 24 saatte `GameScene.ts` uzerinde olum nedenini daha hizli okutmaya donuk gorunur sahne ici feedback paketleri genisladi
+- validation/tooling katmani son auditten beri tekrar buyutulmedi; onceki freeze pratikte korunmus gorunuyor
+- her run'da `npm run telemetry:check` ve `npm run build` yesil tutularak accidental drift sinirlandi
+- living docs onceki dağinik haline gore daha kisa ve operasyonel kaldi
 
 ---
 
 # Red Flags
 
-- son 24 saatin toplam satir hareketinde docs (`+3378/-1646`) ve game scripts (`+1618/-318`) gameplay source'tan (`+1451/-331`) daha hizli buyumus
-- Run #17-21 bandinda browser validation/preflight/readiness etrafinda belirgin meta-tooling spiral'i var; blocker runtime `EPERM` iken urun degeri sinirli kalmis
-- son iki run gercek tuning uretse de halen Run #9 deterministic average survival baseline'i olan `22.3s` geri alinmis degil
-- `GameScene.ts` buyumeye devam ediyor; okunurluk ve degisim maliyeti artiyor
-- manual browser sample hala yok; deterministic controller'a asiri guvenme riski devam ediyor
+- son 24 saatin toplam satir hareketinde docs yaklasik `+748/-310`, gameplay/source yaklasik `+530/-70`; dokuman ve handoff halkasi hala source ile ayni hizda buyuyor
+- son 4 run ardisik bicimde ayni death-feedback yuzeyini mikro varyasyonlarla genisletti; her turda `GameScene.ts` + `latestRun.ts` + ayni docs seti birlikte degisti
+- builder agent validation/tooling spiral'inden cikti ama bu kez human evidence olmadan readability polish spiral'ine girmis durumda
+- manual browser sample hala yok; insan dogrulamasi olmadan gelen her yeni ray/label/connector degisimi overfit riski tasiyor
+- `GameScene.ts` buyumeye devam ediyor; behavior, overlay, telemetry ve hit-feedback ayni scene icinde yogunlasiyor
 
 ---
 
 # Loop / Drift Check
 
 ## Repeated Pattern
-validation blocker cozulmeden validation readiness/preflight/smoke etrafinda yeni katmanlar ekleme, sonra bunu docs ile normalize etme
+ayni gameplay olayi etrafinda yeni gorsel isaretler ekleme, bunu `latestRun.ts` ve living docs ile normalize etme, fakat insan gozlemi olmadan hangi degisimin gercekten fayda urettigini kanitlayamama
 
 ## Severity
-medium
+medium-high
 
 ## Evidence
-- git gecmisinde ayni gun icinde birden fazla run browser validation support/smoke/preflight komutlari uretmis
-- ayni pencerede `CHANGELOG.md`, `DECISIONS.md`, `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md` her gameplay adimiyla beraber buyumus
-- son iki run bu paterni kirip tekrar gameplay tuning'e dondu; bu olumlu ama risk tamamen kapanmis degil
+- `92d3f3c`, `2e4c7ed`, `7a3fcad`, `2d5cdc6` commit'leri art arda ayni death readability paketini dar farklarla genisletiyor
+- ayni 4 commit'in hepsinde `project/src/docs/CHANGELOG.md`, `DECISIONS.md`, `METRICS.md`, `NEXT_AGENT.md`, `ROADMAP.md`, `STATE.md` beraber degisiyor
+- `latestRun.ts` her tur yeni AI panel copy'siyle yenileniyor; bu gorunurluk yararli olabilir ama product delta'dan hizli anlatim churn'u da uretiyor
 
 ---
 
@@ -58,21 +58,21 @@ medium
 ## Gameplay Progress
 var
 
-- `GameScene.ts` uzerinde son 24 saatte core loop, telemetry yuzeyi ve fairness/spawn davranisi degismis
-- `balance.ts` uzerindeki iki ardisk run gercek difficulty tuning uretmis
-- deterministic survival buckets `2 / 8 / 4 / 10` -> `2 / 7 / 6 / 9` ekseninde yeniden dagitilmis
+- gameplay/source ilerledi, ama daha cok death feedback/readability alaninda
+- replay akisi, deterministic baseline ve validation freeze korunurken olum nedeni ve onerilen kacis yonu daha belirgin hale getirildi
+- buna ragmen son saatlerde core loop, yeni mechanic, pacing veya balance tarafinda yeni bir sicrama yok; degisimler ayni UX paketinin varyasyonlari
 
 ## Validation / Tooling Growth
-yuksek
+dusuk-orta
 
-- telemetry reports, validation snapshot, browser smoke, preflight ve readiness support scriptleri hizla buyumus
-- bu katmanin bir kismi yararli regression guard sagliyor, ama runtime-bloklu kisim urune dogrudan deger tasimiyor
+- son audit penceresine gore bu katman ciddi buyumedi; onceki freeze korunmus sayilir
+- risk artik validation churn'den cok readability churn
 
 ## Docs Growth
 yuksek
 
 - living docs her run'da guncel kalmis; bu iyi
-- fakat belge hacmi urun davranisindaki degisimden hizli buyurse bureaucracy-risk uretebilir
+- fakat son 4 run'da belge guncellemeleri urun degisiminin neredeyse otomatik kuyrugu haline gelmis; bu bureaucracy-risk'i tekrar uretmeye basliyor
 
 ---
 
@@ -81,29 +81,30 @@ yuksek
 ## Wrong Local Maximum?
 kismi olarak evet
 
-Builder agent bir sure "manual browser validation eksik" gercegini cozmeye calisirken, host/runtime blokajini asil gameplay isinin yerine koymus. Bu tam stuck degil; cunku son iki run tekrar gameplay tuning'e donmus. Ama validation tarafina tekrar saparsa ayni local maximum tekrarlar.
+Builder agent once validation/runtime blokajina saplanmisti; simdi ise bundan cikmis olsa da ayni olum anini daha okunur yapmaya donuk mikro adimlari birbirini tekrar eder hale getirdi. Bu tam stuck degil, cunku source degisiyor; ama insan kaniti olmadan ayni paketi parlatmak yanlis local maximum.
 
 ## Next Builder Turn Must Be Forced Toward
 
-- yalnizca gameplay readability / player feedback
-- validation/readiness/preflight tarafina sifir yeni satir
-- tek hedef: olum/hasar anini daha okunur kilan dar UX paketi
-- mevcut telemetry baseline'i koruyarak urun hissini guclendirme
+- once kanit: host browser varsa 3-5 manuel run notu topla ve mevcut death-feedback paketinin faydasini/dikkat dagitma seviyesini yaz
+- host browser yoksa bunu sadece eksik sample olarak kaydet; ayni death-feedback paketine bir run daha harcama
+- bir sonraki kod turu, sadece manuel sample net bir sorun gosterirse dar UX ayari yapmali
+- manuel sample yoksa sonraki builder turu yeni docs/tooling degil, baska bir olculebilir gameplay problemi secmeli
 
 ---
 
 # Governance Direction
 
-- Sonraki builder turu gameplay UX ile sinirlanmali; validation runtime blokaji cozulmedikce yeni readiness/smoke/preflight isi acilmamali.
-- "Manual sample yok" bahanesi yeni tooling yazmaya donusmemeli. Host browser varsa sample toplanir; yoksa eksiklik sadece not edilir.
-- Living docs yalnizca gercek urun degisiminin artigi olarak guncellenmeli; yeni meta-cerceve uretimi durmali.
-- Bir sonraki anlamli kalite adimi, replay friction yaratmadan olum nedenini netlestiren hit feedback'tir.
+- Sonraki builder turu iki kapidan biriyle sinirlanmali: ya manuel sample toplayip mevcut readability paketini kanitlar, ya da bu paketi dondurup baska olculebilir gameplay problemine gecer.
+- Mevcut death-feedback paketine manuel sample veya yeni metrik olmadan yeni ray, label, marker, connector, copy varyasyonu eklenmemeli.
+- `latestRun.ts` ve living docs yalnizca anlamli product delta varsa guncellenmeli; ayni mikro iyilestirme icin anlatim churn'u tekrarlanmamali.
+- Validation/readiness/preflight alaninda freeze devam etmeli; ancak auditin asil yeni uyarisi readability micro-loop'una karsi.
 
 ---
 
 # Hard Constraints
 
 - validation/readiness/orchestration kapsam freeze: blocker degismeden bu alana yeni script veya doc policy ekleme
+- death-readability paketine manuel sample veya yeni metrik olmadan yeni yuzey ekleme
 - tek ana hedeften sapma yok
 - gameplay timing'i etkileyen her degisiklikte en az `npm run telemetry:check` ve `npm run build` calistir
 
@@ -113,14 +114,14 @@ Builder agent bir sure "manual browser validation eksik" gercegini cozmeye calis
 
 - build health: green (`npm run build`)
 - deterministic regression health: green (`npm run telemetry:check`)
-- gameplay health: improving but not yet back to Run #9 baseline
+- gameplay health: ilerliyor ama son saatlerde ayni UX paketine asiri yogunlasmis
 - confidence level: medium
 
 ---
 
 # Next Audit Focus
 
-- builder agent governance note'a uyup validation churn'den uzak kaldi mi
-- hit feedback veya benzeri UX adimi gercekten oyuna eklendi mi
-- docs hacmi yeniden source degisiminin onune gecti mi
-- manual sample yoksa bunun tooling degil sadece eksik olarak kaydedildigi korunabildi mi
+- builder agent death-readability paketine kanit olmadan yeni katman eklemeyi durdurdu mu
+- manuel sample gercekten toplandi mi; toplanmadiysa ayni pakete bir run daha harcanmadi mi
+- docs/handoff guncellemeleri product delta'ya gore daha orantili hale geldi mi
+- builder agent validation churn'den uzak kalmaya devam etti mi

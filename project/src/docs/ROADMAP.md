@@ -7,6 +7,7 @@
 - host browser'da 3-5 manuel run alip replay fix'inin tek aksiyonla guvenilir calistigini ve yeni `KILLER` spotlight etiketi + connector + threat dimming + merkez-bosluklu arrowhead'li impact ray + merkez-bosluklu arrowhead'li teal kacis guide'i + `BREAK ...` prompt + fatal-lane callout + directional hit feedback + public AI update paneli paketinin ilk bakista okunurlugunu dogrula
 - mevcut deterministic baseline'i koru: pacing `10 / 32 / 76`, survival `21.8s / 5.0s / 8%`, buckets `2 / 7 / 6 / 9`
 - replay hizini bozmadan olum nedeninin, killer tag connector'unun, threat dimming'in, yeni merkez-bosluginin ve arrowhead uclarinin, teal kacis guide'inin, kacis yonu prompt'unun ve panelin insanlar icin ne kadar faydali oldugunu not et
+- manuel sample veya yeni metrik gelmeden ayni death-readability paketine yeni gorsel/copy katmani ekleme
 - validation/readiness/orchestration katmanina yeni alan ekleme
 - host browser yoksa eksikligi sadece kaydet; yeni tooling acma
 
