@@ -53,7 +53,7 @@ target: keep replay under the project's `< 3s` expectation with no extra tap/key
 
 public_ai_update_surface:
 current: visible beside the game canvas with 1 title, 1 intro, and 9 short bullets about the latest meaningful run
-baseline: copy refreshed in Run #42 to describe the personal-best visibility pass
+baseline: copy refreshed in Run #43 to describe the instructional-hierarchy pass
 target: keep visible in build and validate manually that it helps orientation without distracting from replay or competing with the death callout
 
 personal_best_visibility:
@@ -61,12 +61,17 @@ current: lifetime best and session best are visible in the top-left HUD; game ov
 baseline: added in Run #42 without changing the deterministic balance baseline
 target: confirm manually that the cue is readable at first glance, reinforces retry intent, and does not make the HUD or death summary feel overloaded
 
+instructional_clarity:
+current: waiting hint now shows goal + controls + start action only; telemetry hotkeys live in a quieter bottom support strip; in-run and game-over hints are shorter and more action-led
+baseline: changed in Run #43 without touching balance, replay state handling, or validation tooling
+target: confirm manually that a fresh player can parse the goal and first action in under 5 seconds, and that the support strip does not compete with HUD/death feedback on smaller screens
+
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether the new personal-best cue increases retry intent, and whether killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback improve fairness/readability
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, and whether killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback improve fairness/readability without crowding the new support strip
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #42
+current: passes via `npm run telemetry:check` as of Run #43
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -82,4 +87,4 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 25.2, 22.8, 20.9, 16.4`
-- current tuning signal: deterministic survival baseline yeniden `22.3s`ye cikti ve `30s cap` `11`e tasindi; buna ragmen balance hissi ile mevcut death-feedback paketinin birlikte nasil algilandigi icin manuel sample hala gerekli
+- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen personal-best cue, yeni waiting/support-strip copy hiyerarsisi ve mevcut death-feedback paketinin birlikte nasil algilandigi icin manuel sample hala gerekli

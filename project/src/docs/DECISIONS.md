@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #43]
+
+Decision:
+Bekleme/start/retry instructional copy'si oyuncu onboarding'i ile telemetry/dev hotkey'lerini ayiracak sekilde sadeleştirildi.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; ayni death-readability paketine kanit olmadan geri donmek ve validation/tooling katmanini buyutmek yasak. `PROJECT.md` ile `GAME_DESIGN.md` ise ilk 5 saniyede oyunun anlasilmasini ve cluttered screen'den kacinmayi istiyor. Mevcut waiting hint oyuncu kontrolleriyle telemetry hotkey'lerini ayni blokta topluyordu; en dar urun ilerlemesi, instructional hiyerarsiyi temizleyip replay/balance davranisini degistirmeden onboarding'i daha okunur hale getirmekti.
+
+Impact:
+Oyuncu artik waiting state'te hedef + kontrol + start aksiyonunu tek blokta goruyor. Telemetry hotkey'leri altta ayri support strip'ine tasindi. In-run hint daha kisa hedef odakli, game-over hint'i ise instant retry aksiyonunu one cikariyor. Deterministic baseline `22.3s / 5.0s / 8%` ve pacing `10 / 32 / 76` aynen korundu.
+
+Rollback Condition:
+Host browser manuel sample'i alt support strip'in ekrani kalabaliklastirdigini, waiting hint'in hala gec anlasildigini veya game-over hint'inin replay kararini yavaslattigini gosterirse yalnizca copy/placement/font-size/alpha seviyesinde dar bir sadeleştirme yapilir.
+
 ### [Run #42]
 
 Decision:

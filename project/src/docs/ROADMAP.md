@@ -4,10 +4,10 @@
 
 # NOW (Highest Priority)
 
-- host browser'da 3-5 manuel run alip yeni personal-best cue'nun replay istegini guclendirip guclendirmedigini dogrula
+- host browser'da 3-5 manuel run alip yeni personal-best cue ile sadeleştirilen waiting/start/retry copy'nin ilk bakista anlasilip anlasilmadigini dogrula
 - mevcut deterministic baseline'i koru: pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 7 / 4 / 11`
-- replay hizini bozmadan sol ust `Best ... | Session ...` satirinin okunurlugunu ve game-over'daki new-best / current-best mesajinin motive edici olup olmadigini not et
-- mevcut death-feedback paketi ile public AI panelin birlikte fazla yogun olup olmadigini not et
+- replay hizini bozmadan sol ust `Best ... | Session ...` satirinin okunurlugunu, waiting hint'in oyuncu amacini hizli anlatip anlatmadigini ve game-over'daki new-best / current-best mesajinin motive edici olup olmadigini not et
+- mevcut death-feedback paketi, alt support strip ve public AI panelin birlikte fazla yogun olup olmadigini not et
 - manuel sample veya yeni metrik gelmeden death-readability paketine yeni gorsel/copy katmani ekleme
 - validation/readiness/orchestration katmanina yeni alan ekleme
 - host browser yoksa eksikligi sadece kaydet; yeni tooling acma
@@ -15,17 +15,17 @@
 Basari olcutleri:
 - host browser varsa en az 3 manuel run notu alinmis oluyor
 - ilk death sonrasi replay tek Space/Enter/tap ile yeni run'a donuyor
-- personal-best cue'nun ilk bakista gorulup gorulmedigi ve tekrar deneme istegine etkisi yazili hale geliyor
+- personal-best cue ile waiting/start instructional copy'nin ilk bakista gorulup gorulmedigi ve tekrar deneme istegine etkisi yazili hale geliyor
 - game-over'daki new-best / current-best satiri anlasilir ve motive edici bulunuyorsa bu not ediliyor
-- public AI panel ve mevcut death-feedback paketi birlikte asiri dikkat dagitmiyorsa bu not ediliyor
+- public AI panel, mevcut death-feedback paketi ve support strip birlikte asiri dikkat dagitmiyorsa bu not ediliyor
 - deterministic baseline accidental drift olmadan korunuyor
 
 ---
 
 # NEXT
 
-- host browser sample personal-best cue'nun zayif kaldigini gosterirse sadece copy/placement/weight seviyesinde dar ayar yap
-- host browser sample HUD'in kalabaliklastigini gosterirse sadece top-left score stack hiyerarsisini dar sekilde sadeleştir
+- host browser sample waiting/start copy'nin zayif kaldigini gosterirse sadece copy/placement/weight seviyesinde dar ayar yap
+- host browser sample HUD'in kalabaliklastigini gosterirse sadece top-left score stack veya alt support strip hiyerarsisini dar sekilde sadeleştir
 - death-feedback paketi fazla baskin bulunursa sadece copy/offset/alpha/font-size/line-length/scale seviyesinde dar ayar yap
 - replay reset hissi klavye veya touch'ta takiliyorsa sadece input/copy/offset seviyesinde dar ayar yap
 

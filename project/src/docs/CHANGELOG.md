@@ -2,8 +2,14 @@
 
 ---
 
-## Run #42
+## Run #43
 
+- `project/game/src/game/GameScene.ts` icinde waiting/start/retry instructional copy oyuncu-odakli olacak sekilde sadeleştirildi; telemetry hotkey'leri ayri bir alt support strip'ine tasindi
+- telemetry reset/log/export durum mesajlari ana onboarding kopyasini bozmayacak sekilde support strip uzerinden akacak hale getirildi
+- `project/game/src/latestRun.ts` public AI update paneli bu dar instructional-hierarchy pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+## Run #42
 - `project/game/src/game/telemetry.ts` icinde kalici `bestSurvivalTime` alani eklenerek lifetime ve session personal best ayni telemetry persistence akisina alindi
 - `project/game/src/game/GameScene.ts` icinde sol ust HUD'a `Best ... | Session ...` satiri eklendi; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yazacak sekilde guncellendi
 - `project/game/src/latestRun.ts` public AI update paneli personal-best visibility pass'ini anlatacak sekilde yenilendi

@@ -67,6 +67,7 @@ export class GameScene extends Phaser.Scene {
   private scoreText!: Phaser.GameObjects.Text;
   private bestText!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
+  private supportText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
   private hitFlash!: Phaser.GameObjects.Rectangle;
   private impactRay!: Phaser.GameObjects.Line;
@@ -160,7 +161,7 @@ export class GameScene extends Phaser.Scene {
       .text(
         ARENA_WIDTH / 2,
         78,
-        'WASD / arrows to move\nHold click or touch to steer\nPress Space, Enter, or tap to start\nPress R to reset sample, C to log telemetry summary, V to copy validation summary',
+        'Survive 60 seconds.\nMove with WASD / arrows or hold click / touch to steer.\nPress Space, Enter, tap, or any movement key to start.',
         {
           align: 'center',
           color: '#b8cde0',
@@ -171,6 +172,22 @@ export class GameScene extends Phaser.Scene {
       )
       .setDepth(3)
       .setOrigin(0.5, 0);
+
+    this.supportText = this.add
+      .text(
+        ARENA_WIDTH / 2,
+        ARENA_HEIGHT - 24,
+        this.getBaseSupportText(),
+        {
+          align: 'center',
+          color: '#7f9aad',
+          fontFamily: 'Trebuchet MS',
+          fontSize: '14px',
+          lineSpacing: 4,
+        },
+      )
+      .setDepth(3)
+      .setOrigin(0.5, 1);
 
     this.hitFlash = this.add
       .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0xff8a73, 0)
@@ -457,11 +474,9 @@ export class GameScene extends Phaser.Scene {
     this.saveTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage, this.sessionTelemetry);
     this.updateTelemetryText();
 
-    this.hintText
-      .setText(
-        'Telemetry sample reset.\nPlay 5-10 runs, then press V to copy the validation summary.',
-      )
-      .setVisible(true);
+    this.supportText.setText(
+      'Telemetry sample reset. Play 5-10 runs, then press V to copy the validation summary.',
+    );
 
     console.info('[telemetry] reset', this.getTelemetryReport());
   }
@@ -470,11 +485,9 @@ export class GameScene extends Phaser.Scene {
     const report = this.getTelemetryReport();
 
     console.info('[telemetry] summary', report);
-    this.hintText
-      .setText(
-        'Telemetry summary logged to console.\nUse session metrics for the current validation sample or press V to copy it.',
-      )
-      .setVisible(true);
+    this.supportText.setText(
+      'Telemetry summary logged to console. Use session metrics for the current validation sample or press V to copy it.',
+    );
   }
 
   private handleValidationExport(): void {
@@ -483,11 +496,9 @@ export class GameScene extends Phaser.Scene {
 
     if (!navigator.clipboard?.writeText) {
       console.info('[telemetry] validation_report', validationReport);
-      this.hintText
-        .setText(
-          `Clipboard unavailable here.\nValidation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
-        )
-        .setVisible(true);
+      this.supportText.setText(
+        `Clipboard unavailable here. Validation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
+      );
       return;
     }
 
@@ -495,19 +506,15 @@ export class GameScene extends Phaser.Scene {
       .writeText(validationReport)
       .then(() => {
         console.info('[telemetry] validation_report', validationReport);
-        this.hintText
-          .setText(
-            `Validation summary copied.\nLatest export: ${this.getLastValidationReportSummaryText()}`,
-          )
-          .setVisible(true);
+        this.supportText.setText(
+          `Validation summary copied. Latest export: ${this.getLastValidationReportSummaryText()}`,
+        );
       })
       .catch(() => {
         console.info('[telemetry] validation_report', validationReport);
-        this.hintText
-          .setText(
-            `Clipboard copy failed.\nValidation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
-          )
-          .setVisible(true);
+        this.supportText.setText(
+          `Clipboard copy failed. Validation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
+        );
       });
   }
 
@@ -523,8 +530,9 @@ export class GameScene extends Phaser.Scene {
     this.runSpawnRerolls = 0;
     this.scoreText.setText('0.0s');
     this.hintText.setText(
-      'Survive the rush. The arena gets harder every few seconds.\nPress V after a sample to copy the validation summary.',
+      'Stay moving and break into open space.\nTarget: survive past 10s, then chase your best.',
     );
+    this.supportText.setText(this.getBaseSupportText());
     this.recordRunStart();
 
     this.time.delayedCall(1400, () => {
@@ -831,7 +839,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.hintText
       .setText(
-        `${escapePrompt.title}. Retry should stay instant.`,
+        `Retry now: Space, Enter, or tap.\nThen ${escapePrompt.title.toLowerCase()} on the next rush.`,
       )
       .setVisible(true);
   }
@@ -1299,6 +1307,10 @@ export class GameScene extends Phaser.Scene {
         `Recent session deaths: ${getRecentDeathTimesText(this.sessionTelemetry)}`,
       ].join('\n'),
     );
+  }
+
+  private getBaseSupportText(): string {
+    return 'Telemetry hotkeys: R reset sample | C log summary | V copy validation';
   }
 
   private buildTelemetrySummary(label: string, telemetry: GameplayTelemetry): TelemetrySummary {
