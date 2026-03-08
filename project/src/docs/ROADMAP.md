@@ -4,14 +4,14 @@
 
 # NOW (Highest Priority)
 
-- host browser runtime acilabilirse yeni early spawn-target lag tuning'ini 5-10 manuel run ile gozlemle
+- host browser/runtime varsa yeni early spawn collision-grace guard'ini 5-10 manuel run ile gozlemle
 - mevcut deterministic baseline'i referans al: pacing `10 / 32 / 76`, survival `23.4s / 6.3s / 8%`, buckets `2 / 5 / 6 / 11`
-- odak sadece yeni early chase hissi olsun: ilk 10 saniyede spawn'lar daha adil geliyor mu, yoksa challenge fazla yumusuyor mu
+- odak sadece yeni spawn-an fairness hissi olsun: ilk 10 saniyede yeni obstacle lane'e girerken daha adil mi, yoksa fazla bagislayici mi
 - death-readability, support strip, pause/retry, telemetry veya tooling alanina sapma
-- host browser hala yoksa bunu sadece blocker olarak kaydet; ayni fairness ayarini yeni mikro-tuning loop'una cekme
+- packaged smoke su an `Page.enable` ile fail oldugu icin bunu yalnizca blocker olarak kaydet; bu turu browser-tooling genislemesine cevirme
 
 Basari olcutleri:
-- 5-10 manuel run notu erken spawn chase'inin daha adil ama halen gerilimli olup olmadigini soyluyor
+- 5-10 manuel run notu yeni collision grace'in daha adil ama halen gerilimli olup olmadigini soyluyor
 - deterministic baseline `23.4s / 6.3s / 8%` accidental olarak bozulmuyor
 - average survival `>= 23.4s` korunuyor
 - early death rate `%8` uzeri bozulmuyor
@@ -23,8 +23,8 @@ Basari olcutleri:
 
 # NEXT
 
-- host browser runtime acilamazsa early spawn-target lag tuning'ini dondur ve baska olculebilir gameplay problemine gec
-- manuel sample yeni lag'in fazla yumusak oldugunu gosterirse yalnizca lag suresi/cutoff'u dar kapsamda geri cek
+- host browser runtime acilamazsa early spawn fairness surface'ini dondur ve baska olculebilir gameplay problemine gec
+- manuel sample yeni collision grace'in fazla bagislayici oldugunu gosterirse yalnizca grace suresi/cutoff'u dar kapsamda geri cek
 - replay reset hissi klavye veya touch'ta takiliyorsa sadece input/copy/offset seviyesinde dar ayar yap
 
 ---
@@ -49,8 +49,8 @@ Basari olcutleri:
 # BLOCKERS
 
 - gercek oyuncu verisi yok
-- bu sandbox `127.0.0.1` loopback socket bind denemesini `EPERM` ile reddediyor
 - manual browser validation insan input ve uygun runtime gerektiriyor
+- packaged smoke komutu Chromium/CDP tarafinda `Page.enable` hatasiyla fail oluyor
 - formal test suite yok
 - mobil cihaz dogrulamasi yapilmadi
 
@@ -64,6 +64,7 @@ Basari olcutleri:
 - deterministic first death `> 6.3s` yonunde ilerlemeli; ideal urun hedefi halen `> 10s`
 - deterministic survival buckets icinde `10-20s <= 5`, `<10s <= 2`, `30s cap >= 11`
 - `npm run telemetry:check` accidental drift'te fail veriyor
+- early spawn collision grace ilk `10s` boyunca `260ms`, sonrasinda `0ms` olarak guard altinda
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor
 - live telemetry aktif oynanista compact, waiting/game-over'da ise validation icin yeterince detayli kaliyor

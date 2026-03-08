@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #51
+Updated By: Agent Run #52
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #51 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine donmeden tek bir gameplay fairness hedefi secti: ilk 10 saniyedeki unfair chase outlier'larini dar bir spawn-target tuning'iyle azaltmak. Validation/tooling kapsam freeze'i korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #52 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine donmeden tek bir gameplay fairness hedefi secti: ilk 10 saniyedeki yeni spawn carpisma anlarini daha adil hissettirmek icin dar bir collision-grace penceresi eklemek. Validation/tooling kapsam freeze'i korundu; smoke script'te cikan runtime hatasi sadece blocker olarak kaydedildi.
 
 Bu turun ana hedefi:
-- deterministic snapshot'taki iki `<10s` outlier run'i iyilestirmek
-- pacing `10 / 32 / 76` sabit kalirken first-death snapshot'ini `5.0s` ustune cekmek
+- ilk `10s` icindeki yepyeni obstacle spawn'larinda "dogar dogmaz hit" hissini dar bir gameplay guard'i ile yumusatmak
+- pacing `10 / 32 / 76`, speed curve, replay akisi ve mevcut death-feedback paketini bozmadan fairness'i iyilestirmek
 - audit'in istedigi gibi death-readability ve validation/readiness/preflight tarafina sifir yeni alan eklemek
 
 ---
@@ -27,6 +27,7 @@ Bu turun ana hedefi:
 - controls: keyboard (WASD + arrows) ve pointer/touch steering aktif
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 251 / 304 / 320`
 - early fairness bias: ilk `10s` icindeki spawn'lar artik oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim ediyor
+- early collision grace: ilk `10s` icindeki yeni obstacle'lar hemen hareket ediyor ama collider'lari ilk `260ms` boyunca zarar vermiyor; boylece yeni spawn lane'i keserken oyuncuya kisa bir reaksiyon penceresi birakiyor
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
 - balance baseline: deterministic survival snapshot `avg 23.4s / first death 6.3s / early death 8%`
 - replay motivation: sol ust HUD artik lifetime best + session best gostermekte; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
@@ -38,34 +39,34 @@ Bu turun ana hedefi:
 - inactive-phase input stability: oyuncu artik yalnizca `playing` fazinda hiz aliyor; waiting ve game-over ekranlarinda keyboard/pointer input'u death scene'i veya pre-run yerlesimini kaydirmiyor
 - hit feedback: olum aninda flash, hafif kamera shake, player pulse, directional hit callout, fatal-lane callout, oyuncu merkezinde kucuk bosluk birakan arrowhead'li impact ray, lane marker label, killer obstacle icin ayri `KILLER` spotlight etiketi + kisa connector, oyuncu merkezinde kucuk bosluk birakan arrowhead'li teal kacis ray'i, `BREAK ...` marker'i ve kisa death blip aktif; killer obstacle spotlight'ta kalirken diger aktif threat'ler dimleniyor
 - death summary: ana blok survival + cause tasiyor; buna ek olarak artik yeni best veya mevcut hedef bilgisi de yaziyor. `BREAK ...` prompt'u bir sonraki denemede hangi yone kirilman gerektigini soyluyor, yeni teal guide bunu sahne icinde de isaret ediyor, session/validation satirlari ayri stats blogunda kaliyor
-- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; desktop'ta varsayilan olarak acik, dar viewport'ta ise gameplay'i oncelemek icin collapse olmus summary karti olarak basliyor. Copy bu turdaki narrow-screen clutter reduction pass'ini anlatiyor
+- public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; desktop'ta varsayilan olarak acik, dar viewport'ta ise gameplay'i oncelemek icin collapse olmus summary karti olarak basliyor. Copy bu turdaki early collision-grace fairness pass'ini anlatiyor
 
 ## Telemetry / Validation Status
 - oyun ici telemetry session ve lifetime sample'i ayri gosteriyor
 - telemetry yapisi artik `bestSurvivalTime` alanini da tutuyor; lifetime ve session personal best ayni persistence akisi uzerinden saklaniyor
 - `R` sample reset, `C` console summary, `V` validation export akisi calisiyor
 - validation export kontrati deterministic `telemetry:validation-snapshot` ile guard altinda
-- browser validation preflight/readiness/smoke komutlari repoda mevcut, fakat bu runtime'ta loopback `EPERM` nedeniyle bloklu
+- browser validation preflight/readiness komutlari bu runtime'ta artik hazir durum donuyor; ancak packaged smoke komutu su an CDP `Page.enable` hatasiyla fail ediyor
 - current survival bucket baseline: `<10s: 2`, `10-20s: 5`, `20-30s: 6`, `30s cap: 11`
 - validation export baseline: deterministic 5-seed sample artik `24.2s first death / 40% early / 17.3s avg` kontratini uretiyor
-- `npm run telemetry:check` pacing, survival, validation export ve survival bucket dagilimini birlikte assert ediyor; baseline artik `23.4s / 6.3s / 8%` ve `2 / 5 / 6 / 11`
+- `npm run telemetry:check` pacing, survival, validation export, survival bucket dagilimi ve yeni early collision-grace surface'ini birlikte assert ediyor; baseline halen `23.4s / 6.3s / 8%` ve `2 / 5 / 6 / 11`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/balance.ts` icinde ilk `10s` icin `0.18s` spawn-target lag helper'i eklendi
-- `project/game/src/game/GameScene.ts` icinde obstacle spawn vektoru oyuncunun anlik hizinin biraz gerisine aim edecek sekilde guncellendi
-- `project/game/scripts/telemetry-reports.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` yeni deterministic baseline ile hizalandi
-- `project/game/src/latestRun.ts` public AI panel copy'si bu dar early-fairness tuning pass'ini anlatacak sekilde guncellendi
-- `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
+- `project/game/src/game/balance.ts` icinde ilk `10s` icin `260ms` early spawn collision-grace helper'i eklendi
+- `project/game/src/game/GameScene.ts` icinde yeni obstacle'lar hemen hareket ederken collider'lari grace bittikten sonra aktive olacak sekilde guncellendi; pooled obstacle reuse'i icin token guard eklendi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni collision-grace surface'ini deterministic rapora ve guard'a ekleyecek sekilde guncellendi
+- `project/game/src/latestRun.ts` public AI panel copy'si bu dar early-fairness guard pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check`, `npm run telemetry:browser-preflight`, `npm run telemetry:validation-ready`, `npm run telemetry:validation-ready -- --with-smoke` ve `npm run build` calistirildi; build yesil, smoke ise CDP `Page.enable` hatasiyla fail oldu
 
 ---
 
 # Active Problems
 
 - gercek manual browser sample hala yok
-- mevcut sandbox `127.0.0.1` loopback socket acmaya izin vermedigi icin browser smoke burada calismiyor
+- packaged smoke komutu su an CDP `Page.enable` hatasiyla fail oluyor
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic baseline halen iki `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesine cikti ama urun hedefi `> 10s`in hala belirgin altinda
 - yeni pause/resume prompt'unun host browser'da ilk bakista yeterince anlasilir olup olmadigi henuz insan gozunden teyit edilmedi
@@ -82,7 +83,7 @@ Bu turun ana hedefi:
 # Technical Debt
 
 - formal test suite yok; regression guvencesi deterministic telemetry komutlariyla sinirli
-- browser validation akisi runtime bagimli operasyonel bir ihtiyac olmaya devam ediyor
+- browser validation akisi runtime bagimli operasyonel bir ihtiyac olmaya devam ediyor; preflight hazir ama smoke komutu farkli Chromium/CDP uyumsuzluguna takiliyor
 - telemetry helper'lari ayrildi ama scene dosyasi buyuk
 - telemetry hotkey davranislari icin ayrik unit coverage yok; aktif-run reset guard'i su an build + manual code-path mantik kontrolu ile korunuyor
 - production bundle buyuk; build chunk warning'i devam ediyor
@@ -99,6 +100,7 @@ Bu turun ana hedefi:
 - mobil cihaz testi yapilmadi
 - mevcut deterministic early-death outlier'lari manuel sample olmadan fazla agresif tuning'e overfit etme riski tasir
 - yeni early spawn-target lag deterministic outlier'i yumusatti, fakat host browser sample olmadan chase hissini fazla yumusatip yumusatmadigi bilinmiyor
+- yeni early spawn collision grace gercek oyuncuda daha adil hissedebilir, fakat manuel sample olmadan fazla bagislayici olup olmadigi bilinmiyor
 - mevcut death-feedback paketi ve yeni personal-best cue host browser sample'i olmadan tam hissedilemez
 - public panel faydali olabilir ama replay odagini bolme riski tasir; escape guide ile birlikte gorulmeli
 - personal-best satiri replay motivasyonu saglayabilir ama HUD yogunlugunu da artirabilir; host browser sample ile gormek gerekiyor
@@ -113,7 +115,7 @@ Bu turun ana hedefi:
 
 # Observations
 
-- audit'in readability micro-loop uyarisi bu tur tutuldu; ayni death-feedback paketine yeni yuzey eklenmedi
-- erken spawn hedefleme artik oyuncunun anlik hizinin biraz gerisine bakiyor; pacing degismeden deterministic first death `5.0s -> 6.3s` cikti
-- deterministic average survival `22.3s -> 23.4s`, buckets `2 / 7 / 4 / 11 -> 2 / 5 / 6 / 11`, average spawn count `23.1 -> 24.5` oldu; early death `%8` korundu
-- siradaki en dar ve anlamli urun adimi, host browser varsa bu yeni early-lag hissini 5-10 manuel run ile dogrulamak; yoksa ayni problemi yeni mikro-loop'a cevirmeden dondurmek olmalidir
+- audit'in readability micro-loop uyarisi bu tur de tutuldu; ayni death-feedback paketine yeni yuzey eklenmedi
+- yeni collision grace surface'i deterministic baseline'i degistirmedi: `23.4s / 6.3s / 8%` ve `2 / 5 / 6 / 11` aynen korundu
+- browser preflight artik hazir, fakat smoke komutu `Page.enable` hatasiyla ayri bir runtime blocker gosteriyor
+- siradaki en dar ve anlamli urun adimi, host browser varsa collision-grace hissini 5-10 manuel run ile dogrulamak; yoksa bu fairness surface'ini dondurup baska gameplay problemine gecmek olmalidir

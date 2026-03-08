@@ -6,6 +6,7 @@ import {
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
   getSpawnDelayMs,
+  getSpawnCollisionGraceMs,
   getSpawnTargetLagSeconds,
 } from './balance';
 import {
@@ -106,6 +107,7 @@ export class GameScene extends Phaser.Scene {
   private runStartedAt = 0;
   private survivalTime = 0;
   private runSpawnRerolls = 0;
+  private obstacleLaunchToken = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
   private lastValidationReport: string | null = null;
@@ -141,7 +143,7 @@ export class GameScene extends Phaser.Scene {
       this.player,
       this.obstacles,
       this.handlePlayerHit,
-      undefined,
+      this.canObstacleHitPlayer,
       this,
     );
 
@@ -708,6 +710,8 @@ export class GameScene extends Phaser.Scene {
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
+      obstacle.setData('collisionReady', false);
+      obstacle.setData('launchToken', null);
       obstacle.disableBody(true, true);
       return true;
     });
@@ -780,8 +784,38 @@ export class GameScene extends Phaser.Scene {
     );
     const velocity = target.subtract(spawnPoint).normalize().scale(this.getObstacleSpeed());
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
+    const collisionGraceMs = getSpawnCollisionGraceMs(this.survivalTime);
+    const launchToken = this.obstacleLaunchToken += 1;
+
     obstacleBody.enable = true;
+    obstacle.setData('collisionReady', collisionGraceMs === 0);
+    obstacle.setData('launchToken', launchToken);
     obstacle.setVelocity(velocity.x, velocity.y);
+
+    if (collisionGraceMs === 0) {
+      return;
+    }
+
+    this.tweens.add({
+      targets: obstacle,
+      alpha: { from: 0.58, to: 1 },
+      scaleX: { from: 0.88, to: 1 },
+      scaleY: { from: 0.88, to: 1 },
+      duration: collisionGraceMs,
+      ease: 'Quad.Out',
+    });
+
+    this.time.delayedCall(collisionGraceMs, () => {
+      if (this.phase !== 'playing' || !obstacle.active) {
+        return;
+      }
+
+      if (obstacle.getData('launchToken') !== launchToken) {
+        return;
+      }
+
+      obstacle.setData('collisionReady', true);
+    });
   }
 
   private hasMovementInput(): boolean {
@@ -795,6 +829,14 @@ export class GameScene extends Phaser.Scene {
       this.movementKeys.up.isDown ||
       this.movementKeys.down.isDown
     );
+  }
+
+  private canObstacleHitPlayer(
+    _playerGameObject: unknown,
+    obstacleGameObject: unknown,
+  ): boolean {
+    const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
+    return obstacle.getData('collisionReady') !== false;
   }
 
   private updatePlayerVelocity(): void {

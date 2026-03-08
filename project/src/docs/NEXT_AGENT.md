@@ -2,27 +2,28 @@
 
 ## Recommended Next Task
 
-Run #51 audit'teki `drift-risk` sinirina sadik kalip death-readability veya tooling churn'una donmeden erken-game fairness tuning'i yapti: ilk `10s` icindeki spawn'lar artik oyuncunun hareket vektorunun `0.18s` gerisine aim ediyor ve deterministic baseline `22.3s / 5.0s / 8%`ten `23.4s / 6.3s / 8%`e cikti. Siradaki tek ana gorev, host browser/runtime varsa bu yeni early spawn lag'in gercek oyuncuda adil ama halen gerilimli hissedip hissettirmedigini manuel sample ile dogrulamak olmali.
+Run #52 audit'teki `drift-risk` sinirina sadik kalip death-readability veya tooling churn'una donmeden erken-game fairness surface'ine dar bir collision-grace guard ekledi: ilk `10s` icindeki spawn'lar artik hemen hareket ediyor ama ilk `260ms` boyunca zarar vermiyor. Deterministic baseline `23.4s / 6.3s / 8%` ve buckets `2 / 5 / 6 / 11` aynen korundu. Siradaki tek ana gorev, host browser/runtime varsa bu yeni collision grace'in gercek oyuncuda adil ama halen gerilimli hissedip hissettirmedigini manuel sample ile dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run telemetry:check` calistir; mevcut baseline'in `23.4s / 6.3s / 8%`, buckets `2 / 5 / 6 / 11`, validation sample'inin ise `24.2s first death / 40% early` oldugunu teyit et
-- sonra host browser/runtime mevcutsa 5-10 manuel run yap ve su sorulara kisa not dus: ilk 10 saniyedeki chase daha adil mi, yoksa fazla yumusadi mi; replay temposu hala hizli mi; yeni lag hissi skill expression'i azaltıyor mu
-- browser runtime hala blokluysa bunu sadece blocker olarak kaydet; ayni fairness ayarini yeni mikro-tuning loop'una sokma ve gorevi tooling/readiness/orchestration alanina cevirme
-- manuel sample yeni lag'in fazla yumusak oldugunu gosterirse yalnizca `project/game/src/game/balance.ts`, `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` uzerinden lag suresi veya cutoff'u dar kapsamda ayarla
+- sonra host browser/runtime mevcutsa 5-10 manuel run yap ve su sorulara kisa not dus: ilk 10 saniyedeki yeni spawn temasi daha adil mi; `260ms` grace hissedilir ama ghostly olmadan okunuyor mu; replay temposu hala hizli mi; challenge fazla yumusadi mi
+- packaged smoke komutu su an `Page.enable` ile fail oldugu icin bunu sadece blocker olarak kaydet; gorevi browser-tooling/readiness/orchestration alanina cevirme
+- manuel sample yeni grace'in fazla bagislayici oldugunu gosterirse yalnizca `project/game/src/game/balance.ts`, `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` uzerinden grace suresi veya cutoff'u dar kapsamda ayarla
+- manual sample alamiyorsan ayni fairness surface'ini yeni mikro-loop'a cekme; bir sonraki turda farkli olculebilir gameplay problemine gecmek uzere blocker kaydi birak
 - final varyant korunursa en az `npm run telemetry:check` ve `npm run build` ile accidental drift olmadigini dogrula
 
 ---
 
 ## Why This Is Next
 
-Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #51 tek eksenli bir gameplay tuning'iyle first death'i `5.0s -> 6.3s` cekti ve early death `%8` ustune cikmadi. Bu degisimin urun degeri ancak insan oyuncu hissiyle anlam kazanacak; siradaki dogru adim yeni UI katmani acmak degil, bu fairness kazancinin gercek oyuncuda "daha adil ama halen gerilimli" olarak algilanip algilanmadigini kanitlamaktir.
+Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #52 tek eksenli bir gameplay guard'i ile yeni spawn carpisma anina `260ms` grace ekledi ama deterministic baseline'i degistirmedi. Bu degisimin urun degeri ancak insan oyuncu hissiyle anlam kazanacak; siradaki dogru adim yeni UI katmani acmak ya da smoke sorununu yeni tooling projesine cevirmek degil, bu fairness guard'inin gercek oyuncuda "daha adil ama halen gerilimli" olarak algilanip algilanmadigini kanitlamaktir.
 
 ---
 
 ## Success Criteria
 
 - `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run telemetry:check` basarili olmali
-- 5-10 manuel run notu yeni early spawn lag'in adillik / challenge / replay hissi etkisini somut sekilde yazmali
+- 5-10 manuel run notu yeni collision grace'in adillik / challenge / replay hissi etkisini somut sekilde yazmali
 - deterministic first death `6.3s` altina dusmemeli
 - average survival `23.4s` altina dusmemeli
 - early death rate `%8` uzeri bozulmamali
@@ -54,7 +55,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - validation altyapisina yeni preflight/readiness/orchestration katmani ekleme
 - tek ana hedef sec; manuel sample topluyorsan ayni turda ikinci bir urun cephesi acma
 - yeni HUD/panel/readability/pause/retry copy yuzeyi acma
-- early spawn lag sorununu yeni telemetry sistemi, yeni simulator veya yeni orchestration katmanina donusturme
+- early spawn collision grace sorununu yeni telemetry sistemi, yeni simulator veya yeni orchestration katmanina donusturme
 - browser blokaji varsa bunu blocker olarak yaz ama gorevi docs/tooling churn'una cevirme
 
 ## Governance Note
@@ -63,7 +64,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - host browser sample veya yeni metrik olmadan impact ray / escape ray / arrowhead / connector / label / panel copy uzerinde bir run daha harcama
 - host browser sample olmadan collapsed panel disinda yeni UI yuzeyi ekleme
 - validation/readiness/preflight freeze devam ediyor
-- manuel sample yoksa Run #51'in early spawn lag tuning'ini dondur; ayni problemi sonsuz mikro-tuning loop'una cekme
+- manuel sample yoksa Run #52'nin early spawn collision grace guard'ini dondur; ayni problemi sonsuz mikro-tuning loop'una cekme
 
 ---
 

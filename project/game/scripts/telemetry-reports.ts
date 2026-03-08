@@ -1,11 +1,14 @@
 import {
   EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS,
   EARLY_SPAWN_TARGET_LAG_SECONDS,
+  EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS,
+  EARLY_SPAWN_COLLISION_GRACE_MS,
   FIRST_SPAWN_DELAY_MS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
   getRequiredSpawnDistance,
   getSpawnDelayMs,
+  getSpawnCollisionGraceMs,
   getSpawnTargetLagSeconds,
 } from '../src/game/balance.ts';
 import {
@@ -41,6 +44,7 @@ type Obstacle = {
   y: number;
   vx: number;
   vy: number;
+  collisionReadyAtSeconds: number | null;
 };
 
 type SessionResult = {
@@ -59,6 +63,7 @@ export type BalanceSnapshotReport = {
     obstacleSpeed: number;
     requiredSpawnDistance: number;
     spawnTargetLagSeconds: number;
+    spawnCollisionGraceMs: number;
   }>;
   spawnCounts: Array<{
     seconds: number;
@@ -210,6 +215,7 @@ const simulateSession = (seed: number): SessionResult => {
       });
       const speed = getObstacleSpeed(survivalTimeSeconds);
       const spawnTargetLagSeconds = getSpawnTargetLagSeconds(survivalTimeSeconds);
+      const collisionGraceMs = getSpawnCollisionGraceMs(survivalTimeSeconds);
       const direction = normalize({
         x: clamp(player.x - playerVelocity.x * spawnTargetLagSeconds, 0, ARENA_WIDTH) - selection.point.x,
         y: clamp(player.y - playerVelocity.y * spawnTargetLagSeconds, 0, ARENA_HEIGHT) - selection.point.y,
@@ -220,6 +226,8 @@ const simulateSession = (seed: number): SessionResult => {
         y: selection.point.y,
         vx: direction.x * speed,
         vy: direction.y * speed,
+        collisionReadyAtSeconds:
+          collisionGraceMs > 0 ? survivalTimeSeconds + collisionGraceMs / 1000 : null,
       });
 
       spawns += 1;
@@ -238,6 +246,13 @@ const simulateSession = (seed: number): SessionResult => {
     for (const obstacle of obstacles) {
       obstacle.x += obstacle.vx * FIXED_TIME_STEP_SECONDS;
       obstacle.y += obstacle.vy * FIXED_TIME_STEP_SECONDS;
+
+      if (
+        obstacle.collisionReadyAtSeconds !== null &&
+        survivalTimeSeconds < obstacle.collisionReadyAtSeconds
+      ) {
+        continue;
+      }
 
       const distance = Math.hypot(obstacle.x - player.x, obstacle.y - player.y);
 
@@ -275,6 +290,7 @@ export const createBalanceSnapshotReport = (): BalanceSnapshotReport => {
       obstacleSpeed: Math.round(getObstacleSpeed(seconds)),
       requiredSpawnDistance: Math.round(getRequiredSpawnDistance(seconds)),
       spawnTargetLagSeconds: Number(getSpawnTargetLagSeconds(seconds).toFixed(2)),
+      spawnCollisionGraceMs: Math.round(getSpawnCollisionGraceMs(seconds)),
     })),
     spawnCounts: SPAWN_COUNT_LIMITS_SECONDS.map((limitSeconds) => ({
       seconds: limitSeconds,
@@ -296,7 +312,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
   return {
     sessionCount: SESSION_COUNT,
     maxSimulationSeconds: MAX_SIMULATION_SECONDS,
-    controller: `center-seeking avoidance heuristic with 180ms reaction interval and ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s`,
+    controller: `center-seeking avoidance heuristic with 180ms reaction interval, ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, and ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s`,
     effectivePlayerSpeed: EFFECTIVE_PLAYER_SPEED,
     nativePlayerSpeed: PLAYER_SPEED,
     averageSurvivalTimeSeconds: round(averageSurvivalTime),

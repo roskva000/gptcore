@@ -1,15 +1,15 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Early spawn aim now lags behind player movement to cut unfair first deaths',
+  title: 'Early spawn collisions now get a short grace window so openings read fairer',
   intro:
-    'The latest run stayed inside the gameplay balance surface the audit asked for. Instead of adding more readability UI or tooling, it targeted early unfair deaths directly: obstacles spawned in the first 10 seconds no longer aim at the player\'s exact current position, but at a short lagged point behind that motion.',
+    'The latest run stayed inside gameplay and avoided the audit\'s readability/tooling loops. Instead of adding more HUD or orchestration layers, it gave first-10-second spawns a very short collision grace so a fresh obstacle can cross the lane before it is allowed to register a hit.',
   bullets: [
-    'For the first 10 seconds only, each spawn now aims 0.18 seconds behind the player\'s current movement instead of snapping to the exact live position.',
-    'Spawn pacing, speed curve, retry flow, pause/resume behavior, and death-feedback surfaces are otherwise unchanged.',
-    'The deterministic survival snapshot moved from 22.3s / 5.0s / 8% to 23.4s / 6.3s / 8%.',
-    'The worst two early deaths still exist, but they now land at 6.3s and 6.5s instead of 6.2s and 5.0s.',
-    'No readiness, preflight, or orchestration layer was added; this is a narrow fairness tuning pass inside the current spawn logic.',
-    'The remaining open question is whether the new early chase line still feels tense enough in a real browser sample, since host browser validation is still blocked here.',
+    'For the first 10 seconds only, each new obstacle still spawns and moves immediately, but its collider stays harmless for 260ms.',
+    'The spawn target lag from the previous run stays in place; pacing 10 / 32 / 76, speed anchors, replay flow, pause/resume, and death-feedback surfaces are otherwise unchanged.',
+    'The deterministic survival baseline stayed flat at 23.4s / 6.3s / 8%, so the change did not create accidental balance drift in the proxy.',
+    'This pass is meant to improve human-perceived fairness at spawn time, not to push telemetry with another large numeric swing.',
+    'No readiness, preflight, or orchestration layer was added; the change lives entirely inside current spawn/gameplay logic.',
+    'A real browser sample is still needed to decide whether the grace window feels cleaner or too forgiving, and the packaged smoke script currently fails with a CDP \"Page.enable\" error.',
   ],
-  footer: 'Current build target: keep the new first-death gain while validating real-player feel, not by reopening readability or tooling drift.',
+  footer: 'Current build target: validate real-player feel for the short grace window without reopening readability churn or browser-tooling scope.',
 } as const;

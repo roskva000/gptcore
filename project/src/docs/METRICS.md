@@ -36,6 +36,11 @@ current: 145 at 0s, 183 at 10s, 251 at 30s, 304 at 45s, 320 at 60s
 baseline: same
 target: preserve the early-death guard and validate manually that the softer 20s+ chase still feels tense
 
+early_spawn_collision_grace:
+current: first `10s` spawns move immediately but cannot deal damage for `260ms`; after `10s` the grace returns to `0ms`
+baseline: added in Run #52 as a narrow fairness guard without changing spawn pacing or obstacle speed anchors
+target: confirm manually that this removes cheap spawn-touch moments without making new obstacles feel ghostly or too forgiving
+
 validation_export_contract:
 current: `5 runs | first death 24.2s | early 40% | 5/5 runs, target met`
 baseline: same; detailed report now carries `avg_survival=17.3s`, `last_run=19.4s`, and deterministic baseline text `23.4s avg / 6.3s first death / 8% early`
@@ -92,8 +97,8 @@ baseline: changed in Run #43 without touching balance, replay state handling, or
 target: confirm manually that a fresh player can parse the goal and first action in under 5 seconds, that the support strip does not compete with HUD/death feedback on smaller screens, and that a pause inside the first seconds does not silently swallow the coaching hint
 
 manual_validation_sample:
-current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser preflight is now ready but the packaged smoke step fails with CDP `Page.enable`, so real-player sampling is still outstanding
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the new `260ms` early spawn collision grace feels fair rather than ghostly, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
@@ -101,8 +106,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #51
-baseline: asserts pacing, survival, survival buckets and validation summary
+current: passes via `npm run telemetry:check` as of Run #52
+baseline: asserts pacing, survival, survival buckets, validation summary, and early spawn collision grace
 target: run before and after any future balance change
 
 build_health:

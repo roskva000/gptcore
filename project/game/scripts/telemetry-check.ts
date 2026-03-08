@@ -21,6 +21,12 @@ const spawnTargetLagAt = (seconds: number): number => {
   return point.spawnTargetLagSeconds;
 };
 
+const spawnCollisionGraceAt = (seconds: number): number => {
+  const point = balanceReport.balanceCurve.find((entry) => entry.seconds === seconds);
+  assert.ok(point, `Missing balance curve sample for ${seconds}s.`);
+  return point.spawnCollisionGraceMs;
+};
+
 const spawnsBy = (seconds: number): number => {
   const point = balanceReport.spawnCounts.find((entry) => entry.seconds === seconds);
   assert.ok(point, `Missing spawn count sample for ${seconds}s.`);
@@ -44,6 +50,9 @@ assert.equal(speedAt(60), 320, '60s obstacle speed changed unexpectedly.');
 assert.equal(spawnTargetLagAt(0), 0.18, '0s spawn target lag changed unexpectedly.');
 assert.equal(spawnTargetLagAt(10), 0.18, '10s spawn target lag changed unexpectedly.');
 assert.equal(spawnTargetLagAt(15), 0, '15s spawn target lag changed unexpectedly.');
+assert.equal(spawnCollisionGraceAt(0), 260, '0s spawn collision grace changed unexpectedly.');
+assert.equal(spawnCollisionGraceAt(10), 260, '10s spawn collision grace changed unexpectedly.');
+assert.equal(spawnCollisionGraceAt(15), 0, '15s spawn collision grace changed unexpectedly.');
 
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 23.4, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');
