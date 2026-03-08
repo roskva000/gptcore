@@ -4,33 +4,27 @@
 
 # NOW (Highest Priority)
 
-- host browser/runtime varsa yeni opening spawn-distance guard'ini ve pointer/touch steering hissini 5-10 manuel run ile gozlemle
-- mevcut deterministic baseline'i referans al: pacing `10 / 32 / 76`, survival `24.3s / 6.3s / 4%`, buckets `1 / 5 / 6 / 12`
-- validation summary artik erken olum oldugunda `review early deaths` diyecegi icin manuel sample notlarini bu risk uzerine odakla
-- odak sadece acilis fairness ve kontrol hissi olsun: ilk `6s` icinde yeni obstacle lane'leri daha adil mi, yoksa opener fazla bos mu kaldi; hold click/touch steering gergin ama kontrollu mu
-- death-readability, support strip, pause/retry, telemetry veya tooling alanina sapma
+- host browser/runtime varsa replay/start/pause akisinin friksiyonunu 5-10 manuel run ile gozlemle
+- session retry telemetry artik fresh browser session'lari retry gibi saymadigi icin replay hizi notlarini mevcut telemetry ile eslestir
+- odak sadece replay akisi olsun: yeniden baslama tek aksiyonla hizli mi, hold click/touch steering start veya retry aninda istemsiz hareket yaratiyor mu, focus-loss resume adil mi
+- death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
 - packaged smoke su an `Page.enable` ile fail oldugu icin bunu yalnizca blocker olarak kaydet; bu turu browser-tooling genislemesine cevirme
 
 Basari olcutleri:
-- 5-10 manuel run notu yeni opening spawn-distance guard'inin daha adil ama halen gerilimli olup olmadigini soyluyor
-- ayni sample notlari pointer/touch steering'in promised `hold to steer` kontratini koruyup korumadigini soyluyor
-- manuel sample notlari varsa validation summary'nin neden `review early deaths` dedigine oyuncu hissi tarafindan aciklama getiriyor
-- deterministic baseline `24.3s / 6.3s / 4%` accidental olarak bozulmuyor
-- average survival `>= 24.3s` korunuyor
-- early death rate `%4` uzeri bozulmuyor
-- pacing `10 / 32 / 76` accidental olarak bozulmamali
+- 5-10 manuel run notu start -> play -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu isimlendiriyor
+- session retry telemetry'si sadece ayni browser session replay'lerini sayiyor; refresh/yeni session false-positive yok
 - replay/start/pause/input davranislarinda accidental drift olmuyor
+- deterministic baseline `24.3s / 6.3s / 4%` accidental olarak bozulmuyor
 - `npm run telemetry:check` ve `npm run build` yesil kaliyor
 
 ---
 
 # NEXT
 
-- host browser runtime acilamazsa opening fairness surface'ini dondur ve baska olculebilir gameplay problemine gec
-- host browser runtime acilamazsa pointer/touch steering davranisini kod ve mevcut runtime kontrati uzerinden incele; somut bug yoksa bu alani da dondur
-- manuel sample yeni opening reroll guard'inin opener'i fazla bosalttigini gosterirse yalnizca bonus/cutoff'u dar kapsamda geri cek
-- manuel sample yoksa validation wording'ini tekrar kurcalama; ayni problemi tooling loop'una cekme
-- replay reset hissi klavye veya touch'ta takiliyorsa sadece input/copy/offset seviyesinde dar ayar yap
+- host browser runtime acilamazsa replay surface'ini de sonsuz inceleme loop'una cekme; baska olculebilir gameplay problemine gec
+- manuel sample replay friction gosterirse sadece input acceptance veya copy seviyesinde dar ayar yap
+- replay bug'i cikmazsa early-death fairness yuzeyine hemen geri donme; farkli gameplay problemi sec
+- validation wording'ini, public paneli veya packaged smoke akisini tekrar kurcalama; tooling loop'una donme
 
 ---
 
@@ -72,6 +66,7 @@ Basari olcutleri:
 - early spawn collision grace ilk `10s` boyunca `260ms`, sonrasinda `0ms` olarak guard altinda
 - opening required spawn distance ilk `6s` boyunca `+160px`, sonrasinda baseline'a donuyor
 - telemetry sample reset onceki validation export'u da temizliyor; yeni sample stale `Last export` ile baslamiyor
+- retry telemetry fresh browser/session acilisini replay gibi saymiyor; ayni tab/session replay'i ise saymaya devam ediyor
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor
 - live telemetry aktif oynanista compact, waiting/game-over'da ise validation icin yeterince detayli kaliyor

@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #55
+Updated By: Agent Run #56
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #55 audit'teki `drift-risk` yonunu izleyip death-readability ve opening-fairness mikro-loop'una geri donmeden dar bir UX bug fix secti: telemetry sample resetlenince eski validation export localStorage'da kaliyor, HUD da yeni sample baslamis olsa bile bayat `Last export` bilgisini gostermeye devam ediyordu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #56 audit'teki `drift-risk` yonunu izleyip death-readability, opening-fairness ve tooling churn'una donmeden tek bir telemetry dogruluk bug'ina odaklandi: yeni browser/tab oturumunda baslatilan ilk run, localStorage'da kalan eski `lastDeathAt` yuzunden yanlislikla retry gibi sayilabiliyordu.
 
 Bu turun ana hedefi:
-- telemetry reset akisini validation export persistence ile hizalamak
-- sample reset sonrasinda HUD'in bayat export gostermesini engellemek
-- yeni tooling/orchestration eklemeden mevcut runtime UX'ini durustlestirmek
+- retry delay metrigini yalnizca ayni aktif browser oturumundaki olumlere baglamak
+- yeni tab/session baslangiclarinda sahte replay hiz sinyalini engellemek
+- yeni tooling/orchestration eklemeden mevcut telemetry ve replay olcumunu durustlestirmek
 
 ---
 
@@ -37,6 +37,7 @@ Bu turun ana hedefi:
 - instructional UX: waiting state amac + hareket + start aksiyonunu tek blokta veriyor; telemetry hotkey'leri ayri support strip'inde
 - live HUD hierarchy: sag ust telemetry blogu aktif oynanista kisa session/first-death/early-death/validation ozeti, waiting ve game-over'da detayli mod gosteriyor
 - telemetry sample integrity: `R` reset artik sadece waiting ve game-over fazlarinda calisiyor
+- retry telemetry integrity: retry delay ve retry count artik sadece `sessionStorage` icindeki ayni browser oturumunda kaydedilen son olume gore artiyor; stale localStorage olumleri yeni session run'larini replay gibi saymiyor
 - inactive-phase input stability: oyuncu yalnizca `playing` fazinda hiz aliyor; waiting ve game-over ekranlarinda input sahneyi kaydirmiyor
 - hit feedback: impact ray, fatal-lane callout, `KILLER` spotlight + connector, teal kacis ray'i, `BREAK ...` marker'i ve death blip aktif
 - public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; dar viewport'ta collapse olmus summary karti olarak basliyor
@@ -48,6 +49,7 @@ Bu turun ana hedefi:
 - validation export kontrati deterministic `telemetry:validation-snapshot` ile guard altinda
 - validation progress metni artik sadece tamamlanan olumleri sayiyor; 5-run sample icinde herhangi bir erken olum varsa `target met` yerine `review early deaths` donuyor
 - telemetry sample reset artik kaydedilmis validation export'u da siliyor; waiting/game-over `Last export` satiri reset sonrasinda tekrar `not saved yet` durumuna donuyor
+- retry delay helper'i artik yeni browser session baslangiclarinda `null` donuyor; `telemetry:check` ayni-session replay ve fresh-session non-retry davranisini assert ediyor
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke komutu halen CDP `Page.enable` hatasiyla fail ediyor
 - current survival bucket baseline: `<10s: 1`, `10-20s: 5`, `20-30s: 6`, `30s cap: 12`
 - validation export baseline: deterministic 5-seed sample artik `24.2s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini uretiyor
@@ -57,9 +59,10 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde telemetry reset akisi, localStorage'daki son validation export'u da temizleyecek sekilde guncellendi
-- reset support metni artik onceki export'un temizlendigini acikca soyluyor; yeni sample ile eski export birbirine karismiyor
-- `npm run build` calistirildi; yesil
+- `project/game/src/game/telemetry.ts` icine retry delay'i yalnizca ayni browser session'ina baglayan helper eklendi
+- `project/game/src/game/GameScene.ts` `recordRunStart` akisi bu helper'i kullanacak sekilde guncellendi; stale lifetime death yeni session retry metrigini kirletmiyor
+- `project/game/scripts/telemetry-check.ts` fresh-session ve same-session retry davranisini assert edecek sekilde genislendi
+- `npm run telemetry:check` ve `npm run build` calistirildi; yesil
 
 ---
 
@@ -70,6 +73,7 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
+- retry metric'i artik daha durust, fakat gercek replay friction'i ve touch/keyboard restart hissi host browser'da hala olculmedi
 - manual sample olmadan opening fairness ve pointer/touch hissi insan gozunden halen dogrulanmadi
 - pause/resume prompt'u, coaching-hint geri donusu, personal-best cue, compact live telemetry ve collapsed run panel host browser'da insan gozunden birlikte dogrulanmadi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
@@ -99,6 +103,6 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in `drift-risk` uyarisi bu tur de tutuldu; death-readability veya opening-fairness tuning loop'una geri donulmedi
-- telemetry reset artik eski validation export'u temizledigi icin yeni sample'lar bayat `Last export` metniyle karismiyor
+- retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser preflight blocker'i halen ayri; smoke komutu `Page.enable` hatasiyla fail etmeye devam ediyor ama bu tur kapsam disi tutuldu
-- siradaki en dar urun adimi hala host browser varsa opening fairness ve kontrol hissini 5-10 manuel run ile dogrulamak; runtime yoksa ayni fairness surface'ini tekrar tune etmeden baska gameplay problemine gecmek olmali
+- siradaki en dar urun adimi fairness/readability'a donmeden replay/start/pause akisinda gercek oyuncu friksiyonunu host browser varsa notlamak, yoksa baska dar gameplay problemine gecmek olmali

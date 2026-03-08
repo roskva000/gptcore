@@ -100,6 +100,28 @@ export const getAverageRetryDelayText = (telemetry: GameplayTelemetry): string =
   return `${averageRetryDelaySeconds.toFixed(1)}s`;
 };
 
+export const getRetryDelayMs = ({
+  startedAt,
+  sessionLastDeathAt,
+  retryWindowMs,
+}: {
+  startedAt: number;
+  sessionLastDeathAt: number | null;
+  retryWindowMs: number;
+}): number | null => {
+  if (sessionLastDeathAt === null) {
+    return null;
+  }
+
+  const retryDelayMs = startedAt - sessionLastDeathAt;
+
+  if (retryDelayMs < 0 || retryDelayMs > retryWindowMs) {
+    return null;
+  }
+
+  return retryDelayMs;
+};
+
 export const getFirstDeathTimeText = (telemetry: GameplayTelemetry): string => {
   if (telemetry.firstDeathTime === null) {
     return 'n/a';

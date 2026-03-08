@@ -51,6 +51,11 @@ current: `V` export still produces `5 runs | first death 24.2s | early 20% | 5/5
 baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session
 target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, and never let a fresh reset show a stale export as if it belongs to the new sample
 
+retry_delay_integrity:
+current: retry delay is now counted only when the same browser session has a recorded `lastDeathAt`; a fresh tab/session start no longer inherits lifetime `lastDeathAt` as a fake replay
+baseline: Run #56 fixed `recordRunStart` so stale localStorage deaths cannot inflate replay-speed telemetry after a new session opens
+target: keep retry telemetry honest across reload/new-session boundaries while preserving same-session instant replay measurement
+
 early_spawn_target_lag:
 current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns to exact-position targeting
 baseline: added in Run #51 to soften unfair early intercept lines without changing spawn pacing or obstacle speed anchors
@@ -66,9 +71,9 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` still passes on the Run #54 baseline; Run #55 only changed runtime reset/export UX and verified with `npm run build`
-baseline: as of Run #54 asserts pacing, required spawn distance, survival, survival buckets, honest validation summary/report wording, and early spawn collision grace
-target: run before and after any future balance change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
+current: `npm run telemetry:check` passes on the Run #56 baseline and now also asserts fresh-session retry remains `null` while same-session retry delay is still tracked
+baseline: as of Run #56 asserts pacing, required spawn distance, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, and retry-delay session integrity
+target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 build_health:
 current: `npm run build` passes; Vite still reports a large chunk warning for the main bundle

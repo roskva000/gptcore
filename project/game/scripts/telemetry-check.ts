@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { getRetryDelayMs } from '../src/game/telemetry.ts';
 import {
   createBalanceSnapshotReport,
   createSurvivalSnapshotReport,
@@ -82,6 +83,24 @@ assert.equal(
   validationReport.validationReport,
   'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=24.2s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 24.3s avg / 6.3s first death / 4% early',
   'Validation export contract changed unexpectedly.',
+);
+assert.equal(
+  getRetryDelayMs({
+    startedAt: 10_000,
+    sessionLastDeathAt: null,
+    retryWindowMs: 15_000,
+  }),
+  null,
+  'Fresh browser sessions should not inherit retry delay from lifetime storage.',
+);
+assert.equal(
+  getRetryDelayMs({
+    startedAt: 10_000,
+    sessionLastDeathAt: 6_500,
+    retryWindowMs: 15_000,
+  }),
+  3_500,
+  'Same-session retry delay should still be tracked.',
 );
 
 console.log(

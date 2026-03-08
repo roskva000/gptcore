@@ -28,6 +28,7 @@ import {
   getEarlyDeathRate,
   getFirstDeathTimeText,
   getRecentDeathTimesText,
+  getRetryDelayMs,
   getValidationProgressText,
   type GameplayTelemetry,
   type TelemetrySummary,
@@ -1379,13 +1380,13 @@ export class GameScene extends Phaser.Scene {
 
   private recordRunStart(): void {
     const startedAt = Date.now();
-    let retryDelayMs: number | null = null;
+    const retryDelayMs = getRetryDelayMs({
+      startedAt,
+      sessionLastDeathAt: this.sessionTelemetry.lastDeathAt,
+      retryWindowMs: RETRY_GAP_TRACK_WINDOW_MS,
+    });
 
-    if (
-      this.telemetry.lastDeathAt !== null &&
-      startedAt - this.telemetry.lastDeathAt <= RETRY_GAP_TRACK_WINDOW_MS
-    ) {
-      retryDelayMs = startedAt - this.telemetry.lastDeathAt;
+    if (retryDelayMs !== null) {
       this.telemetry.totalRetryDelayMs += retryDelayMs;
       this.telemetry.retryCount += 1;
     }
