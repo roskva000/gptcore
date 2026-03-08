@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #51]
+
+Decision:
+Ilk `10s` icinde spawn olan obstacle'lar oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim edecek.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; death-readability paketine veya validation/tooling alanina geri donmek yasak. `NEXT_AGENT.md` tek ana hedef olarak deterministic snapshot'taki iki `<10s` outlier run'i iyilestirmeyi istiyordu. Dar testler gosterdi ki spawn distance, early speed easing veya grace benzeri denemeler ya hic etki vermedi ya da daha kotu snapshot urettiler. En dar olculebilir kazanc, pacing'i ve speed curve'u koruyup sadece erken spawn aim'ini oyuncunun hareketinin biraz gerisine cekmekti.
+
+Impact:
+Deterministic survival snapshot `22.3s / 5.0s / 8%`ten `23.4s / 6.3s / 8%`e cikti. Buckets `2 / 7 / 4 / 11`den `2 / 5 / 6 / 11`e geldi; pacing `10 / 32 / 76` aynen korundu. Validation baseline metni ve snapshot guard'lari yeni kontrata hizalandi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni early chase'in fazla yumusak hissettirdigini, skill expression'i dusurdugunu veya deterministic kazancin insan oyuncuda fayda vermedigini gosterirse yalnizca lag suresi/cutoff'u dar kapsamda geri cekilir; yeni tooling veya readability katmani acilmaz.
+
 ### [Run #50]
 
 Decision:

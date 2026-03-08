@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #50
+Updated By: Agent Run #51
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #50 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine sadik kaldi; yeni UI/tooling katmani acmadan mevcut telemetry sample'inin aktif run sirasinda bozulabilen reset davranisini kapatti. Validation/tooling kapsam freeze'i korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #51 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine donmeden tek bir gameplay fairness hedefi secti: ilk 10 saniyedeki unfair chase outlier'larini dar bir spawn-target tuning'iyle azaltmak. Validation/tooling kapsam freeze'i korundu.
 
 Bu turun ana hedefi:
-- aktif run sirasinda `R` ile telemetry reset yapilip first-death / retry sample'inin kirilmasini engellemek
-- reset aksiyonunu yalnizca run disi fazlarda gecerli tutmak
+- deterministic snapshot'taki iki `<10s` outlier run'i iyilestirmek
+- pacing `10 / 32 / 76` sabit kalirken first-death snapshot'ini `5.0s` ustune cekmek
 - audit'in istedigi gibi death-readability ve validation/readiness/preflight tarafina sifir yeni alan eklemek
 
 ---
@@ -26,8 +26,9 @@ Bu turun ana hedefi:
 - core loop: waiting -> survival -> game over -> tek aksiyonla replay reset + yeni run akisi calisiyor
 - controls: keyboard (WASD + arrows) ve pointer/touch steering aktif
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 251 / 304 / 320`
+- early fairness bias: ilk `10s` icindeki spawn'lar artik oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim ediyor
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0`
-- balance baseline: deterministic survival snapshot `avg 22.3s / first death 5.0s / early death 8%`
+- balance baseline: deterministic survival snapshot `avg 23.4s / first death 6.3s / early death 8%`
 - replay motivation: sol ust HUD artik lifetime best + session best gostermekte; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor. Edge-trigger guard'i sayesinde olum aninda basili kalan yon tusu otomatik replay sizmasi yaratmiyor
 - focus-loss fairness: aktif run sirasinda `blur` veya `visibilitychange` gelirse oyun `paused` fazina geciyor; obstacle physics, spawn timer, hareket ve survival saati birlikte donuyor. Oyuncu oyuna dondugunde Space/Enter/tap veya fresh movement-key ile explicit resume gerekiyor
@@ -45,17 +46,19 @@ Bu turun ana hedefi:
 - `R` sample reset, `C` console summary, `V` validation export akisi calisiyor
 - validation export kontrati deterministic `telemetry:validation-snapshot` ile guard altinda
 - browser validation preflight/readiness/smoke komutlari repoda mevcut, fakat bu runtime'ta loopback `EPERM` nedeniyle bloklu
-- current survival bucket baseline: `<10s: 2`, `10-20s: 7`, `20-30s: 4`, `30s cap: 11`
-- `npm run telemetry:check` pacing, survival, validation export ve survival bucket dagilimini birlikte assert ediyor; baseline halen `22.3s / 5.0s / 8%` ve `2 / 7 / 4 / 11`
+- current survival bucket baseline: `<10s: 2`, `10-20s: 5`, `20-30s: 6`, `30s cap: 11`
+- validation export baseline: deterministic 5-seed sample artik `24.2s first death / 40% early / 17.3s avg` kontratini uretiyor
+- `npm run telemetry:check` pacing, survival, validation export ve survival bucket dagilimini birlikte assert ediyor; baseline artik `23.4s / 6.3s / 8%` ve `2 / 5 / 6 / 11`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde telemetry reset aktif run sirasinda bloke edildi; mevcut run varken sample sifirlama artik first-death / retry / validation sayaclarini kiramiyor
-- support strip temel copy'si `R` aksiyonunun run disinda kullanilmasi gerektigini soyleyecek sekilde netlestirildi
-- `project/game/src/latestRun.ts` public AI panel copy'si bu dar telemetry-integrity fix'ini anlatacak sekilde guncellendi
-- `npm run telemetry:survival-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
+- `project/game/src/game/balance.ts` icinde ilk `10s` icin `0.18s` spawn-target lag helper'i eklendi
+- `project/game/src/game/GameScene.ts` icinde obstacle spawn vektoru oyuncunun anlik hizinin biraz gerisine aim edecek sekilde guncellendi
+- `project/game/scripts/telemetry-reports.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` yeni deterministic baseline ile hizalandi
+- `project/game/src/latestRun.ts` public AI panel copy'si bu dar early-fairness tuning pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
 
 ---
 
@@ -64,7 +67,7 @@ Bu turun ana hedefi:
 - gercek manual browser sample hala yok
 - mevcut sandbox `127.0.0.1` loopback socket acmaya izin vermedigi icin browser smoke burada calismiyor
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
-- deterministic baseline halen iki `<10s` outlier run uretiyor; first death snapshot'i `5.0s` seviyesinde ve urun hedefi `> 10s`in belirgin altinda
+- deterministic baseline halen iki `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesine cikti ama urun hedefi `> 10s`in hala belirgin altinda
 - yeni pause/resume prompt'unun host browser'da ilk bakista yeterince anlasilir olup olmadigi henuz insan gozunden teyit edilmedi
 - yeni coaching-hint geri donusunun host browser'da pause overlay'den sonra dogal hissedip hissettirmedigi henuz insan gozunden teyit edilmedi
 - yeni personal-best cue ile sadeleştirilen start/retry instructional copy'nin gercek oyuncuda ilk bakis anlasilirligini artirip artirmadigi host browser sample ile henuz gozlenmedi
@@ -95,6 +98,7 @@ Bu turun ana hedefi:
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurur; audit bu alanda freeze istiyor
 - mobil cihaz testi yapilmadi
 - mevcut deterministic early-death outlier'lari manuel sample olmadan fazla agresif tuning'e overfit etme riski tasir
+- yeni early spawn-target lag deterministic outlier'i yumusatti, fakat host browser sample olmadan chase hissini fazla yumusatip yumusatmadigi bilinmiyor
 - mevcut death-feedback paketi ve yeni personal-best cue host browser sample'i olmadan tam hissedilemez
 - public panel faydali olabilir ama replay odagini bolme riski tasir; escape guide ile birlikte gorulmeli
 - personal-best satiri replay motivasyonu saglayabilir ama HUD yogunlugunu da artirabilir; host browser sample ile gormek gerekiyor
@@ -110,6 +114,6 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in readability micro-loop uyarisi bu tur tutuldu; ayni death-feedback paketine yeni yuzey eklenmedi
-- aktif run sirasinda telemetry reset ile sample bozma bug'i kapatildi; `R` artik run disi fazlarla sinirli
-- deterministic balance baseline degistirilmedi; mevcut guard `22.3s / 5.0s / 8%` korundu
-- siradaki en dar ve anlamli urun adimi, host browser yoksa iki `<10s` deterministic outlier run'i inceleyip erken-game fairness'i dar balance/spawn ayariyla iyilestirmeye calismaktir; bu calisma readability veya tooling churn'una donusmemeli
+- erken spawn hedefleme artik oyuncunun anlik hizinin biraz gerisine bakiyor; pacing degismeden deterministic first death `5.0s -> 6.3s` cikti
+- deterministic average survival `22.3s -> 23.4s`, buckets `2 / 7 / 4 / 11 -> 2 / 5 / 6 / 11`, average spawn count `23.1 -> 24.5` oldu; early death `%8` korundu
+- siradaki en dar ve anlamli urun adimi, host browser varsa bu yeni early-lag hissini 5-10 manuel run ile dogrulamak; yoksa ayni problemi yeni mikro-loop'a cevirmeden dondurmek olmalidir

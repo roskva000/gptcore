@@ -7,13 +7,13 @@
 ## Gameplay
 
 average_survival_time:
-current: 22.3s in deterministic survival snapshot
-baseline: 22.3s
-target: hold `>= 22.3s` unless manual sample proves the feel is too soft
+current: 23.4s in deterministic survival snapshot
+baseline: 23.4s
+target: hold `>= 23.4s` unless manual sample proves the feel is too soft
 
 first_death_time:
-current: 5.0s in deterministic survival snapshot
-baseline: 5.0s
+current: 6.3s in deterministic survival snapshot
+baseline: 6.3s
 target: increase over time; manual sample target remains `> 10s`
 
 early_death_rate_under_10s:
@@ -22,9 +22,9 @@ baseline: 8%
 target: stay at or below 8%
 
 survival_bucket_distribution:
-current: `<10s: 2`, `10-20s: 7`, `20-30s: 4`, `30s cap: 11`
-baseline: `2 / 7 / 4 / 11` across 24 deterministic seeds
-target: keep `10-20s <= 7`, `<10s <= 2`, and hold `30s cap >= 11`
+current: `<10s: 2`, `10-20s: 5`, `20-30s: 6`, `30s cap: 11`
+baseline: `2 / 5 / 6 / 11` across 24 deterministic seeds
+target: keep `10-20s <= 5`, `<10s <= 2`, and hold `30s cap >= 11`
 
 predicted_spawn_count:
 current: 10 by 10s, 32 by 30s, 76 by 60s
@@ -37,9 +37,14 @@ baseline: same
 target: preserve the early-death guard and validate manually that the softer 20s+ chase still feels tense
 
 validation_export_contract:
-current: `5 runs | first death 30.0s | early 20% | 5/5 runs, target met`
-baseline: same; detailed report now carries `avg_survival=17.8s`, `last_run=25.2s`, and deterministic baseline text `22.3s avg / 5.0s first death / 8% early`
+current: `5 runs | first death 24.2s | early 40% | 5/5 runs, target met`
+baseline: same; detailed report now carries `avg_survival=17.3s`, `last_run=19.4s`, and deterministic baseline text `23.4s avg / 6.3s first death / 8% early`
 target: keep `V` export and parser aligned
+
+early_spawn_target_lag:
+current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns to exact-position targeting
+baseline: added in Run #51 to soften unfair early intercept lines without changing spawn pacing or obstacle speed anchors
+target: confirm manually that this improves fairness without making the opening chase feel soft
 
 hit_feedback_status:
 current: visual death feedback, fatal lane impact ray with arrowhead and a small center gap, directional hit callout, dedicated fatal-lane callout, killer obstacle spotlight with in-scene `KILLER` tag plus short connector, non-fatal threat dimming, teal escape ray + arrowhead + marker with a small center gap, `BREAK ...` escape prompt, and short procedural death blip active after user interaction
@@ -96,7 +101,7 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #50
+current: passes via `npm run telemetry:check` as of Run #51
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -112,5 +117,5 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 25.2, 22.8, 20.9, 16.4`
-- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi, inactive-phase input freeze, focus-loss pause ve coaching-hint resume davranisinin birlikte nasil algilandigi icin manuel sample hala gerekli
-- current tuning signal: active-run telemetry reset corruption kapatildi, ancak deterministic first-death snapshot'i halen `5.0s`; sonraki dar urun problemi erken-game outlier death fairness'i olmaya devam ediyor
+- current tuning signal: deterministic snapshot artik `23.4s / 6.3s / 8%`; early outlier worst-case'i iyilesti ama manuel sample olmadan yeni lag'in chase hissini fazla yumusatip yumusatmadigi bilinmiyor
+- current tuning signal: compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi, inactive-phase input freeze, focus-loss pause ve yeni early spawn lag'in birlikte nasil algilandigi icin manuel sample hala gerekli

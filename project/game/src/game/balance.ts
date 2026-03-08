@@ -2,6 +2,8 @@ export const INITIAL_SPAWN_DELAY_MS = 1050;
 export const FIRST_SPAWN_DELAY_MS = 900;
 export const MIN_SPAWN_DELAY_MS = 320;
 export const TARGET_FIRST_DEATH_SECONDS = 10;
+export const EARLY_SPAWN_TARGET_LAG_SECONDS = 0.18;
+export const EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS = 10;
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -25,3 +27,8 @@ export const getObstacleSpeed = (survivalTimeSeconds: number): number =>
 
 export const getRequiredSpawnDistance = (survivalTimeSeconds: number): number =>
   clamp(210 - survivalTimeSeconds * 7, 140, 210);
+
+export const getSpawnTargetLagSeconds = (survivalTimeSeconds: number): number =>
+  survivalTimeSeconds <= EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS
+    ? EARLY_SPAWN_TARGET_LAG_SECONDS
+    : 0;

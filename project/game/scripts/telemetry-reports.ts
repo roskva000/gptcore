@@ -1,9 +1,12 @@
 import {
+  EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS,
+  EARLY_SPAWN_TARGET_LAG_SECONDS,
   FIRST_SPAWN_DELAY_MS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
   getRequiredSpawnDistance,
   getSpawnDelayMs,
+  getSpawnTargetLagSeconds,
 } from '../src/game/balance.ts';
 import {
   ARENA_HEIGHT,
@@ -55,6 +58,7 @@ export type BalanceSnapshotReport = {
     spawnDelayMs: number;
     obstacleSpeed: number;
     requiredSpawnDistance: number;
+    spawnTargetLagSeconds: number;
   }>;
   spawnCounts: Array<{
     seconds: number;
@@ -205,9 +209,10 @@ const simulateSession = (seed: number): SessionResult => {
         randomInt,
       });
       const speed = getObstacleSpeed(survivalTimeSeconds);
+      const spawnTargetLagSeconds = getSpawnTargetLagSeconds(survivalTimeSeconds);
       const direction = normalize({
-        x: player.x - selection.point.x,
-        y: player.y - selection.point.y,
+        x: clamp(player.x - playerVelocity.x * spawnTargetLagSeconds, 0, ARENA_WIDTH) - selection.point.x,
+        y: clamp(player.y - playerVelocity.y * spawnTargetLagSeconds, 0, ARENA_HEIGHT) - selection.point.y,
       });
 
       obstacles.push({
@@ -269,6 +274,7 @@ export const createBalanceSnapshotReport = (): BalanceSnapshotReport => {
       spawnDelayMs: Math.round(getSpawnDelayMs(seconds)),
       obstacleSpeed: Math.round(getObstacleSpeed(seconds)),
       requiredSpawnDistance: Math.round(getRequiredSpawnDistance(seconds)),
+      spawnTargetLagSeconds: Number(getSpawnTargetLagSeconds(seconds).toFixed(2)),
     })),
     spawnCounts: SPAWN_COUNT_LIMITS_SECONDS.map((limitSeconds) => ({
       seconds: limitSeconds,
@@ -290,7 +296,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
   return {
     sessionCount: SESSION_COUNT,
     maxSimulationSeconds: MAX_SIMULATION_SECONDS,
-    controller: 'center-seeking avoidance heuristic with 180ms reaction interval',
+    controller: `center-seeking avoidance heuristic with 180ms reaction interval and ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s`,
     effectivePlayerSpeed: EFFECTIVE_PLAYER_SPEED,
     nativePlayerSpeed: PLAYER_SPEED,
     averageSurvivalTimeSeconds: round(averageSurvivalTime),

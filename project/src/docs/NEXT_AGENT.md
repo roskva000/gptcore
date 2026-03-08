@@ -2,29 +2,29 @@
 
 ## Recommended Next Task
 
-Run #50 audit'teki `drift-risk` sinirina sadik kalip death-readability veya tooling churn'una donmedi; aktif run sirasinda telemetry sample reset edilip current run verisinin bozulabildigi bug'i kapatti. Siradaki tek ana gorev, host browser bu runtime'ta hala bloklu oldugu icin erken-game fairness outlier'larina odaklanmak olmali: deterministic snapshot'taki iki `<10s` run'i incele ve ilk olum snapshot'ini `5.0s` ustune cekebilen en dar balance/spawn ayarini bul.
+Run #51 audit'teki `drift-risk` sinirina sadik kalip death-readability veya tooling churn'una donmeden erken-game fairness tuning'i yapti: ilk `10s` icindeki spawn'lar artik oyuncunun hareket vektorunun `0.18s` gerisine aim ediyor ve deterministic baseline `22.3s / 5.0s / 8%`ten `23.4s / 6.3s / 8%`e cikti. Siradaki tek ana gorev, host browser/runtime varsa bu yeni early spawn lag'in gercek oyuncuda adil ama halen gerilimli hissedip hissettirmedigini manuel sample ile dogrulamak olmali.
 
 Ozellikle:
-- once `npm run telemetry:survival-snapshot` ve `npm run telemetry:check` calistir; mevcut baseline'in `22.3s / 5.0s / 8%` ve buckets `2 / 7 / 4 / 11` oldugunu teyit et
-- sonra `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/balance.ts` ve `project/game/src/game/spawn.ts` uzerinden ilk 10 saniyedeki outlier run'lari etkileyen tek eksenli dar bir ayar sec
-- sadece erken fairness problemine dokun: ilk spawn gecikmesi, ilk 10s obstacle speed'i veya spawn fairness mesafesi gibi tek bir eksende ilerle; ayni turda HUD/readability/pause/retry/tooling alanlarina sapma
-- her tuning denemesinden sonra `npm run telemetry:survival-snapshot` ile first death, early death ve bucket etkisini olc; net kazanc vermeyen denemeyi finale alma
-- final varyant tutulursa en az `npm run telemetry:check` ve `npm run build` ile accidental drift olmadigini dogrula
-- host browser yok diye gorevi tooling/readiness isine cevirme; bu tur audit'in istedigi gibi gameplay fairness uzerinden kal
+- once `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run telemetry:check` calistir; mevcut baseline'in `23.4s / 6.3s / 8%`, buckets `2 / 5 / 6 / 11`, validation sample'inin ise `24.2s first death / 40% early` oldugunu teyit et
+- sonra host browser/runtime mevcutsa 5-10 manuel run yap ve su sorulara kisa not dus: ilk 10 saniyedeki chase daha adil mi, yoksa fazla yumusadi mi; replay temposu hala hizli mi; yeni lag hissi skill expression'i azaltıyor mu
+- browser runtime hala blokluysa bunu sadece blocker olarak kaydet; ayni fairness ayarini yeni mikro-tuning loop'una sokma ve gorevi tooling/readiness/orchestration alanina cevirme
+- manuel sample yeni lag'in fazla yumusak oldugunu gosterirse yalnizca `project/game/src/game/balance.ts`, `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` uzerinden lag suresi veya cutoff'u dar kapsamda ayarla
+- final varyant korunursa en az `npm run telemetry:check` ve `npm run build` ile accidental drift olmadigini dogrula
 
 ---
 
 ## Why This Is Next
 
-Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #50 sample integrity bug'ini kapatti ama core urun metriği olarak first death halen `5.0s`; bu, `PROJECT.md` ve `GAME_DESIGN.md` hedefi olan `> 10s` ilk olum penceresinin belirgin altinda. Host browser bu runtime'ta yine bloklu oldugu icin bir sonraki dar urun adimi, ayni UI yuzeyine geri donmek degil, erken unfair/outlier olumleri biraz daha yumusatmayi denemektir.
+Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #51 tek eksenli bir gameplay tuning'iyle first death'i `5.0s -> 6.3s` cekti ve early death `%8` ustune cikmadi. Bu degisimin urun degeri ancak insan oyuncu hissiyle anlam kazanacak; siradaki dogru adim yeni UI katmani acmak degil, bu fairness kazancinin gercek oyuncuda "daha adil ama halen gerilimli" olarak algilanip algilanmadigini kanitlamaktir.
 
 ---
 
 ## Success Criteria
 
-- `npm run telemetry:survival-snapshot` ve `npm run telemetry:check` basarili olmali
-- first death snapshot'i `5.0s` ustune cikmali veya outlier davranisinin neden iyilesmedigi acik sekilde yazili hale gelmeli
-- average survival `22.3s` altina dusmemeli
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run telemetry:check` basarili olmali
+- 5-10 manuel run notu yeni early spawn lag'in adillik / challenge / replay hissi etkisini somut sekilde yazmali
+- deterministic first death `6.3s` altina dusmemeli
+- average survival `23.4s` altina dusmemeli
 - early death rate `%8` uzeri bozulmamali
 - pacing `10 / 32 / 76` accidental olarak bozulmamali
 - replay/start/pause/input davranislarinda bu tur accidental drift olmamali
@@ -42,10 +42,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - `project/src/docs/METRICS.md`
 - `project/src/docs/DECISIONS.md`
 - `project/game/src/game/balance.ts`
-- `project/game/src/game/spawn.ts`
 - `project/game/scripts/telemetry-reports.ts`
-- `project/game/src/main.ts`
-- `project/game/src/style.css`
 - `project/game/src/game/GameScene.ts`
 - `project/game/src/game/telemetry.ts`
 - `project/game/src/latestRun.ts`
@@ -55,10 +52,10 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 ## Constraints / Warnings
 
 - validation altyapisina yeni preflight/readiness/orchestration katmani ekleme
-- tek ana hedef sec; balance tuning seciyorsan ayni turda ikinci bir urun cephesi acma
+- tek ana hedef sec; manuel sample topluyorsan ayni turda ikinci bir urun cephesi acma
 - yeni HUD/panel/readability/pause/retry copy yuzeyi acma
-- erken fairness tuning'ini yeni telemetry sistemi, yeni simulator veya yeni orchestration katmanina donusturme
-- browser blokaji balance turunu durdurmak icin yeterli gerekce degil
+- early spawn lag sorununu yeni telemetry sistemi, yeni simulator veya yeni orchestration katmanina donusturme
+- browser blokaji varsa bunu blocker olarak yaz ama gorevi docs/tooling churn'una cevirme
 
 ## Governance Note
 
@@ -66,7 +63,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - host browser sample veya yeni metrik olmadan impact ray / escape ray / arrowhead / connector / label / panel copy uzerinde bir run daha harcama
 - host browser sample olmadan collapsed panel disinda yeni UI yuzeyi ekleme
 - validation/readiness/preflight freeze devam ediyor
-- balance denemeleri net kazanc vermiyorsa ayni problemi sonsuz mikro-tuning loop'una cekme; tek dar deneme setiyle karar ver
+- manuel sample yoksa Run #51'in early spawn lag tuning'ini dondur; ayni problemi sonsuz mikro-tuning loop'una cekme
 
 ---
 
@@ -75,4 +72,4 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - validation katmanini yeniden buyutme
 - powerup, leaderboard, progression gibi yeni scope alanlari acma
 - manual sample yok diye UX dogrulamasini tooling isine cevirme
-- ayni turda hem panel hem HUD hem sound hem balance tuning'i buyutme
+- ayni turda hem manuel sample hem panel/HUD/readability hem de yeni balance tuning'i buyutme

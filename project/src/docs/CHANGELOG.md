@@ -2,6 +2,14 @@
 
 ---
 
+## Run #51
+
+- `project/game/src/game/balance.ts` icinde ilk `10s` icin `0.18s` spawn-target lag helper'i eklendi
+- `project/game/src/game/GameScene.ts` icinde obstacle spawn vektoru oyuncunun exact anlik pozisyonu yerine hareket vektorunun biraz gerisine aim edecek sekilde guncellendi
+- `project/game/scripts/telemetry-reports.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` yeni deterministic baseline `23.4s / 6.3s / 8%` ve validation export kontrati ile hizalandi
+- `project/game/src/latestRun.ts` public AI paneli bu dar early-fairness tuning pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #50
 
 - `project/game/src/game/GameScene.ts` icinde telemetry reset aktif run sirasinda bloke edildi; `R` artik sample'i sadece waiting/game-over fazlarinda sifirliyor

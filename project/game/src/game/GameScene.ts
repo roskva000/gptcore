@@ -1,9 +1,12 @@
 import Phaser from 'phaser';
 import {
+  EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS,
+  EARLY_SPAWN_TARGET_LAG_SECONDS,
   FIRST_SPAWN_DELAY_MS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
   getSpawnDelayMs,
+  getSpawnTargetLagSeconds,
 } from './balance';
 import {
   ARENA_HEIGHT,
@@ -761,7 +764,20 @@ export class GameScene extends Phaser.Scene {
       .setScale(1)
       .setVelocity(0, 0);
 
-    const target = new Phaser.Math.Vector2(this.player.x, this.player.y);
+    const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
+    const spawnTargetLagSeconds = getSpawnTargetLagSeconds(this.survivalTime);
+    const target = new Phaser.Math.Vector2(
+      Phaser.Math.Clamp(
+        this.player.x - playerBody.velocity.x * spawnTargetLagSeconds,
+        0,
+        ARENA_WIDTH,
+      ),
+      Phaser.Math.Clamp(
+        this.player.y - playerBody.velocity.y * spawnTargetLagSeconds,
+        0,
+        ARENA_HEIGHT,
+      ),
+    );
     const velocity = target.subtract(spawnPoint).normalize().scale(this.getObstacleSpeed());
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     obstacleBody.enable = true;
@@ -1465,7 +1481,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getBaseSupportText(): string {
-    return 'Telemetry hotkeys: C log summary | V copy validation | R reset sample between runs';
+    return `Telemetry hotkeys: C log summary | V copy validation | R reset sample between runs | early spawn lag ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS.toFixed(0)}s`;
   }
 
   private getPlayingHintText(): string {

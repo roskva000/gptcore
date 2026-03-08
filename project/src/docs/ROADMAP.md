@@ -4,17 +4,16 @@
 
 # NOW (Highest Priority)
 
-- iki `<10s` deterministic outlier run'i (mevcut snapshot'ta worst-case `5.0s`) inceleyip erken-game fairness'i dar bir balance/spawn ayariyla iyilestirmeye calis
-- mevcut deterministic baseline'i referans al: pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 7 / 4 / 11`
-- sadece en erken 0-10 saniye penceresine dokun; replay hizini, mevcut retry/pause/input stabilitesini ve death-feedback paketini degistirme
-- once `npm run telemetry:survival-snapshot` ile outlier seed davranisini teyit et; sonra dar tuning denemelerini olc ve yalnizca net kazanc veren varyanti tut
-- manuel sample veya yeni metrik gelmeden death-readability paketine yeni gorsel/copy katmani ekleme
-- validation/readiness/orchestration katmanina yeni alan ekleme
-- host browser yoksa eksikligi sadece kaydet; yeni tooling acma
+- host browser runtime acilabilirse yeni early spawn-target lag tuning'ini 5-10 manuel run ile gozlemle
+- mevcut deterministic baseline'i referans al: pacing `10 / 32 / 76`, survival `23.4s / 6.3s / 8%`, buckets `2 / 5 / 6 / 11`
+- odak sadece yeni early chase hissi olsun: ilk 10 saniyede spawn'lar daha adil geliyor mu, yoksa challenge fazla yumusuyor mu
+- death-readability, support strip, pause/retry, telemetry veya tooling alanina sapma
+- host browser hala yoksa bunu sadece blocker olarak kaydet; ayni fairness ayarini yeni mikro-tuning loop'una cekme
 
 Basari olcutleri:
-- `npm run telemetry:survival-snapshot` sonucunda first death `> 5.0s` yonunde iyilesme goruluyor veya en azindan `<10s` outlier davranisi daha iyi aciklanmis oluyor
-- average survival `>= 22.3s` korunuyor
+- 5-10 manuel run notu erken spawn chase'inin daha adil ama halen gerilimli olup olmadigini soyluyor
+- deterministic baseline `23.4s / 6.3s / 8%` accidental olarak bozulmuyor
+- average survival `>= 23.4s` korunuyor
 - early death rate `%8` uzeri bozulmuyor
 - pacing `10 / 32 / 76` accidental olarak bozulmuyor
 - replay/start/pause/input davranislarinda accidental drift olmuyor
@@ -24,8 +23,8 @@ Basari olcutleri:
 
 # NEXT
 
-- host browser runtime acilabilirse compact telemetry / collapsed panel / pause-resume / retry copy paketi icin manuel sample topla
-- erken fairness tuning'i net kazanc vermezse outlier run'lari spawn geometri veya ilk 10s obstacle overlap acisindan daha dar analiz et
+- host browser runtime acilamazsa early spawn-target lag tuning'ini dondur ve baska olculebilir gameplay problemine gec
+- manuel sample yeni lag'in fazla yumusak oldugunu gosterirse yalnizca lag suresi/cutoff'u dar kapsamda geri cek
 - replay reset hissi klavye veya touch'ta takiliyorsa sadece input/copy/offset seviyesinde dar ayar yap
 
 ---
@@ -60,10 +59,10 @@ Basari olcutleri:
 # SUCCESS METRICS
 
 - session telemetry first death sinyali manual sample'da zamanla `> 10s`
-- deterministic survival snapshot mevcut guard olarak `avg >= 22.3s`
+- deterministic survival snapshot mevcut guard olarak `avg >= 23.4s`
 - deterministic early death rate `<= 8%`
-- deterministic first death `> 5.0s` yonunde ilerlemeli; ideal urun hedefi halen `> 10s`
-- deterministic survival buckets icinde `10-20s <= 7`, `<10s <= 2`, `30s cap >= 11`
+- deterministic first death `> 6.3s` yonunde ilerlemeli; ideal urun hedefi halen `> 10s`
+- deterministic survival buckets icinde `10-20s <= 5`, `<10s <= 2`, `30s cap >= 11`
 - `npm run telemetry:check` accidental drift'te fail veriyor
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor

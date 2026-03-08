@@ -15,6 +15,12 @@ const speedAt = (seconds: number): number => {
   return point.obstacleSpeed;
 };
 
+const spawnTargetLagAt = (seconds: number): number => {
+  const point = balanceReport.balanceCurve.find((entry) => entry.seconds === seconds);
+  assert.ok(point, `Missing balance curve sample for ${seconds}s.`);
+  return point.spawnTargetLagSeconds;
+};
+
 const spawnsBy = (seconds: number): number => {
   const point = balanceReport.spawnCounts.find((entry) => entry.seconds === seconds);
   assert.ok(point, `Missing spawn count sample for ${seconds}s.`);
@@ -35,31 +41,34 @@ assert.equal(speedAt(10), 183, '10s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(30), 251, '30s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(45), 304, '45s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(60), 320, '60s obstacle speed changed unexpectedly.');
+assert.equal(spawnTargetLagAt(0), 0.18, '0s spawn target lag changed unexpectedly.');
+assert.equal(spawnTargetLagAt(10), 0.18, '10s spawn target lag changed unexpectedly.');
+assert.equal(spawnTargetLagAt(15), 0, '15s spawn target lag changed unexpectedly.');
 
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 22.3, 'Average survival snapshot regressed.');
-assert.equal(survivalReport.firstDeathTimeSeconds, 5, 'First death snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 23.4, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 8, 'Early death rate snapshot regressed.');
 assert.deepEqual(
   survivalReport.survivalBuckets,
   {
     under10Seconds: 2,
-    between10And20Seconds: 7,
-    between20And30Seconds: 4,
+    between10And20Seconds: 5,
+    between20And30Seconds: 6,
     reached30SecondsCap: 11,
   },
   'Survival bucket distribution regressed.',
 );
-assert.equal(survivalReport.averageSpawnCount, 23.1, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 24.5, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0, 'Spawn reroll snapshot changed unexpectedly.');
 assert.equal(
   validationReport.validationSummary,
-  '5 runs | first death 30.0s | early 20% | 5/5 runs, target met',
+  '5 runs | first death 24.2s | early 40% | 5/5 runs, target met',
   'Validation export summary regressed.',
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=17.8s | first_death=30.0s | early_death_rate=20% | avg_retry=n/a | spawn_saves=0 | last_run=25.2s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 22.3s avg / 5.0s first death / 8% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=17.3s | first_death=24.2s | early_death_rate=40% | avg_retry=n/a | spawn_saves=0 | last_run=19.4s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 23.4s avg / 6.3s first death / 8% early',
   'Validation export contract changed unexpectedly.',
 );
 

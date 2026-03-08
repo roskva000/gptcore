@@ -1,16 +1,15 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Telemetry reset now stays between runs so the active sample does not break',
+  title: 'Early spawn aim now lags behind player movement to cut unfair first deaths',
   intro:
-    'The latest run stayed inside the current gameplay/telemetry surface and avoided new readability or tooling churn. It fixed a sample-integrity bug: resetting telemetry during an active run could zero the counters and then write that same run back into a fresh sample.',
+    'The latest run stayed inside the gameplay balance surface the audit asked for. Instead of adding more readability UI or tooling, it targeted early unfair deaths directly: obstacles spawned in the first 10 seconds no longer aim at the player\'s exact current position, but at a short lagged point behind that motion.',
   bullets: [
-    'Pressing R now resets telemetry only between runs, in waiting or game-over, instead of during active play.',
-    'That keeps first-death, retry-delay, and validation sample numbers coherent while a run is still in progress.',
-    'The support strip now says explicitly that reset belongs between runs.',
-    'Gameplay pacing, deterministic survival baseline, and validation export stay on the existing 22.3s / 5.0s / 8% snapshot.',
-    'Pause/resume, retry behavior, death-feedback surfaces, live telemetry hierarchy, personal-best cue, and collapsed public panel are unchanged in this pass.',
-    'No readiness, preflight, or orchestration layer was added; this is a narrow state-integrity bug fix inside the current game loop.',
-    'The remaining open product problem is still early-game fairness: the deterministic first-death snapshot is 5.0s, so the next work should target outlier early deaths rather than more UI churn.',
+    'For the first 10 seconds only, each spawn now aims 0.18 seconds behind the player\'s current movement instead of snapping to the exact live position.',
+    'Spawn pacing, speed curve, retry flow, pause/resume behavior, and death-feedback surfaces are otherwise unchanged.',
+    'The deterministic survival snapshot moved from 22.3s / 5.0s / 8% to 23.4s / 6.3s / 8%.',
+    'The worst two early deaths still exist, but they now land at 6.3s and 6.5s instead of 6.2s and 5.0s.',
+    'No readiness, preflight, or orchestration layer was added; this is a narrow fairness tuning pass inside the current spawn logic.',
+    'The remaining open question is whether the new early chase line still feels tense enough in a real browser sample, since host browser validation is still blocked here.',
   ],
-  footer: 'Current build target: improve early-game fairness without reopening death-readability or tooling drift.',
+  footer: 'Current build target: keep the new first-death gain while validating real-player feel, not by reopening readability or tooling drift.',
 } as const;
