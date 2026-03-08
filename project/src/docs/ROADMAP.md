@@ -4,18 +4,18 @@
 
 # NOW (Highest Priority)
 
-- host browser/runtime varsa yeni early spawn collision-grace guard'ini 5-10 manuel run ile gozlemle
-- mevcut deterministic baseline'i referans al: pacing `10 / 32 / 76`, survival `23.4s / 6.3s / 8%`, buckets `2 / 5 / 6 / 11`
-- odak sadece yeni spawn-an fairness hissi olsun: ilk 10 saniyede yeni obstacle lane'e girerken daha adil mi, yoksa fazla bagislayici mi
+- host browser/runtime varsa yeni opening spawn-distance guard'ini 5-10 manuel run ile gozlemle
+- mevcut deterministic baseline'i referans al: pacing `10 / 32 / 76`, survival `24.3s / 6.3s / 4%`, buckets `1 / 5 / 6 / 12`
+- odak sadece acilis fairness hissi olsun: ilk `6s` icinde yeni obstacle lane'leri daha adil mi, yoksa opener fazla bos mu kaldi
 - death-readability, support strip, pause/retry, telemetry veya tooling alanina sapma
 - packaged smoke su an `Page.enable` ile fail oldugu icin bunu yalnizca blocker olarak kaydet; bu turu browser-tooling genislemesine cevirme
 
 Basari olcutleri:
-- 5-10 manuel run notu yeni collision grace'in daha adil ama halen gerilimli olup olmadigini soyluyor
-- deterministic baseline `23.4s / 6.3s / 8%` accidental olarak bozulmuyor
-- average survival `>= 23.4s` korunuyor
-- early death rate `%8` uzeri bozulmuyor
-- pacing `10 / 32 / 76` accidental olarak bozulmuyor
+- 5-10 manuel run notu yeni opening spawn-distance guard'inin daha adil ama halen gerilimli olup olmadigini soyluyor
+- deterministic baseline `24.3s / 6.3s / 4%` accidental olarak bozulmuyor
+- average survival `>= 24.3s` korunuyor
+- early death rate `%4` uzeri bozulmuyor
+- pacing `10 / 32 / 76` accidental olarak bozulmamali
 - replay/start/pause/input davranislarinda accidental drift olmuyor
 - `npm run telemetry:check` ve `npm run build` yesil kaliyor
 
@@ -23,8 +23,8 @@ Basari olcutleri:
 
 # NEXT
 
-- host browser runtime acilamazsa early spawn fairness surface'ini dondur ve baska olculebilir gameplay problemine gec
-- manuel sample yeni collision grace'in fazla bagislayici oldugunu gosterirse yalnizca grace suresi/cutoff'u dar kapsamda geri cek
+- host browser runtime acilamazsa opening fairness surface'ini dondur ve baska olculebilir gameplay problemine gec
+- manuel sample yeni opening reroll guard'inin opener'i fazla bosalttigini gosterirse yalnizca bonus/cutoff'u dar kapsamda geri cek
 - replay reset hissi klavye veya touch'ta takiliyorsa sadece input/copy/offset seviyesinde dar ayar yap
 
 ---
@@ -59,12 +59,13 @@ Basari olcutleri:
 # SUCCESS METRICS
 
 - session telemetry first death sinyali manual sample'da zamanla `> 10s`
-- deterministic survival snapshot mevcut guard olarak `avg >= 23.4s`
-- deterministic early death rate `<= 8%`
+- deterministic survival snapshot mevcut guard olarak `avg >= 24.3s`
+- deterministic early death rate `<= 4%`
 - deterministic first death `> 6.3s` yonunde ilerlemeli; ideal urun hedefi halen `> 10s`
-- deterministic survival buckets icinde `10-20s <= 5`, `<10s <= 2`, `30s cap >= 11`
+- deterministic survival buckets icinde `10-20s <= 5`, `<10s <= 1`, `30s cap >= 12`
 - `npm run telemetry:check` accidental drift'te fail veriyor
 - early spawn collision grace ilk `10s` boyunca `260ms`, sonrasinda `0ms` olarak guard altinda
+- opening required spawn distance ilk `6s` boyunca `+160px`, sonrasinda baseline'a donuyor
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor
 - live telemetry aktif oynanista compact, waiting/game-over'da ise validation icin yeterince detayli kaliyor

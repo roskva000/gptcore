@@ -6,6 +6,8 @@ export const EARLY_SPAWN_TARGET_LAG_SECONDS = 0.18;
 export const EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS = 10;
 export const EARLY_SPAWN_COLLISION_GRACE_MS = 260;
 export const EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS = 10;
+export const OPENING_REQUIRED_SPAWN_DISTANCE_BONUS = 160;
+export const OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS = 6;
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -28,7 +30,15 @@ export const getObstacleSpeed = (survivalTimeSeconds: number): number =>
   );
 
 export const getRequiredSpawnDistance = (survivalTimeSeconds: number): number =>
-  clamp(210 - survivalTimeSeconds * 7, 140, 210);
+  clamp(
+    210 -
+      survivalTimeSeconds * 7 +
+      (survivalTimeSeconds <= OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS
+        ? OPENING_REQUIRED_SPAWN_DISTANCE_BONUS
+        : 0),
+    140,
+    370,
+  );
 
 export const getSpawnTargetLagSeconds = (survivalTimeSeconds: number): number =>
   survivalTimeSeconds <= EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS

@@ -7,9 +7,9 @@
 ## Gameplay
 
 average_survival_time:
-current: 23.4s in deterministic survival snapshot
-baseline: 23.4s
-target: hold `>= 23.4s` unless manual sample proves the feel is too soft
+current: 24.3s in deterministic survival snapshot
+baseline: 24.3s
+target: hold `>= 24.3s` unless manual sample proves the opener feels too empty
 
 first_death_time:
 current: 6.3s in deterministic survival snapshot
@@ -17,14 +17,14 @@ baseline: 6.3s
 target: increase over time; manual sample target remains `> 10s`
 
 early_death_rate_under_10s:
-current: 8% in deterministic survival snapshot
-baseline: 8%
-target: stay at or below 8%
+current: 4% in deterministic survival snapshot
+baseline: 4%
+target: stay at or below 4%
 
 survival_bucket_distribution:
-current: `<10s: 2`, `10-20s: 5`, `20-30s: 6`, `30s cap: 11`
-baseline: `2 / 5 / 6 / 11` across 24 deterministic seeds
-target: keep `10-20s <= 5`, `<10s <= 2`, and hold `30s cap >= 11`
+current: `<10s: 1`, `10-20s: 5`, `20-30s: 6`, `30s cap: 12`
+baseline: `1 / 5 / 6 / 12` across 24 deterministic seeds
+target: keep `10-20s <= 5`, `<10s <= 1`, and hold `30s cap >= 12`
 
 predicted_spawn_count:
 current: 10 by 10s, 32 by 30s, 76 by 60s
@@ -41,9 +41,14 @@ current: first `10s` spawns move immediately but cannot deal damage for `260ms`;
 baseline: added in Run #52 as a narrow fairness guard without changing spawn pacing or obstacle speed anchors
 target: confirm manually that this removes cheap spawn-touch moments without making new obstacles feel ghostly or too forgiving
 
+opening_required_spawn_distance:
+current: first `6s` add `+160px` to the required spawn distance, then return to the prior baseline
+baseline: added in Run #53 to make the existing spawn-reroll fairness helper actually activate during the opener
+target: confirm manually that this removes crowded opening lanes without making the first seconds feel empty
+
 validation_export_contract:
-current: `5 runs | first death 24.2s | early 40% | 5/5 runs, target met`
-baseline: same; detailed report now carries `avg_survival=17.3s`, `last_run=19.4s`, and deterministic baseline text `23.4s avg / 6.3s first death / 8% early`
+current: `5 runs | first death 24.2s | early 20% | 5/5 runs, target met`
+baseline: same; detailed report now carries `avg_survival=24.1s`, `last_run=30.0s`, `spawn_saves=3`, and deterministic baseline text `24.3s avg / 6.3s first death / 4% early`
 target: keep `V` export and parser aligned
 
 early_spawn_target_lag:
@@ -51,54 +56,9 @@ current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns
 baseline: added in Run #51 to soften unfair early intercept lines without changing spawn pacing or obstacle speed anchors
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
-hit_feedback_status:
-current: visual death feedback, fatal lane impact ray with arrowhead and a small center gap, directional hit callout, dedicated fatal-lane callout, killer obstacle spotlight with in-scene `KILLER` tag plus short connector, non-fatal threat dimming, teal escape ray + arrowhead + marker with a small center gap, `BREAK ...` escape prompt, and short procedural death blip active after user interaction
-baseline: frozen since Run #39 while Run #40 shifted focus back to measurable balance
-target: keep death cause, exact fatal collider, and next move instantly readable at first glance without slowing retry cadence, leaking old obstacle highlight state into replay, or letting the feedback package overpower balance perception
-
-replay_flow_status:
-current: post-death replay clears the prior run state inside the same scene and starts a fresh run on one Space/Enter/tap or a fresh movement-key press
-baseline: fixed in Run #30 after `scene.restart()` was leaving retry on a waiting-state handoff; Run #46 also froze player velocity outside `playing` so waiting/game-over inputs no longer slide the avatar between runs; Run #47 aligned keyboard retry with keyboard start while guarding against held-key accidental restarts
-target: keep replay under the project's `< 3s` expectation with no extra tap/key press, no leftover obstacle/overlay state, no inactive-phase movement bleed, and no accidental auto-retry from held direction input
-
-public_ai_update_surface:
-current: visible beside the game canvas with 1 summary row plus expandable title/intro/bullet content; desktop starts open, narrower layouts start collapsed so gameplay stays first
-baseline: layout hierarchy changed in Run #44 while content remains the latest meaningful run summary surface
-target: keep visible in build and validate manually that the collapsed narrow-screen panel reduces clutter without making the latest AI context too easy to miss or distracting from replay
-
-live_telemetry_surface:
-current: top-right telemetry stays detailed in waiting and game-over, but collapses to a short session/first-death/early-death/validation summary during active play
-baseline: hierarchy changed in Run #45 without changing telemetry data, export contract, pacing, or replay flow
-target: confirm manually that the compact live state reduces clutter and preserves enough validation affordance between runs
-
-inactive_phase_input_stability:
-current: player velocity updates are ignored unless the scene is in `playing`, so waiting and game-over phases stay physically still while start/retry actions remain available
-baseline: fixed in Run #46 after input was still able to move the avatar during non-playing phases
-target: confirm manually on keyboard and touch that the freeze improves death/retry clarity without making start or retry feel unresponsive
-
-movement_key_retry_parity:
-current: waiting and game-over both accept a fresh movement-key press to start the next run, while held movement input is ignored until released and pressed again
-baseline: added in Run #47 to remove keyboard-only replay friction without reopening the death-readability loop
-target: confirm manually that keyboard replay feels more natural and never auto-fires from a key held through the death moment
-
-focus_loss_pause_fairness:
-current: active play now pauses on browser `blur` or `visibilitychange`; obstacle physics, spawn timer, movement, and survival-time accounting freeze until the player explicitly resumes after focus returns, and the early-run coaching hint now tracks active unpaused time instead of disappearing during the pause
-baseline: added in Run #48 to prevent cheap deaths or free survival seconds when the browser loses focus mid-run
-target: confirm manually that pause triggers reliably on desktop/mobile browser focus loss, that hidden time never advances survival, that explicit resume feels clear rather than friction-heavy, and that an early pause preserves the remaining coaching-hint window
-
-personal_best_visibility:
-current: lifetime best and session best are visible in the top-left HUD; game over also states whether the run set a new best or what score still stands as the target
-baseline: added in Run #42 without changing the deterministic balance baseline
-target: confirm manually that the cue is readable at first glance, reinforces retry intent, and does not make the HUD or death summary feel overloaded
-
-instructional_clarity:
-current: waiting hint now shows goal + controls + start action only; telemetry hotkeys live in a quieter bottom support strip; in-run and game-over hints are shorter and more action-led, and the short early-run coaching hint now survives pause/resume for the remaining active-time window
-baseline: changed in Run #43 without touching balance, replay state handling, or validation tooling
-target: confirm manually that a fresh player can parse the goal and first action in under 5 seconds, that the support strip does not compete with HUD/death feedback on smaller screens, and that a pause inside the first seconds does not silently swallow the coaching hint
-
 manual_validation_sample:
 current: not collected in this runtime; browser preflight is now ready but the packaged smoke step fails with CDP `Page.enable`, so real-player sampling is still outstanding
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the new `260ms` early spawn collision grace feels fair rather than ghostly, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
@@ -106,8 +66,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #52
-baseline: asserts pacing, survival, survival buckets, validation summary, and early spawn collision grace
+current: passes via `npm run telemetry:check` as of Run #53
+baseline: asserts pacing, required spawn distance, survival, survival buckets, validation summary, and early spawn collision grace
 target: run before and after any future balance change
 
 build_health:
@@ -121,6 +81,5 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
-- current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 25.2, 22.8, 20.9, 16.4`
-- current tuning signal: deterministic snapshot artik `23.4s / 6.3s / 8%`; early outlier worst-case'i iyilesti ama manuel sample olmadan yeni lag'in chase hissini fazla yumusatip yumusatmadigi bilinmiyor
-- current tuning signal: compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi, inactive-phase input freeze, focus-loss pause ve yeni early spawn lag'in birlikte nasil algilandigi icin manuel sample hala gerekli
+- current tuning signal: deterministic snapshot artik `24.3s / 6.3s / 4%`; opener'da bir `<10s` outlier kaldi ama crowded-lane olasiligi dustu
+- compact live telemetry, collapsed run panel, personal-best cue, waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve focus-loss pause'un birlikte nasil algilandigi icin manuel sample hala gerekli

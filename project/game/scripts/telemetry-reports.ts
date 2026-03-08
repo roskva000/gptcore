@@ -4,6 +4,8 @@ import {
   EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS,
   EARLY_SPAWN_COLLISION_GRACE_MS,
   FIRST_SPAWN_DELAY_MS,
+  OPENING_REQUIRED_SPAWN_DISTANCE_BONUS,
+  OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
   getRequiredSpawnDistance,
@@ -312,7 +314,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
   return {
     sessionCount: SESSION_COUNT,
     maxSimulationSeconds: MAX_SIMULATION_SECONDS,
-    controller: `center-seeking avoidance heuristic with 180ms reaction interval, ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, and ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s`,
+    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, and ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s`,
     effectivePlayerSpeed: EFFECTIVE_PLAYER_SPEED,
     nativePlayerSpeed: PLAYER_SPEED,
     averageSurvivalTimeSeconds: round(averageSurvivalTime),
