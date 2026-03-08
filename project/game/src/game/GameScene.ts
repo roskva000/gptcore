@@ -67,12 +67,14 @@ export class GameScene extends Phaser.Scene {
   private telemetryText!: Phaser.GameObjects.Text;
   private hitFlash!: Phaser.GameObjects.Rectangle;
   private impactRay!: Phaser.GameObjects.Line;
+  private impactArrowHead!: Phaser.GameObjects.Triangle;
   private impactMarker!: Phaser.GameObjects.Arc;
   private impactMarkerLabel!: Phaser.GameObjects.Text;
   private fatalSpotlight!: Phaser.GameObjects.Arc;
   private fatalSpotlightConnector!: Phaser.GameObjects.Line;
   private fatalSpotlightLabel!: Phaser.GameObjects.Text;
   private escapeRay!: Phaser.GameObjects.Line;
+  private escapeArrowHead!: Phaser.GameObjects.Triangle;
   private escapeMarker!: Phaser.GameObjects.Arc;
   private escapeMarkerLabel!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
@@ -174,6 +176,12 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(0)
       .setVisible(false);
 
+    this.impactArrowHead = this.add
+      .triangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 0, -15, 26, 0, 0, 15, 0xffb29f, 0.98)
+      .setDepth(9)
+      .setAlpha(0)
+      .setVisible(false);
+
     this.impactMarker = this.add
       .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 28)
       .setDepth(9)
@@ -230,6 +238,12 @@ export class GameScene extends Phaser.Scene {
       .setDepth(9)
       .setLineWidth(5, 5)
       .setOrigin(0, 0)
+      .setAlpha(0)
+      .setVisible(false);
+
+    this.escapeArrowHead = this.add
+      .triangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 0, -15, 26, 0, 0, 15, 0x88ffe4, 0.98)
+      .setDepth(9)
       .setAlpha(0)
       .setVisible(false);
 
@@ -519,12 +533,14 @@ export class GameScene extends Phaser.Scene {
       this.player,
       this.hitFlash,
       this.impactRay,
+      this.impactArrowHead,
       this.impactMarker,
       this.impactMarkerLabel,
       this.fatalSpotlight,
       this.fatalSpotlightConnector,
       this.fatalSpotlightLabel,
       this.escapeRay,
+      this.escapeArrowHead,
       this.escapeMarker,
       this.escapeMarkerLabel,
     ]);
@@ -536,12 +552,14 @@ export class GameScene extends Phaser.Scene {
       .setScale(1);
     this.hitFlash.setAlpha(0).setVisible(false);
     this.impactRay.setAlpha(0).setVisible(false);
+    this.impactArrowHead.setAlpha(0).setScale(0.72).setVisible(false);
     this.impactMarker.setAlpha(0).setScale(0.72).setVisible(false);
     this.impactMarkerLabel.setAlpha(0).setVisible(false).setText('');
     this.fatalSpotlight.setAlpha(0).setScale(0.72).setVisible(false);
     this.fatalSpotlightConnector.setAlpha(0).setVisible(false);
     this.fatalSpotlightLabel.setAlpha(0).setVisible(false).setText('');
     this.escapeRay.setAlpha(0).setVisible(false);
+    this.escapeArrowHead.setAlpha(0).setScale(0.76).setVisible(false);
     this.escapeMarker.setAlpha(0).setScale(0.78).setVisible(false);
     this.escapeMarkerLabel.setAlpha(0).setVisible(false).setText('');
     this.overlay.setVisible(false);
@@ -712,12 +730,14 @@ export class GameScene extends Phaser.Scene {
       this.player,
       this.hitFlash,
       this.impactRay,
+      this.impactArrowHead,
       this.impactMarker,
       this.impactMarkerLabel,
       this.fatalSpotlight,
       this.fatalSpotlightConnector,
       this.fatalSpotlightLabel,
       this.escapeRay,
+      this.escapeArrowHead,
       this.escapeMarker,
       this.escapeMarkerLabel,
     ]);
@@ -808,6 +828,12 @@ export class GameScene extends Phaser.Scene {
       .setTo(this.player.x, this.player.y, rayEndX, rayEndY)
       .setAlpha(0.95)
       .setVisible(true);
+    this.impactArrowHead
+      .setPosition(rayEndX, rayEndY)
+      .setRotation(this.getDirectionRotation(hitDirection.offsetX, hitDirection.offsetY))
+      .setScale(0.72)
+      .setAlpha(0.98)
+      .setVisible(true);
     this.impactMarker
       .setPosition(markerX, markerY)
       .setScale(0.72)
@@ -822,6 +848,13 @@ export class GameScene extends Phaser.Scene {
     this.tweens.add({
       targets: this.impactRay,
       alpha: 0.2,
+      duration: 180,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.impactArrowHead,
+      scale: 1,
+      alpha: 0.32,
       duration: 180,
       ease: 'Quad.Out',
     });
@@ -902,6 +935,12 @@ export class GameScene extends Phaser.Scene {
       .setTo(this.player.x, this.player.y, guideEndX, guideEndY)
       .setAlpha(0.96)
       .setVisible(true);
+    this.escapeArrowHead
+      .setPosition(guideEndX, guideEndY)
+      .setRotation(this.getDirectionRotation(guideOffsetX, guideOffsetY))
+      .setScale(0.76)
+      .setAlpha(0.98)
+      .setVisible(true);
     this.escapeMarker
       .setPosition(markerX, markerY)
       .setScale(0.78)
@@ -915,6 +954,13 @@ export class GameScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: this.escapeRay,
+      alpha: 0.34,
+      duration: 210,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.escapeArrowHead,
+      scale: 1,
       alpha: 0.34,
       duration: 210,
       ease: 'Quad.Out',
@@ -976,6 +1022,10 @@ export class GameScene extends Phaser.Scene {
       offsetX: 0,
       offsetY: -1,
     };
+  }
+
+  private getDirectionRotation(offsetX: number, offsetY: number): number {
+    return Phaser.Math.Angle.Between(0, 0, offsetX, offsetY);
   }
 
   private getEscapePrompt(hitDirection: HitDirection): EscapePrompt {

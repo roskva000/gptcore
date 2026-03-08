@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #38]
+
+Decision:
+Olum anindaki kirmizi impact ray ve teal kacis ray'i kucuk arrowhead uclariyla bitirildi.
+
+Reason:
+Audit sonraki builder turlerini gameplay readability ile sinirli tutuyor ve host browser manuel sample bu runtime'ta hala alinmiyor. Mevcut death feedback paketinde en dar urun kazanci, gelen tehlike ile onerilen kacis yonunu metin okumadan daha hizli ayristirmakti.
+
+Impact:
+Oyuncu artik hem fatal lane'i hem de `BREAK ...` yonunu sahne icinde daha net gorebiliyor. `npm run telemetry:check` ve `npm run build` yesil kalarak deterministic baseline ve replay hizinin korunmasini dogruladi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni arrowhead'lerin dikkat dagittigini veya mevcut ray/marker hiyerarsisini bozdugunu gosterirse yalnizca alpha/scale/offset seviyesinde dar ayar yapilir.
+
 ### [Run #37]
 
 Decision:

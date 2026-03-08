@@ -2,6 +2,15 @@
 
 ---
 
+## Run #38
+
+- `project/game/src/game/GameScene.ts` icinde death anindaki kirmizi impact ray ve teal kacis ray'i kucuk arrowhead uclariyla guncellendi
+- death feedback reset/tween temizligi yeni arrowhead yuzeylerini de kapsayacak sekilde guncellendi
+- `project/game/src/latestRun.ts` public AI update paneli yeni cift yon arrowhead readability pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #37
 
 - `project/game/src/game/GameScene.ts` icinde `KILLER` spotlight etiketini fatal obstacle'a baglayan kisa bir connector eklendi
