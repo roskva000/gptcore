@@ -109,26 +109,28 @@ export const getFirstDeathTimeText = (telemetry: GameplayTelemetry): string => {
 };
 
 export const getValidationProgressText = (telemetry: GameplayTelemetry): string => {
-  if (telemetry.totalRuns === 0) {
+  if (telemetry.totalDeaths === 0) {
     return '0/5 runs';
   }
 
-  const runCountText = `${Math.min(telemetry.totalRuns, 5)}/5 runs`;
+  const completedRunCountText = `${Math.min(telemetry.totalDeaths, 5)}/5 runs`;
 
-  if (telemetry.totalRuns < 5) {
-    return runCountText;
+  if (telemetry.totalDeaths < 5) {
+    return completedRunCountText;
   }
 
   const firstDeathTime = telemetry.firstDeathTime;
 
   if (firstDeathTime === null) {
-    return `${runCountText} | no death yet`;
+    return `${completedRunCountText} | no death yet`;
   }
 
   const firstDeathStatus =
-    firstDeathTime >= TARGET_FIRST_DEATH_SECONDS ? 'target met' : 'review early deaths';
+    firstDeathTime >= TARGET_FIRST_DEATH_SECONDS && telemetry.earlyDeathsUnderTarget === 0
+      ? 'target met'
+      : 'review early deaths';
 
-  return `${runCountText} | ${firstDeathStatus}`;
+  return `${completedRunCountText} | ${firstDeathStatus}`;
 };
 
 export const getEarlyDeathRate = (telemetry: GameplayTelemetry): number => {

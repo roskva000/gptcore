@@ -6,12 +6,14 @@
 
 - host browser/runtime varsa yeni opening spawn-distance guard'ini 5-10 manuel run ile gozlemle
 - mevcut deterministic baseline'i referans al: pacing `10 / 32 / 76`, survival `24.3s / 6.3s / 4%`, buckets `1 / 5 / 6 / 12`
+- validation summary artik erken olum oldugunda `review early deaths` diyecegi icin manuel sample notlarini bu risk uzerine odakla
 - odak sadece acilis fairness hissi olsun: ilk `6s` icinde yeni obstacle lane'leri daha adil mi, yoksa opener fazla bos mu kaldi
 - death-readability, support strip, pause/retry, telemetry veya tooling alanina sapma
 - packaged smoke su an `Page.enable` ile fail oldugu icin bunu yalnizca blocker olarak kaydet; bu turu browser-tooling genislemesine cevirme
 
 Basari olcutleri:
 - 5-10 manuel run notu yeni opening spawn-distance guard'inin daha adil ama halen gerilimli olup olmadigini soyluyor
+- manuel sample notlari varsa validation summary'nin neden `review early deaths` dedigine oyuncu hissi tarafindan aciklama getiriyor
 - deterministic baseline `24.3s / 6.3s / 4%` accidental olarak bozulmuyor
 - average survival `>= 24.3s` korunuyor
 - early death rate `%4` uzeri bozulmuyor
@@ -25,6 +27,7 @@ Basari olcutleri:
 
 - host browser runtime acilamazsa opening fairness surface'ini dondur ve baska olculebilir gameplay problemine gec
 - manuel sample yeni opening reroll guard'inin opener'i fazla bosalttigini gosterirse yalnizca bonus/cutoff'u dar kapsamda geri cek
+- manuel sample yoksa validation wording'ini tekrar kurcalama; ayni problemi tooling loop'una cekme
 - replay reset hissi klavye veya touch'ta takiliyorsa sadece input/copy/offset seviyesinde dar ayar yap
 
 ---

@@ -24,6 +24,7 @@ const createTelemetryFromRuns = (
     telemetry.totalDeaths += 1;
     telemetry.totalSurvivalTime += survivalTime;
     telemetry.firstDeathTime ??= survivalTime;
+    telemetry.bestSurvivalTime = Math.max(telemetry.bestSurvivalTime ?? 0, survivalTime);
     telemetry.lastSurvivalTime = survivalTime;
     telemetry.lastRunSpawnRerolls = rerolls;
     telemetry.totalSpawnRerolls += rerolls;

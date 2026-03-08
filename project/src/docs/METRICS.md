@@ -47,9 +47,9 @@ baseline: added in Run #53 to make the existing spawn-reroll fairness helper act
 target: confirm manually that this removes crowded opening lanes without making the first seconds feel empty
 
 validation_export_contract:
-current: `5 runs | first death 24.2s | early 20% | 5/5 runs, target met`
-baseline: same; detailed report now carries `avg_survival=24.1s`, `last_run=30.0s`, `spawn_saves=3`, and deterministic baseline text `24.3s avg / 6.3s first death / 4% early`
-target: keep `V` export and parser aligned
+current: `5 runs | first death 24.2s | early 20% | 5/5 runs, review early deaths`
+baseline: Run #54 aligned the export with actual early-death risk; detailed report carries `avg_survival=24.1s`, `last_run=30.0s`, `spawn_saves=3`, and deterministic baseline text `24.3s avg / 6.3s first death / 4% early`
+target: keep `V` export and parser aligned, and never mark a 5-run sample as healthy while it still contains `<10s` deaths
 
 early_spawn_target_lag:
 current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns to exact-position targeting
@@ -67,7 +67,7 @@ target: keep reset available between runs without allowing active-run telemetry 
 
 telemetry_regression_check:
 current: passes via `npm run telemetry:check` as of Run #53
-baseline: asserts pacing, required spawn distance, survival, survival buckets, validation summary, and early spawn collision grace
+baseline: as of Run #54 asserts pacing, required spawn distance, survival, survival buckets, honest validation summary/report wording, and early spawn collision grace
 target: run before and after any future balance change
 
 build_health:
@@ -81,5 +81,5 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
-- current tuning signal: deterministic snapshot artik `24.3s / 6.3s / 4%`; opener'da bir `<10s` outlier kaldi ama crowded-lane olasiligi dustu
+- current tuning signal: deterministic snapshot artik `24.3s / 6.3s / 4%`; opener'da bir `<10s` outlier kaldi ama validation wording artik bunu gizlemiyor
 - compact live telemetry, collapsed run panel, personal-best cue, waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve focus-loss pause'un birlikte nasil algilandigi icin manuel sample hala gerekli

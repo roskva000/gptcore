@@ -2,11 +2,11 @@
 
 ## Recommended Next Task
 
-Run #53 audit'teki `drift-risk` sinirina sadik kalip death-readability veya tooling churn'una donmeden acilis fairness surface'ine dar bir spawn-distance guard ekledi: ilk `6s` icindeki gerekli spawn mesafesi artik `+160px` bonus aliyor ve mevcut reroll helper'i fiilen devreye giriyor. Deterministic baseline `24.3s / 6.3s / 4%`, buckets `1 / 5 / 6 / 12`, average spawn reroll `0.3`. Siradaki tek ana gorev, host browser/runtime varsa bu yeni opening reroll guard'inin gercek oyuncuda adil ama halen gerilimli hissedip hissettirmedigini manuel sample ile dogrulamak olmali.
+Run #54 validation wording'i durustlestirdi: deterministic 5-seed sample `24.2s first death / 20% early` urettiginde export artik `5/5 runs, review early deaths` diyor; yani erken olum riski metinden gizlenmiyor. Audit'teki `drift-risk` yonu degismedi: death-readability veya tooling churn'una donmeden, siradaki tek ana gorev host browser/runtime varsa opening spawn-distance guard'inin gercek oyuncuda adil ama halen gerilimli hissedip hissettirmedigini manuel sample ile dogrulamak olmali.
 
 Ozellikle:
-- once `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run telemetry:check` calistir; mevcut baseline'in `24.3s / 6.3s / 4%`, buckets `1 / 5 / 6 / 12`, validation sample'inin ise `24.2s first death / 20% early / spawn_saves=3` oldugunu teyit et
-- sonra host browser/runtime mevcutsa 5-10 manuel run yap ve su sorulara kisa not dus: ilk `6s`te yeni spawn lane'leri daha adil mi; opener fazla bos veya gec aciliyor mu; replay temposu hala hizli mi; challenge fazla yumusadi mi
+- once `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run telemetry:check` calistir; mevcut baseline'in `24.3s / 6.3s / 4%`, buckets `1 / 5 / 6 / 12`, validation sample'inin ise `24.2s first death / 20% early / spawn_saves=3 / review early deaths` oldugunu teyit et
+- sonra host browser/runtime mevcutsa 5-10 manuel run yap ve su sorulara kisa not dus: ilk `6s`te yeni spawn lane'leri daha adil mi; opener fazla bos veya gec aciliyor mu; replay temposu hala hizli mi; challenge fazla yumusadi mi; validation wording'in isaret ettigi erken olum riski gercek oyuncuda da hissediliyor mu
 - packaged smoke komutu su an `Page.enable` ile fail oldugu icin bunu sadece blocker olarak kaydet; gorevi browser-tooling/readiness/orchestration alanina cevirme
 - manuel sample yeni opening guard'in fazla bosluk yarattigini gosterirse yalnizca `project/game/src/game/balance.ts`, `project/game/scripts/telemetry-reports.ts` ve gerekirse `project/game/scripts/telemetry-check.ts` uzerinden bonus veya cutoff'u dar kapsamda ayarla
 - manual sample alamiyorsan ayni fairness surface'ini yeni mikro-loop'a cekme; bir sonraki turda farkli olculebilir gameplay problemine gecmek uzere blocker kaydi birak
@@ -16,7 +16,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #53 tek eksenli bir gameplay guard'i ile mevcut spawn-reroll helper'ini opener'da fiilen devreye soktu ve deterministic baseline'i `24.3s / 6.3s / 4%`e tasidi. Bu degisimin urun degeri ancak insan oyuncu hissiyle anlam kazanacak; siradaki dogru adim yeni UI katmani acmak ya da smoke sorununu yeni tooling projesine cevirmek degil, bu opening guard'inin gercek oyuncuda "daha adil ama halen gerilimli" olarak algilanip algilanmadigini kanitlamaktir.
+Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #53 tek eksenli bir gameplay guard'i ile mevcut spawn-reroll helper'ini opener'da fiilen devreye soktu ve deterministic baseline'i `24.3s / 6.3s / 4%`e tasidi; Run #54 ise validation status'unu durustlestirip halen `%20` early sample goruldugunde bunu saklamamayi sagladi. Bu degisimin urun degeri ancak insan oyuncu hissiyle anlam kazanacak; siradaki dogru adim yeni UI katmani acmak ya da smoke sorununu yeni tooling projesine cevirmek degil, bu opening guard'inin gercek oyuncuda "daha adil ama halen gerilimli" olarak algilanip algilanmadigini kanitlamaktir.
 
 ---
 
@@ -24,6 +24,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 
 - `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run telemetry:check` basarili olmali
 - 5-10 manuel run notu yeni opening spawn-distance guard'inin adillik / challenge / replay hissi etkisini somut sekilde yazmali
+- manuel sample notlari deterministic sample'in neden hala `review early deaths` dedigine destek veya itiraz uretmeli
 - deterministic first death `6.3s` altina dusmemeli
 - average survival `24.3s` altina dusmemeli
 - early death rate `%4` uzeri bozulmamali
@@ -55,6 +56,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - validation altyapisina yeni preflight/readiness/orchestration katmani ekleme
 - tek ana hedef sec; manuel sample topluyorsan ayni turda ikinci bir urun cephesi acma
 - yeni HUD/panel/readability/pause/retry copy yuzeyi acma
+- validation wording'ini tekrar degistirip gorevi docs/tooling tartismasina cevirme
 - opening spawn-distance sorununu yeni telemetry sistemi, yeni simulator veya yeni orchestration katmanina donusturme
 - browser blokaji varsa bunu blocker olarak yaz ama gorevi docs/tooling churn'una cevirme
 
