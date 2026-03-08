@@ -29,7 +29,7 @@ import {
   type TelemetrySummary,
 } from './telemetry.ts';
 
-type GamePhase = 'waiting' | 'playing' | 'gameOver';
+type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
 const PLAYER_SPEED = 260;
 const OFFSCREEN_CULL_MARGIN = 96;
@@ -61,6 +61,16 @@ type EscapePrompt = {
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
   private movementInputWasActive = false;
+  private pausedRunElapsedMs = 0;
+  private pauseStartedAt: number | null = null;
+  private readonly handleVisibilityChange = (): void => {
+    if (document.hidden) {
+      this.pauseRunForFocusLoss();
+    }
+  };
+  private readonly handleWindowBlur = (): void => {
+    this.pauseRunForFocusLoss();
+  };
   private player!: Phaser.Physics.Arcade.Image;
   private obstacles!: Phaser.Physics.Arcade.Group;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -390,6 +400,10 @@ export class GameScene extends Phaser.Scene {
     keyboard.on('keydown-C', this.handleTelemetryLog, this);
     keyboard.on('keydown-V', this.handleValidationExport, this);
     this.input.on('pointerdown', this.handlePrimaryAction, this);
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    window.addEventListener('blur', this.handleWindowBlur);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupFocusListeners, this);
+    this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanupFocusListeners, this);
   }
 
   update(time: number): void {
@@ -400,6 +414,10 @@ export class GameScene extends Phaser.Scene {
       this.startRun();
     }
 
+    if (this.phase === 'paused' && hasFreshMovementInput && !document.hidden && document.hasFocus()) {
+      this.resumePausedRun();
+    }
+
     this.updatePlayerVelocity();
     this.cullObstacles();
     this.movementInputWasActive = movementInputActive;
@@ -408,7 +426,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    this.survivalTime = (time - this.runStartedAt) / 1000;
+    this.survivalTime = (time - this.runStartedAt - this.pausedRunElapsedMs) / 1000;
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
   }
 
@@ -464,6 +482,11 @@ export class GameScene extends Phaser.Scene {
 
     if (this.phase === 'waiting') {
       this.startRun();
+      return;
+    }
+
+    if (this.phase === 'paused') {
+      this.resumePausedRun();
       return;
     }
 
@@ -530,6 +553,8 @@ export class GameScene extends Phaser.Scene {
 
     this.resetArenaForRun();
     this.phase = 'playing';
+    this.pausedRunElapsedMs = 0;
+    this.pauseStartedAt = null;
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
     this.runSpawnRerolls = 0;
@@ -549,9 +574,82 @@ export class GameScene extends Phaser.Scene {
     this.scheduleNextSpawn(FIRST_SPAWN_DELAY_MS);
   }
 
+  private pauseRunForFocusLoss(): void {
+    if (this.phase !== 'playing') {
+      return;
+    }
+
+    this.phase = 'paused';
+    this.pauseStartedAt = this.time.now;
+    this.physics.world.pause();
+    if (this.nextSpawnTimer) {
+      this.nextSpawnTimer.paused = true;
+    }
+    this.player.setVelocity(0, 0);
+    this.movementInputWasActive = true;
+    this.overlay.setVisible(true);
+    this.fatalCallout.setVisible(false).setText('');
+    this.overlayTitle.setText('Run paused').setVisible(true);
+    this.overlayBody
+      .setText(
+        [
+          `You made it ${this.survivalTime.toFixed(1)} seconds before the pause.`,
+          'The run is frozen so focus loss does not turn into a cheap death.',
+        ].join('\n'),
+      )
+      .setVisible(true);
+    this.overlayPrompt
+      .setText('Return to the game, then press Space, Enter, tap, or a movement key to resume.')
+      .setVisible(true);
+    this.overlayStats
+      .setText(
+        [
+          `Best ${getBestSurvivalTimeText(this.telemetry)} lifetime | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
+          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
+          `Validation ${getValidationProgressText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
+        ].join('\n'),
+      )
+      .setVisible(true);
+    this.hintText
+      .setText('Run paused on focus loss.\nRefocus, then press Space, Enter, tap, or a movement key to resume.')
+      .setVisible(true);
+    this.supportText.setText('Pause guard active: no spawn, movement, or survival time advances while unfocused.');
+    this.updateTelemetryText();
+  }
+
+  private resumePausedRun(): void {
+    if (this.phase !== 'paused' || document.hidden || !document.hasFocus()) {
+      return;
+    }
+
+    if (this.pauseStartedAt !== null) {
+      this.pausedRunElapsedMs += this.time.now - this.pauseStartedAt;
+    }
+
+    this.pauseStartedAt = null;
+    this.phase = 'playing';
+    this.physics.world.resume();
+    if (this.nextSpawnTimer) {
+      this.nextSpawnTimer.paused = false;
+    }
+    this.overlay.setVisible(false);
+    this.fatalCallout.setVisible(false).setText('');
+    this.overlayTitle.setVisible(false);
+    this.overlayBody.setVisible(false).setText('');
+    this.overlayPrompt.setVisible(false).setText('');
+    this.overlayStats.setVisible(false).setText('');
+    this.hintText.setVisible(false);
+    this.supportText.setText(this.getBaseSupportText());
+    this.movementInputWasActive = this.hasMovementInput();
+    this.updateTelemetryText();
+  }
+
   private resetArenaForRun(): void {
     this.nextSpawnTimer?.remove(false);
     this.nextSpawnTimer = undefined;
+    this.physics.world.resume();
+    this.pausedRunElapsedMs = 0;
+    this.pauseStartedAt = null;
     this.tweens.killTweensOf([
       this.player,
       this.hitFlash,
@@ -1329,6 +1427,16 @@ export class GameScene extends Phaser.Scene {
       ];
     }
 
+    if (this.phase === 'paused') {
+      return [
+        'Local telemetry',
+        `Run paused at ${this.survivalTime.toFixed(1)}s | Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+        `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
+        `Validation: ${getValidationProgressText(this.sessionTelemetry)} | Best ${getBestSurvivalTimeText(this.telemetry)}`,
+        'Refocus, then press Space, Enter, tap, or a movement key to resume.',
+      ];
+    }
+
     return [
       'Local telemetry',
       `Session runs: ${this.sessionTelemetry.totalRuns} | Avg life: ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
@@ -1381,5 +1489,10 @@ export class GameScene extends Phaser.Scene {
 
   private getLastValidationReportSummaryText(): string {
     return formatValidationReportSummaryText(this.lastValidationReport);
+  }
+
+  private cleanupFocusListeners(): void {
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    window.removeEventListener('blur', this.handleWindowBlur);
   }
 }

@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-08
-Updated By: Agent Run #47
+Updated By: Agent Run #48
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #47 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine sadik kaldi; bunun yerine replay control tarafindaki dar bir input tutarsizligini kapatti. Validation/tooling kapsam freeze'i korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #48 audit'teki `drift-risk` uyarisini izleyip death-readability mikro-loop'una ve validation freeze'ine sadik kaldi; bunun yerine web oyunda haksiz olum uretebilen focus-loss acigini kapatti. Validation/tooling kapsam freeze'i korundu.
 
 Bu turun ana hedefi:
-- movement-key ile start ve retry akislarini ayni kontrol dili altinda toplamak
-- game-over aninda basili kalan yon tusunun istemsiz anlik replay baslatmasini engellemek
+- aktif run sirasinda tab/window focus kaybi oldugunda oyunu guvenli bicimde pause etmek
+- unfocused sureyi survival telemetry'sine veya haksiz olume sizdirmamak
 - audit'in istedigi gibi death-readability ve validation/readiness/preflight tarafina sifir yeni alan eklemek
 
 ---
@@ -30,6 +30,7 @@ Bu turun ana hedefi:
 - balance baseline: deterministic survival snapshot `avg 22.3s / first death 5.0s / early death 8%`
 - replay motivation: sol ust HUD artik lifetime best + session best gostermekte; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor. Edge-trigger guard'i sayesinde olum aninda basili kalan yon tusu otomatik replay sizmasi yaratmiyor
+- focus-loss fairness: aktif run sirasinda `blur` veya `visibilitychange` gelirse oyun `paused` fazina geciyor; obstacle physics, spawn timer, hareket ve survival saati birlikte donuyor. Oyuncu oyuna dondugunde Space/Enter/tap veya fresh movement-key ile explicit resume gerekiyor
 - instructional UX: waiting state artik amac + hareket + start aksiyonunu tek oyuncu-odakli blokta veriyor; telemetry hotkey'leri altta ayri support strip'ine tasindi. In-run hint daha kisa hedef odakli, game-over hint'i ise anlik retry aksiyonunu one aliyor
 - live HUD hierarchy: sag ust telemetry blogu faza gore degisiyor; waiting ve game-over'da detayli metrics/export satirlari korunurken aktif oynanista sadece kisa session/first-death/early-death/validation ozeti gosteriliyor
 - inactive-phase input stability: oyuncu artik yalnizca `playing` fazinda hiz aliyor; waiting ve game-over ekranlarinda keyboard/pointer input'u death scene'i veya pre-run yerlesimini kaydirmiyor
@@ -50,9 +51,10 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` icinde movement-key start/retry akisi fresh-press edge-trigger mantigina alindi; game-over artik yon tuslariyla da replay kabul ediyor, held input ise otomatik restart tetiklemiyor
-- game-over overlay stats ve retry hint copy'si movement-key replay parity'sini yansitacak sekilde guncellendi
-- `project/game/src/latestRun.ts` public AI panel copy'si bu replay-control parity fix'ini anlatacak sekilde guncellendi
+- `project/game/src/game/GameScene.ts` icinde aktif run icin focus-loss pause/resume guard'i eklendi; blur/hidden durumunda run donuyor, explicit resume aksiyonu olmadan devam etmiyor
+- paused sure artik survival zamanina dahil edilmiyor; spawn timer ve physics de ayni anda freeze/resume oluyor
+- paused faz icin overlay, hint ve compact telemetry satirlari eklendi
+- `project/game/src/latestRun.ts` public AI panel copy'si bu focus-loss fairness fix'ini anlatacak sekilde guncellendi
 - `npm run telemetry:check` ve `npm run build` basarili calisti; build'de buyuk bundle warning'i devam etti
 
 ---
@@ -62,12 +64,13 @@ Bu turun ana hedefi:
 - gercek manual browser sample hala yok
 - mevcut sandbox `127.0.0.1` loopback socket acmaya izin vermedigi icin browser smoke burada calismiyor
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
+- yeni pause/resume prompt'unun host browser'da ilk bakista yeterince anlasilir olup olmadigi henuz insan gozunden teyit edilmedi
 - yeni personal-best cue ile sadeleştirilen start/retry instructional copy'nin gercek oyuncuda ilk bakis anlasilirligini artirip artirmadigi host browser sample ile henuz gozlenmedi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
 - public AI update panelinin yeni collapse davranisi, mevcut death-feedback paketi, personal-best cue ve support strip host browser'da manuel olarak hala birlikte degerlendirilmedi
 - compact live telemetry ozeti ile waiting/game-over detay modlari host browser'da insan gozunden henuz birlikte degerlendirilmedi
-- replay fix'i ve yeni inactive-phase input freeze deterministic guard ile yesil olsa da gercek oyuncu girdisiyle host browser'da dogrudan dogrulanmadi
-- movement-key retry parity mantigi deterministic guard ile yesil olsa da host browser'da keyboard hissi ve accidental replay davranisi henuz insan gozunden dogrulanmadi
+- replay fix'i, inactive-phase input freeze'i ve yeni focus-loss pause guard'i deterministic guard ile yesil olsa da gercek oyuncu girdisiyle host browser'da dogrudan dogrulanmadi
+- movement-key retry parity mantigi ile yeni explicit resume akisi host browser'da keyboard/touch hissi acisindan henuz insan gozunden dogrulanmadi
 
 ---
 
@@ -79,6 +82,7 @@ Bu turun ana hedefi:
 - production bundle buyuk; build chunk warning'i devam ediyor
 - public AI panel su an static content ile besleniyor; otomatik run feed'i yok
 - kalici best-score verisi mevcut telemetry yapisina eklendi; ayrik profile/leaderboard sistemi yok
+- focus-loss pause UX'i scene icinde overlay/hint/telemetry ile yonetiliyor; ayrik state helper yok
 
 ---
 
@@ -95,6 +99,7 @@ Bu turun ana hedefi:
 - compact live telemetry blogu clutter'i azaltabilir ama aktif oynanista validation affordance'larini fazla sakliyor olabilir; host browser sample gerekli
 - inactive-phase input fix'i keyboard/touch'ta dogru hissediyor olmali, ancak host browser sample olmadan fiziksel stabilite ve retry hissi insan gozunden henuz teyit edilmedi
 - fresh-press movement replay parity'si klavye oyuncusu icin daha dogal olabilir, ancak host browser sample olmadan accidental replay riskini gercek hissiyatla dogrulamak mumkun degil
+- yeni focus-loss pause guard'i adil davranis sagliyor olmali, ancak host browser sample olmadan resume prompt'unun yeterince net olup olmadigi ve explicit resume'in fazla surtunme yaratip yaratmadigi bilinmiyor
 
 ---
 
@@ -102,4 +107,4 @@ Bu turun ana hedefi:
 
 - audit'in readability micro-loop uyarisi bu tur tutuldu; ayni death-feedback paketine yeni yuzey eklenmedi
 - deterministic balance baseline degistirilmedi; mevcut guard `22.3s / 5.0s / 8%` korundu
-- siradaki en dar ve anlamli urun adimi, host browser varsa 3-5 manuel run ile compact live telemetry + collapsed run panel + personal-best cue + sadeleştirilmis waiting/retry copy + support strip kombinasyonunu, yeni inactive-phase input freeze'i ve movement-key replay parity'sini insan gozunden dogrulamaktir
+- siradaki en dar ve anlamli urun adimi, host browser varsa 3-5 manuel run ile compact live telemetry + collapsed run panel + personal-best cue + sadeleştirilmis waiting/retry copy + support strip kombinasyonunu, inactive-phase input freeze'ini, movement-key replay parity'sini ve yeni focus-loss pause/resume guard'ini insan gozunden dogrulamaktir

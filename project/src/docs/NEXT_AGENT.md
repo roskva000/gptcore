@@ -2,13 +2,13 @@
 
 ## Recommended Next Task
 
-Run #47 audit'teki `drift-risk` sinirina sadik kalip yeni balance veya death-readability churn'u acmadi; bunun yerine keyboard replay friction'ini kapatarak movement-key start ile movement-key retry'yi fresh-press parity altinda hizaladi. Siradaki tek ana gorev, host browser'da mevcut compact live telemetry hiyerarsisi, collapsed public panel, personal-best cue, waiting/support-strip copy'si, replay/death-feedback yuzeyleri, yeni inactive-phase input freeze'i ve movement-key retry parity'sinin gercek oyuncu hissinde nasil algilandigini manuel olarak dogrulamak olmali.
+Run #48 audit'teki `drift-risk` sinirina sadik kalip yeni balance veya death-readability churn'u acmadi; bunun yerine aktif run sirasinda browser focus'u kayboldugunda cheap death ve kirli telemetry riski ureten acigi kapatti. Siradaki tek ana gorev, host browser'da mevcut compact live telemetry hiyerarsisi, collapsed public panel, personal-best cue, waiting/support-strip copy'si, replay/death-feedback yuzeyleri, inactive-phase input freeze'i, movement-key retry parity'si ve yeni focus-loss pause/resume guard'inin gercek oyuncu hissinde nasil algilandigini manuel olarak dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check` calistir; pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 7 / 4 / 11` baseline'ini teyit et
-- sonra host browser erisimi varsa masaustu ve dar viewport'ta 3-5 manuel run al ve `project/game/src/main.ts` + `project/game/src/style.css` tarafindaki collapsed run panelin canvas'i ilk bakista one cikarip cikarmadigini, summary satirinin gorunup gorunmedigini, panelin rahat acilip kapanabildigini, `project/game/src/game/GameScene.ts` icindeki compact live telemetry blogunun aktif oynanista yeterince sessiz kalip kalmadigini, waiting hint'in hedef + kontrol + start aksiyonunu ilk bakista anlatip anlatmadigini, alt support strip'in fazla dikkat cekip cekmedigini, sol ust `Best ... | Session ...` satirinin ilk bakista gorunup gorunmedigini, waiting ve game-over fazlarinda avatarin keyboard/touch/pointer input'u ile kayip kaymadigini, fresh movement-key retry'nin accidental replay uretmeden dogal hissedip hissettirmedigini ve game-over'daki new-best / current-best mesajinin replay istegini artirip artirmadigini not et
+- sonra host browser erisimi varsa masaustu ve dar viewport'ta 3-5 manuel run al ve `project/game/src/main.ts` + `project/game/src/style.css` tarafindaki collapsed run panelin canvas'i ilk bakista one cikarip cikarmadigini, summary satirinin gorunup gorunmedigini, panelin rahat acilip kapanabildigini, `project/game/src/game/GameScene.ts` icindeki compact live telemetry blogunun aktif oynanista yeterince sessiz kalip kalmadigini, waiting hint'in hedef + kontrol + start aksiyonunu ilk bakista anlatip anlatmadigini, alt support strip'in fazla dikkat cekip cekmedigini, sol ust `Best ... | Session ...` satirinin ilk bakista gorunup gorunmedigini, waiting ve game-over fazlarinda avatarin keyboard/touch/pointer input'u ile kayip kaymadigini, fresh movement-key retry'nin accidental replay uretmeden dogal hissedip hissettirmedigini, aktif run sirasinda blur/tab switch ile pause guard'inin hemen devreye girip girmedigini, hidden surede obstacle/spawn/survival saatinin donup donmedigini, explicit resume'in net ve dogal hissedip hissettirmedigini ve game-over'daki new-best / current-best mesajinin replay istegini artirip artirmadigini not et
 - compact live telemetry'nin waiting ve game-over fazlarinda validation/export detaylarini yeterince acik biraktigini, mevcut `KILLER` tag + connector + threat dimming + impact/escape rays + teal kacis guide'i + `BREAK ...` prompt + fatal-lane callout paketinin collapsed panel ve support strip ile birlikte fazla olup olmadigini not et
-- replay akisini bozma; sample sorun gosterirse sadece tek eksenli dar summary wording/open-default breakpoint/padding veya copy/placement/hierarchy ya da inactive-phase input / retry trigger guard ayarina bak, state reset veya validation/tooling tarafina kayma
+- replay akisini bozma; sample sorun gosterirse sadece tek eksenli dar summary wording/open-default breakpoint/padding veya copy/placement/hierarchy ya da inactive-phase input / retry trigger / pause-resume guard ayarina bak, state reset veya validation/tooling tarafina kayma
 - host browser yoksa bunu blocker degil eksik sample olarak kaydet; yeni tooling acma
 - sadece manuel sample net bir sorun gosterirse en az `npm run telemetry:check` ve `npm run build` ile dar bir compact-live-telemetry satir secimi/alpha/font-size veya panel summary/open-default breakpoint/padding ya da waiting/support-strip/HUD copy-placement-hierarchy / inactive-phase input guard ayari yap
 
@@ -16,7 +16,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #46 fiziksel input bleed'i kapatti, Run #47 ise keyboard replay friction'ini azaltti; simdi bunun gercek oyuncuda death/retry sahnesini daha stabil ve daha akici hissettirip hissettirmedigini, mevcut onboarding/HUD/death-feedback paketiyle birlikte yardimci mi yoksa hala dikkat bolucu mu kaldigini gormek gerekiyor.
+Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek yasak, death-readability paketine de yeni kanit olmadan geri donulmemeli. Run #46 fiziksel input bleed'i kapatti, Run #47 keyboard replay friction'ini azaltti, Run #48 ise focus-loss cheap death riskini kapatti; simdi bunun gercek oyuncuda death/retry/pause sahnesini daha stabil ve daha akici hissettirip hissettirmedigini, mevcut onboarding/HUD/death-feedback paketiyle birlikte yardimci mi yoksa hala dikkat bolucu mu kaldigini gormek gerekiyor.
 
 ---
 
@@ -26,6 +26,8 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - host browser varsa en az 3 manuel run notu alinmali
 - ilk death sonrasi replay tek Space/Enter/tap veya fresh movement-key press ile yeni run'i guvenilir sekilde baslatmali
 - waiting ve game-over fazlarinda avatar keyboard/touch/pointer ile hareket etmemeli
+- aktif run blur veya tab switch aldiginda run pause'a gecmeli; gizli surede obstacle/spawn/survival ilerlememeli
+- focus geri geldiginde resume sadece explicit aksiyonla olmali; otomatik resume veya held input sizmasi olmamali
 - keyboard oyuncusu icin fresh movement-key replay natural hissettirmeli; held direction input accidental restart uretmemeli
 - narrow viewport'ta public AI panel varsayilan collapsed durumda gameplay'i ilk odak haline getirmeli
 - compact live telemetry aktif oynanista canvas odagini gereksiz bolmemeli
@@ -38,6 +40,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - killer tag + connector + threat dimming + impact/escape ray + teal guide + `BREAK ...` prompt paketinin personal-best cue ile birlikte fazla olup olmadigi not edilmeli
 - public AI panelin gorunurlugu ve dikkat seviyesi icin kisa insan gozlemi yazilmali
 - inactive-phase input freeze ve movement-key retry parity'sinin birlikte start/retry responsiveligini bozup bozmadigi yazili hale gelmeli
+- focus-loss pause/resume guard'inin keyboard/touch oyuncusu icin adil ve net hissedip hissettirmedigi yazili hale gelmeli
 - accidental gameplay drift olmamali; pacing ve survival baseline korunmali
 
 ---
@@ -67,6 +70,7 @@ Audit verdict `drift-risk` ve governance note acik: validation churn'e donmek ya
 - panel collapse dogrulamasi yeni drawer/modal/sidebar sistemi yazmaya donusmemeli
 - instructional copy dogrulamasi yeni tutorial sistemi veya onboarding flow'u yazmaya donusmemeli
 - inactive-phase input freeze ve movement-key retry parity dogrulamasi yeni input abstraction veya state-machine refactor'una donusmemeli
+- focus-loss pause/resume dogrulamasi yeni pause menu, settings ekranı veya global app lifecycle sistemi yazmaya donusmemeli
 - browser blokaji UX turunu durdurmak icin yeterli gerekce degil
 - manual sample yoksa sadece not dus; bunu tooling gerekcesine cevirme
 

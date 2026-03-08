@@ -2,6 +2,14 @@
 
 ---
 
+## Run #48
+
+- `project/game/src/game/GameScene.ts` icinde aktif run icin focus-loss pause/resume guard'i eklendi; `blur` ve `visibilitychange` aktif oynanisi `paused` fazina alip obstacle physics, spawn timer ve survival saatini birlikte donduruyor
+- resume akisi explicit hale getirildi; oyuncu focus geri geldikten sonra Space/Enter/tap veya fresh movement-key ile devam ediyor, held input otomatik resume yaratmiyor
+- paused faz icin overlay, hint ve telemetry satirlari eklendi; paused sure survival zamanina dahil edilmiyor
+- `project/game/src/latestRun.ts` public AI panel copy'si bu focus-loss fairness fix'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #47
 
 - `project/game/src/game/GameScene.ts` icinde waiting ve game-over fazlari icin movement-key start/retry akisi fresh-press edge-trigger mantigina alindi; game-over artik yon tuslariyla da replay kabul ediyor, ancak held input otomatik restart tetiklemiyor

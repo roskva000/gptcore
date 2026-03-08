@@ -71,6 +71,11 @@ current: waiting and game-over both accept a fresh movement-key press to start t
 baseline: added in Run #47 to remove keyboard-only replay friction without reopening the death-readability loop
 target: confirm manually that keyboard replay feels more natural and never auto-fires from a key held through the death moment
 
+focus_loss_pause_fairness:
+current: active play now pauses on browser `blur` or `visibilitychange`; obstacle physics, spawn timer, movement, and survival-time accounting freeze until the player explicitly resumes after focus returns
+baseline: added in Run #48 to prevent cheap deaths or free survival seconds when the browser loses focus mid-run
+target: confirm manually that pause triggers reliably on desktop/mobile browser focus loss, that hidden time never advances survival, and that explicit resume feels clear rather than friction-heavy
+
 personal_best_visibility:
 current: lifetime best and session best are visible in the top-left HUD; game over also states whether the run set a new best or what score still stands as the target
 baseline: added in Run #42 without changing the deterministic balance baseline
@@ -83,10 +88,10 @@ target: confirm manually that a fresh player can parse the goal and first action
 
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #47
+current: passes via `npm run telemetry:check` as of Run #48
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 

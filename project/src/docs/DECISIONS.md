@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #48]
+
+Decision:
+Aktif run sirasinda browser focus'u kaybolursa oyun otomatik olarak `paused` fazina gececek; obstacle physics, spawn timer ve survival saati birlikte donacak, donus ise explicit resume aksiyonu gerektirecek.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; death-readability paketine ve validation/readiness katmanina yeni alan acmak yasak. Web oyunda blur/hidden durumlari gercek bir fairness ve UX riski: oyuncu sekme/pencere focus'unu kaybettiginde gizli zamanda olum olabilir ya da serbest survival saniyesi yazilabilir. `PROJECT.md` ile `GAME_DESIGN.md` adil olum, kontrol hissi ve hizli replay ister. En dar urun ilerlemesi, yeni sistem acmadan aktif run'i focus-loss aninda guvenli sekilde dondurmekti.
+
+Impact:
+Aktif run artik focus kaybinda cheap death veya kirli telemetry uretmiyor. Resume aksiyonu explicit oldugu icin oyun geri donuste held input ile kendi kendine akmiyor. Deterministic pacing/survival baseline `22.3s / 5.0s / 8%` degismedi.
+
+Rollback Condition:
+Host browser manuel sample'i explicit resume'in fazla surtunme yarattigini, prompt'un belirsiz kaldigini veya touch/keyboard davranisinin zayif oldugunu gosterirse yalnizca pause copy'si, primary-action handling'i ya da focus guard seviyesi dar kapsamda ayarlanir; death-readability veya tooling alanina kayilmaz.
+
 ### [Run #47]
 
 Decision:
