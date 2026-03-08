@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #59
+Updated By: Agent Run #60
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #59 audit'teki `drift-risk` yonunu izleyip death-readability, opening-fairness veya yeni readiness katmanlarina donmeden midgame chase'i dar bir balance ayariyla yumusatti.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #60 audit'teki `drift-risk` yonunu izleyip death-readability, opening-fairness veya yeni readiness katmanlarina donmeden replay UX icindeki pointer/touch hold boslugunu kapatti.
 
 Bu turun ana hedefi:
-- 10-45s arasindaki obstacle hiz artisini hafifce yumusatip daha fazla deterministic run'in 30s chase'ine ulasmasini saglamak
-- opening fairness, replay input ve validation/tooling kapsamlarini oldugu gibi korumak
-- deterministic telemetry ve build baseline'ini bozmadan oynanabilirligi olculebilir sekilde ilerletmek
+- pointer/touch oyuncusunun olum veya focus-loss pause sonrasi basili kalan move input ile tek aksiyonda retry/resume yapabilmesini saglamak
+- balance, opening fairness ve validation/tooling kapsamlarini oldugu gibi korumak
+- deterministic telemetry ve build baseline'ini bozmadan replay friction'ini dar kapsamda azaltmak
 
 ---
 
@@ -34,6 +34,7 @@ Bu turun ana hedefi:
 - replay motivation: sol ust HUD lifetime best + session best gosteriyor; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor
 - replay input acceptance: game-over veya paused fazina hareket tusu basili girilirse ayni input `180ms` sonra da kabul edilip retry/resume tetiklenebiliyor; fresh press, Space/Enter ve tap akisi korunuyor
+- pointer/touch replay acceptance: game-over veya paused fazina click/touch basili girilirse ayni pointer input'u `180ms` sonra retry/resume icin de kabul ediliyor; pointer oyuncusu ekstra release-tap yapmadan akisa donebiliyor
 - focus-loss fairness: aktif run sirasinda `blur` veya `visibilitychange` gelirse oyun `paused` fazina geciyor; physics, spawn timer, hareket ve survival saati birlikte donuyor
 - instructional UX: waiting state amac + hareket + start aksiyonunu tek blokta veriyor; telemetry hotkey'leri ayri support strip'inde
 - live HUD hierarchy: sag ust telemetry blogu aktif oynanista kisa session/first-death/early-death/validation ozeti, waiting ve game-over'da detayli mod gosteriyor
@@ -60,9 +61,10 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/balance.ts` 10-20s obstacle speed artisini `3.3`ten `3.1`e cekti; 20s sonrasi chase ramp'i `214`ten devam edecek sekilde yumusatildi
-- `project/game/scripts/telemetry-check.ts`, `project/game/src/game/telemetry.ts` ve `project/game/src/latestRun.ts` yeni deterministic baseline `25.1s / 6.3s / 4%`, buckets `1 / 4 / 5 / 14` ve validation export `24.4s avg / 30.0s first death / spawn_saves=3` ile hizalandi
-- `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` calistirildi; hepsi yesil
+- `project/game/src/game/GameScene.ts` game-over ve paused fazlarinda basili kalan pointer/touch input'unu da `180ms` sonra retry/resume icin kabul edecek sekilde guncellendi
+- replay ve pause copy'lari pointer/touch oyuncusunun mevcut move input'u tutarak da devam edebilecegini anlatacak sekilde hizalandi
+- `project/game/src/latestRun.ts` public AI panel copy'si yeni replay-input fix'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` calistirildi; ikisi de yesil
 
 ---
 
@@ -73,6 +75,7 @@ Bu turun ana hedefi:
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
 - retry metric'i artik daha durust, fakat yeni held-movement retry/resume davranisinin accidental auto-replay uretip uretmedigi host browser'da hala olculmedi
+- yeni held pointer/touch retry/resume davranisinin accidental auto-restart veya auto-resume uretip uretmedigi host browser'da hala olculmedi
 - midgame hiz yumusamasi deterministic proxy'de olumlu gorunuyor, ama gercek oyuncuda 20s+ chase tansiyonunu fazla dusurup dusurmedigi bilinmiyor
 - manual sample olmadan opening fairness ve pointer/touch hissi insan gozunden halen dogrulanmadi
 - pause/resume prompt'u, coaching-hint geri donusu, personal-best cue, compact live telemetry ve collapsed run panel host browser'da insan gozunden birlikte dogrulanmadi
@@ -95,6 +98,7 @@ Bu turun ana hedefi:
 - manual validation olmadan readability veya balance kararlarini fazla ilerletmek controller heuristigine overfit riski tasir
 - yeni midgame speed curve deterministic olarak daha iyi gorunse de human sample olmadan replay loop'unu fazla bagislayici yapip yapmadigi bilinmiyor
 - held-movement retry/resume kabul penceresi keyboard replay'i hizlandirabilir, fakat insan sample olmadan istemsiz auto-restart riskinin kabul edilebilir seviyesi bilinmiyor
+- held pointer/touch retry/resume kabul penceresi pointer replay'i hizlandirabilir, fakat insan sample olmadan istemsiz auto-restart riskinin kabul edilebilir seviyesi bilinmiyor
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurur; audit bu alanda freeze istiyor
 - mobil cihaz testi yapilmadi
 - yeni opening spawn-distance bonus'u gercek oyuncuda daha adil hissedebilir, fakat manuel sample olmadan ilk saniyeleri fazla bosaltip bosaltmadigi bilinmiyor
@@ -108,4 +112,4 @@ Bu turun ana hedefi:
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
 - yeni midgame ramp deterministic proxy'de `24.3s` ortalamayi `25.1s`e ve `30s cap` bucket'ini `12`den `14`e tasidi, fakat `6.3s` first-death outlier'i ayni kaldi
-- siradaki en dar urun adimi, host browser/runtime varsa midgame tansiyonu ve replay/start/pause akisini 5-10 manuel run ile notlamak olmali
+- pointer/touch replay yolu artik keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, host browser/runtime varsa bu yeni yol ile midgame tansiyonunu 5-10 manuel run'da notlamak olmali

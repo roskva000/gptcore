@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #60]
+
+Decision:
+Game-over ve paused fazlarinda basili kalan pointer/touch input'u da `180ms` sonra retry/resume icin kabul edilecek; pointer oyuncusu keyboard ile ayni tek-aksiyon replay yolunu alacak.
+
+Reason:
+`AUDIT.md` `drift-risk` yonu altinda death-readability, opening-fairness ve tooling churn'una geri donmek yasakti. Host browser sample halen yokken dar ve gercek urun problemi, pointer/touch oyuncusunun olum veya focus-loss pause sonrasi basili kalan move input ile devam edememesi ve keyboard'a gore ekstra release-tap friction'i yasamasiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik game-over ve paused fazlarinda active pointer `180ms` boyunca basili kalirsa retry/resume tetikliyor. Replay/pause copy'si bu yolu anlatacak sekilde guncellendi. Deterministic survival baseline ve validation kontrati degismedi; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i held pointer/touch yolunun istemsiz auto-restart veya auto-resume urettigini gosterirse bu karar tamamen geri alinmak yerine once kabul penceresi veya copy dar kapsamda ayarlanir; yeni tooling ya da readability katmani eklenmez.
+
 ### [Run #59]
 
 Decision:

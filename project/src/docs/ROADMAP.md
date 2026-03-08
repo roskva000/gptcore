@@ -4,16 +4,16 @@
 
 # NOW (Highest Priority)
 
-- host browser/runtime varsa yeni midgame speed curve'u ve replay/start/pause akisinin friksiyonunu 5-10 manuel run ile gozlemle
-- browser smoke artik calistigi icin once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut, sonra 20s+ chase tansiyonunu ve held-movement retry/resume davranisini birlikte gozlemle
-- odak insan hissi olsun: 20s+ chase hala gergin mi, replay tek aksiyonla net mi, held movement retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi
+- host browser/runtime varsa yeni held pointer/touch retry-resume yolu ile midgame speed curve'unu 5-10 manuel run ile gozlemle
+- browser smoke artik calistigi icin once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut, sonra 20s+ chase tansiyonunu ve held-movement + held-pointer retry/resume davranisini birlikte gozlemle
+- odak insan hissi olsun: 20s+ chase hala gergin mi, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi
 - death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
 
 Basari olcutleri:
 - `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donuyor
 - 5-10 manuel run notu start -> play -> 20s+ chase -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu isimlendiriyor
 - manual notlar yeni midgame hiz yumusamasinin chase'i fazla bagislayici yapip yapmadigini acikca soyluyor
-- held movement key ile retry/resume davranisinin en az bir keyboard senaryosunda sorunsuz, accidental auto-restart'siz calistigi not ediliyor
+- held movement key ve held pointer/touch ile retry/resume davranisinin en az bir keyboard ve bir pointer senaryosunda sorunsuz, accidental auto-restart'siz calistigi not ediliyor
 - session retry telemetry'si sadece ayni browser session replay'lerini sayiyor; refresh/yeni session false-positive yok
 - replay/start/pause/input davranislarinda accidental drift olmuyor
 - deterministic baseline `25.1s / 6.3s / 4%` accidental olarak bozulmuyor
@@ -71,6 +71,7 @@ Basari olcutleri:
 - retry telemetry fresh browser/session acilisini replay gibi saymiyor; ayni tab/session replay'i ise saymaya devam ediyor
 - browser validation readiness smoke komutu yesil kaliyor ve validation export persistence'ini reload sonrasi koruyor
 - game-over ve paused fazlarinda held movement input `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
+- game-over ve paused fazlarinda held pointer/touch input da `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
 - midgame speed curve `145 / 183 / 249 / 302 / 320` olarak korunuyor; human sample chase tansiyonunu fazla dusuk bulmadikca tekrar buyutulmuyor
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor

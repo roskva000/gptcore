@@ -69,6 +69,7 @@ export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
   private movementInputWasActive = false;
   private movementHoldActionStartedAt: number | null = null;
+  private pointerHoldActionStartedAt: number | null = null;
   private playingHintHideAtElapsedMs: number | null = null;
   private pausedRunElapsedMs = 0;
   private pauseStartedAt: number | null = null;
@@ -423,17 +424,23 @@ export class GameScene extends Phaser.Scene {
       time,
       movementInputActive,
     );
+    const hasConfirmedHeldPointerInput =
+      this.phase === 'gameOver' || this.phase === 'paused'
+        ? this.hasConfirmedHeldPointerInput(time)
+        : false;
 
     if (
       (this.phase === 'waiting' || this.phase === 'gameOver') &&
-      (hasFreshMovementInput || (this.phase === 'gameOver' && hasConfirmedHeldMovementInput))
+      (hasFreshMovementInput ||
+        (this.phase === 'gameOver' &&
+          (hasConfirmedHeldMovementInput || hasConfirmedHeldPointerInput)))
     ) {
       this.startRun();
     }
 
     if (
       this.phase === 'paused' &&
-      (hasFreshMovementInput || hasConfirmedHeldMovementInput) &&
+      (hasFreshMovementInput || hasConfirmedHeldMovementInput || hasConfirmedHeldPointerInput) &&
       !document.hidden &&
       document.hasFocus()
     ) {
@@ -593,6 +600,7 @@ export class GameScene extends Phaser.Scene {
     this.resetArenaForRun();
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
+    this.pointerHoldActionStartedAt = null;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
     this.runStartedAt = this.time.now;
@@ -614,6 +622,7 @@ export class GameScene extends Phaser.Scene {
 
     this.phase = 'paused';
     this.movementHoldActionStartedAt = null;
+    this.pointerHoldActionStartedAt = null;
     this.pauseStartedAt = this.time.now;
     this.physics.world.pause();
     if (this.nextSpawnTimer) {
@@ -633,7 +642,9 @@ export class GameScene extends Phaser.Scene {
       )
       .setVisible(true);
     this.overlayPrompt
-      .setText('Return to the game, then press Space, Enter, tap, or hold a movement key to resume.')
+      .setText(
+        `Return to the game, then press ${this.getResumeActionText()} to resume.`,
+      )
       .setVisible(true);
     this.overlayStats
       .setText(
@@ -645,7 +656,9 @@ export class GameScene extends Phaser.Scene {
       )
       .setVisible(true);
     this.hintText
-      .setText('Run paused on focus loss.\nRefocus, then press Space, Enter, tap, or hold a movement key to resume.')
+      .setText(
+        `Run paused on focus loss.\nRefocus, then press ${this.getResumeActionText()} to resume.`,
+      )
       .setVisible(true);
     this.supportText.setText('Pause guard active: no spawn, movement, or survival time advances while unfocused.');
     this.updateTelemetryText();
@@ -663,6 +676,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseStartedAt = null;
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
+    this.pointerHoldActionStartedAt = null;
     this.physics.world.resume();
     if (this.nextSpawnTimer) {
       this.nextSpawnTimer.paused = false;
@@ -726,6 +740,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
     this.movementInputWasActive = this.hasMovementInput();
+    this.pointerHoldActionStartedAt = null;
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -864,6 +879,20 @@ export class GameScene extends Phaser.Scene {
     return time - this.movementHoldActionStartedAt >= HELD_MOVEMENT_ACTION_DELAY_MS;
   }
 
+  private hasConfirmedHeldPointerInput(time: number): boolean {
+    if (!this.input.activePointer.isDown) {
+      this.pointerHoldActionStartedAt = null;
+      return false;
+    }
+
+    if (this.pointerHoldActionStartedAt === null) {
+      this.pointerHoldActionStartedAt = time;
+      return false;
+    }
+
+    return time - this.pointerHoldActionStartedAt >= HELD_MOVEMENT_ACTION_DELAY_MS;
+  }
+
   private canObstacleHitPlayer(
     _playerGameObject: unknown,
     obstacleGameObject: unknown,
@@ -963,6 +992,7 @@ export class GameScene extends Phaser.Scene {
 
     this.phase = 'gameOver';
     this.movementHoldActionStartedAt = null;
+    this.pointerHoldActionStartedAt = null;
     this.nextSpawnTimer?.remove(false);
     this.tweens.killTweensOf([
       this.player,
@@ -1042,7 +1072,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayStats
       .setText(
         [
-          'Press Space, Enter, tap, or hold a movement key to retry instantly.',
+          `Press ${this.getRetryActionText()} to retry instantly.`,
           `Best ${getBestSurvivalTimeText(this.telemetry)} lifetime | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
           `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
           `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
@@ -1052,7 +1082,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.hintText
       .setText(
-        `Retry now: Space, Enter, tap, or hold a movement key.\nThen ${escapePrompt.title.toLowerCase()} on the next rush.`,
+        `Retry now: ${this.getRetryActionText()}.\nThen ${escapePrompt.title.toLowerCase()} on the next rush.`,
       )
       .setVisible(true);
   }
@@ -1537,7 +1567,7 @@ export class GameScene extends Phaser.Scene {
         `Run paused at ${this.survivalTime.toFixed(1)}s | Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
         `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
         `Validation: ${getValidationProgressText(this.sessionTelemetry)} | Best ${getBestSurvivalTimeText(this.telemetry)}`,
-        'Refocus, then press Space, Enter, tap, or hold a movement key to resume.',
+        `Refocus, then press ${this.getResumeActionText()} to resume.`,
       ];
     }
 
@@ -1558,6 +1588,14 @@ export class GameScene extends Phaser.Scene {
 
   private getBaseSupportText(): string {
     return `Telemetry hotkeys: C log summary | V copy validation | R reset sample between runs | early spawn lag ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS.toFixed(0)}s`;
+  }
+
+  private getRetryActionText(): string {
+    return 'Space, Enter, tap/click, or keep holding your move input';
+  }
+
+  private getResumeActionText(): string {
+    return 'Space, Enter, tap/click, or keep holding your move input';
   }
 
   private getPlayingHintText(): string {

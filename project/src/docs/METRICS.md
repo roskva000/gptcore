@@ -61,14 +61,19 @@ current: game-over and paused states now accept a continuously held movement key
 baseline: added in Run #58 as a narrow replay-friction fix without touching pacing, fairness, validation contracts, or touch pointer steering
 target: confirm in manual browser sample that this reduces keyboard replay friction without causing accidental auto-restart or auto-resume
 
+held_pointer_retry_resume:
+current: game-over and paused states now also accept a continuously held pointer/touch after `180ms`, so pointer players can retry/resume without an extra release-tap cycle after death or focus-loss pause
+baseline: added in Run #60 to close the replay-friction gap between keyboard and pointer controls without changing pacing, fairness, validation contracts, or death-feedback surfaces
+target: confirm in manual browser sample that held pointer/touch feels natural and does not create accidental auto-restart or auto-resume
+
 early_spawn_target_lag:
 current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns to exact-position targeting
 baseline: added in Run #51 to soften unfair early intercept lines without changing spawn pacing or obstacle speed anchors
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify both the held-movement retry/resume path and the softer 20s+ chase
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether held movement-key retry/resume feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the 20s+ chase still feels tense after the Run #59 speed-curve softening, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify held movement, held pointer/touch retry/resume, and the softer 20s+ chase
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the 20s+ chase still feels tense after the Run #59 speed-curve softening, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
