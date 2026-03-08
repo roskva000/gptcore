@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #59]
+
+Decision:
+Obstacle hiz curve'u 10-45s araliginda hafifce yumusatildi; 10-20s ramp'i saniyede `3.1`, 20s+ ramp'i ise `214` hiz anchor'undan devam ediyor.
+
+Reason:
+`AUDIT.md` `drift-risk` yonu altinda death-readability, opening-fairness ve tooling churn'una geri donmek yasakti. Replay/path validation'i insan sample bekliyor, fakat host browser kaniti olmadan ayni readability veya fairness yuzeyine yeni bir tur harcamak governance'a ters olurdu. En dar olculebilir gameplay problemi, opener'i degistirmeden midgame chase'in 20-30s bandinda cok erken dusmesiydi.
+
+Impact:
+`project/game/src/game/balance.ts` 30s/45s hiz anchor'larini `249 / 302` seviyesine cekti. Deterministic survival snapshot `24.3s / 6.3s / 4%`ten `25.1s / 6.3s / 4%`e geldi; buckets `1 / 5 / 6 / 12`den `1 / 4 / 5 / 14`e kaydi. Validation export kontrati `24.4s avg / 30.0s first death / 20% early / spawn_saves=3` olarak guncellendi. `telemetry:check` ve build yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample yeni 20s+ chase'in tansiyonunu fazla dusuk veya bagislayici gosterirse yalnizca 10-45s hiz anchor'lari dar kapsamda geri sertlestirilir; opening fairness, death readability veya tooling alanina sapilmaz.
+
 ### [Run #58]
 
 Decision:
