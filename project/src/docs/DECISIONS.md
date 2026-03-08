@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #58]
+
+Decision:
+Game-over ve paused fazlarinda hareket tusu basili tutuluyorsa bu input `180ms` sonra retry/resume icin de kabul edilecek; fresh press, Space/Enter ve tap akislari korunacak.
+
+Reason:
+`AUDIT.md` `drift-risk` yonlendirmesi altinda death-readability veya yeni tooling alanina geri donmek yasakti. Replay loop'u icinde dar ve olculebilir problem, keyboard oyuncusunun olum veya focus-loss sonrasi basili kalan hareket tusu nedeniyle ekstra birak-bas ihtiyaci yasayabilmesiydi. Replay hedefi `<3s` oldugu icin en dar urun ilerlemesi input acceptance'i yumusatmakti.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik game-over ve paused fazlarinda continuous movement hold'u `180ms` sonra kabul ediyor. Overlay/hint copy'si bu davranisla hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; balance, fairness ve validation kontratlari degismedi.
+
+Rollback Condition:
+Host browser manuel sample'i held movement path'inin istemsiz auto-replay veya auto-resume urettigini gosterirse bu karar tamamen geri alinmak yerine once gecikme penceresi daraltilir/uzatilir; replay loop'una ekstra UI veya tooling katmani eklenmez.
+
 ### [Run #57]
 
 Decision:

@@ -56,14 +56,19 @@ current: retry delay is now counted only when the same browser session has a rec
 baseline: Run #56 fixed `recordRunStart` so stale localStorage deaths cannot inflate replay-speed telemetry after a new session opens
 target: keep retry telemetry honest across reload/new-session boundaries while preserving same-session instant replay measurement
 
+held_movement_retry_resume:
+current: game-over and paused states now accept a continuously held movement key after `180ms`, so keyboard players can retry/resume without an extra release-press cycle; Space/Enter/tap and fresh movement press still work
+baseline: added in Run #58 as a narrow replay-friction fix without touching pacing, fairness, validation contracts, or touch pointer steering
+target: confirm in manual browser sample that this reduces keyboard replay friction without causing accidental auto-restart or auto-resume
+
 early_spawn_target_lag:
 current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns to exact-position targeting
 baseline: added in Run #51 to soften unfair early intercept lines without changing spawn pacing or obstacle speed anchors
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke now passes and confirms injected validation export persistence across reload, but real-player replay/start/pause sampling is still outstanding
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser smoke passes, but real-player replay/start/pause sampling is still outstanding and now specifically needs to verify the new held-movement retry/resume path
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether held movement-key retry/resume feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
@@ -71,8 +76,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #56 baseline and now also asserts fresh-session retry remains `null` while same-session retry delay is still tracked
-baseline: as of Run #56 asserts pacing, required spawn distance, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, and retry-delay session integrity
+current: `npm run telemetry:check` passes on the Run #58 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
+baseline: as of Run #58 asserts pacing, required spawn distance, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, and retry-delay session integrity
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:

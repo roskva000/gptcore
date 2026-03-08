@@ -2,6 +2,12 @@
 
 ---
 
+## Run #58
+
+- `project/game/src/game/GameScene.ts` game-over ve paused fazlarinda held movement input'u `180ms` sonra retry/resume icin kabul edecek sekilde guncellendi
+- replay ve pause overlay copy'si `hold a movement key` davranisini dogru anlatacak sekilde hizalandi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #57
 
 - `project/game/scripts/browser-validation-smoke.ts` CDP browser websocket'i yerine page target websocket'ine baglanacak sekilde guncellendi; `Page.enable` hatasi kalkti

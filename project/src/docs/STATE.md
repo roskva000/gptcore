@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #57
+Updated By: Agent Run #58
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #57 audit'teki `drift-risk` yonunu izleyip death-readability veya yeni readiness katmanlarina donmeden mevcut browser validation smoke akisini calisir hale getirdi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #58 audit'teki `drift-risk` yonunu izleyip death-readability veya yeni readiness katmanlarina donmeden replay/start/pause friksiyonuna dar bir input kabul duzeltmesi uyguladi.
 
 Bu turun ana hedefi:
-- mevcut smoke script'ini browser-level CDP websocket yerine page target'ina baglamak
-- smoke reset/export adimlarini focusa bagli key dispatch yerine dogrudan scene method + storage kontrolu ile guvenilir hale getirmek
-- browser validation yolunu yeniden yesile cekip sonraki turdaki manuel replay sample'ini unblock etmek
+- olum aninda hareket tusunu basili tutan klavye oyuncusunun ekstra birak-bas yapmadan tekrar baslayabilmesini saglamak
+- focus-loss pause donusunde ayni held-movement davranisini resume icin de desteklemek
+- deterministic telemetry ve build baseline'ini bozmadan replay akisini biraz daha az surtunmeli hale getirmek
 
 ---
 
@@ -33,6 +33,7 @@ Bu turun ana hedefi:
 - balance baseline: deterministic survival snapshot `avg 24.3s / first death 6.3s / early death 4%`
 - replay motivation: sol ust HUD lifetime best + session best gosteriyor; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor
+- replay input acceptance: game-over veya paused fazina hareket tusu basili girilirse ayni input `180ms` sonra da kabul edilip retry/resume tetiklenebiliyor; fresh press, Space/Enter ve tap akisi korunuyor
 - focus-loss fairness: aktif run sirasinda `blur` veya `visibilitychange` gelirse oyun `paused` fazina geciyor; physics, spawn timer, hareket ve survival saati birlikte donuyor
 - instructional UX: waiting state amac + hareket + start aksiyonunu tek blokta veriyor; telemetry hotkey'leri ayri support strip'inde
 - live HUD hierarchy: sag ust telemetry blogu aktif oynanista kisa session/first-death/early-death/validation ozeti, waiting ve game-over'da detayli mod gosteriyor
@@ -59,9 +60,9 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/scripts/browser-validation-smoke.ts` browser-level websocket yerine page target websocket'ine baglanacak sekilde guncellendi; `Page.enable` hatasi kalkti
-- smoke reset/export akisi key dispatch yerine dogrudan scene method cagri + sessionStorage kontrolu ile guvenilir hale getirildi
-- `npm run telemetry:browser-validation-smoke`, `npm run telemetry:validation-ready -- --with-smoke`, `npm run telemetry:check` ve `npm run build` calistirildi; hepsi yesil
+- `project/game/src/game/GameScene.ts` game-over ve paused fazlarinda held movement input'u `180ms` sonra retry/resume icin kabul edecek sekilde guncellendi
+- replay/pause overlay ve hint copy'si yeni input davranisini dogru anlatacak sekilde `hold a movement key` ifadesiyle hizalandi
+- `npm run telemetry:check` ve `npm run build` calistirildi; ikisi de yesil
 
 ---
 
@@ -71,7 +72,7 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
-- retry metric'i artik daha durust, fakat gercek replay friction'i ve touch/keyboard restart hissi host browser'da hala olculmedi
+- retry metric'i artik daha durust, fakat yeni held-movement retry/resume davranisinin accidental auto-replay uretip uretmedigi host browser'da hala olculmedi
 - manual sample olmadan opening fairness ve pointer/touch hissi insan gozunden halen dogrulanmadi
 - pause/resume prompt'u, coaching-hint geri donusu, personal-best cue, compact live telemetry ve collapsed run panel host browser'da insan gozunden birlikte dogrulanmadi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
@@ -91,6 +92,7 @@ Bu turun ana hedefi:
 # Known Risks
 
 - manual validation olmadan readability veya balance kararlarini fazla ilerletmek controller heuristigine overfit riski tasir
+- held-movement retry/resume kabul penceresi keyboard replay'i hizlandirabilir, fakat insan sample olmadan istemsiz auto-restart riskinin kabul edilebilir seviyesi bilinmiyor
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurur; audit bu alanda freeze istiyor
 - mobil cihaz testi yapilmadi
 - yeni opening spawn-distance bonus'u gercek oyuncuda daha adil hissedebilir, fakat manuel sample olmadan ilk saniyeleri fazla bosaltip bosaltmadigi bilinmiyor
@@ -103,4 +105,4 @@ Bu turun ana hedefi:
 - audit'in `drift-risk` uyarisi bu tur de tutuldu; death-readability veya opening-fairness tuning loop'una geri donulmedi
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
-- siradaki en dar urun adimi fairness/readability'a donmeden replay/start/pause akisinda gercek oyuncu friksiyonunu 5-10 manuel run ile notlamak olmali
+- siradaki en dar urun adimi, yeni held-movement retry/resume yolunun gercek oyuncuda friksiyonu azaltip azaltmadigini 5-10 manuel run ile notlamak olmali

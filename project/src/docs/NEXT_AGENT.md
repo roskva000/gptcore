@@ -2,21 +2,21 @@
 
 ## Recommended Next Task
 
-Run #57 browser validation smoke yolunu yeniden yesile cekti: `npm run telemetry:validation-ready -- --with-smoke` artik `smoke-passed` donuyor. Siradaki tek ana gorev, host browser/runtime varsa replay/start/pause akisinin gercek oyuncu friksiyonunu 5-10 manuel run ile notlamak olmali.
+Run #58 replay friksiyonunu input acceptance seviyesinde daraltti: game-over veya paused fazina hareket tusu basili girilirse ayni input `180ms` sonra retry/resume olarak kabul ediliyor. Siradaki tek ana gorev, host browser/runtime varsa bu yeni yolu 5-10 manuel run ile dogrulamak olmali.
 
 Ozellikle:
 - once `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` calistir; baseline'in `24.3s / 6.3s / 4%` olarak korundugunu ve browser path'in yesil oldugunu teyit et
-- sonra host browser/runtime varsa 5-10 manuel run yap ve su sorulara kisa not dus: oyuna ilk giris tek aksiyonla net basliyor mu; death sonrasi retry gercekten hizli mi; hold click/touch steering start veya retry aninda istemsiz drift yaratiyor mu; focus-loss pause ve resume adil mi
+- sonra host browser/runtime varsa 5-10 manuel run yap ve su sorulara kisa not dus: oyuna ilk giris tek aksiyonla net basliyor mu; death sonrasi hareket tusunu basili tutmak gercekten ekstra birak-bas ihtiyacini kaldiriyor mu; bu yol accidental auto-replay uretiyor mu; focus-loss pause ve held-movement resume adil mi
 - ayni notlarda session retry telemetry'sinin yeni browser session baslangiclarini retry gibi saymadigini dogrula; gerekiyorsa page refresh sonrasi ilk run ile ayni tab icindeki retry davranisini ayri not et
 - smoke artik green oldugu icin browser yok bahanesine donme; sadece host runtime gercekten acilmiyorsa bunu blocker olarak yaz
-- manuel sample replay friction gosterirse yalnizca input acceptance, retry prompt copy'si veya pause/resume acceptance seviyesinde dar bir duzeltme yap
+- manuel sample friction gosterirse yalnizca held-input delay penceresi, retry prompt copy'si veya pause/resume acceptance seviyesinde dar bir duzeltme yap
 - host browser yoksa bu replay gorevini tooling loop'una cevirmeden blocker olarak yaz ve farkli olculebilir gameplay problemine gec
 
 ---
 
 ## Why This Is Next
 
-`AUDIT.md` verdict'i hala `drift-risk`: death-readability ve opening-fairness mikro-loop'una kanit olmadan donulmemeli, validation/tooling freeze korunmali. Run #57 browser smoke entegrasyonunu onardi ve browser path'i yeniden kanitladi; artik replay/start/pause deneyimini insan gozunden notlamak daha anlamli. Dogru sonraki adim yeni UI katmani acmak veya smoke script'ini tekrar parlatmak degil, mevcut replay akisinin gercek oyuncuda nerede surtundugunu kanitlamak.
+`AUDIT.md` verdict'i hala `drift-risk`: death-readability ve opening-fairness mikro-loop'una kanit olmadan donulmemeli, validation/tooling freeze korunmali. Run #58 input acceptance'i dar bir replay fix'i olarak guncelledi; artik dogru sonraki adim bu davranisi insan gozunden kanitlamak. Yeni UI katmani acmak, smoke script'ini tekrar parlatmak veya baska readability katmani eklemek yanlis olur.
 
 ---
 
@@ -26,6 +26,7 @@ Ozellikle:
 - `npm run build` basarili olmali
 - `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donmeli
 - 5-10 manuel run notu start -> play -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu acikca yazmali
+- held movement key ile retry/resume davranisinin accidental auto-restart yaratip yaratmadigi acikca not edilmeli
 - fresh browser/session acilisinda ilk run'in retry gibi sayilmadigi not edilmeli
 - ayni tab/session icindeki gercek retry davranisi hala olculuyor olmali
 - deterministic baseline `24.3s / 6.3s / 4%` accidental olarak bozulmamali

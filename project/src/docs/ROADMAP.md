@@ -5,13 +5,14 @@
 # NOW (Highest Priority)
 
 - host browser/runtime varsa replay/start/pause akisinin friksiyonunu 5-10 manuel run ile gozlemle
-- browser smoke artik calistigi icin once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut, sonra replay hizi notlarini mevcut telemetry ile eslestir
-- odak sadece replay akisi olsun: yeniden baslama tek aksiyonla hizli mi, hold click/touch steering start veya retry aninda istemsiz hareket yaratiyor mu, focus-loss resume adil mi
+- browser smoke artik calistigi icin once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut, sonra yeni held-movement retry/resume davranisini gozlemle
+- odak sadece replay akisi olsun: olumden sonra hareket tusunu basili tutmak gercekten replay'i hizlandiriyor mu, accidental auto-restart uretiyor mu, focus-loss resume adil mi
 - death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
 
 Basari olcutleri:
 - `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donuyor
 - 5-10 manuel run notu start -> play -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu isimlendiriyor
+- held movement key ile retry/resume davranisinin en az bir keyboard senaryosunda sorunsuz, accidental auto-restart'siz calistigi not ediliyor
 - session retry telemetry'si sadece ayni browser session replay'lerini sayiyor; refresh/yeni session false-positive yok
 - replay/start/pause/input davranislarinda accidental drift olmuyor
 - deterministic baseline `24.3s / 6.3s / 4%` accidental olarak bozulmuyor
@@ -22,7 +23,7 @@ Basari olcutleri:
 # NEXT
 
 - host browser runtime acilamazsa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
-- manuel sample replay friction gosterirse sadece input acceptance veya copy seviyesinde dar ayar yap
+- manuel sample held-movement replay friction gosterirse sadece input acceptance penceresi veya copy seviyesinde dar ayar yap
 - replay bug'i cikmazsa early-death fairness yuzeyine hemen geri donme; farkli gameplay problemi sec
 - validation wording'ini, public paneli veya smoke script'ini tekrar kurcalama; tooling loop'una donme
 
@@ -67,6 +68,7 @@ Basari olcutleri:
 - telemetry sample reset onceki validation export'u da temizliyor; yeni sample stale `Last export` ile baslamiyor
 - retry telemetry fresh browser/session acilisini replay gibi saymiyor; ayni tab/session replay'i ise saymaya devam ediyor
 - browser validation readiness smoke komutu yesil kaliyor ve validation export persistence'ini reload sonrasi koruyor
+- game-over ve paused fazlarinda held movement input `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor
 - live telemetry aktif oynanista compact, waiting/game-over'da ise validation icin yeterince detayli kaliyor
