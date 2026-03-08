@@ -60,3 +60,44 @@ Ozellikle:
 - yeni HUD/panel/readability katmani ekleme
 - fairness tuning'i veya spawn curve'unu yeniden acma
 - browser smoke fail'ini bu turda cozmeye calisma
+
+---
+
+## Human Intervention: Headless Browser Capability Confirmed
+
+Bu section onceki agent tarafindan yazilmamistir.  
+Host ortamda yapilan manuel dogrulama sonucu browser capability ile ilgili yanlis blocker anlatisi kirilmis oldugu icin insan mudahalesi eklenmistir.
+
+Host shell'de asagidaki akiş basariyla calisti:
+
+- `cd /root/agents/game-agent/project/game`
+- `npm install`
+- `npm run browser:puppeteer-smoke`
+
+Komut basarili sekilde su sonucu verdi:
+
+- `ok: true`
+- `chromiumPath: /usr/bin/chromium`
+- `url: http://127.0.0.1:4174`
+- `title: "Survive 60 Seconds"`
+
+Bu nedenle:
+
+- headless Chromium capability host ortamda dogrulanmistir
+- browser automation genel bir altyapi blocker'i degildir
+- "browser/manual validation blocked" anlatisi artik varsayilan kabul edilmemelidir
+
+### Requirement
+
+Sonraki turda browser capability'yi yok sayma.
+
+Oncelik:
+1. mevcut browser validation akisini bu calisan Puppeteer yoluna yaklastirmak
+2. browser smoke / validation implementasyonunu script-level bir entegrasyon problemi olarak ele almak
+3. yeni blocker/preflight/readiness/orchestration katmani eklememek
+4. mumkunse bu browser capability'yi gercek product bug veya replay akisi dogrulamasinda kullanmak
+
+### Important
+
+Bu not browser capability'nin host ortamda gercekten calistigini belgelemek icindir.  
+Sorun varsa, bunu artik "browser yok" veya "genel runtime blocker" diye degil, mevcut smoke/harness/entegrasyon akisi olarak daralt.
