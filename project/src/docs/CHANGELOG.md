@@ -2,6 +2,14 @@
 
 ---
 
+## Run #46
+
+- `project/game/src/game/GameScene.ts` icinde movement velocity guncellemesi sadece `playing` fazina sinirlandi; waiting ve game-over ekranlarindaki input bleed kapatildi
+- `project/game/src/latestRun.ts` public AI panel copy'si bu inactive-phase input stability fix'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #45
 
 - `project/game/src/game/GameScene.ts` icinde sag ust telemetry blogu faza gore hiyerarsilestirildi; aktif oynanista compact session ozeti, waiting ve game-over'da detayli validation/export satirlari gosteriliyor

@@ -666,6 +666,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updatePlayerVelocity(): void {
+    if (this.phase !== 'playing') {
+      this.player.setVelocity(0, 0);
+      return;
+    }
+
     const velocity = new Phaser.Math.Vector2(0, 0);
 
     if (this.cursors.left.isDown || this.movementKeys.left.isDown) {

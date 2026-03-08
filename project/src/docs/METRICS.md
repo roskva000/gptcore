@@ -48,8 +48,8 @@ target: keep death cause, exact fatal collider, and next move instantly readable
 
 replay_flow_status:
 current: post-death replay clears the prior run state inside the same scene and starts a fresh run on one Space/Enter/tap
-baseline: fixed in Run #30 after `scene.restart()` was leaving retry on a waiting-state handoff
-target: keep replay under the project's `< 3s` expectation with no extra tap/key press and no leftover obstacle/overlay state
+baseline: fixed in Run #30 after `scene.restart()` was leaving retry on a waiting-state handoff; Run #46 also froze player velocity outside `playing` so waiting/game-over inputs no longer slide the avatar between runs
+target: keep replay under the project's `< 3s` expectation with no extra tap/key press, no leftover obstacle/overlay state, and no inactive-phase movement bleed
 
 public_ai_update_surface:
 current: visible beside the game canvas with 1 summary row plus expandable title/intro/bullet content; desktop starts open, narrower layouts start collapsed so gameplay stays first
@@ -60,6 +60,11 @@ live_telemetry_surface:
 current: top-right telemetry stays detailed in waiting and game-over, but collapses to a short session/first-death/early-death/validation summary during active play
 baseline: hierarchy changed in Run #45 without changing telemetry data, export contract, pacing, or replay flow
 target: confirm manually that the compact live state reduces clutter and preserves enough validation affordance between runs
+
+inactive_phase_input_stability:
+current: player velocity updates are ignored unless the scene is in `playing`, so waiting and game-over phases stay physically still while start/retry actions remain available
+baseline: fixed in Run #46 after input was still able to move the avatar during non-playing phases
+target: confirm manually on keyboard and touch that the freeze improves death/retry clarity without making start or retry feel unresponsive
 
 personal_best_visibility:
 current: lifetime best and session best are visible in the top-left HUD; game over also states whether the run set a new best or what score still stands as the target
@@ -76,7 +81,7 @@ current: not collected in this runtime; browser validation remains blocked by lo
 target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #45
+current: passes via `npm run telemetry:check` as of Run #46
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -92,4 +97,4 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 25.2, 22.8, 20.9, 16.4`
-- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi ve mevcut death-feedback paketinin birlikte nasil algilandigi icin manuel sample hala gerekli
+- current tuning signal: deterministic survival baseline `22.3s`de korunuyor; buna ragmen compact live telemetry, collapsed run panel, personal-best cue, yeni waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve mevcut death-feedback paketinin birlikte nasil algilandigi icin manuel sample hala gerekli

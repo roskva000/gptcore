@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #46]
+
+Decision:
+Oyuncu hareket hizlari yalnizca `playing` fazinda guncellenecek; waiting ve game-over fazlarinda movement input fiziksel hareket uretmeyecek.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; death-readability paketine veya validation/readiness katmanina yeni katman eklemek yasak. Buna karsin mevcut `GameScene.ts` akisi her frame `updatePlayerVelocity()` cagirarak game-over sonrasinda ve pre-run bekleme halinde input kaynakli avatar kaymasina izin veriyordu. Bu, `PROJECT.md` ve `GAME_DESIGN.md` icindeki instant replay, ilk bakis netligi ve adil death feedback hedefleriyle celisiyordu. En dar urun ilerlemesi, yeni UI yuzeyi acmadan inactive-phase input bleed'i kapatmakti.
+
+Impact:
+Death overlay, fatal lane cues ve retry oncesi sahne artik fiziksel olarak sabit kaliyor. Start ve retry aksiyonlari aynen korunuyor; deterministic pacing/survival baseline `22.3s / 5.0s / 8%` degismedi.
+
+Rollback Condition:
+Host browser manuel sample'i start veya retry aninda beklenen keyboard/touch responsiveness'in kayboldugunu gosterirse yalnizca faz guard'i ya da primary-action/input handling seviyesinde dar ayar yapilir; yeni HUD/tooling/readability katmani acilmaz.
+
 ### [Run #45]
 
 Decision:
