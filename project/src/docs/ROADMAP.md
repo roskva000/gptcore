@@ -4,10 +4,10 @@
 
 # NOW (Highest Priority)
 
-- host browser'da 3-5 manuel run alip yeni personal-best cue ile sadeleştirilen waiting/start/retry copy'nin ilk bakista anlasilip anlasilmadigini dogrula
+- host browser'da 3-5 manuel run alip narrow viewport'ta collapse olan public AI panelin gameplay'i onceleyip oncelemedigini ve yeni personal-best cue ile waiting/start/retry copy'nin ilk bakista anlasilip anlasilmadigini dogrula
 - mevcut deterministic baseline'i koru: pacing `10 / 32 / 76`, survival `22.3s / 5.0s / 8%`, buckets `2 / 7 / 4 / 11`
 - replay hizini bozmadan sol ust `Best ... | Session ...` satirinin okunurlugunu, waiting hint'in oyuncu amacini hizli anlatip anlatmadigini ve game-over'daki new-best / current-best mesajinin motive edici olup olmadigini not et
-- mevcut death-feedback paketi, alt support strip ve public AI panelin birlikte fazla yogun olup olmadigini not et
+- mevcut death-feedback paketi, alt support strip ve collapsed public AI panelin birlikte fazla yogun olup olmadigini not et
 - manuel sample veya yeni metrik gelmeden death-readability paketine yeni gorsel/copy katmani ekleme
 - validation/readiness/orchestration katmanina yeni alan ekleme
 - host browser yoksa eksikligi sadece kaydet; yeni tooling acma
@@ -17,7 +17,7 @@ Basari olcutleri:
 - ilk death sonrasi replay tek Space/Enter/tap ile yeni run'a donuyor
 - personal-best cue ile waiting/start instructional copy'nin ilk bakista gorulup gorulmedigi ve tekrar deneme istegine etkisi yazili hale geliyor
 - game-over'daki new-best / current-best satiri anlasilir ve motive edici bulunuyorsa bu not ediliyor
-- public AI panel, mevcut death-feedback paketi ve support strip birlikte asiri dikkat dagitmiyorsa bu not ediliyor
+- public AI panel narrow viewport'ta collapse oldugunda gameplay ilk bakista birinci odak olarak kaliyor ve panel summary'si gerektiginde kolay aciliyorsa bu not ediliyor
 - deterministic baseline accidental drift olmadan korunuyor
 
 ---
@@ -25,6 +25,7 @@ Basari olcutleri:
 # NEXT
 
 - host browser sample waiting/start copy'nin zayif kaldigini gosterirse sadece copy/placement/weight seviyesinde dar ayar yap
+- host browser sample collapsed panel summary'sinin fazla zayif veya fazla baskin oldugunu gosterirse sadece summary wording/open-default breakpoint/padding seviyesinde dar ayar yap
 - host browser sample HUD'in kalabaliklastigini gosterirse sadece top-left score stack veya alt support strip hiyerarsisini dar sekilde sadeleştir
 - death-feedback paketi fazla baskin bulunursa sadece copy/offset/alpha/font-size/line-length/scale seviyesinde dar ayar yap
 - replay reset hissi klavye veya touch'ta takiliyorsa sadece input/copy/offset seviyesinde dar ayar yap
@@ -66,5 +67,5 @@ Basari olcutleri:
 - deterministic survival buckets icinde `10-20s <= 7`, `<10s <= 2`, `30s cap >= 11`
 - `npm run telemetry:check` accidental drift'te fail veriyor
 - personal-best cue build'de kalici ve gorunur durumda
-- public AI update panel oyuncu tarafinda gorulebilir durumda ve replay odagini gereksiz bolmuyor
+- public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor
 - killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li impact/escape rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional death callout oyunda gorunur durumda ve replay hizini bozmuyor

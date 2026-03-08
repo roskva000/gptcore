@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #44]
+
+Decision:
+Public AI update paneli narrow viewport'ta varsayilan olarak collapse olacak sekilde yeniden hiyerarsilestirildi.
+
+Reason:
+`AUDIT.md` verdict'i `drift-risk`; manual sample olmadan death-readability veya waiting/support-strip copy mikro-loop'una geri donmek yasak. `PROJECT.md` ve `GAME_DESIGN.md` ise mobil browser hedefiyle cluttered screen anti-pattern'inden kacilmasini istiyor. Mevcut public panel dar ekranlarda oyun canvas'i ile ayni anda tam yukseklikte kalip gameplay'i ikinci plana itiyordu; en dar urun ilerlemesi, paneli kaldirmadan summary-first bir responsive hiyerarsi vermekti.
+
+Impact:
+Desktop'ta public panel varsayilan olarak acik kalirken dar viewport'larda `details/summary` uzerinden collapse basliyor; oyuncu once canvas'i goruyor, AI update yine tek tikla acilabiliyor. Deterministic baseline `22.3s / 5.0s / 8%` ve replay akisi aynen korundu.
+
+Rollback Condition:
+Host browser manuel sample'i summary'nin fazla kolay gozden kactigini, panelin acma-kapama akisinin rahatsiz edici oldugunu veya dar viewport'ta beklenen clutter azalmasini saglamadigini gosterirse yalnizca summary wording, padding veya open-default breakpoint seviyesinde dar ayar yapilir.
+
 ### [Run #43]
 
 Decision:

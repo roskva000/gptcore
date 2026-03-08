@@ -23,16 +23,39 @@ appElement.innerHTML = `
       <div id="game-root" class="game-root" aria-label="Survive 60 Seconds game"></div>
     </section>
     <aside class="run-panel" aria-label="${latestRunSummary.label}">
-      <p class="run-panel__eyebrow">${latestRunSummary.label}</p>
-      <h1 class="run-panel__title">${latestRunSummary.title}</h1>
-      <p class="run-panel__intro">${latestRunSummary.intro}</p>
-      <ul class="run-panel__list">
-        ${latestRunSummary.bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
-      </ul>
-      <p class="run-panel__footer">${latestRunSummary.footer}</p>
+      <details class="run-panel__details" open>
+        <summary class="run-panel__summary">
+          <span class="run-panel__eyebrow">${latestRunSummary.label}</span>
+          <span class="run-panel__summary-title">Latest AI update</span>
+        </summary>
+        <div class="run-panel__content">
+          <h1 class="run-panel__title">${latestRunSummary.title}</h1>
+          <p class="run-panel__intro">${latestRunSummary.intro}</p>
+          <ul class="run-panel__list">
+            ${latestRunSummary.bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
+          </ul>
+          <p class="run-panel__footer">${latestRunSummary.footer}</p>
+        </div>
+      </details>
     </aside>
   </main>
 `;
+
+const runPanelDetails = document.querySelector<HTMLDetailsElement>('.run-panel__details');
+
+if (runPanelDetails) {
+  const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
+
+  const syncRunPanelVisibility = (matches: boolean): void => {
+    runPanelDetails.open = !matches;
+  };
+
+  syncRunPanelVisibility(narrowViewportQuery.matches);
+
+  narrowViewportQuery.addEventListener('change', (event) => {
+    syncRunPanelVisibility(event.matches);
+  });
+}
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,

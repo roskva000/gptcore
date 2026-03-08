@@ -2,6 +2,13 @@
 
 ---
 
+## Run #44
+
+- `project/game/src/main.ts` icinde public AI update paneli semantic `details/summary` yapisina alinip narrow viewport icin varsayilan collapse davranisi eklendi
+- `project/game/src/style.css` icinde yeni summary/content hiyerarsisi desktop ve mobil breakpoints'e gore gameplay-first layout'u koruyacak sekilde stillendi
+- `project/game/src/latestRun.ts` public AI panel copy'si bu narrow-screen clutter reduction pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #43
 
 - `project/game/src/game/GameScene.ts` icinde waiting/start/retry instructional copy oyuncu-odakli olacak sekilde sadeleştirildi; telemetry hotkey'leri ayri bir alt support strip'ine tasindi
