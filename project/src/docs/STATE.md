@@ -1,17 +1,17 @@
 # STATE.md
-Last Updated: 2026-03-08
-Updated By: Agent Run #56
+Last Updated: 2026-03-09
+Updated By: Agent Run #57
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #56 audit'teki `drift-risk` yonunu izleyip death-readability, opening-fairness ve tooling churn'una donmeden tek bir telemetry dogruluk bug'ina odaklandi: yeni browser/tab oturumunda baslatilan ilk run, localStorage'da kalan eski `lastDeathAt` yuzunden yanlislikla retry gibi sayilabiliyordu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #57 audit'teki `drift-risk` yonunu izleyip death-readability veya yeni readiness katmanlarina donmeden mevcut browser validation smoke akisini calisir hale getirdi.
 
 Bu turun ana hedefi:
-- retry delay metrigini yalnizca ayni aktif browser oturumundaki olumlere baglamak
-- yeni tab/session baslangiclarinda sahte replay hiz sinyalini engellemek
-- yeni tooling/orchestration eklemeden mevcut telemetry ve replay olcumunu durustlestirmek
+- mevcut smoke script'ini browser-level CDP websocket yerine page target'ina baglamak
+- smoke reset/export adimlarini focusa bagli key dispatch yerine dogrudan scene method + storage kontrolu ile guvenilir hale getirmek
+- browser validation yolunu yeniden yesile cekip sonraki turdaki manuel replay sample'ini unblock etmek
 
 ---
 
@@ -50,7 +50,7 @@ Bu turun ana hedefi:
 - validation progress metni artik sadece tamamlanan olumleri sayiyor; 5-run sample icinde herhangi bir erken olum varsa `target met` yerine `review early deaths` donuyor
 - telemetry sample reset artik kaydedilmis validation export'u da siliyor; waiting/game-over `Last export` satiri reset sonrasinda tekrar `not saved yet` durumuna donuyor
 - retry delay helper'i artik yeni browser session baslangiclarinda `null` donuyor; `telemetry:check` ayni-session replay ve fresh-session non-retry davranisini assert ediyor
-- browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke komutu halen CDP `Page.enable` hatasiyla fail ediyor
+- browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke artik page target uzerinden calisiyor ve validation export persistence'ini dogruluyor
 - current survival bucket baseline: `<10s: 1`, `10-20s: 5`, `20-30s: 6`, `30s cap: 12`
 - validation export baseline: deterministic 5-seed sample artik `24.2s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini uretiyor
 - `npm run telemetry:check` pacing, required spawn distance, survival, validation export ve bucket dagilimini assert ediyor; baseline `24.3s / 6.3s / 4%` ve `1 / 5 / 6 / 12`
@@ -59,17 +59,15 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/telemetry.ts` icine retry delay'i yalnizca ayni browser session'ina baglayan helper eklendi
-- `project/game/src/game/GameScene.ts` `recordRunStart` akisi bu helper'i kullanacak sekilde guncellendi; stale lifetime death yeni session retry metrigini kirletmiyor
-- `project/game/scripts/telemetry-check.ts` fresh-session ve same-session retry davranisini assert edecek sekilde genislendi
-- `npm run telemetry:check` ve `npm run build` calistirildi; yesil
+- `project/game/scripts/browser-validation-smoke.ts` browser-level websocket yerine page target websocket'ine baglanacak sekilde guncellendi; `Page.enable` hatasi kalkti
+- smoke reset/export akisi key dispatch yerine dogrudan scene method cagri + sessionStorage kontrolu ile guvenilir hale getirildi
+- `npm run telemetry:browser-validation-smoke`, `npm run telemetry:validation-ready -- --with-smoke`, `npm run telemetry:check` ve `npm run build` calistirildi; hepsi yesil
 
 ---
 
 # Active Problems
 
 - gercek manual browser sample hala yok
-- packaged smoke komutu su an CDP `Page.enable` hatasiyla fail oluyor
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
@@ -83,7 +81,7 @@ Bu turun ana hedefi:
 # Technical Debt
 
 - formal test suite yok; regression guvencesi deterministic telemetry komutlariyla sinirli
-- browser validation akisi runtime bagimli operasyonel ihtiyac olmaya devam ediyor; smoke komutu Chromium/CDP uyumsuzluguna takiliyor
+- browser validation akisi runtime bagimli operasyonel ihtiyac olmaya devam ediyor; smoke script'i calisiyor ama hala injected sample kullaniyor, gercek insan inputu toplamiyor
 - telemetry helper'lari ayrildi ama scene dosyasi buyuk
 - production bundle buyuk; build chunk warning'i devam ediyor
 - public AI panel su an static content ile besleniyor; otomatik run feed'i yok
@@ -104,5 +102,5 @@ Bu turun ana hedefi:
 
 - audit'in `drift-risk` uyarisi bu tur de tutuldu; death-readability veya opening-fairness tuning loop'una geri donulmedi
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
-- browser preflight blocker'i halen ayri; smoke komutu `Page.enable` hatasiyla fail etmeye devam ediyor ama bu tur kapsam disi tutuldu
-- siradaki en dar urun adimi fairness/readability'a donmeden replay/start/pause akisinda gercek oyuncu friksiyonunu host browser varsa notlamak, yoksa baska dar gameplay problemine gecmek olmali
+- browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
+- siradaki en dar urun adimi fairness/readability'a donmeden replay/start/pause akisinda gercek oyuncu friksiyonunu 5-10 manuel run ile notlamak olmali

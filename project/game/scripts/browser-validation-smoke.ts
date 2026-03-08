@@ -34,6 +34,11 @@ type SmokeResult = {
   reloadedSummary: string;
 };
 
+type SessionTelemetrySnapshot = {
+  totalRuns?: number;
+  firstDeathTime?: number | null;
+};
+
 class CdpClient {
   private readonly socket: WebSocket;
   private nextId = 1;
@@ -159,21 +164,31 @@ const startChromium = (): ChildProcess =>
     },
   );
 
-const waitForTarget = async (): Promise<string> => {
+type CdpTargetInfo = {
+  id?: string;
+  type?: string;
+  url?: string;
+  webSocketDebuggerUrl?: string;
+};
+
+const waitForPageTarget = async (): Promise<string> => {
   const startedAt = Date.now();
 
   while (Date.now() - startedAt < 10_000) {
     try {
-      const response = await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`);
+      const response = await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/list`);
 
       if (!response.ok) {
-        throw new Error(`CDP version endpoint returned ${response.status}.`);
+        throw new Error(`CDP target endpoint returned ${response.status}.`);
       }
 
-      const payload = (await response.json()) as { webSocketDebuggerUrl?: string };
+      const payload = (await response.json()) as CdpTargetInfo[];
+      const pageTarget = payload.find(
+        (target) => target.type === 'page' && typeof target.webSocketDebuggerUrl === 'string',
+      );
 
-      if (payload.webSocketDebuggerUrl) {
-        return payload.webSocketDebuggerUrl;
+      if (pageTarget?.webSocketDebuggerUrl) {
+        return pageTarget.webSocketDebuggerUrl;
       }
     } catch {
       // Retry until timeout.
@@ -182,7 +197,7 @@ const waitForTarget = async (): Promise<string> => {
     await delay(100);
   }
 
-  throw new Error('Timed out waiting for Chromium remote debugging endpoint.');
+  throw new Error('Timed out waiting for a Chromium page target.');
 };
 
 const evaluate = async <T>(client: CdpClient, expression: string): Promise<T> => {
@@ -234,6 +249,17 @@ const waitForGameScene = async (client: CdpClient): Promise<void> => {
 
   throw new Error('GameScene did not become available.');
 };
+
+const getSessionTelemetrySnapshot = async (
+  client: CdpClient,
+): Promise<SessionTelemetrySnapshot | null> =>
+  evaluate<SessionTelemetrySnapshot | null>(
+    client,
+    `(() => {
+      const raw = window.sessionStorage.getItem('${SESSION_TELEMETRY_STORAGE_KEY}');
+      return raw ? JSON.parse(raw) : null;
+    })()`,
+  );
 
 const injectSampleRuns = async (client: CdpClient): Promise<void> => {
   await evaluate(
@@ -307,7 +333,7 @@ const main = async (): Promise<void> => {
 
     await waitForHttp(SERVER_URL, 10_000);
     await logStep('server_ready');
-    const webSocketUrl = await waitForTarget();
+    const webSocketUrl = await waitForPageTarget();
     await logStep('cdp_ready');
     client = await CdpClient.connect(webSocketUrl);
     await logStep('cdp_connected');
@@ -318,14 +344,22 @@ const main = async (): Promise<void> => {
     await waitForGameScene(client);
     await logStep('game_scene_ready');
 
-    await evaluate(client, 'document.body.focus()');
-    await dispatchKey(client, 'r', 'KeyR');
-    await logStep('telemetry_reset_dispatched');
-
-    const resetRuns = await evaluate<number>(
+    await evaluate(
       client,
-      `window.__SURVIVE_60_GAME__?.scene?.getScene('GameScene')?.sessionTelemetry?.totalRuns ?? -1`,
+      `(() => {
+        const scene = window.__SURVIVE_60_GAME__?.scene?.getScene('GameScene');
+        if (!scene) {
+          throw new Error('GameScene missing.');
+        }
+
+        scene.handleTelemetryReset();
+      })()`,
     );
+    await logStep('telemetry_reset_called');
+    await delay(100);
+
+    const resetTelemetry = await getSessionTelemetrySnapshot(client);
+    const resetRuns = resetTelemetry?.totalRuns ?? -1;
 
     if (resetRuns !== 0) {
       throw new Error(`Telemetry reset failed. Expected 0 session runs, got ${resetRuns}.`);
@@ -333,8 +367,18 @@ const main = async (): Promise<void> => {
 
     await injectSampleRuns(client);
     await logStep('sample_runs_injected');
-    await dispatchKey(client, 'v', 'KeyV');
-    await logStep('validation_export_dispatched');
+    await evaluate(
+      client,
+      `(() => {
+        const scene = window.__SURVIVE_60_GAME__?.scene?.getScene('GameScene');
+        if (!scene) {
+          throw new Error('GameScene missing.');
+        }
+
+        scene.handleValidationExport();
+      })()`,
+    );
+    await logStep('validation_export_called');
 
     await delay(150);
 

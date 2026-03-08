@@ -62,7 +62,7 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser preflight is now ready but the packaged smoke step fails with CDP `Page.enable`, so real-player sampling is still outstanding
+current: not collected in this runtime; browser smoke now passes and confirms injected validation export persistence across reload, but real-player replay/start/pause sampling is still outstanding
 target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether fresh-press movement-key retry feels natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
@@ -74,6 +74,11 @@ telemetry_regression_check:
 current: `npm run telemetry:check` passes on the Run #56 baseline and now also asserts fresh-session retry remains `null` while same-session retry delay is still tracked
 baseline: as of Run #56 asserts pacing, required spawn distance, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, and retry-delay session integrity
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
+
+browser_validation_smoke:
+current: `npm run telemetry:browser-validation-smoke` and `npm run telemetry:validation-ready -- --with-smoke` pass; smoke injects 5 sample runs, exports validation summary, and confirms `Last export` survives reload
+baseline: Run #57 fixed the smoke script to connect to a page CDP target instead of the browser websocket and to verify reset/export through scene methods plus storage state
+target: keep smoke green as a lightweight browser harness, but treat it as prerequisite evidence only; replay/start/pause friction still requires human sample
 
 build_health:
 current: `npm run build` passes; Vite still reports a large chunk warning for the main bundle
