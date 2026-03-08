@@ -818,14 +818,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   private showImpactMarker(hitDirection: HitDirection): void {
+    const rayStartOffset = 24;
     const rayLength = 94;
+    const rayStartX = this.player.x + hitDirection.offsetX * rayStartOffset;
+    const rayStartY = this.player.y + hitDirection.offsetY * rayStartOffset;
     const rayEndX = this.player.x + hitDirection.offsetX * rayLength;
     const rayEndY = this.player.y + hitDirection.offsetY * rayLength;
     const markerX = Phaser.Math.Clamp(this.player.x + hitDirection.offsetX * 54, 48, ARENA_WIDTH - 48);
     const markerY = Phaser.Math.Clamp(this.player.y + hitDirection.offsetY * 54, 48, ARENA_HEIGHT - 48);
 
     this.impactRay
-      .setTo(this.player.x, this.player.y, rayEndX, rayEndY)
+      .setTo(rayStartX, rayStartY, rayEndX, rayEndY)
       .setAlpha(0.95)
       .setVisible(true);
     this.impactArrowHead
@@ -925,14 +928,17 @@ export class GameScene extends Phaser.Scene {
       hitDirection.offsetX === 0 && hitDirection.offsetY === 0 ? 0 : -hitDirection.offsetX;
     const guideOffsetY =
       hitDirection.offsetX === 0 && hitDirection.offsetY === 0 ? -1 : -hitDirection.offsetY;
+    const guideStartOffset = 28;
     const guideLength = 122;
+    const guideStartX = this.player.x + guideOffsetX * guideStartOffset;
+    const guideStartY = this.player.y + guideOffsetY * guideStartOffset;
     const guideEndX = this.player.x + guideOffsetX * guideLength;
     const guideEndY = this.player.y + guideOffsetY * guideLength;
     const markerX = Phaser.Math.Clamp(this.player.x + guideOffsetX * 70, 56, ARENA_WIDTH - 56);
     const markerY = Phaser.Math.Clamp(this.player.y + guideOffsetY * 70, 56, ARENA_HEIGHT - 56);
 
     this.escapeRay
-      .setTo(this.player.x, this.player.y, guideEndX, guideEndY)
+      .setTo(guideStartX, guideStartY, guideEndX, guideEndY)
       .setAlpha(0.96)
       .setVisible(true);
     this.escapeArrowHead

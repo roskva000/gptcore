@@ -6,6 +6,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #39]
+
+Decision:
+Olum anindaki kirmizi impact ray ve teal kacis ray'inin baslangici oyuncu merkezinden biraz disari alindi.
+
+Reason:
+Audit gameplay readability disinda yeni alan acmayi yasakliyor ve bu runtime'ta manuel browser sample hala yok. Mevcut death feedback paketi icindeki en dar urun kazanci, iki yon sinyalinin oyuncu merkezinde ust uste binmesini azaltip fatal lane ile kacis yonunu daha hizli ayristirmakti.
+
+Impact:
+Oyuncu olum aninda gelen tehlike ve onerilen kacis yonunu ayni anda gorurken merkezde daha temiz bir boslukla iki ray'i daha kolay okuyabilir. `npm run telemetry:check` ve `npm run build` yesil kalarak deterministic baseline ve replay hizinin korunmasini dogruladi.
+
+Rollback Condition:
+Host browser manuel sample'i bu merkez-bosluginin ray'leri fazla kopuk gosterdigini veya oyuncu referansini zayiflattigini gosterirse yalnizca start offset/alpha/line-length seviyesinde dar ayar yapilir.
+
 ### [Run #38]
 
 Decision:

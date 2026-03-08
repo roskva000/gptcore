@@ -42,9 +42,9 @@ baseline: same
 target: keep `V` export and parser aligned
 
 hit_feedback_status:
-current: visual death feedback, fatal lane impact ray with arrowhead, directional hit callout, dedicated fatal-lane callout, killer obstacle spotlight with in-scene `KILLER` tag plus short connector, non-fatal threat dimming, teal escape ray + arrowhead + marker, `BREAK ...` escape prompt, and short procedural death blip active after user interaction
-baseline: expanded in Run #38 without changing deterministic telemetry baselines
-target: keep death cause, exact fatal collider, and next move instantly readable at first glance without slowing retry cadence, leaking old obstacle highlight state into replay, or triggering audio policy friction
+current: visual death feedback, fatal lane impact ray with arrowhead and a small center gap, directional hit callout, dedicated fatal-lane callout, killer obstacle spotlight with in-scene `KILLER` tag plus short connector, non-fatal threat dimming, teal escape ray + arrowhead + marker with a small center gap, `BREAK ...` escape prompt, and short procedural death blip active after user interaction
+baseline: expanded in Run #39 without changing deterministic telemetry baselines
+target: keep death cause, exact fatal collider, and next move instantly readable at first glance without slowing retry cadence, leaking old obstacle highlight state into replay, or letting the center-gap make the rays feel disconnected from the player
 
 replay_flow_status:
 current: post-death replay clears the prior run state inside the same scene and starts a fresh run on one Space/Enter/tap
@@ -53,15 +53,15 @@ target: keep replay under the project's `< 3s` expectation with no extra tap/key
 
 public_ai_update_surface:
 current: visible beside the game canvas with 1 title, 1 intro, and 9 short bullets about the latest meaningful run
-baseline: copy refreshed in Run #38 to match the arrowhead readability pass
+baseline: copy refreshed in Run #39 to match the center-gap readability pass
 target: keep visible in build and validate manually that it helps orientation without distracting from replay or competing with the death callout
 
 manual_validation_sample:
 current: not collected in this runtime; browser validation remains blocked by loopback `EPERM`
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action and whether killer tag + connector + threat dimming + arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback improve fairness/readability
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action and whether killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback improve fairness/readability
 
 telemetry_regression_check:
-current: passes via `npm run telemetry:check` as of Run #38
+current: passes via `npm run telemetry:check` as of Run #39
 baseline: asserts pacing, survival, survival buckets and validation summary
 target: run before and after any future balance change
 
@@ -77,4 +77,4 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current survival sample first 8 runs: `30.0, 14.7, 6.2, 13.1, 30.0, 22.8, 21.0, 16.4`
-- current tuning signal: deterministic survival baseline korunurken olum aninin okunurlugu yeni arrowhead'li impact/escape rays + killer tag + connector + killer spotlight + threat dimming + teal escape guide paketi ile guclendi; insan oyuncu algisi icin manuel sample hala gerekli
+- current tuning signal: deterministic survival baseline korunurken olum aninin okunurlugu yeni merkez-bosluklu impact/escape rays + killer tag + connector + killer spotlight + threat dimming + teal escape guide paketi ile guclendi; insan oyuncu algisi icin manuel sample hala gerekli

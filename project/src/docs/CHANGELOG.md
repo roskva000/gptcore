@@ -2,6 +2,14 @@
 
 ---
 
+## Run #39
+
+- `project/game/src/game/GameScene.ts` icinde death anindaki kirmizi impact ray ve teal kacis ray'inin baslangici oyuncu merkezinden biraz disari alinip merkez ustu gorsel yigilmaya daha az neden olacak sekilde ayarlandi
+- `project/game/src/latestRun.ts` public AI update paneli bu merkez-bosluklu ray readability pass'ini anlatacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #38
 
 - `project/game/src/game/GameScene.ts` icinde death anindaki kirmizi impact ray ve teal kacis ray'i kucuk arrowhead uclariyla guncellendi
