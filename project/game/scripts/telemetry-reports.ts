@@ -66,6 +66,21 @@ type SessionResult = {
   spawnRerolls: number;
 };
 
+export type SpawnTraceEvent = {
+  spawnIndex: number;
+  timeSeconds: number;
+  spawnPoint: Point;
+  rerollsUsed: number;
+  playerPosition: Point;
+  playerVelocity: Point;
+  visibleObstacleCount: number;
+  nearestVisibleObstacleDistancePx: number | null;
+};
+
+type SimulatedSessionResult = SessionResult & {
+  spawnEvents: SpawnTraceEvent[];
+};
+
 export type BalanceSnapshotReport = {
   targetFirstDeathSeconds: number;
   firstSpawnAtSeconds: number;
@@ -103,6 +118,14 @@ export type SurvivalSnapshotReport = {
   averageSpawnCount: number;
   averageSpawnRerolls: number;
   sampleRuns: SessionResult[];
+};
+
+export type SeedTrajectoryReport = {
+  seed: number;
+  deathTimeSeconds: number;
+  spawnsBeforeDeath: number;
+  spawnRerollsBeforeDeath: number;
+  spawnEvents: SpawnTraceEvent[];
 };
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
@@ -207,10 +230,11 @@ const getPlayerVelocity = (
   return scale(direction, EFFECTIVE_PLAYER_SPEED);
 };
 
-const simulateSession = (seed: number): SessionResult => {
+const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionResult => {
   const randomInt = createSeededRandom(seed);
   const player: Point = { x: ARENA_WIDTH / 2, y: ARENA_HEIGHT / 2 };
   const obstacles: Obstacle[] = [];
+  const spawnEvents: SpawnTraceEvent[] = [];
   let playerVelocity: Vector = { x: 0, y: 0 };
   let nextDecisionAtSeconds = 0;
   let survivalTimeSeconds = 0;
@@ -220,6 +244,9 @@ const simulateSession = (seed: number): SessionResult => {
 
   while (survivalTimeSeconds < MAX_SIMULATION_SECONDS) {
     while (survivalTimeSeconds >= nextSpawnAtSeconds) {
+      const visibleObstacleDistances = obstacles
+        .filter((obstacle) => isPointInsideArena(obstacle))
+        .map((obstacle) => Math.hypot(obstacle.x - player.x, obstacle.y - player.y));
       const selection = selectSpawnPoint({
         survivalTimeSeconds,
         playerPosition: player,
@@ -249,6 +276,32 @@ const simulateSession = (seed: number): SessionResult => {
 
       spawns += 1;
       spawnRerolls += selection.rerollsUsed;
+
+      if (spawnEvents.length < spawnTraceLimit) {
+        spawnEvents.push({
+          spawnIndex: spawns,
+          timeSeconds: round(survivalTimeSeconds),
+          spawnPoint: {
+            x: selection.point.x,
+            y: selection.point.y,
+          },
+          rerollsUsed: selection.rerollsUsed,
+          playerPosition: {
+            x: round(player.x),
+            y: round(player.y),
+          },
+          playerVelocity: {
+            x: round(playerVelocity.x),
+            y: round(playerVelocity.y),
+          },
+          visibleObstacleCount: visibleObstacleDistances.length,
+          nearestVisibleObstacleDistancePx:
+            visibleObstacleDistances.length > 0
+              ? round(Math.min(...visibleObstacleDistances))
+              : null,
+        });
+      }
+
       nextSpawnAtSeconds += getSpawnDelayMs(nextSpawnAtSeconds) / 1000;
     }
 
@@ -289,6 +342,7 @@ const simulateSession = (seed: number): SessionResult => {
           survivalTimeSeconds: round(survivalTimeSeconds),
           spawns,
           spawnRerolls,
+          spawnEvents,
         };
       }
     }
@@ -301,6 +355,7 @@ const simulateSession = (seed: number): SessionResult => {
     survivalTimeSeconds: round(MAX_SIMULATION_SECONDS),
     spawns,
     spawnRerolls,
+    spawnEvents,
   };
 };
 
@@ -365,5 +420,20 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
       results.reduce((total, result) => total + result.spawnRerolls, 0) / results.length,
     ),
     sampleRuns: results.slice(0, 8),
+  };
+};
+
+export const createSeedTrajectoryReport = (
+  seed: number,
+  spawnTraceLimit = 6,
+): SeedTrajectoryReport => {
+  const result = simulateSession(seed, spawnTraceLimit);
+
+  return {
+    seed: result.seed,
+    deathTimeSeconds: result.survivalTimeSeconds,
+    spawnsBeforeDeath: result.spawns,
+    spawnRerollsBeforeDeath: result.spawnRerolls,
+    spawnEvents: result.spawnEvents,
   };
 };

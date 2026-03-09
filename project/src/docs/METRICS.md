@@ -71,6 +71,11 @@ current: first `6s` spawn selection now also penalizes candidates that arrive fr
 baseline: Run #74 added this narrow gameplay filter after more aggressive center-cut and intercept ideas regressed the deterministic guard set; Run #76 constrained the filter to visible threats only and added a deterministic regression check for offscreen-vs-visible behavior while holding the checked snapshot at `26.6s` average / `1 / 3 / 2 / 18` buckets / `0.5` average rerolls
 target: confirm manually that this trims repeated same-lane opener pressure without making spawn variety feel scripted or letting invisible edge threats bias the next spawn before they appear
 
+seed3_outlier_trace:
+current: existing deterministic telemetry now also captures the seed `#3` opener trace that still dies at `6.3s`: `6 spawn / 0 reroll`, with spawn times `0.9 / 1.9 / 3.0 / 4.0 / 5.0 / 6.0`, `spawn#4` from `{636,-56}` under `86.3px` nearest visible pressure and `spawn#6` from `{-56,242}` under `81.4px` nearest visible pressure
+baseline: Run #77 added this trace to the existing `telemetry-reports.ts` and `telemetry-check.ts` surface after several narrow spawn-selection experiments improved seed `#3` only by breaking the checked guard set elsewhere
+target: future spawn-selection tuning should move at least one of these pinch moments while preserving `avg >= 26.6s`, `<10s <= 1`, `10-20s <= 3`, and `30s cap >= 18`
+
 public_ai_panel_accuracy:
 current: the player-facing `Latest AI update` panel still mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export, but its static copy now lags the latest `26.6s` deterministic baseline
 baseline: Run #62 removed the stale Run #60 copy and obsolete `30.0s first death` text that had drifted from the real validation/export contract; Run #66 intentionally left public copy untouched to respect the audit freeze on copy churn
@@ -116,8 +121,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #76 baseline and still asserts fresh-session retry remains `null`, same-session retry delay is still tracked, the deterministic survival proxy still models runtime visible-arena hit guard plus `96px` offscreen cull margin, and offscreen obstacle'larin lane-stack reroll tetiklememesi guard altinda
-baseline: as of Run #76 asserts pacing, required spawn distance, forward-pressure and lane-stack spawn reroll behavior through the checked snapshot, visible-only lane-stack guard'ini, softened `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, retry-delay session integrity, and runtime-aligned collision/cull proxy behavior
+current: `npm run telemetry:check` passes on the Run #77 baseline and still asserts fresh-session retry remains `null`, same-session retry delay is still tracked, the deterministic survival proxy still models runtime visible-arena hit guard plus `96px` offscreen cull margin, offscreen obstacle'larin lane-stack reroll tetiklememesi guard altinda, and seed `#3`un ilk alti spawn trace'i sabit kaliyor
+baseline: as of Run #77 asserts pacing, required spawn distance, forward-pressure and lane-stack spawn reroll behavior through the checked snapshot, visible-only lane-stack guard'ini, softened `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, retry-delay session integrity, runtime-aligned collision/cull proxy behavior, and the seed `#3` outlier trace
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:
@@ -141,5 +146,6 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current tuning signal: deterministic snapshot artik `26.6s / 6.3s / 4%`; Run #75 yumusatilan `20s+` curve bir `20-30s` kuyruğunu `30s` cap'e tasidi ama opener'da bir `<10s` outlier hala var, Run #67'nin daralttigi obstacle collider ise bu metrigi degistirmeden insan hissinde fairness kazanimi ariyor
 - deterministic survival proxy artik runtime ile ayni gorunur-arena hit guard'i ve `96px` offscreen cull margin'ini modelledigi icin collision/cull tarafinda sessiz drift riski azaldi
+- seed `#3` outlier'i artik tek satir `6.3s` metric olarak degil, hangi spawn zinciriyle geldigini gosteren sabit bir deterministic trace olarak da tutuluyor
 - Run #72 collision grace unlock'unu aktif run elapsed zamanina tasidigi icin focus-loss pause sirasinda "run is frozen" vaadi gameplay tarafinda daha tutarli
 - compact live telemetry, collapsed run panel, personal-best cue, waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve focus-loss pause'un birlikte nasil algilandigi icin manuel sample hala gerekli

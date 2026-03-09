@@ -3,12 +3,14 @@ import { selectSpawnPoint } from '../src/game/spawn.ts';
 import { getRetryDelayMs } from '../src/game/telemetry.ts';
 import {
   createBalanceSnapshotReport,
+  createSeedTrajectoryReport,
   createSurvivalSnapshotReport,
 } from './telemetry-reports.ts';
 import { createValidationSnapshotReport } from './validation-snapshot.ts';
 
 const balanceReport = createBalanceSnapshotReport();
 const survivalReport = createSurvivalSnapshotReport();
+const seed3TrajectoryReport = createSeedTrajectoryReport(3);
 const validationReport = createValidationSnapshotReport();
 
 const speedAt = (seconds: number): number => {
@@ -124,6 +126,67 @@ assert.deepEqual(
 );
 assert.equal(survivalReport.averageSpawnCount, 28.1, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.5, 'Spawn reroll snapshot changed unexpectedly.');
+assert.equal(seed3TrajectoryReport.deathTimeSeconds, 6.3, 'Seed #3 trajectory baseline drifted.');
+assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 6, 'Seed #3 spawn count changed unexpectedly.');
+assert.equal(
+  seed3TrajectoryReport.spawnRerollsBeforeDeath,
+  0,
+  'Seed #3 should still reach the 6.3s outlier without spawn rerolls.',
+);
+assert.deepEqual(
+  seed3TrajectoryReport.spawnEvents.map((event) => ({
+    spawnIndex: event.spawnIndex,
+    timeSeconds: event.timeSeconds,
+    spawnPoint: event.spawnPoint,
+    visibleObstacleCount: event.visibleObstacleCount,
+    nearestVisibleObstacleDistancePx: event.nearestVisibleObstacleDistancePx,
+  })),
+  [
+    {
+      spawnIndex: 1,
+      timeSeconds: 0.9,
+      spawnPoint: { x: 634, y: -56 },
+      visibleObstacleCount: 0,
+      nearestVisibleObstacleDistancePx: null,
+    },
+    {
+      spawnIndex: 2,
+      timeSeconds: 1.9,
+      spawnPoint: { x: 856, y: 355 },
+      visibleObstacleCount: 1,
+      nearestVisibleObstacleDistancePx: 271.3,
+    },
+    {
+      spawnIndex: 3,
+      timeSeconds: 3,
+      spawnPoint: { x: 3, y: 656 },
+      visibleObstacleCount: 2,
+      nearestVisibleObstacleDistancePx: 120,
+    },
+    {
+      spawnIndex: 4,
+      timeSeconds: 4,
+      spawnPoint: { x: 636, y: -56 },
+      visibleObstacleCount: 3,
+      nearestVisibleObstacleDistancePx: 86.3,
+    },
+    {
+      spawnIndex: 5,
+      timeSeconds: 5,
+      spawnPoint: { x: 856, y: 150 },
+      visibleObstacleCount: 4,
+      nearestVisibleObstacleDistancePx: 80.9,
+    },
+    {
+      spawnIndex: 6,
+      timeSeconds: 6,
+      spawnPoint: { x: -56, y: 242 },
+      visibleObstacleCount: 5,
+      nearestVisibleObstacleDistancePx: 81.4,
+    },
+  ],
+  'Seed #3 outlier trace changed unexpectedly.',
+);
 assert.equal(
   validationReport.validationSummary,
   '5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths',

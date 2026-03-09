@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #77]
+
+Decision:
+Headed runtime bloklu kaldigi icin yeni gameplay tuning'i zorlamadan once seed `#3` deterministic outlier'i mevcut telemetry-report/check yuzeyinde sabit bir trajectory trace olarak kilitlendi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry wording, public copy, readability ve yeni readiness/preflight katmani yasakti. Bu runtime'da halen interactive headed browser yoktu. Seed `#3` icin yapilan dar spawn-selection denemeleri deterministic guard setini bozdu; bu nedenle ayni `6.3s` olumu ureten ilk alti spawn zincirini mevcut deterministic check icinde acikca sabitlemek daha guvenli ve bir sonraki gameplay turunu hizlandiracak bir adimdi.
+
+Impact:
+`project/game/scripts/telemetry-reports.ts` icine mevcut survival sim'ini yeniden kullanarak `createSeedTrajectoryReport()` helper'i eklendi. `project/game/scripts/telemetry-check.ts` seed `#3` icin `6.3s` death, `6 spawn / 0 reroll`, ilk alti spawnin `0.9 / 1.9 / 3.0 / 4.0 / 5.0 / 6.0` saniye zincirini ve `spawn#4`te `86.3px`, `spawn#6`da `81.4px` en yakin gorunur obstacle baskisini assert ediyor. Gameplay davranisi ve checked baseline bilincli olarak degistirilmedi: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Eger seed trajectory trace'i bir sonraki gameplay turlerinde fazla kirilgan bulunursa helper kaldirilmadan once yalnizca trace alanlari sadeleştirilir; ayri bir validation/readiness katmani acilmaz.
+
 ### [Run #76]
 
 Decision:

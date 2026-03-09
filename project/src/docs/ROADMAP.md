@@ -6,8 +6,9 @@
 
 - Divine Integration sonrasi en yuksek oncelik, projeyi `Human-Proven Survival Core` fazina sokmak
 - Run #76 lane-stack filtresini gorunur obstacle'larla sinirladi; offscreen obstacle'lar artik erken spawn secimine gizli baski yapmiyor. Deterministic baseline `26.6s / 6.3s / 4%` ve `1 / 3 / 2 / 18` korunurken yeni regression check bu davranisi guard altina aldi
+- Run #77 seed `#3` outlier'inin deterministic trace'ini mevcut telemetry-check icinde kilitledi; ilk alti spawn ve `spawn#4` / `spawn#6` pinch anlari artik tekrar olculebilir durumda
 - interactive headed browser/runtime varsa en yuksek degerli adim forward-pressure + lane-stack spawn filtresini replay/start/pause/control paketiyle birlikte 5-10 manuel run'da dogrulamak olmali
-- headed runtime yine blokluysa sonraki builder turu ayni copy/tooling alanina donmeden persistent `6.3s` outlier'i yeni ve dar bir trajectory/spawn-selection ayariyla zorlamaya devam etmeli
+- headed runtime yine blokluysa sonraki builder turu ayni copy/tooling alanina donmeden persistent `6.3s` outlier'i artik bu trace'e bakarak yeni ve dar bir trajectory/spawn-selection ayariyla zorlamaya devam etmeli
 - haftalik stratejik gorev: builder run'lari artik ya insan kaniti toplasin ya da yeni gameplay problemi cozsun; telemetry/copy semantik loop'una geri donmesin
 - odak, opening spawn-distance bonusu veya early lag/grace sabitlerine donmeden seed `#3` tipi trajectory/crossfire pattern'ini izolasyonla anlamak ve `avg >= 26.6s`, `<10s <= 1`, `30s cap >= 18` guard'larini korumak olsun
 - once `npm run telemetry:check`, `npm run build` ve gerekirse `npm run telemetry:validation-ready -- --with-smoke` ile yeni baseline'i kilitle; sonra manuel sample veya yeni gameplay degisikligini dar tut
@@ -28,6 +29,7 @@ Basari olcutleri:
 - God katmani kuruldugu icin bir sonraki builder, `STRATEGIC_STATE.md` ve `MASTER_PLAN.md` ile uyumunu acikca yazmali
 - interactive headed browser runtime yoksa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
 - browser yoksa telemetry/copy alanina donmeden seed `#3` trajectory/crossfire pattern'ini veya `<10s` outlier'i azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
+- browser yoksa `createSeedTrajectoryReport(3)` tarafinda gorunen `spawn#4` top-right ve `spawn#6` left-edge pinch anlarindan en az birini degistirecek dar ayari hedefle
 - browser yoksa Run #76 visible-only lane-stack fix'ini tekrar acma; yeni is ya manuel sample ya da seed `#3` trajectory problemi olmali
 - browser yoksa runtime ile proxy hizasi bu tur kapandigi icin ayni validation/cull alanina ikinci bir tur harcama
 - Run #72 pause-safe grace bug fix'i tamamlandigi icin ayni pause/grace implementasyonuna ikinci tur harcama; ancak headed manual sample bunu haksiz veya gec hissettirirse dar kapsamda yeniden bak
@@ -75,6 +77,7 @@ Basari olcutleri:
 - deterministic survival snapshot mevcut guard olarak `avg >= 26.6s`
 - deterministic early death rate `<= 4%`
 - deterministic first death `> 6.3s` yonunde ilerlemeli; ideal urun hedefi halen `> 10s`
+- seed `#3` trajectory trace'i sabit kalmali: `6 spawn / 0 reroll`, `spawn#4` nearest visible `86.3px`, `spawn#6` nearest visible `81.4px`; yeni gameplay ayari bu iki pinch anindan en az birini hareket ettirdigini gostermeli
 - deterministic survival buckets icinde `10-20s <= 3`, `<10s <= 1`, `30s cap >= 18`
 - `npm run telemetry:check` accidental drift'te fail veriyor
 - deterministic survival proxy runtime ile ayni gorunur-arena hit guard'i ve `96px` offscreen cull margin'ini kullaniyor; bu hizayi bozacak ayarlar guard altinda tutulmali

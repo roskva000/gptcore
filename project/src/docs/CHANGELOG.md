@@ -2,6 +2,12 @@
 
 ---
 
+## Run #77
+
+- `project/game/scripts/telemetry-reports.ts` mevcut deterministic survival sim'inden `createSeedTrajectoryReport()` helper'i uretti; seed `#3` icin ilk alti spawn zinciri artik ayni yuzeyden okunabiliyor
+- `project/game/scripts/telemetry-check.ts` seed `#3` outlier'ini `6.3s`, `6 spawn / 0 reroll`, `spawn#4`te `86.3px` ve `spawn#6`da `81.4px` gorunur obstacle yakinligi ile guard altina aldi
+- gameplay davranisi degistirilmeden deterministic baseline `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #76
 
 - `project/game/src/game/spawn.ts` early lane-stack filtresini yalnizca arena icine girmis obstacle'lari sayacak sekilde guncelledi; offscreen obstacle'lar artik yakin lane baskisi yaratmiyor
