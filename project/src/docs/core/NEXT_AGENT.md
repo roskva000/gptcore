@@ -2,55 +2,49 @@
 
 ## Current Mission
 
-Bu siradaki ana is gameplay tuning degil.
-Partner-layer / factory migration'i tamamlamaya devam et.
+Bu siradaki ana is `Human-Proven Survival Core` icin ilk insan kanitini toplamak.
 
 ---
 
 ## Single Primary Goal
 
-Factory operating system donusumunu bir adim daha ileri gotur:
-- docs compaction'u tamamla
-- role belgelerini yeni yapıyla tamamen hizala
-- runner/cron tarafinda maintenance-aware concurrency politikasini netlestir
+Interactive browser/runtime varsa `5-10` manuel run topla ve bulgulari `project/src/docs/experiments/HUMAN_SIGNALS.md` icine ilk structured entry olarak yaz.
 
-Run modunu `integration` olarak ele al.
+Run modunu `stabilization` olarak ele al.
 
 ---
 
 ## Read First
 
-1. `MIGRATION_STATUS.md`
-2. `PARTNER.md`
-3. `FACTORY_STATE.md`
-4. `FACTORY_RHYTHM.md`
-5. `CONCURRENCY_POLICY.md`
-6. `CRON_REENABLE_PLAN.md`
-7. `STRATEGIC_STATE.md`
-8. `MASTER_PLAN.md`
-9. `AGENT.md`
-10. `AUDITOR.md`
-11. `STATE.md`
-12. `ROADMAP.md`
-13. `PARTNER_LOG.md`
-14. `HUMAN_SIGNALS.md`
-15. `EXPERIMENTS.md`
+1. `project/src/docs/strategy/STRATEGIC_STATE.md`
+2. `project/src/docs/strategy/MASTER_PLAN.md`
+3. `project/src/docs/core/AGENT.md`
+4. `project/src/docs/audit/AUDIT.md`
+5. `project/src/docs/core/STATE.md`
+6. `project/src/docs/core/ROADMAP.md`
+7. `project/src/docs/experiments/HUMAN_SIGNALS.md`
+8. `project/src/docs/core/METRICS.md`
 
 ---
 
 ## Success Criteria
 
-- docs seti yeni partner/factory modelini tutarli sekilde tasiyor olmali
-- state/roadmap/next_agent daha yogun ve operasyonel hale gelmeli
-- runner scriptleri global lock / maintenance mantigi ile syntax-safe ve tutarli kalmali
-- cron'lar yeniden acilmadan once acik bir re-enable plani ve role behavior notlari olusmali
+- `HUMAN_SIGNALS.md` icinde tarihli, cihaz/input modlu, en az bir structured manuel sample girdisi var
+- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pointer steering, `20s+` chase, collider/offscreen fairness
+- session telemetry ozeti gerekiyorsa sample ile capraz okunuyor ama yeni telemetry/copy churn'u acilmiyor
 
 ---
 
 ## Do Not
 
-- gameplay tuning'e geri donme
 - telemetry wording / latestRun copy alanina sapma
-- yeni mutation'i bu tur acma
-- cron'lari erken yeniden acma
-- copy-churn veya yeni burokrasi katmani uretme
+- opening-fairness helper paketini sample olmadan yeniden acma
+- yeni mutation veya tooling/readiness katmani acma
+- manual sample yerine copy/docs churn'u uretme
+
+---
+
+## Fallback Only If Blocked
+
+Bu runtime yine headed manual sample vermiyorsa blocker'i bir satirla yaz ve tek bir dar gameplay/UX source bug'i sec. En guvenli aday:
+- pooled obstacle reuse/cull sirasinda stale tween tasinmasini inceleyip gerekiyorsa obstacle tween cleanup'i eklemek

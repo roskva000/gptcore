@@ -4,27 +4,22 @@
 
 # NOW
 
-- partner/factory operating system migration'ini tamamla
-- builder / auditor / god / partner rol haritasini tam hizala
-- factory-wide concurrency ve maintenance politikasini runner katmanina tasima yolunu netlestir
-- human signal, experiment ve retention hafizasini canli hale getir
-- cron'lari yeniden acmadan once cakismasiz ritim planini kilitle
+- `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, pointer steering, offscreen hit guard, `11px` collider, `20s+` chase ve audio feedback parity notlarini kaydet
+- headed runtime yoksa telemetry/copy/readability veya opening-fairness paketine donmeden tek bir dar gameplay/UX bug'ini kapat
+- deterministic baseline'i `26.6s / 6.3s / 4%`, bucket'lari `1 / 3 / 2 / 18` ve build sagligini koru
 
 Success markers:
-- yeni docs seti birbiriyle tutarli
-- runner scripts global lock mantigiyla syntax-safe
-- state / next-agent / roadmap yuksek sinyal yogunluguna indi
-- migration bitmeden otomatik cron tekrar acilmadi
+- ilk `HUMAN_SIGNALS.md` girdisi olustu veya runtime blocker net kayda gecti
+- product delta gameplay/source icinde kaldi; telemetry/copy churn'u acilmadi
+- `npm run telemetry:check` ve `npm run build` yesil kaldi
 
 ---
 
 # NEXT
 
-- human signals girdisi ile `Human-Proven Survival Core`u gercekten baslat
-- controlled mutation cadence'i tanimla
-- ilk dusuk riskli mutation adayini (`near-miss pressure reward` gibi) degerlendir
-- partner pulse ve deep review ritmini operasyonalize et
-- cron re-enable plani + timeout/skip/defer davranisini finalize et
+- manual sample notlarina gore fairness, replay veya control tarafinda en yuksek etkili dar bug fix'i sec
+- seed `#3` outlier'ini ancak manual evidence veya yeni guvenli gameplay hipotezi varsa yeniden ac
+- insan kaniti geldikten sonra ilk dusuk riskli mutation adayini (`near-miss pressure reward` gibi) degerlendir
 
 ---
 
@@ -35,15 +30,15 @@ Success markers:
 - lightweight run identity layer
 - obstacle variety / archetype split
 
-Bu adaylar migration tamamlanmadan active run'a donusmemeli.
+Bu adaylar human signal gelmeden ve cekirdek fairness/replay akisi kanitlanmadan active run'a donusmemeli.
 
 ---
 
 # BLOCKED
 
 - structured human signal eksikligi
-- cron/runner reformu bitmeden tam otomatik yeniden aktivasyon
-- gameplay mutation'larinin retention sistemi olmadan acilmasi
+- bu runtime'da headed browser olmayisi
+- gameplay mutation'larinin insan kaniti ve retention sistemi olmadan acilmasi
 
 ---
 
@@ -52,12 +47,13 @@ Bu adaylar migration tamamlanmadan active run'a donusmemeli.
 - telemetry wording / latestRun copy churn'u
 - ayni fairness helper yuzeyine tekrar tekrar donme
 - readiness/preflight/tooling katmani buyutme
+- migration-first builder odagi
 
 ---
 
 # LATER
 
 - `GameScene.ts` icin seam extraction plani
+- public experiment feed / learning surface
 - factory pulse'in script seviyesinde otomasyonu
 - deploy / release ritmini yeni growth modeliyle hizalama
-- public experiment feed / learning surface

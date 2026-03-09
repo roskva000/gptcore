@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #79]
+
+Decision:
+Primary-action girisi `activatePrimaryAction()` altinda birlestirildi; movement-key veya held-input ile baslayan/resume olan run'lar da artik Space/Enter/tap ile ayni audio unlock yolunu kullaniyor.
+
+Reason:
+Stratejik yon ve `AUDIT.md` governance'i bu turda telemetry/copy/readability churn'unu ve ayni fairness paketine donmeyi yasakliyordu. Headed manual sample yine blokluydu. Mevcut source icinde gercek bir UX bug'i vardi: movement-key ile baslayan run'larda `unlockFeedbackAudio()` hic cagrilmadigi icin death feedback sesi ilk elden kilitli kalabiliyordu. Bu, replay/start akisini etkileyen dar bir stabilization problemiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` waiting/gameOver/paused fazlarindaki update-tabanli movement/held input tetiklerini `activatePrimaryAction()` uzerinden yonetiyor. `handlePrimaryAction()` da ayni yolu kullandigi icin Space/Enter/tap ve movement-key baslangiclari audio unlock parity kazandi. Deterministic baseline bilincli olarak degismedi: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Manual sample movement-key ile baslayan run'larda accidental start/resume veya beklenmeyen audio davranisi gosterirse ayri input kollari geri acilmadan once `activatePrimaryAction()` icindeki faz kosullari dar kapsamda yeniden ayarlanir; telemetry/copy veya fairness helper'lari bu bahaneyle acilmaz.
+
 ### [Run #78]
 
 Decision:

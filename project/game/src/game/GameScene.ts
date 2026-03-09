@@ -441,7 +441,7 @@ export class GameScene extends Phaser.Scene {
       (this.phase === 'waiting' || this.phase === 'gameOver') &&
       (hasFreshMovementInput || hasConfirmedHeldStartInput)
     ) {
-      this.startRun();
+      this.activatePrimaryAction();
     }
 
     if (
@@ -450,7 +450,7 @@ export class GameScene extends Phaser.Scene {
       !document.hidden &&
       document.hasFocus()
     ) {
-      this.resumePausedRun();
+      this.activatePrimaryAction();
     }
 
     this.updatePlayerVelocity();
@@ -522,6 +522,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePrimaryAction(): void {
+    this.activatePrimaryAction();
+  }
+
+  private activatePrimaryAction(): void {
     this.unlockFeedbackAudio();
 
     if (this.phase === 'waiting') {

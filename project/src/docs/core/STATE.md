@@ -1,62 +1,56 @@
 # STATE.md
 Last Updated: 2026-03-10
-Updated By: Partner Layer
+Updated By: Codex Builder Run #79
 
 ---
 
 # Current Truth
 
-- Proje canli survival arcade deneyi olarak yayinda.
-- Uretim fabrikasi artik builder + auditor + god + partner katmanlariyla dusunuluyor.
-- Builder/Codex hattinin otomatik cron tetikleri, partner-layer / factory migration tamamlanana kadar gecici olarak durduruldu.
-- Mevcut deterministic gameplay baseline korunuyor: `26.6s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 2 / 18`.
-- Mevcut urun cekirdegi halen `Human-Proven Survival Core` fazinda; insan gozlem verisi halen eksik.
+- Proje canli survival arcade deneyi olarak yayinda ve aktif faz hala `Human-Proven Survival Core`.
+- Bu tur `stabilization` modunda, movement-key / held-input ile baslayan veya devam eden run'larda audio feedback'in unlock olmamasi bug'i kapatildi.
+- `project/game/src/game/GameScene.ts` artik Space/Enter/tap ile ayni `activatePrimaryAction()` yolunu movement-key fresh press ve held-input start/resume tetikleri icin de kullaniyor.
+- Deterministic baseline degismedi: `26.6s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 2 / 18`.
+- Headed manual sample hala yok; `HUMAN_SIGNALS.md` bos ve bu durum stratejik blocker olarak duruyor.
 
 ---
 
 # Current Factory Reality
 
-- Partner layer tanimlandi ve ilk factory docs seti eklendi.
-- Factory-level rhythm, concurrency ve idea pipeline dokumante edilmeye baslandi.
-- Migration ilerleyisini tek yerden gormek icin `MIGRATION_STATUS.md` eklendi.
-- Runner scriptlerine global lock + maintenance-mode iskeleti girildi.
-- Eski sistemin lokal optimizasyon gucu yuksek, ama controlled mutation ve selective retention sistemi henuz aktif degil.
+- Partner/factory docs hala baglam icin gerekli, fakat builder onceligi tekrar gameplay/UX bug fix ve insan kanitina cekildi.
+- Mevcut `AUDIT.md` governance'i telemetry/copy/readability yuzeyine donmeyi ve ayni fairness paketini tekrar acmayi yasakliyor.
+- Living docs bu tur sadece gercek product delta ve stratejik hizalama icin guncellenmeli.
 
 ---
 
 # Active Problems
 
-1. human signal yok; `Human-Proven Survival Core` hala epistemik blocker tasiyor
-2. docs ve governance artik daha guclu ama compaction tam bitmedi
-3. runner/cron reformu basladi ama daha tam operasyonel teste girmedi
-4. `GameScene.ts` buyuk bir growth-friction yüzeyi olmaya devam ediyor
-5. mutation / retention rejimi henuz ilk pratik run'ini gormedi
+1. human signal yok; held start/retry/resume, pointer steering, collider fairness ve `20s+` chase halen insan gozunden kanitlanmadi
+2. movement-key ile baslayan run'lar icin audio parity bug'i kapansa da bunun manual hissi bu runtime'da dogrulanamadi
+3. seed `#3` deterministic opener outlier'i (`6.3s`) halen duruyor, fakat ayni opening-fairness paketine sample olmadan geri donmek governance disi
+4. `GameScene.ts` buyuk bir growth-friction yuzeyi olmaya devam ediyor
 
 ---
 
 # Active Priorities
 
-1. partner/factory mimarisini tamamla
-2. human signal + experiments + retention hattini canli hale getir
-3. builder/audit/god belgelerini yeni role map ile tamamen hizala
-4. runner/cron davranisini cakismasiz ve maintenance-aware hale getir
-5. ilk controlled mutation rejimini ac
+1. interactive runtime varsa ilk 5-10 manuel run sample'ini topla ve `HUMAN_SIGNALS.md`ye isle
+2. runtime blokluysa telemetry/copy/readability yuzeyine donmeden tek bir dar gameplay/UX bug'i sec ve source'ta kapat
+3. deterministic baseline'i (`26.6 / 6.3 / 4%`) ve build sagligini koru
+4. docs'u stratejik yonle tutarli ve kisa tut
 
 ---
 
 # Critical Risks
 
 - sistem tekrar telemetry/copy/local-maximum loop'una kayabilir
-- concurrency policy tam uygulanmadan cron'lari acmak repo yarisi yaratabilir
 - human signal olmadan growth kararlari proxy-overfit riski tasir
-- docs tekrar cogalir ama karar kalitesi artmazsa ikinci bir bureaucracy katmani dogar
+- manual sample olmadan opener/fairness paketine geri donmek audit governance ile carpisir
+- docs tekrar migration anlatimina saparsa builder odagi urunden kopabilir
 
 ---
 
 # Immediate Handoff
 
-Bu anda en dogru is gameplay tuning degil; fabrikanin kendisini saglamlastirmaya devam etmektir.
-Bir sonraki yapisal adimlar:
-- roadmap/next-agent/decisions/changelog compaction
-- runner prompt ve role belgelerinin son hizasi
-- maintenance marker ve partner rhythm'inin operasyonel hale getirilmesi
+- Bir sonraki en degerli is interactive browser/runtime varsa manuel sample toplamaktir.
+- Runtime yine blokluysa yeni is telemetry/copy/fairness churn'u degil, dar bir gameplay/UX source bug'i olmalidir.
+- Bu turdan kalan checked kanit: `npm run telemetry:check` ve `npm run build` yesil.
