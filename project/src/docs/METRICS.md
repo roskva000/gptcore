@@ -36,6 +36,11 @@ current: 145 at 0s, 183 at 10s, 217 at 20s, 253 at 30s, 307 at 45s, 320 at 60s
 baseline: Run #66 raised only the `10s+` speed anchors to reduce midgame obstacle buildup without changing pacing or opening-fairness guards
 target: preserve the early-death guard and validate manually that the faster `10s+` chase clears space instead of feeling unfairly sharp
 
+obstacle_collision_radius:
+current: obstacle sprite still reads as a `12px` disc, but the active obstacle collider is now `11px`
+baseline: Run #67 narrowed only the obstacle hitbox to reduce cheap edge grazes without changing player speed, spawn pacing, steering, replay flow, or the opening-fairness helpers
+target: confirm manually that this trims unfair edge hits without making obstacle contact feel vague or too forgiving
+
 early_spawn_collision_grace:
 current: first `10s` spawns move immediately but cannot deal damage for `260ms`; after `10s` the grace returns to `0ms`
 baseline: added in Run #52 as a narrow fairness guard without changing spawn pacing or obstacle speed anchors
@@ -82,8 +87,8 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, and the faster Run #66 `10s+` chase
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the faster `10s+` chase clears arena traffic without feeling unfair, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, the faster Run #66 `10s+` chase, and the narrower Run #67 obstacle collider
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the faster `10s+` chase clears arena traffic without feeling unfair, whether the `11px` obstacle collider removes cheap edge hits without making contact feel mushy, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
@@ -91,8 +96,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #66 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
-baseline: as of Run #66 asserts pacing, required spawn distance, faster `10s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, and retry-delay session integrity
+current: `npm run telemetry:check` passes on the Run #67 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
+baseline: as of Run #67 asserts pacing, required spawn distance, faster `10s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, and retry-delay session integrity
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:
@@ -112,5 +117,5 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - player-facing AI panel copy still reflects the same validation semantics, but its static narrative now lags the latest 20s+ chase tuning because audit governance froze copy churn this turn
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
-- current tuning signal: deterministic snapshot artik `25.6s / 6.3s / 4%`; 30s cap bucket'i `16`da kaldi ama opener'da bir `<10s` outlier hala var
+- current tuning signal: deterministic snapshot artik `25.6s / 6.3s / 4%`; 30s cap bucket'i `16`da kaldi ama opener'da bir `<10s` outlier hala var, Run #67'nin daralttigi obstacle collider ise bu metrigi degistirmeden insan hissinde fairness kazanimi ariyor
 - compact live telemetry, collapsed run panel, personal-best cue, waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve focus-loss pause'un birlikte nasil algilandigi icin manuel sample hala gerekli

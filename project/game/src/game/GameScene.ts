@@ -38,6 +38,8 @@ import {
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
 const PLAYER_SPEED = 260;
+const PLAYER_COLLISION_RADIUS = 16;
+const OBSTACLE_COLLISION_RADIUS = 11;
 const POINTER_DEAD_ZONE_PX = 10;
 const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const OFFSCREEN_CULL_MARGIN = 96;
@@ -135,7 +137,7 @@ export class GameScene extends Phaser.Scene {
       .image(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 'player')
       .setDepth(2)
       .setCollideWorldBounds(true)
-      .setCircle(16)
+      .setCircle(PLAYER_COLLISION_RADIUS)
       .setDrag(1400, 1400);
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
     playerBody.setMaxVelocity(PLAYER_SPEED, PLAYER_SPEED);
@@ -801,7 +803,7 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(1)
       .setDepth(2)
       .setPosition(spawnPoint.x, spawnPoint.y)
-      .setCircle(12)
+      .setCircle(OBSTACLE_COLLISION_RADIUS)
       .setScale(1)
       .setVelocity(0, 0);
 

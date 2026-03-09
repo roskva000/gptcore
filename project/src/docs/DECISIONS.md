@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #67]
+
+Decision:
+Obstacle collider yaricapi gorsel yaricap korunarak `12px`ten `11px`e cekildi.
+
+Reason:
+`AUDIT.md` bu tur telemetry/export/public-copy hattina, death-readability'ye ve opening-fairness paketine geri donmeyi yasakliyor. Host browser manuel sample bu runtime'da yine toplanamadi. Yeni tek ana hedef olarak secilen dar gameplay problemi, mevcut hiz curve'u ve replay akislarini bozmadan oyuncunun obstacle kenarina surtundugu anlarda gelen ucuz temaslari biraz daha affedici hale getirmekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` obstacle physics circle'ini `11px`e cekti; player collider, spawn pacing, speed curve, early lag/grace guard'lari, replay/start/resume akislari ve pointer analog steering degismedi. `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni collider ile hizaladi. Deterministic survival snapshot ve validation export bilincli olarak degismedi; baseline `25.6s / 6.3s / 4%` ve `24.1s` validation average olarak korundu. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i `11px` collider'in grazed edge temaslarini duzeltmek yerine oyunu fazla bagislayici yaptigini veya obstacle okunurlugunu bozdugunu gosterirse yeni bir fairness sistemi acmadan yalnizca collider yaricapi dar kapsamda yeniden ayarlanir.
+
 ### [Run #66]
 
 Decision:

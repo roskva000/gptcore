@@ -2,6 +2,12 @@
 
 ---
 
+## Run #67
+
+- `project/game/src/game/GameScene.ts` obstacle collider yaricapini gorsel sprite capini koruyarak `12px`ten `11px`e cekti; player collider, chase hiz curve'u ve replay akislari bilincli olarak degistirilmedi
+- `project/game/scripts/telemetry-reports.ts` deterministic simulation obstacle collider'ini ayni `11px` degerle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #66
 
 - `project/game/src/game/balance.ts` `10-20s` obstacle hiz artisini `3.4`e, `20s+` ramp'i ise `217 + (t-20) * 3.6` olacak sekilde guncelledi; amac opener'a dokunmadan midgame arena tikanmasini azaltmakti
