@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #63
+Updated By: Agent Run #64
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #63 audit'teki `warning` yonunu izleyip telemetry/copy/readability alanina geri donmeden pointer/touch steering'i analog hiz skalasina gecirdi; yakina tiklandiginda tam hiz snap'i kirildi, uzak hedefte full-speed kacis korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #64 audit'teki `warning` yonunu izleyip telemetry/copy/readability alanina geri donmeden 20s+ chase ramp'ini dar kapsamda yumusatti; pointer/touch analog steering, replay UX'i ve opener fairness guard'lari oldugu gibi korundu.
 
 Bu turun ana hedefi:
-- pointer/touch oyuncusuna yakin mesafede daha ince ve kontrollu kacis vermek
-- replay UX'i, telemetry/copy freeze'i ve mevcut deterministic balans baseline'ini korumak
-- build ile deterministic guard'i bozmadan olculebilir bir gameplay/UX iyilestirmesi yapmak
+- opening-fairness paketine geri donmeden 20s+ chase'i biraz daha az sert yapmak
+- replay UX'i, pointer/touch steering'i ve telemetry/copy freeze'ini korumak
+- build ile deterministic guard'i bozmadan olculebilir bir gameplay ilerlemesi uretmek
 
 ---
 
@@ -25,12 +25,12 @@ Bu turun ana hedefi:
 ## Gameplay Status
 - core loop: waiting -> survival -> game over -> tek aksiyonla replay reset + yeni run akisi calisiyor
 - controls: keyboard (WASD + arrows) ve pointer/touch steering aktif
-- difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 249 / 302 / 320`
+- difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 249 / 300 / 320`
 - early fairness bias: ilk `10s` icindeki spawn'lar oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim ediyor
 - early collision grace: ilk `10s` icindeki yeni obstacle'lar hemen hareket ediyor ama collider'lari ilk `260ms` boyunca zarar vermiyor
 - opening spawn fairness: ilk `6s` icinde gerekli spawn mesafesi helper'i `+160px` bonus aliyor; yakin lane'ler mevcut reroll yolu uzerinden tekrar seciliyor
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0.3`
-- balance baseline: deterministic survival snapshot `avg 25.1s / first death 6.3s / early death 4%`
+- balance baseline: deterministic survival snapshot `avg 25.3s / first death 6.3s / early death 4%`
 - replay motivation: sol ust HUD lifetime best + session best gosteriyor; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor
 - replay input acceptance: game-over veya paused fazina hareket tusu basili girilirse ayni input `180ms` sonra da kabul edilip retry/resume tetiklenebiliyor; fresh press, Space/Enter ve tap akisi korunuyor
@@ -56,16 +56,17 @@ Bu turun ana hedefi:
 - retry delay helper'i artik yeni browser session baslangiclarinda `null` donuyor; `telemetry:check` ayni-session replay ve fresh-session non-retry davranisini assert ediyor
 - `first death` telemetry semantigi artik ilk kronolojik olum degil, sample icindeki en dusuk olum suresi; session HUD, validation export ve smoke ayni riski gosteriyor
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke artik page target uzerinden calisiyor ve validation export persistence'ini dogruluyor
-- current survival bucket baseline: `<10s: 1`, `10-20s: 4`, `20-30s: 5`, `30s cap: 14`
-- validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.4s avg / spawn_saves=3 / review early deaths` kontratini uretiyor
-- `npm run telemetry:check` pacing, required spawn distance, survival, validation export ve bucket dagilimini assert ediyor; baseline `25.1s / 6.3s / 4%` ve `1 / 4 / 5 / 14`
+- current survival bucket baseline: `<10s: 1`, `10-20s: 4`, `20-30s: 3`, `30s cap: 16`
+- validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.4s avg / spawn_saves=3 / review early deaths` kontratini ve `25.3s avg / 6.3s first death / 4% early` baseline etiketini uretiyor
+- `npm run telemetry:check` pacing, required spawn distance, survival, validation export ve bucket dagilimini assert ediyor; baseline `25.3s / 6.3s / 4%` ve `1 / 4 / 3 / 16`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` pointer/touch steering'i analog hiz skalasi ile guncelledi; yakin hedefte tam hiz snap'i yerine daha kontrollu hareket var
-- keyboard hareketi, replay/start/resume akislari, balans curve'u ve telemetry/export semantigi bilincli olarak degistirilmedi
+- `project/game/src/game/balance.ts` 20s+ obstacle hiz ramp'ini `3.5`ten `3.45`e cekti; 45s anchor'i `302`den `300`e indi
+- deterministic survival baseline `25.1s`ten `25.3s`e cikti; bucket dagilimi `1 / 4 / 5 / 14`ten `1 / 4 / 3 / 16`ya kaydi
+- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni baseline etiketini ve regression guard'larini bu davranisla hizaladi
 - `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
@@ -76,10 +77,11 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
+- oyuncuya gorunen static AI update paneli hala Run #61'in anlatimini tasiyor; audit freeze nedeniyle bu tur copy senkronu acilmadi
 - retry metric'i artik daha durust, fakat yeni held-movement retry/resume davranisinin accidental auto-replay uretip uretmedigi host browser'da hala olculmedi
 - yeni held pointer/touch retry/resume davranisinin accidental auto-restart veya auto-resume uretip uretmedigi host browser'da hala olculmedi
 - yeni analog pointer steering'in gercek oyuncuda ince kacisi iyilestirip iyilestirmedigi ve mobil/touch hissi host browser'da hala olculmedi
-- host browser sample olmadigi icin public AI paneldeki yeni kopyanin insan tarafinda anlasilirlik etkisi olculmedi; yalnizca stale bilgi bug'i kapatildi
+- host browser sample olmadigi icin public AI panel copy'sinin ve static anlatimin oyuncu tarafinda nasil okundugu olculmedi
 - midgame hiz yumusamasi deterministic proxy'de olumlu gorunuyor, ama gercek oyuncuda 20s+ chase tansiyonunu fazla dusurup dusurmedigi bilinmiyor
 - manual sample olmadan opening fairness ve pointer/touch hissi insan gozunden halen dogrulanmadi
 - pause/resume prompt'u, coaching-hint geri donusu, personal-best cue, compact live telemetry ve collapsed run panel host browser'da insan gozunden birlikte dogrulanmadi
@@ -114,10 +116,10 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in `warning` yonu bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
-- public AI panelde oyuncuya giden run ozeti yeniden deterministic telemetry gercegiyle hizali; urun yuzeyindeki stale metric bug'i kapandi
+- public AI panelin `first death` semantigi dogru kaldi, fakat static anlatim Run #64 gameplay baseline'inin gerisine dustu
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
 - yeni pointer steering analog hiz ile calisiyor; bu tur telemetry/copy/readability yerine dogrudan oyuncu kontrol hissine dokunuldu
-- yeni midgame ramp deterministic proxy'de `24.3s` ortalamayi `25.1s`e ve `30s cap` bucket'ini `12`den `14`e tasidi, fakat `6.3s` first-death outlier'i ayni kaldi
+- yeni 20s+ chase yumusamasi deterministic proxy'de `25.1s` ortalamayi `25.3s`e ve `30s cap` bucket'ini `14`ten `16`ya tasidi, fakat `6.3s` first-death outlier'i ayni kaldi
 - validation/export tarafindaki `first death` artik sample icindeki gercek minimumu gosterdigi icin manual sample notlari daha durust okunabilecek
 - pointer/touch replay yolu keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, host browser/runtime varsa bu yeni analog steering ile replay/pause/chase hissini 5-10 manuel run'da notlamak olmali

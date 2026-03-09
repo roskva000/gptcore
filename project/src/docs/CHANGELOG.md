@@ -2,6 +2,13 @@
 
 ---
 
+## Run #64
+
+- `project/game/src/game/balance.ts` 20s+ obstacle hiz artisini `3.5`ten `3.45`e cekti; 45s speed anchor'i `302`den `300`e indi
+- `project/game/src/game/telemetry.ts` validation baseline etiketini yeni deterministic snapshot `25.3s / 6.3s / 4%` ile hizaladi
+- `project/game/scripts/telemetry-check.ts` yeni survival baseline `25.3s`, bucket dagilimi `1 / 4 / 3 / 16`, average spawn count `26.6` ve 45s hiz anchor'i `300` olacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #63
 
 - `project/game/src/game/GameScene.ts` pointer/touch steering'i analog hiz skalasi ile guncelledi; yakin hedefte ince kacis icin tam hiz snap'i kirildi, uzak hedefte tam hiz korundu

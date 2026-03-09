@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #64]
+
+Decision:
+20s sonrasi obstacle hiz ramp'i dar kapsamda yumusatildi; `214 + (t-20) * 3.5` yerine `214 + (t-20) * 3.45` kullaniliyor.
+
+Reason:
+`AUDIT.md` host browser yoksa telemetry/copy/readability hattina donmeden yeni ve olculebilir bir gameplay problemi secilmesini istiyor. Run #63 sonrasi pointer/touch steering iyilesti, fakat deterministic snapshot hala midgame chase'te gereksiz sert bir uzun-kuyruk baskisi tasiyordu. Opening-fairness paketini tekrar acmadan secilen dar hedef, 20s+ chase'i biraz daha uzun sure oynanir tutmakti.
+
+Impact:
+`project/game/src/game/balance.ts` 45s hiz anchor'ini `302`den `300`e cekti; 30s ve 60s anchor'lari fiilen ayni kaldi. Deterministic survival snapshot `25.1s / 6.3s / 4%`ten `25.3s / 6.3s / 4%`e geldi, bucket dagilimi `1 / 4 / 5 / 14`ten `1 / 4 / 3 / 16`ya kaydi. `project/game/src/game/telemetry.ts` validation baseline etiketini, `project/game/scripts/telemetry-check.ts` regression guard'larini yeni tabloyla hizaladi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni 20s+ chase'in tansiyonu hissedilir sekilde dusurdugunu veya replay motivasyonunu zayiflattigini gosterirse yalnizca 20-45s hiz anchor'lari dar kapsamda geri sertlestirilir; opening-fairness, telemetry wording veya public panel copy yuzeyleri ayni turda acilmaz.
+
 ### [Run #63]
 
 Decision:
