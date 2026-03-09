@@ -4,16 +4,17 @@
 
 # NOW (Highest Priority)
 
-- oyuncuya gorunen AI panelindeki stale metric/copy bug'i kapandi; sonraki ana urun adimi tekrar manuel kanit veya yeni olculebilir gameplay problemi olmali
-- host browser/runtime varsa yeni durust `first death` telemetrysi ile keyboard + pointer replay/start/pause akisinin 5-10 manuel run notunu topla
-- once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut; export artik sample icindeki en dusuk olum suresini gosterdigi icin 20s+ chase tansiyonu ve replay friksiyonu notlari daha dogru okunacak
-- odak insan hissi olsun: 20s+ chase hala gergin mi, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi
+- Run #63 pointer/touch steering'i analog hiz skalasina gecirdi; sonraki ana urun adimi bunun ve mevcut replay/pause/chase paketinin insan sample ile dogrulanmasi olmali
+- host browser/runtime varsa yeni durust `first death` telemetrysi ile keyboard + pointer replay/start/pause akisinin ve analog pointer steering'in 5-10 manuel run notunu topla
+- once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut; export sample icindeki en dusuk olum suresini gosterdigi icin 20s+ chase tansiyonu ve replay friksiyonu notlari daha dogru okunacak
+- odak insan hissi olsun: analog pointer steering yakin hedefte daha kontrollu mu, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi, 20s+ chase hala gergin mi
 - death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
 
 Basari olcutleri:
 - `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donuyor
 - 5-10 manuel run notu start -> play -> 20s+ chase -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu isimlendiriyor
 - `V` export ve HUD `first death` alanlari sample icindeki en dusuk olum suresini gosteriyor; manuel notlar bu sinyali dogru yorumluyor
+- analog pointer steering en az bir touch/pointer senaryosunda yakin dodge ayarini iyilestiriyor veya somut bir sorun notu uretiyor
 - manual notlar yeni midgame hiz yumusamasinin chase'i fazla bagislayici yapip yapmadigini acikca soyluyor
 - held movement key ve held pointer/touch ile retry/resume davranisinin en az bir keyboard ve bir pointer senaryosunda sorunsuz, accidental auto-restart'siz calistigi not ediliyor
 - session retry telemetry'si sadece ayni browser session replay'lerini sayiyor; refresh/yeni session false-positive yok
@@ -26,6 +27,7 @@ Basari olcutleri:
 # NEXT
 
 - host browser runtime acilamazsa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
+- browser yoksa telemetry/copy alanina donmeden `<10s` outlier'i pacing/control tarafindan azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
 - host browser yoksa stale copy gibi kolay product bug'lari tekrar aramak yerine dogrudan yeni gameplay problem sec; ayni telemetry semantigi etrafinda ikinci bir run acma
 - manuel sample replay friction gosterirse sadece input acceptance penceresi veya copy seviyesinde dar ayar yap
 - manuel sample midgame chase'i fazla kolay gosterirse yalnizca 10-45s speed anchors uzerinde dar geri ayar yap
@@ -77,6 +79,7 @@ Basari olcutleri:
 - browser validation readiness smoke komutu yesil kaliyor ve validation export persistence'ini reload sonrasi koruyor
 - game-over ve paused fazlarinda held movement input `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
 - game-over ve paused fazlarinda held pointer/touch input da `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
+- pointer/touch steering `10px` dead-zone ve `140px` full-speed mesafe ile yakin hedefte analog hiz kullaniyor; human sample bunu fazla yumusak bulmadikca korunmali
 - midgame speed curve `145 / 183 / 249 / 302 / 320` olarak korunuyor; human sample chase tansiyonunu fazla dusuk bulmadikca tekrar buyutulmuyor
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor

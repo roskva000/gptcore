@@ -38,6 +38,8 @@ import {
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
 const PLAYER_SPEED = 260;
+const POINTER_DEAD_ZONE_PX = 10;
+const POINTER_FULL_SPEED_DISTANCE_PX = 140;
 const OFFSCREEN_CULL_MARGIN = 96;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;
@@ -935,23 +937,45 @@ export class GameScene extends Phaser.Scene {
     const pointer = this.input.activePointer;
 
     if (pointer.isDown) {
-      const worldPoint = pointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2 | null;
+      const pointerVelocity = this.getPointerVelocity();
 
-      if (worldPoint) {
-        const pointerVelocity = new Phaser.Math.Vector2(
-          worldPoint.x - this.player.x,
-          worldPoint.y - this.player.y,
-        );
-
-        if (pointerVelocity.lengthSq() > 100) {
-          pointerVelocity.normalize().scale(PLAYER_SPEED);
-          this.player.setVelocity(pointerVelocity.x, pointerVelocity.y);
-          return;
-        }
+      if (pointerVelocity) {
+        this.player.setVelocity(pointerVelocity.x, pointerVelocity.y);
+        return;
       }
     }
 
     this.player.setVelocity(0, 0);
+  }
+
+  private getPointerVelocity(): Phaser.Math.Vector2 | null {
+    const worldPoint = this.input.activePointer.positionToCamera(
+      this.cameras.main,
+    ) as Phaser.Math.Vector2 | null;
+
+    if (!worldPoint) {
+      return null;
+    }
+
+    const pointerVelocity = new Phaser.Math.Vector2(
+      worldPoint.x - this.player.x,
+      worldPoint.y - this.player.y,
+    );
+    const distance = pointerVelocity.length();
+
+    if (distance <= POINTER_DEAD_ZONE_PX) {
+      return null;
+    }
+
+    const normalizedDistance = Phaser.Math.Clamp(
+      (distance - POINTER_DEAD_ZONE_PX) /
+        (POINTER_FULL_SPEED_DISTANCE_PX - POINTER_DEAD_ZONE_PX),
+      0,
+      1,
+    );
+    const pointerSpeed = PLAYER_SPEED * Math.sqrt(normalizedDistance);
+
+    return pointerVelocity.scale(pointerSpeed / distance);
   }
 
   private cullObstacles(): void {

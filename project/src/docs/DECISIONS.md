@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #63]
+
+Decision:
+Pointer/touch steering, hedefe olan mesafeye gore analog hiz kullanacak sekilde guncellendi; yakin hedefte tam hiz snap'i kaldirildi, uzak hedefte full-speed kacis korundu.
+
+Reason:
+`AUDIT.md` bu tur telemetry/copy/readability alanina geri donmeyi yasakliyor ve host browser olmadan ayni problem etrafinda yeni tooling acmamayi istiyor. Yeni tek ana hedef olarak secilen dar gameplay problemi, pointer/touch oyuncusunun yakin hedeflerde hala binary tam hiz ile hareket edip ince dodge kontrolunu zorlastirmasiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` pointer hareketini `10px` dead-zone ve `140px` full-speed mesafesi uzerinden analog hizla hesapliyor. Keyboard yolu, replay/start/resume akislari, deterministic balance baseline'i ve telemetry/export semantigi degismedi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni analog steering'in yakin dodge'lari fazla yumusattigini, touch yolunu hissizlestirdigini veya oyuncuyu gereksiz yavaslattigini gosterirse degisiklik tamamen geri alinmadan once dead-zone ya da full-speed mesafesi dar kapsamda ayarlanir; telemetry/copy/readability alanina sapilmaz.
+
 ### [Run #62]
 
 Decision:

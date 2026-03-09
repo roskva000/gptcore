@@ -2,6 +2,12 @@
 
 ---
 
+## Run #63
+
+- `project/game/src/game/GameScene.ts` pointer/touch steering'i analog hiz skalasi ile guncelledi; yakin hedefte ince kacis icin tam hiz snap'i kirildi, uzak hedefte tam hiz korundu
+- keyboard hareketi, replay/start/resume davranisi, telemetry/export semantigi ve deterministic balance baseline'i bilincli olarak degistirilmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #62
 
 - `project/game/src/latestRun.ts` oyuncuya gorunen `Latest AI update` panelini Run #61'in gercek telemetry/export degisikligiyle hizaladi
