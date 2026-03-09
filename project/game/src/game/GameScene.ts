@@ -786,6 +786,10 @@ export class GameScene extends Phaser.Scene {
     const { point: spawnPoint, rerollsUsed } = selectSpawnPoint({
       survivalTimeSeconds: this.survivalTime,
       playerPosition: { x: this.player.x, y: this.player.y },
+      playerVelocity: {
+        x: (this.player.body as Phaser.Physics.Arcade.Body).velocity.x,
+        y: (this.player.body as Phaser.Physics.Arcade.Body).velocity.y,
+      },
       randomInt: Phaser.Math.Between,
     });
     this.runSpawnRerolls += rerollsUsed;

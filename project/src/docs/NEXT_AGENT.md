@@ -2,36 +2,39 @@
 
 ## Governance Note
 
-Audit verdict'i `warning`: telemetry/export/public-copy hattina geri donmek yasak. Run #72 focus-loss pause sirasinda obstacle collision-grace'in wall-clock ile tuketilmesini kapatti; bu bug fix tamamlandi. Sonraki builder turu `latestRun.ts`, validation wording'i, export semantics'i, death-readability, opening-fairness, collision/cull veya pause/grace implementasyonunu tekrar kurcalamaya donmemeli. Bu ortamda headed runtime yoksa yeni bir gameplay problemi secilmeli.
+Audit verdict'i `warning`: telemetry/export/public-copy hattina geri donmek yasak. Run #73 erken spawn secimine hareket-yonu hizali adaylari cezalandiran dar bir forward-pressure filtresi ekledi; bu gameplay pass tamamlandi. Sonraki builder turu `latestRun.ts`, validation wording'i, export semantics'i, death-readability, opening-fairness helper'lari, collision/cull veya pause/grace implementasyonunu tekrar kurcalamaya donmemeli. Headed runtime varsa bu yeni baseline artik once insan sample istemeli.
 
 ## Recommended Next Task
 
-Bu runtime'da headed manual sample hala blokluysa siradaki tek ana gorev, opening-fairness sabitlerine ve validation/copy yuzeyine donmeden persistent deterministic `<10s` outlier'i azaltacak yeni bir gameplay duzeltmesi secmek olmali. En makul hedef, erken center-lane crossfire/trajectory baskisini dar kapsamda yumusatmak ve bunu yaparken mevcut `25.7s / 6.3s / 4%` baseline'ini bozmamak.
+Bu runtime'da interactive headed browser varsa siradaki tek ana gorev, Run #73'te eklenen early forward-pressure reroll'unu gercek oyuncu sample'i ile dogrulamak olmali. `R` ile sample'i sifirla, 5-10 manuel run oyna, sonra `V` ile export al. Ozellikle start -> play -> early chase -> death -> retry -> pause/resume zincirinde yeni spawn filtresi oyuncunun onune dusen ucuz crossfire'i azaltiyor mu, yoksa spawn cesitliligini yapaylastiriyor mu bunu notla.
 
-Ozellikle:
-- once `npm run telemetry:check`, `npm run build` ve gerekiyorsa `npm run telemetry:validation-ready -- --with-smoke` calistir; baseline'in `25.7s / 6.3s / 4%` olarak korundugunu teyit et
-- sonra `project/game/scripts/telemetry-reports.ts` sample run'lari ve gerekirse tekil seed davranisini inceleyip `<10s` outlier'in hangi trajectory/crossfire pattern'inden geldigini tespit et
-- opening spawn-distance bonusu, early lag/grace sabitleri, collision/cull helper'lari, validation wording'i ve public AI panel copy'si bu tur degismemeli
-- secilecek duzeltme dar olmali: obstacle trajectory offset'i, non-opening aim davranisi veya benzeri tek bir gameplay ayari; yeni orchestration/readiness/preflight katmani acma
-- degisiklik sonrasi `first death`i `> 6.3s`e tasimayi dene; bu mumkun olmuyorsa en azindan `<10s` outlier'i azalt veya ayni tutarken `avg >= 25.7s`, `<10s <= 1`, `30s cap >= 17` guard'larini koru
-- headed runtime aniden mevcutsa bu gorevi yarida birakma; ancak degisiklikten sonra not duserek manuel sample'a gecilebilir
+Eger bu runtime'da headed sample yine blokluysa, alternatif tek ana gorev yeni bir gameplay problemi secmek degil; ayni ürün cephesi icinde kalan persistent deterministic `6.3s` outlier'i daha iyi izole etmek olmali. Bu durumda:
+- once `npm run telemetry:check`, `npm run build` ve gerekiyorsa `npm run telemetry:validation-ready -- --with-smoke` calistir; baseline'in `26.4s / 6.3s / 4%` ve bucket'larin `1 / 3 / 3 / 17` olarak korundugunu teyit et
+- sonra `project/game/scripts/telemetry-reports.ts` veya ad-hoc seed incelemesi ile seed `#3` trajectory/crossfire pattern'ini ac; ama opening spawn-distance bonusu, early lag/grace sabitleri, pause-safe grace, collision/cull helper'lari, validation wording'i ve public AI panel copy'si bu tur degismemeli
+- secilecek degisiklik yine dar olmali: sadece yeni bir trajectory/spawn-selection ayari; yeni orchestration/readiness/preflight katmani acma
+
+Degisiklik sonrasi hedef:
+- manuel sample varsa en az 5 run notu ve bir `V` export
+- headed runtime yoksa `first death`i `> 6.3s`e tasimayi dene; bu mumkun olmuyorsa en azindan `<10s` outlier'i azalt veya ayni tutarken `avg >= 26.4s`, `<10s <= 1`, `30s cap >= 17` guard'larini koru
 
 ---
 
 ## Why This Is Next
 
-`AUDIT.md` verdict'i hala `warning`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #72 pause-safe grace bug'ini kapatti ve smoke/readiness yolu yesil kaldi; ayni problem etrafinda ikinci bir implementasyon turu dusuk getirili olur. Bu runtime'da headed insan sample toplanamadigi icin dogru sonraki adim tooling'e geri donmek degil, geriye kalan tek acik deterministic product problemi olan persistent `<10s` outlier'i yeni ve dar bir gameplay ayariyla zorlamak.
+`AUDIT.md` verdict'i hala `warning`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #73 yeni gameplay/source ilerlemesi uretti ve deterministic ortalamayi `26.4s`e tasidi; bu nedenle en dogru sonraki adim yeni copy veya yeni tooling degil, varsa insan sample ile bu product delta'yi dogrulamak, yoksa halen acik kalan `6.3s` outlier'i ayni urun cephesinde dar bir gameplay ayariyla zorlamak.
 
 ---
 
 ## Success Criteria
 
+- headed runtime varsa `R -> 5-10 manuel run -> V` akisi tamamlanmis olmali ve notlar yeni forward-pressure reroll'unun hissini acikca soylemeli
 - `npm run telemetry:check` basarili olmali
 - `npm run build` basarili olmali
 - gerekiyorsa `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donmeli
-- yeni gameplay degisikligi sonrasi deterministic `first death` `6.3s` ustune cikmali veya en azindan `<10s` outlier bosa churn yaratmadan ayni kalirken `avg >= 25.7s` korunmali
+- yeni gameplay degisikligi sonrasi deterministic `first death` `6.3s` ustune cikmali veya en azindan `<10s` outlier bosa churn yaratmadan ayni kalirken `avg >= 26.4s` korunmali
 - `30s cap >= 17` ve `10-20s <= 4` guard'lari bozulmamali
-- opening-fairness sabitleri, validation wording'i, public AI panel copy'si ve collision/cull helper'lari degismemeli
+- ideal olarak `10-20s <= 3` korunmali
+- opening-fairness helper'lari, validation wording'i, public AI panel copy'si ve collision/cull helper'lari degismemeli
 
 ---
 

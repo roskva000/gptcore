@@ -2,6 +2,13 @@
 
 ---
 
+## Run #73
+
+- `project/game/src/game/spawn.ts` ilk `6s` icinde oyuncunun hareket yonunun onune fazla hizalanan spawn adaylarini puan kirarak reroll'e zorlayan dar bir forward-pressure filtresi ekledi
+- `project/game/src/game/GameScene.ts` runtime spawn secimine oyuncu velocity'sini gecirdi; `project/game/scripts/telemetry-reports.ts` deterministic survival proxy'yi ayni secim davranisiyla hizaladi
+- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni deterministic baseline `26.4s / 6.3s / 4%`, buckets `1 / 3 / 3 / 17`, average spawn count `27.8` ve average reroll `0.4` ile guncellendi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #72
 
 - `project/game/src/game/GameScene.ts` obstacle collision-grace acilimini wall-clock `delayedCall` yerine aktif run elapsed zamanina bagladi; focus-loss pause artik grace'i tuketmiyor

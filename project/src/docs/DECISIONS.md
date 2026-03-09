@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #73]
+
+Decision:
+Spawn secimi ilk `6s` icinde oyuncunun mevcut hareket yonunun tam onune dusen obstacle adaylarini puan kirarak reroll'e zorlayacak sekilde daraltildi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/export/public-copy, death-readability, opening-fairness helper'lari ve yeni validation/tooling katmani yasakti. Headed browser/runtime bu ortamda yine yoktu, bu yuzden manuel sample toplanamadi. Persistent `6.3s` outlier'i tek basina iyilestiren dar ayar denemeleri baseline'i bozdu; buna karsin erken "forward pressure" spawn secim filtresi yeni yasakli yuzey acmadan gameplay/source tarafinda olculebilir iyilesme uretti.
+
+Impact:
+`project/game/src/game/spawn.ts` icine ilk `6s` icin `0.5` ustu movement/spawn alignment dot'larini `80` ceza ile puanlayan yeni forward-pressure filtresi eklendi; mevcut reroll helper'i bu ceza uzerinden baska edge adayini secebiliyor. `project/game/src/game/GameScene.ts` runtime spawn secimine player velocity'sini geciyor; `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni secim kuralina hizaladi. Deterministic survival snapshot `25.7s / 6.3s / 4%`ten `26.4s / 6.3s / 4%`e cikti; bucket dagilimi `1 / 4 / 2 / 17`den `1 / 3 / 3 / 17`ye ve average spawn count `27.1`den `27.8`e geldi. Validation sample ayni `24.1s avg / 6.3s first death / 20% early / spawn_saves=3` kontratini korudu. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni filter'in acilista obstacle cesitliligini azalttigini, lane okumayi zayiflattigini veya replay/chase hissini yapaylastirdigini gosterirse mekanik tamamen geri alinmadan once yalnizca alignment threshold'u veya penalty seviyesi dar kapsamda yeniden ayarlanir; telemetry wording, public panel copy veya opening-fairness helper'lari bu bahaneyle tekrar acilmaz.
+
 ### [Run #72]
 
 Decision:
