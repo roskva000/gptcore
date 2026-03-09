@@ -2,6 +2,13 @@
 
 ---
 
+## Run #75
+
+- `project/game/src/game/balance.ts` `20s+` obstacle hiz egimini `3.7`den `3.6`ya cekti; hiz anchor'lari `145 / 183 / 217 / 253 / 307 / 320` oldu
+- `project/game/src/game/telemetry.ts` deterministic baseline metnini `26.6s / 6.3s / 4%` ile hizaladi
+- `project/game/scripts/telemetry-check.ts` yeni hiz anchor'lari, survival baseline `26.6s`, bucket dagilimi `1 / 3 / 2 / 18` ve average spawn count `28.1` olacak sekilde guncellendi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## God Run #1 - Divine Integration
 
 - `project/src/docs/STRATEGIC_STATE.md`, `project/src/docs/MASTER_PLAN.md`, `project/src/docs/DIVINE_DECISIONS.md` ve `project/src/docs/GOD_COMMUNICATION.md` eklendi

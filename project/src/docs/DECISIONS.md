@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #75]
+
+Decision:
+`20s+` obstacle hiz egimi `3.7`den `3.6`ya cekildi; opener ve early fairness paketine dokunmadan gec-midgame chase biraz yumusatildi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/export/public-copy, death-readability ve opening-fairness helper'larina geri donmek yasakti. Bu runtime'da `DISPLAY` ve `WAYLAND_DISPLAY` hala olmadigi icin headed manual sample yine blokluydu. Seed `#3` outlier'i icin denenen sert crowd/intercept reject fikirleri deterministic guard setini bozdu; buna karsin mevcut forward-pressure + lane-stack filtreleriyle birlikte yalnizca `20s+` hiz egimini bir kademe yumusatmak yeni tooling katmani acmadan `20-30s` kuyruğunu `30s` cap'e tasiyan dar ve olculebilir bir gameplay kazanimi verdi.
+
+Impact:
+`project/game/src/game/balance.ts` icindeki `20s+` slope `3.6` oldu; hiz anchor'lari `145 / 183 / 217 / 253 / 307 / 320`e geldi. `project/game/src/game/telemetry.ts` validation baseline metnini `26.6s avg / 6.3s first death / 4% early` ile hizaladi; `project/game/scripts/telemetry-check.ts` yeni hiz anchor'lari, survival baseline'i ve bucket dagilimini assert edecek sekilde guncellendi. Deterministic survival snapshot `26.5s / 6.3s / 4%`ten `26.6s / 6.3s / 4%`e cikti; bucket dagilimi `1 / 3 / 3 / 17`den `1 / 3 / 2 / 18`e kaydi, average spawn count `28.1`, average reroll `0.5` oldu. Validation snapshot `24.1s avg / 6.3s first death / 20% early / spawn_saves=3` olarak korundu. `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yumusatilan `20s+` chase'in tansiyonu gereksiz dusurdugunu veya arena akisini fazla bosalttigini gosterirse yeni sistem acmadan yalnizca `20-45s` hiz anchor'lari dar kapsamda yeniden ayarlanir; telemetry wording, public panel copy, opening-fairness helper'lari ve replay/pause katmanlari bu bahaneyle tekrar acilmaz.
+
 ### [God Run #1 - Divine Integration]
 
 Decision:
