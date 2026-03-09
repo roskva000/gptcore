@@ -39,7 +39,7 @@ type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
 const PLAYER_SPEED = 260;
 const POINTER_DEAD_ZONE_PX = 10;
-const POINTER_FULL_SPEED_DISTANCE_PX = 140;
+const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const OFFSCREEN_CULL_MARGIN = 96;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;

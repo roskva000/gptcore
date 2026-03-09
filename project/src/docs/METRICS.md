@@ -72,9 +72,9 @@ baseline: added in Run #60 to close the replay-friction gap between keyboard and
 target: confirm in manual browser sample that held pointer/touch feels natural and does not create accidental auto-restart or auto-resume
 
 pointer_steering_precision:
-current: pointer/touch steering now uses analog speed scaling with a `10px` dead-zone and reaches full `260` speed by `140px`, so short drags can produce finer dodge adjustments instead of always snapping to max speed
-baseline: Run #63 changed pointer steering only; keyboard movement, replay acceptance, pacing, and deterministic telemetry contracts stayed unchanged
-target: confirm in manual browser sample that close-range pointer/touch corrections feel more controllable without making escape movement sluggish on desktop or mobile
+current: pointer/touch steering now uses analog speed scaling with a `10px` dead-zone and reaches full `260` speed by `120px`, so short drags still allow finer dodge adjustments while longer escapes hit full speed sooner
+baseline: Run #63 changed pointer steering to analog control; Run #65 tightened only the full-speed distance from `140px` to `120px` without changing keyboard movement, replay acceptance, pacing, or deterministic telemetry contracts
+target: confirm in manual browser sample that close-range pointer/touch corrections still feel controllable while long escapes no longer feel sluggish on desktop or mobile
 
 early_spawn_target_lag:
 current: first `10s` spawn aim uses `0.18s` of player-velocity lag, then returns to exact-position targeting
@@ -82,8 +82,8 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify analog pointer steering, held movement, held pointer/touch retry/resume, and the softer Run #64 20s+ chase
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether analog pointer steering improves close-range dodge control without making long escapes feel slow, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the 20s+ chase still feels tense after the Run #64 speed-curve softening, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, and the softer Run #64 20s+ chase
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the 20s+ chase still feels tense after the Run #64 speed-curve softening, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run

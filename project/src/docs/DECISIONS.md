@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #65]
+
+Decision:
+Pointer/touch analog steering'in full-speed mesafesi `140px`ten `120px`e cekildi; yakin dodge analog davranisi korunurken uzun kacislar daha erken tam hiza ulasiyor.
+
+Reason:
+`AUDIT.md` bu tur telemetry/export/public-copy hattina donmeyi ve opening-fairness helper'larini yeniden acmayi yasakliyor. Host browser manuel sample bu runtime'da yine toplanamadi. Yeni tek ana hedef olarak secilen dar gameplay problemi, Run #63'te eklenen analog steering'in uzun drag kacislarinda fazla gec tam hiza ulasma riskiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` pointer steering'in `POINTER_FULL_SPEED_DISTANCE_PX` esigini `120`ye cekti. Keyboard hareketi, replay/start/resume akisi, speed curve, spawn fairness guard'lari ve deterministic telemetry kontratlari degismedi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni `120px` esiginin yakin duzeltmelerde kontrolden fazla odun verdigini, pointer/touch yolunu fazla snap'li yaptigini veya mobil hissi bozdugunu gosterirse degisiklik tamamen geri alinmadan once full-speed mesafesi dar kapsamda tekrar ayarlanir; telemetry/copy/readability ya da opening-fairness alanina sapilmaz.
+
 ### [Run #64]
 
 Decision:
