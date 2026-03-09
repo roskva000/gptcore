@@ -67,9 +67,9 @@ baseline: Run #73 added this narrow gameplay filter after outlier-specific lag/t
 target: confirm manually that this reduces cheap oncoming opener pressure without making spawn variety feel scripted or hollow
 
 lane_stack_spawn_filter:
-current: first `6s` spawn selection now also penalizes candidates that arrive from the same lane as an active obstacle already within `160px` of the player when that lane alignment exceeds `0.55`, but only after that obstacle's center has entered the arena; offscreen obstacle'lar artik oyuncu gormeden lane-stack reroll baskisi yaratmiyor
-baseline: Run #74 added this narrow gameplay filter after more aggressive center-cut and intercept ideas regressed the deterministic guard set; Run #76 constrained the filter to visible threats only and added a deterministic regression check for offscreen-vs-visible behavior while holding the checked snapshot at `26.6s` average / `1 / 3 / 2 / 18` buckets / `0.5` average rerolls
-target: confirm manually that this trims repeated same-lane opener pressure without making spawn variety feel scripted or letting invisible edge threats bias the next spawn before they appear
+current: first `6s` spawn selection still penalizes candidates that arrive from the same lane as an active obstacle already within `160px`, but Run #78 now measures that lane against the player's projected `0.18s` path instead of the exact current point; the visible-only guard stays intact and deterministic average spawn reroll is now `0.4`
+baseline: Run #74 added this narrow gameplay filter after more aggressive center-cut and intercept ideas regressed the deterministic guard set; Run #76 constrained the filter to visible threats only and added a deterministic regression check for offscreen-vs-visible behavior while holding the checked snapshot at `26.6s` average / `1 / 3 / 2 / 18` buckets / `0.5` average rerolls; Run #78 kept the same checked survival guards while trimming average rerolls from `0.5` to `0.4`
+target: confirm manually that this trims repeated same-lane opener pressure without making spawn variety feel scripted, and that the projected-path reference feels more natural rather than softer or less readable
 
 seed3_outlier_trace:
 current: existing deterministic telemetry now also captures the seed `#3` opener trace that still dies at `6.3s`: `6 spawn / 0 reroll`, with spawn times `0.9 / 1.9 / 3.0 / 4.0 / 5.0 / 6.0`, `spawn#4` from `{636,-56}` under `86.3px` nearest visible pressure and `spawn#6` from `{-56,242}` under `81.4px` nearest visible pressure
@@ -144,7 +144,7 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - player-facing AI panel copy still reflects the same validation semantics, but its static narrative now lags the latest 20s+ chase tuning because audit governance froze copy churn this turn
 - player-facing AI panel copy still reflects the same validation semantics, but its static narrative now also lags the new `26.6s` deterministic baseline because audit governance still freezes copy churn on that surface
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
-- current tuning signal: deterministic snapshot artik `26.6s / 6.3s / 4%`; Run #75 yumusatilan `20s+` curve bir `20-30s` kuyruğunu `30s` cap'e tasidi ama opener'da bir `<10s` outlier hala var, Run #67'nin daralttigi obstacle collider ise bu metrigi degistirmeden insan hissinde fairness kazanimi ariyor
+- current tuning signal: deterministic snapshot artik `26.6s / 6.3s / 4%`; Run #78 projected-path lane-stack referansi average spawn reroll'u `0.4`e indirdi ama opener'da bir `<10s` outlier hala var
 - deterministic survival proxy artik runtime ile ayni gorunur-arena hit guard'i ve `96px` offscreen cull margin'ini modelledigi icin collision/cull tarafinda sessiz drift riski azaldi
 - seed `#3` outlier'i artik tek satir `6.3s` metric olarak degil, hangi spawn zinciriyle geldigini gosteren sabit bir deterministic trace olarak da tutuluyor
 - Run #72 collision grace unlock'unu aktif run elapsed zamanina tasidigi icin focus-loss pause sirasinda "run is frozen" vaadi gameplay tarafinda daha tutarli

@@ -111,7 +111,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 4, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*visible-arena hit guard, and 96px offscreen cull margin/,
+  /projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*visible-arena hit guard, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(
@@ -125,7 +125,7 @@ assert.deepEqual(
   'Survival bucket distribution regressed.',
 );
 assert.equal(survivalReport.averageSpawnCount, 28.1, 'Average spawn count snapshot changed unexpectedly.');
-assert.equal(survivalReport.averageSpawnRerolls, 0.5, 'Spawn reroll snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnRerolls, 0.4, 'Spawn reroll snapshot changed unexpectedly.');
 assert.equal(seed3TrajectoryReport.deathTimeSeconds, 6.3, 'Seed #3 trajectory baseline drifted.');
 assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 6, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(

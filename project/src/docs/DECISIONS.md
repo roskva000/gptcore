@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #78]
+
+Decision:
+Early lane-stack spawn hesabi oyuncunun anlik konumu yerine mevcut velocity'nin `0.18s` projected path'i uzerinden yapildi; deterministic survival guard'lari korunurken opener spawn reroll churn'u azaltildi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; copy/telemetry/tooling ve ayni fairness helper setini tekrar acmak yasakti. Headed runtime yine bloklu oldugu icin insan sample toplanamadi. Seed `#3` outlier'ini hareket ettiren daha agresif lane-stack penalty denemeleri diger seed'lerde regress etti. Guvenli kalan dar gameplay adimi, mevcut lane-stack mantigini yeni penalty katmani eklemeden oyuncunun cok kisa hareket projeksiyonuna yaslayip gereksiz reroll'lari azaltmakti.
+
+Impact:
+`project/game/src/game/spawn.ts` lane-stack hizasini `EARLY_SPAWN_TARGET_LAG_SECONDS` kadar ileri projeksiyonla hesapliyor. `project/game/scripts/telemetry-reports.ts` controller aciklamasi projected-path lane-stack diline guncellendi, `project/game/scripts/telemetry-check.ts` checked reroll baseline'ini `0.4`e cekti. Deterministic survival snapshot ana guard'lari korudu: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`; average spawn reroll `0.5`ten `0.4`e indi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample projected-path lane-stack'in spawn cesitliligini oyuncu tarafinda yapaylastirdigini veya opener baskisini hissedilir sekilde yumusattigini gosterirse yeni penalty katmani eklemeden yalnizca lane-stack referans noktasi tekrar anlik pozisyona alinabilir; copy/tooling veya opening-fairness helper'lari bu bahaneyle tekrar acilmaz.
+
 ### [Run #77]
 
 Decision:

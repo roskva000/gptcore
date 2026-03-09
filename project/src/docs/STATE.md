@@ -6,14 +6,14 @@ Updated By: Builder Agent
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #76 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden dar bir gameplay bug fix uyguladi: early lane-stack spawn filtresi artik arenaya henuz girmemis obstacle'lari yakin tehdit gibi saymiyor. Run #77 headed runtime bloklu oldugu icin yeni copy/tooling yuzeyi acmadan seed `#3` outlier'ini mevcut deterministic katman icinde daha net izole etti: `telemetry-reports.ts` artik seed trajectory trace uretiyor, `telemetry-check.ts` ise seed `#3`un ilk alti spawn zincirini ve her spawn anindaki gorunur obstacle yakinligini guard altina aliyor.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #76 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden dar bir gameplay bug fix uyguladi: early lane-stack spawn filtresi artik arenaya henuz girmemis obstacle'lari yakin tehdit gibi saymiyor. Run #77 headed runtime bloklu oldugu icin yeni copy/tooling yuzeyi acmadan seed `#3` outlier'ini mevcut deterministic katman icinde daha net izole etti: `telemetry-reports.ts` artik seed trajectory trace uretiyor, `telemetry-check.ts` ise seed `#3`un ilk alti spawn zincirini ve her spawn anindaki gorunur obstacle yakinligini guard altina aliyor. Run #78 ise ayni governance sinirlari icinde dar bir gameplay secim ayari yapti: lane-stack spawn skoru artik oyuncunun tam anlik noktasina degil, mevcut hareket vektorunun `0.18s` ileri projeksiyonuna gore hesaplaniyor. Bu degisiklik deterministic guard setini korurken average spawn reroll'u `0.5`ten `0.4`e indirdi; seed `#3`teki `6.3s` outlier ise oldugu gibi kaldi.
 
 Ilk God run'i sonrasi sistem artik yalnizca builder/audit dongusuyle degil, haftalik stratejik governance katmaniyla yonetilecek. Stratejik hafiza `STRATEGIC_STATE.md`, uzun faz plani `MASTER_PLAN.md`, haftalik karar hafizasi `DIVINE_DECISIONS.md` ve human-in-the-loop kanali `GOD_COMMUNICATION.md` uzerinden tutuluyor.
 
 Bu turun ana hedefi:
-- headed runtime yokken yeni orchestration/readiness katmani acmadan seed `#3` deterministic outlier'ini daha net izole etmek
-- mevcut `6.3s` erken olumun ilk alti spawn zincirini ve her spawn anindaki gorunur obstacle baskisini telemetry check icinde okunur hale getirmek
-- davranisi degistirmeden baseline'i `26.6s / 6.3s / 4%` ve bucket'lari `1 / 3 / 2 / 18` olarak korumak
+- headed runtime yokken yeni orchestration/readiness katmani acmadan opener spawn secimindeki gereksiz churn'u azaltmak
+- lane-stack degerlendirmesini oyuncunun kisa vadeli hareket hattina yaklastirarak gorunur tehditlere verilen reroll kararlarini biraz daha dogal hale getirmek
+- deterministic baseline'i `26.6s / 6.3s / 4%` ve bucket'lari `1 / 3 / 2 / 18` olarak korumak
 
 ---
 
@@ -37,6 +37,7 @@ Bu turun ana hedefi:
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 217 / 253 / 307 / 320`
 - early forward-pressure reroll: ilk `6s` icinde spawn adayi oyuncunun mevcut hareket yonu ile `0.5+` dot hizasina girerse spawn secim puani `80` ceza aliyor; mevcut reroll helper'i bu oncoming crossfire'i mumkun oldugunca baska edge'e itiyor
 - early lane-stack reroll: ilk `6s` icinde oyuncuya `160px` icinde kalan ve merkezi arena icine girmis aktif obstacle ile `0.55+` dot ayni lane'i paylasan yeni spawn adayi ek `120` ceza aliyor; amac yakin tehditlerin ayni yonden ust uste binip erken crossfire olusturmasini azaltmak
+- projected lane-stack reference: Run #78 ile bu lane-stack hesabi oyuncunun tam anlik merkezine degil, mevcut velocity'nin `0.18s` ileri projeksiyonuna gore yapiliyor; amac ayni deterministic fairness guard'larini korurken gereksiz reroll'lari azaltmak
 - early fairness bias: ilk `10s` icindeki spawn'lar oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim ediyor
 - early collision grace: ilk `10s` icindeki yeni obstacle'lar hemen hareket ediyor ama collider'lari ilk `260ms` boyunca zarar vermiyor
 - pause-safe collision grace: grace suresi artik aktif run elapsed zamanina gore aciliyor; focus-loss pause sirasinda obstacle grace'i sessizce tuketilmiyor
@@ -44,7 +45,7 @@ Bu turun ana hedefi:
 - offscreen collision fairness: `collisionReady` olsa bile obstacle merkezi arena sinirlarina girmeden oyuncuya zarar veremiyor; arena disina cikan obstacle da ekrandan tastigi anda artik hit sayilmiyor
 - deterministic proxy integrity: survival snapshot artik runtime ile ayni gorunur-arena hit guard'ini ve `96px` offscreen cull margin'ini paylasiyor; metricler degismedi ama proxy davranisi sahne mantigina hizalandi
 - opening spawn fairness: ilk `6s` icinde gerekli spawn mesafesi helper'i `+160px` bonus aliyor; yakin lane'ler mevcut reroll yolu uzerinden tekrar seciliyor
-- fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da average spawn reroll `0.5`
+- fairness baseline: spawn selection ortak helper uzerinden calisiyor; projected-path lane-stack hesabi ile mevcut deterministic sample'da average spawn reroll `0.4`
 - balance baseline: deterministic survival snapshot `avg 26.6s / first death 6.3s / early death 4%`
 - replay motivation: sol ust HUD lifetime best + session best gosteriyor; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor
@@ -97,7 +98,7 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic proxy runtime collision/cull ile hizalansa da insan hissi kaniti yerine gecmez
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
-- Run #75 gec-midgame hiz egimi avg'yi `26.6s`e ve `30s cap`i `18`e tasidi, Run #76 ise lane-stack filtresindeki gorunmez-obstacle baskisini temizledi; Run #77 seed `#3`u artik ilk alti spawn trace'i ile izole etti, ancak `6.3s` outlier halen duruyor
+- Run #75 gec-midgame hiz egimi avg'yi `26.6s`e ve `30s cap`i `18`e tasidi, Run #76 ise lane-stack filtresindeki gorunmez-obstacle baskisini temizledi; Run #77 seed `#3`u artik ilk alti spawn trace'i ile izole etti, Run #78 de projected-path lane-stack ile average reroll'u `0.4`e indirdi, ancak `6.3s` outlier halen duruyor
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
 - obstacle collider daralmasinin gercek oyuncuda ucuz grazing hit'leri azaltip azaltmadigi host browser'da hala olculmedi
 - yeni offscreen collision guard'inin arena kenarinda gorunmez veya son-piksel temaslarini gercek oyuncuda azaltip azaltmadigi host browser'da hala olculmedi
@@ -154,6 +155,7 @@ Bu turun ana hedefi:
 
 - audit'in `warning` yonu bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
 - Run #77 davranisi degistirmeden seed `#3` outlier'inin tam hangi spawn zincirinden geldigini mevcut telemetry-check icinde sabitledi
+- Run #78 projected-path lane-stack hesabi ile opener spawn churn'unu biraz azaltirken checked survival baseline'i korudu
 - sistem artik builder + auditor + god ritmiyle daha net katmanlandi; bundan sonraki risk "yon eksikligi"nden ziyade "stratejik dosyalarin gercekten kullanilmamasi" olacak
 - pause overlay'nin "run is frozen" vaadi obstacle grace icin de artik runtime ile hizali
 - snapshot metricleri `26.6s / 6.3s / 4%`e tasindi; iyilesme `20-30s` kuyruğunun `30s` cap'e kaymasindan geldi, `6.3s` first-death outlier ise degismedi

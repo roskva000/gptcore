@@ -2,6 +2,13 @@
 
 ---
 
+## Run #78
+
+- `project/game/src/game/spawn.ts` early lane-stack hesabini oyuncunun anlik merkezinden `0.18s` projected path'ine tasidi; spawn secimi yeni penalty katmani eklemeden mevcut hareket hattina biraz daha yakin degerlendiriliyor
+- `project/game/scripts/telemetry-reports.ts` deterministic controller metnini projected-path lane-stack davranisiyla hizaladi
+- `project/game/scripts/telemetry-check.ts` checked average spawn reroll baseline'ini `0.4`e guncelledi
+- deterministic survival baseline `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #77
 
 - `project/game/scripts/telemetry-reports.ts` mevcut deterministic survival sim'inden `createSeedTrajectoryReport()` helper'i uretti; seed `#3` icin ilk alti spawn zinciri artik ayni yuzeyden okunabiliyor

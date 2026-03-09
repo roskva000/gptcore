@@ -1,4 +1,4 @@
-import { getRequiredSpawnDistance } from './balance.ts';
+import { EARLY_SPAWN_TARGET_LAG_SECONDS, getRequiredSpawnDistance } from './balance.ts';
 
 export const ARENA_WIDTH = 800;
 export const ARENA_HEIGHT = 600;
@@ -83,6 +83,7 @@ const getForwardSpawnPenalty = (
 const getLaneStackPenalty = (
   survivalTimeSeconds: number,
   playerPosition: Point,
+  playerVelocity: Point | undefined,
   activeObstaclePositions: Point[] | undefined,
   spawnPoint: Point,
 ): number => {
@@ -90,9 +91,16 @@ const getLaneStackPenalty = (
     return 0;
   }
 
+  const laneStackReference =
+    playerVelocity && (playerVelocity.x !== 0 || playerVelocity.y !== 0)
+      ? {
+          x: playerPosition.x + playerVelocity.x * EARLY_SPAWN_TARGET_LAG_SECONDS,
+          y: playerPosition.y + playerVelocity.y * EARLY_SPAWN_TARGET_LAG_SECONDS,
+        }
+      : playerPosition;
   const spawnDirection = normalize({
-    x: spawnPoint.x - playerPosition.x,
-    y: spawnPoint.y - playerPosition.y,
+    x: spawnPoint.x - laneStackReference.x,
+    y: spawnPoint.y - laneStackReference.y,
   });
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
@@ -101,8 +109,8 @@ const getLaneStackPenalty = (
     }
 
     const obstacleVector = {
-      x: obstaclePosition.x - playerPosition.x,
-      y: obstaclePosition.y - playerPosition.y,
+      x: obstaclePosition.x - laneStackReference.x,
+      y: obstaclePosition.y - laneStackReference.y,
     };
     const obstacleDistance = Math.hypot(obstacleVector.x, obstacleVector.y);
 
@@ -166,7 +174,13 @@ export const selectSpawnPoint = ({
   let bestScore =
     getSpawnFairnessScore(survivalTimeSeconds, playerPosition, selectedSpawnPoint) -
     getForwardSpawnPenalty(survivalTimeSeconds, playerPosition, playerVelocity, selectedSpawnPoint) -
-    getLaneStackPenalty(survivalTimeSeconds, playerPosition, activeObstaclePositions, selectedSpawnPoint);
+    getLaneStackPenalty(
+      survivalTimeSeconds,
+      playerPosition,
+      playerVelocity,
+      activeObstaclePositions,
+      selectedSpawnPoint,
+    );
 
   if (bestScore >= 0) {
     return { point: selectedSpawnPoint, rerollsUsed: 0 };
@@ -181,7 +195,13 @@ export const selectSpawnPoint = ({
     const candidateScore =
       getSpawnFairnessScore(survivalTimeSeconds, playerPosition, candidate) -
       getForwardSpawnPenalty(survivalTimeSeconds, playerPosition, playerVelocity, candidate) -
-      getLaneStackPenalty(survivalTimeSeconds, playerPosition, activeObstaclePositions, candidate);
+      getLaneStackPenalty(
+        survivalTimeSeconds,
+        playerPosition,
+        playerVelocity,
+        activeObstaclePositions,
+        candidate,
+      );
 
     if (candidateScore > bestScore) {
       selectedSpawnPoint = candidate;
