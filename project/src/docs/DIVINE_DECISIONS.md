@@ -18,6 +18,7 @@ Impact:
 - `GOD_COMMUNICATION.md` human-in-the-loop kanalini tanimliyor
 - `AGENT.md`, `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md`, `DECISIONS.md`, `CHANGELOG.md` ve `README.md` yeni governance katmaniyla hizalandi
 - public UI'ya haftalik `God's Revelation` paneli eklendi
+- sonraki migration dalgasi partner/factory operating system katmanini ekleyerek builder/auditor/god ritmini daha dayanikli hale getirmeyi hedefliyor
 
 Rollback Condition:
 Eger bu katman bir hafta icinde karar kalitesini artirmak yerine builder uzerinde yalnizca yazisal yuk yaratirsa, God agent dosya setini sadeleştirmeli ama haftalik stratejik hafiza ihtiyacini tamamen kaldirmamalidir.

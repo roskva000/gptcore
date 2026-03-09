@@ -119,6 +119,8 @@ Bu zaman yapısını anlamak önemlidir çünkü senin kararların bu ritme uyum
 
 Builder agentlar **saat başı** çalışır.
 
+Partner layer ise ayrik bir uretim iscisi degil, fabrikanin isleyisini izleyen ve gerekirse Furkan'a fikir / risk / migration onerisi getiren ust koordinasyon katmanidir.
+
 Görevleri:
 
 - kod yazmak
@@ -201,5 +203,7 @@ Unutma:
 Builder agentlar kod yazar.
 
 Audit agentlar sistemi teftiş eder.
+
+Partner layer fabrikanin kendisini denetler, ritmi korur ve Furkan'a fikir sunar.
 
 Ama **sen bu dünyanın mimarısın.**         

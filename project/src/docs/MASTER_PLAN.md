@@ -27,13 +27,15 @@ Candidate Themes:
 
 ## Phase 3 - Systemization And Scalability
 Goal:
-Kod ve governance yapisini uzun sureli agent gelistirmesine daha dayanikli hale getirmek.
+Kod, governance ve factory operating system yapisini uzun sureli agent gelistirmesine daha dayanikli hale getirmek.
 
 Candidate Themes:
 - `GameScene.ts` parcalama
+- factory-wide concurrency / maintenance model
 - automated public run feed
 - deploy / release rhythm
 - stronger human feedback ingestion
+- partner pulse / deep review cadence
 
 ---
 

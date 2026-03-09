@@ -115,3 +115,5 @@ iki secenek disina cikmamali
 - host browser yoksa gercekten yeni bir gameplay problemi secebildi mi
 - living docs her tur otomatik buyumek yerine product delta ile daha orantili hale geldi mi
 - replay friction ve 20s+ chase hissi icin ilk insan kaniti toplandi mi
+- partner/factory migration sonrasi yeni docs seti gercek karar kalitesi uretiyor mu, yoksa ikinci bir bureaucracy katmani mi oluyor
+- concurrency / maintenance politikalari cron yeniden acildiginda ritual veya skip firtinasi yaratacak gibi gorunuyor mu

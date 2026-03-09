@@ -12,11 +12,12 @@ Projede çalışan bir agent, belirli aralıklarla:
 
 Bu süreç sürekli tekrar eder ve proje **run run ilerleyerek evrilir**.
 
-Bugun itibariyla bu dongu uc katmanli yonetiliyor:
+Bugun itibariyla bu dongu dort katmanli dusunuluyor:
 
 * saatlik `builder agent`
 * gunluk `audit agent`
 * haftalik `god agent`
+* ust koordinasyon icin `partner layer`
 
 ---
 
@@ -164,6 +165,18 @@ Temel dosyalar:
 * `DIVINE_DECISIONS.md`
 * `GOD_COMMUNICATION.md`
 
+Partner layer ise fabrikanin kendisini denetleyen, ritmi koruyan ve buyume mimarisini kuran ayrik bir katmandir.
+
+Partner ile ilgili temel dosyalar:
+
+* `PARTNER.md`
+* `PARTNER_LOG.md`
+* `FACTORY_STATE.md`
+* `FACTORY_RHYTHM.md`
+* `IDEA_PIPELINE.md`
+* `CONCURRENCY_POLICY.md`
+* `CRON_REENABLE_PLAN.md`
+
 ---
 
 # Repository Yapısı
@@ -188,7 +201,7 @@ project/
       browser-validation-ready.ts
 ```
 
-Dokümantasyon dosyaları:
+Dokümantasyon dosyalari:
 
 ```
 STATE.md
@@ -203,6 +216,18 @@ STRATEGIC_STATE.md
 MASTER_PLAN.md
 DIVINE_DECISIONS.md
 GOD_COMMUNICATION.md
+PARTNER.md
+PARTNER_LOG.md
+FACTORY_STATE.md
+FACTORY_RHYTHM.md
+IDEA_PIPELINE.md
+HUMAN_SIGNALS.md
+EXPERIMENTS.md
+RETENTION_NOTES.md
+IDENTITY_ARC.md
+CONCURRENCY_POLICY.md
+CRON_REENABLE_PLAN.md
+archive/
 ```
 
 ---

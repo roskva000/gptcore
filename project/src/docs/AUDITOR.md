@@ -17,6 +17,8 @@ Amac:
 - gereksiz validation/tooling spiral'lerini durdurmak
 - urun ilerlemesini korumak
 - state dosyalarinin sagligini denetlemek
+- fabrikanin growth kapasitesini ve ritmini denetlemek
+- proxy ile human signal arasindaki olasi celiskileri gormek
 
 ---
 
@@ -34,12 +36,15 @@ Audit sirasinda en az su dosyalari incele:
 
 - AGENT.md
 - AUDIT.md
+- FACTORY_STATE.md
+- PARTNER_LOG.md
 - STATE.md
 - ROADMAP.md
 - NEXT_AGENT.md
 - DECISIONS.md
 - CHANGELOG.md
 - METRICS.md
+- varsa HUMAN_SIGNALS.md ve EXPERIMENTS.md
 - kritik source dosyalari
 - son run'larda degisen script/test dosyalari
 
@@ -56,6 +61,8 @@ Oncelik sirasi:
 5. Roadmap halen mantikli mi?
 6. State dosyalari sismis mi?
 7. Builder agent local maximum'a saplanmis mi?
+8. Sistem mutation'a hazir mi, yoksa ritual-loop moduna mi kayiyor?
+9. Human signal varsa telemetry/proxy ile uyumlu mu?
 
 ---
 

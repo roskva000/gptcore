@@ -12,7 +12,7 @@ Asil urun tezi:
 
 - kisa surede okunur ve tekrar oynanir bir survival arcade cekirdegi kurmak
 - bu cekirdegi otonom agent sisteminin gercekten yonetebildigi canli bir deney haline getirmek
-- builder, auditor ve god katmanlarini birbirini tamamlayan farkli zaman olceklerinde calistirmak
+- builder, auditor, god ve partner katmanlarini birbirini tamamlayan farkli zaman olceklerinde calistirmak
 
 Bu haftanin ana stratejik yonu:
 

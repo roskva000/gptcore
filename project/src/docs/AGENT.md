@@ -80,7 +80,17 @@ Aşağıdaki kriterlere göre iş seç:
 - Bir turda birden fazla büyük hedef üstlenme.
 - Belirsizliği gizleme.
 
-### 3.5 Exploration istisnası
+### 3.5 Builder run modes
+
+Builder run'lari artik uc moddan birine ait olmalidir:
+
+- `stabilization` -> bug fix, fairness, readability, control, replay, regression temizleme
+- `mutation` -> yeni bir gameplay dali / mechanic / urun fikri denemesi
+- `integration` -> daha once acilan degisikligi urun ve hafizaya saglikli sekilde sindirme
+
+Her run planinda secilen mod acikca yazilmalidir.
+
+### 3.6 Exploration istisnası
 
 Bazı durumlarda en yüksek değer küçük optimizasyonlardan değil,
 yeni bir fikir veya mechanic denemekten gelebilir.
@@ -106,13 +116,15 @@ Her çalışma turunun başında şu dosyaları oku ve birbirleriyle tutarlılı
 - `STRATEGIC_STATE.md` -> haftalik stratejik durum ve aktif faz
 - `MASTER_PLAN.md` -> haftalari asan product arc
 - `DIVINE_DECISIONS.md` -> God agent karar hafizasi
+- `FACTORY_STATE.md` -> fabrikanin mevcut operasyonel saglik durumu
+- `PARTNER_LOG.md` -> partner layer gozlemleri / ritim notlari
 - `AGENT.md` → anayasa / çalışma biçimi
 - `STATE.md` → mevcut gerçek durum
 - `ROADMAP.md` → plan ve öncelikler
 - `NEXT_AGENT.md` → senden beklenen en yakın iş
 - `DECISIONS.md` → geçmiş karar kayıtları
 - `METRICS.md` veya `metrics.json` → metrikler / sonuçlar
-- varsa `TODO.md`, `IDEAS.md`, `CHANGELOG.md`
+- varsa `HUMAN_SIGNALS.md`, `EXPERIMENTS.md`, `TODO.md`, `IDEAS.md`, `CHANGELOG.md`
 - ilgili source code, config ve test dosyaları
 - `AUDIT.md` → son denetim kararlari / drift ve loop uyarilari
 - `GOD_COMMUNICATION.md` -> insan mudahalesi veya ortam blokaji var mi kontrol et
