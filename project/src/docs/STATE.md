@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #73
+Updated By: Agent Run #74
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #73 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden erken spawn seciminde oyuncunun hareket yonunun tam onune dusen adaylari dar kapsamda reroll'e zorlayarak center-lane crossfire baskisini yumusatti. Pause-safe collision grace, offscreen collision guard, waiting held-start acceptance, obstacle collider, opener fairness guard'lari, speed curve ve pointer analog steering esigi korunurken spawn secimi artik ilk `6s` icinde hareket yonu ile fazla hizalanan adaylari cezalendiriyor.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #74 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden ilk `6s` icinde oyuncuya yakin aktif obstacle lane'i ile ayni yonu paylasan yeni spawn adaylarini cezalandiran dar bir lane-stack filtresi ekledi. Forward-pressure reroll, pause-safe collision grace, offscreen collision guard, waiting held-start acceptance, obstacle collider, opener fairness guard'lari, speed curve ve pointer analog steering esigi korunurken spawn secimi artik hem oyuncunun mevcut hareket yonunun tam onune dusen, hem de yakin aktif tehditlerle ayni lane'i yigan adaylari cezalandiriyor.
 
 Bu turun ana hedefi:
-- yeni tooling/copy katmani acmadan erken center-lane crossfire baskisini dar bir spawn secim ayariyla yumusatmak
-- opening distance/grace sabitlerine donmeden gameplay source uzerinde olculebilir iyilesme uretmek
-- deterministic baseline'i `26.4s / 6.3s / 4%` seviyesine tasirken validation kontratini bozmayi onlemek
+- yeni tooling/copy katmani acmadan erken lane-stack crossfire baskisini dar bir spawn secim ayariyla yumusatmak
+- opening distance/lag/grace sabitlerine donmeden gameplay source uzerinde olculebilir iyilesme uretmek
+- deterministic baseline'i `26.5s / 6.3s / 4%` seviyesine tasirken validation kontratini bozmayi onlemek
 
 ---
 
@@ -27,6 +27,7 @@ Bu turun ana hedefi:
 - controls: keyboard (WASD + arrows) ve pointer/touch steering aktif
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 217 / 254 / 310 / 320`
 - early forward-pressure reroll: ilk `6s` icinde spawn adayi oyuncunun mevcut hareket yonu ile `0.5+` dot hizasina girerse spawn secim puani `80` ceza aliyor; mevcut reroll helper'i bu oncoming crossfire'i mumkun oldugunca baska edge'e itiyor
+- early lane-stack reroll: ilk `6s` icinde oyuncuya `160px` icinde kalan aktif obstacle ile `0.55+` dot ayni lane'i paylasan yeni spawn adayi ek `120` ceza aliyor; amac yakin tehditlerin ayni yonden ust uste binip erken crossfire olusturmasini azaltmak
 - early fairness bias: ilk `10s` icindeki spawn'lar oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim ediyor
 - early collision grace: ilk `10s` icindeki yeni obstacle'lar hemen hareket ediyor ama collider'lari ilk `260ms` boyunca zarar vermiyor
 - pause-safe collision grace: grace suresi artik aktif run elapsed zamanina gore aciliyor; focus-loss pause sirasinda obstacle grace'i sessizce tuketilmiyor
@@ -34,8 +35,8 @@ Bu turun ana hedefi:
 - offscreen collision fairness: `collisionReady` olsa bile obstacle merkezi arena sinirlarina girmeden oyuncuya zarar veremiyor; arena disina cikan obstacle da ekrandan tastigi anda artik hit sayilmiyor
 - deterministic proxy integrity: survival snapshot artik runtime ile ayni gorunur-arena hit guard'ini ve `96px` offscreen cull margin'ini paylasiyor; metricler degismedi ama proxy davranisi sahne mantigina hizalandi
 - opening spawn fairness: ilk `6s` icinde gerekli spawn mesafesi helper'i `+160px` bonus aliyor; yakin lane'ler mevcut reroll yolu uzerinden tekrar seciliyor
-- fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0.3`
-- balance baseline: deterministic survival snapshot `avg 26.4s / first death 6.3s / early death 4%`
+- fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da average spawn reroll `0.5`
+- balance baseline: deterministic survival snapshot `avg 26.5s / first death 6.3s / early death 4%`
 - replay motivation: sol ust HUD lifetime best + session best gosteriyor; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor
 - replay input acceptance: game-over veya paused fazina hareket tusu basili girilirse ayni input `180ms` sonra da kabul edilip retry/resume tetiklenebiliyor; fresh press, Space/Enter ve tap akisi korunuyor
@@ -64,17 +65,17 @@ Bu turun ana hedefi:
 - `first death` telemetry semantigi artik ilk kronolojik olum degil, sample icindeki en dusuk olum suresi; session HUD, validation export ve smoke ayni riski gosteriyor
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke artik page target uzerinden calisiyor ve validation export persistence'ini dogruluyor
 - current survival bucket baseline: `<10s: 1`, `10-20s: 3`, `20-30s: 3`, `30s cap: 17`
-- validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini ve `26.4s avg / 6.3s first death / 4% early` baseline etiketini uretiyor
-- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi, daraltilmis obstacle collider baseline'i, yeni forward-pressure reroll baseline'i ve deterministic proxy'nin runtime-visible-arena/cull guard hizasini assert ediyor; baseline `26.4s / 6.3s / 4%` ve `1 / 3 / 3 / 17`
+- validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini ve `26.5s avg / 6.3s first death / 4% early` baseline etiketini uretiyor
+- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi, daraltilmis obstacle collider baseline'i, yeni forward-pressure + lane-stack reroll baseline'i ve deterministic proxy'nin runtime-visible-arena/cull guard hizasini assert ediyor; baseline `26.5s / 6.3s / 4%` ve `1 / 3 / 3 / 17`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/spawn.ts` ilk `6s` icinde oyuncunun hareket yonu ile asiri hizalanan spawn adaylarini cezalandirip mevcut reroll helper'ina forward-pressure filtresi ekledi
-- `project/game/src/game/GameScene.ts` runtime spawn secimine oyuncu velocity'sini gecirdi; `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni secim kurali ile hizaladi
-- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni deterministic baseline `26.4s / 6.3s / 4%`, bucket dagilimi `1 / 3 / 3 / 17`, average spawn count `27.8` ve average reroll `0.4` ile guncellendi
-- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+- `project/game/src/game/spawn.ts` ilk `6s` icinde oyuncuya `160px` icindeki aktif obstacle lane'i ile ayni yonu paylasan spawn adaylarini puan kirarak reroll'e zorlayan dar bir lane-stack filtresi ekledi
+- `project/game/src/game/GameScene.ts` runtime spawn secimine aktif obstacle pozisyonlarini gecirdi; `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni lane-stack secim kurali ile hizaladi
+- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni deterministic baseline `26.5s / 6.3s / 4%`, bucket dagilimi `1 / 3 / 3 / 17`, average spawn count `28` ve average reroll `0.5` ile guncellendi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
 
@@ -85,7 +86,7 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic proxy runtime collision/cull ile hizalansa da insan hissi kaniti yerine gecmez
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
-- Run #73 yeni forward-pressure reroll'u avg'yi `26.4s`e cikardi ve `10-20s` bandini `3`e indirdi, ancak seed `#3` kaynakli `6.3s` outlier halen duruyor
+- Run #74 lane-stack filtresi avg'yi `26.5s`e cikardi ve `1 / 3 / 3 / 17` guard'larini korudu, ancak seed `#3` kaynakli `6.3s` outlier halen duruyor
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
 - obstacle collider daralmasinin gercek oyuncuda ucuz grazing hit'leri azaltip azaltmadigi host browser'da hala olculmedi
 - yeni offscreen collision guard'inin arena kenarinda gorunmez veya son-piksel temaslarini gercek oyuncuda azaltip azaltmadigi host browser'da hala olculmedi
@@ -139,12 +140,12 @@ Bu turun ana hedefi:
 
 - audit'in `warning` yonu bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
 - pause overlay'nin "run is frozen" vaadi obstacle grace icin de artik runtime ile hizali
-- snapshot metricleri `26.4s / 6.3s / 4%`e tasindi; iyilesme early-mid survival dagiliminde geldi, `6.3s` first-death outlier ise degismedi
+- snapshot metricleri `26.5s / 6.3s / 4%`e tasindi; iyilesme avg ve spawn throughput tarafinda geldi, `6.3s` first-death outlier ise degismedi
 - Chromium ve smoke hazir olmasina ragmen bu terminal runtime'inda headed display olmadigi icin audit'in istedigi gercek manuel sample bu tur toplanamadi
-- public AI panelin `first death` semantigi dogru kaldi, fakat static anlatim yeni `25.7s` gameplay baseline'inin gerisine dustu
+- public AI panelin `first death` semantigi dogru kaldi, fakat static anlatim yeni `26.5s` gameplay baseline'inin gerisine dustu
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
-- pointer steering analog davranisi, replay kabul pencereleri, offscreen collision guard'i, pause-safe grace fix'i ve opening-fairness helper'lari oldugu gibi korundu; bu tur yalnizca spawn seciminde yeni forward-pressure filtresi eklendi
-- yeni `20s+` hiz ramp'i deterministic proxy'de `25.6s` ortalamayi `25.7s`e tasidi; `6.3s` first-death outlier'i ve `4%` early death orani ayni kaldi
+- pointer steering analog davranisi, replay kabul pencereleri, offscreen collision guard'i, pause-safe grace fix'i ve opening-fairness helper'lari oldugu gibi korundu; bu tur yalnizca spawn secimine yeni lane-stack filtresi eklendi
+- lane-stack filtresi deterministic proxy'de `26.4s` ortalamayi `26.5s`e tasidi; `6.3s` first-death outlier'i ve `4%` early death orani ayni kaldi
 - validation/export tarafindaki `first death` artik sample icindeki gercek minimumu gosterdigi icin manual sample notlari daha durust okunabilecek
 - pointer/touch replay yolu keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, interactive headed browser/runtime varsa yeni `20s+` chase curve'u ile birlikte offscreen collision guard'i, `120px` analog steering, replay/pause ve chase hissini 5-10 manuel run'da notlamak olmali

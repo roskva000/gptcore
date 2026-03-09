@@ -16,6 +16,10 @@ import {
 import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
+  EARLY_LANE_STACK_ALIGNMENT_THRESHOLD,
+  EARLY_LANE_STACK_DISTANCE,
+  EARLY_LANE_STACK_PENALTY,
+  EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS,
   EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY,
   EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD,
   EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS,
@@ -220,6 +224,10 @@ const simulateSession = (seed: number): SessionResult => {
         survivalTimeSeconds,
         playerPosition: player,
         playerVelocity,
+        activeObstaclePositions: obstacles.map((obstacle) => ({
+          x: obstacle.x,
+          y: obstacle.y,
+        })),
         randomInt,
       });
       const speed = getObstacleSpeed(survivalTimeSeconds);
@@ -331,7 +339,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
   return {
     sessionCount: SESSION_COUNT,
     maxSimulationSeconds: MAX_SIMULATION_SECONDS,
-    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, forward-alignment rerolls above ${EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS}s (${EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY}px-equivalent penalty), ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s, visible-arena hit guard, and ${OFFSCREEN_CULL_MARGIN}px offscreen cull margin`,
+    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, forward-alignment rerolls above ${EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS}s (${EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY}px-equivalent penalty), lane-stack rerolls within ${EARLY_LANE_STACK_DISTANCE}px above ${EARLY_LANE_STACK_ALIGNMENT_THRESHOLD.toFixed(2)} dot through ${EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS}s (${EARLY_LANE_STACK_PENALTY}px-equivalent penalty), ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s, visible-arena hit guard, and ${OFFSCREEN_CULL_MARGIN}px offscreen cull margin`,
     effectivePlayerSpeed: EFFECTIVE_PLAYER_SPEED,
     nativePlayerSpeed: PLAYER_SPEED,
     averageSurvivalTimeSeconds: round(averageSurvivalTime),

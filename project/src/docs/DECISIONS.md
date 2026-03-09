@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #74]
+
+Decision:
+Spawn secimi ilk `6s` icinde oyuncuya `160px` icindeki aktif obstacle lane'i ile ayni yonu paylasan yeni adaylari puan kirarak reroll'e zorlayacak sekilde daraltildi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/export/public-copy, death-readability, opening-fairness helper'lari ve yeni validation/tooling katmani yine yasakti. Headed browser/runtime bu ortamda hala yoktu, bu yuzden manuel sample toplanamadi. Seed `#3` outlier'ini kaldirmaya yonelik lineer intercept ve center-cut denemeleri deterministic baseline'i geriletti; buna karsin yakin aktif tehditle ayni lane'i yeniden yigan spawn'lari cezalandirmak yeni yasakli yuzey acmadan avg survival'i ilerleten daha dar bir gameplay pass verdi.
+
+Impact:
+`project/game/src/game/spawn.ts` icine ilk `6s` icin oyuncuya `160px` icindeki aktif obstacle ile `0.55` ustu yon hizasi paylasan adaylari toplam `120` puana kadar cezalandiran yeni lane-stack filtresi eklendi. `project/game/src/game/GameScene.ts` runtime spawn secimine aktif obstacle pozisyonlarini geciyor; `project/game/scripts/telemetry-reports.ts` deterministic proxy ayni secim kuralini kullaniyor. Deterministic survival snapshot `26.4s / 6.3s / 4%`ten `26.5s / 6.3s / 4%`e cikti; bucket dagilimi `1 / 3 / 3 / 17` korundu, average spawn count `27.8`den `28`e ve average reroll `0.4`ten `0.5`e geldi. Validation sample ayni `24.1s avg / 6.3s first death / 20% early / spawn_saves=3` kontratini korudu. `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni lane-stack filtresinin spawn cesitliligini yapaylastirdigini veya ayni lane'de gerekli baskiyi fazla yumusattigini gosterirse mekanik tamamen geri alinmadan once yalnizca distance, alignment threshold veya penalty seviyesi dar kapsamda yeniden ayarlanir; telemetry wording, public panel copy veya opening-fairness helper'lari bu bahaneyle tekrar acilmaz.
+
 ### [Run #73]
 
 Decision:

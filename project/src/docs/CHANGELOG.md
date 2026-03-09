@@ -2,6 +2,13 @@
 
 ---
 
+## Run #74
+
+- `project/game/src/game/spawn.ts` ilk `6s` icinde oyuncuya `160px` icindeki aktif obstacle lane'i ile `0.55+` dot ayni yonu paylasan spawn adaylarini puan kirarak reroll'e zorlayan dar bir lane-stack filtresi ekledi
+- `project/game/src/game/GameScene.ts` runtime spawn secimine aktif obstacle pozisyonlarini gecirdi; `project/game/scripts/telemetry-reports.ts` deterministic survival proxy'yi ayni lane-stack secim davranisiyla hizaladi
+- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni deterministic baseline `26.5s / 6.3s / 4%`, buckets `1 / 3 / 3 / 17`, average spawn count `28` ve average reroll `0.5` ile guncellendi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #73
 
 - `project/game/src/game/spawn.ts` ilk `6s` icinde oyuncunun hareket yonunun onune fazla hizalanan spawn adaylarini puan kirarak reroll'e zorlayan dar bir forward-pressure filtresi ekledi

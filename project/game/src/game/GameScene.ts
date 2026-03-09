@@ -790,6 +790,13 @@ export class GameScene extends Phaser.Scene {
         x: (this.player.body as Phaser.Physics.Arcade.Body).velocity.x,
         y: (this.player.body as Phaser.Physics.Arcade.Body).velocity.y,
       },
+      activeObstaclePositions: this.obstacles
+        .getChildren()
+        .filter(
+          (entry): entry is Phaser.Physics.Arcade.Image =>
+            entry instanceof Phaser.Physics.Arcade.Image && entry.active,
+        )
+        .map((obstacle) => ({ x: obstacle.x, y: obstacle.y })),
       randomInt: Phaser.Math.Between,
     });
     this.runSpawnRerolls += rerollsUsed;

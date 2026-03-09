@@ -8,6 +8,10 @@ export const OFFSCREEN_CULL_MARGIN = 96;
 export const EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS = 6;
 export const EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD = 0.5;
 export const EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY = 80;
+export const EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS = 6;
+export const EARLY_LANE_STACK_DISTANCE = 160;
+export const EARLY_LANE_STACK_ALIGNMENT_THRESHOLD = 0.55;
+export const EARLY_LANE_STACK_PENALTY = 120;
 
 export type Point = {
   x: number;
@@ -18,6 +22,7 @@ type SpawnSelectionParams = {
   survivalTimeSeconds: number;
   playerPosition: Point;
   playerVelocity?: Point;
+  activeObstaclePositions?: Point[];
   randomInt: (min: number, max: number) => number;
 };
 
@@ -75,6 +80,50 @@ const getForwardSpawnPenalty = (
   return (alignment - EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD) * EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY;
 };
 
+const getLaneStackPenalty = (
+  survivalTimeSeconds: number,
+  playerPosition: Point,
+  activeObstaclePositions: Point[] | undefined,
+  spawnPoint: Point,
+): number => {
+  if (survivalTimeSeconds > EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS || !activeObstaclePositions?.length) {
+    return 0;
+  }
+
+  const spawnDirection = normalize({
+    x: spawnPoint.x - playerPosition.x,
+    y: spawnPoint.y - playerPosition.y,
+  });
+
+  return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
+    const obstacleVector = {
+      x: obstaclePosition.x - playerPosition.x,
+      y: obstaclePosition.y - playerPosition.y,
+    };
+    const obstacleDistance = Math.hypot(obstacleVector.x, obstacleVector.y);
+
+    if (obstacleDistance === 0 || obstacleDistance > EARLY_LANE_STACK_DISTANCE) {
+      return totalPenalty;
+    }
+
+    const obstacleDirection = normalize(obstacleVector);
+    const alignment =
+      obstacleDirection.x * spawnDirection.x + obstacleDirection.y * spawnDirection.y;
+
+    if (alignment <= EARLY_LANE_STACK_ALIGNMENT_THRESHOLD) {
+      return totalPenalty;
+    }
+
+    return (
+      totalPenalty +
+      ((alignment - EARLY_LANE_STACK_ALIGNMENT_THRESHOLD) /
+        (1 - EARLY_LANE_STACK_ALIGNMENT_THRESHOLD)) *
+        ((EARLY_LANE_STACK_DISTANCE - obstacleDistance) / EARLY_LANE_STACK_DISTANCE) *
+        EARLY_LANE_STACK_PENALTY
+    );
+  }, 0);
+};
+
 export const rollSpawnPoint = (randomInt: (min: number, max: number) => number): Point => {
   const edge = randomInt(0, 3);
 
@@ -106,17 +155,14 @@ export const selectSpawnPoint = ({
   survivalTimeSeconds,
   playerPosition,
   playerVelocity,
+  activeObstaclePositions,
   randomInt,
 }: SpawnSelectionParams): { point: Point; rerollsUsed: number } => {
   let selectedSpawnPoint = rollSpawnPoint(randomInt);
   let bestScore =
     getSpawnFairnessScore(survivalTimeSeconds, playerPosition, selectedSpawnPoint) -
-    getForwardSpawnPenalty(
-      survivalTimeSeconds,
-      playerPosition,
-      playerVelocity,
-      selectedSpawnPoint,
-    );
+    getForwardSpawnPenalty(survivalTimeSeconds, playerPosition, playerVelocity, selectedSpawnPoint) -
+    getLaneStackPenalty(survivalTimeSeconds, playerPosition, activeObstaclePositions, selectedSpawnPoint);
 
   if (bestScore >= 0) {
     return { point: selectedSpawnPoint, rerollsUsed: 0 };
@@ -130,7 +176,8 @@ export const selectSpawnPoint = ({
     const candidate = rollSpawnPoint(randomInt);
     const candidateScore =
       getSpawnFairnessScore(survivalTimeSeconds, playerPosition, candidate) -
-      getForwardSpawnPenalty(survivalTimeSeconds, playerPosition, playerVelocity, candidate);
+      getForwardSpawnPenalty(survivalTimeSeconds, playerPosition, playerVelocity, candidate) -
+      getLaneStackPenalty(survivalTimeSeconds, playerPosition, activeObstaclePositions, candidate);
 
     if (candidateScore > bestScore) {
       selectedSpawnPoint = candidate;
