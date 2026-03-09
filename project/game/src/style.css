@@ -44,19 +44,32 @@ body {
   width: min(100vw - 48px, 800px);
 }
 
-.run-panel {
-  width: min(100%, 320px);
+.signals-panel {
+  width: min(100%, 340px);
+  display: grid;
+  gap: 18px;
+}
+
+.message-panel {
+  width: 100%;
   border: 1px solid rgba(124, 232, 255, 0.22);
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(11, 23, 34, 0.9), rgba(6, 12, 19, 0.92));
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
 
-.run-panel__details {
+.message-panel--divine {
+  border-color: rgba(255, 214, 120, 0.34);
+  background:
+    radial-gradient(circle at top, rgba(130, 88, 22, 0.22), transparent 58%),
+    linear-gradient(180deg, rgba(28, 21, 10, 0.96), rgba(13, 10, 6, 0.96));
+}
+
+.message-panel__details {
   width: 100%;
 }
 
-.run-panel__summary {
+.message-panel__summary {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -65,11 +78,11 @@ body {
   list-style: none;
 }
 
-.run-panel__summary::-webkit-details-marker {
+.message-panel__summary::-webkit-details-marker {
   display: none;
 }
 
-.run-panel__eyebrow {
+.message-panel__eyebrow {
   color: #7ce8ff;
   font-size: 0.72rem;
   font-weight: 700;
@@ -77,38 +90,42 @@ body {
   text-transform: uppercase;
 }
 
-.run-panel__summary-title {
+.message-panel--divine .message-panel__eyebrow {
+  color: #ffd56a;
+}
+
+.message-panel__summary-title {
   color: #f5f7ff;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.2;
 }
 
-.run-panel__content {
+.message-panel__content {
   padding: 0 22px 20px;
 }
 
-.run-panel__title {
+.message-panel__title {
   margin: 0;
   font-size: 1.55rem;
   line-height: 1.1;
 }
 
-.run-panel__intro,
-.run-panel__footer {
+.message-panel__intro,
+.message-panel__footer {
   margin: 14px 0 0;
   color: #c8d8e4;
   line-height: 1.5;
 }
 
-.run-panel__list {
+.message-panel__list {
   margin: 16px 0 0;
   padding-left: 18px;
   color: #eef8ff;
   line-height: 1.5;
 }
 
-.run-panel__list li + li {
+.message-panel__list li + li {
   margin-top: 10px;
 }
 
@@ -128,16 +145,16 @@ canvas {
   }
 
   .game-root,
-  .run-panel {
+  .signals-panel {
     width: min(100%, 800px);
     margin: 0 auto;
   }
 
-  .run-panel__summary {
+  .message-panel__summary {
     padding: 16px 18px;
   }
 
-  .run-panel__content {
+  .message-panel__content {
     padding: 0 18px 18px;
   }
 }
@@ -148,24 +165,28 @@ canvas {
     padding: 16px;
   }
 
-  .run-panel {
+  .signals-panel {
+    gap: 14px;
+  }
+
+  .message-panel {
     border-radius: 16px;
   }
 
-  .run-panel__title {
+  .message-panel__title {
     font-size: 1.3rem;
   }
 
-  .run-panel__summary {
+  .message-panel__summary {
     gap: 6px;
     padding: 14px 16px;
   }
 
-  .run-panel__content {
+  .message-panel__content {
     padding: 0 16px 16px;
   }
 
-  .run-panel__summary-title {
+  .message-panel__summary-title {
     font-size: 0.95rem;
   }
 }

@@ -10,6 +10,9 @@ Primary Language: Turkish unless project assets require otherwise
 
 Sen bu projede tek seferlik cevap üreten bir asistan değil, sürekli iterasyon yapan bir ürün geliştirme ajanısın.
 
+Not:
+Bu dosya builder agent icindir. Haftalik yon ve faz kararlari artik `GOD.md`, `STRATEGIC_STATE.md`, `MASTER_PLAN.md` ve `DIVINE_DECISIONS.md` tarafindan belirlenir. Builder agent bu stratejik cerceveyi uygulayan yurutucu katmandir; kendi basina haftalik yon degistirmez.
+
 Ana görevin:
 - projeyi anlamak,
 - mevcut durumu tespit etmek,
@@ -100,6 +103,9 @@ Amaç kaos yaratmak değil,
 
 Her çalışma turunun başında şu dosyaları oku ve birbirleriyle tutarlılıklarını kontrol et:
 
+- `STRATEGIC_STATE.md` -> haftalik stratejik durum ve aktif faz
+- `MASTER_PLAN.md` -> haftalari asan product arc
+- `DIVINE_DECISIONS.md` -> God agent karar hafizasi
 - `AGENT.md` → anayasa / çalışma biçimi
 - `STATE.md` → mevcut gerçek durum
 - `ROADMAP.md` → plan ve öncelikler
@@ -109,11 +115,15 @@ Her çalışma turunun başında şu dosyaları oku ve birbirleriyle tutarlılı
 - varsa `TODO.md`, `IDEAS.md`, `CHANGELOG.md`
 - ilgili source code, config ve test dosyaları
 - `AUDIT.md` → son denetim kararlari / drift ve loop uyarilari
+- `GOD_COMMUNICATION.md` -> insan mudahalesi veya ortam blokaji var mi kontrol et
 
 Bu dosyalar arasında çelişki varsa:
 1. önce çelişkiyi tespit et,
 2. gerekçeni açık yaz,
 3. gerekli dosyalarda düzeltici güncelleme yap.
+
+Oncelik sirasi:
+`GOD.md` / stratejik dosyalar > `AUDIT.md` > `AGENT.md` > operasyonel handoff dosyalari.
 
 ---
 
@@ -148,6 +158,9 @@ Hedef şuna benzemeli:
 - "Oyunu genel olarak iyileştir"
 - "Projeyi mükemmelleştir"
 - "Bir sürü feature ekle"
+
+Ek kural:
+Secilen hedef mevcut haftalik stratejik yone acikca baglanabilmelidir. Eger baglanamiyorsa o is "iyi fikir" olsa bile bu tur icin secilmemelidir.
 
 ## STEP 3 — Plan çıkar
 Seçtiğin hedef için kısa bir uygulama planı yap:

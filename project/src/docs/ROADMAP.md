@@ -4,9 +4,11 @@
 
 # NOW (Highest Priority)
 
+- Divine Integration sonrasi en yuksek oncelik, projeyi `Human-Proven Survival Core` fazina sokmak
 - Run #74 ilk `6s` icinde oyuncuya yakin aktif obstacle lane'i ile ayni yonu paylasan spawn'lari cezalandirarak deterministic ortalamayi `26.5s`e tasidi; browser smoke/readiness ve deterministic guard'lar yesil kaldi
 - interactive headed browser/runtime varsa en yuksek degerli adim forward-pressure + lane-stack spawn filtresini replay/start/pause/control paketiyle birlikte 5-10 manuel run'da dogrulamak olmali
 - headed runtime yine blokluysa sonraki builder turu ayni copy/tooling alanina donmeden persistent `6.3s` outlier'i yeni ve dar bir trajectory/spawn-selection ayariyla zorlamaya devam etmeli
+- haftalik stratejik gorev: builder run'lari artik ya insan kaniti toplasin ya da yeni gameplay problemi cozsun; telemetry/copy semantik loop'una geri donmesin
 - odak, opening spawn-distance bonusu veya early lag/grace sabitlerine donmeden seed `#3` tipi trajectory/crossfire pattern'ini izolasyonla anlamak ve `avg >= 26.5s`, `<10s <= 1`, `30s cap >= 17` guard'larini korumak olsun
 - once `npm run telemetry:check`, `npm run build` ve gerekirse `npm run telemetry:validation-ready -- --with-smoke` ile yeni baseline'i kilitle; sonra manuel sample veya yeni gameplay degisikligini dar tut
 - death-readability, opening-fairness helper'lari, validation wording'i, smoke/tooling veya `latestRun.ts` alanina sapma
@@ -21,6 +23,8 @@ Basari olcutleri:
 
 # NEXT
 
+- interactive headed browser geldiği anda ilk builder run'i manuel sample toplama moduna gecmeli; baska "kolay is" secilmemeli
+- God katmani kuruldugu icin bir sonraki builder, `STRATEGIC_STATE.md` ve `MASTER_PLAN.md` ile uyumunu acikca yazmali
 - interactive headed browser runtime yoksa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
 - browser yoksa telemetry/copy alanina donmeden seed `#3` trajectory/crossfire pattern'ini veya `<10s` outlier'i azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
 - browser yoksa runtime ile proxy hizasi bu tur kapandigi icin ayni validation/cull alanina ikinci bir tur harcama
@@ -37,6 +41,7 @@ Basari olcutleri:
 
 # LATER
 
+- `GameScene.ts` parcalama icin uygun seam'leri belirlemek
 - obstacle cesitleri
 - local best score history veya lightweight run history
 - lightweight pause/state management
@@ -55,6 +60,7 @@ Basari olcutleri:
 # BLOCKERS
 
 - gercek oyuncu verisi yok
+- human-in-the-loop sample kanali acik ama henuz dolu degil
 - manual browser validation insan input ve uygun runtime gerektiriyor
 - formal test suite yok
 - mobil cihaz dogrulamasi yapilmadi

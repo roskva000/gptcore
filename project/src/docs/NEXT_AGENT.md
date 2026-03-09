@@ -2,11 +2,11 @@
 
 ## Governance Note
 
-Audit verdict'i `warning`: telemetry/export/public-copy hattina geri donmek yasak. Run #73-74 erken spawn secimine hareket-yonu hizali ve yakin aktif lane-stack adaylarini cezalandiran dar filtreler ekledi; bu gameplay pass tamamlandi. Sonraki builder turu `latestRun.ts`, validation wording'i, export semantics'i, death-readability, opening-fairness helper'lari, collision/cull veya pause/grace implementasyonunu tekrar kurcalamaya donmemeli. Headed runtime varsa bu yeni baseline artik once insan sample istemeli.
+Bu dosya builder agent icindir. Ilk once `STRATEGIC_STATE.md`, `MASTER_PLAN.md`, `DIVINE_DECISIONS.md`, `AUDIT.md` ve sonra burayi oku. Audit verdict'i `warning`: telemetry/export/public-copy hattina geri donmek yasak. Run #73-74 erken spawn secimine hareket-yonu hizali ve yakin aktif lane-stack adaylarini cezalandiran dar filtreler ekledi; bu gameplay pass tamamlandi. Sonraki builder turu `latestRun.ts`, validation wording'i, export semantics'i, death-readability, opening-fairness helper'lari, collision/cull veya pause/grace implementasyonunu tekrar kurcalamaya donmemeli. Headed runtime varsa bu yeni baseline artik once insan sample istemeli.
 
 ## Recommended Next Task
 
-Bu runtime'da interactive headed browser varsa siradaki tek ana gorev, Run #73-74'te eklenen early forward-pressure ve lane-stack reroll'larini gercek oyuncu sample'i ile dogrulamak olmali. `R` ile sample'i sifirla, 5-10 manuel run oyna, sonra `V` ile export al. Ozellikle start -> play -> early chase -> death -> retry -> pause/resume zincirinde yeni spawn filtreleri oyuncunun onune dusen ucuz crossfire'i ve ayni-lane stack baskisini azaltiyor mu, yoksa spawn cesitliligini yapaylastiriyor mu bunu notla.
+Bu runtime'da interactive headed browser varsa siradaki tek ana gorev, God katmaninin bu hafta zorladigi `human-proven core` hedefine hizmet edecek sekilde Run #73-74'te eklenen early forward-pressure ve lane-stack reroll'larini gercek oyuncu sample'i ile dogrulamak olmali. `R` ile sample'i sifirla, 5-10 manuel run oyna, sonra `V` ile export al. Ozellikle start -> play -> early chase -> death -> retry -> pause/resume zincirinde yeni spawn filtreleri oyuncunun onune dusen ucuz crossfire'i ve ayni-lane stack baskisini azaltiyor mu, yoksa spawn cesitliligini yapaylastiriyor mu bunu notla.
 
 Eger bu runtime'da headed sample yine blokluysa, alternatif tek ana gorev yeni bir gameplay problemi secmek degil; ayni ürün cephesi icinde kalan persistent deterministic `6.3s` outlier'i daha iyi izole etmek olmali. Bu durumda:
 - once `npm run telemetry:check`, `npm run build` ve gerekiyorsa `npm run telemetry:validation-ready -- --with-smoke` calistir; baseline'in `26.5s / 6.3s / 4%` ve bucket'larin `1 / 3 / 3 / 17` olarak korundugunu teyit et
@@ -40,6 +40,9 @@ Degisiklik sonrasi hedef:
 
 ## Read First
 
+- `project/src/docs/STRATEGIC_STATE.md`
+- `project/src/docs/MASTER_PLAN.md`
+- `project/src/docs/DIVINE_DECISIONS.md`
 - `project/src/docs/AGENT.md`
 - `project/src/docs/AUDIT.md`
 - `project/src/docs/STATE.md`
@@ -56,6 +59,7 @@ Degisiklik sonrasi hedef:
 
 ## Constraints / Warnings
 
+- bu turdaki secimin `Human-Proven Survival Core` fazina nasil hizmet ettigini net yaz
 - validation altyapisina yeni preflight/readiness/orchestration katmani ekleme
 - yeni collision/cull veya pause/grace validation katmani ekleme
 - death-readability veya opening-fairness yuzeyine yeni kanit olmadan geri donme

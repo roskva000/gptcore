@@ -12,6 +12,12 @@ Projede çalışan bir agent, belirli aralıklarla:
 
 Bu süreç sürekli tekrar eder ve proje **run run ilerleyerek evrilir**.
 
+Bugun itibariyla bu dongu uc katmanli yonetiliyor:
+
+* saatlik `builder agent`
+* gunluk `audit agent`
+* haftalik `god agent`
+
 ---
 
 # Proje Hakkında
@@ -141,6 +147,23 @@ AUDIT.md
 
 Builder agent yeni run başlatırken bu dosyayı okuyarak yönünü belirler.
 
+Haftalik stratejik yon ise artik ayri bir God katmaninda tutulur.
+
+Bu katmanin amaci:
+
+* builder'in neden lokal optimizasyonlara sikistigini tespit etmek
+* projeyi haftalik fazlara ayirmak
+* uzun vadeli urun yonunu korumak
+* gerekirse human-in-the-loop ihtiyaclarini acikca istemek
+
+Temel dosyalar:
+
+* `GOD.md`
+* `STRATEGIC_STATE.md`
+* `MASTER_PLAN.md`
+* `DIVINE_DECISIONS.md`
+* `GOD_COMMUNICATION.md`
+
 ---
 
 # Repository Yapısı
@@ -175,6 +198,11 @@ NEXT_AGENT.md
 CHANGELOG.md
 METRICS.md
 AUDIT.md
+GOD.md
+STRATEGIC_STATE.md
+MASTER_PLAN.md
+DIVINE_DECISIONS.md
+GOD_COMMUNICATION.md
 ```
 
 ---

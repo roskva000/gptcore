@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [God Run #1 - Divine Integration]
+
+Decision:
+Projeye builder ve auditor'un uzerinde duran haftalik stratejik governance katmani eklendi; yeni hafiza dosyalari ve public `God's Revelation` yuzeyi tanimlandi.
+
+Reason:
+Mevcut sistem oyun ve telemetry tarafinda gercek ilerleme uretiyor, ancak builder dogasi geregi lokal ve saatlik kararlara optimizasyon yapiyor. `AUDIT.md` bu davranisin loop riskini gorse de haftalik yon belirlemiyordu. God katmani olmadan proje "iyi optimize edilen dar cekirdek" seviyesinde kalma riski tasiyor.
+
+Impact:
+`STRATEGIC_STATE.md`, `MASTER_PLAN.md`, `DIVINE_DECISIONS.md` ve `GOD_COMMUNICATION.md` eklendi. `AGENT.md` builder'in stratejik dosyalari zorunlu okumasini isteyecek sekilde guncellendi. `main.ts`, `style.css` ve yeni `divineMessage.ts` ile public UI'ya haftalik revelation paneli eklendi.
+
+Rollback Condition:
+Eger yeni stratejik dosyalar haftalik net yon vermek yerine builder uzerine anlamsiz yazi yuku bindirirse dosya seti sadeleştirilebilir; fakat haftalik stratejik hafiza ihtiyaci kaldirilmaz.
+
 ### [Run #74]
 
 Decision:
