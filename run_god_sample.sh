@@ -5,6 +5,8 @@ REPO_DIR="$HOME/agents/game-agent"
 BRANCH="main"
 LOG_DIR="$HOME/agent-logs/game-agent-god"
 LOCKFILE="/tmp/game-agent-god.lock"
+GLOBAL_LOCKFILE="/tmp/game-agent-global.lock"
+MAINTENANCE_FILE="$REPO_DIR/.factory-maintenance"
 ENV_FILE="$HOME/.agent_env"
 PROMPT_DIR="$HOME/agent-runner/prompts"
 FIRST_PROMPT_FILE="$PROMPT_DIR/god_first_run_prompt.txt"
@@ -36,11 +38,30 @@ if [ -f "$ENV_FILE" ]; then
   source "$ENV_FILE"
 fi
 
+check_maintenance() {
+  if [ -f "$MAINTENANCE_FILE" ]; then
+    log "[INFO] Maintenance marker detected, skipping god run."
+    exit 0
+  fi
+}
+
+acquire_global_lock() {
+  exec 8>"$GLOBAL_LOCKFILE"
+  if ! flock -w 1800 8; then
+    log "[INFO] Global repo lock busy, skipping god after timeout."
+    exit 0
+  fi
+}
+
+check_maintenance
+
 exec 9>"$LOCKFILE"
 flock -n 9 || {
   log "[INFO] Another god run is already active, skipping."
   exit 0
 }
+
+acquire_global_lock
 
 log "[INFO] Starting god run at $TS"
 
@@ -67,7 +88,6 @@ case "$REMOTE_URL" in
     ;;
 esac
 
-# Dirty tree yüzünden haftalık run kilitlenmesin
 if ! git diff --quiet || ! git diff --cached --quiet; then
   log "[WARN] Working tree dirty, resetting to HEAD"
   git reset --hard HEAD | tee -a "$OUTFILE"
@@ -105,7 +125,6 @@ PROMPT="$(cat "$PROMPT_FILE")"
 log "[INFO] Running Codex God agent"
 codex exec --model gpt-5.4 --full-auto "$PROMPT" | tee -a "$OUTFILE"
 
-# İlk ilahi entegrasyon tamamlandıysa marker koy
 if [ ! -f "$MARKER_FILE" ]; then
   touch "$MARKER_FILE"
 fi

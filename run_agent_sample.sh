@@ -5,7 +5,9 @@ REPO_DIR="$HOME/agents/game-agent"
 PROJECT_DIR="$REPO_DIR/project/game"
 BRANCH="main"
 LOG_DIR="$REPO_DIR/.agent-logs"
-LOCKFILE="/tmp/game-agent.lock"
+LOCKFILE="/tmp/game-agent-builder.lock"
+GLOBAL_LOCKFILE="/tmp/game-agent-global.lock"
+MAINTENANCE_FILE="$REPO_DIR/.factory-maintenance"
 ENV_FILE="$HOME/.agent_env"
 
 mkdir -p "$LOG_DIR"
@@ -49,7 +51,30 @@ Log: ${OUTFILE}"
 
 trap on_error ERR
 
-cd "$REPO_DIR"
+check_maintenance() {
+  if [ -f "$MAINTENANCE_FILE" ]; then
+    log "[INFO] Maintenance marker detected, skipping builder run."
+    send_telegram "🟡 Agent run skipped
+Server: $(hostname)
+Time: $(date)
+Reason: maintenance mode active"
+    exit 0
+  fi
+}
+
+acquire_global_lock() {
+  exec 8>"$GLOBAL_LOCKFILE"
+  if ! flock -w 15 8; then
+    log "[INFO] Global repo lock busy, skipping builder run."
+    send_telegram "🟡 Agent run skipped
+Server: $(hostname)
+Time: $(date)
+Reason: global repo lock busy"
+    exit 0
+  fi
+}
+
+check_maintenance
 
 exec 9>"$LOCKFILE"
 flock -n 9 || {
@@ -60,6 +85,8 @@ Time: $(date)
 Reason: another run is already active"
   exit 0
 }
+
+acquire_global_lock
 
 log "[INFO] Starting run at $TS"
 send_telegram "🟡 Agent run STARTED
@@ -84,13 +111,11 @@ case "$REMOTE_URL" in
     ;;
 esac
 
-# Local working tree temiz değilse loop kilitlenmesin
 if ! git diff --quiet || ! git diff --cached --quiet; then
   log "[WARN] Working tree dirty, resetting to HEAD"
   git reset --hard HEAD | tee -a "$OUTFILE"
 fi
 
-# Untracked dosyalar varsa temizle
 if [ -n "$(git ls-files --others --exclude-standard)" ]; then
   log "[WARN] Untracked files found, cleaning"
   git clean -fd | tee -a "$OUTFILE"
@@ -102,43 +127,39 @@ git pull --rebase origin "$BRANCH" | tee -a "$OUTFILE"
 
 PROMPT='Kolay gelsin şef, mesai başladı.
 
-AGENT.md anayasan.
-AUDIT.md son denetim hafızan.
-PROJECT.md, ARCHITECTURE.md ve GAME_DESIGN.md bağlamın.
-NEXT_AGENT.md aktif görev tanımın.
+`project/src/docs/core/AGENT.md` anayasan.
+`project/src/docs/audit/AUDIT.md` son denetim hafızan.
+`project/src/docs/core/PROJECT.md`, `project/src/docs/core/ARCHITECTURE.md` ve `project/src/docs/core/GAME_DESIGN.md` bağlamın.
+`project/src/docs/core/NEXT_AGENT.md` aktif görev tanımın.
 
 Önce repo durumunu ve state dosyalarını oku.
 
 Okuma sırası:
-1. AGENT.md
-2. AUDIT.md
-3. NEXT_AGENT.md
-4. STATE.md
-5. ROADMAP.md
-6. DECISIONS.md
-7. CHANGELOG.md
-8. METRICS.md
+1. `project/src/docs/strategy/STRATEGIC_STATE.md`
+2. `project/src/docs/strategy/MASTER_PLAN.md`
+3. `project/src/docs/factory/FACTORY_STATE.md`
+4. `project/src/docs/factory/PARTNER_LOG.md`
+5. `project/src/docs/core/AGENT.md`
+6. `project/src/docs/audit/AUDIT.md`
+7. `project/src/docs/core/NEXT_AGENT.md`
+8. `project/src/docs/core/STATE.md`
+9. `project/src/docs/core/ROADMAP.md`
+10. `project/src/docs/core/DECISIONS.md`
+11. `project/src/docs/core/CHANGELOG.md`
+12. `project/src/docs/core/METRICS.md`
+13. varsa `project/src/docs/experiments/HUMAN_SIGNALS.md` ve `project/src/docs/experiments/EXPERIMENTS.md`
 
-AUDIT.md içinde governance yönlendirmeleri veya risk uyarıları varsa bunu dikkate al.
+`project/src/docs/audit/AUDIT.md` içinde governance yönlendirmeleri veya risk uyarıları varsa bunu dikkate al.
 
-Eğer AUDIT.md:
-- loop
-- drift
-- bureaucracy-risk
-- validation freeze
-
-gibi bir uyarı içeriyorsa, bu yönlendirmeyi göz ardı etme.
-
-Bu tur için tek bir ana hedef seç.
+Bu tur için tek bir ana hedef seç ve run modunu açıkça belirt: `stabilization` / `mutation` / `integration`.
 
 Hedef seçiminde şu öncelikleri kullan:
-
 1. ürün ilerlemesi (gameplay / UX / bug fix)
 2. deterministic validation
 3. test stabilitesi
 4. teknik borç azaltma
 
-Validation veya tooling genişletmesi sadece gerçekten gerekli ise yapılmalıdır.
+Validation veya tooling genişletmesi sadece gerçekten gerekli ise yapılmalıdır. Factory docs ve partner notları builder için bağlamdır; bunları copy-churn bahanesiyle büyütme.
 
 Aynı problem etrafında yeni orchestration / readiness / preflight katmanı eklemekten kaçın.
 
@@ -146,18 +167,16 @@ Uygula.
 Doğrula.
 
 Tur sonunda mutlaka şu dosyaları güncelle:
+- `project/src/docs/core/STATE.md`
+- `project/src/docs/core/ROADMAP.md`
+- `project/src/docs/core/DECISIONS.md`
+- `project/src/docs/core/CHANGELOG.md`
+- `project/src/docs/core/METRICS.md`
+- `project/src/docs/core/NEXT_AGENT.md`
 
-STATE.md
-ROADMAP.md
-DECISIONS.md
-CHANGELOG.md
-METRICS.md
-NEXT_AGENT.md
-
-NEXT_AGENT.md bir sonraki agent için net ve uygulanabilir bir görev içermelidir.
+`project/src/docs/core/NEXT_AGENT.md` bir sonraki agent için net ve uygulanabilir bir görev içermelidir.
 
 Gereksiz scope büyütme.
-
 Core gameplay ve ölçülebilir ilerleme öncelikli.'
 
 log "[INFO] Running Codex"

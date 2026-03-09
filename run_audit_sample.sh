@@ -6,6 +6,8 @@ PROJECT_DIR="$REPO_DIR/project/game"
 BRANCH="main"
 LOG_DIR="$HOME/agent-logs/game-agent-audit"
 LOCKFILE="/tmp/game-agent-audit.lock"
+GLOBAL_LOCKFILE="/tmp/game-agent-global.lock"
+MAINTENANCE_FILE="$REPO_DIR/.factory-maintenance"
 ENV_FILE="$HOME/.agent_env"
 
 mkdir -p "$LOG_DIR"
@@ -44,6 +46,23 @@ Log: ${OUTFILE}"
 
 trap on_error ERR
 
+check_maintenance() {
+  if [ -f "$MAINTENANCE_FILE" ]; then
+    log "[INFO] Maintenance marker detected, skipping audit run."
+    exit 0
+  fi
+}
+
+acquire_global_lock() {
+  exec 8>"$GLOBAL_LOCKFILE"
+  if ! flock -w 900 8; then
+    log "[INFO] Global repo lock busy, skipping audit after timeout."
+    exit 0
+  fi
+}
+
+check_maintenance
+
 exec 9>"$LOCKFILE"
 flock -n 9 || {
   log "[INFO] Another audit is active, exiting."
@@ -51,6 +70,8 @@ flock -n 9 || {
 }
 
 cd "$REPO_DIR"
+
+acquire_global_lock
 
 log "[INFO] Starting audit at $TS"
 send_telegram "🟡 Daily audit STARTED
@@ -67,22 +88,26 @@ Sen builder agent değilsin.
 Görevin kod yazmak değil, son 24 saatlik gidişatı denetlemek.
 
 Önce şu dosyaları oku:
-1. AUDITOR.md
-2. AUDIT.md
-3. AGENT.md
-4. STATE.md
-5. ROADMAP.md
-6. NEXT_AGENT.md
-7. DECISIONS.md
-8. CHANGELOG.md
-9. METRICS.md
+1. `project/src/docs/audit/AUDITOR.md`
+2. `project/src/docs/audit/AUDIT.md`
+3. `project/src/docs/strategy/STRATEGIC_STATE.md`
+4. `project/src/docs/factory/FACTORY_STATE.md`
+5. `project/src/docs/factory/PARTNER_LOG.md`
+6. `project/src/docs/core/AGENT.md`
+7. `project/src/docs/core/STATE.md`
+8. `project/src/docs/core/ROADMAP.md`
+9. `project/src/docs/core/NEXT_AGENT.md`
+10. `project/src/docs/core/DECISIONS.md`
+11. `project/src/docs/core/CHANGELOG.md`
+12. `project/src/docs/core/METRICS.md`
+13. varsa `project/src/docs/experiments/HUMAN_SIGNALS.md` ve `project/src/docs/experiments/EXPERIMENTS.md`
 
 Ardından son 24 saatte veya son birkaç runda şu soruları cevapla:
-
 - proje gerçekten ilerledi mi?
 - gameplay/source code ilerledi mi?
 - yoksa docs / validation / tooling katmanı mı büyüdü?
 - loop, drift veya bureaucracy riski var mı?
+- factory ritual-loop veya proxy-overfit riski var mı?
 - builder agent yanlış local maximuma mı saplandı?
 - sonraki builder turu hangi yöne zorlanmalı?
 
@@ -90,17 +115,17 @@ Kurallar:
 - yeni feature implement etmek zorunda değilsin
 - gereksiz kod yazma
 - asıl görevin yönetişim
-- gerekiyorsa NEXT_AGENT.md içine kısa governance note ekle
-- mutlaka AUDIT.md güncelle
+- gerekiyorsa `project/src/docs/core/NEXT_AGENT.md` içine kısa governance note ekle
+- mutlaka `project/src/docs/audit/AUDIT.md` güncelle
 - gerekiyorsa ROADMAP veya STATE içinde kısa yön düzeltmesi yap
-- net yargı ver: healthy / warning / stuck / drift-risk / bureaucracy-risk
+- net yargı ver: healthy / warning / stuck / drift-risk / bureaucracy-risk / ritual-loop / proxy-overfit
 
 Tur sonunda mutlaka üret:
 - kısa audit özeti
 - kırmızı bayraklar
 - governance direction
-- güncellenmiş AUDIT.md
-- gerekiyorsa NEXT_AGENT.md içine governance note'
+- güncellenmiş `project/src/docs/audit/AUDIT.md`
+- gerekiyorsa `project/src/docs/core/NEXT_AGENT.md` içine governance note'
 
 log "[INFO] Running Codex audit"
 codex exec \
