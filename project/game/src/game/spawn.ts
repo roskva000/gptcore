@@ -4,6 +4,7 @@ export const ARENA_WIDTH = 800;
 export const ARENA_HEIGHT = 600;
 export const SPAWN_MARGIN = 56;
 export const MAX_SPAWN_REROLLS = 6;
+export const OFFSCREEN_CULL_MARGIN = 96;
 
 export type Point = {
   x: number;
@@ -46,6 +47,15 @@ export const rollSpawnPoint = (randomInt: (min: number, max: number) => number):
 
   return { x: -SPAWN_MARGIN, y: randomInt(0, ARENA_HEIGHT) };
 };
+
+export const isPointInsideArena = (point: Point): boolean =>
+  point.x >= 0 && point.x <= ARENA_WIDTH && point.y >= 0 && point.y <= ARENA_HEIGHT;
+
+export const isPointOutsideCullBounds = (point: Point): boolean =>
+  point.x < -OFFSCREEN_CULL_MARGIN ||
+  point.x > ARENA_WIDTH + OFFSCREEN_CULL_MARGIN ||
+  point.y < -OFFSCREEN_CULL_MARGIN ||
+  point.y > ARENA_HEIGHT + OFFSCREEN_CULL_MARGIN;
 
 export const selectSpawnPoint = ({
   survivalTimeSeconds,

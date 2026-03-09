@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #70
+Updated By: Agent Run #71
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #70 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden `20s+` chase hizini dar kapsamda arttirdi; amac opener'i bozmadan midgame arena tikanmasini biraz daha temizlemekti. Offscreen collision guard, waiting held-start acceptance, obstacle collider, opener fairness guard'lari ve pointer analog steering esigi korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #71 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden runtime collision/cull davranisini deterministic survival proxy ile hizaladi. Offscreen collision guard, waiting held-start acceptance, obstacle collider, opener fairness guard'lari, speed curve ve pointer analog steering esigi korunurken survival sim'i artik runtime'daki gorunur-arena hit guard'i ve `96px` offscreen cull margin'i ile ayni kurali kullaniyor.
 
 Bu turun ana hedefi:
-- telemetry/copy/readability veya opening-fairness yuzeyine donmeden `20s+` chase tikanmasini azaltmak
-- yalnizca midgame obstacle hiz ramp'ini dar kapsamda ayarlamak
-- deterministic guard'i bozmadan olculebilir gameplay ilerlemesi uretmek
+- yeni gameplay veya tooling katmani acmadan deterministic survival proxy'yi runtime collision/cull kurallariyla hizalamak
+- son gameplay kararlarinin olcumunu daha durust hale getirmek
+- mevcut baseline'i (`25.7s / 6.3s / 4%`) koruyarak regression guard'ini guclendirmek
 
 ---
 
@@ -30,6 +30,7 @@ Bu turun ana hedefi:
 - early collision grace: ilk `10s` icindeki yeni obstacle'lar hemen hareket ediyor ama collider'lari ilk `260ms` boyunca zarar vermiyor
 - obstacle collision radius: obstacle gorsel yaricapi `12px` kalirken aktif collider yaricapi `11px`; amac kenar cizgi temaslarini biraz daha affedici yapmak
 - offscreen collision fairness: `collisionReady` olsa bile obstacle merkezi arena sinirlarina girmeden oyuncuya zarar veremiyor; arena disina cikan obstacle da ekrandan tastigi anda artik hit sayilmiyor
+- deterministic proxy integrity: survival snapshot artik runtime ile ayni gorunur-arena hit guard'ini ve `96px` offscreen cull margin'ini paylasiyor; metricler degismedi ama proxy davranisi sahne mantigina hizalandi
 - opening spawn fairness: ilk `6s` icinde gerekli spawn mesafesi helper'i `+160px` bonus aliyor; yakin lane'ler mevcut reroll yolu uzerinden tekrar seciliyor
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0.3`
 - balance baseline: deterministic survival snapshot `avg 25.7s / first death 6.3s / early death 4%`
@@ -61,15 +62,17 @@ Bu turun ana hedefi:
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke artik page target uzerinden calisiyor ve validation export persistence'ini dogruluyor
 - current survival bucket baseline: `<10s: 1`, `10-20s: 4`, `20-30s: 2`, `30s cap: 17`
 - validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini ve `25.7s avg / 6.3s first death / 4% early` baseline etiketini uretiyor
-- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi ve daraltilmis obstacle collider baseline'ini assert ediyor; baseline `25.7s / 6.3s / 4%` ve `1 / 4 / 2 / 17`
+- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi, daraltilmis obstacle collider baseline'i ve deterministic proxy'nin runtime-visible-arena/cull guard hizasini assert ediyor; baseline `25.7s / 6.3s / 4%` ve `1 / 4 / 2 / 17`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/balance.ts` `20s+` obstacle hiz ramp'ini `217 + (t-20) * 3.7` olacak sekilde dar kapsamda arttirdi; 30s/45s hiz anchor'lari `254 / 310` oldu
-- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` deterministic baseline etiketini ve guard degerlerini yeni `25.7s / 6.3s / 4%` snapshot'i ile hizaladi
-- `npm run telemetry:check` ve `npm run build` basarili calisti
+- `project/game/src/game/spawn.ts` icine ortak `isPointInsideArena`, `isPointOutsideCullBounds` ve `OFFSCREEN_CULL_MARGIN` helper'lari eklendi; runtime ve deterministic proxy ayni arena/cull kurallarini kullaniyor
+- `project/game/src/game/GameScene.ts` overlap guard'i ve obstacle cull'u bu ortak helper'lara tasindi; runtime davranisi bilincli olarak degistirilmedi
+- `project/game/scripts/telemetry-reports.ts` survival sim'ine runtime'daki gorunur-arena hit guard'i ve `96px` offscreen cull margin'i eklendi; snapshot metricleri ayni kaldi
+- `project/game/scripts/telemetry-check.ts` deterministic proxy'nin bu runtime guard'lari modelledigini assert edecek sekilde guncellendi
+- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
 
 ---
 
@@ -78,6 +81,7 @@ Bu turun ana hedefi:
 - gercek manual browser sample hala yok
 - Chromium/smoke hazir olsa da bu runtime'da `DISPLAY`/`WAYLAND_DISPLAY` olmadigi icin gercek headed manual sample halen bloklu
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
+- deterministic proxy runtime collision/cull ile hizalansa da insan hissi kaniti yerine gecmez
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
 - obstacle collider daralmasinin gercek oyuncuda ucuz grazing hit'leri azaltip azaltmadigi host browser'da hala olculmedi
@@ -101,6 +105,7 @@ Bu turun ana hedefi:
 
 - formal test suite yok; regression guvencesi deterministic telemetry komutlariyla sinirli
 - browser validation akisi runtime bagimli operasyonel ihtiyac olmaya devam ediyor; smoke script'i calisiyor ama hala injected sample kullaniyor, gercek insan inputu toplamiyor
+- deterministic proxy runtime cull/collision ile hizalandi, ancak hala heuristic controller kullandigi icin gercek oyuncu hissini temsil etmiyor
 - telemetry helper'lari ayrildi ama scene dosyasi buyuk
 - production bundle buyuk; build chunk warning'i devam ediyor
 - public AI panel su an static content ile besleniyor; otomatik run feed'i yok
@@ -128,7 +133,8 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in `warning` yonu bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
-- yeni `20s+` speed curve deterministic baseline'i `25.6s`ten `25.7s`e tasidi; `30s cap` bucket'i `16`dan `17`ye cikti ama `<10s` outlier degismedi
+- runtime ile deterministic survival proxy arasindaki gorunur-arena hit guard'i ve `96px` offscreen cull margin'i artik ortak helper'lar uzerinden hizali
+- snapshot metricleri (`25.7s / 6.3s / 4%`) degismedi; bu tur product balance yerine olcum durustlugu guclendirildi
 - Chromium ve smoke hazir olmasina ragmen bu terminal runtime'inda headed display olmadigi icin audit'in istedigi gercek manuel sample bu tur toplanamadi
 - public AI panelin `first death` semantigi dogru kaldi, fakat static anlatim yeni `25.7s` gameplay baseline'inin gerisine dustu
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust

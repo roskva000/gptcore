@@ -12,6 +12,9 @@ import {
 import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
+  isPointInsideArena,
+  isPointOutsideCullBounds,
+  OFFSCREEN_CULL_MARGIN,
   selectSpawnPoint,
 } from './spawn';
 import {
@@ -42,7 +45,6 @@ const PLAYER_COLLISION_RADIUS = 16;
 const OBSTACLE_COLLISION_RADIUS = 11;
 const POINTER_DEAD_ZONE_PX = 10;
 const POINTER_FULL_SPEED_DISTANCE_PX = 120;
-const OFFSCREEN_CULL_MARGIN = 96;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
@@ -910,12 +912,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private isObstacleInsideVisibleArena(obstacle: Phaser.Physics.Arcade.Image): boolean {
-    return (
-      obstacle.x >= 0 &&
-      obstacle.x <= ARENA_WIDTH &&
-      obstacle.y >= 0 &&
-      obstacle.y <= ARENA_HEIGHT
-    );
+    return isPointInsideArena(obstacle);
   }
 
   private updatePlayerVelocity(): void {
@@ -998,10 +995,7 @@ export class GameScene extends Phaser.Scene {
 
       if (
         obstacle.active &&
-        (obstacle.x < -OFFSCREEN_CULL_MARGIN ||
-          obstacle.x > ARENA_WIDTH + OFFSCREEN_CULL_MARGIN ||
-          obstacle.y < -OFFSCREEN_CULL_MARGIN ||
-          obstacle.y > ARENA_HEIGHT + OFFSCREEN_CULL_MARGIN)
+        isPointOutsideCullBounds(obstacle)
       ) {
         obstacle.disableBody(true, true);
       }

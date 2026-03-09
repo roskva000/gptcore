@@ -16,6 +16,9 @@ import {
 import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
+  isPointInsideArena,
+  isPointOutsideCullBounds,
+  OFFSCREEN_CULL_MARGIN,
   selectSpawnPoint,
   type Point,
 } from '../src/game/spawn.ts';
@@ -245,14 +248,24 @@ const simulateSession = (seed: number): SessionResult => {
     player.x = clamp(player.x + playerVelocity.x * FIXED_TIME_STEP_SECONDS, PLAYER_RADIUS, ARENA_WIDTH - PLAYER_RADIUS);
     player.y = clamp(player.y + playerVelocity.y * FIXED_TIME_STEP_SECONDS, PLAYER_RADIUS, ARENA_HEIGHT - PLAYER_RADIUS);
 
-    for (const obstacle of obstacles) {
+    for (let obstacleIndex = obstacles.length - 1; obstacleIndex >= 0; obstacleIndex -= 1) {
+      const obstacle = obstacles[obstacleIndex];
       obstacle.x += obstacle.vx * FIXED_TIME_STEP_SECONDS;
       obstacle.y += obstacle.vy * FIXED_TIME_STEP_SECONDS;
+
+      if (isPointOutsideCullBounds(obstacle)) {
+        obstacles.splice(obstacleIndex, 1);
+        continue;
+      }
 
       if (
         obstacle.collisionReadyAtSeconds !== null &&
         survivalTimeSeconds < obstacle.collisionReadyAtSeconds
       ) {
+        continue;
+      }
+
+      if (!isPointInsideArena(obstacle)) {
         continue;
       }
 
@@ -314,7 +327,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
   return {
     sessionCount: SESSION_COUNT,
     maxSimulationSeconds: MAX_SIMULATION_SECONDS,
-    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, and ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s`,
+    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s, visible-arena hit guard, and ${OFFSCREEN_CULL_MARGIN}px offscreen cull margin`,
     effectivePlayerSpeed: EFFECTIVE_PLAYER_SPEED,
     nativePlayerSpeed: PLAYER_SPEED,
     averageSurvivalTimeSeconds: round(averageSurvivalTime),

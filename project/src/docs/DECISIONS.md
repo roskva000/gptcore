@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #71]
+
+Decision:
+Deterministic survival proxy, runtime'daki gorunur-arena hit guard'i ve `96px` offscreen cull margin'i ile hizalandi; bu davranis ortak spawn helper'larina tasindi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/copy/readability ve opening-fairness alanlarina geri donmek yasakti. Headed browser/runtime hala yoktu, bu yuzden manuel sample toplanamadi. Yeni gameplay tuning churn'una dusmeden secilen gerekli dar is, son run'larda oyuna eklenen collision/cull davranisinin deterministic survival proxy'de eksik kalmasi ve olcum durustlugunu zedeleme riskiydi.
+
+Impact:
+`project/game/src/game/spawn.ts` icine `isPointInsideArena`, `isPointOutsideCullBounds` ve `OFFSCREEN_CULL_MARGIN` eklendi; `project/game/src/game/GameScene.ts` overlap/cull yolu bu helper'lari kullanacak sekilde hizalandi. `project/game/scripts/telemetry-reports.ts` survival sim'i de ayni visible-arena hit guard'i ve offscreen cull margin'i ile calisiyor. Snapshot baseline bilincli olarak degismedi: deterministic survival `25.7s / 6.3s / 4%` ve bucket dagilimi `1 / 4 / 2 / 17` korundu. `project/game/scripts/telemetry-check.ts` bu hizayi assert ediyor. `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Eger runtime'daki obstacle overlap veya cull kurallari bilincli olarak degisirse deterministic proxy ayni helper'larla tekrar hizalanmali; proxy'yi sahneden farkli kurallarda sessizce birakmak kabul edilmez.
+
 ### [Run #70]
 
 Decision:

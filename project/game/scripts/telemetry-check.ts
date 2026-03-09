@@ -64,6 +64,11 @@ assert.equal(survivalReport.averageSurvivalTimeSeconds, 25.7, 'Average survival 
 assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 4, 'Early death rate snapshot regressed.');
+assert.match(
+  survivalReport.controller,
+  /visible-arena hit guard, and 96px offscreen cull margin/,
+  'Deterministic survival proxy no longer matches runtime collision and cull guards.',
+);
 assert.deepEqual(
   survivalReport.survivalBuckets,
   {

@@ -2,6 +2,14 @@
 
 ---
 
+## Run #71
+
+- `project/game/src/game/spawn.ts` ortak `isPointInsideArena`, `isPointOutsideCullBounds` ve `OFFSCREEN_CULL_MARGIN` helper'larini ekledi
+- `project/game/src/game/GameScene.ts` obstacle overlap guard'i ve cull davranisini bu ortak helper'larla hizaladi; runtime davranisi bilincli olarak degistirilmedi
+- `project/game/scripts/telemetry-reports.ts` deterministic survival sim'ine runtime'daki gorunur-arena hit guard'i ve `96px` offscreen cull margin'ini ekledi
+- `project/game/scripts/telemetry-check.ts` deterministic proxy'nin runtime collision/cull hizasini assert edecek sekilde guncellendi
+- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #70
 
 - `project/game/src/game/balance.ts` `20s+` obstacle hiz ramp'ini `217 + (t-20) * 3.7` olacak sekilde guncelledi; 30s/45s hiz anchor'lari `254 / 310` oldu

@@ -4,9 +4,10 @@
 
 # NOW (Highest Priority)
 
-- Run #70 opener'i, replay akisini ve telemetry/export semantigini koruyup `20s+` chase hizini biraz arttirdi; sonraki ana urun adimi bunun ve mevcut replay/pause/control paketinin insan sample ile dogrulanmasi olmali
+- Run #71 deterministic survival proxy'yi runtime collision/cull davranisiyla hizaladi; sonraki ana urun adimi halen mevcut replay/pause/control paketinin insan sample ile dogrulanmasi olmali
 - interactive headed browser/runtime varsa yeni `25.7s / 6.3s / 4%` baseline'i koruyarak keyboard + pointer replay/start/pause akisinin, waiting held-start davranisinin, `120px` analog pointer steering esiginin, hizlanan `20s+` chase'in, `11px` obstacle collider'in ve offscreen collision guard'inin 5-10 manuel run notunu topla
 - once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut; export sample icindeki en dusuk olum suresini gosterdigi icin 20s+ chase tansiyonu ve replay friksiyonu notlari daha dogru okunacak
+- deterministic proxy artik runtime'daki gorunur-arena hit guard'ini ve `96px` offscreen cull margin'ini modelledigi icin browser yoksa ayni validation/cull alanina geri donme; yeni gameplay problemine gec
 - odak insan hissi olsun: waiting state'te held movement/pointer extra release-repress istemeden start'i netlestiriyor mu, `120px` analog pointer steering uzak kacista daha cevabi mi, yakin hedefte halen kontrollu mu, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi, hizlanan `20s+` chase arena tikanmasini azaltirken hala adil mi, `11px` obstacle collider kenar grazing hit'lerini azaltirken fazla bagislayici hissettiriyor mu, offscreen collision guard'i kenarda gorunmez hit hissini azaltirken gec hasar hissi yaratmiyor mu
 - death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
 
@@ -31,6 +32,7 @@ Basari olcutleri:
 
 - interactive headed browser runtime yoksa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
 - browser yoksa telemetry/copy alanina donmeden arena edge-pressure veya `<10s` outlier'i azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
+- browser yoksa runtime ile proxy hizasi bu tur kapandigi icin ayni validation/cull alanina ikinci bir tur harcama
 - interactive headed browser yoksa stale copy gibi kolay product bug'lari tekrar aramak yerine dogrudan yeni gameplay problem sec; ayni telemetry semantigi etrafinda ikinci bir run acma
 - manuel sample replay friction gosterirse sadece input acceptance penceresi seviyesinde dar ayar yap
 - manuel sample hizlanan `20s+` chase'i fazla sert veya fazla bos gosterirse yalnizca 20-45s speed anchors uzerinde dar geri ayar yap
@@ -74,6 +76,7 @@ Basari olcutleri:
 - deterministic first death `> 6.3s` yonunde ilerlemeli; ideal urun hedefi halen `> 10s`
 - deterministic survival buckets icinde `10-20s <= 4`, `<10s <= 1`, `30s cap >= 17`
 - `npm run telemetry:check` accidental drift'te fail veriyor
+- deterministic survival proxy runtime ile ayni gorunur-arena hit guard'i ve `96px` offscreen cull margin'ini kullaniyor; bu hizayi bozacak ayarlar guard altinda tutulmali
 - early spawn collision grace ilk `10s` boyunca `260ms`, sonrasinda `0ms` olarak guard altinda
 - opening required spawn distance ilk `6s` boyunca `+160px`, sonrasinda baseline'a donuyor
 - telemetry sample reset onceki validation export'u da temizliyor; yeni sample stale `Last export` ile baslamiyor

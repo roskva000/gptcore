@@ -43,7 +43,7 @@ target: confirm manually that this trims unfair edge hits without making obstacl
 
 offscreen_collision_guard:
 current: obstacle overlap now requires the obstacle center to be inside the arena bounds, so `collisionReady` obstacles cannot damage the player before fully entering or after leaving the visible playfield
-baseline: Run #69 added this narrow guard to remove invisible or last-pixel edge hits without changing pacing, speed anchors, replay/start flow, obstacle radius, or telemetry/export semantics
+baseline: Run #69 added this narrow guard to remove invisible or last-pixel edge hits without changing pacing, speed anchors, replay/start flow, obstacle radius, or telemetry/export semantics; Run #71 aligned the deterministic survival proxy with the same visible-arena hit rule and `96px` offscreen cull margin used by runtime
 target: confirm manually that wall-hugging players no longer take unfair offscreen hits and that contact does not start so late that edge dodges feel mushy
 
 early_spawn_collision_grace:
@@ -97,7 +97,7 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke passes and Chromium exists, but `DISPLAY`/`WAYLAND_DISPLAY` are absent so no headed manual sample was possible here. Real-player sampling is still needed to verify waiting held-start acceptance, the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, the faster Run #70 `20s+` chase, the narrower Run #67 obstacle collider, and the new Run #69 offscreen collision guard
+current: not collected in this runtime; browser smoke passes and Chromium exists, but `DISPLAY`/`WAYLAND_DISPLAY` are absent so no headed manual sample was possible here. Real-player sampling is still needed to verify waiting held-start acceptance, the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, the faster Run #70 `20s+` chase, the narrower Run #67 obstacle collider, and the new Run #69 offscreen collision guard. Run #71 only improved deterministic runtime alignment; it did not replace human evidence
 target: 5-10 runs via session telemetry when a suitable interactive browser runtime is available; note whether waiting start and replay really restart on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the faster `20s+` chase clears arena traffic without feeling unfair, whether the `11px` obstacle collider removes cheap edge hits without making contact feel mushy, whether the new offscreen collision guard removes invisible edge hits without making arena-edge contact feel delayed, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
@@ -106,8 +106,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #70 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
-baseline: as of Run #70 asserts pacing, required spawn distance, faster `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, and retry-delay session integrity
+current: `npm run telemetry:check` passes on the Run #71 baseline and still asserts fresh-session retry remains `null`, same-session retry delay is still tracked, and the deterministic survival proxy still models runtime visible-arena hit guard plus `96px` offscreen cull margin
+baseline: as of Run #71 asserts pacing, required spawn distance, faster `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, retry-delay session integrity, and runtime-aligned collision/cull proxy behavior
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:
@@ -128,4 +128,5 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - player-facing AI panel copy still reflects the same validation semantics, but its static narrative now lags the latest 20s+ chase tuning because audit governance froze copy churn this turn
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current tuning signal: deterministic snapshot artik `25.7s / 6.3s / 4%`; 30s cap bucket'i `17`ye cikti ama opener'da bir `<10s` outlier hala var, Run #67'nin daralttigi obstacle collider ise bu metrigi degistirmeden insan hissinde fairness kazanimi ariyor
+- deterministic survival proxy artik runtime ile ayni gorunur-arena hit guard'i ve `96px` offscreen cull margin'ini modelledigi icin collision/cull tarafinda sessiz drift riski azaldi
 - compact live telemetry, collapsed run panel, personal-best cue, waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve focus-loss pause'un birlikte nasil algilandigi icin manuel sample hala gerekli
