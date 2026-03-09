@@ -2,6 +2,13 @@
 
 ---
 
+## Run #66
+
+- `project/game/src/game/balance.ts` `10-20s` obstacle hiz artisini `3.4`e, `20s+` ramp'i ise `217 + (t-20) * 3.6` olacak sekilde guncelledi; amac opener'a dokunmadan midgame arena tikanmasini azaltmakti
+- `project/game/src/game/telemetry.ts` validation baseline etiketini yeni deterministic snapshot `25.6s / 6.3s / 4%` ile hizaladi
+- `project/game/scripts/telemetry-check.ts` yeni hiz anchor'lari `200 / 217 / 253 / 307`, survival baseline `25.6s`, average spawn count `27` ve validation export ortalamasi `24.1s` olacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #65
 
 - `project/game/src/game/GameScene.ts` pointer/touch analog steering'in full-speed mesafesini `140px`ten `120px`e cekti; uzun kacislarda tam hiz daha erken geliyor

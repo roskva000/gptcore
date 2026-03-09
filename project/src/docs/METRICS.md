@@ -7,9 +7,9 @@
 ## Gameplay
 
 average_survival_time:
-current: 25.3s in deterministic survival snapshot
-baseline: 25.3s
-target: hold `>= 25.3s` unless manual sample proves the 20s+ chase feels too soft
+current: 25.6s in deterministic survival snapshot
+baseline: 25.6s
+target: hold `>= 25.6s` while checking manually that the faster `10s+` chase still feels fair and readable
 
 first_death_time:
 current: 6.3s in deterministic survival snapshot
@@ -32,9 +32,9 @@ baseline: 10 / 32 / 76
 target: keep explicit and stable unless pacing tuning is intentional
 
 obstacle_speed_curve:
-current: 145 at 0s, 183 at 10s, 214 at 20s, 249 at 30s, 300 at 45s, 320 at 60s
-baseline: Run #64 further softened only the 20s+ chase ramp without changing pacing or opening-fairness guards
-target: preserve the early-death guard and validate manually that the softer 20s+ chase still feels tense
+current: 145 at 0s, 183 at 10s, 217 at 20s, 253 at 30s, 307 at 45s, 320 at 60s
+baseline: Run #66 raised only the `10s+` speed anchors to reduce midgame obstacle buildup without changing pacing or opening-fairness guards
+target: preserve the early-death guard and validate manually that the faster `10s+` chase clears space instead of feeling unfairly sharp
 
 early_spawn_collision_grace:
 current: first `10s` spawns move immediately but cannot deal damage for `260ms`; after `10s` the grace returns to `0ms`
@@ -48,12 +48,12 @@ target: confirm manually that this removes crowded opening lanes without making 
 
 validation_export_contract:
 current: `V` export now produces `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths`, and `R` reset still clears the saved export so HUD summary returns to `not saved yet`
-baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #59 moved the deterministic sample average to `24.4s`; Run #61 aligned `first death` with the minimum death in the sample instead of the first chronological run; Run #64 updated the embedded deterministic baseline text to `25.3s avg / 6.3s first death / 4% early`
+baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #61 aligned `first death` with the minimum death in the sample instead of the first chronological run; Run #66 moved the checked deterministic baseline text to `25.6s avg / 6.3s first death / 4% early` while the 5-seed validation sample average became `24.1s`
 target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, never let a fresh reset show a stale export as if it belongs to the new sample, and keep the embedded deterministic baseline text synchronized with the latest checked gameplay snapshot
 
 public_ai_panel_accuracy:
-current: the player-facing `Latest AI update` panel still mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export, but its static copy now lags the latest `25.3s` chase baseline
-baseline: Run #62 removed the stale Run #60 copy and obsolete `30.0s first death` text that had drifted from the real validation/export contract; Run #64 intentionally left public copy untouched to respect the audit freeze on copy churn
+current: the player-facing `Latest AI update` panel still mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export, but its static copy now lags the latest `25.6s` chase baseline
+baseline: Run #62 removed the stale Run #60 copy and obsolete `30.0s first death` text that had drifted from the real validation/export contract; Run #66 intentionally left public copy untouched to respect the audit freeze on copy churn
 target: keep player-facing AI copy synchronized with the actual deterministic baseline and validation summary once a manual-sample-backed product delta justifies touching that surface again
 
 retry_delay_integrity:
@@ -82,8 +82,8 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, and the softer Run #64 20s+ chase
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the 20s+ chase still feels tense after the Run #64 speed-curve softening, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, and the faster Run #66 `10s+` chase
+target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the faster `10s+` chase clears arena traffic without feeling unfair, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
@@ -91,8 +91,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #64 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
-baseline: as of Run #64 asserts pacing, required spawn distance, softened 20s+ speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, and retry-delay session integrity
+current: `npm run telemetry:check` passes on the Run #66 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
+baseline: as of Run #66 asserts pacing, required spawn distance, faster `10s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, and retry-delay session integrity
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:
@@ -112,5 +112,5 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
 - player-facing AI panel copy still reflects the same validation semantics, but its static narrative now lags the latest 20s+ chase tuning because audit governance froze copy churn this turn
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
-- current tuning signal: deterministic snapshot artik `25.3s / 6.3s / 4%`; 30s cap bucket'i `16`ya cikti ama opener'da bir `<10s` outlier hala var
+- current tuning signal: deterministic snapshot artik `25.6s / 6.3s / 4%`; 30s cap bucket'i `16`da kaldi ama opener'da bir `<10s` outlier hala var
 - compact live telemetry, collapsed run panel, personal-best cue, waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve focus-loss pause'un birlikte nasil algilandigi icin manuel sample hala gerekli

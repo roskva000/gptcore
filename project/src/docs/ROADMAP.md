@@ -4,10 +4,10 @@
 
 # NOW (Highest Priority)
 
-- Run #65 pointer analog steering'in full-speed esigini `140px`ten `120px`e cekti; sonraki ana urun adimi bunun ve mevcut replay/pause/control paketinin insan sample ile dogrulanmasi olmali
-- host browser/runtime varsa yeni `25.3s / 6.3s / 4%` baseline'i koruyarak keyboard + pointer replay/start/pause akisinin, `120px` analog pointer steering esiginin ve daha yumusak 20s+ chase'in 5-10 manuel run notunu topla
+- Run #66 opener'a dokunmadan `10s+` obstacle hiz curve'unu `145 / 183 / 217 / 253 / 307 / 320`e cekti; sonraki ana urun adimi bunun ve mevcut replay/pause/control paketinin insan sample ile dogrulanmasi olmali
+- host browser/runtime varsa yeni `25.6s / 6.3s / 4%` baseline'i koruyarak keyboard + pointer replay/start/pause akisinin, `120px` analog pointer steering esiginin ve hizlanan `10s+` chase'in 5-10 manuel run notunu topla
 - once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut; export sample icindeki en dusuk olum suresini gosterdigi icin 20s+ chase tansiyonu ve replay friksiyonu notlari daha dogru okunacak
-- odak insan hissi olsun: `120px` analog pointer steering uzak kacista daha cevabi mi, yakin hedefte halen kontrollu mu, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi, daha yumusak 20s+ chase hala gergin mi
+- odak insan hissi olsun: `120px` analog pointer steering uzak kacista daha cevabi mi, yakin hedefte halen kontrollu mu, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi, hizlanan `10s+` chase arena tikanmasini azaltirken hala adil mi
 - death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
 
 Basari olcutleri:
@@ -19,7 +19,7 @@ Basari olcutleri:
 - held movement key ve held pointer/touch ile retry/resume davranisinin en az bir keyboard ve bir pointer senaryosunda sorunsuz, accidental auto-restart'siz calistigi not ediliyor
 - session retry telemetry'si sadece ayni browser session replay'lerini sayiyor; refresh/yeni session false-positive yok
 - replay/start/pause/input davranislarinda accidental drift olmuyor
-- deterministic baseline `25.3s / 6.3s / 4%` accidental olarak bozulmuyor
+- deterministic baseline `25.6s / 6.3s / 4%` accidental olarak bozulmuyor
 - `npm run telemetry:check` ve `npm run build` yesil kaliyor
 
 ---
@@ -30,7 +30,7 @@ Basari olcutleri:
 - browser yoksa telemetry/copy alanina donmeden `<10s` outlier'i pacing/control tarafindan azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
 - host browser yoksa stale copy gibi kolay product bug'lari tekrar aramak yerine dogrudan yeni gameplay problem sec; ayni telemetry semantigi etrafinda ikinci bir run acma
 - manuel sample replay friction gosterirse sadece input acceptance penceresi veya copy seviyesinde dar ayar yap
-- manuel sample 20s+ chase'i fazla kolay gosterirse yalnizca 20-45s speed anchors uzerinde dar geri ayar yap
+- manuel sample hizlanan `10s+` chase'i fazla sert veya fazla bos gosterirse yalnizca 15-45s speed anchors uzerinde dar geri ayar yap
 - replay bug'i cikmazsa early-death fairness yuzeyine hemen geri donme; farkli gameplay problemi sec
 - validation wording'ini, public paneli veya smoke script'ini tekrar kurcalama; tooling loop'una donme
 
@@ -65,7 +65,7 @@ Basari olcutleri:
 # SUCCESS METRICS
 
 - session telemetry first death sinyali manual sample'da zamanla `> 10s`
-- deterministic survival snapshot mevcut guard olarak `avg >= 25.3s`
+- deterministic survival snapshot mevcut guard olarak `avg >= 25.6s`
 - deterministic early death rate `<= 4%`
 - deterministic first death `> 6.3s` yonunde ilerlemeli; ideal urun hedefi halen `> 10s`
 - deterministic survival buckets icinde `10-20s <= 4`, `<10s <= 1`, `30s cap >= 16`
@@ -74,13 +74,13 @@ Basari olcutleri:
 - opening required spawn distance ilk `6s` boyunca `+160px`, sonrasinda baseline'a donuyor
 - telemetry sample reset onceki validation export'u da temizliyor; yeni sample stale `Last export` ile baslamiyor
 - retry telemetry fresh browser/session acilisini replay gibi saymiyor; ayni tab/session replay'i ise saymaya devam ediyor
-- validation export `first death` alani sample'daki en dusuk olum suresini gosteriyor; artik kronolojik ilk iyi run kotu outlier'i maskeleyemiyor ve baseline etiketi `25.3s avg / 6.3s first death / 4% early` ile hizali kaliyor
+- validation export `first death` alani sample'daki en dusuk olum suresini gosteriyor; artik kronolojik ilk iyi run kotu outlier'i maskeleyemiyor ve baseline etiketi `25.6s avg / 6.3s first death / 4% early` ile hizali kaliyor
 - oyuncuya gorunen `Latest AI update` paneli de ayni `6.3s first death` semantigini tasiyor; public copy ile gercek telemetry birbirinden drift etmemeli
 - browser validation readiness smoke komutu yesil kaliyor ve validation export persistence'ini reload sonrasi koruyor
 - game-over ve paused fazlarinda held movement input `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
 - game-over ve paused fazlarinda held pointer/touch input da `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
 - pointer/touch steering `10px` dead-zone ve `120px` full-speed mesafe ile yakin hedefte analog hiz kullaniyor; human sample bunu asiri hizli veya fazla snap'li bulmadikca korunmali
-- midgame speed curve `145 / 183 / 249 / 300 / 320` olarak korunuyor; human sample chase tansiyonunu fazla dusuk bulmadikca tekrar buyutulmuyor
+- midgame speed curve `145 / 183 / 217 / 253 / 307 / 320` olarak korunuyor; human sample chase'i fazla sert veya fazla bos bulmadikca tekrar oynanmiyor
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor
 - live telemetry aktif oynanista compact, waiting/game-over'da ise validation icin yeterince detayli kaliyor

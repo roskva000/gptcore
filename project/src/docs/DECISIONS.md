@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #66]
+
+Decision:
+`10s+` obstacle hiz ramp'i arttirildi; `10-20s` bandi saniyede `3.4`, `20s+` bandi ise `217 + (t-20) * 3.6` oldu.
+
+Reason:
+`AUDIT.md` bu tur telemetry/export/public-copy hattina veya opening-fairness paketine donmeyi yasakliyor. Host browser manuel sample bu runtime'da yine toplanamadi. Yeni tek ana hedef olarak secilen dar gameplay problemi, yumusayan chase sonrasi `10s+` bandinda obstacle alaninin fazla birikip kovalamacayi temiz gerilim yerine bulanik bir traffic hissine yaklastirma riskiydi.
+
+Impact:
+`project/game/src/game/balance.ts` yalnizca `10s+` hiz anchor'larini `183 / 217 / 253 / 307 / 320` olacak sekilde guncelledi; spawn pacing, opening spawn-distance helper'i, early lag/grace guard'lari, replay/start/resume akislari ve pointer analog steering degismedi. Deterministic survival snapshot `25.3s / 6.3s / 4%`ten `25.6s / 6.3s / 4%`e cikti; bucket dagilimi `1 / 4 / 3 / 16` korundu, validation sample ortalamasi `24.4s`ten `24.1s`e geldi. `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni baseline ile hizalandi; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni `10s+` curve'un chase'i gereksiz sertlestirdigini, pointer/kontrol hissini bozdugunu veya arena akisini fazla bosalttigini gosterirse yalnizca 15-45s hiz anchor'lari dar kapsamda tekrar ayarlanir; telemetry/copy/readability ya da opening-fairness yuzeyine sapilmaz.
+
 ### [Run #65]
 
 Decision:
