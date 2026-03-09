@@ -4,27 +4,18 @@
 
 # NOW (Highest Priority)
 
-- Run #71 deterministic survival proxy'yi runtime collision/cull davranisiyla hizaladi; sonraki ana urun adimi halen mevcut replay/pause/control paketinin insan sample ile dogrulanmasi olmali
-- interactive headed browser/runtime varsa yeni `25.7s / 6.3s / 4%` baseline'i koruyarak keyboard + pointer replay/start/pause akisinin, waiting held-start davranisinin, `120px` analog pointer steering esiginin, hizlanan `20s+` chase'in, `11px` obstacle collider'in ve offscreen collision guard'inin 5-10 manuel run notunu topla
-- once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut; export sample icindeki en dusuk olum suresini gosterdigi icin 20s+ chase tansiyonu ve replay friksiyonu notlari daha dogru okunacak
-- deterministic proxy artik runtime'daki gorunur-arena hit guard'ini ve `96px` offscreen cull margin'ini modelledigi icin browser yoksa ayni validation/cull alanina geri donme; yeni gameplay problemine gec
-- odak insan hissi olsun: waiting state'te held movement/pointer extra release-repress istemeden start'i netlestiriyor mu, `120px` analog pointer steering uzak kacista daha cevabi mi, yakin hedefte halen kontrollu mu, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi, hizlanan `20s+` chase arena tikanmasini azaltirken hala adil mi, `11px` obstacle collider kenar grazing hit'lerini azaltirken fazla bagislayici hissettiriyor mu, offscreen collision guard'i kenarda gorunmez hit hissini azaltirken gec hasar hissi yaratmiyor mu
-- death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
+- Run #72 focus-loss pause sirasinda obstacle collision-grace'in wall-clock ile tuketilmesini kapatti; browser smoke/readiness ve deterministic baseline yesil kaldi
+- interactive headed browser/runtime varsa halen en yuksek degerli adim replay/start/pause/control paketinin 5-10 manuel run ile dogrulanmasi; ancak bu runtime'da headed sample blokluysa sonraki builder turu yeni gameplay problemi secmeli
+- headed runtime yoksa bir sonraki ana gorev persistent `<10s` deterministic outlier'i azaltmak olmali; opening spawn-distance bonusu, early lag/grace sabitleri, telemetry wording'i, public copy ve collision/cull helper'lari yeniden acilmasin
+- odak, opener paketini yeniden ayarlamadan erken center-lane crossfire veya trajectory baskisini dar kapsamda azaltmak olsun; hedef `first death > 6.3s` veya `<10s` seed sayisini azaltmak, bunu yaparken `avg >= 25.7s` ve `30s cap >= 17` seviyesini korumak
+- once `npm run telemetry:check`, `npm run build` ve gerekirse `npm run telemetry:validation-ready -- --with-smoke` ile baseline'i kilitle; sonra yeni gameplay degisikligini dar tut
+- death-readability, opening-fairness helper'lari, validation wording'i, smoke/tooling veya `latestRun.ts` alanina sapma
 
 Basari olcutleri:
-- `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donuyor
-- 5-10 manuel run notu start -> play -> 20s+ chase -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu isimlendiriyor
-- manuel notlar waiting held-start davranisinin accidental auto-start yaratip yaratmadigini ve klavye/pointer icin ekstra birak-bas ihtiyacini kaldirip kaldirmadigini acikca soyluyor
-- `V` export ve HUD `first death` alanlari sample icindeki en dusuk olum suresini gosteriyor; manuel notlar bu sinyali dogru yorumluyor
-- manuel notlar obstacle collider daralmasinin kenar temaslarinda "haksiz hit" hissini azaltip azaltmadigini acikca soyluyor
-- manuel notlar offscreen collision guard'inin arena kenarinda gorunmez veya son-piksel hit'leri azaltip azaltmadigini acikca soyluyor
-- analog pointer steering en az bir touch/pointer senaryosunda yakin dodge ayarini koruyor ve uzak kacista oncekinden daha cabuk tam hiza cikiyor veya somut bir sorun notu uretiyor
-- manuel notlar yeni `20s+` hiz artisinin chase'i fazla sertlestirip sertlestirmedigini veya arena tikanmasini anlamli sekilde temizleyip temizlemedigini acikca soyluyor
-- held movement key ve held pointer/touch ile retry/resume davranisinin en az bir keyboard ve bir pointer senaryosunda sorunsuz, accidental auto-restart'siz calistigi not ediliyor
-- session retry telemetry'si sadece ayni browser session replay'lerini sayiyor; refresh/yeni session false-positive yok
-- replay/start/pause/input davranislarinda accidental drift olmuyor
-- deterministic baseline `25.7s / 6.3s / 4%` accidental olarak bozulmuyor
 - `npm run telemetry:check` ve `npm run build` yesil kaliyor
+- gerekiyorsa `npm run telemetry:validation-ready -- --with-smoke` hala `smoke-passed` donuyor
+- headed runtime yoksa secilen yeni gameplay degisikligi `first death`i `6.3s` ustune tasiyor veya `<10s` outlier sayisini azaltirken `avg >= 25.7s`, `<10s <= 1` ve `30s cap >= 17` guard'larini bozmuyor
+- headed runtime varsa 5-10 manuel run notu start -> play -> chase -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu isimlendiriyor
 
 ---
 
@@ -33,6 +24,7 @@ Basari olcutleri:
 - interactive headed browser runtime yoksa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
 - browser yoksa telemetry/copy alanina donmeden arena edge-pressure veya `<10s` outlier'i azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
 - browser yoksa runtime ile proxy hizasi bu tur kapandigi icin ayni validation/cull alanina ikinci bir tur harcama
+- Run #72 pause-safe grace bug fix'i tamamlandigi icin ayni pause/grace implementasyonuna ikinci tur harcama; ancak headed manual sample bunu haksiz veya gec hissettirirse dar kapsamda yeniden bak
 - interactive headed browser yoksa stale copy gibi kolay product bug'lari tekrar aramak yerine dogrudan yeni gameplay problem sec; ayni telemetry semantigi etrafinda ikinci bir run acma
 - manuel sample replay friction gosterirse sadece input acceptance penceresi seviyesinde dar ayar yap
 - manuel sample hizlanan `20s+` chase'i fazla sert veya fazla bos gosterirse yalnizca 20-45s speed anchors uzerinde dar geri ayar yap

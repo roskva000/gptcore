@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #72]
+
+Decision:
+Obstacle collision-grace activation'i wall-clock `delayedCall` yerine aktif run elapsed zamanina baglandi; focus-loss pause artik grace penceresini tuketemiyor.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/copy/readability, opening-fairness ve yeni validation/tooling katmani yasakti. Headed browser/runtime bu ortamda hala yok, bu yuzden manuel sample toplanamadi. Dar ve gercek gameplay bug'i, pause overlay'nin "run is frozen" demesine ragmen Run #52'de eklenen early collision grace'in sahne timer'iyle akmaya devam etme riskini tasimasiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` obstacle'lara `collisionUnlockElapsedMs` kaydediyor ve `canObstacleHitPlayer` bu kilidi aktif run elapsed zamanina gore aciyor. Pooled obstacle reset akisi yeni alanı temizliyor; eski `launchToken` yolu kaldirildi. Balance baseline degismedi: deterministic survival `25.7s / 6.3s / 4%` ve bucket dagilimi `1 / 4 / 2 / 17` korundu. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i pause sonrasi grace'in fazla gec actigini veya beklenmeyen hit penceresi yarattigini gosterirse yeni sistem acmadan yalnizca collision unlock zamanlamasi dar kapsamda yeniden ayarlanir; opening-fairness sabitleri, validation wording'i ve public copy bu bahaneyle tekrar acilmaz.
+
 ### [Run #71]
 
 Decision:

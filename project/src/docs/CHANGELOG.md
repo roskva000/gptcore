@@ -2,6 +2,12 @@
 
 ---
 
+## Run #72
+
+- `project/game/src/game/GameScene.ts` obstacle collision-grace acilimini wall-clock `delayedCall` yerine aktif run elapsed zamanina bagladi; focus-loss pause artik grace'i tuketmiyor
+- pooled obstacle reset akisi yeni `collisionUnlockElapsedMs` alanini temizleyecek sekilde hizalandi ve artik gereksiz kalan `launchToken` izi kaldirildi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #71
 
 - `project/game/src/game/spawn.ts` ortak `isPointInsideArena`, `isPointOutsideCullBounds` ve `OFFSCREEN_CULL_MARGIN` helper'larini ekledi

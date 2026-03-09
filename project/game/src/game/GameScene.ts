@@ -118,7 +118,6 @@ export class GameScene extends Phaser.Scene {
   private runStartedAt = 0;
   private survivalTime = 0;
   private runSpawnRerolls = 0;
-  private obstacleLaunchToken = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
   private lastValidationReport: string | null = null;
@@ -752,7 +751,7 @@ export class GameScene extends Phaser.Scene {
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
       obstacle.setData('collisionReady', false);
-      obstacle.setData('launchToken', null);
+      obstacle.setData('collisionUnlockElapsedMs', null);
       obstacle.disableBody(true, true);
       return true;
     });
@@ -826,11 +825,12 @@ export class GameScene extends Phaser.Scene {
     const velocity = target.subtract(spawnPoint).normalize().scale(this.getObstacleSpeed());
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     const collisionGraceMs = getSpawnCollisionGraceMs(this.survivalTime);
-    const launchToken = this.obstacleLaunchToken += 1;
+    const collisionUnlockElapsedMs =
+      collisionGraceMs > 0 ? this.getActiveRunElapsedMs(this.time.now) + collisionGraceMs : null;
 
     obstacleBody.enable = true;
     obstacle.setData('collisionReady', collisionGraceMs === 0);
-    obstacle.setData('launchToken', launchToken);
+    obstacle.setData('collisionUnlockElapsedMs', collisionUnlockElapsedMs);
     obstacle.setVelocity(velocity.x, velocity.y);
 
     if (collisionGraceMs === 0) {
@@ -846,17 +846,6 @@ export class GameScene extends Phaser.Scene {
       ease: 'Quad.Out',
     });
 
-    this.time.delayedCall(collisionGraceMs, () => {
-      if (this.phase !== 'playing' || !obstacle.active) {
-        return;
-      }
-
-      if (obstacle.getData('launchToken') !== launchToken) {
-        return;
-      }
-
-      obstacle.setData('collisionReady', true);
-    });
   }
 
   private hasMovementInput(): boolean {
@@ -906,9 +895,27 @@ export class GameScene extends Phaser.Scene {
   ): boolean {
     const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
     return (
-      obstacle.getData('collisionReady') !== false &&
+      this.isObstacleCollisionReady(obstacle) &&
       this.isObstacleInsideVisibleArena(obstacle)
     );
+  }
+
+  private isObstacleCollisionReady(obstacle: Phaser.Physics.Arcade.Image): boolean {
+    if (obstacle.getData('collisionReady') !== false) {
+      return true;
+    }
+
+    const collisionUnlockElapsedMs = obstacle.getData('collisionUnlockElapsedMs');
+
+    if (
+      typeof collisionUnlockElapsedMs !== 'number' ||
+      this.getActiveRunElapsedMs(this.time.now) < collisionUnlockElapsedMs
+    ) {
+      return false;
+    }
+
+    obstacle.setData('collisionReady', true);
+    return true;
   }
 
   private isObstacleInsideVisibleArena(obstacle: Phaser.Physics.Arcade.Image): boolean {
