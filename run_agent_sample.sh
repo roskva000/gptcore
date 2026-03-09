@@ -4,7 +4,7 @@ set -euo pipefail
 REPO_DIR="$HOME/agents/game-agent"
 PROJECT_DIR="$REPO_DIR/project/game"
 BRANCH="main"
-LOG_DIR="$HOME/agent-logs/game-agent"
+LOG_DIR="$REPO_DIR/.agent-logs"
 LOCKFILE="/tmp/game-agent.lock"
 ENV_FILE="$HOME/.agent_env"
 
@@ -84,6 +84,18 @@ case "$REMOTE_URL" in
     ;;
 esac
 
+# Local working tree temiz değilse loop kilitlenmesin
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  log "[WARN] Working tree dirty, resetting to HEAD"
+  git reset --hard HEAD | tee -a "$OUTFILE"
+fi
+
+# Untracked dosyalar varsa temizle
+if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+  log "[WARN] Untracked files found, cleaning"
+  git clean -fd | tee -a "$OUTFILE"
+fi
+
 git fetch origin | tee -a "$OUTFILE"
 git checkout "$BRANCH" | tee -a "$OUTFILE"
 git pull --rebase origin "$BRANCH" | tee -a "$OUTFILE"
@@ -91,16 +103,62 @@ git pull --rebase origin "$BRANCH" | tee -a "$OUTFILE"
 PROMPT='Kolay gelsin şef, mesai başladı.
 
 AGENT.md anayasan.
-PROJECT.md, ARCHITECTURE.md ve GAME_DESIGN.md baglamin.
-NEXT_AGENT.md aktif gorev tanimin.
+AUDIT.md son denetim hafızan.
+PROJECT.md, ARCHITECTURE.md ve GAME_DESIGN.md bağlamın.
+NEXT_AGENT.md aktif görev tanımın.
 
-Once repo durumunu ve state dosyalarini oku.
-Bu tur icin tek bir ana hedef sec.
+Önce repo durumunu ve state dosyalarını oku.
+
+Okuma sırası:
+1. AGENT.md
+2. AUDIT.md
+3. NEXT_AGENT.md
+4. STATE.md
+5. ROADMAP.md
+6. DECISIONS.md
+7. CHANGELOG.md
+8. METRICS.md
+
+AUDIT.md içinde governance yönlendirmeleri veya risk uyarıları varsa bunu dikkate al.
+
+Eğer AUDIT.md:
+- loop
+- drift
+- bureaucracy-risk
+- validation freeze
+
+gibi bir uyarı içeriyorsa, bu yönlendirmeyi göz ardı etme.
+
+Bu tur için tek bir ana hedef seç.
+
+Hedef seçiminde şu öncelikleri kullan:
+
+1. ürün ilerlemesi (gameplay / UX / bug fix)
+2. deterministic validation
+3. test stabilitesi
+4. teknik borç azaltma
+
+Validation veya tooling genişletmesi sadece gerçekten gerekli ise yapılmalıdır.
+
+Aynı problem etrafında yeni orchestration / readiness / preflight katmanı eklemekten kaçın.
+
 Uygula.
-Dogrula.
-Tur sonunda mutlaka STATE.md, ROADMAP.md, DECISIONS.md, CHANGELOG.md, METRICS.md ve NEXT_AGENT.md dosyalarini guncelle.
-Gereksiz scope buyutme.
-Core gameplay ve olculebilir ilerleme oncelikli.'
+Doğrula.
+
+Tur sonunda mutlaka şu dosyaları güncelle:
+
+STATE.md
+ROADMAP.md
+DECISIONS.md
+CHANGELOG.md
+METRICS.md
+NEXT_AGENT.md
+
+NEXT_AGENT.md bir sonraki agent için net ve uygulanabilir bir görev içermelidir.
+
+Gereksiz scope büyütme.
+
+Core gameplay ve ölçülebilir ilerleme öncelikli.'
 
 log "[INFO] Running Codex"
 codex exec \
