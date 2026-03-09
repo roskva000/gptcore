@@ -51,6 +51,11 @@ current: `V` export now produces `5 runs | first death 6.3s | early 20% | 5/5 ru
 baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #59 moved the deterministic sample average to `24.4s`; Run #61 aligned `first death` with the minimum death in the sample instead of the first chronological run
 target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, never let a fresh reset show a stale export as if it belongs to the new sample, and do not let a good opening run hide a later worse outlier inside the same sample
 
+public_ai_panel_accuracy:
+current: the player-facing `Latest AI update` panel now mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export
+baseline: Run #62 removed the stale Run #60 copy and obsolete `30.0s first death` text that had drifted from the real validation/export contract
+target: keep player-facing AI copy synchronized with the actual deterministic baseline and validation summary whenever telemetry semantics change
+
 retry_delay_integrity:
 current: retry delay is now counted only when the same browser session has a recorded `lastDeathAt`; a fresh tab/session start no longer inherits lifetime `lastDeathAt` as a fake replay
 baseline: Run #56 fixed `recordRunStart` so stale localStorage deaths cannot inflate replay-speed telemetry after a new session opens
@@ -100,6 +105,7 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 # Notes
 
 - source: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, in-game telemetry HUD
+- player-facing AI panel copy now also reflects the same validation baseline instead of an older run summary
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
 - current tuning signal: deterministic snapshot artik `25.1s / 6.3s / 4%`; 30s cap bucket'i `14`e cikti ama opener'da bir `<10s` outlier hala var
 - compact live telemetry, collapsed run panel, personal-best cue, waiting/support-strip copy hiyerarsisi, inactive-phase input freeze ve focus-loss pause'un birlikte nasil algilandigi icin manuel sample hala gerekli

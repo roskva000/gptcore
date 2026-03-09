@@ -4,6 +4,7 @@
 
 # NOW (Highest Priority)
 
+- oyuncuya gorunen AI panelindeki stale metric/copy bug'i kapandi; sonraki ana urun adimi tekrar manuel kanit veya yeni olculebilir gameplay problemi olmali
 - host browser/runtime varsa yeni durust `first death` telemetrysi ile keyboard + pointer replay/start/pause akisinin 5-10 manuel run notunu topla
 - once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut; export artik sample icindeki en dusuk olum suresini gosterdigi icin 20s+ chase tansiyonu ve replay friksiyonu notlari daha dogru okunacak
 - odak insan hissi olsun: 20s+ chase hala gergin mi, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi
@@ -25,6 +26,7 @@ Basari olcutleri:
 # NEXT
 
 - host browser runtime acilamazsa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
+- host browser yoksa stale copy gibi kolay product bug'lari tekrar aramak yerine dogrudan yeni gameplay problem sec; ayni telemetry semantigi etrafinda ikinci bir run acma
 - manuel sample replay friction gosterirse sadece input acceptance penceresi veya copy seviyesinde dar ayar yap
 - manuel sample midgame chase'i fazla kolay gosterirse yalnizca 10-45s speed anchors uzerinde dar geri ayar yap
 - replay bug'i cikmazsa early-death fairness yuzeyine hemen geri donme; farkli gameplay problemi sec
@@ -71,6 +73,7 @@ Basari olcutleri:
 - telemetry sample reset onceki validation export'u da temizliyor; yeni sample stale `Last export` ile baslamiyor
 - retry telemetry fresh browser/session acilisini replay gibi saymiyor; ayni tab/session replay'i ise saymaya devam ediyor
 - validation export `first death` alani sample'daki en dusuk olum suresini gosteriyor; artik kronolojik ilk iyi run kotu outlier'i maskeleyemiyor
+- oyuncuya gorunen `Latest AI update` paneli de ayni `6.3s first death` semantigini tasiyor; public copy ile gercek telemetry birbirinden drift etmemeli
 - browser validation readiness smoke komutu yesil kaliyor ve validation export persistence'ini reload sonrasi koruyor
 - game-over ve paused fazlarinda held movement input `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali
 - game-over ve paused fazlarinda held pointer/touch input da `180ms` sonra retry/resume olarak kabul ediliyor; bu davranis human sample'da accidental auto-restart yaratmamali

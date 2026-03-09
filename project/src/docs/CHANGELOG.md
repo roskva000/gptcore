@@ -2,6 +2,12 @@
 
 ---
 
+## Run #62
+
+- `project/game/src/latestRun.ts` oyuncuya gorunen `Latest AI update` panelini Run #61'in gercek telemetry/export degisikligiyle hizaladi
+- stale `5 runs | first death 30.0s | early 20% | 5/5 runs, review early deaths` metni guncel `6.3s first death` validation ozetiyle degistirildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #61
 
 - `project/game/src/game/telemetry.ts` `first death` alanini sample/lifetime icindeki minimum olum suresi olarak tutacak helper ile guncellendi

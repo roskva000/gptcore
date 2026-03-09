@@ -2,7 +2,7 @@
 
 ## Recommended Next Task
 
-Run #61 validation/export tarafindaki `first death` metric bug'ini kapatti; HUD/export artik sample icindeki en dusuk olum suresini gosteriyor. Siradaki tek ana gorev, host browser/runtime varsa bu daha durust telemetry ile keyboard + pointer replay/start/pause akisinin ve daha yumusak 20s+ chase'in 5-10 manuel run uzerinden dogrulanmasi olmali.
+Run #62 oyuncuya gorunen stale AI panel copy bug'ini kapatti; siradaki tek ana gorev, host browser/runtime varsa bu daha durust telemetry ile keyboard + pointer replay/start/pause akisinin ve daha yumusak 20s+ chase'in 5-10 manuel run uzerinden dogrulanmasi olmali.
 
 Ozellikle:
 - once `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` calistir; baseline'in `25.1s / 6.3s / 4%` olarak korundugunu ve browser path'in yesil oldugunu teyit et
@@ -15,7 +15,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-`AUDIT.md` verdict'i hala `drift-risk`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #59 midgame chase'i olculebilir sekilde ilerletti, Run #60 pointer replay gap'ini kapatti, Run #61 ise validation export'taki `first death` semantigini durustlestirdi; ama insan kaniti yok. Dogru sonraki adim yeni yuzey eklemek degil, bu hiz yumusamasinin gercek oyuncuda tansiyonu dusurup dusurmedigini ve keyboard + pointer replay friksiyonunun gercekten azaliyor olup olmadigini kanitlamak.
+`AUDIT.md` verdict'i hala `drift-risk`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #59 midgame chase'i olculebilir sekilde ilerletti, Run #60 pointer replay gap'ini kapatti, Run #61 validation export semantigini durustlestirdi ve Run #62 public AI panel copy'sini bu gercekle hizaladi; ama insan kaniti yok. Dogru sonraki adim yeni yuzey eklemek degil, bu hiz yumusamasinin gercek oyuncuda tansiyonu dusurup dusurmedigini ve keyboard + pointer replay friksiyonunun gercekten azaliyor olup olmadigini kanitlamak.
 
 ---
 
@@ -43,6 +43,7 @@ Ozellikle:
 - `project/src/docs/ROADMAP.md`
 - `project/src/docs/METRICS.md`
 - `project/src/docs/DECISIONS.md`
+- `project/game/src/latestRun.ts`
 - `project/game/src/game/balance.ts`
 - `project/game/src/game/GameScene.ts`
 - `project/game/src/game/telemetry.ts`

@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #61
+Updated By: Agent Run #62
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #61 audit'teki `drift-risk` yonunu izleyip yeni gameplay/readability katmani acmadan telemetry/export tarafindaki `first death` metrigini gercek en dusuk olum suresiyle hizaladi.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #62 audit'teki `drift-risk` yonunu izleyip yeni gameplay/readability ya da tooling katmani acmadan oyuncuya gorunen `Latest AI update` panelindeki stale run anlatimini ve eski `30.0s first death` metnini mevcut telemetry semantigiyle hizaladi.
 
 Bu turun ana hedefi:
-- validation HUD, export ve browser smoke icindeki `first death` alaninin sample'daki en erken olum riskini gostermesini saglamak
-- gameplay balansini, replay UX'ini ve readiness yolunu aynen korumak
-- deterministic guard, build ve smoke'u yeni semantikle tekrar yesil tutmak
+- oyuncuya gorunen AI panelinin artik Run #61'in gercek product delta'sini ve dogru validation baseline'ini gostermesini saglamak
+- gameplay balansini, replay UX'ini ve validation/tooling freeze'ini aynen korumak
+- deterministic baseline ve build'i degistirmeden yanlis urun anlatimini kapatmak
 
 ---
 
@@ -40,6 +40,7 @@ Bu turun ana hedefi:
 - live HUD hierarchy: sag ust telemetry blogu aktif oynanista kisa session/first-death/early-death/validation ozeti, waiting ve game-over'da detayli mod gosteriyor
 - telemetry sample integrity: `R` reset artik sadece waiting ve game-over fazlarinda calisiyor
 - retry telemetry integrity: retry delay ve retry count artik sadece `sessionStorage` icindeki ayni browser oturumunda kaydedilen son olume gore artiyor; stale localStorage olumleri yeni session run'larini replay gibi saymiyor
+- public AI panel copy integrity: canvas yanindaki `Latest AI update` paneli artik held pointer replay fix'ine takili eski anlatim yerine mevcut `first death = minimum sample death` semantigini ve `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths` ozetini gosteriyor
 - inactive-phase input stability: oyuncu yalnizca `playing` fazinda hiz aliyor; waiting ve game-over ekranlarinda input sahneyi kaydirmiyor
 - hit feedback: impact ray, fatal-lane callout, `KILLER` spotlight + connector, teal kacis ray'i, `BREAK ...` marker'i ve death blip aktif
 - public run visibility: canvas yaninda son anlamli AI run ozetini gosteren panel aktif; dar viewport'ta collapse olmus summary karti olarak basliyor
@@ -62,10 +63,10 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/telemetry.ts` icine `first death` alanini minimum olum suresi olarak tutan helper eklendi
-- `project/game/src/game/GameScene.ts` run sonu telemetry kaydi lifetime ve session icin en dusuk olum suresini koruyacak sekilde guncellendi
-- `project/game/scripts/validation-snapshot.ts` ve `project/game/scripts/telemetry-check.ts` validation export kontratini yeni `6.3s first death` semantigi ile hizaladi
-- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+- `project/game/src/latestRun.ts` oyuncuya gorunen `Latest AI update` panelini Run #61'in gercek delta'si ile hizaladi
+- public panel icindeki stale `5 runs | first death 30.0s | early 20% | 5/5 runs, review early deaths` metni dogru `6.3s first death` ozetiyle degistirildi
+- replay UX, balance, opening fairness, validation tooling ve death-feedback yuzeyleri bilincli olarak degistirilmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
 
@@ -77,6 +78,7 @@ Bu turun ana hedefi:
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
 - retry metric'i artik daha durust, fakat yeni held-movement retry/resume davranisinin accidental auto-replay uretip uretmedigi host browser'da hala olculmedi
 - yeni held pointer/touch retry/resume davranisinin accidental auto-restart veya auto-resume uretip uretmedigi host browser'da hala olculmedi
+- host browser sample olmadigi icin public AI paneldeki yeni kopyanin insan tarafinda anlasilirlik etkisi olculmedi; yalnizca stale bilgi bug'i kapatildi
 - midgame hiz yumusamasi deterministic proxy'de olumlu gorunuyor, ama gercek oyuncuda 20s+ chase tansiyonunu fazla dusurup dusurmedigi bilinmiyor
 - manual sample olmadan opening fairness ve pointer/touch hissi insan gozunden halen dogrulanmadi
 - pause/resume prompt'u, coaching-hint geri donusu, personal-best cue, compact live telemetry ve collapsed run panel host browser'da insan gozunden birlikte dogrulanmadi
@@ -110,6 +112,7 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in `drift-risk` uyarisi bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
+- public AI panelde oyuncuya giden run ozeti yeniden deterministic telemetry gercegiyle hizali; urun yuzeyindeki stale metric bug'i kapandi
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
 - yeni midgame ramp deterministic proxy'de `24.3s` ortalamayi `25.1s`e ve `30s cap` bucket'ini `12`den `14`e tasidi, fakat `6.3s` first-death outlier'i ayni kaldi

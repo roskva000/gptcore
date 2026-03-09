@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #62]
+
+Decision:
+Oyuncuya gorunen `Latest AI update` paneli mevcut telemetry semantigiyle hizalandi; stale Run #60 anlatimi ve eski `30.0s first death` validation ozeti kaldirildi.
+
+Reason:
+`AUDIT.md` `drift-risk` yonu altinda death-readability, opening-fairness ve tooling genisletmesi yasak. Host browser manual sample da bu runtime'da toplanmadi. Buna ragmen oyuncuya gorunen public panel hala eski run anlatimini ve Run #61 ile gecersiz hale gelen `30.0s first death` metnini tasiyordu; bu dogrudan urun yuzeyinde yanlis bilgi bug'iydi.
+
+Impact:
+`project/game/src/latestRun.ts` artik Run #61'in gercek product delta'sini, `first death = minimum sample death` semantigini ve guncel validation ozeti `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths` metnini gosteriyor. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Eger public panelin tamamen otomatik bir run feed'ine tasinmasi gibi daha buyuk bir urun karari alinmazsa bu kopya geri eski sayilara dondurulmemeli; yeni telemetry semantik degisikliginde panel metni de ayni turda guncellenmeli.
+
 ### [Run #61]
 
 Decision:
