@@ -903,7 +903,19 @@ export class GameScene extends Phaser.Scene {
     obstacleGameObject: unknown,
   ): boolean {
     const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
-    return obstacle.getData('collisionReady') !== false;
+    return (
+      obstacle.getData('collisionReady') !== false &&
+      this.isObstacleInsideVisibleArena(obstacle)
+    );
+  }
+
+  private isObstacleInsideVisibleArena(obstacle: Phaser.Physics.Arcade.Image): boolean {
+    return (
+      obstacle.x >= 0 &&
+      obstacle.x <= ARENA_WIDTH &&
+      obstacle.y >= 0 &&
+      obstacle.y <= ARENA_HEIGHT
+    );
   }
 
   private updatePlayerVelocity(): void {

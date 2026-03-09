@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #69]
+
+Decision:
+Obstacle'lar yalnizca merkezleri arena icindeyken oyuncuya zarar verecek sekilde overlap guard'i daraltildi; arena kenarindaki gorunmez veya yari-gorunur hit penceresi kapatildi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/export/public-copy, death-readability ve opening-fairness yuzeyine geri donmek yasakti. Bu runtime'da hala `DISPLAY`/`WAYLAND_DISPLAY` olmadigi icin gercek manuel sample toplanamadi. Tooling loop'una sapmadan secilen dar gameplay problemi, obstacle `collisionReady` olduktan sonra arena kenarinda merkez ekrana girmeden veya cikarken bile hit verebilmesinin yaratabilecegi unfair edge-hit riskiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` overlap check'ine gorunur-arena guard'i eklendi; obstacle merkezi `0..ARENA_WIDTH` ve `0..ARENA_HEIGHT` icine girmeden oyuncuya zarar veremiyor. Spawn pacing, speed curve, waiting held-start acceptance, replay/resume akislari, obstacle collider yaricapi ve telemetry/export semantigi degismedi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `25.6s / 6.3s / 4%` aynen korundu.
+
+Rollback Condition:
+Host browser manuel sample'i bu guard'in arena kenarinda obstacle temasini fazla gec acarak tutarsiz veya bagislayici his yarattigini gosterirse yeni sistem acmadan yalnizca arena-giris esigi dar kapsamda yeniden ayarlanir; telemetry/copy/readability veya opening-fairness alanina sapilmaz.
+
 ### [Run #68]
 
 Decision:

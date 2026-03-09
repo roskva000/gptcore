@@ -4,10 +4,10 @@
 
 # NOW (Highest Priority)
 
-- Run #68 waiting state'i mevcut `180ms` held-input acceptance ile replay/pause akisiyle hizaladi; sonraki ana urun adimi bunun ve mevcut replay/pause/control paketinin insan sample ile dogrulanmasi olmali
-- interactive headed browser/runtime varsa yeni `25.6s / 6.3s / 4%` baseline'i koruyarak keyboard + pointer replay/start/pause akisinin, waiting held-start davranisinin, `120px` analog pointer steering esiginin, hizlanan `10s+` chase'in ve `11px` obstacle collider'in 5-10 manuel run notunu topla
+- Run #69 arena kenarindaki gorunmez veya yari-gorunur obstacle hit'lerini kapatan gorunur-arena collision guard'ini ekledi; sonraki ana urun adimi bunun ve mevcut replay/pause/control paketinin insan sample ile dogrulanmasi olmali
+- interactive headed browser/runtime varsa yeni `25.6s / 6.3s / 4%` baseline'i koruyarak keyboard + pointer replay/start/pause akisinin, waiting held-start davranisinin, `120px` analog pointer steering esiginin, hizlanan `10s+` chase'in, `11px` obstacle collider'in ve yeni offscreen collision guard'inin 5-10 manuel run notunu topla
 - once `npm run telemetry:validation-ready -- --with-smoke` ile yolu yesil tut; export sample icindeki en dusuk olum suresini gosterdigi icin 20s+ chase tansiyonu ve replay friksiyonu notlari daha dogru okunacak
-- odak insan hissi olsun: waiting state'te held movement/pointer extra release-repress istemeden start'i netlestiriyor mu, `120px` analog pointer steering uzak kacista daha cevabi mi, yakin hedefte halen kontrollu mu, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi, hizlanan `10s+` chase arena tikanmasini azaltirken hala adil mi, `11px` obstacle collider kenar grazing hit'lerini azaltirken fazla bagislayici hissettiriyor mu
+- odak insan hissi olsun: waiting state'te held movement/pointer extra release-repress istemeden start'i netlestiriyor mu, `120px` analog pointer steering uzak kacista daha cevabi mi, yakin hedefte halen kontrollu mu, replay tek aksiyonla net mi, held movement ve held pointer retry/resume accidental auto-restart uretiyor mu, focus-loss resume adil mi, hizlanan `10s+` chase arena tikanmasini azaltirken hala adil mi, `11px` obstacle collider kenar grazing hit'lerini azaltirken fazla bagislayici hissettiriyor mu, yeni offscreen collision guard'i kenarda gorunmez hit hissini azaltirken gec hasar hissi yaratmiyor mu
 - death-readability, opening-fairness, support strip, validation wording veya tooling alanina sapma
 
 Basari olcutleri:
@@ -16,6 +16,7 @@ Basari olcutleri:
 - manuel notlar waiting held-start davranisinin accidental auto-start yaratip yaratmadigini ve klavye/pointer icin ekstra birak-bas ihtiyacini kaldirip kaldirmadigini acikca soyluyor
 - `V` export ve HUD `first death` alanlari sample icindeki en dusuk olum suresini gosteriyor; manuel notlar bu sinyali dogru yorumluyor
 - manuel notlar obstacle collider daralmasinin kenar temaslarinda "haksiz hit" hissini azaltip azaltmadigini acikca soyluyor
+- manuel notlar offscreen collision guard'inin arena kenarinda gorunmez veya son-piksel hit'leri azaltip azaltmadigini acikca soyluyor
 - analog pointer steering en az bir touch/pointer senaryosunda yakin dodge ayarini koruyor ve uzak kacista oncekinden daha cabuk tam hiza cikiyor veya somut bir sorun notu uretiyor
 - manual notlar yeni midgame hiz yumusamasinin chase'i fazla bagislayici yapip yapmadigini acikca soyluyor
 - held movement key ve held pointer/touch ile retry/resume davranisinin en az bir keyboard ve bir pointer senaryosunda sorunsuz, accidental auto-restart'siz calistigi not ediliyor
@@ -29,7 +30,7 @@ Basari olcutleri:
 # NEXT
 
 - interactive headed browser runtime yoksa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
-- browser yoksa telemetry/copy alanina donmeden `<10s` outlier'i pacing/control tarafindan azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
+- browser yoksa telemetry/copy alanina donmeden arena edge-pressure veya `<10s` outlier'i azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
 - interactive headed browser yoksa stale copy gibi kolay product bug'lari tekrar aramak yerine dogrudan yeni gameplay problem sec; ayni telemetry semantigi etrafinda ikinci bir run acma
 - manuel sample replay friction gosterirse sadece input acceptance penceresi seviyesinde dar ayar yap
 - manuel sample hizlanan `10s+` chase'i fazla sert veya fazla bos gosterirse yalnizca 15-45s speed anchors uzerinde dar geri ayar yap
@@ -86,6 +87,7 @@ Basari olcutleri:
 - pointer/touch steering `10px` dead-zone ve `120px` full-speed mesafe ile yakin hedefte analog hiz kullaniyor; human sample bunu asiri hizli veya fazla snap'li bulmadikca korunmali
 - midgame speed curve `145 / 183 / 217 / 253 / 307 / 320` olarak korunuyor; human sample chase'i fazla sert veya fazla bos bulmadikca tekrar oynanmiyor
 - obstacle collider `11px` olarak korunuyor; human sample kenar temasta ucuz hit'leri azaltirken oyunu fazla bagislayici bulmazsa yeni readability/fairness katmani acilmiyor
+- obstacle'lar yalnizca merkezleri arena icindeyken hit verebiliyor; human sample bu guard'i kenarda gorunmez hit'leri azaltirken "late contact" hissi uretmedigi surece korumali
 - personal-best cue build'de kalici ve gorunur durumda
 - public AI update panel oyuncu tarafinda gorulebilir durumda ve narrow viewport'ta gameplay odagini gereksiz bolmuyor
 - live telemetry aktif oynanista compact, waiting/game-over'da ise validation icin yeterince detayli kaliyor

@@ -2,6 +2,12 @@
 
 ---
 
+## Run #69
+
+- `project/game/src/game/GameScene.ts` obstacle overlap check'ine gorunur-arena guard'i ekledi; obstacle merkezi arena icine girmeden veya arena disina ciktiktan sonra oyuncuya hit veremiyor
+- waiting held-start, replay/resume acceptance, speed curve, obstacle collider yaricapi ve telemetry/export semantigi bilincli olarak degistirilmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #68
 
 - `project/game/src/game/GameScene.ts` waiting state icin de mevcut `180ms` held movement ve held pointer/touch acceptance yolunu acti; start akisi game-over/pause replay-resume davranisiyla hizalandi
