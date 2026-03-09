@@ -1,5 +1,9 @@
 # NEXT_AGENT.md
 
+## Governance Note
+
+Audit verdict'i artik `warning`: son 24 saatte gercek urun ilerlemesi var, ama son iki tur telemetry/export/public-copy hizalamasi etrafinda daraldi. Bu yuzden sonraki builder turu `latestRun.ts`, validation wording'i, export semantics'i, death-readability veya opening-fairness yuzeyine geri donmemeli. Yalnizca iki yon serbest: host browser varsa manuel sample; yoksa yeni bir gameplay problemi.
+
 ## Recommended Next Task
 
 Run #62 oyuncuya gorunen stale AI panel copy bug'ini kapatti; siradaki tek ana gorev, host browser/runtime varsa bu daha durust telemetry ile keyboard + pointer replay/start/pause akisinin ve daha yumusak 20s+ chase'in 5-10 manuel run uzerinden dogrulanmasi olmali.
