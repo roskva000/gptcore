@@ -130,6 +130,11 @@ export const getFirstDeathTimeText = (telemetry: GameplayTelemetry): string => {
   return `${telemetry.firstDeathTime.toFixed(1)}s`;
 };
 
+export const getLowestDeathTime = (
+  currentFirstDeathTime: number | null,
+  survivalTime: number,
+): number => (currentFirstDeathTime === null ? survivalTime : Math.min(currentFirstDeathTime, survivalTime));
+
 export const getValidationProgressText = (telemetry: GameplayTelemetry): string => {
   if (telemetry.totalDeaths === 0) {
     return '0/5 runs';

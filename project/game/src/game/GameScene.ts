@@ -27,6 +27,7 @@ import {
   getAverageSurvivalTime,
   getEarlyDeathRate,
   getFirstDeathTimeText,
+  getLowestDeathTime,
   getRecentDeathTimesText,
   getRetryDelayMs,
   getValidationProgressText,
@@ -1482,7 +1483,10 @@ export class GameScene extends Phaser.Scene {
     this.telemetry.totalDeaths += 1;
     this.telemetry.totalSurvivalTime += roundedSurvivalTime;
     this.telemetry.bestSurvivalTime = Math.max(this.telemetry.bestSurvivalTime ?? 0, roundedSurvivalTime);
-    this.telemetry.firstDeathTime ??= roundedSurvivalTime;
+    this.telemetry.firstDeathTime = getLowestDeathTime(
+      this.telemetry.firstDeathTime,
+      roundedSurvivalTime,
+    );
     this.telemetry.lastDeathAt = Date.now();
     this.telemetry.lastSurvivalTime = roundedSurvivalTime;
     this.telemetry.lastRunSpawnRerolls = this.runSpawnRerolls;
@@ -1503,7 +1507,10 @@ export class GameScene extends Phaser.Scene {
       this.sessionTelemetry.bestSurvivalTime ?? 0,
       roundedSurvivalTime,
     );
-    this.sessionTelemetry.firstDeathTime ??= roundedSurvivalTime;
+    this.sessionTelemetry.firstDeathTime = getLowestDeathTime(
+      this.sessionTelemetry.firstDeathTime,
+      roundedSurvivalTime,
+    );
     this.sessionTelemetry.lastDeathAt = this.telemetry.lastDeathAt;
     this.sessionTelemetry.lastSurvivalTime = roundedSurvivalTime;
     this.sessionTelemetry.lastRunSpawnRerolls = this.runSpawnRerolls;

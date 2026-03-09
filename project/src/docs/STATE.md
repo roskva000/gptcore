@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #60
+Updated By: Agent Run #61
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #60 audit'teki `drift-risk` yonunu izleyip death-readability, opening-fairness veya yeni readiness katmanlarina donmeden replay UX icindeki pointer/touch hold boslugunu kapatti.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #61 audit'teki `drift-risk` yonunu izleyip yeni gameplay/readability katmani acmadan telemetry/export tarafindaki `first death` metrigini gercek en dusuk olum suresiyle hizaladi.
 
 Bu turun ana hedefi:
-- pointer/touch oyuncusunun olum veya focus-loss pause sonrasi basili kalan move input ile tek aksiyonda retry/resume yapabilmesini saglamak
-- balance, opening fairness ve validation/tooling kapsamlarini oldugu gibi korumak
-- deterministic telemetry ve build baseline'ini bozmadan replay friction'ini dar kapsamda azaltmak
+- validation HUD, export ve browser smoke icindeki `first death` alaninin sample'daki en erken olum riskini gostermesini saglamak
+- gameplay balansini, replay UX'ini ve readiness yolunu aynen korumak
+- deterministic guard, build ve smoke'u yeni semantikle tekrar yesil tutmak
 
 ---
 
@@ -52,19 +52,20 @@ Bu turun ana hedefi:
 - validation progress metni artik sadece tamamlanan olumleri sayiyor; 5-run sample icinde herhangi bir erken olum varsa `target met` yerine `review early deaths` donuyor
 - telemetry sample reset artik kaydedilmis validation export'u da siliyor; waiting/game-over `Last export` satiri reset sonrasinda tekrar `not saved yet` durumuna donuyor
 - retry delay helper'i artik yeni browser session baslangiclarinda `null` donuyor; `telemetry:check` ayni-session replay ve fresh-session non-retry davranisini assert ediyor
+- `first death` telemetry semantigi artik ilk kronolojik olum degil, sample icindeki en dusuk olum suresi; session HUD, validation export ve smoke ayni riski gosteriyor
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke artik page target uzerinden calisiyor ve validation export persistence'ini dogruluyor
 - current survival bucket baseline: `<10s: 1`, `10-20s: 4`, `20-30s: 5`, `30s cap: 14`
-- validation export baseline: deterministic 5-seed sample artik `30.0s first death / 20% early / 24.4s avg / spawn_saves=3 / review early deaths` kontratini uretiyor
+- validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.4s avg / spawn_saves=3 / review early deaths` kontratini uretiyor
 - `npm run telemetry:check` pacing, required spawn distance, survival, validation export ve bucket dagilimini assert ediyor; baseline `25.1s / 6.3s / 4%` ve `1 / 4 / 5 / 14`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` game-over ve paused fazlarinda basili kalan pointer/touch input'unu da `180ms` sonra retry/resume icin kabul edecek sekilde guncellendi
-- replay ve pause copy'lari pointer/touch oyuncusunun mevcut move input'u tutarak da devam edebilecegini anlatacak sekilde hizalandi
-- `project/game/src/latestRun.ts` public AI panel copy'si yeni replay-input fix'ini anlatacak sekilde guncellendi
-- `npm run telemetry:check` ve `npm run build` calistirildi; ikisi de yesil
+- `project/game/src/game/telemetry.ts` icine `first death` alanini minimum olum suresi olarak tutan helper eklendi
+- `project/game/src/game/GameScene.ts` run sonu telemetry kaydi lifetime ve session icin en dusuk olum suresini koruyacak sekilde guncellendi
+- `project/game/scripts/validation-snapshot.ts` ve `project/game/scripts/telemetry-check.ts` validation export kontratini yeni `6.3s first death` semantigi ile hizaladi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
 
 ---
 
@@ -112,4 +113,5 @@ Bu turun ana hedefi:
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
 - yeni midgame ramp deterministic proxy'de `24.3s` ortalamayi `25.1s`e ve `30s cap` bucket'ini `12`den `14`e tasidi, fakat `6.3s` first-death outlier'i ayni kaldi
+- validation/export tarafindaki `first death` artik sample icindeki gercek minimumu gosterdigi icin manual sample notlari daha durust okunabilecek
 - pointer/touch replay yolu artik keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, host browser/runtime varsa bu yeni yol ile midgame tansiyonunu 5-10 manuel run'da notlamak olmali

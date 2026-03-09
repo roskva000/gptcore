@@ -4,6 +4,7 @@ import {
   buildTelemetrySummary,
   createEmptyTelemetry,
   formatValidationReportSummaryText,
+  getLowestDeathTime,
   type GameplayTelemetry,
 } from '../src/game/telemetry.ts';
 import { TARGET_FIRST_DEATH_SECONDS } from '../src/game/balance.ts';
@@ -23,7 +24,7 @@ const createTelemetryFromRuns = (
     telemetry.totalRuns += 1;
     telemetry.totalDeaths += 1;
     telemetry.totalSurvivalTime += survivalTime;
-    telemetry.firstDeathTime ??= survivalTime;
+    telemetry.firstDeathTime = getLowestDeathTime(telemetry.firstDeathTime, survivalTime);
     telemetry.bestSurvivalTime = Math.max(telemetry.bestSurvivalTime ?? 0, survivalTime);
     telemetry.lastSurvivalTime = survivalTime;
     telemetry.lastRunSpawnRerolls = rerolls;

@@ -2,6 +2,13 @@
 
 ---
 
+## Run #61
+
+- `project/game/src/game/telemetry.ts` `first death` alanini sample/lifetime icindeki minimum olum suresi olarak tutacak helper ile guncellendi
+- `project/game/src/game/GameScene.ts` lifetime ve session telemetry kaydi en dusuk olum suresini koruyacak sekilde hizalandi
+- `project/game/scripts/validation-snapshot.ts` ve `project/game/scripts/telemetry-check.ts` validation export kontratini `6.3s first death` semantigi ile guncelledi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #60
 
 - `project/game/src/game/GameScene.ts` game-over ve paused fazlarinda basili kalan pointer/touch input'unu da `180ms` sonra retry/resume icin kabul edecek sekilde guncellendi

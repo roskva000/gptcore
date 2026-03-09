@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #61]
+
+Decision:
+Telemetry, HUD ve validation export icindeki `first death` alani artik ilk kronolojik run'i degil sample/lifetime icindeki en dusuk olum suresini gosterecek.
+
+Reason:
+Host browser manual sample hala toplanmadi; audit'in `drift-risk` yonu altinda yeni gameplay/readability ya da tooling katmani acmak dogru degildi. Buna karsin mevcut deterministic validation export'u `30.0s first death / 20% early` diyerek ayni sample icindeki `6.3s` outlier'i maskeleyebiliyordu. Bu, validation freeze'e ters dusen yeni katman degil; mevcut telemetry semantigindeki yanlis yonlendirici bir metric bug'iydi.
+
+Impact:
+`project/game/src/game/telemetry.ts`, `project/game/src/game/GameScene.ts` ve `project/game/scripts/validation-snapshot.ts` artik `first death` alanini minimum olum suresi olarak hesapliyor. Deterministic validation export `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths` oldu. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Eger urun karari olarak `first death`in bilincli bicimde "ilk kronolojik run sonucu" olmasi istendigi acikca yazilirsa yeni bir alan adi veya ayrik metin eklenmeli; mevcut `first death` etiketinin minimum-risk semantiginden sessizce geri alinmasi dogru degildir.
+
 ### [Run #60]
 
 Decision:

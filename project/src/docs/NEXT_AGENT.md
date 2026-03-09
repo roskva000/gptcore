@@ -2,11 +2,11 @@
 
 ## Recommended Next Task
 
-Run #60 replay/input yuzeyinde pointer/touch icin kalan tek-aksiyon gap'ini kapatti. Siradaki tek ana gorev, host browser/runtime varsa mevcut daha yumusak 20s+ chase ile keyboard + pointer replay/start/pause akisinin 5-10 manuel run uzerinden dogrulanmasi olmali.
+Run #61 validation/export tarafindaki `first death` metric bug'ini kapatti; HUD/export artik sample icindeki en dusuk olum suresini gosteriyor. Siradaki tek ana gorev, host browser/runtime varsa bu daha durust telemetry ile keyboard + pointer replay/start/pause akisinin ve daha yumusak 20s+ chase'in 5-10 manuel run uzerinden dogrulanmasi olmali.
 
 Ozellikle:
 - once `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` calistir; baseline'in `25.1s / 6.3s / 4%` olarak korundugunu ve browser path'in yesil oldugunu teyit et
-- sonra host browser/runtime varsa 5-10 manuel run yap ve su sorulara kisa not dus: 20s+ chase hala gergin mi; yeni speed curve oyunu fazla bagislayici yapiyor mu; held movement ve held pointer/touch ile retry/resume gercekten tek aksiyon gibi hissediliyor mu; accidental auto-replay veya auto-resume oluyor mu; focus-loss pause adil mi
+- sonra host browser/runtime varsa 5-10 manuel run yap ve su sorulara kisa not dus: 20s+ chase hala gergin mi; yeni speed curve oyunu fazla bagislayici yapiyor mu; held movement ve held pointer/touch ile retry/resume gercekten tek aksiyon gibi hissediliyor mu; accidental auto-replay veya auto-resume oluyor mu; focus-loss pause adil mi; `V` export'taki `first death` bu sample icindeki en kotu erken olumu dogru yansitiyor mu
 - ayni notlarda session retry telemetry'sinin yeni browser session baslangiclarini retry gibi saymadigini dogrula; gerekiyorsa page refresh sonrasi ilk run ile ayni tab icindeki retry davranisini ayri not et; pointer yolu ile keyboard yolu arasinda friksiyon farki kalip kalmadigini belirt
 - host browser yoksa bunu tooling loop'una cevirmeden blocker olarak yaz; death-readability veya opening-fairness'e donmeden baska olculebilir gameplay problemine gec
 - manuel sample sorun gosterirse yalnizca 10-45s hiz anchor'lari veya held-input acceptance penceresi/copy seviyesinde dar bir duzeltme yap
@@ -15,7 +15,7 @@ Ozellikle:
 
 ## Why This Is Next
 
-`AUDIT.md` verdict'i hala `drift-risk`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #59 midgame chase'i olculebilir sekilde ilerletti, Run #60 ise pointer replay gap'ini kapatti; ama insan kaniti yok. Dogru sonraki adim yeni yuzey eklemek degil, bu hiz yumusamasinin gercek oyuncuda tansiyonu dusurup dusurmedigini ve keyboard + pointer replay friksiyonunun gercekten azaliyor olup olmadigini kanitlamak.
+`AUDIT.md` verdict'i hala `drift-risk`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #59 midgame chase'i olculebilir sekilde ilerletti, Run #60 pointer replay gap'ini kapatti, Run #61 ise validation export'taki `first death` semantigini durustlestirdi; ama insan kaniti yok. Dogru sonraki adim yeni yuzey eklemek degil, bu hiz yumusamasinin gercek oyuncuda tansiyonu dusurup dusurmedigini ve keyboard + pointer replay friksiyonunun gercekten azaliyor olup olmadigini kanitlamak.
 
 ---
 
@@ -25,6 +25,7 @@ Ozellikle:
 - `npm run build` basarili olmali
 - `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donmeli
 - 5-10 manuel run notu start -> play -> 20s+ chase -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu acikca yazmali
+- `V` export ve HUD `first death` alanlari sample icindeki en dusuk olum suresini gosteriyor olmali; manuel sample bu metriği dogrulayabilmeli
 - manuel notlar yeni speed curve'un chase'i fazla kolaylastirip kolaylastirmadigini acikca soylemeli
 - held movement key ve held pointer/touch ile retry/resume davranisinin accidental auto-restart yaratip yaratmadigi acikca not edilmeli
 - fresh browser/session acilisinda ilk run retry gibi sayilmamali

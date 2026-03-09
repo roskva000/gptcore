@@ -47,9 +47,9 @@ baseline: added in Run #53 to make the existing spawn-reroll fairness helper act
 target: confirm manually that this removes crowded opening lanes without making the first seconds feel empty
 
 validation_export_contract:
-current: `V` export now produces `5 runs | first death 30.0s | early 20% | 5/5 runs, review early deaths`, and `R` reset still clears the saved export so HUD summary returns to `not saved yet`
-baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #59 moved the deterministic sample average to `24.4s`
-target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, and never let a fresh reset show a stale export as if it belongs to the new sample
+current: `V` export now produces `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths`, and `R` reset still clears the saved export so HUD summary returns to `not saved yet`
+baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #59 moved the deterministic sample average to `24.4s`; Run #61 aligned `first death` with the minimum death in the sample instead of the first chronological run
+target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, never let a fresh reset show a stale export as if it belongs to the new sample, and do not let a good opening run hide a later worse outlier inside the same sample
 
 retry_delay_integrity:
 current: retry delay is now counted only when the same browser session has a recorded `lastDeathAt`; a fresh tab/session start no longer inherits lifetime `lastDeathAt` as a fake replay
@@ -86,8 +86,8 @@ baseline: as of Run #59 asserts pacing, required spawn distance, softened midgam
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:
-current: `npm run telemetry:browser-validation-smoke` and `npm run telemetry:validation-ready -- --with-smoke` pass; smoke injects 5 sample runs, exports validation summary, and confirms `Last export` survives reload
-baseline: Run #57 fixed the smoke script to connect to a page CDP target instead of the browser websocket and to verify reset/export through scene methods plus storage state
+current: `npm run telemetry:browser-validation-smoke` and `npm run telemetry:validation-ready -- --with-smoke` pass; smoke injects 5 sample runs, exports validation summary, confirms `Last export` survives reload, and now shows the minimum injected death (`9.8s`) as `first death`
+baseline: Run #57 fixed the smoke script to connect to a page CDP target instead of the browser websocket and to verify reset/export through scene methods plus storage state; Run #61 aligned smoke-visible `first death` with the same minimum-death semantics used by deterministic validation
 target: keep smoke green as a lightweight browser harness, but treat it as prerequisite evidence only; replay/start/pause friction still requires human sample
 
 build_health:
