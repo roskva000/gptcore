@@ -2,6 +2,13 @@
 
 ---
 
+## Run #70
+
+- `project/game/src/game/balance.ts` `20s+` obstacle hiz ramp'ini `217 + (t-20) * 3.7` olacak sekilde guncelledi; 30s/45s hiz anchor'lari `254 / 310` oldu
+- `project/game/src/game/telemetry.ts` deterministic baseline etiketini `25.7s avg / 6.3s first death / 4% early` ile hizaladi
+- `project/game/scripts/telemetry-check.ts` yeni hiz anchor'lari, survival baseline `25.7s`, bucket dagilimi `1 / 4 / 2 / 17` ve average spawn count `27.1` olacak sekilde guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #69
 
 - `project/game/src/game/GameScene.ts` obstacle overlap check'ine gorunur-arena guard'i ekledi; obstacle merkezi arena icine girmeden veya arena disina ciktiktan sonra oyuncuya hit veremiyor

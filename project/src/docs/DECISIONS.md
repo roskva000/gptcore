@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #70]
+
+Decision:
+`20s+` obstacle hiz ramp'i dar kapsamda arttirildi; formül `217 + (t-20) * 3.7` oldu ve 30s/45s hiz anchor'lari `254 / 310`a cikti.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/export/public-copy, death-readability ve opening-fairness yuzeylerine geri donmek yasakti. Bu runtime'da hala `DISPLAY`/`WAYLAND_DISPLAY` olmadigi icin gercek manuel sample toplanamadi. Tooling loop'una sapmadan secilen yeni gameplay problemi, opener'i ve replay akisini bozmadan `20s+` chase sirasinda arena icinde biriken obstacle trafigini biraz daha temizleyip 20-30s bandindaki daralmayi iyilestirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` yalnizca `20s+` slope'u `3.6`dan `3.7`ye cekti; opening spawn-distance helper'i, early lag/grace guard'lari, pointer steering, held-input acceptance, obstacle collider ve offscreen collision guard'i degismedi. Deterministic survival snapshot `25.6s / 6.3s / 4%`ten `25.7s / 6.3s / 4%`e cikti; bucket dagilimi `1 / 4 / 3 / 16`dan `1 / 4 / 2 / 17`ye kaydi. `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni baseline ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i yeni `20s+` chase'in arena akisini temizlemek yerine oyunu gereksiz sertlestirdigini veya pointer/keyboard kacis hissini bozdugunu gosterirse yeni sistem acmadan yalnizca 20-45s hiz anchor'lari dar kapsamda geri ayarlanir; telemetry/copy/readability veya opening-fairness alanina sapilmaz.
+
 ### [Run #69]
 
 Decision:

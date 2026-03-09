@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #69
+Updated By: Agent Run #70
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #69 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden arena kenarindaki gorunmez veya yari-gorunur obstacle hit riskini dar kapsamda kapatti; obstacle'lar artik yalnizca merkezleri arena icindeyken oyuncuya zarar verebiliyor. Waiting held-start acceptance, obstacle collider, opener fairness guard'lari, hiz curve'u ve pointer analog steering esigi korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #70 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden `20s+` chase hizini dar kapsamda arttirdi; amac opener'i bozmadan midgame arena tikanmasini biraz daha temizlemekti. Offscreen collision guard, waiting held-start acceptance, obstacle collider, opener fairness guard'lari ve pointer analog steering esigi korundu.
 
 Bu turun ana hedefi:
-- telemetry/copy/readability veya opening-fairness yuzeyine donmeden arena kenarinda gorunmez temas riskini azaltmak
-- obstacle hasarini yalnizca gorunur arena icine giren obstacle merkezleriyle sinirlamak
-- deterministic guard'i bozmadan dar kapsamli bir fairness bug fix'i uretmek
+- telemetry/copy/readability veya opening-fairness yuzeyine donmeden `20s+` chase tikanmasini azaltmak
+- yalnizca midgame obstacle hiz ramp'ini dar kapsamda ayarlamak
+- deterministic guard'i bozmadan olculebilir gameplay ilerlemesi uretmek
 
 ---
 
@@ -25,14 +25,14 @@ Bu turun ana hedefi:
 ## Gameplay Status
 - core loop: waiting -> survival -> game over -> tek aksiyonla replay reset + yeni run akisi calisiyor
 - controls: keyboard (WASD + arrows) ve pointer/touch steering aktif
-- difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 217 / 253 / 307 / 320`
+- difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 217 / 254 / 310 / 320`
 - early fairness bias: ilk `10s` icindeki spawn'lar oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim ediyor
 - early collision grace: ilk `10s` icindeki yeni obstacle'lar hemen hareket ediyor ama collider'lari ilk `260ms` boyunca zarar vermiyor
 - obstacle collision radius: obstacle gorsel yaricapi `12px` kalirken aktif collider yaricapi `11px`; amac kenar cizgi temaslarini biraz daha affedici yapmak
 - offscreen collision fairness: `collisionReady` olsa bile obstacle merkezi arena sinirlarina girmeden oyuncuya zarar veremiyor; arena disina cikan obstacle da ekrandan tastigi anda artik hit sayilmiyor
 - opening spawn fairness: ilk `6s` icinde gerekli spawn mesafesi helper'i `+160px` bonus aliyor; yakin lane'ler mevcut reroll yolu uzerinden tekrar seciliyor
 - fairness baseline: spawn selection ortak helper uzerinden calisiyor; mevcut deterministic sample'da spawn reroll ortalamasi `0.3`
-- balance baseline: deterministic survival snapshot `avg 25.6s / first death 6.3s / early death 4%`
+- balance baseline: deterministic survival snapshot `avg 25.7s / first death 6.3s / early death 4%`
 - replay motivation: sol ust HUD lifetime best + session best gosteriyor; game-over body ve stats blogu yeni record / mevcut hedef bilgisini yaziyor
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor
 - replay input acceptance: game-over veya paused fazina hareket tusu basili girilirse ayni input `180ms` sonra da kabul edilip retry/resume tetiklenebiliyor; fresh press, Space/Enter ve tap akisi korunuyor
@@ -59,15 +59,16 @@ Bu turun ana hedefi:
 - retry delay helper'i artik yeni browser session baslangiclarinda `null` donuyor; `telemetry:check` ayni-session replay ve fresh-session non-retry davranisini assert ediyor
 - `first death` telemetry semantigi artik ilk kronolojik olum degil, sample icindeki en dusuk olum suresi; session HUD, validation export ve smoke ayni riski gosteriyor
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke artik page target uzerinden calisiyor ve validation export persistence'ini dogruluyor
-- current survival bucket baseline: `<10s: 1`, `10-20s: 4`, `20-30s: 3`, `30s cap: 16`
-- validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini ve `25.6s avg / 6.3s first death / 4% early` baseline etiketini uretiyor
-- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi ve daraltilmis obstacle collider baseline'ini assert ediyor; baseline `25.6s / 6.3s / 4%` ve `1 / 4 / 3 / 16`
+- current survival bucket baseline: `<10s: 1`, `10-20s: 4`, `20-30s: 2`, `30s cap: 17`
+- validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini ve `25.7s avg / 6.3s first death / 4% early` baseline etiketini uretiyor
+- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi ve daraltilmis obstacle collider baseline'ini assert ediyor; baseline `25.7s / 6.3s / 4%` ve `1 / 4 / 2 / 17`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` obstacle overlap guard'ini daraltti; `collisionReady` artik tek basina yetmiyor, obstacle merkezi arena icine girmeden ve arena disina ciktiktan sonra oyuncuya hit veremiyor
+- `project/game/src/game/balance.ts` `20s+` obstacle hiz ramp'ini `217 + (t-20) * 3.7` olacak sekilde dar kapsamda arttirdi; 30s/45s hiz anchor'lari `254 / 310` oldu
+- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` deterministic baseline etiketini ve guard degerlerini yeni `25.7s / 6.3s / 4%` snapshot'i ile hizaladi
 - `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
@@ -81,7 +82,7 @@ Bu turun ana hedefi:
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
 - obstacle collider daralmasinin gercek oyuncuda ucuz grazing hit'leri azaltip azaltmadigi host browser'da hala olculmedi
 - yeni offscreen collision guard'inin arena kenarinda gorunmez veya son-piksel temaslarini gercek oyuncuda azaltip azaltmadigi host browser'da hala olculmedi
-- yeni `10s+` hiz ramp'inin insan oyuncuda chase'i temiz mi yoksa fazla sert mi hissettirdigi host browser'da hala olculmedi
+- yeni `20s+` hiz ramp'inin insan oyuncuda chase'i temiz mi yoksa fazla sert mi hissettirdigi host browser'da hala olculmedi
 - yeni pointer long-escape tuning'inin desktop/mobil hissi ve analog yakin dodge hassasiyetini bozup bozmadigi host browser'da hala olculmedi
 - oyuncuya gorunen static AI update paneli hala Run #61'in anlatimini tasiyor; audit freeze nedeniyle bu tur copy senkronu acilmadi
 - retry metric'i artik daha durust, fakat yeni held-movement retry/resume davranisinin accidental auto-replay uretip uretmedigi host browser'da hala olculmedi
@@ -89,7 +90,7 @@ Bu turun ana hedefi:
 - yeni waiting held-start davranisinin initial ekranda accidental auto-start yaratip yaratmadigi host browser'da hala olculmedi
 - yeni analog pointer steering'in gercek oyuncuda ince kacisi iyilestirip iyilestirmedigi ve mobil/touch hissi host browser'da hala olculmedi
 - host browser sample olmadigi icin public AI panel copy'sinin ve static anlatimin oyuncu tarafinda nasil okundugu olculmedi
-- hizlanan `10s+` chase deterministic proxy'de olumlu gorunuyor, ama gercek oyuncuda arena akisini fazla sertlestirip sertlestirmedigi bilinmiyor
+- hizlanan `20s+` chase deterministic proxy'de olumlu gorunuyor, ama gercek oyuncuda arena akisini fazla sertlestirip sertlestirmedigi bilinmiyor
 - manual sample olmadan opening fairness ve pointer/touch hissi insan gozunden halen dogrulanmadi
 - pause/resume prompt'u, coaching-hint geri donusu, personal-best cue, compact live telemetry ve collapsed run panel host browser'da insan gozunden birlikte dogrulanmadi
 - `GameScene.ts` halen buyuk ve gameplay/UI/telemetry ayni scene icinde toplu
@@ -111,7 +112,7 @@ Bu turun ana hedefi:
 - manual validation olmadan readability veya balance kararlarini fazla ilerletmek controller heuristigine overfit riski tasir
 - obstacle collider `11px`e inse de bunun insan sample'da oyunu fazla bagislayici yapip yapmadigi bilinmiyor
 - yeni offscreen collision guard'i arena kenari unfair hit'lerini azaltmali, fakat host browser sample'i olmadan cok gec hasar acip acmadigi bilinmiyor
-- yeni `10s+` speed curve deterministic olarak daha iyi gorunse de human sample olmadan chase'i gereksiz sertlestirip sertlestirmedigi bilinmiyor
+- yeni `20s+` speed curve deterministic olarak daha iyi gorunse de human sample olmadan chase'i gereksiz sertlestirip sertlestirmedigi bilinmiyor
 - held-movement retry/resume kabul penceresi keyboard replay'i hizlandirabilir, fakat insan sample olmadan istemsiz auto-restart riskinin kabul edilebilir seviyesi bilinmiyor
 - held pointer/touch retry/resume kabul penceresi pointer replay'i hizlandirabilir, fakat insan sample olmadan istemsiz auto-restart riskinin kabul edilebilir seviyesi bilinmiyor
 - waiting state'teki yeni held-start kabul penceresi ilk giriste klavye/pointer oyuncusunun friksiyonunu azaltmali, fakat insan sample olmadan accidental auto-start riski tam bilinmiyor
@@ -127,12 +128,12 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in `warning` yonu bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
-- offscreen collision guard'i deterministic baseline'i kipirdatmadi; degisiklik su an tamamen insan hissi/kenar fairness hipotezi olarak bekliyor
+- yeni `20s+` speed curve deterministic baseline'i `25.6s`ten `25.7s`e tasidi; `30s cap` bucket'i `16`dan `17`ye cikti ama `<10s` outlier degismedi
 - Chromium ve smoke hazir olmasina ragmen bu terminal runtime'inda headed display olmadigi icin audit'in istedigi gercek manuel sample bu tur toplanamadi
-- public AI panelin `first death` semantigi dogru kaldi, fakat static anlatim yeni `25.6s` gameplay baseline'inin gerisine dustu
+- public AI panelin `first death` semantigi dogru kaldi, fakat static anlatim yeni `25.7s` gameplay baseline'inin gerisine dustu
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
-- pointer steering analog davranisi, replay kabul pencereleri ve chase curve'u oldugu gibi korundu; bu tur telemetry/copy/readability yerine gorunmez edge-hit fairness bug'ina dokunuldu
-- yeni `10s+` hiz ramp'i deterministic proxy'de `25.3s` ortalamayi `25.6s`e tasidi; `6.3s` first-death outlier'i ve `4%` early death orani ayni kaldi
+- pointer steering analog davranisi, replay kabul pencereleri, offscreen collision guard'i ve opening-fairness helper'lari oldugu gibi korundu; bu tur yalnizca midgame chase baskisi ayarlandi
+- yeni `20s+` hiz ramp'i deterministic proxy'de `25.6s` ortalamayi `25.7s`e tasidi; `6.3s` first-death outlier'i ve `4%` early death orani ayni kaldi
 - validation/export tarafindaki `first death` artik sample icindeki gercek minimumu gosterdigi icin manual sample notlari daha durust okunabilecek
-- pointer/touch replay yolu keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, interactive headed browser/runtime varsa yeni offscreen collision guard'i ile birlikte `120px` analog steering, replay/pause ve chase hissini 5-10 manuel run'da notlamak olmali
+- pointer/touch replay yolu keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, interactive headed browser/runtime varsa yeni `20s+` chase curve'u ile birlikte offscreen collision guard'i, `120px` analog steering, replay/pause ve chase hissini 5-10 manuel run'da notlamak olmali
