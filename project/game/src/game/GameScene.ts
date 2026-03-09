@@ -430,15 +430,15 @@ export class GameScene extends Phaser.Scene {
       movementInputActive,
     );
     const hasConfirmedHeldPointerInput =
-      this.phase === 'gameOver' || this.phase === 'paused'
+      this.phase === 'waiting' || this.phase === 'gameOver' || this.phase === 'paused'
         ? this.hasConfirmedHeldPointerInput(time)
         : false;
+    const hasConfirmedHeldStartInput =
+      hasConfirmedHeldMovementInput || hasConfirmedHeldPointerInput;
 
     if (
       (this.phase === 'waiting' || this.phase === 'gameOver') &&
-      (hasFreshMovementInput ||
-        (this.phase === 'gameOver' &&
-          (hasConfirmedHeldMovementInput || hasConfirmedHeldPointerInput)))
+      (hasFreshMovementInput || hasConfirmedHeldStartInput)
     ) {
       this.startRun();
     }

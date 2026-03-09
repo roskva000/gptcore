@@ -76,6 +76,11 @@ current: game-over and paused states now also accept a continuously held pointer
 baseline: added in Run #60 to close the replay-friction gap between keyboard and pointer controls without changing pacing, fairness, validation contracts, or death-feedback surfaces
 target: confirm in manual browser sample that held pointer/touch feels natural and does not create accidental auto-restart or auto-resume
 
+held_start_acceptance:
+current: waiting state now also accepts a continuously held movement key or held pointer/touch after `180ms`, so initial start uses the same one-action input acceptance model as replay/resume
+baseline: Run #68 extended the existing held-input acceptance window to the waiting screen without changing balance, telemetry/export wording, or the opening-fairness helpers
+target: confirm in manual browser sample that this removes extra release-repress friction on start without causing accidental auto-start on desktop or mobile
+
 pointer_steering_precision:
 current: pointer/touch steering now uses analog speed scaling with a `10px` dead-zone and reaches full `260` speed by `120px`, so short drags still allow finer dodge adjustments while longer escapes hit full speed sooner
 baseline: Run #63 changed pointer steering to analog control; Run #65 tightened only the full-speed distance from `140px` to `120px` without changing keyboard movement, replay acceptance, pacing, or deterministic telemetry contracts
@@ -87,8 +92,8 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke passes, but real-player sampling is still needed to verify the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, the faster Run #66 `10s+` chase, and the narrower Run #67 obstacle collider
-target: 5-10 runs via session telemetry when a suitable browser runtime is available; note whether replay really restarts on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the faster `10s+` chase clears arena traffic without feeling unfair, whether the `11px` obstacle collider removes cheap edge hits without making contact feel mushy, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser smoke passes and Chromium exists, but `DISPLAY`/`WAYLAND_DISPLAY` are absent so no headed manual sample was possible here. Real-player sampling is still needed to verify waiting held-start acceptance, the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, the faster Run #66 `10s+` chase, and the narrower Run #67 obstacle collider
+target: 5-10 runs via session telemetry when a suitable interactive browser runtime is available; note whether waiting start and replay really restart on one action, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause/resume feels fair and clear, whether the faster `10s+` chase clears arena traffic without feeling unfair, whether the `11px` obstacle collider removes cheap edge hits without making contact feel mushy, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
@@ -96,8 +101,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #67 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
-baseline: as of Run #67 asserts pacing, required spawn distance, faster `10s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, and retry-delay session integrity
+current: `npm run telemetry:check` passes on the Run #68 baseline and still asserts fresh-session retry remains `null` while same-session retry delay is still tracked
+baseline: as of Run #68 asserts pacing, required spawn distance, faster `10s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, and retry-delay session integrity
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #68]
+
+Decision:
+Waiting state, game-over ve pause ile ayni `180ms` held-input acceptance'i kullanacak sekilde guncellendi; oyuncu start ekranina hareket tusu veya pointer/touch basili girerse yeni run ekstra release-repress istemeden baslayabiliyor.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/export/public-copy, death-readability ve opening-fairness yuzeyine geri donmek yasakti. `npm run telemetry:validation-ready -- --with-smoke` ve Chromium path'i yesil olsa da bu terminal runtime'inda `DISPLAY`/`WAYLAND_DISPLAY` olmadigindan gercek manuel sample toplanamadi. Bu blocker'i tooling loop'una cevirmeden secilen dar urun problemi, replay/pause icin zaten duzeltilmis held-input akisinin waiting state'te hala eksik kalmasiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` waiting fazinda da held movement ve held pointer/touch input'unu `180ms` sonra start icin kabul ediyor. Telemetry/export semantigi, balance curve'u, obstacle collider'i, replay-resume davranisi ve opening-fairness guard'lari degismedi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `25.6s / 6.3s / 4%` aynen korundu.
+
+Rollback Condition:
+Host browser manuel sample'i waiting state'teki yeni held-start yolunun accidental auto-start urettigini veya start ekraninda kontrol kaybi hissi yarattigini gosterirse yeni sistem acmadan yalnizca acceptance penceresi daraltilir ya da waiting fazindan geri alinir; telemetry/copy/readability ya da opening-fairness alanina sapilmaz.
+
 ### [Run #67]
 
 Decision:

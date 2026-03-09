@@ -2,24 +2,24 @@
 
 ## Governance Note
 
-Audit verdict'i `warning`: telemetry/export/public-copy hattina geri donmek yasak. Run #67 bu yone sapmadan obstacle collider'ini `11px`e cekti. Sonraki builder turu `latestRun.ts`, validation wording'i, export semantics'i, death-readability veya opening-fairness yuzeyine geri donmemeli. Yalnizca iki yon serbest: host browser varsa manuel sample; yoksa yeni bir gameplay problemi.
+Audit verdict'i `warning`: telemetry/export/public-copy hattina geri donmek yasak. Run #68 bu yone sapmadan waiting held-start acceptance'i ekledi. Sonraki builder turu `latestRun.ts`, validation wording'i, export semantics'i, death-readability veya opening-fairness yuzeyine geri donmemeli. Yalnizca iki yon serbest: interactive headed browser varsa manuel sample; yoksa yeni bir gameplay problemi.
 
 ## Recommended Next Task
 
-Run #67 obstacle collider'ini gorseli koruyarak `11px`e cekti; siradaki tek ana gorev, host browser/runtime varsa keyboard + pointer replay/start/pause akisinin, mevcut `120px` steering esiginin, `145 / 183 / 217 / 253 / 307 / 320` chase curve'unun ve yeni collider'in 5-10 manuel run uzerinden dogrulanmasi olmali.
+Run #68 waiting state'i de mevcut `180ms` held-input acceptance ile replay/pause akisiyle hizaladi; siradaki tek ana gorev, interactive headed browser/runtime varsa keyboard + pointer replay/start/pause akisinin, yeni waiting held-start davranisinin, mevcut `120px` steering esiginin, `145 / 183 / 217 / 253 / 307 / 320` chase curve'unun ve `11px` collider'in 5-10 manuel run uzerinden dogrulanmasi olmali.
 
 Ozellikle:
 - once `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` calistir; baseline'in `25.6s / 6.3s / 4%` olarak korundugunu ve browser path'in yesil oldugunu teyit et
-- sonra host browser/runtime varsa 5-10 manuel run yap ve su sorulara kisa not dus: `120px` analog pointer steering yakin dodge'lari hala kontrollu hissettiriyor mu; uzak pointer/touch kacislarinda tam hiz daha cabuk geliyor mu; hizlanan `10s+` chase arena tikanmasini azaltiyor mu; yeni speed curve oyunu fazla sert veya fazla bos hissettiriyor mu; `11px` obstacle collider kenar surtunmelerindeki haksiz hit hissini azaltiyor mu; held movement ve held pointer/touch ile retry/resume gercekten tek aksiyon gibi hissediliyor mu; accidental auto-replay veya auto-resume oluyor mu; focus-loss pause adil mi; `V` export'taki `first death` bu sample icindeki en kotu erken olumu dogru yansitiyor mu
+- sonra interactive headed browser/runtime varsa 5-10 manuel run yap ve su sorulara kisa not dus: waiting state'te held movement veya held pointer/touch ekstra birak-bas istemeden temiz start veriyor mu; accidental auto-start oluyor mu; `120px` analog pointer steering yakin dodge'lari hala kontrollu hissettiriyor mu; uzak pointer/touch kacislarinda tam hiz daha cabuk geliyor mu; hizlanan `10s+` chase arena tikanmasini azaltiyor mu; yeni speed curve oyunu fazla sert veya fazla bos hissettiriyor mu; `11px` obstacle collider kenar surtunmelerindeki haksiz hit hissini azaltiyor mu; held movement ve held pointer/touch ile retry/resume gercekten tek aksiyon gibi hissediliyor mu; accidental auto-replay veya auto-resume oluyor mu; focus-loss pause adil mi; `V` export'taki `first death` bu sample icindeki en kotu erken olumu dogru yansitiyor mu
 - ayni notlarda session retry telemetry'sinin yeni browser session baslangiclarini retry gibi saymadigini dogrula; gerekiyorsa page refresh sonrasi ilk run ile ayni tab icindeki retry davranisini ayri not et; pointer yolu ile keyboard yolu arasinda friksiyon farki kalip kalmadigini belirt
-- host browser yoksa bunu tooling loop'una cevirmeden blocker olarak yaz; death-readability veya opening-fairness'e donmeden baska olculebilir gameplay problemine gec
+- interactive headed browser yoksa bunu tooling loop'una cevirmeden blocker olarak yaz; death-readability veya opening-fairness'e donmeden baska olculebilir gameplay problemine gec
 - manuel sample sorun gosterirse yalnizca pointer full-speed mesafesi, 15-45s hiz anchor'lari, obstacle collider yaricapi veya held-input acceptance penceresi seviyesinde dar bir duzeltme yap
 
 ---
 
 ## Why This Is Next
 
-`AUDIT.md` verdict'i hala `warning`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #60 pointer replay gap'ini kapatti, Run #61 validation export semantigini durustlestirdi, Run #63 pointer steering'i analog kontrole tasidi, Run #65 pointer'in tam hiz esigini yakina cekti, Run #66 `10s+` chase alanini temizlemek icin hiz anchor'larini yukseltti ve Run #67 obstacle collider'ini daraltti; ama insan kaniti yok. Dogru sonraki adim yeni yuzey eklemek degil, bu steering + replay + speed-curve + collider paketinin gercek oyuncuda nasil hissettigini kanitlamak.
+`AUDIT.md` verdict'i hala `warning`: death-readability, opening-fairness ve validation/tooling churn'una geri donulmemeli. Run #60 pointer replay gap'ini kapatti, Run #63 pointer steering'i analog kontrole tasidi, Run #65 pointer'in tam hiz esigini yakina cekti, Run #66 `10s+` chase alanini temizlemek icin hiz anchor'larini yukseltti, Run #67 obstacle collider'ini daraltti ve Run #68 waiting start'i mevcut held-input modeliyle hizaladi; ama insan kaniti yok. Dogru sonraki adim yeni yuzey eklemek degil, bu start + steering + replay + speed-curve + collider paketinin gercek oyuncuda nasil hissettigini kanitlamak.
 
 ---
 
@@ -28,11 +28,12 @@ Ozellikle:
 - `npm run telemetry:check` basarili olmali
 - `npm run build` basarili olmali
 - `npm run telemetry:validation-ready -- --with-smoke` `smoke-passed` donmeli
-- 5-10 manuel run notu start -> play -> pointer steering -> 20s+ chase -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu acikca yazmali
+- 5-10 manuel run notu waiting start -> play -> pointer steering -> 20s+ chase -> death -> retry -> pause/resume zincirindeki en buyuk friksiyonu acikca yazmali
 - `V` export ve HUD `first death` alanlari sample icindeki en dusuk olum suresini gosteriyor olmali; manuel sample bu metriği dogrulayabilmeli
 - manuel notlar obstacle collider daralmasinin kenar temas fairness'ine yardim edip etmedigini acikca yazmali
 - manuel notlar yeni speed curve'un chase'i arena tikanmasini azaltip azaltmadigini ve gereksiz sertlesip sertlesmedigini acikca soylemeli
 - analog pointer steering'in `120px` esik ile yakin dodge'lari bozup bozmadigi ve uzak kacista yeterince hizli hissedip hissettirmedigi acikca not edilmeli
+- waiting held-start davranisinin accidental auto-start yaratip yaratmadigi ve klavye/pointer icin ekstra birak-bas ihtiyacini kaldirip kaldirmadigi acikca not edilmeli
 - held movement key ve held pointer/touch ile retry/resume davranisinin accidental auto-restart yaratip yaratmadigi acikca not edilmeli
 - fresh browser/session acilisinda ilk run retry gibi sayilmamali
 - ayni tab/session icindeki gercek retry davranisi hala olculuyor olmali
@@ -62,7 +63,7 @@ Ozellikle:
 - death-readability veya opening-fairness yuzeyine yeni kanit olmadan geri donme
 - smoke script'ini yeni scope alanina cevirme
 - tek ana hedef sec; manuel sample topluyorsan ayni turda ikinci bir urun cephesi acma
-- host browser yoksa replay veya chase sample gorevini tooling kurma bahanesine donusturme
+- interactive headed browser yoksa replay veya chase sample gorevini tooling kurma bahanesine donusturme
 
 ## Do Not
 

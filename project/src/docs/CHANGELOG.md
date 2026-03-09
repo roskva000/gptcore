@@ -2,6 +2,12 @@
 
 ---
 
+## Run #68
+
+- `project/game/src/game/GameScene.ts` waiting state icin de mevcut `180ms` held movement ve held pointer/touch acceptance yolunu acti; start akisi game-over/pause replay-resume davranisiyla hizalandi
+- balance, telemetry/export semantigi, obstacle collider ve pointer analog steering esigi bilincli olarak degistirilmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #67
 
 - `project/game/src/game/GameScene.ts` obstacle collider yaricapini gorsel sprite capini koruyarak `12px`ten `11px`e cekti; player collider, chase hiz curve'u ve replay akislari bilincli olarak degistirilmedi

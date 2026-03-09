@@ -1,17 +1,17 @@
 # STATE.md
 Last Updated: 2026-03-09
-Updated By: Agent Run #67
+Updated By: Agent Run #68
 
 ---
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #67 audit'teki `warning` yonunu izleyip telemetry/copy/readability alanina geri donmeden ucuz kenar temaslarini azaltmak icin obstacle collider'ini dar kapsamda daraltti; replay UX'i, opener fairness guard'lari, hiz curve'u ve pointer analog steering esigi korundu.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #68 audit'teki `warning` yonunu izleyip telemetry/copy/readability alanina geri donmeden waiting start friksiyonunu dar kapsamda azaltti; game-over/pause icin var olan held-input acceptance artik waiting state icin de kullaniliyor. Obstacle collider, opener fairness guard'lari, hiz curve'u ve pointer analog steering esigi korundu.
 
 Bu turun ana hedefi:
-- opening-fairness paketine veya telemetry/copy hattina donmeden ucuz grazing hit'leri azaltmak
-- replay/start/resume, pointer steering ve mevcut hiz curve'unu korurken obstacle temasini biraz daha adil yapmak
-- build ile deterministic guard'i bozmadan dar kapsamli bir gameplay fairness ilerlemesi uretmek
+- telemetry/copy/readability veya opening-fairness yuzeyine donmeden waiting -> play gecisini replay/pause ile daha tutarli yapmak
+- game-over/pause'taki mevcut held-input davranisini initial waiting start'a da tasiyarak ekstra birak-bas friksiyonunu azaltmak
+- deterministic guard'i bozmadan dar kapsamli bir start UX ilerlemesi uretmek
 
 ---
 
@@ -36,6 +36,7 @@ Bu turun ana hedefi:
 - replay controls: waiting state'te oldugu gibi game-over fazinda da fresh movement-key press yeni run baslatabiliyor; Space/Enter/tap secenegi korunuyor
 - replay input acceptance: game-over veya paused fazina hareket tusu basili girilirse ayni input `180ms` sonra da kabul edilip retry/resume tetiklenebiliyor; fresh press, Space/Enter ve tap akisi korunuyor
 - pointer/touch replay acceptance: game-over veya paused fazina click/touch basili girilirse ayni pointer input'u `180ms` sonra retry/resume icin de kabul ediliyor; pointer oyuncusu ekstra release-tap yapmadan akisa donebiliyor
+- waiting start acceptance: waiting state artik game-over/pause ile ayni `180ms` held-input guard'ini paylasiyor; oyuncu start ekranina hareket tusu veya pointer/touch basili girerse yeni run ekstra release-repress gerektirmeden baslayabiliyor
 - pointer steering precision: pointer/touch hareketi artik hedefe olan mesafeye gore analog hiz aliyor; `10px` dead-zone korunurken yakin hedeflerde ince ayar, `120px+` mesafede tam hiz kacis veriliyor
 - focus-loss fairness: aktif run sirasinda `blur` veya `visibilitychange` gelirse oyun `paused` fazina geciyor; physics, spawn timer, hareket ve survival saati birlikte donuyor
 - instructional UX: waiting state amac + hareket + start aksiyonunu tek blokta veriyor; telemetry hotkey'leri ayri support strip'inde
@@ -65,8 +66,7 @@ Bu turun ana hedefi:
 
 # Completed This Run
 
-- `project/game/src/game/GameScene.ts` obstacle collider yaricapini gorsel sprite capini koruyarak `12px`ten `11px`e cekti; player collider, hiz curve'u, replay akislari ve opening-fairness helper'lari degismedi
-- `project/game/scripts/telemetry-reports.ts` ayni `11px` obstacle collider'i deterministic raporla hizaladi; survival ve validation snapshot'lari bilincli olarak ayni `25.6s / 6.3s / 4%` baseline'da kaldi
+- `project/game/src/game/GameScene.ts` waiting state icin de `180ms` held movement ve held pointer/touch acceptance'i acti; start davranisi game-over/pause replay-resume akisi ile hizalandi
 - `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
@@ -74,6 +74,7 @@ Bu turun ana hedefi:
 # Active Problems
 
 - gercek manual browser sample hala yok
+- Chromium/smoke hazir olsa da bu runtime'da `DISPLAY`/`WAYLAND_DISPLAY` olmadigi icin gercek headed manual sample halen bloklu
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
@@ -83,6 +84,7 @@ Bu turun ana hedefi:
 - oyuncuya gorunen static AI update paneli hala Run #61'in anlatimini tasiyor; audit freeze nedeniyle bu tur copy senkronu acilmadi
 - retry metric'i artik daha durust, fakat yeni held-movement retry/resume davranisinin accidental auto-replay uretip uretmedigi host browser'da hala olculmedi
 - yeni held pointer/touch retry/resume davranisinin accidental auto-restart veya auto-resume uretip uretmedigi host browser'da hala olculmedi
+- yeni waiting held-start davranisinin initial ekranda accidental auto-start yaratip yaratmadigi host browser'da hala olculmedi
 - yeni analog pointer steering'in gercek oyuncuda ince kacisi iyilestirip iyilestirmedigi ve mobil/touch hissi host browser'da hala olculmedi
 - host browser sample olmadigi icin public AI panel copy'sinin ve static anlatimin oyuncu tarafinda nasil okundugu olculmedi
 - hizlanan `10s+` chase deterministic proxy'de olumlu gorunuyor, ama gercek oyuncuda arena akisini fazla sertlestirip sertlestirmedigi bilinmiyor
@@ -109,6 +111,7 @@ Bu turun ana hedefi:
 - yeni `10s+` speed curve deterministic olarak daha iyi gorunse de human sample olmadan chase'i gereksiz sertlestirip sertlestirmedigi bilinmiyor
 - held-movement retry/resume kabul penceresi keyboard replay'i hizlandirabilir, fakat insan sample olmadan istemsiz auto-restart riskinin kabul edilebilir seviyesi bilinmiyor
 - held pointer/touch retry/resume kabul penceresi pointer replay'i hizlandirabilir, fakat insan sample olmadan istemsiz auto-restart riskinin kabul edilebilir seviyesi bilinmiyor
+- waiting state'teki yeni held-start kabul penceresi ilk giriste klavye/pointer oyuncusunun friksiyonunu azaltmali, fakat insan sample olmadan accidental auto-start riski tam bilinmiyor
 - analog pointer steering yakin hedefte kontrolu iyilestirmeli, fakat insan sample olmadan fazla yumusak veya yavas hissedip hissettirmedigi bilinmiyor
 - pointer steering'in tam hiz esigi artik daha yakin; insan sample olmadan bu degisimin uzun drag'lerde faydali ama yakin duzeltmelerde asiri hizli olup olmadigi bilinmiyor
 - validation/export/readiness katmanini tekrar buyutmek gameplay ilerlemesini durdurur; audit bu alanda freeze istiyor
@@ -121,11 +124,12 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in `warning` yonu bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
-- obstacle collider daraltmasi deterministic snapshot'i kipirdatmadi; degisiklik su an tamamen insan hissi/fairness hipotezi olarak bekliyor
+- waiting held-start degisikligi deterministic baseline'i kipirdatmadi; degisiklik su an tamamen insan hissi/start friksiyonu hipotezi olarak bekliyor
+- Chromium ve smoke hazir olmasina ragmen bu terminal runtime'inda headed display olmadigi icin audit'in istedigi gercek manuel sample bu tur toplanamadi
 - public AI panelin `first death` semantigi dogru kaldi, fakat static anlatim yeni `25.6s` gameplay baseline'inin gerisine dustu
 - retry telemetry artik eski localStorage olumunu yeni browser session replay'i gibi saymiyor; replay metriği session bazli daha durust
 - browser smoke artik blocker degil; readiness komutu `smoke-passed` donebiliyor
 - pointer steering analog davranisi ve replay kabul pencereleri oldugu gibi korundu; bu tur telemetry/copy/readability yerine dogrudan chase alaninin temizligine dokunuldu
 - yeni `10s+` hiz ramp'i deterministic proxy'de `25.3s` ortalamayi `25.6s`e tasidi; `6.3s` first-death outlier'i ve `4%` early death orani ayni kaldi
 - validation/export tarafindaki `first death` artik sample icindeki gercek minimumu gosterdigi icin manual sample notlari daha durust okunabilecek
-- pointer/touch replay yolu keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, host browser/runtime varsa bu yeni `120px` analog steering esigi ile replay/pause/chase hissini 5-10 manuel run'da notlamak olmali
+- pointer/touch replay yolu keyboard ile ayni `180ms` held-input guard'ini paylasiyor; siradaki en dar urun adimi, interactive headed browser/runtime varsa bu yeni `120px` analog steering esigi ile replay/pause/chase hissini 5-10 manuel run'da notlamak olmali
