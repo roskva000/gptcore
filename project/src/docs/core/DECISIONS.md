@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #80]
+
+Decision:
+Pooled obstacle reuse/cull/reset akisinda stale tween'lerin yeni spawn'a tasinmasini engellemek icin obstacle lifecycle temizligi ortak `deactivateObstacle()` yoluna toplandi.
+
+Reason:
+`AUDIT.md` bu turda manuel sample yoksa telemetry/copy/readability veya ayni opening-fairness paketine geri donmeyi yasakliyordu. Headed runtime yine blokluydu. `NEXT_AGENT.md` fallback'i pooled obstacle reuse/cull sirasinda stale tween tasinmasini incelemeyi oneriyordu. Mevcut source'ta spawn collision-grace tween'i obstacle cull/reset/death durumlarinda oldurulmuyordu; pool'dan yeniden alinan obstacle eski alpha/scale tween'ini tasiyip gorunur davranis drift'i uretebilirdi.
+
+Impact:
+`project/game/src/game/GameScene.ts` spawn oncesi obstacle tween'lerini olduruyor; cull ve reset akislari ortak `deactivateObstacle()` helper'i ile tween/data/visual state'i sifirliyor; death freeze de obstacle tween'lerini durdurup fatal/non-fatal presentation'i temiz baseline'dan kuruyor. Deterministic baseline bilincli olarak degismedi: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample reuse edilen obstacle'larda gorunur pop, gec alpha gecisi veya beklenmeyen fade davranisi gosterirse helper kaldirilmadan once yalnizca obstacle reset prezentasyonu dar kapsamda ayarlanir; yeni orchestration/readiness katmani acilmaz.
+
 ### [Run #79]
 
 Decision:

@@ -754,9 +754,7 @@ export class GameScene extends Phaser.Scene {
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
-      obstacle.setData('collisionReady', false);
-      obstacle.setData('collisionUnlockElapsedMs', null);
-      obstacle.disableBody(true, true);
+      this.deactivateObstacle(obstacle);
       return true;
     });
   }
@@ -812,6 +810,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.tweens.killTweensOf(obstacle);
     obstacle
       .setActive(true)
       .setVisible(true)
@@ -1019,7 +1018,7 @@ export class GameScene extends Phaser.Scene {
         obstacle.active &&
         isPointOutsideCullBounds(obstacle)
       ) {
-        obstacle.disableBody(true, true);
+        this.deactivateObstacle(obstacle);
       }
 
       return true;
@@ -1067,12 +1066,14 @@ export class GameScene extends Phaser.Scene {
     this.player.setVelocity(0, 0);
     this.player.setTint(0xffd6cf);
     this.recordRunEnd();
+    this.tweens.killTweensOf(obstacle);
     obstacle.setTint(0xfff0c7).setScale(1.12).setAlpha(1);
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
       const isFatalObstacle = obstacle === obstacleGameObject;
 
+      this.tweens.killTweensOf(obstacle);
       obstacle.setVelocity(0, 0);
 
       if (!isFatalObstacle) {
@@ -1140,6 +1141,14 @@ export class GameScene extends Phaser.Scene {
         `Retry now: ${this.getRetryActionText()}.\nThen ${escapePrompt.title.toLowerCase()} on the next rush.`,
       )
       .setVisible(true);
+  }
+
+  private deactivateObstacle(obstacle: Phaser.Physics.Arcade.Image): void {
+    this.tweens.killTweensOf(obstacle);
+    obstacle.setData('collisionReady', false);
+    obstacle.setData('collisionUnlockElapsedMs', null);
+    obstacle.clearTint().setAlpha(1).setScale(1).setVelocity(0, 0);
+    obstacle.disableBody(true, true);
   }
 
   private showImpactMarker(hitDirection: HitDirection): void {

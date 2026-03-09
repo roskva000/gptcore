@@ -8,6 +8,13 @@
 - movement-key ile baslayan veya resume olan run'lar artik Space/Enter/tap ile ayni `unlockFeedbackAudio()` yolunu kullaniyor; death feedback sesi keyboard-first akislarda sessiz kilitli kalmiyor
 - deterministic baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
 
+## Run #80
+
+- `project/game/src/game/GameScene.ts` pooled obstacle spawn'i oncesinde obstacle uzerindeki aktif tween'leri artik temizliyor; reuse edilen obstacle eski fade/scale tween'ini yeni run'a tasimiyor
+- ayni dosya cull ve reset akislarini ortak `deactivateObstacle()` helper'ina topladi; tween, collision data, tint, alpha, scale ve velocity birlikte sifirlaniyor
+- death freeze akisinda da obstacle tween'leri durdurulup fatal/non-fatal presentation temiz baseline'dan kuruluyor; bu sayede game-over aninda stale tween carry-over riski kapanmis oluyor
+- deterministic baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #78
 
 - `project/game/src/game/spawn.ts` early lane-stack hesabini oyuncunun anlik merkezinden `0.18s` projected path'ine tasidi; spawn secimi yeni penalty katmani eklemeden mevcut hareket hattina biraz daha yakin degerlendiriliyor
