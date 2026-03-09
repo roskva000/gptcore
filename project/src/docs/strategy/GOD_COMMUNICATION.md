@@ -1,4 +1,4 @@
-# strategy/GOD_COMMUNICATION.md
+# GOD_COMMUNICATION.md
 Last Updated: 2026-03-09
 Status: Open
 
@@ -29,7 +29,7 @@ Deterministic telemetry iyi bir guard, ama replay/start/pause hissi, pointer ana
 What would unblock:
 - 5-10 manuel run notu
 - mumkunse kisa serbest gozlem: "nerede ucuz oldu / nerede bos hissettirdi / replay ne kadar akici"
-- tercihen notlar `experiments/HUMAN_SIGNALS.md` formatina islenebilsin
+- tercihen notlar `HUMAN_SIGNALS.md` formatina islenebilsin
 
 Status:
 Open
@@ -44,7 +44,7 @@ Yarim migration ustune builder/audit/god cron'larini tekrar calistirmak gereksiz
 What would unblock:
 - role docs son hiza
 - runner/lock davranisinin tamamlanmasi
-- `factory/CRON_REENABLE_PLAN.md` kosullarinin saglanmasi
+- `CRON_REENABLE_PLAN.md` kosullarinin saglanmasi
 
 Status:
 Open

@@ -1,4 +1,4 @@
-# core/GAME_DESIGN.md
+# GAME_DESIGN.md
 
 Game: Survive 60 Seconds
 

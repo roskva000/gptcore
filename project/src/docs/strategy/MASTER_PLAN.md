@@ -1,4 +1,4 @@
-# strategy/MASTER_PLAN.md
+# MASTER_PLAN.md
 Last Updated: 2026-03-09
 Updated By: God Agent, Divine Integration
 

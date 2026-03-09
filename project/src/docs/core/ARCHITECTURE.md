@@ -1,4 +1,4 @@
-# core/ARCHITECTURE.md
+# ARCHITECTURE.md
 
 Project: Survive 60 Seconds
 

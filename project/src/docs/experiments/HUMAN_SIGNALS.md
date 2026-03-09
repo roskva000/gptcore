@@ -1,4 +1,4 @@
-# experiments/HUMAN_SIGNALS.md
+# HUMAN_SIGNALS.md
 
 Bu dosya insan gozlem ve hissini sistem icin birinci sinif girdi haline getirir.
 

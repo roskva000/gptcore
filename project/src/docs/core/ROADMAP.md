@@ -1,4 +1,4 @@
-# core/ROADMAP.md
+# ROADMAP.md
 
 ---
 

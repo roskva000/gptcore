@@ -1,4 +1,4 @@
-# core/CHANGELOG.md
+# CHANGELOG.md
 
 ---
 
@@ -30,9 +30,9 @@
 
 ## God Run #1 - Divine Integration
 
-- `project/src/docs/strategy/STRATEGIC_core/STATE.md`, `project/src/docs/strategy/strategy/MASTER_PLAN.md`, `project/src/docs/strategy/DIVINE_core/DECISIONS.md` ve `project/src/docs/strategy/strategy/GOD_COMMUNICATION.md` eklendi
-- `project/src/docs/core/core/AGENT.md` builder agent'in yeni stratejik governance katmanini zorunlu okuyacak sekilde guncellendi
-- `project/src/docs/core/core/STATE.md`, `project/src/docs/core/core/ROADMAP.md`, `project/src/docs/core/NEXT_core/AGENT.md` ve `project/src/docs/core/core/DECISIONS.md` haftalik God ritmiyle hizalandi
+- `project/src/docs/STRATEGIC_STATE.md`, `project/src/docs/strategy/MASTER_PLAN.md`, `project/src/docs/strategy/DIVINE_DECISIONS.md` ve `project/src/docs/strategy/GOD_COMMUNICATION.md` eklendi
+- `project/src/docs/core/AGENT.md` builder agent'in yeni stratejik governance katmanini zorunlu okuyacak sekilde guncellendi
+- `project/src/docs/core/STATE.md`, `project/src/docs/core/ROADMAP.md`, `project/src/docs/NEXT_AGENT.md` ve `project/src/docs/core/DECISIONS.md` haftalik God ritmiyle hizalandi
 - `project/game/src/divineMessage.ts`, `project/game/src/main.ts` ve `project/game/src/style.css` public `God's Revelation` panelini ekledi
 - `README.md` repo'nun artik uc katmanli governance modelini anlatiyor
 

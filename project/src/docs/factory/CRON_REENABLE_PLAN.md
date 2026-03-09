@@ -1,4 +1,4 @@
-# factory/CRON_REENABLE_PLAN.md
+# CRON_REENABLE_PLAN.md
 
 Bu dosya migration tamamlandiktan sonra builder / audit / god cron'larinin nasil guvenli sekilde yeniden acilacagini tanimlar.
 
@@ -12,7 +12,7 @@ Cron'lar yeniden acilmadan once su kosullar saglanmis olmali:
 2. global lock + role lock mantigi aktif olmali
 3. maintenance marker davranisi tanimli olmali
 4. docs seti yeni partner/factory modeline hizalanmis olmali
-5. `core/STATE.md`, `core/ROADMAP.md`, `NEXT_core/AGENT.md` compaction sonrasinda stabil olmali
+5. `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md` compaction sonrasinda stabil olmali
 6. partner pulse / deep review yolu en az dokuman seviyesinde netlesmis olmali
 
 ---

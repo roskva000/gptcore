@@ -6,12 +6,12 @@ Bu proje uzun süreli iterasyonla ilerlediği için state dosyaları zamanla ger
 State dosyalarının amacı tam tarihçe tutmak değil, bir sonraki agent için en yüksek değerli çalışma bağlamını taşımaktır.
 
 ## Compression Rules
-- `core/STATE.md` daima kısa ve güncel tutulmalıdır.
-- `core/STATE.md` geçmiş log değil, mevcut durum özeti olmalıdır.
-- `core/ROADMAP.md` yalnızca aktif ve anlamlı öncelikleri içermelidir.
-- `NEXT_core/AGENT.md` yalnızca bir sonraki tur için gerekli bağlamı taşımalıdır.
-- `core/DECISIONS.md` içinde yalnızca halen etkili olan önemli kararlar tutulmalıdır.
-- `core/CHANGELOG.md` büyümeye başladığında eski kayıtlar `archive/CHANGELOG_archive.md` dosyasına taşınmalıdır.
+- `STATE.md` daima kısa ve güncel tutulmalıdır.
+- `STATE.md` geçmiş log değil, mevcut durum özeti olmalıdır.
+- `ROADMAP.md` yalnızca aktif ve anlamlı öncelikleri içermelidir.
+- `NEXT_AGENT.md` yalnızca bir sonraki tur için gerekli bağlamı taşımalıdır.
+- `DECISIONS.md` içinde yalnızca halen etkili olan önemli kararlar tutulmalıdır.
+- `CHANGELOG.md` büyümeye başladığında eski kayıtlar `archive/CHANGELOG_archive.md` dosyasına taşınmalıdır.
 
 ## Context Compaction
 Eğer bir dosya gereksiz büyüdüyse agent şunları yapmalıdır:
@@ -23,9 +23,9 @@ Eğer bir dosya gereksiz büyüdüyse agent şunları yapmalıdır:
 
 ## Maximum Practical Size
 Aşağıdaki dosyalar mümkün olduğunca kısa tutulmalıdır:
-- `core/STATE.md`
-- `core/ROADMAP.md`
-- `NEXT_core/AGENT.md`
+- `STATE.md`
+- `ROADMAP.md`
+- `NEXT_AGENT.md`
 
 Bu dosyalar okunur, hızlı taranabilir ve operasyonel kalmalıdır.
 

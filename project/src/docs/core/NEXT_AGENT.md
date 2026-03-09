@@ -1,4 +1,4 @@
-# NEXT_core/AGENT.md
+# NEXT_AGENT.md
 
 ## Current Mission
 
@@ -20,21 +20,21 @@ Run modunu `integration` olarak ele al.
 
 ## Read First
 
-1. `factory/MIGRATION_STATUS.md`
-2. `factory/PARTNER.md`
-3. `FACTORY_core/STATE.md`
-4. `factory/FACTORY_RHYTHM.md`
-5. `factory/CONCURRENCY_POLICY.md`
-6. `factory/CRON_REENABLE_PLAN.md`
-7. `STRATEGIC_core/STATE.md`
-8. `strategy/MASTER_PLAN.md`
-9. `core/AGENT.md`
-10. `audit/AUDITOR.md`
-11. `core/STATE.md`
-12. `core/ROADMAP.md`
-13. `factory/PARTNER_LOG.md`
-14. `experiments/HUMAN_SIGNALS.md`
-15. `experiments/EXPERIMENTS.md`
+1. `MIGRATION_STATUS.md`
+2. `PARTNER.md`
+3. `FACTORY_STATE.md`
+4. `FACTORY_RHYTHM.md`
+5. `CONCURRENCY_POLICY.md`
+6. `CRON_REENABLE_PLAN.md`
+7. `STRATEGIC_STATE.md`
+8. `MASTER_PLAN.md`
+9. `AGENT.md`
+10. `AUDITOR.md`
+11. `STATE.md`
+12. `ROADMAP.md`
+13. `PARTNER_LOG.md`
+14. `HUMAN_SIGNALS.md`
+15. `EXPERIMENTS.md`
 
 ---
 

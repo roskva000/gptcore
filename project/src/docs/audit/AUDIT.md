@@ -1,4 +1,4 @@
-# audit/AUDIT.md
+# AUDIT.md
 
 Last Updated: 2026-03-09
 Updated By: Audit Agent

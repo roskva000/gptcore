@@ -1,4 +1,4 @@
-# factory/CONCURRENCY_POLICY.md
+# CONCURRENCY_POLICY.md
 
 Bu dosya canli fabrikada ayni repo uzerinde calisan farkli rollerin nasil cakismadan calisacagini tanimlar.
 

@@ -1,4 +1,4 @@
-# FACTORY_core/STATE.md
+# FACTORY_STATE.md
 Last Updated: 2026-03-09
 Updated By: Partner Layer
 
@@ -78,6 +78,6 @@ Open:
 # Migration Snapshot
 
 See also:
-- `factory/MIGRATION_STATUS.md`
-- `factory/CRON_REENABLE_PLAN.md`
-- `factory/REENABLE_CHECKLIST.md`
+- `MIGRATION_STATUS.md`
+- `CRON_REENABLE_PLAN.md`
+- `REENABLE_CHECKLIST.md`

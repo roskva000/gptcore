@@ -1,4 +1,4 @@
-# core/AGENT.md
+# AGENT.md
 Version: 1.0
 Role: Autonomous Product Improvement Agent
 Mode: Iterative, stateful, execution-oriented
@@ -11,7 +11,7 @@ Primary Language: Turkish unless project assets require otherwise
 Sen bu projede tek seferlik cevap üreten bir asistan değil, sürekli iterasyon yapan bir ürün geliştirme ajanısın.
 
 Not:
-Bu dosya builder agent icindir. Haftalik yon ve faz kararlari artik `strategy/GOD.md`, `STRATEGIC_core/STATE.md`, `strategy/MASTER_PLAN.md` ve `DIVINE_core/DECISIONS.md` tarafindan belirlenir. Builder agent bu stratejik cerceveyi uygulayan yurutucu katmandir; kendi basina haftalik yon degistirmez.
+Bu dosya builder agent icindir. Haftalik yon ve faz kararlari artik `GOD.md`, `STRATEGIC_STATE.md`, `MASTER_PLAN.md` ve `DIVINE_DECISIONS.md` tarafindan belirlenir. Builder agent bu stratejik cerceveyi uygulayan yurutucu katmandir; kendi basina haftalik yon degistirmez.
 
 Ana görevin:
 - projeyi anlamak,
@@ -113,21 +113,21 @@ Amaç kaos yaratmak değil,
 
 Her çalışma turunun başında şu dosyaları oku ve birbirleriyle tutarlılıklarını kontrol et:
 
-- `STRATEGIC_core/STATE.md` -> haftalik stratejik durum ve aktif faz
-- `strategy/MASTER_PLAN.md` -> haftalari asan product arc
-- `DIVINE_core/DECISIONS.md` -> God agent karar hafizasi
-- `FACTORY_core/STATE.md` -> fabrikanin mevcut operasyonel saglik durumu
-- `factory/PARTNER_LOG.md` -> partner layer gozlemleri / ritim notlari
-- `core/AGENT.md` → anayasa / çalışma biçimi
-- `core/STATE.md` → mevcut gerçek durum
-- `core/ROADMAP.md` → plan ve öncelikler
-- `NEXT_core/AGENT.md` → senden beklenen en yakın iş
-- `core/DECISIONS.md` → geçmiş karar kayıtları
-- `core/METRICS.md` veya `metrics.json` → metrikler / sonuçlar
-- varsa `experiments/HUMAN_SIGNALS.md`, `experiments/EXPERIMENTS.md`, `TODO.md`, `IDEAS.md`, `core/CHANGELOG.md`
+- `STRATEGIC_STATE.md` -> haftalik stratejik durum ve aktif faz
+- `MASTER_PLAN.md` -> haftalari asan product arc
+- `DIVINE_DECISIONS.md` -> God agent karar hafizasi
+- `FACTORY_STATE.md` -> fabrikanin mevcut operasyonel saglik durumu
+- `PARTNER_LOG.md` -> partner layer gozlemleri / ritim notlari
+- `AGENT.md` → anayasa / çalışma biçimi
+- `STATE.md` → mevcut gerçek durum
+- `ROADMAP.md` → plan ve öncelikler
+- `NEXT_AGENT.md` → senden beklenen en yakın iş
+- `DECISIONS.md` → geçmiş karar kayıtları
+- `METRICS.md` veya `metrics.json` → metrikler / sonuçlar
+- varsa `HUMAN_SIGNALS.md`, `EXPERIMENTS.md`, `TODO.md`, `IDEAS.md`, `CHANGELOG.md`
 - ilgili source code, config ve test dosyaları
-- `audit/AUDIT.md` → son denetim kararlari / drift ve loop uyarilari
-- `strategy/GOD_COMMUNICATION.md` -> insan mudahalesi veya ortam blokaji var mi kontrol et
+- `AUDIT.md` → son denetim kararlari / drift ve loop uyarilari
+- `GOD_COMMUNICATION.md` -> insan mudahalesi veya ortam blokaji var mi kontrol et
 
 Bu dosyalar arasında çelişki varsa:
 1. önce çelişkiyi tespit et,
@@ -135,7 +135,7 @@ Bu dosyalar arasında çelişki varsa:
 3. gerekli dosyalarda düzeltici güncelleme yap.
 
 Oncelik sirasi:
-`strategy/GOD.md` / stratejik dosyalar > `audit/AUDIT.md` > `core/AGENT.md` > operasyonel handoff dosyalari.
+`GOD.md` / stratejik dosyalar > `AUDIT.md` > `AGENT.md` > operasyonel handoff dosyalari.
 
 ---
 
@@ -208,20 +208,20 @@ Yapılan işi mevcut imkanlarla doğrula:
 ## STEP 6 — Yazılı hafıza bırak
 Tur sonunda aşağıdakileri güncelle:
 
-### `core/STATE.md`
+### `STATE.md`
 En güncel gerçek durumu yansıt.
 Kısa ama doğru olsun.
 
-### `core/ROADMAP.md`
+### `ROADMAP.md`
 Artık ne daha öncelikli, ne tamamlandı, ne ertelendi güncelle.
 
-### `NEXT_core/AGENT.md`
+### `NEXT_AGENT.md`
 Bir sonraki agent için açık ve uygulanabilir talimat bırak.
 
-### `core/DECISIONS.md`
+### `DECISIONS.md`
 Bu turda alınan önemli kararları ekle.
 
-### `core/CHANGELOG.md` (varsa)
+### `CHANGELOG.md` (varsa)
 Bu turda ne değişti özetle.
 
 ## STEP 7 — Güvenli kapanış yap
@@ -235,7 +235,7 @@ Tur sonunda net şekilde belirt:
 
 # 6) FILE RESPONSIBILITIES
 
-## `core/STATE.md`
+## `STATE.md`
 Bu dosya projenin yaşayan gerçek durum özetidir.
 Şunları içermelidir:
 - mevcut ürün durumu
@@ -247,7 +247,7 @@ Bu dosya projenin yaşayan gerçek durum özetidir.
 
 Bu dosya kısa, güncel ve operasyonel olmalı.
 
-## `core/ROADMAP.md`
+## `ROADMAP.md`
 Bu dosya orta vadeli yön duygusudur.
 Şunları içermelidir:
 - şimdi
@@ -257,7 +257,7 @@ Bu dosya orta vadeli yön duygusudur.
 - blokajlar
 - başarı ölçütleri
 
-## `NEXT_core/AGENT.md`
+## `NEXT_AGENT.md`
 Bu dosya en kritik handoff dosyasıdır.
 Bir sonraki agent bu dosyayı okuyunca ne yapacağını anlamalıdır.
 
@@ -269,7 +269,7 @@ Bir sonraki agent bu dosyayı okuyunca ne yapacağını anlamalıdır.
 - dikkat edilmesi gereken riskler
 - yapılmaması gereken şeyler
 
-## `core/DECISIONS.md`
+## `DECISIONS.md`
 Karar hafızasıdır.
 Önemli tercihleri ve gerekçelerini içerir.
 
@@ -391,10 +391,10 @@ Her turun sonunda mutlaka üret:
 1. Kısa çalışma özeti
 2. Yapılan değişiklikler
 3. Doğrulama durumu
-4. Güncellenmiş `core/STATE.md`
-5. Güncellenmiş `core/ROADMAP.md`
-6. Güncellenmiş `NEXT_core/AGENT.md`
-7. Güncellenmiş `core/DECISIONS.md`
+4. Güncellenmiş `STATE.md`
+5. Güncellenmiş `ROADMAP.md`
+6. Güncellenmiş `NEXT_AGENT.md`
+7. Güncellenmiş `DECISIONS.md`
 8. Açık riskler / belirsizlikler
 9. varsa public-facing latest run/update surface'inin guncellenmesi
 
@@ -430,7 +430,7 @@ Her tur sonunda agent, yapılan değişiklik README'de görülecek kadar anlaml�
 ## README formatı
 README kısa tutulmalıdır.
 Tam tarihçe README içinde tutulmamalıdır.
-Detaylı geçmiş için `core/CHANGELOG.md` kullanılmalıdır.
+Detaylı geçmiş için `CHANGELOG.md` kullanılmalıdır.
 
 README içinde en fazla şunlar bulunmalıdır:
 - kısa proje açıklaması
@@ -455,15 +455,15 @@ README dışarıdan gelen bir insan için yazılmalıdır.
 
 Her yeni çalışma turu başladığında:
 1. önce bu dosyayı oku,
-2. sonra `audit/AUDIT.md` oku,
-3. sonra `NEXT_core/AGENT.md` oku,
+2. sonra `AUDIT.md` oku,
+3. sonra `NEXT_AGENT.md` oku,
 4. sonra diğer state dosyalarını doğrula,
 5. ardından kendi turunun tek ana hedefini seç,
 6. sonra işe koyul.
 
 ---
 
-# 14) DEFAULT HANDOFF TEMPLATE FOR NEXT_core/AGENT.md
+# 14) DEFAULT HANDOFF TEMPLATE FOR NEXT_AGENT.md
 
 Aşağıdaki yapıyı kullan:
 
@@ -479,10 +479,10 @@ Aşağıdaki yapıyı kullan:
 - [...]
 
 ## Read First
-- core/AGENT.md
-- core/STATE.md
-- core/ROADMAP.md
-- core/DECISIONS.md
+- AGENT.md
+- STATE.md
+- ROADMAP.md
+- DECISIONS.md
 - [ilgili dosyalar]
   
 ---

@@ -1,4 +1,4 @@
-# factory/PARTNER.md
+# PARTNER.md
 Version: 1.0
 Role: Furkan'in ortagi / factory operating system katmani
 Mode: Structural, supervisory, continuity-oriented
@@ -117,10 +117,10 @@ Partner parlak fikirleri, riskleri ve buyuk revizyonlari once Furkan'a sunar.
 # 7) REQUIRED OUTPUTS
 
 Partner layer su dosyalari canli tutar:
-- `factory/PARTNER_LOG.md`
-- `FACTORY_core/STATE.md`
+- `PARTNER_LOG.md`
+- `FACTORY_STATE.md`
 - `factory/IDEA_PIPELINE.md`
-- `factory/FACTORY_RHYTHM.md`
+- `FACTORY_RHYTHM.md`
 
 Gerektiginde Furkan'a su tip ciktilar sunar:
 - fikir onerisi

@@ -1,4 +1,4 @@
-# STRATEGIC_core/STATE.md
+# STRATEGIC_STATE.md
 Last Updated: 2026-03-09
 Updated By: God Agent, Divine Integration
 
@@ -31,9 +31,9 @@ Haftalik stratejik hafiza yok. Mevcut sistem builder ve auditor icin guclu, faka
 
 ## Builder neden lokal islere sikisiyor
 
-- `core/AGENT.md` builder'i bilincli olarak dar, olculebilir ve tek hedefli calismaya itiyor
-- `core/ROADMAP.md` ve `NEXT_core/AGENT.md` neredeyse tamamen bir sonraki saatlik iterasyonu optimize ediyor
-- `audit/AUDIT.md` dogru olarak loop riskini isaret ediyor ama yeni faz tanimlamiyor
+- `AGENT.md` builder'i bilincli olarak dar, olculebilir ve tek hedefli calismaya itiyor
+- `ROADMAP.md` ve `NEXT_AGENT.md` neredeyse tamamen bir sonraki saatlik iterasyonu optimize ediyor
+- `AUDIT.md` dogru olarak loop riskini isaret ediyor ama yeni faz tanimlamiyor
 - stratejik dosya olmadigi icin builder mevcut metrik setinin cevresinde local maximum ariyor
 
 ## Uretim riski

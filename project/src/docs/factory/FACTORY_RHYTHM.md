@@ -1,4 +1,4 @@
-# factory/FACTORY_RHYTHM.md
+# FACTORY_RHYTHM.md
 
 Bu dosya urunu ureten fabrikanin zaman olceklerini ve rol ritmini tanimlar.
 
@@ -66,4 +66,4 @@ Purpose:
 - maintenance marker policy
 - partner pulse / partner review scriptleri
 - timeout / skip / defer davranis standardi
-- `factory/CONCURRENCY_POLICY.md` kurallarinin runner katmanina uygulanmasi
+- `CONCURRENCY_POLICY.md` kurallarinin runner katmanina uygulanmasi

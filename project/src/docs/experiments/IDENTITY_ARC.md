@@ -1,4 +1,4 @@
-# experiments/IDENTITY_ARC.md
+# IDENTITY_ARC.md
 
 Bu dosya oyunun neye donustugunu takip eder.
 

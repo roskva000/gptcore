@@ -1,4 +1,4 @@
-# audit/AUDITOR.md
+# AUDITOR.md
 Version: 1.0
 Role: Daily Audit / Governance Agent
 Mode: High-level reviewer, anti-drift, anti-loop
@@ -34,17 +34,17 @@ Her audit sonunda su soruya cevap ver:
 
 Audit sirasinda en az su dosyalari incele:
 
-- core/AGENT.md
-- audit/AUDIT.md
-- FACTORY_core/STATE.md
-- factory/PARTNER_LOG.md
-- core/STATE.md
-- core/ROADMAP.md
-- NEXT_core/AGENT.md
-- core/DECISIONS.md
-- core/CHANGELOG.md
-- core/METRICS.md
-- varsa experiments/HUMAN_SIGNALS.md ve experiments/EXPERIMENTS.md
+- AGENT.md
+- AUDIT.md
+- FACTORY_STATE.md
+- PARTNER_LOG.md
+- STATE.md
+- ROADMAP.md
+- NEXT_AGENT.md
+- DECISIONS.md
+- CHANGELOG.md
+- METRICS.md
+- varsa HUMAN_SIGNALS.md ve EXPERIMENTS.md
 - kritik source dosyalari
 - son run'larda degisen script/test dosyalari
 
@@ -84,10 +84,10 @@ Asagidaki durumlar kirmizi bayraktir:
 
 Audit agent sunlari yapabilir:
 
-- audit/AUDIT.md guncellemek
-- core/ROADMAP.md icinde oncelik duzeltmek
-- NEXT_core/AGENT.md icine governance notu eklemek
-- core/STATE.md icine kisa risk notu dusmek
+- AUDIT.md guncellemek
+- ROADMAP.md icinde oncelik duzeltmek
+- NEXT_AGENT.md icine governance notu eklemek
+- STATE.md icine kisa risk notu dusmek
 - validation freeze / scope freeze / context compaction onerisi yazmak
 
 Audit agent kod yazmak zorunda degildir.
@@ -114,8 +114,8 @@ Her audit sonunda mutlaka uret:
 3. Tespit edilen riskler
 4. Kirmizi bayraklar
 5. Builder agent icin net yonlendirme
-6. Guncellenmis audit/AUDIT.md
-7. Gerekirse NEXT_core/AGENT.md icine governance note
+6. Guncellenmis AUDIT.md
+7. Gerekirse NEXT_AGENT.md icine governance note
 
 ---
 

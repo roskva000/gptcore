@@ -1,4 +1,4 @@
-# factory/PARTNER_LOG.md
+# PARTNER_LOG.md
 
 Bu dosya partner layer'in operasyonel gunlugudur.
 
@@ -40,8 +40,8 @@ Observation:
 - cron/runner reformu bitmeden gameplay tuning'e donmek riskliydi
 
 Action:
-- `experiments/HUMAN_SIGNALS.md`, `experiments/EXPERIMENTS.md`, `experiments/RETENTION_NOTES.md`, `experiments/IDENTITY_ARC.md` eklendi
-- `core/STATE.md` ve `NEXT_core/AGENT.md` compaction mantigiyla yeniden yazildi
+- `HUMAN_SIGNALS.md`, `EXPERIMENTS.md`, `RETENTION_NOTES.md`, `IDENTITY_ARC.md` eklendi
+- `STATE.md` ve `NEXT_AGENT.md` compaction mantigiyla yeniden yazildi
 - archive klasoru ve changelog/decisions archive hedefleri acildi
 - roadmap yeni migration + mutation kademelerine gore yeniden cercevelendi
 
@@ -69,9 +69,9 @@ Observation:
 
 Action:
 - README partner/factory operating system modelini taniyacak sekilde guncellendi
-- `factory/MIGRATION_STATUS.md` eklendi
+- `MIGRATION_STATUS.md` eklendi
 - partner pulse/review scriptleri syntax-safe ve read-only-by-default placeholder olarak korundu
-- `NEXT_core/AGENT.md` migration + re-enable eksenine yeniden hizalandi
+- `NEXT_AGENT.md` migration + re-enable eksenine yeniden hizalandi
 
 Expected Effect:
 - migration artik hem repo anlatisi hem operasyonel docs tarafinda gorunur hale gelir
@@ -95,7 +95,7 @@ Observation:
 - migration durumu artik 'kuruluyor'dan 'kapanisa yaklasiyor'a gecti
 
 Action:
-- `factory/REENABLE_CHECKLIST.md` eklendi
+- `REENABLE_CHECKLIST.md` eklendi
 - migration durumu closure'a yaklasiyor olarak guncellendi
 - factory docs bu yeni checklist referansiyla capraz baglandi
 

@@ -1,6 +1,6 @@
 Kolay gelsin. Haftalık stratejik değerlendirme zamanı.
 
-Önce project/src/docs/strategy/GOD.md dosyasını oku ve rolünü hatırla.
+Önce project/src/docs/GOD.md dosyasını oku ve rolünü hatırla.
 
 Sen builder değilsin.
 Sen auditor da değilsin.
@@ -11,19 +11,19 @@ Auditor günlük sağlık kontrolü yapar.
 Sen haftalık zaman ölçeğinde düşünürsün.
 
 Önce şu dosyaları oku:
-- project/src/docs/strategy/GOD.md
-- project/src/docs/core/AGENT.md
-- project/src/docs/audit/AUDIT.md
-- project/src/docs/core/STATE.md
-- project/src/docs/core/ROADMAP.md
-- NEXT_project/src/docs/core/AGENT.md
-- project/src/docs/core/DECISIONS.md
-- project/src/docs/core/CHANGELOG.md
-- project/src/docs/core/METRICS.md
-- project/src/docs/strategy/STRATEGIC_project/src/docs/core/STATE.md (varsa)
-- project/src/docs/strategy/MASTER_PLAN.md (varsa)
-- project/src/docs/strategy/DIVINE_project/src/docs/core/DECISIONS.md (varsa)
-- project/src/docs/strategy/GOD_COMMUNICATION.md (varsa)
+- project/src/docs/GOD.md
+- project/src/docs/AGENT.md
+- project/src/docs/AUDIT.md
+- project/src/docs/STATE.md
+- project/src/docs/ROADMAP.md
+- NEXT_project/src/docs/AGENT.md
+- project/src/docs/DECISIONS.md
+- project/src/docs/CHANGELOG.md
+- project/src/docs/METRICS.md
+- project/src/docs/strategy/STRATEGIC_project/src/docs/STATE.md (varsa)
+- project/src/docs/MASTER_PLAN.md (varsa)
+- project/src/docs/strategy/DIVINE_project/src/docs/DECISIONS.md (varsa)
+- project/src/docs/GOD_COMMUNICATION.md (varsa)
 - public-facing latest run / weekly revelations ile ilgili dosyalar
 - kritik gameplay ve product dosyaları
 
@@ -59,7 +59,7 @@ Bu haftalık çalışmanın sonunda mutlaka üret:
 4. builder için yön
 5. auditor için dikkat noktaları
 6. varsa governance değişiklikleri
-7. project/src/docs/strategy/DIVINE_project/src/docs/core/DECISIONS.md güncellemesi
+7. project/src/docs/strategy/DIVINE_project/src/docs/DECISIONS.md güncellemesi
 8. gerekiyorsa weekly god revelations güncellemesi
 9. Arayüzdeki tanrının yaptıklarıyla alakalı sosyal bildiri paneli
 Haftalık düşün.

@@ -1,4 +1,4 @@
-# core/PROJECT.md
+# PROJECT.md
 
 Project Name: Survive 60 Seconds  
 Type: Browser Web Game  

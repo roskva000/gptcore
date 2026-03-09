@@ -1,4 +1,4 @@
-# factory/REENABLE_CHECKLIST.md
+# REENABLE_CHECKLIST.md
 
 Bu dosya cron'lar tekrar acilmadan once tek bakista kontrol edilecek son listedir.
 

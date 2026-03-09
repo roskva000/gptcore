@@ -1,4 +1,4 @@
-# experiments/RETENTION_NOTES.md
+# RETENTION_NOTES.md
 
 Bu dosya hangi mutation veya process degisikliginin neden tutuldugunu ya da neden elendigini kaydeder.
 

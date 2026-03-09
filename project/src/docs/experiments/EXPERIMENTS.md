@@ -1,4 +1,4 @@
-# experiments/EXPERIMENTS.md
+# EXPERIMENTS.md
 
 Bu dosya mutation ve deney akisini takip eder.
 

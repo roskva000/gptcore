@@ -59,7 +59,7 @@ state dosyalarını güncelle
 commit oluştur
 ```
 
-Her çalışma turu `core/project/src/docs/core/CHANGELOG.md` içinde kayıt altına alınır.
+Her çalışma turu `core/project/src/docs/CHANGELOG.md` içinde kayıt altına alınır.
 
 ---
 
@@ -71,12 +71,12 @@ Ajanın hafızası şu dosyalardan oluşur:
 
 | Dosya           | Açıklama                    |
 | --------------- | --------------------------- |
-| `core/project/src/docs/core/STATE.md`      | Projenin mevcut durumu      |
-| `core/project/src/docs/core/ROADMAP.md`    | Gelecek planı               |
-| `NEXT_core/project/src/docs/core/AGENT.md` | Bir sonraki ajan için görev |
-| `core/project/src/docs/core/DECISIONS.md`  | Önemli teknik kararlar      |
-| `core/project/src/docs/core/METRICS.md`    | Oyun telemetry verileri     |
-| `core/project/src/docs/core/CHANGELOG.md`  | Ajan run geçmişi            |
+| `core/project/src/docs/STATE.md`      | Projenin mevcut durumu      |
+| `core/project/src/docs/ROADMAP.md`    | Gelecek planı               |
+| `NEXT_core/project/src/docs/AGENT.md` | Bir sonraki ajan için görev |
+| `core/project/src/docs/DECISIONS.md`  | Önemli teknik kararlar      |
+| `core/project/src/docs/METRICS.md`    | Oyun telemetry verileri     |
+| `core/project/src/docs/CHANGELOG.md`  | Ajan run geçmişi            |
 
 Bu dosyalar birlikte çalışarak ajan için **uzun süreli hafıza sistemi** oluşturur.
 
@@ -143,7 +143,7 @@ Günlük çalışan bir **audit agent** şu konuları değerlendirir:
 Denetim sonuçları şu dosyada tutulur:
 
 ```
-audit/project/src/docs/audit/AUDIT.md
+audit/project/src/docs/AUDIT.md
 ```
 
 Builder agent yeni run başlatırken bu dosyayı okuyarak yönünü belirler.
@@ -159,23 +159,23 @@ Bu katmanin amaci:
 
 Temel dosyalar:
 
-* `strategy/project/src/docs/strategy/GOD.md`
-* `STRATEGIC_core/project/src/docs/core/STATE.md`
-* `strategy/project/src/docs/strategy/MASTER_PLAN.md`
-* `DIVINE_core/project/src/docs/core/DECISIONS.md`
-* `strategy/project/src/docs/strategy/GOD_COMMUNICATION.md`
+* `strategy/project/src/docs/GOD.md`
+* `STRATEGIC_core/project/src/docs/STATE.md`
+* `strategy/project/src/docs/MASTER_PLAN.md`
+* `DIVINE_core/project/src/docs/DECISIONS.md`
+* `strategy/project/src/docs/GOD_COMMUNICATION.md`
 
 Partner layer ise fabrikanin kendisini denetleyen, ritmi koruyan ve buyume mimarisini kuran ayrik bir katmandir.
 
 Partner ile ilgili temel dosyalar:
 
-* `factory/project/src/docs/factory/PARTNER.md`
-* `factory/project/src/docs/factory/PARTNER_LOG.md`
-* `FACTORY_core/project/src/docs/core/STATE.md`
-* `factory/project/src/docs/factory/FACTORY_RHYTHM.md`
+* `factory/project/src/docs/PARTNER.md`
+* `factory/project/src/docs/PARTNER_LOG.md`
+* `FACTORY_core/project/src/docs/STATE.md`
+* `factory/project/src/docs/FACTORY_RHYTHM.md`
 * `factory/IDEA_PIPELINE.md`
-* `factory/project/src/docs/factory/CONCURRENCY_POLICY.md`
-* `factory/project/src/docs/factory/CRON_REENABLE_PLAN.md`
+* `factory/project/src/docs/CONCURRENCY_POLICY.md`
+* `factory/project/src/docs/CRON_REENABLE_PLAN.md`
 
 ---
 
@@ -204,29 +204,29 @@ project/
 Dokümantasyon dosyalari:
 
 ```
-core/project/src/docs/core/STATE.md
-core/project/src/docs/core/ROADMAP.md
-core/project/src/docs/core/DECISIONS.md
-NEXT_core/project/src/docs/core/AGENT.md
-core/project/src/docs/core/CHANGELOG.md
-core/project/src/docs/core/METRICS.md
-audit/project/src/docs/audit/AUDIT.md
-strategy/project/src/docs/strategy/GOD.md
-STRATEGIC_core/project/src/docs/core/STATE.md
-strategy/project/src/docs/strategy/MASTER_PLAN.md
-DIVINE_core/project/src/docs/core/DECISIONS.md
-strategy/project/src/docs/strategy/GOD_COMMUNICATION.md
-factory/project/src/docs/factory/PARTNER.md
-factory/project/src/docs/factory/PARTNER_LOG.md
-FACTORY_core/project/src/docs/core/STATE.md
-factory/project/src/docs/factory/FACTORY_RHYTHM.md
+core/project/src/docs/STATE.md
+core/project/src/docs/ROADMAP.md
+core/project/src/docs/DECISIONS.md
+NEXT_core/project/src/docs/AGENT.md
+core/project/src/docs/CHANGELOG.md
+core/project/src/docs/METRICS.md
+audit/project/src/docs/AUDIT.md
+strategy/project/src/docs/GOD.md
+STRATEGIC_core/project/src/docs/STATE.md
+strategy/project/src/docs/MASTER_PLAN.md
+DIVINE_core/project/src/docs/DECISIONS.md
+strategy/project/src/docs/GOD_COMMUNICATION.md
+factory/project/src/docs/PARTNER.md
+factory/project/src/docs/PARTNER_LOG.md
+FACTORY_core/project/src/docs/STATE.md
+factory/project/src/docs/FACTORY_RHYTHM.md
 factory/IDEA_PIPELINE.md
-experiments/project/src/docs/experiments/HUMAN_SIGNALS.md
-experiments/project/src/docs/experiments/EXPERIMENTS.md
-experiments/RETENTION_NOTES.md
-experiments/IDENTITY_ARC.md
-factory/project/src/docs/factory/CONCURRENCY_POLICY.md
-factory/project/src/docs/factory/CRON_REENABLE_PLAN.md
+experiments/project/src/docs/HUMAN_SIGNALS.md
+experiments/project/src/docs/EXPERIMENTS.md
+RETENTION_NOTES.md
+IDENTITY_ARC.md
+factory/project/src/docs/CONCURRENCY_POLICY.md
+factory/project/src/docs/CRON_REENABLE_PLAN.md
 archive/
 ```
 
@@ -273,7 +273,7 @@ Her run:
 İlerlemeyi şu dosyadan takip edebilirsiniz:
 
 ```
-core/project/src/docs/core/CHANGELOG.md
+core/project/src/docs/CHANGELOG.md
 ```
 
 ---

@@ -1,4 +1,4 @@
-# core/METRICS.md
+# METRICS.md
 
 ---
 

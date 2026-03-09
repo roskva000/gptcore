@@ -1,4 +1,4 @@
-# factory/MIGRATION_STATUS.md
+# MIGRATION_STATUS.md
 Last Updated: 2026-03-10
 Updated By: Partner Layer
 
@@ -40,7 +40,7 @@ Current Focus:
 # Remaining Before Re-enable
 
 1. migration dalgasinin repoda commitlenebilir hale gelmesi
-2. `factory/REENABLE_CHECKLIST.md` uzerinden son kontrol gecilmesi
+2. `REENABLE_CHECKLIST.md` uzerinden son kontrol gecilmesi
 3. cron yeniden acilis sirasinin kontrollu uygulanmasi
 4. builder hattinin yeni docs setiyle stabil calistiginin gozlenmesi
 

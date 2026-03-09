@@ -1,4 +1,4 @@
-# core/STATE.md
+# STATE.md
 Last Updated: 2026-03-10
 Updated By: Partner Layer
 
@@ -18,7 +18,7 @@ Updated By: Partner Layer
 
 - Partner layer tanimlandi ve ilk factory docs seti eklendi.
 - Factory-level rhythm, concurrency ve idea pipeline dokumante edilmeye baslandi.
-- Migration ilerleyisini tek yerden gormek icin `factory/MIGRATION_STATUS.md` eklendi.
+- Migration ilerleyisini tek yerden gormek icin `MIGRATION_STATUS.md` eklendi.
 - Runner scriptlerine global lock + maintenance-mode iskeleti girildi.
 - Eski sistemin lokal optimizasyon gucu yuksek, ama controlled mutation ve selective retention sistemi henuz aktif degil.
 
