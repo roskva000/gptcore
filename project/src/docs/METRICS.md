@@ -67,9 +67,9 @@ baseline: Run #73 added this narrow gameplay filter after outlier-specific lag/t
 target: confirm manually that this reduces cheap oncoming opener pressure without making spawn variety feel scripted or hollow
 
 lane_stack_spawn_filter:
-current: first `6s` spawn selection now also penalizes candidates that arrive from the same lane as an active obstacle already within `160px` of the player when that lane alignment exceeds `0.55`, so early stacked crossfire is less likely to pile up from one direction without touching opening distance, target lag, or collision grace
-baseline: Run #74 added this narrow gameplay filter after more aggressive center-cut and intercept ideas regressed the deterministic guard set; the checked snapshot moved from `26.4s` average / `27.8` average spawns / `0.4` average rerolls to `26.5s` average / `28` average spawns / `0.5` average rerolls while holding buckets at `1 / 3 / 3 / 17`
-target: confirm manually that this trims repeated same-lane opener pressure without making spawn variety feel scripted or too empty on one edge
+current: first `6s` spawn selection now also penalizes candidates that arrive from the same lane as an active obstacle already within `160px` of the player when that lane alignment exceeds `0.55`, but only after that obstacle's center has entered the arena; offscreen obstacle'lar artik oyuncu gormeden lane-stack reroll baskisi yaratmiyor
+baseline: Run #74 added this narrow gameplay filter after more aggressive center-cut and intercept ideas regressed the deterministic guard set; Run #76 constrained the filter to visible threats only and added a deterministic regression check for offscreen-vs-visible behavior while holding the checked snapshot at `26.6s` average / `1 / 3 / 2 / 18` buckets / `0.5` average rerolls
+target: confirm manually that this trims repeated same-lane opener pressure without making spawn variety feel scripted or letting invisible edge threats bias the next spawn before they appear
 
 public_ai_panel_accuracy:
 current: the player-facing `Latest AI update` panel still mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export, but its static copy now lags the latest `26.6s` deterministic baseline
@@ -116,8 +116,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #75 baseline and still asserts fresh-session retry remains `null`, same-session retry delay is still tracked, and the deterministic survival proxy still models runtime visible-arena hit guard plus `96px` offscreen cull margin
-baseline: as of Run #75 asserts pacing, required spawn distance, forward-pressure and lane-stack spawn reroll behavior through the checked snapshot, softened `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, retry-delay session integrity, and runtime-aligned collision/cull proxy behavior
+current: `npm run telemetry:check` passes on the Run #76 baseline and still asserts fresh-session retry remains `null`, same-session retry delay is still tracked, the deterministic survival proxy still models runtime visible-arena hit guard plus `96px` offscreen cull margin, and offscreen obstacle'larin lane-stack reroll tetiklememesi guard altinda
+baseline: as of Run #76 asserts pacing, required spawn distance, forward-pressure and lane-stack spawn reroll behavior through the checked snapshot, visible-only lane-stack guard'ini, softened `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, retry-delay session integrity, and runtime-aligned collision/cull proxy behavior
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:

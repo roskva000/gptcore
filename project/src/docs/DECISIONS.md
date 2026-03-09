@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #76]
+
+Decision:
+Early lane-stack spawn filtresi yalnizca arena icine girmis obstacle'lari dikkate alacak sekilde daraltildi.
+
+Reason:
+`AUDIT.md` verdict'i `warning`; telemetry/export/public-copy, death-readability ve opening-fairness helper'larina geri donmek yasakti. Headed browser/runtime bu ortamda hala yoktu; bu nedenle manuel sample toplanamadi. Seed `#3` outlier'i icin yapilan parametrik taramalar guvenli bir deterministic iyilesme vermedi. Buna karsin mevcut lane-stack mantiginin henuz arena icine girmemis obstacle'lari da yakin tehdit gibi sayabilmesi, oyuncu tarafinda gorunmez baski yaratabilecek dar bir gameplay bug'iydi.
+
+Impact:
+`project/game/src/game/spawn.ts` icindeki lane-stack cezasi artik `isPointInsideArena` guard'i ile yalnizca gorunur obstacle'lara uygulanıyor. `project/game/scripts/telemetry-check.ts` sentetik spawn secim assert'leri ile offscreen obstacle'in reroll tetiklememesini ve visible varyantin halen tetikleyebilmesini regression guard altina aldi. Deterministic survival ve validation baseline'i bilincli olarak degismedi: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Host browser manuel sample'i arena kenarina yakin acilista spawn cesitliliginin gereksiz sertlestigini veya gorunur tehditler girdikten sonra lane-stack korumasinin gec davrandigini gosterirse guard tamamen geri alinmadan once yalnizca "visible" kosulu ile distance esigi birlikte dar kapsamda yeniden ayarlanir; copy/tooling veya opening-fairness helper'lari bu bahaneyle tekrar acilmaz.
+
 ### [Run #75]
 
 Decision:

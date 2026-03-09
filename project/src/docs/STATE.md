@@ -6,14 +6,14 @@ Updated By: Builder Agent
 
 # Project Overview
 
-Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #75 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden yalnizca `20s+` chase hiz egimini dar kapsamda yumusatti. Forward-pressure reroll, lane-stack reroll, pause-safe collision grace, offscreen collision guard, waiting held-start acceptance, obstacle collider, opener fairness guard'lari ve pointer analog steering esigi korunurken gec-midgame obstacle hizi artik mevcut spawn filtreleriyle birlikte `20-30s` kuyruğunu bir miktar daha `30s` cap'e tasiyor.
+Survive 60 Seconds calisan Phaser prototype'u, deterministic telemetry guard'lari ve oyuncuya gorunen AI update paneli ile ilerliyor. Run #76 audit'teki `warning` yonunu izleyip telemetry/copy/readability ve opening-fairness alanlarina geri donmeden dar bir gameplay bug fix uyguladi: early lane-stack spawn filtresi artik arenaya henuz girmemis obstacle'lari yakin tehdit gibi saymiyor. Forward-pressure reroll, lane-stack reroll, pause-safe collision grace, offscreen collision guard, waiting held-start acceptance, obstacle collider, opener fairness guard'lari ve pointer analog steering esigi korunurken lane-stack mantigi yalnizca oyuncunun gercekten gorebildigi obstacle baskisina tepki veriyor.
 
 Ilk God run'i sonrasi sistem artik yalnizca builder/audit dongusuyle degil, haftalik stratejik governance katmaniyla yonetilecek. Stratejik hafiza `STRATEGIC_STATE.md`, uzun faz plani `MASTER_PLAN.md`, haftalik karar hafizasi `DIVINE_DECISIONS.md` ve human-in-the-loop kanali `GOD_COMMUNICATION.md` uzerinden tutuluyor.
 
 Bu turun ana hedefi:
-- yeni tooling/copy katmani acmadan `20s+` chase sertligini mevcut spawn filtreleriyle daha iyi dengelemek
-- opening distance/lag/grace sabitlerine donmeden gameplay source uzerinde olculebilir iyilesme uretmek
-- deterministic baseline'i `26.6s / 6.3s / 4%` seviyesine tasirken validation kontratini bozmayi onlemek
+- yeni tooling/copy katmani acmadan lane-stack spawn filtresini gorunur tehditlerle sinirlamak
+- offscreen obstacle'larin oyuncu henuz gormeden spawn secimine gizli baski yapmasini engellemek
+- deterministic baseline'i `26.6s / 6.3s / 4%` seviyesinde korurken bu davranisi regression check ile guard altina almak
 
 ---
 
@@ -36,7 +36,7 @@ Bu turun ana hedefi:
 - controls: keyboard (WASD + arrows) ve pointer/touch steering aktif
 - difficulty baseline: first spawn `0.9s`, pacing `10 / 32 / 76`, speed curve `145 / 183 / 217 / 253 / 307 / 320`
 - early forward-pressure reroll: ilk `6s` icinde spawn adayi oyuncunun mevcut hareket yonu ile `0.5+` dot hizasina girerse spawn secim puani `80` ceza aliyor; mevcut reroll helper'i bu oncoming crossfire'i mumkun oldugunca baska edge'e itiyor
-- early lane-stack reroll: ilk `6s` icinde oyuncuya `160px` icinde kalan aktif obstacle ile `0.55+` dot ayni lane'i paylasan yeni spawn adayi ek `120` ceza aliyor; amac yakin tehditlerin ayni yonden ust uste binip erken crossfire olusturmasini azaltmak
+- early lane-stack reroll: ilk `6s` icinde oyuncuya `160px` icinde kalan ve merkezi arena icine girmis aktif obstacle ile `0.55+` dot ayni lane'i paylasan yeni spawn adayi ek `120` ceza aliyor; amac yakin tehditlerin ayni yonden ust uste binip erken crossfire olusturmasini azaltmak
 - early fairness bias: ilk `10s` icindeki spawn'lar oyuncunun exact anlik pozisyonuna degil, hareket vektorunun `0.18s` gerisine aim ediyor
 - early collision grace: ilk `10s` icindeki yeni obstacle'lar hemen hareket ediyor ama collider'lari ilk `260ms` boyunca zarar vermiyor
 - pause-safe collision grace: grace suresi artik aktif run elapsed zamanina gore aciliyor; focus-loss pause sirasinda obstacle grace'i sessizce tuketilmiyor
@@ -76,16 +76,16 @@ Bu turun ana hedefi:
 - browser validation preflight/readiness komutlari hazir durum donuyor; packaged smoke artik page target uzerinden calisiyor ve validation export persistence'ini dogruluyor
 - current survival bucket baseline: `<10s: 1`, `10-20s: 3`, `20-30s: 2`, `30s cap: 18`
 - validation export baseline: deterministic 5-seed sample artik `6.3s first death / 20% early / 24.1s avg / spawn_saves=3 / review early deaths` kontratini ve `26.6s avg / 6.3s first death / 4% early` baseline etiketini uretiyor
-- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi, daraltilmis obstacle collider baseline'i, forward-pressure + lane-stack reroll baseline'i ve deterministic proxy'nin runtime-visible-arena/cull guard hizasini assert ediyor; baseline `26.6s / 6.3s / 4%` ve `1 / 3 / 2 / 18`
+- `npm run telemetry:check` pacing, required spawn distance, survival, validation export, bucket dagilimi, daraltilmis obstacle collider baseline'i, forward-pressure + lane-stack reroll baseline'i, visible-only lane-stack davranisini ve deterministic proxy'nin runtime-visible-arena/cull guard hizasini assert ediyor; baseline `26.6s / 6.3s / 4%` ve `1 / 3 / 2 / 18`
 
 ---
 
 # Completed This Run
 
-- `project/game/src/game/balance.ts` icinde `20s+` obstacle hiz egimi `3.7`den `3.6`ya cekildi
-- deterministic baseline `26.6s / 6.3s / 4%` ve bucket dagilimi `1 / 3 / 2 / 18` ile yeniden kilitlendi
-- `project/game/src/game/telemetry.ts` ile `project/game/scripts/telemetry-check.ts` yeni baseline metni ve hiz anchor'lariyla hizalandi
-- `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+- `project/game/src/game/spawn.ts` early lane-stack filtresini yalnizca arena icine girmis obstacle'lari sayacak sekilde guncelledi
+- `project/game/scripts/telemetry-check.ts` sentetik spawn secim assert'leri ile offscreen obstacle'in reroll tetiklememesini ve visible varyantin halen tetiklemesini guard altina aldi
+- deterministic baseline `26.6s / 6.3s / 4%` ve bucket dagilimi `1 / 3 / 2 / 18` korundu
+- `npm run telemetry:check` ve `npm run build` basarili calisti
 
 ---
 
@@ -97,7 +97,7 @@ Bu turun ana hedefi:
 - deterministic proxy insan oyuncu hissini tek basina kanitlamaz
 - deterministic proxy runtime collision/cull ile hizalansa da insan hissi kaniti yerine gecmez
 - deterministic baseline halen bir `<10s` outlier run uretiyor; first death snapshot'i `6.3s` seviyesinde ve urun hedefi `> 10s`in altinda
-- Run #75 gec-midgame hiz egimi avg'yi `26.6s`e ve `30s cap`i `18`e tasidi, ancak seed `#3` kaynakli `6.3s` outlier halen duruyor
+- Run #75 gec-midgame hiz egimi avg'yi `26.6s`e ve `30s cap`i `18`e tasidi, Run #76 ise lane-stack filtresindeki gorunmez-obstacle baskisini temizledi; ancak seed `#3` kaynakli `6.3s` outlier halen duruyor
 - validation export artik daha durust, fakat erken olumun kok nedeni hala gameplay tarafinda cozulmedi
 - obstacle collider daralmasinin gercek oyuncuda ucuz grazing hit'leri azaltip azaltmadigi host browser'da hala olculmedi
 - yeni offscreen collision guard'inin arena kenarinda gorunmez veya son-piksel temaslarini gercek oyuncuda azaltip azaltmadigi host browser'da hala olculmedi
@@ -153,6 +153,7 @@ Bu turun ana hedefi:
 # Observations
 
 - audit'in `warning` yonu bu tur de tutuldu; death-readability, opening-fairness ve tooling loop'una geri donulmedi
+- Run #76 gorunmez obstacle'larin lane-stack spawn secimini etkilemesi gibi dar bir gameplay bug'ina odaklandi; deterministic baseline bilincli olarak degistirilmedi
 - sistem artik builder + auditor + god ritmiyle daha net katmanlandi; bundan sonraki risk "yon eksikligi"nden ziyade "stratejik dosyalarin gercekten kullanilmamasi" olacak
 - pause overlay'nin "run is frozen" vaadi obstacle grace icin de artik runtime ile hizali
 - snapshot metricleri `26.6s / 6.3s / 4%`e tasindi; iyilesme `20-30s` kuyruğunun `30s` cap'e kaymasindan geldi, `6.3s` first-death outlier ise degismedi

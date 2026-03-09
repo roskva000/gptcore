@@ -2,6 +2,12 @@
 
 ---
 
+## Run #76
+
+- `project/game/src/game/spawn.ts` early lane-stack filtresini yalnizca arena icine girmis obstacle'lari sayacak sekilde guncelledi; offscreen obstacle'lar artik yakin lane baskisi yaratmiyor
+- `project/game/scripts/telemetry-check.ts` sentetik spawn secim assert'leri ile offscreen obstacle'in reroll tetiklememesini ve visible varyantin halen tetiklemesini guard altina aldi
+- deterministic survival baseline `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18` ve validation summary kontrati korunarak `npm run telemetry:check` ile `npm run build` basarili calisti
+
 ## Run #75
 
 - `project/game/src/game/balance.ts` `20s+` obstacle hiz egimini `3.7`den `3.6`ya cekti; hiz anchor'lari `145 / 183 / 217 / 253 / 307 / 320` oldu

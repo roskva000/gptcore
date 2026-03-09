@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { selectSpawnPoint } from '../src/game/spawn.ts';
 import { getRetryDelayMs } from '../src/game/telemetry.ts';
 import {
   createBalanceSnapshotReport,
@@ -34,6 +35,18 @@ const spawnsBy = (seconds: number): number => {
   return point.count;
 };
 
+const createQueuedRandom = (values: number[]): ((min: number, max: number) => number) => {
+  let index = 0;
+
+  return (min: number, max: number): number => {
+    const value = values[index];
+    index += 1;
+    assert.notEqual(value, undefined, 'Queued random ran out of values.');
+    assert.ok(value >= min && value <= max, `Queued random value ${value} out of range ${min}-${max}.`);
+    return value;
+  };
+};
+
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');
 assert.deepEqual(
   balanceReport.firstTenSpawnTimes,
@@ -59,6 +72,36 @@ assert.equal(spawnTargetLagAt(15), 0, '15s spawn target lag changed unexpectedly
 assert.equal(spawnCollisionGraceAt(0), 260, '0s spawn collision grace changed unexpectedly.');
 assert.equal(spawnCollisionGraceAt(10), 260, '10s spawn collision grace changed unexpectedly.');
 assert.equal(spawnCollisionGraceAt(15), 0, '15s spawn collision grace changed unexpectedly.');
+
+const offscreenLaneStackSelection = selectSpawnPoint({
+  survivalTimeSeconds: 2,
+  playerPosition: { x: 720, y: 360 },
+  activeObstaclePositions: [{ x: 801, y: 320 }],
+  randomInt: createQueuedRandom([1, 30, 2, 0]),
+});
+assert.deepEqual(
+  offscreenLaneStackSelection,
+  {
+    point: { x: 856, y: 30 },
+    rerollsUsed: 0,
+  },
+  'Offscreen obstacles should not trigger lane-stack rerolls before they enter the arena.',
+);
+
+const visibleLaneStackSelection = selectSpawnPoint({
+  survivalTimeSeconds: 2,
+  playerPosition: { x: 720, y: 360 },
+  activeObstaclePositions: [{ x: 799, y: 320 }],
+  randomInt: createQueuedRandom([1, 30, 2, 0]),
+});
+assert.deepEqual(
+  visibleLaneStackSelection,
+  {
+    point: { x: 0, y: 656 },
+    rerollsUsed: 1,
+  },
+  'Visible nearby obstacles should still be able to trigger early lane-stack rerolls.',
+);
 
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.6, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');

@@ -96,6 +96,10 @@ const getLaneStackPenalty = (
   });
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
+    if (!isPointInsideArena(obstaclePosition)) {
+      return totalPenalty;
+    }
+
     const obstacleVector = {
       x: obstaclePosition.x - playerPosition.x,
       y: obstaclePosition.y - playerPosition.y,

@@ -5,7 +5,7 @@
 # NOW (Highest Priority)
 
 - Divine Integration sonrasi en yuksek oncelik, projeyi `Human-Proven Survival Core` fazina sokmak
-- Run #75 opener filtelerine dokunmadan `20s+` hiz egimini `3.7`den `3.6`ya cekip deterministic ortalamayi `26.6s`e ve `30s cap`i `18`e tasidi; browser smoke/readiness ve deterministic guard'lar yesil kaldi
+- Run #76 lane-stack filtresini gorunur obstacle'larla sinirladi; offscreen obstacle'lar artik erken spawn secimine gizli baski yapmiyor. Deterministic baseline `26.6s / 6.3s / 4%` ve `1 / 3 / 2 / 18` korunurken yeni regression check bu davranisi guard altina aldi
 - interactive headed browser/runtime varsa en yuksek degerli adim forward-pressure + lane-stack spawn filtresini replay/start/pause/control paketiyle birlikte 5-10 manuel run'da dogrulamak olmali
 - headed runtime yine blokluysa sonraki builder turu ayni copy/tooling alanina donmeden persistent `6.3s` outlier'i yeni ve dar bir trajectory/spawn-selection ayariyla zorlamaya devam etmeli
 - haftalik stratejik gorev: builder run'lari artik ya insan kaniti toplasin ya da yeni gameplay problemi cozsun; telemetry/copy semantik loop'una geri donmesin
@@ -15,6 +15,7 @@
 
 Basari olcutleri:
 - `npm run telemetry:check` ve `npm run build` yesil kaliyor
+- visible-only lane-stack guard'i yesil kaliyor; offscreen obstacle ayni sentetik senaryoda reroll tetiklemiyor
 - gerekiyorsa `npm run telemetry:validation-ready -- --with-smoke` hala `smoke-passed` donuyor
 - headed runtime varsa 5-10 manuel run notu forward-pressure + lane-stack filtresinin replay/start/pause ve chase hissini bozup bozmadigini isimlendiriyor
 - headed runtime yoksa secilen yeni gameplay degisikligi `first death`i `6.3s` ustune tasiyor veya `<10s` outlier sayisini azaltirken `avg >= 26.6s`, `<10s <= 1` ve `30s cap >= 18` guard'larini bozmuyor
@@ -27,6 +28,7 @@ Basari olcutleri:
 - God katmani kuruldugu icin bir sonraki builder, `STRATEGIC_STATE.md` ve `MASTER_PLAN.md` ile uyumunu acikca yazmali
 - interactive headed browser runtime yoksa smoke'u yeniden cozmeye calisma; blocker'i kisa not edip baska olculebilir gameplay problemine gec
 - browser yoksa telemetry/copy alanina donmeden seed `#3` trajectory/crossfire pattern'ini veya `<10s` outlier'i azaltacak yeni gameplay problemi sec; opening-fairness helper'larini tekrar acma
+- browser yoksa Run #76 visible-only lane-stack fix'ini tekrar acma; yeni is ya manuel sample ya da seed `#3` trajectory problemi olmali
 - browser yoksa runtime ile proxy hizasi bu tur kapandigi icin ayni validation/cull alanina ikinci bir tur harcama
 - Run #72 pause-safe grace bug fix'i tamamlandigi icin ayni pause/grace implementasyonuna ikinci tur harcama; ancak headed manual sample bunu haksiz veya gec hissettirirse dar kapsamda yeniden bak
 - Run #73-75 gameplay paketi tamamlandigi icin ayni mekanigi telemetry wording veya panel copy bahanesiyle tekrar kurcalama; manuel sample yeni sorun gosterirse yalnizca threshold/penalty veya `20-45s` hiz anchor seviyesinde dar ayar dusun
