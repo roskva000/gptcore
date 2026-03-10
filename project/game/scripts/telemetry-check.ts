@@ -233,12 +233,12 @@ assert.deepEqual(
     { x: 0, y: 180 },
   ),
   {
-    label: 'top',
-    sentence: 'the obstacle closed in from the top',
+    label: 'center',
+    sentence: 'the impact overlapped your center line',
     offsetX: 0,
-    offsetY: -1,
+    offsetY: 0,
   },
-  'Impact direction should still fall back to obstacle velocity when the overlap is centered.',
+  'Centered overlaps should stay centered so the death guidance can fall back to RESET CENTER instead of inventing a fake lane.',
 );
 
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.5, 'Average survival snapshot regressed.');

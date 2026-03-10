@@ -30,8 +30,23 @@ export const getImpactDirection = (
   obstaclePosition: Point,
   obstacleVelocity: Point,
 ): ImpactDirection => {
-  const offsetX = resolveAxisDirection(obstaclePosition.x - playerPosition.x, obstacleVelocity.x);
-  const offsetY = resolveAxisDirection(obstaclePosition.y - playerPosition.y, obstacleVelocity.y);
+  const positionDeltaX = obstaclePosition.x - playerPosition.x;
+  const positionDeltaY = obstaclePosition.y - playerPosition.y;
+
+  if (
+    Math.abs(positionDeltaX) <= POSITION_EPSILON_PX &&
+    Math.abs(positionDeltaY) <= POSITION_EPSILON_PX
+  ) {
+    return {
+      label: 'center',
+      sentence: 'the impact overlapped your center line',
+      offsetX: 0,
+      offsetY: 0,
+    };
+  }
+
+  const offsetX = resolveAxisDirection(positionDeltaX, obstacleVelocity.x);
+  const offsetY = resolveAxisDirection(positionDeltaY, obstacleVelocity.y);
   const horizontal = offsetX < 0 ? 'left' : offsetX > 0 ? 'right' : '';
   const vertical = offsetY < 0 ? 'top' : offsetY > 0 ? 'bottom' : '';
 
@@ -61,11 +76,10 @@ export const getImpactDirection = (
       offsetY,
     };
   }
-
   return {
     label: 'center',
     sentence: 'the impact overlapped your center line',
     offsetX: 0,
-    offsetY: -1,
+    offsetY: 0,
   };
 };

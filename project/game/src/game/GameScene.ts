@@ -1153,9 +1153,9 @@ export class GameScene extends Phaser.Scene {
 
     this.overlay.setVisible(true);
     this.fatalCallout
-      .setText(`FATAL LANE  ${hitDirection.label.toUpperCase()}`)
+      .setText(this.getFatalCalloutText(hitDirection))
       .setVisible(true);
-    this.overlayTitle.setText(`Hit from ${hitDirection.label}`).setVisible(true);
+    this.overlayTitle.setText(this.getDeathOverlayTitle(hitDirection)).setVisible(true);
     this.overlayBody
       .setText(
         [
@@ -1222,6 +1222,36 @@ export class GameScene extends Phaser.Scene {
   }
 
   private showImpactMarker(hitDirection: ImpactDirection): void {
+    if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
+      this.impactRay.setAlpha(0).setVisible(false);
+      this.impactArrowHead.setAlpha(0).setVisible(false);
+      this.impactMarker
+        .setPosition(this.player.x, this.player.y)
+        .setScale(0.72)
+        .setAlpha(0.95)
+        .setVisible(true);
+      this.impactMarkerLabel
+        .setPosition(this.player.x, this.player.y)
+        .setText('CENTER')
+        .setAlpha(1)
+        .setVisible(true);
+
+      this.tweens.add({
+        targets: this.impactMarker,
+        scale: 1,
+        alpha: 0.7,
+        duration: 150,
+        ease: 'Quad.Out',
+      });
+      this.tweens.add({
+        targets: this.impactMarkerLabel,
+        alpha: 0.84,
+        duration: 150,
+        ease: 'Quad.Out',
+      });
+      return;
+    }
+
     const rayStartOffset = 24;
     const rayLength = 94;
     const rayStartX = this.player.x + hitDirection.offsetX * rayStartOffset;
@@ -1316,7 +1346,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.fatalSpotlightLabel
       .setPosition(spotlightX, fatalLabelPlacement.labelY)
-      .setText(`KILLER\n${hitDirection.label.toUpperCase()}`)
+      .setText(this.getFatalSpotlightLabelText(hitDirection))
       .setAlpha(1)
       .setVisible(true);
 
@@ -1437,6 +1467,30 @@ export class GameScene extends Phaser.Scene {
       title: 'RESET CENTER',
       sentence: 'On the retry, move off the center line before the next rush closes in.',
     };
+  }
+
+  private getFatalCalloutText(hitDirection: ImpactDirection): string {
+    if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
+      return 'CENTER COLLISION';
+    }
+
+    return `FATAL LANE  ${hitDirection.label.toUpperCase()}`;
+  }
+
+  private getDeathOverlayTitle(hitDirection: ImpactDirection): string {
+    if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
+      return 'Caught at center';
+    }
+
+    return `Hit from ${hitDirection.label}`;
+  }
+
+  private getFatalSpotlightLabelText(hitDirection: ImpactDirection): string {
+    if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
+      return 'KILLER\nCENTER';
+    }
+
+    return `KILLER\n${hitDirection.label.toUpperCase()}`;
   }
 
   private unlockFeedbackAudio(): void {

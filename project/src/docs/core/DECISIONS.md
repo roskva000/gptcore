@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #93]
+
+Decision:
+Centered overlap death'lerde velocity fallback ile sahte lane uretmek yerine gercek `center` sonucu korundu; death overlay/callout copy'si ve retry guidance bu merkez durumuna hizalandi.
+
+Reason:
+Runtime hala bloklu oldugu icin audit governance'i builder'in yeni ama dar bir gameplay/UX problemi secmesini istiyordu. Run #91 edge-safe death callout placement'i kapatti, fakat `impactDirection` overlap tam merkezdeyken `top/bottom` gibi yapay bir lane uretebiliyordu. Bu da ayni game-over ekraninda bir yandan `center` benzeri bir overlap durumu yasatirken diger yandan oyuncuya uydurma bir kacis yonu soyletme riski tasiyordu.
+
+Impact:
+`project/game/src/game/impactDirection.ts` artik her iki eksende de merkez-overlap durumunda dogrudan `center` donduruyor. `project/game/src/game/GameScene.ts` center death'lerde ray yerine merkez marker gosteriyor, `CENTER COLLISION` / `Caught at center` copy'sini kullaniyor ve retry prompt'unu tekrar `RESET CENTER` fallback'ine indiriyor. `project/game/scripts/telemetry-check.ts` yeni centered overlap guard'i ile bu davranisi koruyor. Deterministic checked aggregate baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample center-overlap death'lerde yeni marker/copy'nin fazla belirsiz kaldigini veya oyuncuya hic yon hissi vermedigini gosterirse yalnizca bu center fallback presentation'i dar kapsamda yeniden ayarlanir; pause/input, visible-arena fairness, `20s+` chase ve telemetry/copy yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #92]
 
 Decision:

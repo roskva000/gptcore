@@ -2,6 +2,12 @@
 
 ---
 
+## Run #93
+
+- `project/game/src/game/impactDirection.ts` tam merkez overlap'lerde velocity fallback ile yapay `top/bottom` lane uretmek yerine gercek `center` sonucunu donduruyor
+- `project/game/src/game/GameScene.ts` center death'lerde impact marker'i oyuncu merkezine topluyor, `CENTER COLLISION` / `Caught at center` copy'sine geciyor ve retry guidance'i tekrar `RESET CENTER` fallback'ine indiriyor
+- `project/game/scripts/telemetry-check.ts` centered overlap regression guard'ini yeni `center` davranisina hizaladi; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #92
 
 - `project/game/src/game/balance.ts` early spawn collision grace'i keskin `10s -> 0ms` drop yerine `10-11s` arasinda fade edecek sekilde guncelledi; `10.5s`te grace `130ms`, `11s`te `0ms`
