@@ -2,6 +2,12 @@
 
 ---
 
+## Run #97
+
+- `project/game/src/game/GameScene.ts` Run #96 pointer start/retry steering guard'inin biraktigi lock-state regresyonunu kapatti
+- waiting veya game-over ekranindan pointer ile baslayan run'larda ayni `tap/click` hala neutral kalirken steering artik pointer release ile geri geliyor; deliberate held-pointer start/retry ise `180ms` sonra yeniden steering'e akabiliyor
+- deterministic baseline korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #96
 
 - `project/game/src/game/GameScene.ts` waiting veya game-over fazindan pointer ile yapilan tek `tap/click` primary action sonrasinda steering'i pointer release'e kadar bekleten dar bir guard ekledi

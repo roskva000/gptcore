@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #97]
+
+Decision:
+Run #96'nin pointer start/retry steering guard'i dar kapsamda duzeltildi; discrete `tap/click` start hala neutral kalirken steering kilidi artik pointer release geldigi anda veya ayni press bilincli held-start esigini (`180ms`) gectiginde aciliyor.
+
+Reason:
+Audit governance ayni input yuzeyine tekrar donmeyi istemiyordu, fakat source incelemesi Run #96'nin canli bir kontrol regresyonu biraktigini gosterdi. `handlePointerPrimaryAction()` waiting/game-over pointerdown'unda `pointerSteeringNeedsRelease` gard'ini kuruyor, ama `updatePlayerVelocity()` bu gard'i playing fazinda pointer release ile temizlemiyordu; ayni degisiklik intentional held-pointer start/retry akisini da fiilen bloke ediyordu. Bu, pointer/touch oyuncusu icin run boyunca steering'in kilitli kalabildigi gercek bir urun arizasiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` pointer ile baslatilan veya retry edilen run'larda steering guard'ina zaman damgasi ekliyor. Playing update'i artik pointer release'te gard'i temizliyor; pointer basili kalmaya devam ederse `180ms` sonra deliberate hold-to-steer akisini yeniden aktive ediyor. Boylece neutral tap/click start korunurken Run #96'nin lock-state regresyonu kapanmis oldu. Deterministic checked baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample bu degisikligin pointer/touch oyuncusunda tap/click start'i tekrar istemsiz steering'e cevirdigini veya `180ms` held re-arm'in fazla gec hissettirdigini gosterirse yalnizca pointer start/retry steering arm kosulu dar kapsamda yeniden ayarlanir; opener fairness, HUD, death guidance ve focus-loss resume yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #96]
 
 Decision:

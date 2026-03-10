@@ -544,6 +544,7 @@ export class GameScene extends Phaser.Scene {
 
     if (shouldRequirePointerReleaseForSteering && this.phase === 'playing') {
       this.pointerSteeringNeedsRelease = true;
+      this.pointerHoldActionStartedAt = this.time.now;
     }
   }
 
@@ -1023,18 +1024,30 @@ export class GameScene extends Phaser.Scene {
 
     const pointer = this.input.activePointer;
 
-    if (pointer.isDown) {
-      if (this.pointerSteeringNeedsRelease) {
+    if (!pointer.isDown) {
+      this.pointerSteeringNeedsRelease = false;
+      this.pointerHoldActionStartedAt = null;
+      this.player.setVelocity(0, 0);
+      return;
+    }
+
+    if (this.pointerSteeringNeedsRelease) {
+      if (
+        this.pointerHoldActionStartedAt !== null &&
+        this.time.now - this.pointerHoldActionStartedAt >= HELD_MOVEMENT_ACTION_DELAY_MS
+      ) {
+        this.pointerSteeringNeedsRelease = false;
+      } else {
         this.player.setVelocity(0, 0);
         return;
       }
+    }
 
-      const pointerVelocity = this.getPointerVelocity();
+    const pointerVelocity = this.getPointerVelocity();
 
-      if (pointerVelocity) {
-        this.player.setVelocity(pointerVelocity.x, pointerVelocity.y);
-        return;
-      }
+    if (pointerVelocity) {
+      this.player.setVelocity(pointerVelocity.x, pointerVelocity.y);
+      return;
     }
 
     this.player.setVelocity(0, 0);
