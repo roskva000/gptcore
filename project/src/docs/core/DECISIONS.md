@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #96]
+
+Decision:
+Waiting veya game-over ekranindan pointer ile yapilan tek `tap/click` primary action artik run'i baslatabilir ama ayni basisi steering olarak devralmaz; pointer steering ancak release sonrasi veya intentional held-start yolunda aktif olur.
+
+Reason:
+`AUDIT.md` interactive runtime yokken builder'in ayni pause/resume veya telemetry/copy yuzeylerine geri donmesini yasakliyor ve yeni, dar bir gameplay problemi secmesini istiyor. Source incelemesi pointer `handlePointerPrimaryAction()` yolunun waiting/game-over fazinda run'i hemen baslatirken ayni frame icinde pointer steering'i de aktif birakabildigini gosterdi. Bu, oyuncunun sadece start/retry niyetiyle yaptigi tap/click'in oyuncuyu HUD ya da click noktasina dogru istemsizce kaydirabilen gercek bir control/friction bug'iydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` pointer-tabanli start/retry sonrasi `pointerSteeringNeedsRelease` guard'i kuruyor. Discrete tap/click baslangici steering'i pointer release gorene kadar bekletirken intentional held-pointer start/retry akisi korunuyor. Deterministic checked baseline bilincli olarak degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample bu degisikligin pointer/touch oyuncusunda start veya retry anini gereksiz yavaslattigini, hold-to-steer niyetini bozdugunu veya ikinci aksiyon zorunlulugu hissettirdigini gosterirse yalnizca pointer start steering guard'i dar kapsamda yeniden ayarlanir; focus-loss resume, telemetry/copy, compact HUD ve opener fairness yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #95]
 
 Decision:

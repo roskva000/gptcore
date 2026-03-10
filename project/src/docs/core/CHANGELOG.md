@@ -2,6 +2,12 @@
 
 ---
 
+## Run #96
+
+- `project/game/src/game/GameScene.ts` waiting veya game-over fazindan pointer ile yapilan tek `tap/click` primary action sonrasinda steering'i pointer release'e kadar bekleten dar bir guard ekledi
+- boylece start/retry niyetli tek tap/click ayni frame'de oyuncuyu click noktasina dogru istemsizce cekmiyor; intentional held-pointer start/retry steering yolu korunuyor
+- deterministic baseline korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #95
 
 - `project/game/src/game/GameScene.ts` focus-loss pause sirasinda `movementInputWasActive` alanini artik kosulsuz `true` yapmak yerine gercek blur-anindaki movement-input durumuna esitliyor

@@ -80,6 +80,7 @@ export class GameScene extends Phaser.Scene {
   private movementInputWasActive = false;
   private movementHoldActionStartedAt: number | null = null;
   private pointerHoldActionStartedAt: number | null = null;
+  private pointerSteeringNeedsRelease = false;
   private pauseResumeNeedsMovementRelease = false;
   private pauseResumeNeedsPointerRelease = false;
   private playingHintHideAtElapsedMs: number | null = null;
@@ -536,7 +537,14 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    const shouldRequirePointerReleaseForSteering =
+      this.phase === 'waiting' || this.phase === 'gameOver';
+
     this.activatePrimaryAction();
+
+    if (shouldRequirePointerReleaseForSteering && this.phase === 'playing') {
+      this.pointerSteeringNeedsRelease = true;
+    }
   }
 
   private activatePrimaryAction(): void {
@@ -625,6 +633,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pointerSteeringNeedsRelease = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.pausedRunElapsedMs = 0;
@@ -659,6 +668,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.pauseActiveObstacleSpawnGraceTweens();
     this.player.setVelocity(0, 0);
+    this.pointerSteeringNeedsRelease = false;
     this.movementInputWasActive = movementInputActive;
     this.overlay.setVisible(true);
     this.fatalCallout.setVisible(false).setText('');
@@ -735,6 +745,7 @@ export class GameScene extends Phaser.Scene {
     this.playingHintHideAtElapsedMs = null;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
+    this.pointerSteeringNeedsRelease = false;
     this.tweens.killTweensOf([
       this.player,
       this.hitFlash,
@@ -929,6 +940,7 @@ export class GameScene extends Phaser.Scene {
   private hasConfirmedHeldPointerInput(time: number): boolean {
     if (!this.input.activePointer.isDown) {
       this.pointerHoldActionStartedAt = null;
+      this.pointerSteeringNeedsRelease = false;
       this.pauseResumeNeedsPointerRelease = false;
       return false;
     }
@@ -1012,6 +1024,11 @@ export class GameScene extends Phaser.Scene {
     const pointer = this.input.activePointer;
 
     if (pointer.isDown) {
+      if (this.pointerSteeringNeedsRelease) {
+        this.player.setVelocity(0, 0);
+        return;
+      }
+
       const pointerVelocity = this.getPointerVelocity();
 
       if (pointerVelocity) {
@@ -1090,6 +1107,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'gameOver';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pointerSteeringNeedsRelease = false;
     this.nextSpawnTimer?.remove(false);
     this.tweens.killTweensOf([
       this.player,
