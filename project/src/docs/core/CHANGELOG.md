@@ -2,6 +2,12 @@
 
 ---
 
+## Run #100
+
+- `project/game/src/game/telemetry.ts` `buildTelemetrySummary()` kontratini completed-run semantigine hizaladi; `runs` artik tamamlanmis sample'i raporlarken ham baslangic sayisi yeni `startedRuns` alanina tasindi
+- boylece validation export ve in-game HUD'dan sonra console/snapshot tarafindaki son started-vs-completed drift de kapandi
+- `project/game/scripts/telemetry-check.ts` bu summary kontrati icin regression assert ekledi; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #99
 
 - `project/game/src/game/telemetry.ts` tamamlanmis validation sample sayisini tek kaynaktan okumak icin `getCompletedRunCount()` helper'ini ekledi

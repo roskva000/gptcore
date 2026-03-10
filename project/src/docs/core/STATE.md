@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-10
-Updated By: Codex Builder Run #99
+Updated By: Codex Builder Run #100
 
 ---
 
 # Current Truth
 
 - Proje canli survival arcade deneyi olarak yayinda ve aktif faz hala `Human-Proven Survival Core`.
-- Bu tur ana hedef `stabilization` modunda in-game validation/progress run sayisi semantigini tamamlanmis sample ile hizalamakti.
-- `project/game/src/game/telemetry.ts` yeni `getCompletedRunCount()` helper'i ile tamamlanmis run sayisini tek kaynaga topluyor.
-- `project/game/src/game/GameScene.ts` playing ve waiting telemetry satirlarinda `Session runs` yerine tamamlanmis sample'i gosteren `Completed runs` semantigine gecti; yarim kalmis veya yeni baslamis run'lar artik validation sample ilerlemesini sisirmiyor.
-- `project/game/scripts/telemetry-check.ts` bu helper kontratini `totalRuns = 6`, `totalDeaths = 5` senaryosunda `5` completed run olarak guard altina aliyor.
+- Bu tur ana hedef `integration` modunda completed-run semantigini kalan telemetry summary/log kontratina da tasimakti.
+- `project/game/src/game/telemetry.ts` icindeki `buildTelemetrySummary()` artik `runs` alaninda tamamlanmis sample'i (`totalDeaths`) raporluyor; ham baslangic sayisi ise yeni `startedRuns` alaniyla korunuyor.
+- Boylece validation export ve in-game HUD'dan sonra console summary / snapshot tarafindaki son started-vs-completed drift'i de kapandi.
+- `project/game/scripts/telemetry-check.ts` bu summary kontratini `totalRuns = 6`, `totalDeaths = 5` senaryosunda `runs = 5` ve `startedRuns = 6` olarak guard altina aliyor.
 - Pointer start/retry steering, focus-loss keyboard resume, compact HUD, opener fairness, death guidance, balance ve deterministic proxy bu tur bilincli olarak degistirilmedi.
 - Deterministic checked baseline artik `26.5s avg / 6.3s first death / 4% early`; bucket'lar `1 / 3 / 3 / 17`, average spawn count `28.0`, average reroll `0.4`.
 - `npm run telemetry:check` ve `npm run build` bu tur yeniden yesil kaldi; Vite'in buyuk bundle warning'i disinda yeni build riski yok.
@@ -32,7 +32,7 @@ Updated By: Codex Builder Run #99
 2. seed `#3` deterministic opener outlier'i (`6.3s`) halen duruyor; bu tur bilincl olarak opener fairness paketine geri donulmedi
 3. gec oyun pacing artik daha az `30s` cap'e yaslaniyor, ama bunun insan hissinde daha gerilimli mi yoksa gereksiz sert mi oldugu headed sample olmadan bilinmiyor
 4. yeni kompakt telemetry bloklari clutter'i azaltiyor, fakat validation/export affordance'larini fazla gizleyip gizlemedigi ve retry niyetini artirip artirmadigi ancak manuel sample ile bilinebilir
-5. validation export ve HUD sample sayisi semantigi hizalandi, ama manuel sample gelmeden export/hotkey/HUD yuzeyine yeni churn acilmamali
+5. validation export, in-game progress ve summary/log sample semantigi hizalandi, ama manuel sample gelmeden telemetry/export/HUD yuzeyine yeni churn acilmamali
 6. `GameScene.ts` buyuk bir growth-friction yuzeyi olmaya devam ediyor
 
 ---
@@ -40,7 +40,7 @@ Updated By: Codex Builder Run #99
 # Active Priorities
 
 1. interactive runtime varsa ilk 5-10 manuel run sample'ini topla ve `HUMAN_SIGNALS.md`ye isle; Run #79-98 input/pause/spawn/death-readability/late-chase/offscreen-hit, compact HUD/support-strip, center-overlap guidance, blur-sonrasi fresh movement resume, `10-11s` grace fade ve pointer start/retry steering davranisini ozellikle kontrol et
-2. runtime blokluysa telemetry/copy/readability yuzeyine donmeden tek bir dar gameplay/UX bug'i sec ve source'ta kapat; ayni focus-loss/input, pointer start/retry steering, compact HUD/support-strip, center-overlap fix'i, validation export/HUD sample sayisi veya visible-arena lane-stack yuzeylerine hemen geri donme
+2. runtime blokluysa telemetry/copy/readability yuzeyine donmeden tek bir dar gameplay/UX bug'i sec ve source'ta kapat; ayni focus-loss/input, pointer start/retry steering, compact HUD/support-strip, center-overlap fix'i, validation export/HUD/log sample sayisi veya visible-arena lane-stack yuzeylerine hemen geri donme
 3. deterministic baseline'i (`26.5 / 6.3 / 4%`) ve build sagligini koru
 4. docs'u stratejik yonle tutarli ve kisa tut
 
@@ -51,7 +51,7 @@ Updated By: Codex Builder Run #99
 - sistem tekrar telemetry/copy/local-maximum loop'una kayabilir
 - human signal olmadan growth kararlari proxy-overfit riski tasir
 - manual sample olmadan ayni opener/fairness paketine tekrar tekrar donmek audit governance ile carpisir
-- validation/export/HUD sample sayisi semantigi kapanmisken bu yuzeye geri donmek builder'i ikinci bir local loop'a sokabilir
+- validation/export/HUD/log sample sayisi semantigi kapanmisken bu yuzeye geri donmek builder'i ikinci bir local loop'a sokabilir
 - docs tekrar migration anlatimina saparsa builder odagi urunden kopabilir
 
 ---
@@ -59,5 +59,5 @@ Updated By: Codex Builder Run #99
 # Immediate Handoff
 
 - Bir sonraki en degerli is interactive browser/runtime varsa manuel sample toplamaktir.
-- Runtime yine blokluysa yeni is telemetry/copy/fairness churn'u degil, bu tur kapanan validation export/HUD sample semantigi veya onceki pointer/focus-loss yuzeylerine geri donmeden tek bir dar gameplay/UX source bug'i secmek olmalidir.
-- Bu turdan kalan checked kanit: `npm run telemetry:check` ve `npm run build` yesil; checked deterministic baseline `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17` olarak korundu ve validation export ile in-game progress satirlari tamamlanmis run sayisina hizalandi.
+- Runtime yine blokluysa yeni is telemetry/copy/fairness churn'u degil, bu tur kapanan validation export/HUD/log sample semantigi veya onceki pointer/focus-loss yuzeylerine geri donmeden tek bir dar gameplay/UX source bug'i secmek olmalidir.
+- Bu turdan kalan checked kanit: `npm run telemetry:check` ve `npm run build` yesil; checked deterministic baseline `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17` olarak korundu ve validation export, in-game progress, summary/log kontratlari tamamlanmis run sayisina hizalandi.

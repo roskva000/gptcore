@@ -9,6 +9,7 @@ import {
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import {
   buildValidationReport,
+  buildTelemetrySummary,
   createEmptyTelemetry,
   getCompletedRunCount,
   getRetryDelayMs,
@@ -361,6 +362,34 @@ assert.equal(
   }),
   5,
   'Completed-run helpers should stay aligned with validation/export semantics when fresh starts outnumber deaths.',
+);
+assert.deepEqual(
+  buildTelemetrySummary('session', {
+    ...createEmptyTelemetry(),
+    totalRuns: 6,
+    totalDeaths: 5,
+    totalSurvivalTime: 120.5,
+    bestSurvivalTime: 30,
+    firstDeathTime: 6.3,
+    earlyDeathsUnderTarget: 1,
+    totalSpawnRerolls: 3,
+    lastSurvivalTime: 30,
+  }),
+  {
+    label: 'session',
+    runs: 5,
+    startedRuns: 6,
+    deaths: 5,
+    bestSurvivalTime: 30,
+    firstDeathTime: 6.3,
+    averageSurvivalTime: 24.1,
+    earlyDeathRate: 20,
+    averageRetryDelaySeconds: null,
+    totalSpawnRerolls: 3,
+    recentDeathTimes: [],
+    lastSurvivalTime: 30,
+  },
+  'Telemetry summary should report completed runs while still exposing raw started-run count for debugging.',
 );
 assert.equal(
   getRetryDelayMs({

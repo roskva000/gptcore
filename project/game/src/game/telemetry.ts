@@ -25,6 +25,7 @@ export type GameplayTelemetry = {
 export type TelemetrySummary = {
   label: string;
   runs: number;
+  startedRuns: number;
   deaths: number;
   bestSurvivalTime: number | null;
   firstDeathTime: number | null;
@@ -183,7 +184,8 @@ export const buildTelemetrySummary = (
   telemetry: GameplayTelemetry,
 ): TelemetrySummary => ({
   label,
-  runs: telemetry.totalRuns,
+  runs: getCompletedRunCount(telemetry),
+  startedRuns: telemetry.totalRuns,
   deaths: telemetry.totalDeaths,
   bestSurvivalTime: telemetry.bestSurvivalTime,
   firstDeathTime: telemetry.firstDeathTime,

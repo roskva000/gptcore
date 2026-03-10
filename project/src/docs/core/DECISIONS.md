@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #100]
+
+Decision:
+Completed-run semantigi validation export ve HUD'dan sonra telemetry summary/log kontratina da tasindi; `buildTelemetrySummary()` artik `runs` alaninda tamamlanmis sample'i raporluyor, `startedRuns` ise ayri debug alani olarak korunuyor.
+
+Reason:
+Run #98-99 validation export ve in-game progress satirlarini `totalDeaths` tabanli completed-run sayisina hizaladi, fakat console/snapshot tarafinda kullanilan `buildTelemetrySummary()` hala `totalRuns` donduruyordu. Headed runtime bu ortamda bloklu oldugu ve audit ayni gameplay/input/HUD yuzeylerine geri donmeyi yasakladigi icin en guvenli dar `integration` hedefi bu kalan validation-integrity sizintisini kapatmakti.
+
+Impact:
+`project/game/src/game/telemetry.ts` icindeki `TelemetrySummary` yeni `startedRuns` alanini tasiyor; `runs` ise artik `getCompletedRunCount()` ile hizali. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile `totalRuns = 6`, `totalDeaths = 5` durumunda summary'nin `runs = 5`, `startedRuns = 6` kaldigini guard altina aliyor. Deterministic checked baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Sonraki manual sample veya telemetry review ham start girisinin oyuncu/analiz akisinda farkli bir contract ile gorunmesi gerektigini gosterirse `startedRuns` yeni bir ayrik alan olarak kalabilir; fakat completed-run semantigi `runs` alaninda tekrar `totalRuns`a dondurulmemelidir.
+
 ### [Run #99]
 
 Decision:
