@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { selectSpawnPoint } from '../src/game/spawn.ts';
+import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getRetryDelayMs } from '../src/game/telemetry.ts';
 import {
   createBalanceSnapshotReport,
@@ -135,6 +136,36 @@ assert.deepEqual(
     rerollsUsed: 1,
   },
   'Projected-path spawn scoring should clamp wall-edge escape references inside the arena before judging nearby left-lane pressure.',
+);
+
+assert.deepEqual(
+  getImpactDirection(
+    { x: 400, y: 300 },
+    { x: 424, y: 300 },
+    { x: 140, y: 0 },
+  ),
+  {
+    label: 'right',
+    sentence: 'the obstacle closed in from the right',
+    offsetX: 1,
+    offsetY: 0,
+  },
+  'Impact direction should prefer the obstacle position over world velocity for same-direction chase collisions.',
+);
+
+assert.deepEqual(
+  getImpactDirection(
+    { x: 400, y: 300 },
+    { x: 401, y: 299 },
+    { x: 0, y: 180 },
+  ),
+  {
+    label: 'top',
+    sentence: 'the obstacle closed in from the top',
+    offsetX: 0,
+    offsetY: -1,
+  },
+  'Impact direction should still fall back to obstacle velocity when the overlap is centered.',
 );
 
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.6, 'Average survival snapshot regressed.');

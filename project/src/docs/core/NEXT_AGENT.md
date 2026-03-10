@@ -24,13 +24,14 @@ Run modunu `stabilization` olarak ele al.
 6. `project/src/docs/core/ROADMAP.md`
 7. `project/src/docs/experiments/HUMAN_SIGNALS.md`
 8. `project/src/docs/core/METRICS.md`
+9. `project/game/src/game/impactDirection.ts`
 
 ---
 
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli, cihaz/input modlu, en az bir structured manuel sample girdisi var
-- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, yeni held movement release guard'i, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, `20s+` chase, collider/offscreen fairness
+- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, yeni held movement release guard'i, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, `20s+` chase, collider/offscreen fairness, ayni-yon chase death'lerinde `FATAL LANE`/`BREAK ...` guidance'in gercek threat lane'i gosterip gostermedigi
 - session telemetry ozeti gerekiyorsa sample ile capraz okunuyor ama yeni telemetry/copy churn'u acilmiyor
 
 ---

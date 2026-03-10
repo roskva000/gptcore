@@ -2,6 +2,12 @@
 
 ---
 
+## Run #85
+
+- `project/game/src/game/impactDirection.ts` impact konumunu onceleyen ve overlap merkezdeyse velocity fallback'ine donen saf death-direction helper'ini ekledi
+- `project/game/src/game/GameScene.ts` game-over `FATAL LANE`, impact marker ve retry guidance'i yeni helper ile hizaladi; chase/catch-up carpismalarinda ters yon etiketi riski kapandi
+- `project/game/scripts/telemetry-check.ts` ayni-yon chase carpismasi ve merkez-overlap fallback'i icin regression guard ekledi; deterministic baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #84
 
 - `project/game/src/game/spawn.ts` projected-path spawn referansina arena clamp'i ekledi; duvar-kenari kacis anlarinda spawn secimi arena disindaki hayali boslugu guvenli lane gibi saymiyor

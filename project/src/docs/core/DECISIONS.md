@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #85]
+
+Decision:
+Death direction / retry guidance artik obstacle'in dunya hizindan once impact anindaki goreli konuma gore etiketleniyor; overlap merkezdeyse velocity fallback'i korundu.
+
+Reason:
+`AUDIT.md` bu runtime blokluyken ayni opener fairness zincirine donmeyi yasakliyor ve fallback'i `20s+ chase / obstacle reuse / collider readability` tarafinda dar bir product bug'ina yonlendiriyor. Mevcut `GameScene.ts` hit-direction mantigi yalnizca obstacle velocity sign'ina bakiyordu; bu da oyuncunun ayni yone giden obstacle'a yetistigi chase/catch-up carpismalarinda `FATAL LANE` ve retry prompt'unu ters yone yazip olum okunurlugunu bozabiliyordu.
+
+Impact:
+`project/game/src/game/impactDirection.ts` saf helper'i impact konumunu onceleyip velocity'yi yalnizca merkez-overlap fallback'i olarak kullaniyor. `project/game/src/game/GameScene.ts` game-over overlay, fatal callout ve escape prompt'u bu helper'a tasindi. `project/game/scripts/telemetry-check.ts` ayni-yon chase carpismasi ve merkez-overlap velocity fallback'i icin regression assert'leri ekledi. Deterministic aggregate baseline bilincli olarak korunuyor: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample yeni death-direction mantiginin diagonal veya centerline carpismalarinda oyuncuya daha kotu guidance verdigini gosterirse yeni readability katmani acmadan yalnizca position/velocity esikleri dar kapsamda yeniden ayarlanir; telemetry/copy veya opener fairness yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #84]
 
 Decision:

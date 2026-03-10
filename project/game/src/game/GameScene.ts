@@ -17,6 +17,7 @@ import {
   OFFSCREEN_CULL_MARGIN,
   selectSpawnPoint,
 } from './spawn';
+import { getImpactDirection, type ImpactDirection } from './impactDirection';
 import {
   TELEMETRY_RECENT_RUN_LIMIT,
   buildTelemetrySummary,
@@ -60,13 +61,6 @@ type MovementKeys = {
 };
 
 type FeedbackAudioContext = AudioContext | null;
-type HitDirection = {
-  label: string;
-  sentence: string;
-  offsetX: number;
-  offsetY: number;
-};
-
 type EscapePrompt = {
   title: string;
   sentence: string;
@@ -1183,7 +1177,7 @@ export class GameScene extends Phaser.Scene {
     obstacle.disableBody(true, true);
   }
 
-  private showImpactMarker(hitDirection: HitDirection): void {
+  private showImpactMarker(hitDirection: ImpactDirection): void {
     const rayStartOffset = 24;
     const rayLength = 94;
     const rayStartX = this.player.x + hitDirection.offsetX * rayStartOffset;
@@ -1244,7 +1238,7 @@ export class GameScene extends Phaser.Scene {
 
   private showFatalSpotlight(
     obstacle: Phaser.Physics.Arcade.Image,
-    hitDirection: HitDirection,
+    hitDirection: ImpactDirection,
   ): void {
     const spotlightX = Phaser.Math.Clamp(obstacle.x, 44, ARENA_WIDTH - 44);
     const spotlightY = Phaser.Math.Clamp(obstacle.y, 44, ARENA_HEIGHT - 44);
@@ -1289,7 +1283,7 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  private showEscapeGuide(hitDirection: HitDirection, promptTitle: string): void {
+  private showEscapeGuide(hitDirection: ImpactDirection, promptTitle: string): void {
     const guideOffsetX =
       hitDirection.offsetX === 0 && hitDirection.offsetY === 0 ? 0 : -hitDirection.offsetX;
     const guideOffsetY =
@@ -1352,55 +1346,23 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  private getHitDirection(obstacle: Phaser.Physics.Arcade.Image): HitDirection {
+  private getHitDirection(obstacle: Phaser.Physics.Arcade.Image): ImpactDirection {
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body | undefined;
-    const velocityX = obstacleBody?.velocity.x ?? 0;
-    const velocityY = obstacleBody?.velocity.y ?? 0;
-    const incomingX = velocityX === 0 ? 0 : velocityX > 0 ? -1 : 1;
-    const incomingY = velocityY === 0 ? 0 : velocityY > 0 ? -1 : 1;
-    const horizontal = incomingX < 0 ? 'left' : incomingX > 0 ? 'right' : '';
-    const vertical = incomingY < 0 ? 'top' : incomingY > 0 ? 'bottom' : '';
-
-    if (horizontal && vertical) {
-      return {
-        label: `${vertical}-${horizontal}`,
-        sentence: `the obstacle closed in from the ${vertical}-${horizontal}`,
-        offsetX: incomingX,
-        offsetY: incomingY,
-      };
-    }
-
-    if (horizontal) {
-      return {
-        label: horizontal,
-        sentence: `the obstacle closed in from the ${horizontal}`,
-        offsetX: incomingX,
-        offsetY: 0,
-      };
-    }
-
-    if (vertical) {
-      return {
-        label: vertical,
-        sentence: `the obstacle closed in from the ${vertical}`,
-        offsetX: 0,
-        offsetY: incomingY,
-      };
-    }
-
-    return {
-      label: 'center',
-      sentence: 'the impact overlapped your center line',
-      offsetX: 0,
-      offsetY: -1,
-    };
+    return getImpactDirection(
+      { x: this.player.x, y: this.player.y },
+      { x: obstacle.x, y: obstacle.y },
+      {
+        x: obstacleBody?.velocity.x ?? 0,
+        y: obstacleBody?.velocity.y ?? 0,
+      },
+    );
   }
 
   private getDirectionRotation(offsetX: number, offsetY: number): number {
     return Phaser.Math.Angle.Between(0, 0, offsetX, offsetY);
   }
 
-  private getEscapePrompt(hitDirection: HitDirection): EscapePrompt {
+  private getEscapePrompt(hitDirection: ImpactDirection): EscapePrompt {
     const horizontal = hitDirection.offsetX < 0 ? 'right' : hitDirection.offsetX > 0 ? 'left' : '';
     const vertical = hitDirection.offsetY < 0 ? 'down' : hitDirection.offsetY > 0 ? 'up' : '';
     const direction = [vertical, horizontal].filter(Boolean).join('-');
