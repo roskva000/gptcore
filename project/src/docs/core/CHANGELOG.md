@@ -2,6 +2,12 @@
 
 ---
 
+## Run #98
+
+- `project/game/src/game/telemetry.ts` validation export icindeki `runs=` alanini `totalRuns` yerine tamamlanmis run sayisina (`totalDeaths`) hizaladi
+- boylece yarim kalmis veya aktif start'lar validation sample boyutunu sisiremiyor; export artik `runs` ve `deaths` alanlarini ayni tamamlanmis sample uzerinden veriyor
+- `project/game/scripts/telemetry-check.ts` bu contract icin regression assert ekledi; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #97
 
 - `project/game/src/game/GameScene.ts` Run #96 pointer start/retry steering guard'inin biraktigi lock-state regresyonunu kapatti

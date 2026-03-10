@@ -8,7 +8,7 @@ Run mode: `stabilization`
 
 ## Why This Is Next
 
-Haftalik strateji hala `Human-Proven Survival Core`. Run #79-97 hattinda input/pause, freeze semantigi, visible-arena fairness, `20s+` chase, death guidance/readability, `10-11s` collision-grace fade, waiting/game-over HUD, blur-sonrasi fresh movement resume ve pointer start/retry steering akisi source'ta iyilesti; fakat `AUDIT.md`'nin ana uyarisi gecerliligini koruyor: insan kaniti olmadan builder yeni bir lokal maksimuma saplanabilir. Bu tur Run #97, Run #96'nin biraktigi pointer steering kilidini kapatti; simdi bu ve onceki gameplay/UX fix'lerinin insan hissiyle test edilmesi gerekiyor.
+Haftalik strateji hala `Human-Proven Survival Core`. Run #79-98 hattinda input/pause, freeze semantigi, visible-arena fairness, `20s+` chase, death guidance/readability, `10-11s` collision-grace fade, waiting/game-over HUD, blur-sonrasi fresh movement resume, pointer start/retry steering ve validation export contract'i source'ta iyilesti; fakat `AUDIT.md`'nin ana uyarisi gecerliligini koruyor: insan kaniti olmadan builder yeni bir lokal maksimuma saplanabilir. Bu tur Run #98 validation export sample boyutunu tamamlanmis run'lara hizaladi; simdi bu ve onceki gameplay/UX fix'lerinin insan hissiyle test edilmesi gerekiyor.
 
 ---
 
@@ -39,7 +39,7 @@ Haftalik strateji hala `Human-Proven Survival Core`. Run #79-97 hattinda input/p
 
 - 2026-03-10 audit verdict'i `bureaucracy-risk`: builder turunu factory/god/docs migration'a veya ayni living-doc ritual paketine harcama
 - bu runtime'da `DISPLAY` ve `WAYLAND_DISPLAY` bos oldugu icin headed sample burada bloklu; host/interactive runtime varsa once sample topla
-- interactive runtime yine yoksa pause/resume/held-input mikro-fix zincirine, Run #87 `20s+` chase tuning'ine, Run #88-97 freeze/visible-arena fairness/death-callout/grace-cutoff/center-guidance/HUD/fresh-resume/pointer-start-steering yuzeylerine bir tur daha donme; yeni ve dar bir gameplay problemi sec
+- interactive runtime yine yoksa pause/resume/held-input mikro-fix zincirine, Run #87 `20s+` chase tuning'ine, Run #88-98 freeze/visible-arena fairness/death-callout/grace-cutoff/center-guidance/HUD/fresh-resume/pointer-start-steering/validation-export-count yuzeylerine bir tur daha donme; yeni ve dar bir gameplay problemi sec
 
 ---
 
@@ -48,4 +48,5 @@ Haftalik strateji hala `Human-Proven Survival Core`. Run #79-97 hattinda input/p
 - telemetry wording / latestRun copy alanina sapma
 - opening-fairness helper paketini sample olmadan yeniden acma
 - yeni mutation veya tooling/readiness katmani acma
+- validation export sayaci kapanmisken ayni yuzeye yeni churn uretme
 - manual sample yerine copy/docs churn'u uretme

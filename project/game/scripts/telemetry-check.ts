@@ -7,7 +7,11 @@ import {
   selectSpawnPoint,
 } from '../src/game/spawn.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
-import { getRetryDelayMs } from '../src/game/telemetry.ts';
+import {
+  buildValidationReport,
+  createEmptyTelemetry,
+  getRetryDelayMs,
+} from '../src/game/telemetry.ts';
 import {
   createBalanceSnapshotReport,
   createSeedTrajectoryReport,
@@ -332,6 +336,21 @@ assert.equal(
   validationReport.validationReport,
   'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early',
   'Validation export contract changed unexpectedly.',
+);
+assert.equal(
+  buildValidationReport({
+    ...createEmptyTelemetry(),
+    totalRuns: 6,
+    totalDeaths: 5,
+    totalSurvivalTime: 120.5,
+    bestSurvivalTime: 30,
+    firstDeathTime: 6.3,
+    earlyDeathsUnderTarget: 1,
+    totalSpawnRerolls: 3,
+    lastSurvivalTime: 30,
+  }),
+  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early',
+  'Validation export should report only completed runs even if a fresh start increased totalRuns beyond totalDeaths.',
 );
 assert.equal(
   getRetryDelayMs({

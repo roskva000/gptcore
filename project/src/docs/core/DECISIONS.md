@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #98]
+
+Decision:
+Validation export `runs=` alani `totalRuns` yerine tamamlanmis sample sayisini (`totalDeaths`) raporlayacak sekilde dar kapsamda duzeltildi.
+
+Reason:
+Headed runtime bu ortamda yine bloklu ve audit fallback olarak yeni ama dar bir problem secilmesini istiyor. Bu tur ayni input/pause/fairness mikro-yuzeylerine geri donmek yasakti. Mevcut `buildValidationReport()` export'u `runs=` icin `totalRuns` kullaniyordu; bu da aktif veya yarim kalmis start'lar sonrasinda validation sample boyutunu sisirip export ozetini tamamlanmamis run'larla kirletebilecek gercek bir contract bug'iydi.
+
+Impact:
+`project/game/src/game/telemetry.ts` validation report'ta `runs=` alanini `totalDeaths` ile uretiyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile `totalRuns = 6`, `totalDeaths = 5` durumunda export'un yine `runs=5 | deaths=5` kalmasini guard altina aliyor. Deterministic checked baseline bilincli olarak degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Interactive sample veya sonraki export akis review'u "started attempts" bilgisinin ayri gorunmesi gerektigini kanitlarsa bu bilgi validation export'a degil ayri telemetry yuzeyine eklenmelidir; validation sample run sayisi yeniden `totalRuns`a dondurulmemelidir.
+
 ### [Run #97]
 
 Decision:

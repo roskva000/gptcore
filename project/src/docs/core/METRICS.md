@@ -67,9 +67,9 @@ baseline: added in Run #53 to make the existing spawn-reroll fairness helper act
 target: confirm manually that this removes crowded opening lanes without making the first seconds feel empty
 
 validation_export_contract:
-current: `V` export now produces `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths`, and `R` reset still clears the saved export so HUD summary returns to `not saved yet`
+current: `V` export now produces `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths`, counts `runs=` from completed sample deaths instead of raw start count, and `R` reset still clears the saved export so HUD summary returns to `not saved yet`
 baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #61 aligned `first death` with the minimum death in the sample instead of the first chronological run; Run #87 moved the checked deterministic baseline text to `26.5s avg / 6.3s first death / 4% early` while the 5-seed validation sample average stayed `24.1s`
-target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, never let a fresh reset show a stale export as if it belongs to the new sample, and keep the embedded deterministic baseline text synchronized with the latest checked gameplay snapshot
+target: keep `V` export and parser aligned, count validation sample size from completed runs only, never mark a 5-run sample as healthy while it still contains `<10s` deaths, never let a fresh reset show a stale export as if it belongs to the new sample, and keep the embedded deterministic baseline text synchronized with the latest checked gameplay snapshot
 
 forward_pressure_spawn_filter:
 current: first `6s` spawn selection now scores forward-alignment from the player's projected `0.18s` path instead of the exact current center, so the existing reroll helper can still deflect cheap oncoming crossfire without needlessly rejecting safe edge spawns while the player is already escaping into that lane

@@ -195,13 +195,14 @@ export const buildTelemetrySummary = (
 
 export const buildValidationReport = (telemetry: GameplayTelemetry): string => {
   const sessionSummary = buildTelemetrySummary('session', telemetry);
+  const completedRunCount = telemetry.totalDeaths;
   const lastRunText =
     sessionSummary.lastSurvivalTime === null ? 'n/a' : `${sessionSummary.lastSurvivalTime.toFixed(1)}s`;
   const validationText = getValidationProgressText(telemetry).replaceAll(' | ', ', ');
 
   return [
     'validation_sample',
-    `runs=${sessionSummary.runs}`,
+    `runs=${completedRunCount}`,
     `deaths=${sessionSummary.deaths}`,
     `avg_survival=${sessionSummary.averageSurvivalTime.toFixed(1)}s`,
     `first_death=${getFirstDeathTimeText(telemetry)}`,
