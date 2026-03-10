@@ -2,6 +2,12 @@
 
 ---
 
+## Run #94
+
+- `project/game/src/game/GameScene.ts` waiting ve game-over telemetry bloklarini kompaktlastirdi; session/lifetime/export bilgileri daha az tekrar eden, daha kisa satirlarda sunuluyor
+- ayni dosyada `Last export` satiri artik yalnizca kayitli export varsa detay veriyor; ilk sample oncesi HUD oyuncuya `5-run sample` hedefini acik soyluyor
+- support strip telemetry-first yerine oyuncu-first hale getirildi: hedef artik `break 10s, then chase your best`; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #93
 
 - `project/game/src/game/impactDirection.ts` tam merkez overlap'lerde velocity fallback ile yapay `top/bottom` lane uretmek yerine gercek `center` sonucunu donduruyor

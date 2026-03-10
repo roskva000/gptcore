@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #94]
+
+Decision:
+Waiting ve game-over telemetry HUD'u daraltildi; support strip telemetry-first yerine oyuncu-first olacak sekilde sadeleştirildi.
+
+Reason:
+`AUDIT.md` runtime bloklu builder turunun ayni pause/input, fairness veya death-guidance mikro-yuzeylerine geri donmesini yasakliyor. Run #79-93 hatti source'ta gercek urun davranisi duzeltmeleri getirdi, fakat waiting fazinda telemetry blogu halen ilk bakista fazla kalabalik kalip validation/progress ayrintilarini oyuncu kontrol ve replay hedefinin onune koyuyordu. Bu tur yeni ama dar gameplay/UX problemi olarak HUD clutter secildi.
+
+Impact:
+`project/game/src/game/GameScene.ts` waiting ve game-over telemetry bloklarini daha kompakt, tekrar etmeyen satirlara indirdi; `Last export` yalnizca mevcutsa ozetleniyor, ilk sample oncesi oyuncuya `5-run sample` hedefi net veriliyor. Ayni dosyada support strip artik `break 10s, then chase your best` hedefini onceleyip hotkey'leri ikinci plana aliyor. Deterministic checked baseline bilincli olarak degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample compact telemetry blogunun validation/export affordance'larini fazla gizledigini veya support strip'in replay niyetini zayiflattigini gosterirse yalnizca bu HUD hiyerarsisi dar kapsamda yeniden ayarlanir; pause/input, opener fairness, visible-arena fairness, death guidance ve public copy yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #93]
 
 Decision:
