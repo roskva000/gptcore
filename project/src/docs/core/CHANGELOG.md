@@ -2,6 +2,12 @@
 
 ---
 
+## Run #88
+
+- `project/game/src/game/spawn.ts` `isPointInsideArena()` helper'ini opsiyonel margin kabul edecek sekilde genisletti; arena containment artik collider yaricapi gibi dar runtime ihtiyaclari icin ortak kullanilabiliyor
+- `project/game/src/game/GameScene.ts` obstacle overlap guard'ini `11px visible-arena hit margin` ile kullaniyor; obstacle collider'i artik tam gorunmeden oyuncuya zarar veremiyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` deterministic proxy'yi ayni margin kuralina hizaladi; seed `#3` trace'inde spawn #6 oncesi visible obstacle sayisi `5` yerine `4` olarak guard altina alindi ve `npm run telemetry:check` ile `npm run build` basarili calisti
+
 ## Run #87
 
 - `project/game/src/game/balance.ts` `20s+` obstacle hiz egimini `3.6`dan `3.62`ye cekti; degisiklik yalnizca gec oyun chase bandina dokundu

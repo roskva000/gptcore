@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #88]
+
+Decision:
+`collider/offscreen fairness` yuzeyinde obstacle overlap guard'i merkez tabanli kontrol yerine `11px` collider yaricapinin tamamiyla arena icinde olmasini bekleyecek sekilde daraltildi; deterministic survival proxy ayni kuralla hizalandi.
+
+Reason:
+`AUDIT.md` runtime bloklu builder turunun ya manuel sample toplamasini ya da yeni ve dar bir gameplay problemi secmesini istiyordu; pause/resume/input veya telemetry/copy yuzeyine donus yasakti. Mevcut `visible-arena hit guard` obstacle merkezi arena sinirini gecer gecmez overlap'a izin veriyordu; bu da collider ve sprite tam gorunmeden "ilk piksel" temasina alan acabiliyordu. Bu, pacingi acmadan kapatilabilecek gercek bir fairness bug'iydi.
+
+Impact:
+`project/game/src/game/spawn.ts` arena containment helper'ini opsiyonel margin ile genisletti. `project/game/src/game/GameScene.ts` runtime hit guard'ini `11px` margin ile kullaniyor; `project/game/scripts/telemetry-reports.ts` ayni marji deterministic proxy ve rapor metnine tasiyor; `project/game/scripts/telemetry-check.ts` yeni margin assert'leri ve buna bagli seed `#3` visible obstacle trace farkini guard altina aliyor. Deterministic aggregate baseline korunuyor: `26.5s / 6.3s / 4%`, buckets `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample yeni `11px visible-arena hit margin` kuralinin arena kenarinda temasi fazla geciktirip kacislari "ghosty" hissettirdigini gosterirse yeni fairness katmani acmadan yalnizca hit-margin esigi dar kapsamda yeniden ayarlanir; spawn pacing, telemetry wording ve pause/input yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #87]
 
 Decision:

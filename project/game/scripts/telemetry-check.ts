@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { selectSpawnPoint } from '../src/game/spawn.ts';
+import { isPointInsideArena, selectSpawnPoint } from '../src/game/spawn.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getRetryDelayMs } from '../src/game/telemetry.ts';
 import {
@@ -138,6 +138,17 @@ assert.deepEqual(
   'Projected-path spawn scoring should clamp wall-edge escape references inside the arena before judging nearby left-lane pressure.',
 );
 
+assert.equal(
+  isPointInsideArena({ x: 10, y: 300 }, { margin: 11 }),
+  false,
+  'Visible-arena hit margin should keep obstacle colliders inactive until fully inside the arena.',
+);
+assert.equal(
+  isPointInsideArena({ x: 11, y: 300 }, { margin: 11 }),
+  true,
+  'Visible-arena hit margin should allow obstacle colliders once their center clears the radius threshold.',
+);
+
 assert.deepEqual(
   getImpactDirection(
     { x: 400, y: 300 },
@@ -174,7 +185,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 4, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*visible-arena hit guard, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(
@@ -244,7 +255,7 @@ assert.deepEqual(
       spawnIndex: 6,
       timeSeconds: 6,
       spawnPoint: { x: -56, y: 242 },
-      visibleObstacleCount: 5,
+      visibleObstacleCount: 4,
       nearestVisibleObstacleDistancePx: 81.4,
     },
   ],

@@ -966,7 +966,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private isObstacleInsideVisibleArena(obstacle: Phaser.Physics.Arcade.Image): boolean {
-    return isPointInsideArena(obstacle);
+    return isPointInsideArena(obstacle, { margin: OBSTACLE_COLLISION_RADIUS });
   }
 
   private updatePlayerVelocity(): void {

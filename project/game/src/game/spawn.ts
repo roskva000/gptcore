@@ -18,6 +18,10 @@ export type Point = {
   y: number;
 };
 
+type ArenaContainmentOptions = {
+  margin?: number;
+};
+
 type SpawnSelectionParams = {
   survivalTimeSeconds: number;
   playerPosition: Point;
@@ -168,8 +172,19 @@ export const rollSpawnPoint = (randomInt: (min: number, max: number) => number):
   return { x: -SPAWN_MARGIN, y: randomInt(0, ARENA_HEIGHT) };
 };
 
-export const isPointInsideArena = (point: Point): boolean =>
-  point.x >= 0 && point.x <= ARENA_WIDTH && point.y >= 0 && point.y <= ARENA_HEIGHT;
+export const isPointInsideArena = (
+  point: Point,
+  options: ArenaContainmentOptions = {},
+): boolean => {
+  const margin = options.margin ?? 0;
+
+  return (
+    point.x >= margin &&
+    point.x <= ARENA_WIDTH - margin &&
+    point.y >= margin &&
+    point.y <= ARENA_HEIGHT - margin
+  );
+};
 
 export const isPointOutsideCullBounds = (point: Point): boolean =>
   point.x < -OFFSCREEN_CULL_MARGIN ||
