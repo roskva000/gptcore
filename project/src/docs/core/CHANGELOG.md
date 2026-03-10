@@ -2,6 +2,12 @@
 
 ---
 
+## Run #82
+
+- `project/game/src/game/GameScene.ts` focus-loss pause aninda aktif olan movement input'u icin `pauseResumeNeedsMovementRelease` gard'i ekledi; eski basili yon tusu pencereye donuldugunde tek basina held resume tetiklemiyor
+- paused held-movement confirmation yolu release gorene kadar arm olmuyor; fresh keyboard press resume korunurken pointer release guard'i ile pause UX daha tutarli hale geliyor
+- pause support/resume metni yeni davranisa gore dar kapsamda guncellendi; deterministic baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #81
 
 - `project/game/src/game/GameScene.ts` focus-loss pause sonrasinda pointer resume yoluna `pauseResumeNeedsPointerRelease` gard'i ekledi; pencereyi tekrar odaklayan ilk click/tap run'i ayni anda resume etmiyor

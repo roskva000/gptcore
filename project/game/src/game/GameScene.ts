@@ -77,6 +77,7 @@ export class GameScene extends Phaser.Scene {
   private movementInputWasActive = false;
   private movementHoldActionStartedAt: number | null = null;
   private pointerHoldActionStartedAt: number | null = null;
+  private pauseResumeNeedsMovementRelease = false;
   private pauseResumeNeedsPointerRelease = false;
   private playingHintHideAtElapsedMs: number | null = null;
   private pausedRunElapsedMs = 0;
@@ -620,6 +621,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
@@ -641,8 +643,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.phase = 'paused';
+    const movementInputActive = this.hasMovementInput();
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pauseResumeNeedsMovementRelease = movementInputActive;
     this.pauseResumeNeedsPointerRelease = true;
     this.pauseStartedAt = this.time.now;
     this.physics.world.pause();
@@ -682,7 +686,7 @@ export class GameScene extends Phaser.Scene {
       )
       .setVisible(true);
     this.supportText.setText(
-      'Pause guard active: refocus click only restores focus; press again to resume. No spawn, movement, or survival time advances while unfocused.',
+      'Pause guard active: refocus click only restores focus, and any held move key must be released before it can resume. No spawn, movement, or survival time advances while unfocused.',
     );
     this.updateTelemetryText();
   }
@@ -700,6 +704,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.physics.world.resume();
     if (this.nextSpawnTimer) {
@@ -892,6 +897,12 @@ export class GameScene extends Phaser.Scene {
 
   private hasConfirmedHeldMovementInput(time: number, movementInputActive: boolean): boolean {
     if (!movementInputActive) {
+      this.movementHoldActionStartedAt = null;
+      this.pauseResumeNeedsMovementRelease = false;
+      return false;
+    }
+
+    if (this.phase === 'paused' && this.pauseResumeNeedsMovementRelease) {
       this.movementHoldActionStartedAt = null;
       return false;
     }
@@ -1686,7 +1697,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getResumeActionText(): string {
-    return 'Space, Enter, tap/click again, or keep holding your move input';
+    return 'Space, Enter, tap/click again, or press/hold your move input again';
   }
 
   private getPlayingHintText(): string {

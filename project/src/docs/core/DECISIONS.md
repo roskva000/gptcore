@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #82]
+
+Decision:
+Focus-loss pause sonrasinda basili kalan hareket tusunun eski input ile otomatik resume yaratmasini engellemek icin paused held-movement yolu "release sonra yeni press/hold" gard'i ile daraltildi.
+
+Reason:
+`AUDIT.md` bu turda headed sample yoksa telemetry/copy/readability ya da opening-fairness hattina donmeyi yasakliyordu. `NEXT_AGENT.md` fallback'i focus-loss pause sonrasi keyboard held resume davranisini dar kapsamda incelemeyi oneriyordu. Source'ta pointer/touch refocus click'i icin guard varken, pause aninda zaten basili olan hareket input'u pencereye donuldugunde `180ms` sonra run'i tekrar baslatabiliyordu; bu da oyuncu yeni bir karar vermeden accidental auto-resume uretebilecek gercek bir UX acigiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` focus-loss aninda aktif hareket input'u varsa `pauseResumeNeedsMovementRelease` gard'i kuruyor; paused held-movement yolu release gorene kadar arm olmuyor. Fresh keyboard press resume davranisi korunuyor, pointer release guard'i ile daha tutarli bir pause UX elde ediliyor. Deterministic baseline bilincli olarak degismedi: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample yeni guard'in keyboard oyuncusunda pause-resume'u gereksiz yavaslattigini veya beklenmedik stuck-state yarattigini gosterirse yeni orchestration/readiness katmani acmadan yalnizca movement release arming kosulu dar kapsamda yeniden ayarlanir; telemetry/copy ya da opening-fairness yuzeyleri bu bahaneyle acilmaz.
+
 ### [Run #81]
 
 Decision:

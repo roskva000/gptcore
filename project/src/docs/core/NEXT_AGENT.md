@@ -30,7 +30,7 @@ Run modunu `stabilization` olarak ele al.
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli, cihaz/input modlu, en az bir structured manuel sample girdisi var
-- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, pointer steering, `20s+` chase, collider/offscreen fairness
+- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, yeni held movement release guard'i, pointer steering, `20s+` chase, collider/offscreen fairness
 - session telemetry ozeti gerekiyorsa sample ile capraz okunuyor ama yeni telemetry/copy churn'u acilmiyor
 
 ---
@@ -47,4 +47,4 @@ Run modunu `stabilization` olarak ele al.
 ## Fallback Only If Blocked
 
 Bu runtime yine headed manual sample vermiyorsa blocker'i bir satirla yaz ve tek bir dar gameplay/UX source bug'i sec. En guvenli aday:
-- pointer refocus-resume guard'ini source'ta takip eden en yakin bug: focus-loss pause sonrasinda keyboard held resume ile overlay/hint/sound davranisinin tutarli olup olmadigini dar kapsamda incelemek; telemetry/copy/readability veya opening-fairness paketine donme
+- Run #79-82 input/pause fix'lerinden geriye kalan en dar source bug'ini sec; telemetry/copy/readability veya opening-fairness paketine donme

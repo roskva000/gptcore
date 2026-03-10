@@ -111,6 +111,11 @@ current: Run #81 makes the first pointer click/tap after a focus-loss pause rest
 baseline: before Run #81 paused `pointerdown` could fire on the same gesture used to refocus the window, creating a source-level accidental auto-resume risk without changing deterministic telemetry
 target: confirm manually that refocus no longer resumes by surprise and that the extra release requirement does not make pointer/touch resume feel clumsy
 
+focus_loss_movement_resume_guard:
+current: Run #82 now also requires any movement key that was already held when focus loss paused the run to be released before paused held-movement resume can arm again; fresh movement-key press resume still works after refocus
+baseline: before Run #82 the pause flow guarded pointer refocus clicks, but a movement key kept held across blur/refocus could still resume the run after the normal `180ms` held-action window without a new player decision
+target: confirm manually that keyboard players no longer get surprise auto-resume after alt-tab/refocus and that intentional press/hold resume still feels immediate enough
+
 pooled_obstacle_tween_integrity:
 current: Run #80 kills obstacle-local tweens before reuse, cull, reset, and death freeze, so the early collision-grace fade/scale animation should no longer leak into later pooled obstacle presentations
 baseline: before Run #80 pooled obstacles could keep an old tween alive after `disableBody(true, true)`, allowing reused obstacles to inherit stale alpha/scale motion across spawn or game-over transitions
