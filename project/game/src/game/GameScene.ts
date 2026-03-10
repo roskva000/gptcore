@@ -659,7 +659,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.pauseActiveObstacleSpawnGraceTweens();
     this.player.setVelocity(0, 0);
-    this.movementInputWasActive = true;
+    this.movementInputWasActive = movementInputActive;
     this.overlay.setVisible(true);
     this.fatalCallout.setVisible(false).setText('');
     this.overlayTitle.setText('Run paused').setVisible(true);

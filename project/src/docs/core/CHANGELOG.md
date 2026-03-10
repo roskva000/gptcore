@@ -2,6 +2,12 @@
 
 ---
 
+## Run #95
+
+- `project/game/src/game/GameScene.ts` focus-loss pause sirasinda `movementInputWasActive` alanini artik kosulsuz `true` yapmak yerine gercek blur-anindaki movement-input durumuna esitliyor
+- blur aninda hic yon tusu basili degilse refocus sonrasi ilk movement press'i stale-held gibi `180ms` beklemiyor; sadece gercekten basili kalan tuslar release guard'ina takiliyor
+- deterministic baseline korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #94
 
 - `project/game/src/game/GameScene.ts` waiting ve game-over telemetry bloklarini kompaktlastirdi; session/lifetime/export bilgileri daha az tekrar eden, daha kisa satirlarda sunuluyor

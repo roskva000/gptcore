@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #95]
+
+Decision:
+Focus-loss pause sonrasinda blur aninda hic movement input yoksa ilk keyboard movement resume basisi stale-held gibi gecikmeyecek; `movementInputWasActive` pause anindaki gercek input durumuyla korunacak.
+
+Reason:
+`AUDIT.md` runtime blokluyken builder'in docs/tooling veya fairness/copy churn'una donmesini yasakliyor. Headed sample yine yoktu; bu nedenle tek dar product hedefi secildi. Source incelemesi `pauseRunForFocusLoss()` icinde `movementInputWasActive` alaninin kosulsuz `true` yapildigini gosterdi. Bu, blur aninda hic yon tusu basili olmasa bile refocus sonrasi ilk bilincli movement press'ini fresh input yerine held path'ine itip gereksiz `180ms` gecikme yaratabiliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` focus-loss pause sirasinda `movementInputWasActive` degerini gercek `movementInputActive` snapshot'ina esitledi. Boylece yalnizca blur sirasinda gercekten basili kalan tuslar release guard'ina takiliyor; fresh keyboard resume yeniden anlik tepki veriyor. Deterministic checked baseline bilincli olarak degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample bu degisikligin focus-loss sonrasinda keyboard resume'i fazla agresiflestirdigini veya unintended auto-resume yarattigini gosterirse yalnizca focus-loss movement-input hafizasi dar kapsamda yeniden ayarlanir; telemetry/copy, opener fairness ve diger pause/input yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #94]
 
 Decision:
