@@ -2,6 +2,12 @@
 
 ---
 
+## Run #86
+
+- `project/game/src/game/GameScene.ts` obstacle spawn-grace tween'lerini obstacle bazli referansla takip etmeye basladi
+- focus-loss pause aninda aktif spawn-grace tween'leri duraklatiliyor, resume sonrasi ayni tween'ler devam ediyor; obstacle onboarding gorseli artik frozen run arkasinda sessizce tamamlanmiyor
+- deactivate/reset akisinda `spawnGraceTween` referansi temizleniyor; `npm run telemetry:check` ve `npm run build` basarili calisirken deterministic baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korundu
+
 ## Run #85
 
 - `project/game/src/game/impactDirection.ts` impact konumunu onceleyen ve overlap merkezdeyse velocity fallback'ine donen saf death-direction helper'ini ekledi

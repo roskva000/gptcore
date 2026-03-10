@@ -647,6 +647,7 @@ export class GameScene extends Phaser.Scene {
     if (this.nextSpawnTimer) {
       this.nextSpawnTimer.paused = true;
     }
+    this.pauseActiveObstacleSpawnGraceTweens();
     this.player.setVelocity(0, 0);
     this.movementInputWasActive = true;
     this.overlay.setVisible(true);
@@ -704,6 +705,7 @@ export class GameScene extends Phaser.Scene {
     if (this.nextSpawnTimer) {
       this.nextSpawnTimer.paused = false;
     }
+    this.resumeActiveObstacleSpawnGraceTweens();
     this.overlay.setVisible(false);
     this.fatalCallout.setVisible(false).setText('');
     this.overlayTitle.setVisible(false);
@@ -859,20 +861,25 @@ export class GameScene extends Phaser.Scene {
     obstacleBody.enable = true;
     obstacle.setData('collisionReady', collisionGraceMs === 0);
     obstacle.setData('collisionUnlockElapsedMs', collisionUnlockElapsedMs);
+    obstacle.setData('spawnGraceTween', null);
     obstacle.setVelocity(velocity.x, velocity.y);
 
     if (collisionGraceMs === 0) {
       return;
     }
 
-    this.tweens.add({
+    const spawnGraceTween = this.tweens.add({
       targets: obstacle,
       alpha: { from: 0.58, to: 1 },
       scaleX: { from: 0.88, to: 1 },
       scaleY: { from: 0.88, to: 1 },
       duration: collisionGraceMs,
       ease: 'Quad.Out',
+      onComplete: () => {
+        obstacle.setData('spawnGraceTween', null);
+      },
     });
+    obstacle.setData('spawnGraceTween', spawnGraceTween);
 
   }
 
@@ -1173,8 +1180,35 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(obstacle);
     obstacle.setData('collisionReady', false);
     obstacle.setData('collisionUnlockElapsedMs', null);
+    obstacle.setData('spawnGraceTween', null);
     obstacle.clearTint().setAlpha(1).setScale(1).setVelocity(0, 0);
     obstacle.disableBody(true, true);
+  }
+
+  private pauseActiveObstacleSpawnGraceTweens(): void {
+    this.obstacles.children.each((child) => {
+      const obstacle = child as Phaser.Physics.Arcade.Image;
+      const spawnGraceTween = obstacle.getData('spawnGraceTween') as Phaser.Tweens.Tween | null;
+
+      if (obstacle.active && spawnGraceTween?.isPlaying()) {
+        spawnGraceTween.pause();
+      }
+
+      return true;
+    });
+  }
+
+  private resumeActiveObstacleSpawnGraceTweens(): void {
+    this.obstacles.children.each((child) => {
+      const obstacle = child as Phaser.Physics.Arcade.Image;
+      const spawnGraceTween = obstacle.getData('spawnGraceTween') as Phaser.Tweens.Tween | null;
+
+      if (obstacle.active && spawnGraceTween?.isPaused()) {
+        spawnGraceTween.resume();
+      }
+
+      return true;
+    });
   }
 
   private showImpactMarker(hitDirection: ImpactDirection): void {

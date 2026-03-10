@@ -31,7 +31,7 @@ Run modunu `stabilization` olarak ele al.
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli, cihaz/input modlu, en az bir structured manuel sample girdisi var
-- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, yeni held movement release guard'i, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, `20s+` chase, collider/offscreen fairness, ayni-yon chase death'lerinde `FATAL LANE`/`BREAK ...` guidance'in gercek threat lane'i gosterip gostermedigi
+- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, held movement release guard'i, pause sirasinda obstacle spawn-grace fade/scale onboarding'inin de frozen kalip kalmadigi, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, `20s+` chase, collider/offscreen fairness, ayni-yon chase death'lerinde `FATAL LANE`/`BREAK ...` guidance'in gercek threat lane'i gosterip gostermedigi
 - session telemetry ozeti gerekiyorsa sample ile capraz okunuyor ama yeni telemetry/copy churn'u acilmiyor
 
 ---

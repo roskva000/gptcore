@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #86]
+
+Decision:
+Focus-loss pause sirasinda aktif obstacle spawn-grace tween'leri de duraklatilip resume'da devam ettirilecek; spawn onboarding gorseli artik freeze-state boyunca duvar saatiyle akmayacak.
+
+Reason:
+`AUDIT.md` bu runtime blokluyken ayni pause/resume/held-input mikro-fix zincirine geri donmeyi yasakliyor ama fallback olarak dar gameplay/UX source bug'i secmeye izin veriyor. Mevcut source'ta collision-grace unlock'u Run #72 ile aktif run elapsed zamanina baglanmisti; buna ragmen obstacle'in alpha/scale onboarding tween'i focus-loss pause sirasinda akmaya devam ederek "run frozen" vaadini gorsel tarafta bozabiliyordu. Bu, input mantigini buyutmeden obstacle readability/lifecycle tarafinda kapatilabilir gercek bir runtime uyumsuzluguydu.
+
+Impact:
+`project/game/src/game/GameScene.ts` obstacle bazli `spawnGraceTween` referansi sakliyor; pause aninda aktif obstacle grace tween'lerini `pause()`, resume'da `resume()` ediyor ve deactivate/reset akisinda referansi temizliyor. Deterministic aggregate baseline bilincli olarak korunuyor: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample spawn-grace tween pause/resume davranisinin obstacle spawn'larini takiliyor, cift-animasyonlu veya bitmeyen fade durumuna soktugunu gosterirse yeni katman acmadan yalnizca obstacle grace tween yasam dongusu dar kapsamda yeniden ayarlanir; telemetry/copy veya ayni input/pause seremonisi bu bahaneyle tekrar acilmaz.
+
 ### [Run #85]
 
 Decision:
