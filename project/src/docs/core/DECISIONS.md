@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #102]
+
+Decision:
+Duvara veya koseye yaslanmis oyuncunun artik devam edemeyecegi velocity bilesenleri spawn secimi oncesi yok sayilacak; projected-path forward-pressure ve lane-stack skorlamasi stale wall-velocity ile safe spawn'i reroll etmeyecek.
+
+Reason:
+Runtime yine headed sample veremiyor ve audit ayni input/pause, HUD/telemetry ve kapanmis fairness yuzeylerine donmeyi yasakliyor. Source incelemesi `selectSpawnPoint()`in oyuncu zaten arena marjina dayanmis olsa bile son velocity vektorunu tam haliyle kullanmaya devam ettigini gosterdi. Bu, ozellikle koseye itilmis diyagonal kacis anlarinda oyuncunun fiziksel olarak devam edemeyecegi bir duvar-yonunu hala aktif forward-pressure gibi sayip safe top spawn'i gereksiz reroll'e sokabilen gercek bir gameplay secim kusuruydu.
+
+Impact:
+`project/game/src/game/spawn.ts` yeni `playerReachabilityMargin` ile duvar tarafina kilitli velocity bilesenlerini sifirliyor. `project/game/src/game/GameScene.ts` runtime'da `PLAYER_COLLISION_RADIUS`, `project/game/scripts/telemetry-reports.ts` ise deterministic proxy'de `PLAYER_RADIUS` ile ayni davranisi kullaniyor. `project/game/scripts/telemetry-check.ts` yeni wall-pinned corner regression guard'i ekledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manual sample bu kirpmanin wall-hug/kose kacislarini fazla scriptli, yumusak veya exploit'e acik hale getirdigini gosterirse yalnizca wall-locked velocity yorumu dar kapsamda yeniden ayarlanir; input/pause, HUD/telemetry, opening-fairness helper'lari veya edge-target clamp yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #101]
 
 Decision:

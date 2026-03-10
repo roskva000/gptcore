@@ -831,6 +831,7 @@ export class GameScene extends Phaser.Scene {
         x: (this.player.body as Phaser.Physics.Arcade.Body).velocity.x,
         y: (this.player.body as Phaser.Physics.Arcade.Body).velocity.y,
       },
+      playerReachabilityMargin: PLAYER_COLLISION_RADIUS,
       activeObstaclePositions: this.obstacles
         .getChildren()
         .filter(

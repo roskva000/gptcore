@@ -2,6 +2,13 @@
 
 ---
 
+## Run #102
+
+- `project/game/src/game/spawn.ts` spawn secimi icin yeni `playerReachabilityMargin` girdisi ekledi; oyuncu duvara veya koseye dayanmisken artik devam edemeyecegi velocity bilesenleri projected-path scoring'de yok sayiliyor
+- `project/game/src/game/GameScene.ts` runtime spawn secimine `PLAYER_COLLISION_RADIUS` marjini gecti; `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni reachability kuralina hizaladi
+- `project/game/scripts/telemetry-check.ts` wall-pinned corner case regression guard'i ekledi; safe top spawn stale wall-velocity yuzunden gereksiz reroll'e dusmuyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #101
 
 - `project/game/src/game/GameScene.ts` obstacle spawn target lag hesabini oyuncunun gercekte ulasabilecegi arena ic sinirlarina clamp'ledi; duvar kenarinda obstacle'lar artik oyuncu merkezinin hic gidemeyecegi wall coordinates'a nisan almiyor

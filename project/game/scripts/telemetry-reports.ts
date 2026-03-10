@@ -252,6 +252,7 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
         survivalTimeSeconds,
         playerPosition: player,
         playerVelocity,
+        playerReachabilityMargin: PLAYER_RADIUS,
         activeObstaclePositions: obstacles.map((obstacle) => ({
           x: obstacle.x,
           y: obstacle.y,

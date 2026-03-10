@@ -179,6 +179,7 @@ const projectedForwardSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
   playerPosition: { x: 308.6, y: 290.3 },
   playerVelocity: { x: -111.6, y: 136.3 },
+  playerReachabilityMargin: 16,
   activeObstaclePositions: [{ x: 700.9, y: 384.3 }],
   randomInt: createQueuedRandom([3, 303, 1, 527]),
 });
@@ -195,6 +196,7 @@ const wallEdgeProjectedSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
   playerPosition: { x: 18, y: 300 },
   playerVelocity: { x: -260, y: 0 },
+  playerReachabilityMargin: 16,
   activeObstaclePositions: [{ x: 96, y: 300 }],
   randomInt: createQueuedRandom([3, 300, 1, 300]),
 });
@@ -205,6 +207,23 @@ assert.deepEqual(
     rerollsUsed: 1,
   },
   'Projected-path spawn scoring should clamp wall-edge escape references inside the arena before judging nearby left-lane pressure.',
+);
+
+const wallPinnedForwardSelection = selectSpawnPoint({
+  survivalTimeSeconds: 2,
+  playerPosition: { x: 16, y: 16 },
+  playerVelocity: { x: -260, y: -260 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 96, y: 300 }, { x: 60, y: 60 }],
+  randomInt: createQueuedRandom([0, 369, 0, 788]),
+});
+assert.deepEqual(
+  wallPinnedForwardSelection,
+  {
+    point: { x: 369, y: -56 },
+    rerollsUsed: 0,
+  },
+  'Blocked wall movement should not reroll a safe top spawn solely because stale corner velocity still points further into the wall.',
 );
 
 assert.equal(

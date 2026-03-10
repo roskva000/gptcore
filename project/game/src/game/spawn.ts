@@ -27,6 +27,7 @@ type SpawnSelectionParams = {
   survivalTimeSeconds: number;
   playerPosition: Point;
   playerVelocity?: Point;
+  playerReachabilityMargin?: number;
   activeObstaclePositions?: Point[];
   randomInt: (min: number, max: number) => number;
 };
@@ -41,6 +42,38 @@ export const clampPointToArena = (
     x: Math.min(Math.max(point.x, margin), ARENA_WIDTH - margin),
     y: Math.min(Math.max(point.y, margin), ARENA_HEIGHT - margin),
   };
+};
+
+const getReachableVelocity = (
+  playerPosition: Point,
+  playerVelocity: Point | undefined,
+  playerReachabilityMargin = 0,
+): Point | undefined => {
+  if (!playerVelocity) {
+    return undefined;
+  }
+
+  const clampedVelocity = { ...playerVelocity };
+
+  if (
+    (playerPosition.x <= playerReachabilityMargin && clampedVelocity.x < 0) ||
+    (playerPosition.x >= ARENA_WIDTH - playerReachabilityMargin && clampedVelocity.x > 0)
+  ) {
+    clampedVelocity.x = 0;
+  }
+
+  if (
+    (playerPosition.y <= playerReachabilityMargin && clampedVelocity.y < 0) ||
+    (playerPosition.y >= ARENA_HEIGHT - playerReachabilityMargin && clampedVelocity.y > 0)
+  ) {
+    clampedVelocity.y = 0;
+  }
+
+  if (clampedVelocity.x === 0 && clampedVelocity.y === 0) {
+    return undefined;
+  }
+
+  return clampedVelocity;
 };
 
 const getProjectedPathReference = (
@@ -204,17 +237,28 @@ export const selectSpawnPoint = ({
   survivalTimeSeconds,
   playerPosition,
   playerVelocity,
+  playerReachabilityMargin,
   activeObstaclePositions,
   randomInt,
 }: SpawnSelectionParams): { point: Point; rerollsUsed: number } => {
+  const reachableVelocity = getReachableVelocity(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
   let selectedSpawnPoint = rollSpawnPoint(randomInt);
   let bestScore =
     getSpawnFairnessScore(survivalTimeSeconds, playerPosition, selectedSpawnPoint) -
-    getForwardSpawnPenalty(survivalTimeSeconds, playerPosition, playerVelocity, selectedSpawnPoint) -
+    getForwardSpawnPenalty(
+      survivalTimeSeconds,
+      playerPosition,
+      reachableVelocity,
+      selectedSpawnPoint,
+    ) -
     getLaneStackPenalty(
       survivalTimeSeconds,
       playerPosition,
-      playerVelocity,
+      reachableVelocity,
       activeObstaclePositions,
       selectedSpawnPoint,
     );
@@ -231,11 +275,16 @@ export const selectSpawnPoint = ({
     const candidate = rollSpawnPoint(randomInt);
     const candidateScore =
       getSpawnFairnessScore(survivalTimeSeconds, playerPosition, candidate) -
-      getForwardSpawnPenalty(survivalTimeSeconds, playerPosition, playerVelocity, candidate) -
+      getForwardSpawnPenalty(
+        survivalTimeSeconds,
+        playerPosition,
+        reachableVelocity,
+        candidate,
+      ) -
       getLaneStackPenalty(
         survivalTimeSeconds,
         playerPosition,
-        playerVelocity,
+        reachableVelocity,
         activeObstaclePositions,
         candidate,
       );
