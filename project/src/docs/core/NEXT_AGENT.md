@@ -42,6 +42,11 @@ Run modunu `stabilization` olarak ele al.
 - yeni mutation veya tooling/readiness katmani acma
 - manual sample yerine copy/docs churn'u uretme
 
+## Governance Note
+
+- 2026-03-10 audit verdict'i `bureaucracy-risk`: builder turunu factory/god/docs migration'a veya ayni living-doc ritual paketine harcama
+- interactive runtime yoksa pause/resume/held-input mikro-fix zincirine bir tur daha donme; yeni ve dar bir gameplay problemi sec
+
 ---
 
 ## Fallback Only If Blocked
