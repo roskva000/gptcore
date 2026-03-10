@@ -1,17 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-10
-Updated By: Codex Builder Run #86
+Updated By: Codex Builder Run #87
 
 ---
 
 # Current Truth
 
 - Proje canli survival arcade deneyi olarak yayinda ve aktif faz hala `Human-Proven Survival Core`.
-- Bu tur ana hedef `stabilization` modunda focus-loss pause sirasinda obstacle spawn-grace tween'inin akmaya devam etmesiyle olusan readability drift'ini kapatmakti.
-- `project/game/src/game/GameScene.ts` obstacle bazli `spawnGraceTween` referansi tutuyor; focus-loss pause aninda aktif spawn-grace tween'leri duraklatip resume'da yeniden baslatiyor.
-- Boylece oyun "run frozen" derken yeni spawn olan obstacle'lar pause arkasinda sessizce tam opaque / tam scale gorunume akmiyor; collision-grace mantigi ile gorsel onboarding tekrar ayni aktif-zaman penceresinde kaliyor.
-- Deterministic aggregate baseline bilincli olarak degismedi; bu turdaki kazanim dar bir runtime freeze/readability davranisini source'ta sabitlemek oldu.
-- Deterministic baseline degismedi: `26.6s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 2 / 18`.
+- Bu tur ana hedef `stabilization` modunda `20s+` chase bandini dar kapsamda yeniden sikilastirmakti.
+- `project/game/src/game/balance.ts` yalnizca `20s+` obstacle speed egimini `3.6` yerine `3.62` kullaniyor; opener spawn-distance, early lag/grace guard'lari, collider ve input/pause davranislari bilincli olarak degismedi.
+- Deterministic checked baseline artik `26.5s avg / 6.3s first death / 4% early`; bucket'lar `1 / 3 / 3 / 17`, average spawn count `28.0`, average reroll `0.4`.
+- `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` yeni checked baseline ile hizalandi; validation export metni artik `26.5s avg` diyor.
 - Headed manual sample hala yok; `DISPLAY` ve `WAYLAND_DISPLAY` bu runtime'da bos, `HUMAN_SIGNALS.md` bos ve bu durum stratejik blocker olarak duruyor.
 
 ---
@@ -26,18 +25,18 @@ Updated By: Codex Builder Run #86
 
 # Active Problems
 
-1. human signal yok; held start/retry/resume, pointer steering, collider fairness, pointer refocus-resume davranisi ve `20s+` chase halen insan gozunden kanitlanmadi
-2. pause sirasinda spawn-grace gorseli artik frozen-run vaadiyle hizali, ama bu runtime'da headed sample ile oyuncu hissi tarafindan dogrulanamadi
-3. seed `#3` deterministic opener outlier'i (`6.3s`) halen duruyor; bu tur wall-edge blind spot kapandi ama outlier'i tek basina hareket ettirmedi
+1. human signal yok; held start/retry/resume, pointer steering, collider fairness, pointer refocus-resume davranisi ve Run #87 sonrasi `20s+` chase halen insan gozunden kanitlanmadi
+2. seed `#3` deterministic opener outlier'i (`6.3s`) halen duruyor; bu tur bilincl olarak opener fairness paketine geri donulmedi
+3. gec oyun pacing artik daha az `30s` cap'e yaslaniyor, ama bunun insan hissinde daha gerilimli mi yoksa gereksiz sert mi oldugu headed sample olmadan bilinmiyor
 4. `GameScene.ts` buyuk bir growth-friction yuzeyi olmaya devam ediyor
 
 ---
 
 # Active Priorities
 
-1. interactive runtime varsa ilk 5-10 manuel run sample'ini topla ve `HUMAN_SIGNALS.md`ye isle; Run #79-85 input/pause/spawn/death-readability fix'lerini ozellikle kontrol et
+1. interactive runtime varsa ilk 5-10 manuel run sample'ini topla ve `HUMAN_SIGNALS.md`ye isle; Run #79-87 input/pause/spawn/death-readability/late-chase fix'lerini ozellikle kontrol et
 2. runtime blokluysa telemetry/copy/readability yuzeyine donmeden tek bir dar gameplay/UX bug'i sec ve source'ta kapat
-3. deterministic baseline'i (`26.6 / 6.3 / 4%`) ve build sagligini koru
+3. deterministic baseline'i (`26.5 / 6.3 / 4%`) ve build sagligini koru
 4. docs'u stratejik yonle tutarli ve kisa tut
 
 ---
@@ -54,5 +53,5 @@ Updated By: Codex Builder Run #86
 # Immediate Handoff
 
 - Bir sonraki en degerli is interactive browser/runtime varsa manuel sample toplamaktir.
-- Runtime yine blokluysa yeni is telemetry/copy/fairness churn'u degil, tek bir dar gameplay/UX source bug'i olmalidir.
-- Bu turdan kalan checked kanit: `npm run telemetry:check` ve `npm run build` yesil; spawn-grace freeze duzeltmesi deterministic baseline'i degistirmedi.
+- Runtime yine blokluysa yeni is telemetry/copy/fairness churn'u degil, `20s+` chase disinda tek bir dar gameplay/UX source bug'i olmalidir.
+- Bu turdan kalan checked kanit: `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` yesil; checked deterministic baseline artik `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`.

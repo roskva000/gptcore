@@ -7,9 +7,9 @@
 ## Gameplay
 
 average_survival_time:
-current: 26.6s in deterministic survival snapshot
-baseline: 26.6s
-target: hold `>= 26.6s` while checking manually that the softened `20s+` chase plus the forward-pressure and lane-stack spawn filters still feel fair and readable
+current: 26.5s in deterministic survival snapshot
+baseline: 26.5s
+target: hold `>= 26.5s` while checking manually that the slightly firmer `20s+` chase plus the forward-pressure and lane-stack spawn filters still feel fair and readable
 
 first_death_time:
 current: 6.3s in deterministic survival snapshot
@@ -22,9 +22,9 @@ baseline: 4%
 target: stay at or below 4%
 
 survival_bucket_distribution:
-current: `<10s: 1`, `10-20s: 3`, `20-30s: 2`, `30s cap: 18`
-baseline: `1 / 3 / 2 / 18` across 24 deterministic seeds
-target: keep `10-20s <= 3`, `<10s <= 1`, and hold `30s cap >= 18`
+current: `<10s: 1`, `10-20s: 3`, `20-30s: 3`, `30s cap: 17`
+baseline: `1 / 3 / 3 / 17` across 24 deterministic seeds
+target: keep `10-20s <= 3`, `<10s <= 1`, and avoid drifting below `30s cap = 17` unless headed sample justifies a harder chase
 
 predicted_spawn_count:
 current: 10 by 10s, 32 by 30s, 76 by 60s
@@ -32,9 +32,9 @@ baseline: 10 / 32 / 76
 target: keep explicit and stable unless pacing tuning is intentional
 
 obstacle_speed_curve:
-current: 145 at 0s, 183 at 10s, 217 at 20s, 253 at 30s, 307 at 45s, 320 at 60s
-baseline: Run #75 lowered only the `20s+` speed slope from `3.7` to `3.6` after the new opener spawn filters had already improved average survival, converting one deterministic `20-30s` tail into a `30s` cap without changing pacing or opening-fairness guards
-target: preserve the early-death guard and validate manually that the softened `20s+` chase still clears space without feeling mushy or overly sharp
+current: 145 at 0s, 183 at 10s, 217 at 20s, 253 at 30s, 308 at 45s, 320 at 60s
+baseline: Run #87 nudged only the `20s+` speed slope from `3.6` to `3.62` after the prior softened chase had drifted to `18/24` deterministic `30s` caps; opener pacing, spawn-distance helpers, lag/grace guards, collider, and input/pause surfaces were intentionally left untouched
+target: preserve the early-death guard and validate manually that the slightly firmer `20s+` chase restores tension without feeling sharp or cheap
 
 obstacle_collision_radius:
 current: obstacle sprite still reads as a `12px` disc, but the active obstacle collider is now `11px`
@@ -58,7 +58,7 @@ target: confirm manually that this removes crowded opening lanes without making 
 
 validation_export_contract:
 current: `V` export now produces `5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths`, and `R` reset still clears the saved export so HUD summary returns to `not saved yet`
-baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #61 aligned `first death` with the minimum death in the sample instead of the first chronological run; Run #75 moved the checked deterministic baseline text to `26.6s avg / 6.3s first death / 4% early` while the 5-seed validation sample average stayed `24.1s`
+baseline: Run #54 aligned the export with actual early-death risk; Run #55 aligned sample reset with that export by clearing stale saved summaries instead of carrying them into a fresh session; Run #61 aligned `first death` with the minimum death in the sample instead of the first chronological run; Run #87 moved the checked deterministic baseline text to `26.5s avg / 6.3s first death / 4% early` while the 5-seed validation sample average stayed `24.1s`
 target: keep `V` export and parser aligned, never mark a 5-run sample as healthy while it still contains `<10s` deaths, never let a fresh reset show a stale export as if it belongs to the new sample, and keep the embedded deterministic baseline text synchronized with the latest checked gameplay snapshot
 
 forward_pressure_spawn_filter:
@@ -79,11 +79,11 @@ target: confirm manually that this trims repeated same-lane opener pressure with
 seed3_outlier_trace:
 current: existing deterministic telemetry now also captures the seed `#3` opener trace that still dies at `6.3s`: `6 spawn / 0 reroll`, with spawn times `0.9 / 1.9 / 3.0 / 4.0 / 5.0 / 6.0`, `spawn#4` from `{636,-56}` under `86.3px` nearest visible pressure and `spawn#6` from `{-56,242}` under `81.4px` nearest visible pressure
 baseline: Run #77 added this trace to the existing `telemetry-reports.ts` and `telemetry-check.ts` surface after several narrow spawn-selection experiments improved seed `#3` only by breaking the checked guard set elsewhere
-target: future spawn-selection tuning should move at least one of these pinch moments while preserving `avg >= 26.6s`, `<10s <= 1`, `10-20s <= 3`, and `30s cap >= 18`
+target: future spawn-selection tuning should move at least one of these pinch moments while preserving `avg >= 26.5s`, `<10s <= 1`, `10-20s <= 3`, and `30s cap >= 17`
 
 public_ai_panel_accuracy:
-current: the player-facing `Latest AI update` panel still mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export, but its static copy now lags the latest `26.6s` deterministic baseline
-baseline: Run #62 removed the stale Run #60 copy and obsolete `30.0s first death` text that had drifted from the real validation/export contract; Run #66 intentionally left public copy untouched to respect the audit freeze on copy churn
+current: the player-facing `Latest AI update` panel still mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export, but its static copy now lags the latest `26.5s` deterministic baseline
+baseline: Run #62 removed the stale Run #60 copy and obsolete `30.0s first death` text that had drifted from the real validation/export contract; later runs intentionally left public copy untouched to respect the audit freeze on copy churn
 target: keep player-facing AI copy synchronized with the actual deterministic baseline and validation summary once a manual-sample-backed product delta justifies touching that surface again
 
 retry_delay_integrity:
@@ -142,8 +142,8 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: not collected in this runtime; browser smoke passes and Chromium exists, but `DISPLAY`/`WAYLAND_DISPLAY` are absent so no headed manual sample was possible here. Real-player sampling is still needed to verify waiting held-start acceptance, Run #79 input-audio parity, Run #80 pooled obstacle tween cleanup, Run #81 focus-loss pointer resume guard, Run #82 held movement release guard, Run #83 forward-pressure projected-path scoring, Run #84 wall-edge projected-path clamp, Run #85 death-direction readability for chase/catch-up hits, Run #86 spawn-grace visual freeze on focus-loss pause, the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, the softened Run #75 `20s+` chase, the narrower Run #67 obstacle collider, the Run #69 offscreen collision guard, the Run #72 pause-safe collision-grace fix, and the Run #73-78 spawn filters. Run #86 fixed a real frozen-run readability gap, but it still did not replace human evidence
-target: 5-10 runs via session telemetry when a suitable interactive browser runtime is available; note whether waiting start and replay really restart on one action, whether keyboard-first starts/resumes now consistently unlock death audio, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause now requires an intentional second pointer action without feeling clumsy, whether pausing during an early spawn freezes both collision grace and the obstacle's fade/scale onboarding together, whether the softened `20s+` chase still clears arena traffic without feeling mushy, whether the `11px` obstacle collider removes cheap edge hits without making contact feel mushy, whether the new offscreen collision guard removes invisible edge hits without making arena-edge contact feel delayed, whether the projected-path forward-pressure, wall-edge clamp, and lane-stack filters trim cheap opener pressure without making spawns feel scripted, whether same-direction chase deaths now label the real threat lane instead of the obstacle's travel direction, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
+current: not collected in this runtime; browser smoke passes and Chromium exists, but `DISPLAY`/`WAYLAND_DISPLAY` are absent so no headed manual sample was possible here. Real-player sampling is still needed to verify waiting held-start acceptance, Run #79 input-audio parity, Run #80 pooled obstacle tween cleanup, Run #81 focus-loss pointer resume guard, Run #82 held movement release guard, Run #83 forward-pressure projected-path scoring, Run #84 wall-edge projected-path clamp, Run #85 death-direction readability for chase/catch-up hits, Run #86 spawn-grace visual freeze on focus-loss pause, Run #87's slightly firmer `20s+` chase, the tighter `120px` analog pointer steering threshold, held movement, held pointer/touch retry/resume, the narrower Run #67 obstacle collider, the Run #69 offscreen collision guard, the Run #72 pause-safe collision-grace fix, and the Run #73-78 spawn filters. Run #87 advanced product pacing, but it still did not replace human evidence
+target: 5-10 runs via session telemetry when a suitable interactive browser runtime is available; note whether waiting start and replay really restart on one action, whether keyboard-first starts/resumes now consistently unlock death audio, whether analog pointer steering still improves close-range dodge control while long escapes now reach speed fast enough, whether held movement-key and held pointer/touch retry/resume feel natural without accidental auto-replay, whether focus-loss pause now requires an intentional second pointer action without feeling clumsy, whether pausing during an early spawn freezes both collision grace and the obstacle's fade/scale onboarding together, whether the slightly firmer `20s+` chase restores tension without turning cheap, whether the `11px` obstacle collider removes cheap edge hits without making contact feel mushy, whether the new offscreen collision guard removes invisible edge hits without making arena-edge contact feel delayed, whether the projected-path forward-pressure, wall-edge clamp, and lane-stack filters trim cheap opener pressure without making spawns feel scripted, whether same-direction chase deaths now label the real threat lane instead of the obstacle's travel direction, whether an early pause preserves the remaining coaching-hint window, whether the new personal-best cue plus waiting/support-strip hierarchy increase first-look clarity and retry intent, whether the compact live telemetry block reduces clutter without hiding useful validation affordances, whether the first `6s` `+160px` opening spawn-distance guard feels fair without hollowing out tension, and whether the collapsed narrow-screen run panel reduces clutter without hiding useful context while killer tag + connector + threat dimming + merkez-bosluklu arrowhead'li rays + teal guide + `BREAK ...` prompt + fatal-lane callout + directional hit feedback stay readable
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run
@@ -151,8 +151,8 @@ baseline: fixed in Run #50 after active-play reset could silently corrupt the cu
 target: keep reset available between runs without allowing active-run telemetry corruption
 
 telemetry_regression_check:
-current: `npm run telemetry:check` passes on the Run #86 baseline and still asserts fresh-session retry remains `null`, same-session retry delay is still tracked, the deterministic survival proxy still models runtime visible-arena hit guard plus `96px` offscreen cull margin, offscreen obstacle'larin lane-stack reroll tetiklememesi guard altinda, projected-path forward-pressure preserved left-edge opener senaryosu sabit, wall-edge projected-path reference arena icine clamp'leniyor, death-direction helper ayni-yon chase carpismasinda gercek threat lane'i koruyor, merkez-overlap durumda velocity fallback'i calisiyor, and seed `#3`un ilk alti spawn trace'i sabit kaliyor
-baseline: as of Run #86 asserts pacing, required spawn distance, projected-path forward-pressure and lane-stack spawn reroll behavior through the checked snapshot, the wall-edge projected-path clamp, visible-only lane-stack guard'ini, softened `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, retry-delay session integrity, runtime-aligned collision/cull proxy behavior, death-direction chase/collision readability guards, and the seed `#3` outlier trace
+current: `npm run telemetry:check` passes on the Run #87 baseline and still asserts fresh-session retry remains `null`, same-session retry delay is still tracked, the deterministic survival proxy still models runtime visible-arena hit guard plus `96px` offscreen cull margin, offscreen obstacle'larin lane-stack reroll tetiklememesi guard altinda, projected-path forward-pressure preserved left-edge opener senaryosu sabit, wall-edge projected-path reference arena icine clamp'leniyor, death-direction helper ayni-yon chase carpismasinda gercek threat lane'i koruyor, merkez-overlap durumda velocity fallback'i calisiyor, and seed `#3`un ilk alti spawn trace'i sabit kaliyor
+baseline: as of Run #87 asserts pacing, required spawn distance, projected-path forward-pressure and lane-stack spawn reroll behavior through the checked snapshot, the wall-edge projected-path clamp, visible-only lane-stack guard'ini, slightly firmer `20s+` speed anchors, survival, survival buckets, honest validation summary/report wording, early spawn collision grace, the narrower obstacle collider, retry-delay session integrity, runtime-aligned collision/cull proxy behavior, death-direction chase/collision readability guards, and the seed `#3` outlier trace
 target: run before and after any future balance or telemetry change; runtime-only UX fixes can stay on build verification when deterministic contracts are unchanged
 
 browser_validation_smoke:
@@ -173,9 +173,9 @@ target: keep build green; do not chase bundle optimization ahead of gameplay UX 
 - strategic layer note: bu metrikler artik tek basina yon belirleyici degil; God katmani bunlari haftalik faz hedefleriyle birlikte yorumlar
 - partner layer note: factory-level kararlar verilirken bu metrikler human signals, experiments ve retention notlari ile birlikte okunmalidir
 - player-facing AI panel copy still reflects the same validation semantics, but its static narrative now lags the latest 20s+ chase tuning because audit governance froze copy churn this turn
-- player-facing AI panel copy still reflects the same validation semantics, but its static narrative now also lags the new `26.6s` deterministic baseline because audit governance still freezes copy churn on that surface
+- player-facing AI panel copy still reflects the same validation semantics, but its static narrative now also lags the new `26.5s` deterministic baseline because audit governance still freezes copy churn on that surface
 - deterministic survival method: 24 seed, 30s cap, center-seeking avoidance controller, 180ms reaction interval, effective player speed 214
-- current tuning signal: deterministic snapshot artik `26.6s / 6.3s / 4%`; Run #78 projected-path lane-stack referansi average spawn reroll'u `0.4`e indirdi, Run #83 ayni projected-path mantigini forward-pressure scoring'e de tasidi, Run #84 bu projected-path referansini duvar-kenarinda arena icine clamp'ledi, ama opener'da bir `<10s` outlier hala var
+- current tuning signal: deterministic snapshot artik `26.5s / 6.3s / 4%`; Run #78 projected-path lane-stack referansi average spawn reroll'u `0.4`e indirdi, Run #83 ayni projected-path mantigini forward-pressure scoring'e de tasidi, Run #84 bu projected-path referansini duvar-kenarinda arena icine clamp'ledi, Run #87 ise `20s+` chase'i kucuk bir kademe tekrar sikilastirdi; ama opener'da bir `<10s` outlier hala var
 - deterministic survival proxy artik runtime ile ayni gorunur-arena hit guard'i ve `96px` offscreen cull margin'ini modelledigi icin collision/cull tarafinda sessiz drift riski azaldi
 - seed `#3` outlier'i artik tek satir `6.3s` metric olarak degil, hangi spawn zinciriyle geldigini gosteren sabit bir deterministic trace olarak da tutuluyor
 - Run #72 collision grace unlock'unu aktif run elapsed zamanina tasidigi icin focus-loss pause sirasinda "run is frozen" vaadi gameplay tarafinda daha tutarli

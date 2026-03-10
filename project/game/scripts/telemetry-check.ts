@@ -64,7 +64,7 @@ assert.equal(speedAt(10), 183, '10s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(15), 200, '15s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(20), 217, '20s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(30), 253, '30s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(45), 307, '45s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(45), 308, '45s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(60), 320, '60s obstacle speed changed unexpectedly.');
 assert.equal(balanceReport.balanceCurve.find((entry) => entry.seconds === 0)?.requiredSpawnDistance, 370, '0s required spawn distance changed unexpectedly.');
 assert.equal(balanceReport.balanceCurve.find((entry) => entry.seconds === 5)?.requiredSpawnDistance, 335, '5s required spawn distance changed unexpectedly.');
@@ -168,7 +168,7 @@ assert.deepEqual(
   'Impact direction should still fall back to obstacle velocity when the overlap is centered.',
 );
 
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.6, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.5, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 4, 'Early death rate snapshot regressed.');
@@ -182,12 +182,12 @@ assert.deepEqual(
   {
     under10Seconds: 1,
     between10And20Seconds: 3,
-    between20And30Seconds: 2,
-    reached30SecondsCap: 18,
+    between20And30Seconds: 3,
+    reached30SecondsCap: 17,
   },
   'Survival bucket distribution regressed.',
 );
-assert.equal(survivalReport.averageSpawnCount, 28.1, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 28, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.4, 'Spawn reroll snapshot changed unexpectedly.');
 assert.equal(seed3TrajectoryReport.deathTimeSeconds, 6.3, 'Seed #3 trajectory baseline drifted.');
 assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 6, 'Seed #3 spawn count changed unexpectedly.');
@@ -257,7 +257,7 @@ assert.equal(
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.6s avg / 6.3s first death / 4% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(

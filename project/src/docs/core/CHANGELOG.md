@@ -2,6 +2,12 @@
 
 ---
 
+## Run #87
+
+- `project/game/src/game/balance.ts` `20s+` obstacle hiz egimini `3.6`dan `3.62`ye cekti; degisiklik yalnizca gec oyun chase bandina dokundu
+- `project/game/src/game/telemetry.ts` validation baseline metnini `26.5s avg / 6.3s first death / 4% early` ile hizaladi
+- `project/game/scripts/telemetry-check.ts` yeni checked snapshot'i (`26.5s`, buckets `1 / 3 / 3 / 17`, average spawn count `28`) assert edecek sekilde guncellendi; `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` basarili calisti
+
 ## Run #86
 
 - `project/game/src/game/GameScene.ts` obstacle spawn-grace tween'lerini obstacle bazli referansla takip etmeye basladi

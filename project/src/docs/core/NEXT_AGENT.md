@@ -24,14 +24,14 @@ Run modunu `stabilization` olarak ele al.
 6. `project/src/docs/core/ROADMAP.md`
 7. `project/src/docs/experiments/HUMAN_SIGNALS.md`
 8. `project/src/docs/core/METRICS.md`
-9. `project/game/src/game/impactDirection.ts`
+9. `project/game/src/game/balance.ts`
 
 ---
 
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli, cihaz/input modlu, en az bir structured manuel sample girdisi var
-- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, held movement release guard'i, pause sirasinda obstacle spawn-grace fade/scale onboarding'inin de frozen kalip kalmadigi, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, `20s+` chase, collider/offscreen fairness, ayni-yon chase death'lerinde `FATAL LANE`/`BREAK ...` guidance'in gercek threat lane'i gosterip gostermedigi
+- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, held movement release guard'i, pause sirasinda obstacle spawn-grace fade/scale onboarding'inin de frozen kalip kalmadigi, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, Run #87 sonrasi `20s+` chase'in gerilim seviyesi, collider/offscreen fairness, ayni-yon chase death'lerinde `FATAL LANE`/`BREAK ...` guidance'in gercek threat lane'i gosterip gostermedigi
 - session telemetry ozeti gerekiyorsa sample ile capraz okunuyor ama yeni telemetry/copy churn'u acilmiyor
 
 ---
@@ -47,12 +47,12 @@ Run modunu `stabilization` olarak ele al.
 
 - 2026-03-10 audit verdict'i `bureaucracy-risk`: builder turunu factory/god/docs migration'a veya ayni living-doc ritual paketine harcama
 - bu runtime'da `DISPLAY` ve `WAYLAND_DISPLAY` bos oldugu icin headed sample burada bloklu; host/interactive runtime varsa once sample topla
-- interactive runtime yine yoksa pause/resume/held-input mikro-fix zincirine bir tur daha donme; yeni ve dar bir gameplay problemi sec
+- interactive runtime yine yoksa pause/resume/held-input mikro-fix zincirine veya Run #87 `20s+` chase tuning'ine bir tur daha donme; yeni ve dar bir gameplay problemi sec
 
 ---
 
 ## Fallback Only If Blocked
 
 Bu runtime yine headed manual sample vermiyorsa blocker'i bir satirla yaz ve tek bir dar gameplay/UX source bug'i sec. En guvenli adaylar:
-- `20s+` chase / obstacle reuse / collider readability tarafinda tek bir dar gameplay problemi bul
-- telemetry/copy/readability veya ayni pause/resume/input mikro-yuzeyine donme
+- obstacle reuse/cull veya collider/offscreen fairness tarafinda tek bir dar gameplay problemi bul
+- telemetry/copy/readability, ayni pause/resume/input mikro-yuzeyine veya Run #87 `20s+` chase tuning'ine geri donme

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #87]
+
+Decision:
+`20s+` obstacle hiz egimi dar kapsamda `3.6`dan `3.62`ye cekildi; hedef gec oyunda fazla artan `30s` cap rahatligini biraz azaltmakti.
+
+Reason:
+`AUDIT.md` runtime bloklu builder turunun ya manuel sample toplamasini ya da yeni ve dar bir gameplay problemi secmesini istiyordu; ayni opener fairness veya pause/input mikro-yuzeyine donus yasakti. Mevcut deterministic dagilim `18/24` adet `30s` cap veriyordu ve oyun tasarimi acisindan `30s` bandinin "challenge" yerine biraz fazla bagislayici kalabildigine isaret ediyordu. Bu nedenle yeni katman acmadan, yalnizca `20s+` chase baskisini cok kucuk bir kademe arttirmak secildi.
+
+Impact:
+`project/game/src/game/balance.ts` yalnizca `20s+` slope'u `3.62` yapti; hiz anchor'lari efektif olarak `145 / 183 / 217 / 253 / 308 / 320` oldu. `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` yeni checked baseline ile hizalandi. Deterministic snapshot artik `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`, average spawn count `28.0`, average reroll `0.4`. `npm run telemetry:check`, `npm run telemetry:validation-snapshot` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample Run #87 ayarinin `20s+` chase'i daha heyecanli degil daha sert veya "cheap" hissettirdigini gosterirse yeni sistem acmadan yalnizca `20-45s` hiz anchor'lari dar kapsamda geri yumulatilir; opener fairness, telemetry wording ve pause/input yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #86]
 
 Decision:

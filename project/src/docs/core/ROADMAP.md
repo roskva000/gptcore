@@ -4,9 +4,9 @@
 
 # NOW
 
-- `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, focus-loss sonrasi pointer refocus-resume guard'i, held movement release guard'i, pause sirasinda frozen kalan spawn-grace readability, projected-path forward-pressure secimi, pointer steering, offscreen hit guard, `11px` collider, pooled obstacle reuse/cull temizligi, `20s+` chase, death lane/readability ve audio feedback parity notlarini kaydet
-- headed runtime yoksa telemetry/copy veya ayni opening-fairness paketini buyutmeden tek bir dar gameplay/UX bug'ini kapat; mevcut en guvenli yuzey `20s+` chase / collider readability / obstacle reuse tarafi
-- deterministic baseline'i `26.6s / 6.3s / 4%`, bucket'lari `1 / 3 / 2 / 18` ve build sagligini koru
+- `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, focus-loss sonrasi pointer refocus-resume guard'i, held movement release guard'i, pause sirasinda frozen kalan spawn-grace readability, projected-path forward-pressure secimi, pointer steering, offscreen hit guard, `11px` collider, pooled obstacle reuse/cull temizligi, Run #87 sonrasi `20s+` chase, death lane/readability ve audio feedback parity notlarini kaydet
+- headed runtime yoksa telemetry/copy veya ayni opening-fairness paketini buyutmeden tek bir dar gameplay/UX bug'ini kapat; Run #87 `20s+` chase yuzeyini kullandigi icin bir sonraki en guvenli alan `collider/offscreen fairness` veya `obstacle reuse/cull` tarafidir
+- deterministic baseline'i `26.5s / 6.3s / 4%`, bucket'lari `1 / 3 / 3 / 17` ve build sagligini koru
 
 Success markers:
 - ilk `HUMAN_SIGNALS.md` girdisi olustu veya runtime blocker net kayda gecti
@@ -18,7 +18,7 @@ Success markers:
 # NEXT
 
 - manual sample notlarina gore fairness, replay, held resume guard'lari, projected-path wall-edge davranisi, obstacle reuse, death readability veya control tarafinda en yuksek etkili dar bug fix'i sec
-- manual sample notlarina gore fairness, replay, held resume guard'lari, pause-freeze readability, projected-path wall-edge davranisi, obstacle reuse, death readability veya control tarafinda en yuksek etkili dar bug fix'i sec
+- manual sample gelmezse `20s+` chase'i tekrar acmadan collider/offscreen fairness ya da obstacle reuse/cull tarafinda tek bir dar source bug'i sec
 - seed `#3` outlier'ini ancak manual evidence veya yeni guvenli gameplay hipotezi varsa yeniden ac
 - insan kaniti geldikten sonra ilk dusuk riskli mutation adayini (`near-miss pressure reward` gibi) degerlendir
 

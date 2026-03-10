@@ -24,7 +24,7 @@ export const getObstacleSpeed = (survivalTimeSeconds: number): number =>
       ? 145 + survivalTimeSeconds * 3.8
       : survivalTimeSeconds <= 20
         ? 183 + (survivalTimeSeconds - 10) * 3.4
-        : 217 + (survivalTimeSeconds - 20) * 3.6,
+        : 217 + (survivalTimeSeconds - 20) * 3.62,
     145,
     320,
   );
