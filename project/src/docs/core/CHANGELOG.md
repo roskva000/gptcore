@@ -2,6 +2,12 @@
 
 ---
 
+## Run #99
+
+- `project/game/src/game/telemetry.ts` tamamlanmis validation sample sayisini tek kaynaktan okumak icin `getCompletedRunCount()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` waiting ve playing telemetry/progress satirlarini `Completed runs` semantigine tasidi; yarim kalmis veya yeni baslamis start'lar artik sample ilerlemesini tamamlanmis run gibi gostermiyor
+- `project/game/scripts/telemetry-check.ts` bu helper semantigini `totalRuns = 6`, `totalDeaths = 5` senaryosunda guard altina aldi; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #98
 
 - `project/game/src/game/telemetry.ts` validation export icindeki `runs=` alanini `totalRuns` yerine tamamlanmis run sayisina (`totalDeaths`) hizaladi

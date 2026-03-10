@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #99]
+
+Decision:
+In-game telemetry/progress satirlari validation export ile ayni completed-run semantigine hizalandi; waiting ve playing fazlari artik sample ilerlemesini `totalRuns` yerine `totalDeaths` uzerinden okuyor.
+
+Reason:
+Run #98 validation export kontratini dar kapsamda duzeltti, fakat `GameScene.ts` icindeki progress satirlari hala `Session runs ${totalRuns}` diyerek yarim kalmis veya yeni baslamis run'lari tamamlanmis sample gibi gosterebiliyordu. Bu, runtime blokluyken builder'in tekrar ayni telemetry/copy yuzeyine acilmadan kapatabilecegi gercek bir validation-integrity/UX bug'iydi.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `getCompletedRunCount()` helper'ini ekledi. `project/game/src/game/GameScene.ts` playing ve waiting telemetry satirlarinda `Completed runs` semantigine gecti. `project/game/scripts/telemetry-check.ts` helper'in `totalRuns = 6`, `totalDeaths = 5` senaryosunda `5` completed run dondurmesini guard altina aldi. Deterministic checked baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Interactive sample veya sonraki UX review bu satirlarda started-attempt bilgisinin de oyuncu icin gerekli oldugunu gosterirse bu bilgi ayri bir started/completed ciftine acikca ayrilmalidir; completed-run semantigi `totalRuns`a geri dondurulmemelidir.
+
 ### [Run #98]
 
 Decision:

@@ -69,6 +69,8 @@ export const getAverageSurvivalTime = (telemetry: GameplayTelemetry): number => 
   return telemetry.totalSurvivalTime / telemetry.totalDeaths;
 };
 
+export const getCompletedRunCount = (telemetry: GameplayTelemetry): number => telemetry.totalDeaths;
+
 export const getBestSurvivalTime = (telemetry: GameplayTelemetry): number | null =>
   telemetry.bestSurvivalTime;
 

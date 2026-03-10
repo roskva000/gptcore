@@ -25,6 +25,7 @@ import {
   buildTelemetrySummary,
   buildValidationReport,
   createEmptyTelemetry,
+  getCompletedRunCount,
   getBestSurvivalTime,
   getBestSurvivalTimeText,
   formatValidationReportSummaryText,
@@ -1752,7 +1753,7 @@ export class GameScene extends Phaser.Scene {
     if (this.phase === 'playing') {
       return [
         'Local telemetry',
-        `Session runs ${this.sessionTelemetry.totalRuns} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+        `Completed runs ${getCompletedRunCount(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
         `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}%`,
         `Validation ${getValidationProgressText(this.sessionTelemetry)} | Press V to export`,
       ];
@@ -1829,7 +1830,7 @@ export class GameScene extends Phaser.Scene {
       return `No completed runs yet | Goal: survive past ${TARGET_FIRST_DEATH_SECONDS}s`;
     }
 
-    return `Session runs ${this.sessionTelemetry.totalRuns} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Best ${getBestSurvivalTimeText(this.sessionTelemetry)}`;
+    return `Completed runs ${getCompletedRunCount(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Best ${getBestSurvivalTimeText(this.sessionTelemetry)}`;
   }
 
   private getWaitingRiskLine(): string {
