@@ -26,6 +26,11 @@ type SpawnSelectionParams = {
   randomInt: (min: number, max: number) => number;
 };
 
+const clampPointToArena = (point: Point): Point => ({
+  x: Math.min(Math.max(point.x, 0), ARENA_WIDTH),
+  y: Math.min(Math.max(point.y, 0), ARENA_HEIGHT),
+});
+
 const getProjectedPathReference = (
   playerPosition: Point,
   playerVelocity: Point | undefined,
@@ -34,10 +39,10 @@ const getProjectedPathReference = (
     return playerPosition;
   }
 
-  return {
+  return clampPointToArena({
     x: playerPosition.x + playerVelocity.x * EARLY_SPAWN_TARGET_LAG_SECONDS,
     y: playerPosition.y + playerVelocity.y * EARLY_SPAWN_TARGET_LAG_SECONDS,
-  };
+  });
 };
 
 const normalize = (point: Point): Point => {

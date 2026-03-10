@@ -2,6 +2,12 @@
 
 ---
 
+## Run #84
+
+- `project/game/src/game/spawn.ts` projected-path spawn referansina arena clamp'i ekledi; duvar-kenari kacis anlarinda spawn secimi arena disindaki hayali boslugu guvenli lane gibi saymiyor
+- `project/game/scripts/telemetry-check.ts` duvar-kenari sentetik spawn secim senaryosunu regression guard altina aldi; tehlikeli sol spawn artik reroll'e dusup sag guvenli lane seciliyor
+- deterministic baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #83
 
 - `project/game/src/game/spawn.ts` early forward-pressure penalty hesabini oyuncunun anlik merkezi yerine mevcut velocity'nin `0.18s` projected path referansina tasidi; aktif kacis yonunde guvenli edge spawn'lar gereksiz reroll'e daha az dusuyor

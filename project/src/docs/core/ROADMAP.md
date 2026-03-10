@@ -5,7 +5,7 @@
 # NOW
 
 - `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, focus-loss sonrasi pointer refocus-resume guard'i, yeni held movement release guard'i, projected-path forward-pressure secimi, pointer steering, offscreen hit guard, `11px` collider, pooled obstacle reuse/cull temizligi, `20s+` chase ve audio feedback parity notlarini kaydet
-- headed runtime yoksa telemetry/copy/readability veya opening-fairness paketine donmeden tek bir dar gameplay/UX bug'ini kapat
+- headed runtime yoksa telemetry/copy/readability veya ayni opening-fairness paketini buyutmeden tek bir dar gameplay/UX bug'ini kapat
 - deterministic baseline'i `26.6s / 6.3s / 4%`, bucket'lari `1 / 3 / 2 / 18` ve build sagligini koru
 
 Success markers:
@@ -17,7 +17,7 @@ Success markers:
 
 # NEXT
 
-- manual sample notlarina gore fairness, replay, held resume guard'lari, projected-path forward-pressure, obstacle reuse veya control tarafinda en yuksek etkili dar bug fix'i sec
+- manual sample notlarina gore fairness, replay, held resume guard'lari, projected-path wall-edge davranisi, obstacle reuse veya control tarafinda en yuksek etkili dar bug fix'i sec
 - seed `#3` outlier'ini ancak manual evidence veya yeni guvenli gameplay hipotezi varsa yeniden ac
 - insan kaniti geldikten sonra ilk dusuk riskli mutation adayini (`near-miss pressure reward` gibi) degerlendir
 
@@ -37,7 +37,7 @@ Bu adaylar human signal gelmeden ve cekirdek fairness/replay akisi kanitlanmadan
 # BLOCKED
 
 - structured human signal eksikligi
-- bu runtime'da headed browser olmayisi
+- bu runtime'da `DISPLAY` / `WAYLAND_DISPLAY` olmayan headed browser eksikligi
 - gameplay mutation'larinin insan kaniti ve retention sistemi olmadan acilmasi
 
 ---

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #84]
+
+Decision:
+Projected-path spawn referansi arena sinirlari icine clamp'lendi; duvar-kenari kacis anlarinda spawn secimi arena disindaki hayali bosluga gore karar vermiyor.
+
+Reason:
+`AUDIT.md` bu runtime blokluysa pause/resume/input mikro-fix zincirine veya telemetry/copy/readability churn'una donmeyi yasakliyor. `NEXT_AGENT.md` fallback'i Run #83'ün komsu bir source bug'ini secmeye izin veriyordu. Mevcut `projected-path` hesabi oyuncunun velocity projeksiyonunu arena disina tasirabiliyor; bu da duvara yaslanmis oyuncu icin solda/sagda gercekte kullanamayacagi bir boslugu guvenli kacis lane'i gibi puanlayarak yakindaki tehdit baskisini eksik hesaplayabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` icinde projected-path referansi yeni helper ile arena icine clamp'lendi. `project/game/scripts/telemetry-check.ts` duvar-kenari bir sentetik secim senaryosunda tehlikeli sol spawn'in artik reroll'e dusup sag guvenli lane'in secildigini assert ediyor. Deterministic aggregate baseline bilincli olarak korunuyor: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample veya sonraki deterministic guard'lar bu clamp'in arena kenarinda spawn cesitliligini gereksiz sertlestirdigini gosterirse yeni fairness helper katmani acmadan yalnizca projected-path clamp davranisi dar kapsamda yeniden ayarlanir; telemetry/copy veya pause/input yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #83]
 
 Decision:

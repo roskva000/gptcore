@@ -121,6 +121,22 @@ assert.deepEqual(
   'Projected-path forward-pressure should keep a safe left-edge spawn instead of rerolling into right-edge crossfire.',
 );
 
+const wallEdgeProjectedSelection = selectSpawnPoint({
+  survivalTimeSeconds: 2,
+  playerPosition: { x: 18, y: 300 },
+  playerVelocity: { x: -260, y: 0 },
+  activeObstaclePositions: [{ x: 96, y: 300 }],
+  randomInt: createQueuedRandom([3, 300, 1, 300]),
+});
+assert.deepEqual(
+  wallEdgeProjectedSelection,
+  {
+    point: { x: 856, y: 300 },
+    rerollsUsed: 1,
+  },
+  'Projected-path spawn scoring should clamp wall-edge escape references inside the arena before judging nearby left-lane pressure.',
+);
+
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.6, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
