@@ -2,6 +2,12 @@
 
 ---
 
+## Run #90
+
+- `project/game/src/game/GameScene.ts` obstacle cull adimini `playing` fazina tasidi; focus-loss pause ve game-over freeze sirasinda offscreen obstacle'lar artik arka planda pool'a geri dusmuyor
+- freeze semantigi obstacle lifecycle tarafinda daha tutarli hale geldi; runtime davranisi degisirken deterministic checked baseline bilincli olarak korunup `npm run telemetry:check` yesil kaldi
+- `npm run build` basarili calisti
+
 ## Run #89
 
 - `project/game/src/game/spawn.ts` early lane-stack filtresinin visible-obstacle guard'ini `11px` collider margin ile hizaladi; merkez arena icine girmis ama collider'i tam gorunmemis edge obstacle'lar artik reroll baskisi yaratmiyor

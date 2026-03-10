@@ -450,12 +450,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.updatePlayerVelocity();
-    this.cullObstacles();
     this.movementInputWasActive = movementInputActive;
 
     if (this.phase !== 'playing') {
       return;
     }
+
+    this.cullObstacles();
 
     const activeRunElapsedMs = this.getActiveRunElapsedMs(time);
     this.survivalTime = activeRunElapsedMs / 1000;

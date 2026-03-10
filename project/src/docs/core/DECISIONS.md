@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #90]
+
+Decision:
+Obstacle cull sadece `playing` fazinda calisacak sekilde daraltildi; focus-loss pause ve game-over freeze sirasinda obstacle lifecycle arka planda degismiyor.
+
+Reason:
+`AUDIT.md` runtime bloklu builder turunu ayni pause/input mikro-fix zincirine veya visible-arena fairness helper'larina geri dondurmeyi yasakliyor, ama obstacle reuse/cull tarafinda dar bir gameplay problemi secmeye izin veriyor. Mevcut `GameScene.ts` her frame `cullObstacles()` cagiriyordu; bu da pause overlay'i acikken veya death tableau ekrandayken bile offscreen obstacle'larin pool'a geri dusmesine izin verip "run frozen" vaadiyle sessizce celisiyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` cull adimini `phase === 'playing'` guard'inin arkasina tasidi. Runtime freeze semantigi obstacle lifecycle tarafinda daha durust hale geldi; deterministic checked baseline bilincl olarak degismedi: `26.5s / 6.3s / 4%`, buckets `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample bu degisikligin pause/game-over ekranlarinda beklenmedik obstacle birikimi, gorunur artifact veya retry sonrasi pool davranisinda bozulma yarattigini gosterirse yalnizca cull faz kosulu dar kapsamda yeniden ayarlanir; telemetry/copy, input akislari ve opening-fairness helper'lari bu bahaneyle tekrar acilmaz.
+
 ### [Run #89]
 
 Decision:
