@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { getVerticalCalloutPlacement } from '../src/game/deathOverlayLayout.ts';
 import {
   OBSTACLE_COLLISION_RADIUS,
   isPointInsideArena,
@@ -53,6 +54,37 @@ const createQueuedRandom = (values: number[]): ((min: number, max: number) => nu
     return value;
   };
 };
+
+assert.deepEqual(
+  getVerticalCalloutPlacement({
+    anchorY: 48,
+    gap: 22,
+    labelHalfHeight: 12,
+    minY: 28,
+    maxY: 572,
+  }),
+  {
+    connectorY: 70,
+    labelY: 82,
+    placeBelow: true,
+  },
+  'Top-edge impact callouts should flip below the marker instead of clipping out of the arena.',
+);
+assert.deepEqual(
+  getVerticalCalloutPlacement({
+    anchorY: 556,
+    gap: 18,
+    labelHalfHeight: 20,
+    minY: 40,
+    maxY: 560,
+  }),
+  {
+    connectorY: 538,
+    labelY: 518,
+    placeBelow: false,
+  },
+  'Bottom-edge fatal callouts should stay above the spotlight instead of running off the screen.',
+);
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');
 assert.deepEqual(

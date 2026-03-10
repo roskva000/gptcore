@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #91]
+
+Decision:
+Death-readability callout'lari arena kenarina gore yukari/asagi yer degistirecek sekilde edge-aware yapildi; top-edge impact label ve bottom-edge killer label artik ekran disina tasimiyor.
+
+Reason:
+`AUDIT.md` runtime bloklu turda ayni pause/input/fairness mikro-yuzeylerine donmeyi ve public copy churn'unu yasakliyor. Buna karsin death readability halen fallback icin uygun dar gameplay/UX alanlarindan biriydi. Mevcut `GameScene.ts` impact marker label'ini sabit olarak marker'in ustune, killer label'ini da sabit olarak spotlight'in ustune koyuyordu; top/bottom edge olumlerinde bu callout'lar kismen arena disina tasip tam okunurlugu bozabiliyordu.
+
+Impact:
+`project/game/src/game/deathOverlayLayout.ts` saf bir dikey yerlesim helper'i ekledi. `project/game/src/game/GameScene.ts` impact ve fatal callout'lari bu helper ile arena icinde tutuyor. `project/game/scripts/telemetry-check.ts` top-edge impact ve bottom-edge fatal placement guard'lari ekledi. Deterministic checked baseline korunarak `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample yeni callout yer degistirme davranisinin top/bottom edge olumlerinde ray/marker hiyerarsisini daha da karmasiklastirdigini gosterirse yalnizca label gap/min-max placement degerleri dar kapsamda yeniden ayarlanir; pause/input, opener fairness, telemetry/export ve public copy yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #90]
 
 Decision:

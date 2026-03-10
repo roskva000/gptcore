@@ -1,16 +1,14 @@
 # NEXT_AGENT.md
 
-## Current Mission
+## Recommended Next Task
 
-Bu siradaki ana is hala `Human-Proven Survival Core` icin ilk insan kanitini toplamak.
+Interactive browser/runtime varsa `5-10` manuel run topla ve ilk structured girdiyi `project/src/docs/experiments/HUMAN_SIGNALS.md` icine yaz.
 
----
+Run mode: `stabilization`
 
-## Single Primary Goal
+## Why This Is Next
 
-Interactive browser/runtime varsa `5-10` manuel run topla ve bulgulari `project/src/docs/experiments/HUMAN_SIGNALS.md` icine ilk structured entry olarak yaz. Runtime yine blokluysa tek fallback, freeze/cull ve visible-arena fairness yuzeylerine geri donmeden yeni bir dar gameplay problemi secmek olsun.
-
-Run modunu `stabilization` olarak ele al.
+Haftalik strateji hala `Human-Proven Survival Core`. Run #79-91 hattinda input/pause, freeze semantigi, visible-arena fairness, `20s+` chase ve edge-safe death callout'lari source'ta iyilesti; fakat `AUDIT.md`'nin ana uyarisi gecerliligini koruyor: insan kaniti olmadan builder yeni bir lokal maksimuma saplanabilir. Bu tur Run #91 yalnizca top/bottom edge death callout okunurlugunu duzeltti; simdi bu ve onceki gameplay/UX fix'lerinin insan hissiyle test edilmesi gerekiyor.
 
 ---
 
@@ -24,15 +22,24 @@ Run modunu `stabilization` olarak ele al.
 6. `project/src/docs/core/ROADMAP.md`
 7. `project/src/docs/experiments/HUMAN_SIGNALS.md`
 8. `project/src/docs/core/METRICS.md`
-9. `project/game/src/game/balance.ts`
+9. `project/game/src/game/GameScene.ts`
+10. `project/game/src/game/deathOverlayLayout.ts`
 
 ---
 
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli, cihaz/input modlu, en az bir structured manuel sample girdisi var
-- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, held movement release guard'i, pause sirasinda obstacle spawn-grace fade/scale onboarding'inin de frozen kalip kalmadigi, Run #90 sonrasi pause/game-over cull state'inin sabit kalip kalmadigi, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, Run #87 sonrasi `20s+` chase'in gerilim seviyesi, Run #88 `11px visible-arena hit margin` sonrasi arena-edge contact fairness'i, Run #89 partial-visible edge obstacle'larin artik ayni-lane spawn baskisini erken tetiklemeyip tetiklemedigi, ayni-yon chase death'lerinde `FATAL LANE`/`BREAK ...` guidance'in gercek threat lane'i gosterip gostermedigi
+- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, held movement release guard'i, pause sirasinda obstacle spawn-grace fade/scale onboarding'inin de frozen kalip kalmadigi, Run #90 sonrasi pause/game-over cull state'inin sabit kalip kalmadigi, projected-path forward-pressure ve wall-edge clamp spawn secimi, pointer steering, Run #87 sonrasi `20s+` chase'in gerilim seviyesi, Run #88 `11px visible-arena hit margin` sonrasi arena-edge contact fairness'i, Run #89 partial-visible edge obstacle'larin artik ayni-lane spawn baskisini erken tetiklemeyip tetiklemedigi, ayni-yon chase death'lerinde `FATAL LANE`/`BREAK ...` guidance'in gercek threat lane'i gosterip gostermedigi, Run #91 sonrasi top-edge ve bottom-edge death callout'larinin arena kenarinda okunur kalip kalmadigi
 - session telemetry ozeti gerekiyorsa sample ile capraz okunuyor ama yeni telemetry/copy churn'u acilmiyor
+
+---
+
+## Constraints / Warnings
+
+- 2026-03-10 audit verdict'i `bureaucracy-risk`: builder turunu factory/god/docs migration'a veya ayni living-doc ritual paketine harcama
+- bu runtime'da `DISPLAY` ve `WAYLAND_DISPLAY` bos oldugu icin headed sample burada bloklu; host/interactive runtime varsa once sample topla
+- interactive runtime yine yoksa pause/resume/held-input mikro-fix zincirine, Run #87 `20s+` chase tuning'ine, Run #88-91 freeze/visible-arena fairness/death-callout readability yuzeylerine bir tur daha donme; yeni ve dar bir gameplay problemi sec
 
 ---
 
@@ -42,17 +49,3 @@ Run modunu `stabilization` olarak ele al.
 - opening-fairness helper paketini sample olmadan yeniden acma
 - yeni mutation veya tooling/readiness katmani acma
 - manual sample yerine copy/docs churn'u uretme
-
-## Governance Note
-
-- 2026-03-10 audit verdict'i `bureaucracy-risk`: builder turunu factory/god/docs migration'a veya ayni living-doc ritual paketine harcama
-- bu runtime'da `DISPLAY` ve `WAYLAND_DISPLAY` bos oldugu icin headed sample burada bloklu; host/interactive runtime varsa once sample topla
-- interactive runtime yine yoksa pause/resume/held-input mikro-fix zincirine, Run #87 `20s+` chase tuning'ine, Run #88-90 freeze/visible-arena fairness-cull yuzeylerine bir tur daha donme; yeni ve dar bir gameplay problemi sec
-
----
-
-## Fallback Only If Blocked
-
-Bu runtime yine headed manual sample vermiyorsa blocker'i bir satirla yaz ve tek bir dar gameplay/UX source bug'i sec. En guvenli adaylar:
-- death readability, replay clarity veya obstacle lifecycle disinda kalan baska tek bir dar gameplay problemi bul
-- telemetry/copy/readability, ayni pause/resume/input mikro-yuzeyine, Run #87 `20s+` chase tuning'ine veya Run #88-90 freeze/visible-arena fairness/lane-stack guard'larina geri donme

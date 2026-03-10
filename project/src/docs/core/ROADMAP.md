@@ -5,7 +5,7 @@
 # NOW
 
 - `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, focus-loss sonrasi pointer refocus-resume guard'i, held movement release guard'i, pause sirasinda frozen kalan spawn-grace readability, projected-path forward-pressure secimi, pointer steering, yeni `11px visible-arena hit margin`, pooled obstacle reuse/cull temizligi, Run #87 sonrasi `20s+` chase, death lane/readability ve audio feedback parity notlarini kaydet
-- headed runtime yoksa telemetry/copy veya ayni opening-fairness paketini buyutmeden tek bir dar gameplay/UX bug'ini kapat; Run #90 pause/game-over sirasinda obstacle cull mutasyonunu kapattigi icin fallback adayi artik obstacle lifecycle disinda yeni bir dar source bug'i bulmaktir
+- headed runtime yoksa telemetry/copy veya ayni opening-fairness paketini buyutmeden tek bir dar gameplay/UX bug'ini kapat; Run #91 death callout'larini arena kenarinda okunur tuttu, bu yuzey tekrar acilmadan yeni fallback adayi secilmelidir
 - deterministic baseline'i `26.5s / 6.3s / 4%`, bucket'lari `1 / 3 / 3 / 17` ve build sagligini koru
 
 Success markers:
@@ -13,6 +13,7 @@ Success markers:
 - product delta gameplay/source icinde kaldi; telemetry/copy churn'u acilmadi
 - `npm run telemetry:check` ve `npm run build` yesil kaldi
 - focus-loss pause ve game-over freeze semantigi obstacle cull tarafinda arka plan mutasyonu yapmiyor
+- top/bottom edge olumlerinde impact ve killer callout'lari arena icinde kalacak sekilde yerlesiyor
 
 ---
 

@@ -18,6 +18,7 @@ import {
   OFFSCREEN_CULL_MARGIN,
   selectSpawnPoint,
 } from './spawn';
+import { getVerticalCalloutPlacement } from './deathOverlayLayout';
 import { getImpactDirection, type ImpactDirection } from './impactDirection';
 import {
   TELEMETRY_RECENT_RUN_LIMIT,
@@ -49,6 +50,14 @@ const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
+const IMPACT_LABEL_HALF_HEIGHT_PX = 12;
+const IMPACT_LABEL_GAP_PX = 22;
+const IMPACT_LABEL_MIN_Y_PX = 28;
+const IMPACT_LABEL_MAX_Y_PX = ARENA_HEIGHT - 28;
+const FATAL_LABEL_HALF_HEIGHT_PX = 20;
+const FATAL_LABEL_GAP_PX = 18;
+const FATAL_LABEL_MIN_Y_PX = 40;
+const FATAL_LABEL_MAX_Y_PX = ARENA_HEIGHT - 40;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
 const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
@@ -1221,6 +1230,13 @@ export class GameScene extends Phaser.Scene {
     const rayEndY = this.player.y + hitDirection.offsetY * rayLength;
     const markerX = Phaser.Math.Clamp(this.player.x + hitDirection.offsetX * 54, 48, ARENA_WIDTH - 48);
     const markerY = Phaser.Math.Clamp(this.player.y + hitDirection.offsetY * 54, 48, ARENA_HEIGHT - 48);
+    const impactLabelPlacement = getVerticalCalloutPlacement({
+      anchorY: markerY,
+      gap: IMPACT_LABEL_GAP_PX,
+      labelHalfHeight: IMPACT_LABEL_HALF_HEIGHT_PX,
+      minY: IMPACT_LABEL_MIN_Y_PX,
+      maxY: IMPACT_LABEL_MAX_Y_PX,
+    });
 
     this.impactRay
       .setTo(rayStartX, rayStartY, rayEndX, rayEndY)
@@ -1238,7 +1254,7 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(0.95)
       .setVisible(true);
     this.impactMarkerLabel
-      .setPosition(markerX, markerY - 34)
+      .setPosition(markerX, impactLabelPlacement.labelY)
       .setText(hitDirection.label.toUpperCase())
       .setAlpha(1)
       .setVisible(true);
@@ -1277,9 +1293,17 @@ export class GameScene extends Phaser.Scene {
   ): void {
     const spotlightX = Phaser.Math.Clamp(obstacle.x, 44, ARENA_WIDTH - 44);
     const spotlightY = Phaser.Math.Clamp(obstacle.y, 44, ARENA_HEIGHT - 44);
-    const labelY = Phaser.Math.Clamp(spotlightY - 36, 36, ARENA_HEIGHT - 36);
-    const labelBottomY = labelY + 18;
-    const connectorEndY = Math.min(labelBottomY, spotlightY - 12);
+    const fatalLabelPlacement = getVerticalCalloutPlacement({
+      anchorY: spotlightY,
+      gap: FATAL_LABEL_GAP_PX,
+      labelHalfHeight: FATAL_LABEL_HALF_HEIGHT_PX,
+      minY: FATAL_LABEL_MIN_Y_PX,
+      maxY: FATAL_LABEL_MAX_Y_PX,
+    });
+    const connectorStartY = fatalLabelPlacement.placeBelow ? spotlightY + 16 : spotlightY - 16;
+    const connectorEndY = fatalLabelPlacement.placeBelow
+      ? Math.max(fatalLabelPlacement.labelY - 18, spotlightY + 12)
+      : Math.min(fatalLabelPlacement.labelY + 18, spotlightY - 12);
 
     this.fatalSpotlight
       .setPosition(spotlightX, spotlightY)
@@ -1287,11 +1311,11 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(1)
       .setVisible(true);
     this.fatalSpotlightConnector
-      .setTo(spotlightX, spotlightY - 16, spotlightX, connectorEndY)
+      .setTo(spotlightX, connectorStartY, spotlightX, connectorEndY)
       .setAlpha(0.96)
       .setVisible(true);
     this.fatalSpotlightLabel
-      .setPosition(spotlightX, labelY)
+      .setPosition(spotlightX, fatalLabelPlacement.labelY)
       .setText(`KILLER\n${hitDirection.label.toUpperCase()}`)
       .setAlpha(1)
       .setVisible(true);
@@ -1311,7 +1335,7 @@ export class GameScene extends Phaser.Scene {
     });
     this.tweens.add({
       targets: this.fatalSpotlightLabel,
-      y: labelY - 8,
+      y: fatalLabelPlacement.labelY + (fatalLabelPlacement.placeBelow ? 8 : -8),
       alpha: 0.86,
       duration: 220,
       ease: 'Quad.Out',

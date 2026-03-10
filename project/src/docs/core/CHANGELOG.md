@@ -2,6 +2,12 @@
 
 ---
 
+## Run #91
+
+- `project/game/src/game/deathOverlayLayout.ts` impact ve killer callout'lari icin edge-aware dikey yerlesim helper'i ekledi
+- `project/game/src/game/GameScene.ts` top-edge death'lerde impact label'i marker'in altina indirebiliyor, bottom-edge death'lerde killer label'i spotlight'in ustunde tutuyor; death readability arena kenarlarinda daha tutarli hale geldi
+- `project/game/scripts/telemetry-check.ts` top-edge impact ve bottom-edge fatal placement guard'lari ekledi; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #90
 
 - `project/game/src/game/GameScene.ts` obstacle cull adimini `playing` fazina tasidi; focus-loss pause ve game-over freeze sirasinda offscreen obstacle'lar artik arka planda pool'a geri dusmuyor
