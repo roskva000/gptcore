@@ -5,7 +5,7 @@
 # NOW
 
 - `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, focus-loss sonrasi pointer refocus-resume guard'i, held movement release guard'i, pause sirasinda frozen kalan spawn-grace readability, projected-path forward-pressure secimi, pointer steering, yeni `11px visible-arena hit margin`, pooled obstacle reuse/cull temizligi, Run #87 sonrasi `20s+` chase, death lane/readability ve audio feedback parity notlarini kaydet
-- headed runtime yoksa telemetry/copy veya ayni opening-fairness paketini buyutmeden tek bir dar gameplay/UX bug'ini kapat; Run #88 collider/offscreen fairness guard'i kapanmis oldugu icin bir sonraki en guvenli alan `obstacle reuse/cull` tarafidir
+- headed runtime yoksa telemetry/copy veya ayni opening-fairness paketini buyutmeden tek bir dar gameplay/UX bug'ini kapat; Run #89 partial-visible edge obstacle reroll baskisini kapattigi icin fallback adayi artik `obstacle reuse/cull` tarafinda baska bir lifecycle bug'i bulmaktir
 - deterministic baseline'i `26.5s / 6.3s / 4%`, bucket'lari `1 / 3 / 3 / 17` ve build sagligini koru
 
 Success markers:
@@ -50,6 +50,7 @@ Bu adaylar human signal gelmeden ve cekirdek fairness/replay akisi kanitlanmadan
 - readiness/preflight/tooling katmani buyutme
 - migration-first builder odagi
 - merkez tabanli offscreen hit guard'i; Run #88 ile yerini `11px visible-arena hit margin` aldi
+- merkez tabanli lane-stack visibility yorumu; Run #89 ile yerini tam-gorunur `11px` collider visibility esigi aldi
 
 ---
 

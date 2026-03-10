@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
-import { isPointInsideArena, selectSpawnPoint } from '../src/game/spawn.ts';
+import {
+  OBSTACLE_COLLISION_RADIUS,
+  isPointInsideArena,
+  selectSpawnPoint,
+} from '../src/game/spawn.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getRetryDelayMs } from '../src/game/telemetry.ts';
 import {
@@ -94,7 +98,7 @@ assert.deepEqual(
 const visibleLaneStackSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
   playerPosition: { x: 720, y: 360 },
-  activeObstaclePositions: [{ x: 799, y: 320 }],
+  activeObstaclePositions: [{ x: 789, y: 320 }],
   randomInt: createQueuedRandom([1, 30, 2, 0]),
 });
 assert.deepEqual(
@@ -104,6 +108,21 @@ assert.deepEqual(
     rerollsUsed: 1,
   },
   'Visible nearby obstacles should still be able to trigger early lane-stack rerolls.',
+);
+
+const partialVisibleLaneStackSelection = selectSpawnPoint({
+  survivalTimeSeconds: 2,
+  playerPosition: { x: 720, y: 360 },
+  activeObstaclePositions: [{ x: 799, y: 320 }],
+  randomInt: createQueuedRandom([1, 30, 2, 0]),
+});
+assert.deepEqual(
+  partialVisibleLaneStackSelection,
+  {
+    point: { x: 856, y: 30 },
+    rerollsUsed: 0,
+  },
+  'Partially visible edge obstacles should not trigger lane-stack rerolls before their collider fully clears the arena.',
 );
 
 const projectedForwardSelection = selectSpawnPoint({
@@ -139,12 +158,12 @@ assert.deepEqual(
 );
 
 assert.equal(
-  isPointInsideArena({ x: 10, y: 300 }, { margin: 11 }),
+  isPointInsideArena({ x: 10, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),
   false,
   'Visible-arena hit margin should keep obstacle colliders inactive until fully inside the arena.',
 );
 assert.equal(
-  isPointInsideArena({ x: 11, y: 300 }, { margin: 11 }),
+  isPointInsideArena({ x: 11, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),
   true,
   'Visible-arena hit margin should allow obstacle colliders once their center clears the radius threshold.',
 );

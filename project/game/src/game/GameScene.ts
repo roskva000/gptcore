@@ -12,6 +12,7 @@ import {
 import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
+  OBSTACLE_COLLISION_RADIUS,
   isPointInsideArena,
   isPointOutsideCullBounds,
   OFFSCREEN_CULL_MARGIN,
@@ -43,7 +44,6 @@ type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
 const PLAYER_SPEED = 260;
 const PLAYER_COLLISION_RADIUS = 16;
-const OBSTACLE_COLLISION_RADIUS = 11;
 const POINTER_DEAD_ZONE_PX = 10;
 const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;

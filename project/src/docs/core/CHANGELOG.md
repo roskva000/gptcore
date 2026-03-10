@@ -2,6 +2,12 @@
 
 ---
 
+## Run #89
+
+- `project/game/src/game/spawn.ts` early lane-stack filtresinin visible-obstacle guard'ini `11px` collider margin ile hizaladi; merkez arena icine girmis ama collider'i tam gorunmemis edge obstacle'lar artik reroll baskisi yaratmiyor
+- `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` ayni `OBSTACLE_COLLISION_RADIUS` sabitini kullanacak sekilde hizalandi; runtime ve deterministic proxy gorunur-obstacle semantigini tek kaynakta topladi
+- `project/game/scripts/telemetry-check.ts` tam gorunur (`x=789`) ve partial-visible (`x=799`) edge obstacle lane-stack senaryolarini regression guard altina aldi; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #88
 
 - `project/game/src/game/spawn.ts` `isPointInsideArena()` helper'ini opsiyonel margin kabul edecek sekilde genisletti; arena containment artik collider yaricapi gibi dar runtime ihtiyaclari icin ortak kullanilabiliyor

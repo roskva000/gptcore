@@ -23,6 +23,7 @@ import {
   EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY,
   EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD,
   EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS,
+  OBSTACLE_COLLISION_RADIUS,
   isPointInsideArena,
   isPointOutsideCullBounds,
   OFFSCREEN_CULL_MARGIN,
@@ -35,7 +36,6 @@ const SPAWN_COUNT_LIMITS_SECONDS = [10, 30, 60];
 const PLAYER_SPEED = 260;
 const EFFECTIVE_PLAYER_SPEED = 214;
 const PLAYER_RADIUS = 16;
-const OBSTACLE_RADIUS = 11;
 const MAX_SIMULATION_SECONDS = 30;
 const SESSION_COUNT = 24;
 const FIXED_TIME_STEP_SECONDS = 1 / 60;
@@ -245,7 +245,7 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
   while (survivalTimeSeconds < MAX_SIMULATION_SECONDS) {
     while (survivalTimeSeconds >= nextSpawnAtSeconds) {
       const visibleObstacleDistances = obstacles
-        .filter((obstacle) => isPointInsideArena(obstacle, { margin: OBSTACLE_RADIUS }))
+        .filter((obstacle) => isPointInsideArena(obstacle, { margin: OBSTACLE_COLLISION_RADIUS }))
         .map((obstacle) => Math.hypot(obstacle.x - player.x, obstacle.y - player.y));
       const selection = selectSpawnPoint({
         survivalTimeSeconds,
@@ -330,13 +330,13 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
         continue;
       }
 
-      if (!isPointInsideArena(obstacle, { margin: OBSTACLE_RADIUS })) {
+      if (!isPointInsideArena(obstacle, { margin: OBSTACLE_COLLISION_RADIUS })) {
         continue;
       }
 
       const distance = Math.hypot(obstacle.x - player.x, obstacle.y - player.y);
 
-      if (distance <= PLAYER_RADIUS + OBSTACLE_RADIUS) {
+      if (distance <= PLAYER_RADIUS + OBSTACLE_COLLISION_RADIUS) {
         return {
           seed,
           survivalTimeSeconds: round(survivalTimeSeconds),
@@ -394,7 +394,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
   return {
     sessionCount: SESSION_COUNT,
     maxSimulationSeconds: MAX_SIMULATION_SECONDS,
-    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, projected-path forward-alignment rerolls above ${EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS}s (${EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY}px-equivalent penalty), projected-path lane-stack rerolls within ${EARLY_LANE_STACK_DISTANCE}px above ${EARLY_LANE_STACK_ALIGNMENT_THRESHOLD.toFixed(2)} dot through ${EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS}s (${EARLY_LANE_STACK_PENALTY}px-equivalent penalty), ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s, ${OBSTACLE_RADIUS}px visible-arena hit margin, and ${OFFSCREEN_CULL_MARGIN}px offscreen cull margin`,
+    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, projected-path forward-alignment rerolls above ${EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS}s (${EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY}px-equivalent penalty), projected-path lane-stack rerolls within ${EARLY_LANE_STACK_DISTANCE}px above ${EARLY_LANE_STACK_ALIGNMENT_THRESHOLD.toFixed(2)} dot through ${EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS}s (${EARLY_LANE_STACK_PENALTY}px-equivalent penalty), ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s, ${OBSTACLE_COLLISION_RADIUS}px visible-arena hit margin, and ${OFFSCREEN_CULL_MARGIN}px offscreen cull margin`,
     effectivePlayerSpeed: EFFECTIVE_PLAYER_SPEED,
     nativePlayerSpeed: PLAYER_SPEED,
     averageSurvivalTimeSeconds: round(averageSurvivalTime),

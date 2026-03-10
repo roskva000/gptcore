@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #89]
+
+Decision:
+Early lane-stack spawn filtresi, yakindaki obstacle'i "visible pressure" olarak saymadan once obstacle collider'inin `11px` yaricapla tamamen arena icine girmesini bekleyecek sekilde daraltildi.
+
+Reason:
+`AUDIT.md` runtime bloklu builder turunun ayni pause/resume, telemetry/copy veya gec-chase tuning zincirine donmesini yasakliyor; fallback ancak yeni ve dar bir gameplay problemi olabilir. Run #88 runtime hit guard'ini tam-gorunur collider mantigina tasimisken `spawn.ts` lane-stack filtresi halen merkez arena icine giren edge obstacle'lari baski kaynagi sayiyordu. Bu da oyuncunun henuz tam okuyamadigi partial-visible edge obstacle icin gereksiz reroll baskisi uretip runtime collision semantigi ile spawn-selection semantigi arasinda drift birakiyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` lane-stack visibility kontrolunu `11px` margin ile hizaladi ve `OBSTACLE_COLLISION_RADIUS` tek kaynak haline getirildi. `project/game/src/game/GameScene.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` ayni sabiti kullaniyor. Yeni regression guard'i `x=789` tam gorunur edge obstacle'in reroll tetikleyebildigini, `x=799` partial-visible obstacle'in ise artik tetiklemedigini assert ediyor. Deterministic checked baseline korundu: `26.5s / 6.3s / 4%`, buckets `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample tam-gorunur lane-stack visibility esiginin arena kenarinda spawn cesitliligini gereksiz yumusattigini veya duvar-kacisi baskisini fazla gec gosterdigini kanitlarsa yeni helper katmani acmadan yalnizca visibility margin dar kapsamda yeniden ayarlanir; telemetry/copy, pause/input ve `20s+` chase yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #88]
 
 Decision:

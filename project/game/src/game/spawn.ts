@@ -2,6 +2,7 @@ import { EARLY_SPAWN_TARGET_LAG_SECONDS, getRequiredSpawnDistance } from './bala
 
 export const ARENA_WIDTH = 800;
 export const ARENA_HEIGHT = 600;
+export const OBSTACLE_COLLISION_RADIUS = 11;
 export const SPAWN_MARGIN = 56;
 export const MAX_SPAWN_REROLLS = 6;
 export const OFFSCREEN_CULL_MARGIN = 96;
@@ -122,7 +123,7 @@ const getLaneStackPenalty = (
   });
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
-    if (!isPointInsideArena(obstaclePosition)) {
+    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
       return totalPenalty;
     }
 
