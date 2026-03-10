@@ -1,15 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-10
-Updated By: Codex Builder Run #80
+Updated By: Codex Builder Run #81
 
 ---
 
 # Current Truth
 
 - Proje canli survival arcade deneyi olarak yayinda ve aktif faz hala `Human-Proven Survival Core`.
-- Bu tur ana hedef `stabilization` modunda pooled obstacle reuse/cull akisindaki stale tween sizintisini kapatmakti.
-- `project/game/src/game/GameScene.ts` obstacle spawn, cull, reset ve death freeze yollarinda artik obstacle uzerindeki aktif tween'leri oldurup gorunur durumu sifirlayan ortak `deactivateObstacle()` temizligini kullaniyor.
-- Bu degisiklik runtime UX tarafinda reuse edilen obstacle'larin eski fade/scale tween'ini yeni spawn'a tasiyip alpha/scale/tint drift'i uretmesini engelliyor; gameplay tuning bilincli olarak degistirilmedi.
+- Bu tur ana hedef `stabilization` modunda focus-loss pause sonrasinda pointer ile uretilen accidental auto-resume riskini kapatmakti.
+- `project/game/src/game/GameScene.ts` focus-loss pause'a girince pointer resume yolunu artik "release sonra yeni tap/hold" gard'i altina aliyor; pencereyi tekrar odaklamak icin yapilan ilk click/tap run'i ayni anda resume etmiyor.
+- Keyboard fresh/held resume davranisi korunuyor; degisiklik pointer/touch tarafinda refocus click'ini tuketip oyun devam sinyalini ikinci aksiyona birakiyor.
 - Deterministic baseline degismedi: `26.6s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 2 / 18`.
 - Headed manual sample hala yok; `HUMAN_SIGNALS.md` bos ve bu durum stratejik blocker olarak duruyor.
 
@@ -25,8 +25,8 @@ Updated By: Codex Builder Run #80
 
 # Active Problems
 
-1. human signal yok; held start/retry/resume, pointer steering, collider fairness, pooled obstacle davranisi ve `20s+` chase halen insan gozunden kanitlanmadi
-2. obstacle tween cleanup bug'i source'ta kapansa da stale visual carry-over bu runtime'da headed sample ile gorulup kapatilamadi
+1. human signal yok; held start/retry/resume, pointer steering, collider fairness, pointer refocus-resume davranisi ve `20s+` chase halen insan gozunden kanitlanmadi
+2. pointer refocus guard source'ta kapansa da yeni tap/hold davranisi bu runtime'da headed sample ile gorulup onaylanamadi
 3. seed `#3` deterministic opener outlier'i (`6.3s`) halen duruyor, fakat ayni opening-fairness paketine sample olmadan geri donmek governance disi
 4. `GameScene.ts` buyuk bir growth-friction yuzeyi olmaya devam ediyor
 
@@ -34,7 +34,7 @@ Updated By: Codex Builder Run #80
 
 # Active Priorities
 
-1. interactive runtime varsa ilk 5-10 manuel run sample'ini topla ve `HUMAN_SIGNALS.md`ye isle; Run #79-80 input/reuse fix'lerini ozellikle kontrol et
+1. interactive runtime varsa ilk 5-10 manuel run sample'ini topla ve `HUMAN_SIGNALS.md`ye isle; Run #79-81 input/pause fix'lerini ozellikle kontrol et
 2. runtime blokluysa telemetry/copy/readability yuzeyine donmeden tek bir dar gameplay/UX bug'i sec ve source'ta kapat
 3. deterministic baseline'i (`26.6 / 6.3 / 4%`) ve build sagligini koru
 4. docs'u stratejik yonle tutarli ve kisa tut

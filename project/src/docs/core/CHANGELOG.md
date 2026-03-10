@@ -2,6 +2,14 @@
 
 ---
 
+## Run #81
+
+- `project/game/src/game/GameScene.ts` focus-loss pause sonrasinda pointer resume yoluna `pauseResumeNeedsPointerRelease` gard'i ekledi; pencereyi tekrar odaklayan ilk click/tap run'i ayni anda resume etmiyor
+- ayni dosyada paused `pointerdown` primary action'i gard altina alindi ve held pointer resume sayaci pointer release gorene kadar arm olmuyor; keyboard fresh/held resume davranisi bilincli olarak korunuyor
+- support/resume metni yeni davranisi anlatacak sekilde dar kapsamda guncellendi; deterministic baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
+---
+
 ## Run #79
 
 - `project/game/src/game/GameScene.ts` movement-key ve held-input ile gelen waiting/game-over/pause aksiyonlarini yeni `activatePrimaryAction()` yolunda topladi

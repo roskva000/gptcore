@@ -2,7 +2,7 @@
 
 ## Current Mission
 
-Bu siradaki ana is `Human-Proven Survival Core` icin ilk insan kanitini toplamak.
+Bu siradaki ana is hala `Human-Proven Survival Core` icin ilk insan kanitini toplamak.
 
 ---
 
@@ -30,7 +30,7 @@ Run modunu `stabilization` olarak ele al.
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli, cihaz/input modlu, en az bir structured manuel sample girdisi var
-- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, pointer steering, `20s+` chase, collider/offscreen fairness
+- notlar su alanlari kapsiyor: held start, replay/resume, input-audio parity, pooled obstacle reuse/cull davranisi, focus-loss sonrasi pointer refocus-resume davranisi, pointer steering, `20s+` chase, collider/offscreen fairness
 - session telemetry ozeti gerekiyorsa sample ile capraz okunuyor ama yeni telemetry/copy churn'u acilmiyor
 
 ---
@@ -47,4 +47,4 @@ Run modunu `stabilization` olarak ele al.
 ## Fallback Only If Blocked
 
 Bu runtime yine headed manual sample vermiyorsa blocker'i bir satirla yaz ve tek bir dar gameplay/UX source bug'i sec. En guvenli aday:
-- focus-loss pause/resume sonrasinda held pointer veya movement input'un accidental auto-resume uretip uretmedigini source uzerinden dar kapsamda incelemek ve gerekiyorsa ayni gameplay akisi icinde kapatmak
+- pointer refocus-resume guard'ini source'ta takip eden en yakin bug: focus-loss pause sonrasinda keyboard held resume ile overlay/hint/sound davranisinin tutarli olup olmadigini dar kapsamda incelemek; telemetry/copy/readability veya opening-fairness paketine donme

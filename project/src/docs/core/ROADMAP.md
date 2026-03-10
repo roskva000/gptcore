@@ -4,7 +4,7 @@
 
 # NOW
 
-- `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, pointer steering, offscreen hit guard, `11px` collider, pooled obstacle reuse/cull temizligi, `20s+` chase ve audio feedback parity notlarini kaydet
+- `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, pointer steering, offscreen hit guard, `11px` collider, pooled obstacle reuse/cull temizligi, focus-loss sonrasi pointer refocus-resume guard'i, `20s+` chase ve audio feedback parity notlarini kaydet
 - headed runtime yoksa telemetry/copy/readability veya opening-fairness paketine donmeden tek bir dar gameplay/UX bug'ini kapat
 - deterministic baseline'i `26.6s / 6.3s / 4%`, bucket'lari `1 / 3 / 2 / 18` ve build sagligini koru
 
@@ -17,7 +17,7 @@ Success markers:
 
 # NEXT
 
-- manual sample notlarina gore fairness, replay, obstacle reuse veya control tarafinda en yuksek etkili dar bug fix'i sec
+- manual sample notlarina gore fairness, replay, pointer refocus-resume, obstacle reuse veya control tarafinda en yuksek etkili dar bug fix'i sec
 - seed `#3` outlier'ini ancak manual evidence veya yeni guvenli gameplay hipotezi varsa yeniden ac
 - insan kaniti geldikten sonra ilk dusuk riskli mutation adayini (`near-miss pressure reward` gibi) degerlendir
 

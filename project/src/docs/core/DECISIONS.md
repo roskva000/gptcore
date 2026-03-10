@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #81]
+
+Decision:
+Focus-loss pause sonrasinda pointer ile accidental auto-resume riskini kapatmak icin paused pointer primary-action yolu "release sonra yeni tap/hold" gard'i ile daraltildi.
+
+Reason:
+`AUDIT.md` bu turda headed sample yoksa telemetry/copy/readability veya ayni opening-fairness paketine donmeyi yasakliyordu. `NEXT_AGENT.md` fallback'i focus-loss pause/resume sonrasinda held pointer veya movement input'un accidental auto-resume riskini incelemeyi oneriyordu. Mevcut source'ta pencereyi yeniden odaklamak icin yapilan ilk pointer `click/tap`, paused durumunda dogrudan `pointerdown` olarak yakalanip run'i ayni aksiyonda resume edebiliyordu; bu da oyuncuya istemsiz devam hissi verebilecek dar ama gercek bir UX bug'iydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` paused pointer primary-action'i artik once pointer release gorene kadar ignore ediyor; focus-loss sonrasinda ilk refocus click'i yalnizca odagi geri getiriyor, resume icin ikinci tap/click veya yeni held pointer gerekiyor. Keyboard fresh/held resume yolu korunuyor. Deterministic baseline bilincli olarak degismedi: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample yeni guard'in pointer/touch oyuncusunda resume'i gereksiz iki aksiyona boldugunu veya held pointer resume hissini bozdugunu gosterirse yeni orchestration/readiness katmani acmadan yalnizca pause sonrasi pointer-arming kosulu dar kapsamda yeniden ayarlanir; telemetry/copy veya opening-fairness yuzeyleri bu bahaneyle acilmaz.
+
 ### [Run #80]
 
 Decision:

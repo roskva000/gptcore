@@ -77,6 +77,7 @@ export class GameScene extends Phaser.Scene {
   private movementInputWasActive = false;
   private movementHoldActionStartedAt: number | null = null;
   private pointerHoldActionStartedAt: number | null = null;
+  private pauseResumeNeedsPointerRelease = false;
   private playingHintHideAtElapsedMs: number | null = null;
   private pausedRunElapsedMs = 0;
   private pauseStartedAt: number | null = null;
@@ -416,7 +417,7 @@ export class GameScene extends Phaser.Scene {
     keyboard.on('keydown-R', this.handleTelemetryReset, this);
     keyboard.on('keydown-C', this.handleTelemetryLog, this);
     keyboard.on('keydown-V', this.handleValidationExport, this);
-    this.input.on('pointerdown', this.handlePrimaryAction, this);
+    this.input.on('pointerdown', this.handlePointerPrimaryAction, this);
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
     window.addEventListener('blur', this.handleWindowBlur);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupFocusListeners, this);
@@ -525,6 +526,14 @@ export class GameScene extends Phaser.Scene {
     this.activatePrimaryAction();
   }
 
+  private handlePointerPrimaryAction(): void {
+    if (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) {
+      return;
+    }
+
+    this.activatePrimaryAction();
+  }
+
   private activatePrimaryAction(): void {
     this.unlockFeedbackAudio();
 
@@ -611,6 +620,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pauseResumeNeedsPointerRelease = false;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
     this.runStartedAt = this.time.now;
@@ -633,6 +643,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'paused';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pauseResumeNeedsPointerRelease = true;
     this.pauseStartedAt = this.time.now;
     this.physics.world.pause();
     if (this.nextSpawnTimer) {
@@ -670,7 +681,9 @@ export class GameScene extends Phaser.Scene {
         `Run paused on focus loss.\nRefocus, then press ${this.getResumeActionText()} to resume.`,
       )
       .setVisible(true);
-    this.supportText.setText('Pause guard active: no spawn, movement, or survival time advances while unfocused.');
+    this.supportText.setText(
+      'Pause guard active: refocus click only restores focus; press again to resume. No spawn, movement, or survival time advances while unfocused.',
+    );
     this.updateTelemetryText();
   }
 
@@ -687,6 +700,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pauseResumeNeedsPointerRelease = false;
     this.physics.world.resume();
     if (this.nextSpawnTimer) {
       this.nextSpawnTimer.paused = false;
@@ -751,6 +765,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayStats.setVisible(false).setText('');
     this.movementInputWasActive = this.hasMovementInput();
     this.pointerHoldActionStartedAt = null;
+    this.pauseResumeNeedsPointerRelease = false;
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -891,6 +906,12 @@ export class GameScene extends Phaser.Scene {
 
   private hasConfirmedHeldPointerInput(time: number): boolean {
     if (!this.input.activePointer.isDown) {
+      this.pointerHoldActionStartedAt = null;
+      this.pauseResumeNeedsPointerRelease = false;
+      return false;
+    }
+
+    if (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) {
       this.pointerHoldActionStartedAt = null;
       return false;
     }
@@ -1665,7 +1686,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getResumeActionText(): string {
-    return 'Space, Enter, tap/click, or keep holding your move input';
+    return 'Space, Enter, tap/click again, or keep holding your move input';
   }
 
   private getPlayingHintText(): string {
