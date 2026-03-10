@@ -76,6 +76,13 @@ type EscapePrompt = {
   sentence: string;
 };
 
+type PrimaryActionSource =
+  | 'primary-key'
+  | 'movement-fresh'
+  | 'movement-held'
+  | 'pointer-press'
+  | 'pointer-held';
+
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
   private movementInputWasActive = false;
@@ -441,23 +448,31 @@ export class GameScene extends Phaser.Scene {
       this.phase === 'waiting' || this.phase === 'gameOver' || this.phase === 'paused'
         ? this.hasConfirmedHeldPointerInput(time)
         : false;
-    const hasConfirmedHeldStartInput =
-      hasConfirmedHeldMovementInput || hasConfirmedHeldPointerInput;
 
     if (
-      (this.phase === 'waiting' || this.phase === 'gameOver') &&
-      (hasFreshMovementInput || hasConfirmedHeldStartInput)
+      this.phase === 'waiting' || this.phase === 'gameOver'
     ) {
-      this.activatePrimaryAction();
+      if (hasFreshMovementInput) {
+        this.activatePrimaryAction('movement-fresh');
+      } else if (hasConfirmedHeldMovementInput) {
+        this.activatePrimaryAction('movement-held');
+      } else if (hasConfirmedHeldPointerInput) {
+        this.activatePrimaryAction('pointer-held');
+      }
     }
 
     if (
       this.phase === 'paused' &&
-      (hasFreshMovementInput || hasConfirmedHeldMovementInput || hasConfirmedHeldPointerInput) &&
       !document.hidden &&
       document.hasFocus()
     ) {
-      this.activatePrimaryAction();
+      if (hasFreshMovementInput) {
+        this.activatePrimaryAction('movement-fresh');
+      } else if (hasConfirmedHeldMovementInput) {
+        this.activatePrimaryAction('movement-held');
+      } else if (hasConfirmedHeldPointerInput) {
+        this.activatePrimaryAction('pointer-held');
+      }
     }
 
     this.updatePlayerVelocity();
@@ -530,7 +545,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePrimaryAction(): void {
-    this.activatePrimaryAction();
+    this.activatePrimaryAction('primary-key');
   }
 
   private handlePointerPrimaryAction(): void {
@@ -538,32 +553,24 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    const shouldRequirePointerReleaseForSteering =
-      this.phase === 'waiting' || this.phase === 'gameOver';
-
-    this.activatePrimaryAction();
-
-    if (shouldRequirePointerReleaseForSteering && this.phase === 'playing') {
-      this.pointerSteeringNeedsRelease = true;
-      this.pointerHoldActionStartedAt = this.time.now;
-    }
+    this.activatePrimaryAction('pointer-press');
   }
 
-  private activatePrimaryAction(): void {
+  private activatePrimaryAction(source: PrimaryActionSource): void {
     this.unlockFeedbackAudio();
 
     if (this.phase === 'waiting') {
-      this.startRun();
+      this.startRun(source);
       return;
     }
 
     if (this.phase === 'paused') {
-      this.resumePausedRun();
+      this.resumePausedRun(source);
       return;
     }
 
     if (this.phase === 'gameOver') {
-      this.startRun();
+      this.startRun(source);
     }
   }
 
@@ -626,7 +633,7 @@ export class GameScene extends Phaser.Scene {
       });
   }
 
-  private startRun(): void {
+  private startRun(source: PrimaryActionSource): void {
     if (this.phase === 'playing') {
       return;
     }
@@ -648,6 +655,7 @@ export class GameScene extends Phaser.Scene {
     this.supportText.setText(this.getBaseSupportText());
     this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
     this.recordRunStart();
+    this.armPointerSteeringGuardAfterActivation(source);
 
     this.scheduleNextSpawn(FIRST_SPAWN_DELAY_MS);
   }
@@ -708,7 +716,7 @@ export class GameScene extends Phaser.Scene {
     this.updateTelemetryText();
   }
 
-  private resumePausedRun(): void {
+  private resumePausedRun(source: PrimaryActionSource): void {
     if (this.phase !== 'paused' || document.hidden || !document.hasFocus()) {
       return;
     }
@@ -737,6 +745,7 @@ export class GameScene extends Phaser.Scene {
     this.restorePlayingHintAfterPause();
     this.supportText.setText(this.getBaseSupportText());
     this.movementInputWasActive = this.hasMovementInput();
+    this.armPointerSteeringGuardAfterActivation(source);
     this.updateTelemetryText();
   }
 
@@ -955,6 +964,15 @@ export class GameScene extends Phaser.Scene {
     }
 
     return time - this.pointerHoldActionStartedAt >= HELD_MOVEMENT_ACTION_DELAY_MS;
+  }
+
+  private armPointerSteeringGuardAfterActivation(source: PrimaryActionSource): void {
+    if (!this.input.activePointer.isDown || source === 'pointer-held') {
+      return;
+    }
+
+    this.pointerSteeringNeedsRelease = true;
+    this.pointerHoldActionStartedAt = this.time.now;
   }
 
   private canObstacleHitPlayer(

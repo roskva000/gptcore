@@ -2,6 +2,13 @@
 
 ---
 
+## Run #103
+
+- `project/game/src/game/GameScene.ts` primary action kaynagini ayirdi; `primary-key`, movement fresh/held ve pointer press/held akislarini start/resume sirasinda farkli yorumluyor
+- pointer zaten basiliyken keyboard/Space veya movement-input ile baslatilan ya da resume edilen run'larda pointer steering artik yeniden release-or-`180ms` guard'ina giriyor; ayni frame'de istemsiz pointer steering acilmiyor
+- neutral `tap/click` start/retry davranisi ile deliberate held-pointer start/retry yolu korunarak sadece non-pointer aktivasyon edge-case'i kapatildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #102
 
 - `project/game/src/game/spawn.ts` spawn secimi icin yeni `playerReachabilityMargin` girdisi ekledi; oyuncu duvara veya koseye dayanmisken artik devam edemeyecegi velocity bilesenleri projected-path scoring'de yok sayiliyor

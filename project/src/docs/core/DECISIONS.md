@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #103]
+
+Decision:
+Pointer zaten basiliyken keyboard/Space veya movement-input ile baslatilan ya da resume edilen run'lar, pointer steering'i yeniden release-or-`180ms` guard'ina sokacak; deliberate held-pointer start/retry yolu ise aynen korunacak.
+
+Reason:
+Headed runtime hala bloklu ve audit ayni telemetry/HUD/fairness paketine donmeyi istemiyor. Source incelemesi `startRun()` ve `resumePausedRun()` akislarinin pointer halen down durumdayken aktivasyon kaynagini ayirt etmedigini gosterdi. Bu nedenle oyuncu klavye veya Space ile baslatmak/resume etmek isterken pointer ekranda basili kaldiginda run ayni frame'de istemsiz pointer steering'e kayabiliyordu; bu dar, gercek ve kontrol hissini bozan bir gameplay/input kusuruydu.
+
+Impact:
+`project/game/src/game/GameScene.ts` primary-action source'unu ayiriyor ve aktivasyon sonrasi pointer guard'ini sadece pointer basili kalan non-pointer veya neutral `tap/click` akislarinda yeniden kuruyor. Held-pointer start/retry/resume yolu ekstra ikinci bir bekleme almiyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manual sample bu guard'in keyboard/Space start-resume'u fazla agirlastirdigini veya deliberate held-pointer akisini kirip ekstra release zorladigini gosterirse yalnizca activation-source yorumu dar kapsamda yeniden ayarlanir; HUD/telemetry, opening fairness, edge-target clamp ve wall-pinned velocity yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #102]
 
 Decision:
