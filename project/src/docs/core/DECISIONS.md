@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #83]
+
+Decision:
+Early forward-pressure spawn penalty oyuncunun anlik merkezinden degil, mevcut velocity'nin `0.18s` projected path referansindan hesaplanacak sekilde hizalandi.
+
+Reason:
+`AUDIT.md` bu turda runtime yoksa pause/resume/input mikro-fix zincirine geri donmeyi ve telemetry/copy/readability churn'unu yasakliyordu. Yeni ve dar gameplay problemi olarak early spawn secimindeki forward-pressure hesabinin hala anlik pozisyona bakmasi secildi. Bu, projected-path lane-stack filtresiyle ayni referansi kullanmadigi icin aktif soldan/sagdan kacis anlarinda guvenli edge spawn'lari gereksiz reroll'e itebiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` forward-alignment scoring'i projected-path referansina tasidi; `project/game/scripts/telemetry-reports.ts` controller aciklamasi bu davranisla hizalandi; `project/game/scripts/telemetry-check.ts` dar bir opener senaryosunda guvenli left-edge spawn'in artik reroll'e dusmedigini assert ediyor. Aggregate deterministic baseline bilincli olarak korunuyor: `26.6s / 6.3s / 4%`, buckets `1 / 3 / 2 / 18`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample projected-path forward referansinin opener'i fazla yumusattigini, spawn cesitliligini yapaylastirdigini veya oyuncu hareketinin "kovalamayi arkasinda birakma" hissini bozdugunu gosterirse yeni helper katmani acmadan yalnizca forward-pressure referans noktasi dar kapsamda yeniden ayarlanir; telemetry/copy ya da ayni input/pause yuzeyi bu bahaneyle tekrar acilmaz.
+
 ### [Run #82]
 
 Decision:

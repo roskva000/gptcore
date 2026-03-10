@@ -26,6 +26,20 @@ type SpawnSelectionParams = {
   randomInt: (min: number, max: number) => number;
 };
 
+const getProjectedPathReference = (
+  playerPosition: Point,
+  playerVelocity: Point | undefined,
+): Point => {
+  if (!playerVelocity || (playerVelocity.x === 0 && playerVelocity.y === 0)) {
+    return playerPosition;
+  }
+
+  return {
+    x: playerPosition.x + playerVelocity.x * EARLY_SPAWN_TARGET_LAG_SECONDS,
+    y: playerPosition.y + playerVelocity.y * EARLY_SPAWN_TARGET_LAG_SECONDS,
+  };
+};
+
 const normalize = (point: Point): Point => {
   const magnitude = Math.hypot(point.x, point.y);
 
@@ -66,10 +80,11 @@ const getForwardSpawnPenalty = (
     return 0;
   }
 
+  const forwardReference = getProjectedPathReference(playerPosition, playerVelocity);
   const movementDirection = normalize(playerVelocity);
   const spawnDirection = normalize({
-    x: spawnPoint.x - playerPosition.x,
-    y: spawnPoint.y - playerPosition.y,
+    x: spawnPoint.x - forwardReference.x,
+    y: spawnPoint.y - forwardReference.y,
   });
   const alignment = movementDirection.x * spawnDirection.x + movementDirection.y * spawnDirection.y;
 
@@ -91,13 +106,7 @@ const getLaneStackPenalty = (
     return 0;
   }
 
-  const laneStackReference =
-    playerVelocity && (playerVelocity.x !== 0 || playerVelocity.y !== 0)
-      ? {
-          x: playerPosition.x + playerVelocity.x * EARLY_SPAWN_TARGET_LAG_SECONDS,
-          y: playerPosition.y + playerVelocity.y * EARLY_SPAWN_TARGET_LAG_SECONDS,
-        }
-      : playerPosition;
+  const laneStackReference = getProjectedPathReference(playerPosition, playerVelocity);
   const spawnDirection = normalize({
     x: spawnPoint.x - laneStackReference.x,
     y: spawnPoint.y - laneStackReference.y,

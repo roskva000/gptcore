@@ -105,13 +105,29 @@ assert.deepEqual(
   'Visible nearby obstacles should still be able to trigger early lane-stack rerolls.',
 );
 
+const projectedForwardSelection = selectSpawnPoint({
+  survivalTimeSeconds: 2,
+  playerPosition: { x: 308.6, y: 290.3 },
+  playerVelocity: { x: -111.6, y: 136.3 },
+  activeObstaclePositions: [{ x: 700.9, y: 384.3 }],
+  randomInt: createQueuedRandom([3, 303, 1, 527]),
+});
+assert.deepEqual(
+  projectedForwardSelection,
+  {
+    point: { x: -56, y: 303 },
+    rerollsUsed: 0,
+  },
+  'Projected-path forward-pressure should keep a safe left-edge spawn instead of rerolling into right-edge crossfire.',
+);
+
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.6, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 4, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*visible-arena hit guard, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*visible-arena hit guard, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(

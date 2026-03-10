@@ -2,6 +2,12 @@
 
 ---
 
+## Run #83
+
+- `project/game/src/game/spawn.ts` early forward-pressure penalty hesabini oyuncunun anlik merkezi yerine mevcut velocity'nin `0.18s` projected path referansina tasidi; aktif kacis yonunde guvenli edge spawn'lar gereksiz reroll'e daha az dusuyor
+- `project/game/scripts/telemetry-reports.ts` deterministic controller metnini projected-path forward-alignment davranisiyla hizaladi
+- `project/game/scripts/telemetry-check.ts` dar bir opener senaryosunda left-edge spawn'in korunmasini regression guard altina aldi; aggregate baseline `26.6s / 6.3s / 4%`, bucket'lar `1 / 3 / 2 / 18` korunarak `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #82
 
 - `project/game/src/game/GameScene.ts` focus-loss pause aninda aktif olan movement input'u icin `pauseResumeNeedsMovementRelease` gard'i ekledi; eski basili yon tusu pencereye donuldugunde tek basina held resume tetiklemiyor
