@@ -2,6 +2,12 @@
 
 ---
 
+## Run #92
+
+- `project/game/src/game/balance.ts` early spawn collision grace'i keskin `10s -> 0ms` drop yerine `10-11s` arasinda fade edecek sekilde guncelledi; `10.5s`te grace `130ms`, `11s`te `0ms`
+- spawn target-lag, opener distance, `20s+` chase ve visible-arena/death-readability yuzeyleri bilincli olarak degistirilmedi; aggregate deterministic snapshot `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17` olarak korundu
+- `project/game/scripts/telemetry-check.ts` yeni grace fade assert'leri ekledi; `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #91
 
 - `project/game/src/game/deathOverlayLayout.ts` impact ve killer callout'lari icin edge-aware dikey yerlesim helper'i ekledi

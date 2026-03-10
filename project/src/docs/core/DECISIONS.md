@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #92]
+
+Decision:
+`10s` helper cliff'ini yumusatmak icin early spawn collision grace bir anda sifira dusmek yerine `10-11s` arasinda lineer fade ile kapatildi; spawn target-lag ve diger fairness/readability yuzeyleri sabit birakildi.
+
+Reason:
+`AUDIT.md` runtime bloklu builder turunun ayni pause/input, `20s+` chase veya visible-arena/death-readability mikro-yuzeylerine donmesini yasakliyor; fallback yeni ve dar bir gameplay problemi olmali. Deterministic snapshot'ta seed `#7` tam `10.0s`'de oluyordu ve mevcut balance kodu hem target-lag hem collision grace yardimini keskin sekilde `10s`te bitiriyordu. Ilk denemede her iki helper'i uzatmak aggregate baseline'i bozdu; bu nedenle daraltilarak yalnizca collision grace icin kucuk bir fade secildi.
+
+Impact:
+`project/game/src/game/balance.ts` artik `10s`e kadar `260ms` grace veriyor, `10.5s`te `130ms`e iniyor ve `11s`te `0ms` oluyor. `project/game/scripts/telemetry-check.ts` bu fade'i yeni assert'lerle guard altina aldi. Deterministic checked aggregate baseline korundu: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample `10-11s` penceresinde yeni spawn'larin gereksiz "ghosty" hissettigini veya cheap touch yerine bosluk hissi urettiğini gosterirse yalnizca fade araligi dar kapsamda yeniden ayarlanir; pause/input, visible-arena hit, death readability, telemetry/copy ve `20s+` chase yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #91]
 
 Decision:

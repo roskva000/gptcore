@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { getVerticalCalloutPlacement } from '../src/game/deathOverlayLayout.ts';
+import { getSpawnCollisionGraceMs } from '../src/game/balance.ts';
 import {
   OBSTACLE_COLLISION_RADIUS,
   isPointInsideArena,
@@ -110,6 +111,16 @@ assert.equal(spawnTargetLagAt(10), 0.18, '10s spawn target lag changed unexpecte
 assert.equal(spawnTargetLagAt(15), 0, '15s spawn target lag changed unexpectedly.');
 assert.equal(spawnCollisionGraceAt(0), 260, '0s spawn collision grace changed unexpectedly.');
 assert.equal(spawnCollisionGraceAt(10), 260, '10s spawn collision grace changed unexpectedly.');
+assert.equal(
+  getSpawnCollisionGraceMs(10.5),
+  130,
+  '10-11s spawn collision grace should fade instead of dropping to zero immediately.',
+);
+assert.equal(
+  getSpawnCollisionGraceMs(11),
+  0,
+  '11s spawn collision grace should complete its fade-out and reach zero.',
+);
 assert.equal(spawnCollisionGraceAt(15), 0, '15s spawn collision grace changed unexpectedly.');
 
 const offscreenLaneStackSelection = selectSpawnPoint({

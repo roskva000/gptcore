@@ -5,7 +5,8 @@ export const TARGET_FIRST_DEATH_SECONDS = 10;
 export const EARLY_SPAWN_TARGET_LAG_SECONDS = 0.18;
 export const EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS = 10;
 export const EARLY_SPAWN_COLLISION_GRACE_MS = 260;
-export const EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS = 10;
+export const EARLY_SPAWN_COLLISION_GRACE_FADE_START_SECONDS = 10;
+export const EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS = 11;
 export const OPENING_REQUIRED_SPAWN_DISTANCE_BONUS = 160;
 export const OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS = 6;
 
@@ -46,6 +47,13 @@ export const getSpawnTargetLagSeconds = (survivalTimeSeconds: number): number =>
     : 0;
 
 export const getSpawnCollisionGraceMs = (survivalTimeSeconds: number): number =>
-  survivalTimeSeconds <= EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS
+  survivalTimeSeconds <= EARLY_SPAWN_COLLISION_GRACE_FADE_START_SECONDS
     ? EARLY_SPAWN_COLLISION_GRACE_MS
-    : 0;
+    : survivalTimeSeconds >= EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS
+      ? 0
+      : Math.round(
+          EARLY_SPAWN_COLLISION_GRACE_MS *
+            ((EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS - survivalTimeSeconds) /
+              (EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS -
+                EARLY_SPAWN_COLLISION_GRACE_FADE_START_SECONDS)),
+        );
