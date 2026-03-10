@@ -3,6 +3,7 @@ import { getVerticalCalloutPlacement } from '../src/game/deathOverlayLayout.ts';
 import { getSpawnCollisionGraceMs } from '../src/game/balance.ts';
 import {
   OBSTACLE_COLLISION_RADIUS,
+  clampPointToArena,
   isPointInsideArena,
   selectSpawnPoint,
 } from '../src/game/spawn.ts';
@@ -215,6 +216,20 @@ assert.equal(
   isPointInsideArena({ x: 11, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),
   true,
   'Visible-arena hit margin should allow obstacle colliders once their center clears the radius threshold.',
+);
+assert.deepEqual(
+  clampPointToArena(
+    {
+      x: -24,
+      y: 640,
+    },
+    { margin: 16 },
+  ),
+  {
+    x: 16,
+    y: 584,
+  },
+  'Obstacle target lag should clamp to the player-reachable arena instead of impossible wall coordinates.',
 );
 
 assert.deepEqual(

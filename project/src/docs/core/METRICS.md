@@ -36,6 +36,11 @@ current: 145 at 0s, 183 at 10s, 217 at 20s, 253 at 30s, 308 at 45s, 320 at 60s
 baseline: Run #87 nudged only the `20s+` speed slope from `3.6` to `3.62` after the prior softened chase had drifted to `18/24` deterministic `30s` caps; opener pacing, spawn-distance helpers, lag/grace guards, collider, and input/pause surfaces were intentionally left untouched
 target: preserve the early-death guard and validate manually that the slightly firmer `20s+` chase restores tension without feeling sharp or cheap
 
+edge_target_reachability:
+current: Run #101 now clamps obstacle spawn target lag to the player-reachable arena (`16px` inner margin), so wall-edge chase lines aim at coordinates the player center can actually occupy instead of impossible `0/800/600` extremes
+baseline: before Run #101 runtime and deterministic proxy both aimed obstacle trajectories at full arena edges even though the player center is bounded by its collider radius, which could over-tighten edge chase lines without changing pacing metrics
+target: confirm manually that wall-edge pressure now feels more readable without becoming soft, scripted, or easier to exploit by wall-hugging
+
 obstacle_collision_radius:
 current: obstacle sprite still reads as a `12px` disc, but the active obstacle collider is now `11px`
 baseline: Run #67 narrowed only the obstacle hitbox to reduce cheap edge grazes without changing player speed, spawn pacing, steering, replay flow, or the opening-fairness helpers

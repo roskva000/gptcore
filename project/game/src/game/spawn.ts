@@ -31,10 +31,17 @@ type SpawnSelectionParams = {
   randomInt: (min: number, max: number) => number;
 };
 
-const clampPointToArena = (point: Point): Point => ({
-  x: Math.min(Math.max(point.x, 0), ARENA_WIDTH),
-  y: Math.min(Math.max(point.y, 0), ARENA_HEIGHT),
-});
+export const clampPointToArena = (
+  point: Point,
+  options: ArenaContainmentOptions = {},
+): Point => {
+  const margin = options.margin ?? 0;
+
+  return {
+    x: Math.min(Math.max(point.x, margin), ARENA_WIDTH - margin),
+    y: Math.min(Math.max(point.y, margin), ARENA_HEIGHT - margin),
+  };
+};
 
 const getProjectedPathReference = (
   playerPosition: Point,

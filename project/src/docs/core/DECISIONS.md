@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #101]
+
+Decision:
+Obstacle spawn hedefleme noktasi, oyuncunun collider merkeziyle gercekte ulasabilecegi arena ic sinirlariyla clamp'lenecek; runtime ve deterministic proxy ayni reachable target alani uzerinden obstacle velocity hesaplayacak.
+
+Reason:
+Interactive runtime hala bloklu ve `AUDIT.md` ayni input/pause, telemetry/HUD ve opening-fairness helper paketine geri donmeyi yasakliyor. Kaynak incelemesi obstacle'larin spawn target lag hesabinda oyuncunun fiziksel olarak hic gidemeyecegi `x=0/800`, `y=0/600` uclarina nisan alabildigini gosterdi; oyuncu merkezi ise `PLAYER_COLLISION_RADIUS` nedeniyle bu koordinatlara ulasamiyor. Bu, ozellikle duvar kenarinda chase cizgilerini gereksiz sertlestiren gercek gameplay/pathing kusuruydu.
+
+Impact:
+`project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` hedef noktayi artik erisilebilir arena icine clamp'liyor. `project/game/src/game/spawn.ts` ortak clamp helper'i sagliyor ve `project/game/scripts/telemetry-check.ts` bu reachable-edge davranisini regression guard altina aliyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Host browser manuel sample'i duvar-kenari chase'in artik fazla yumusak, bos veya tehditsiz hissettigini gosterirse bu karar geri alinmadan once sadece reachable-margin yorumu dar kapsamda yeniden ayarlanir; input/pause veya opening-fairness helper paketine kayilmaz.
+
 ### [Run #100]
 
 Decision:

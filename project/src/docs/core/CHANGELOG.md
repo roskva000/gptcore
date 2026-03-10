@@ -2,6 +2,14 @@
 
 ---
 
+## Run #101
+
+- `project/game/src/game/GameScene.ts` obstacle spawn target lag hesabini oyuncunun gercekte ulasabilecegi arena ic sinirlarina clamp'ledi; duvar kenarinda obstacle'lar artik oyuncu merkezinin hic gidemeyecegi wall coordinates'a nisan almiyor
+- `project/game/src/game/spawn.ts` ortak `clampPointToArena()` helper'ini export etti
+- `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni reachable-edge hedefleme davranisiyla hizaladi
+- `project/game/scripts/telemetry-check.ts` reachable-edge clamp regression assert'i ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #100
 
 - `project/game/src/game/telemetry.ts` `buildTelemetrySummary()` kontratini completed-run semantigine hizaladi; `runs` artik tamamlanmis sample'i raporlarken ham baslangic sayisi yeni `startedRuns` alanina tasindi

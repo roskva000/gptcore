@@ -13,9 +13,9 @@ import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
   OBSTACLE_COLLISION_RADIUS,
+  clampPointToArena,
   isPointInsideArena,
   isPointOutsideCullBounds,
-  OFFSCREEN_CULL_MARGIN,
   selectSpawnPoint,
 } from './spawn';
 import { getVerticalCalloutPlacement } from './deathOverlayLayout';
@@ -863,18 +863,14 @@ export class GameScene extends Phaser.Scene {
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
     const spawnTargetLagSeconds = getSpawnTargetLagSeconds(this.survivalTime);
-    const target = new Phaser.Math.Vector2(
-      Phaser.Math.Clamp(
-        this.player.x - playerBody.velocity.x * spawnTargetLagSeconds,
-        0,
-        ARENA_WIDTH,
-      ),
-      Phaser.Math.Clamp(
-        this.player.y - playerBody.velocity.y * spawnTargetLagSeconds,
-        0,
-        ARENA_HEIGHT,
-      ),
+    const targetPoint = clampPointToArena(
+      {
+        x: this.player.x - playerBody.velocity.x * spawnTargetLagSeconds,
+        y: this.player.y - playerBody.velocity.y * spawnTargetLagSeconds,
+      },
+      { margin: PLAYER_COLLISION_RADIUS },
     );
+    const target = new Phaser.Math.Vector2(targetPoint.x, targetPoint.y);
     const velocity = target.subtract(spawnPoint).normalize().scale(this.getObstacleSpeed());
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     const collisionGraceMs = getSpawnCollisionGraceMs(this.survivalTime);
