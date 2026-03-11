@@ -52,6 +52,8 @@ const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
+const OBSTACLE_DEPTH = 2;
+const FATAL_OBSTACLE_DEPTH = 3;
 const IMPACT_LABEL_HALF_HEIGHT_PX = 12;
 const IMPACT_LABEL_GAP_PX = 22;
 const IMPACT_LABEL_MIN_Y_PX = 28;
@@ -888,7 +890,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true)
       .clearTint()
       .setAlpha(1)
-      .setDepth(2)
+      .setDepth(OBSTACLE_DEPTH)
       .setPosition(spawnPoint.x, spawnPoint.y)
       .setCircle(OBSTACLE_COLLISION_RADIUS)
       .setScale(1)
@@ -1192,7 +1194,7 @@ export class GameScene extends Phaser.Scene {
     this.player.setTint(0xffd6cf);
     this.recordRunEnd();
     this.tweens.killTweensOf(fatalObstacle);
-    fatalObstacle.setTint(0xfff0c7).setScale(1.12).setAlpha(1);
+    fatalObstacle.setTint(0xfff0c7).setScale(1.12).setAlpha(1).setDepth(FATAL_OBSTACLE_DEPTH);
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -1202,7 +1204,7 @@ export class GameScene extends Phaser.Scene {
       obstacle.setVelocity(0, 0);
 
       if (!isFatalObstacle) {
-        obstacle.clearTint().setAlpha(0.24);
+        obstacle.clearTint().setScale(1).setAlpha(0.24).setDepth(OBSTACLE_DEPTH);
       }
 
       return true;
@@ -1273,7 +1275,7 @@ export class GameScene extends Phaser.Scene {
     obstacle.setData('collisionReady', false);
     obstacle.setData('collisionUnlockElapsedMs', null);
     obstacle.setData('spawnGraceTween', null);
-    obstacle.clearTint().setAlpha(1).setScale(1).setVelocity(0, 0);
+    obstacle.clearTint().setAlpha(1).setScale(1).setDepth(OBSTACLE_DEPTH).setVelocity(0, 0);
     obstacle.disableBody(true, true);
   }
 

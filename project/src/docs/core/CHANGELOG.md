@@ -2,6 +2,12 @@
 
 ---
 
+## Run #111
+
+- `project/game/src/game/GameScene.ts` obstacle depth'ini ortak sabite tasidi; spawn/deactivate akislarinda baseline obstacle depth'i artik tek kaynaktan kuruluyor
+- death aninda secilen fatal obstacle `depth=3` ile overlap stack'inin ustune aliniyor; fatal olmayan obstacle'lar `scale=1`, `alpha=0.24`, `depth=2` ile neutralize edilerek spotlight altindaki killer silhouette'i daha net okunur kaliyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #110
 
 - `project/game/src/game/deathAttribution.ts` coklu overlap death'leri icin yeni fatal threat secim helper'i ekledi

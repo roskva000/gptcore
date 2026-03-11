@@ -86,6 +86,11 @@ current: Run #110 now resolves fatal death attribution across all currently over
 baseline: before Run #110 the first overlap callback obstacle became the fatal spotlight/callout source even if another obstacle in the same frame had already penetrated deeper into the player or represented the more direct closing threat
 target: confirm manually that stacked or near-simultaneous collisions blame the obstacle the player actually perceives as the killer, without making spotlight selection feel unstable or noisy
 
+death_tableau_visual_priority:
+current: Run #111 now lifts the selected fatal obstacle to `depth=3` during game-over freeze, while non-fatal obstacles are reset to `scale=1`, `alpha=0.24`, `depth=2`; overlap stacks should no longer let spawn-grace silhouette drift or display order muddy the highlighted killer
+baseline: before Run #111 fatal threat attribution could already pick the right obstacle, but death freeze still left every obstacle on the same depth and non-fatal overlap sprites could keep non-neutral scale state, making the killer spotlight visually less decisive in dense collisions
+target: confirm manually that overlap deaths now keep the chosen killer visually dominant without making the tableau feel artificial or hiding too much surrounding pressure context
+
 center_overlap_death_guidance:
 current: Run #93 now keeps fully centered overlaps as `center`, collapses the impact marker onto the player instead of inventing a fake top/bottom lane, switches the death copy to `CENTER COLLISION` / `Caught at center`, and lets retry guidance fall back to `RESET CENTER`
 baseline: before Run #93 centered overlaps could still borrow obstacle velocity and surface a fake lane label, which meant the same death tableau could mix overlap copy with directional blame and a misleading escape prompt

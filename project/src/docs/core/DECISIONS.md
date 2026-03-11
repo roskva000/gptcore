@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #111]
+
+Decision:
+Game-over tableau'da secilen fatal obstacle depth ve silhouette olarak da one cikarilacak; fatal olmayan obstacle'lar neutral state'e cekilecek.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in kapattigi telemetry/copy/fairness zincirine donmeden yeni ama dar bir gameplay/readability kusuru secildi. Run #110 gercek killer'i secse bile `GameScene.ts` death freeze akisi fatal obstacle'i diger obstacle'larla ayni depth'te birakiyor ve fatal olmayan obstacle'larin scale state'ini normalize etmiyordu. Overlap anlarinda spawn-grace veya display-order kalintisi secilen killer silhouette'ini bulandirabiliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` obstacle depth'ini ortak sabite tasidi. Death aninda fatal obstacle `depth=3` ile one aliniyor; fatal olmayan obstacle'lar `scale=1`, `alpha=0.24`, `depth=2` ile neutralize ediliyor; deactivate/reset akisi de obstacle depth'ini tekrar baseline'a indiriyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample yeni depth hiyerarsisinin overlap death tableau'sunu yapay, flickery veya fazla staged hissettirdigini gosterirse yalnizca death-time obstacle emphasis agirliklari dar kapsamda yeniden ayarlanir; fatal threat attribution, edge-callout, input, pause, timing, telemetry ve fairness yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #110]
 
 Decision:
