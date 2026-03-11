@@ -717,6 +717,7 @@ export class GameScene extends Phaser.Scene {
     this.survivalTime = 0;
     this.survivalGoalReachedThisRun = false;
     this.runSpawnRerolls = 0;
+    this.updateHudChromeVisibility();
     this.scoreText.setText('0.0s');
     this.hintText.setText(this.getPlayingHintText()).setVisible(true);
     this.supportText.setText(this.getBaseSupportText()).setVisible(true);
@@ -782,6 +783,7 @@ export class GameScene extends Phaser.Scene {
       'Pause guard active: refocus click only restores focus, and any held move key must be released before it can resume. No spawn, movement, or survival time advances while unfocused.',
     ).setVisible(true);
     this.survivalTime = pausedAtSeconds;
+    this.updateHudChromeVisibility();
     this.updateTelemetryText();
   }
 
@@ -815,6 +817,7 @@ export class GameScene extends Phaser.Scene {
     this.supportText.setText(this.getBaseSupportText()).setVisible(true);
     this.movementInputWasActive = this.hasMovementInput();
     this.armPointerSteeringGuardAfterActivation(source);
+    this.updateHudChromeVisibility();
     this.updateTelemetryText();
   }
 
@@ -871,6 +874,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseResumeNeedsPointerRelease = false;
     this.gameOverRetryNeedsMovementRelease = false;
     this.gameOverRetryNeedsPointerRelease = false;
+    this.updateHudChromeVisibility();
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -1323,6 +1327,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.hintText.setVisible(false);
     this.supportText.setText(this.getGameOverSupportText()).setVisible(false);
+    this.updateHudChromeVisibility();
   }
 
   private deactivateObstacle(obstacle: Phaser.Physics.Arcade.Image): void {
@@ -1982,6 +1987,12 @@ export class GameScene extends Phaser.Scene {
     this.telemetryText
       .setText(this.getTelemetryLinesForCurrentPhase().join('\n'))
       .setAlpha(this.phase === 'playing' ? 0.9 : 1);
+  }
+
+  private updateHudChromeVisibility(): void {
+    const hudVisible = this.phase === 'waiting' || this.phase === 'playing';
+    this.scoreText.setVisible(hudVisible);
+    this.bestText.setVisible(hudVisible);
   }
 
   private getTelemetryLinesForCurrentPhase(): string[] {

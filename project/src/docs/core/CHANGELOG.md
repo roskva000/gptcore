@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #125
+
+- `project/game/src/game/GameScene.ts` faz-tabanli HUD gorunurluk helper'i ekledi; `score` ve `best` satirlari artik yalnizca `waiting` ve `playing` fazlarinda gorunuyor
+- ayni dosya pause ve game-over overlay'leri acikken ust sol HUD chrome'u gizleyerek overlay ozetini daha tek odakli bir sunuma cekti
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #124
 
 - `project/game/src/game/GameScene.ts` game-over aninda alt support strip'in varsayilan gorunurlugunu kapatti; death overlay ve `Session snapshot` artik daha temiz bir hiyerarsiyle kaliyor

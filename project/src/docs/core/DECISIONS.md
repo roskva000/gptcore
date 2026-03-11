@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #125]
+
+Decision:
+Pause ve game-over overlay'leri acikken ust HUD chrome (`score` / `best`) gizlenecek; bu satirlar yalnizca `waiting` ve `playing` fazlarinda gorunecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Runtime yine blokluydu, audit ayni fairness/input/telemetry zincirine donmeyi yasakliyordu ve insan sinyali olum ekranini hala fazla kalabalik buluyordu. `GameScene.ts` incelemesi death/pause overlay'leri kendi ozetlerini cizerken ustteki skor ve best HUD'sini de gorunur biraktigini gosterdi; bu da tek ekran uzerinde iki ayrik bilgi katmani yaratiyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` yeni faz-tabanli HUD gorunurluk helper'i ile `scoreText` ve `bestText` satirlarini non-playing overlay'lerde gizliyor. Boylece death ve pause ekranlari duplicate zaman/best baglamiyla daha az yarisan bir sunuma geciyor. Deterministic baseline degismedi.
+
+Rollback Condition:
+Bir sonraki manuel sample ust HUD'nin gizlenmesinin replay orientasyonunu veya pause sirasinda durum algisini zayiflattigini gosterirse yalnizca bu gorunurluk kurali dar kapsamda yeniden ayarlanir; fairness, telemetry veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #124]
 
 Decision:
@@ -17,8 +31,6 @@ Impact:
 
 Rollback Condition:
 Bir sonraki manuel sample support strip'in kaybolmasinin retry/export affordance'ini zararli sekilde azalttigini gosterirse strip game-over icin daha dar bir mesajla veya daha kontrollu gorunurluk kuraliyla geri getirilebilir.
-
-## Decision Log
 
 ### [Run #123]
 

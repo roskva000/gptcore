@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+non_playing_hud_chrome_focus:
+current: Run #125 `score` ve `best` HUD satirlarini `paused` ve `gameOver` fazlarinda gizliyor; ust sol runtime chrome artik overlay ozetiyle ayni anda rekabet etmiyor
+baseline: Run #124 support strip game-over aninda gizlenmisti, fakat ustteki skor ve best HUD'si hala gorunur kalip death/pause overlay'lerinin kendi ozetleriyle duplicate zaman/best baglami yaratiyordu
+target: sonraki manuel sample'da pause ve death ekranlari daha tek parca, daha sakin ve "iki UI ust uste binmis" hissinden daha uzak algilansin
+
 game_over_support_strip_focus:
 current: Run #124 game-over aninda alt support strip'i varsayilan olarak gizliyor; strip sadece start/pause/resume ve explicit telemetry/export aksiyonlarinda geri geliyor
 baseline: Run #122 support strip metnini tek export/retry hatirlatmasina daraltmisti, ancak strip hala death overlay ile ayni anda gorunerek ikinci bir dikkat noktasi yaratabiliyordu
@@ -17,9 +22,9 @@ baseline: onceki panel stale kalmis, eski telemetry bug fix'ini ve drift eden `2
 target: public panel yalnizca gercek source delta veya yeni insan kaniti geldikce guncellensin; gameplay hafizasi ile player-facing anlatim tekrar drift etmesin
 
 death_screen_clarity:
-current: Run #122 game-over ekraninda ikinci declutter adimini atti; overlay stats artik yalnizca retry aksiyonunu tasiyor, `best` bilgisi body ozetine gomulu, ust hint kapali ve alt support strip tek export/retry hatirlatmasina indi
+current: Run #125 ile birlikte game-over ekrani artik duplicate `score` / `best` HUD'si olmadan aciliyor; Run #122'nin retry-only stats, kisaltilmis body ve gizli hint degisiklikleri ustune ekran tek overlay hiyerarsisine biraz daha yaklasti
 baseline: 11.03.2026 tarihli insan sinyali death ekranini "inanilmaz fazla veri/yazi" nedeniyle karmasik ve rahatsiz edici olarak raporladi
-target: sonraki manuel sample'da death ekraninin daha sakin, daha rahat okunur ve retry istegini daha az bozan bir his vermesi; ozellikle sag ust snapshot tek basina yeterli baglam sagliyor mu netlestirilsin
+target: sonraki manuel sample'da death ekraninin daha sakin, daha rahat okunur ve retry istegini daha az bozan bir his vermesi; ozellikle sag ust snapshot tek basina yeterli baglam sagliyor mu ve ust HUD'nin gizlenmesi clutter'i gercekten azaltiyor mu netlestirilsin
 
 average_survival_time:
 current: 26.5s in deterministic survival snapshot
