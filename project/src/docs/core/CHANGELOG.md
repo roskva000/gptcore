@@ -2,6 +2,13 @@
 
 ---
 
+## Run #117
+
+- `project/game/src/game/primaryAction.ts` fresh-vs-repeat primary key kabulunu tek kaynaga tasiyan yeni saf helper ekledi
+- `project/game/src/game/GameScene.ts` held `Space` / `Enter` auto-repeat event'lerini yok sayarak waiting, paused ve game-over fazlarinda istemsiz ikinci start/retry/resume tetiklenmesini kapatti
+- `project/game/scripts/telemetry-check.ts` fresh ve repeated primary-key davranisini regression guard altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #116
 
 - `project/game/src/game/GameScene.ts` gameplay keyboard capture listesine `Enter` tusunu ekledi

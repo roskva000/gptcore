@@ -48,6 +48,7 @@ import {
   type TelemetrySummary,
 } from './telemetry.ts';
 import { getPointerSteeringVelocity } from './pointerSteering.ts';
+import { shouldHandlePrimaryActionKey } from './primaryAction.ts';
 
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
@@ -573,7 +574,11 @@ export class GameScene extends Phaser.Scene {
     frame.strokeRoundedRect(12, 12, ARENA_WIDTH - 24, ARENA_HEIGHT - 24, 24);
   }
 
-  private handlePrimaryAction(): void {
+  private handlePrimaryAction(event?: KeyboardEvent): void {
+    if (!shouldHandlePrimaryActionKey(event)) {
+      return;
+    }
+
     this.activatePrimaryAction('primary-key');
   }
 

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #117]
+
+Decision:
+`Space` ve `Enter` icin repeated keyboard event'leri primary action olarak yok sayilacak; held auto-repeat waiting, paused ve game-over fazlarinda ikinci bir start/retry/resume tetiklemeyecek.
+
+Reason:
+Bu tur `stabilization` modunda, runtime yine blokluyken audit'in yasakladigi fairness, telemetry, browser-control ve death-guidance zincirini acmadan dar bir control kusuru secildi. `keydown-SPACE` ve `keydown-ENTER` dogrudan primary action'a bagliydi; key auto-repeat browser/OS seviyesinde yeniden event urettiginde death tableau veya pause overlay'i oyuncu taze niyet gostermeden delinme riski tasiyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni saf guard'i ekledi. `project/game/src/game/GameScene.ts` repeated `KeyboardEvent` geldiğinde primary action'i erken durduruyor; taze Space/Enter basisi aynen korunuyor. `project/game/scripts/telemetry-check.ts` bu kontrati regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample bu guard'in bilincli keyboard tekrar davranisini gereksiz sekilde yavaslattigini veya taze primary key akisini bozdugunu gosterirse yalnizca repeat-event yorumu dar kapsamda yeniden ayarlanir; retry/fairness/telemetry yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #116]
 
 Decision:

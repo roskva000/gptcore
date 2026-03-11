@@ -14,6 +14,7 @@ import {
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
+import { shouldHandlePrimaryActionKey } from '../src/game/primaryAction.ts';
 import {
   buildValidationReport,
   buildTelemetrySummary,
@@ -129,6 +130,21 @@ assert.equal(
   }),
   400,
   'Overwide callouts should fall back to the arena midpoint instead of producing an inverted clamp range.',
+);
+assert.equal(
+  shouldHandlePrimaryActionKey(),
+  true,
+  'Primary action keys should still work for fresh Space/Enter presses.',
+);
+assert.equal(
+  shouldHandlePrimaryActionKey({ repeat: false }),
+  true,
+  'Non-repeated primary key events should trigger start/retry/resume.',
+);
+assert.equal(
+  shouldHandlePrimaryActionKey({ repeat: true }),
+  false,
+  'Held Space/Enter auto-repeat should not retrigger primary actions during waiting, pause, or game-over overlays.',
 );
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');
