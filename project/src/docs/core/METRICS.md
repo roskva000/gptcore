@@ -57,9 +57,9 @@ baseline: before Run #117 `keydown-SPACE` and `keydown-ENTER` flowed straight in
 target: confirm manually that held Space/Enter no longer skip the pause or death read, while a fresh desktop key press still feels instant and unchanged
 
 primary_pointer_button_integrity:
-current: Run #118 now limits pointer primary action to primary-button presses, so right-click and middle-click no longer trigger desktop start/retry/resume by accident
-baseline: before Run #118 any pointerdown reached the same primary-action path, which let non-primary mouse buttons act like replay/start intents
-target: confirm manually that left-click and touch still feel instant while non-primary mouse buttons are ignored
+current: Run #119 now treats only primary-button holds as pointer input across primary-action, held-pointer, steering, and death-release flows, so right-click and middle-click no longer trigger desktop start/retry/resume or active steering by accident
+baseline: before Run #118 any pointerdown reached the same primary-action path, and before Run #119 the later held-pointer/steering paths still trusted raw `isDown`, which let non-primary mouse buttons behave like replay/start or steer intents when held
+target: confirm manually that left-click and touch still feel instant while non-primary mouse buttons are ignored across both primary action and live steering
 
 pointer_edge_control_integrity:
 current: Run #114 now clamps pointer/touch steering targets to the player-reachable arena (`16px` inner margin), so dragging beyond the canvas or arena edge no longer spends movement velocity into an impossible outward lane while the player is already pinned to the wall

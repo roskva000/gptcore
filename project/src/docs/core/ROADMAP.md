@@ -10,7 +10,7 @@
   - `Enter` start/retry/resume shell focus kaymasinda da durust mu
   - pointer/touch steer arena disina kaysa bile wall-edge kacis ekseni durust mu
   - death sonrasi held movement/pointer input kendi kendine retry uretmiyor mu
-  - right-click veya middle-click artik istemsiz start/retry/resume uretmiyor mu
+  - right-click veya middle-click artik istemsiz start/retry/resume ya da steer uretmiyor mu
   - pause/death freeze ve `20s+` chase insan gozunde adil mi
 - Runtime yoksa ayni fairness/control/telemetry hattina donmeden tek bir yeni gameplay/UX source bug'i sec.
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
@@ -24,7 +24,7 @@ Success markers:
 # NEXT
 
 - Manuel sample sonuclarina gore fairness, replay veya readability tarafinda en yuksek etkili dar bug fix'i sec.
-- Sample yine yoksa Run #101-#118 zinciri disinda kalacak yeni source-level gameplay problemi ara.
+- Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara.
 - Seed `#3` opener fairness paketini ancak manuel evidence veya yeni dar hipotez varsa yeniden ac.
 
 ---
@@ -40,7 +40,7 @@ Success markers:
 
 - telemetry wording / HUD copy churn'u
 - yeni readiness / preflight / orchestration katmani
-- sample olmadan Run #101-#118 fairness/input/control zincirine geri donus
+- sample olmadan Run #101-#119 fairness/input/control zincirine geri donus
 
 ---
 

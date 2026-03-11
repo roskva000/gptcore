@@ -48,7 +48,11 @@ import {
   type TelemetrySummary,
 } from './telemetry.ts';
 import { getPointerSteeringVelocity } from './pointerSteering.ts';
-import { shouldHandlePrimaryActionKey, shouldHandlePrimaryActionPointer } from './primaryAction.ts';
+import {
+  isPrimaryPointerDown,
+  shouldHandlePrimaryActionKey,
+  shouldHandlePrimaryActionPointer,
+} from './primaryAction.ts';
 
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
@@ -1016,7 +1020,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private hasConfirmedHeldPointerInput(time: number): boolean {
-    if (!this.input.activePointer.isDown) {
+    if (!isPrimaryPointerDown(this.input.activePointer)) {
       this.pointerHoldActionStartedAt = null;
       this.pointerSteeringNeedsRelease = false;
       this.pauseResumeNeedsPointerRelease = false;
@@ -1043,7 +1047,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private armPointerSteeringGuardAfterActivation(source: PrimaryActionSource): void {
-    if (!this.input.activePointer.isDown || source === 'pointer-held') {
+    if (!isPrimaryPointerDown(this.input.activePointer) || source === 'pointer-held') {
       return;
     }
 
@@ -1116,7 +1120,7 @@ export class GameScene extends Phaser.Scene {
 
     const pointer = this.input.activePointer;
 
-    if (!pointer.isDown) {
+    if (!isPrimaryPointerDown(pointer)) {
       this.pointerSteeringNeedsRelease = false;
       this.pointerHoldActionStartedAt = null;
       this.player.setVelocity(0, 0);
@@ -1195,7 +1199,7 @@ export class GameScene extends Phaser.Scene {
 
     this.survivalTime = this.getCurrentSurvivalTimeSeconds();
     const movementInputActive = this.hasMovementInput();
-    const pointerInputActive = this.input.activePointer.isDown;
+    const pointerInputActive = isPrimaryPointerDown(this.input.activePointer);
     const fatalObstacle = this.resolveFatalObstacle(
       obstacleGameObject as Phaser.Physics.Arcade.Image,
     );

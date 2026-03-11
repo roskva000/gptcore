@@ -12,12 +12,12 @@ Minimum sample checklist:
 - `Enter` start/retry/resume shell focus kaymalarinda da oyunda kaliyor mu
 - pointer/touch steer arena disina kaysa bile wall-edge kacis ekseni durust mu
 - death sonrasi held movement/pointer input kendi kendine retry baslatmiyor mu
-- right-click veya middle-click artik istemsiz start/retry/resume uretmiyor mu
+- right-click veya middle-click artik istemsiz start/retry/resume ya da steer uretmiyor mu
 - pause/death freeze ve `20s+` chase insan gozunde adil mi
 
 ## If Runtime Is Still Blocked
 
-- Run #101-#118 fairness/input/control/telemetry zincirine geri donme.
+- Run #101-#119 fairness/input/control/telemetry zincirine geri donme.
 - Telemetry wording, HUD copy veya governance expansion acma.
 - Tek bir yeni gameplay/UX source bug'i sec, dar tut, source odakli kal.
 - `npm run telemetry:check` ve `npm run build` ile dogrula.

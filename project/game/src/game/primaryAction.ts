@@ -23,3 +23,27 @@ export const shouldHandlePrimaryActionPointer = (
 
   return pointer.button === 0;
 };
+
+export const isPrimaryPointerDown = (
+  pointer?: Pick<Phaser.Input.Pointer, 'isDown' | 'button' | 'event'> | null,
+): boolean => {
+  if (!pointer?.isDown) {
+    return false;
+  }
+
+  const nativeEvent = pointer.event;
+
+  if (
+    nativeEvent &&
+    'buttons' in nativeEvent &&
+    typeof nativeEvent.buttons === 'number'
+  ) {
+    if (nativeEvent.buttons === 0) {
+      return shouldHandlePrimaryActionPointer(pointer);
+    }
+
+    return (nativeEvent.buttons & 1) === 1;
+  }
+
+  return shouldHandlePrimaryActionPointer(pointer);
+};

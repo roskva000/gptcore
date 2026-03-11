@@ -2,11 +2,16 @@
 
 ---
 
+## Run #119
+
+- `project/game/src/game/primaryAction.ts` pointer'in primary button veya touch tutusu ile aktif olup olmadigini tek kaynaktan yorumlayan `isPrimaryPointerDown()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` held pointer start/retry/resume, pointer steering ve death-time pointer release guard'ini bu helper ile hizaladi; right-click ve middle-click artik basili tutuldugunda da primary action veya steer uretmiyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #118
 
 - `project/game/src/game/primaryAction.ts` primary pointer action icin non-primary mouse button guard'i ekledi
 - `project/game/src/game/GameScene.ts` pointerdown akisinda artık yalnizca primary pointer press ile start/retry/resume aciyor; right-click ve middle-click istemsiz primary action uretmiyor
-- `project/game/scripts/telemetry-check.ts` pointer button regression assert'leri eklendi
 - `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
 
 ## Run #117

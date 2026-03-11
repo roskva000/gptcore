@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #119]
+
+Decision:
+Non-primary mouse button'lar held pointer ve steering akislari icinde de primary input sayilmayacak.
+
+Reason:
+Bu tur `stabilization` modunda, runtime halen blokluyken ayni fairness/telemetry/readiness alanina donmeden dar ve gercek bir gameplay-control regressiyonu secildi. Run #118 `pointerdown` uzerinden gelen right-click / middle-click start-retry-resume yolunu kapatmisti, fakat `GameScene.ts` icindeki held pointer ve steering akislari hala yalnizca `activePointer.isDown` kontrolune dayaniyordu. Bu yuzden non-primary mouse button basili tutulursa oyun hala primary action veya steer uretebiliyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` pointer'in primary button ile mi aktif oldugunu yorumlayan tek kaynak `isPrimaryPointerDown()` helper'ini ekledi. `project/game/src/game/GameScene.ts` held pointer acceptance, pointer steering, activation sonrasi steering guard'i ve death-time pointer release ihtiyacini bu helper ile hizaladi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample bu guard'in touch veya normal left-click akisini bozdugunu gosterirse yalnizca primary-pointer yorumlama dar kapsamda yeniden ayarlanir; fairness, telemetry, browser shell veya yeni orchestration bahanesiyle scope genisletilmez.
+
 ### [Run #118]
 
 Decision:
@@ -13,7 +27,7 @@ Reason:
 Bu tur `stabilization` modunda, audit'in yasakladigi fairness/telemetry/readiness zincirine donmeden dar bir control-honesty kusuru secildi. Mevcut pointer primary action akisi mouse button ayrimi yapmadigi icin right-click veya middle-click desktop'ta istemsiz start/retry/resume uretebiliyordu.
 
 Impact:
-`project/game/src/game/primaryAction.ts` pointer icin saf guard ekledi. `project/game/src/game/GameScene.ts` pointer primary action'i bu guard ile kullaniyor. `project/game/scripts/telemetry-check.ts` primary vs non-primary pointer davranisini regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+`project/game/src/game/primaryAction.ts` pointer icin saf guard ekledi. `project/game/src/game/GameScene.ts` pointer primary action'i bu guard ile kullaniyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
 
 Rollback Condition:
 Headed manuel sample bu guard'in touch veya normal left-click akisini bozdugunu gosterirse yalnizca pointer button yorumu dar kapsamda yeniden ayarlanir; fairness, telemetry, browser-control veya readiness yuzeyleri bu bahaneyle tekrar acilmaz.
