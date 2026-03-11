@@ -1,0 +1,43 @@
+(dizin):1 Refused to execute script from 'https://thegame.psyfurkan.com/_vercel/insights/script.js' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.
+index-BSvllvtk.js:1      Phaser v3.90.0 (WebGL | Web Audio)  https://phaser.io/v390
+index-BSvllvtk.js:81 [telemetry] run_start ObjectretryDelayMs: nullrunNumber: 11startedAt: 1773250688549[[Prototype]]: Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=6 | deaths=6 | avg_survival=40.2s | first_death=3.8s | early_death_rate=17% | avg_retry=1.6s | spawn_saves=3 | last_run=3.8s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=6 | deaths=6 | avg_survival=40.2s | first_death=3.8s | early_death_rate=17% | avg_retry=1.6s | spawn_saves=3 | last_run=3.8s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=7 | deaths=7 | avg_survival=35.0s | first_death=3.8s | early_death_rate=29% | avg_retry=3.6s | spawn_saves=3 | last_run=4.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=7 | deaths=7 | avg_survival=35.0s | first_death=3.8s | early_death_rate=29% | avg_retry=3.6s | spawn_saves=3 | last_run=4.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=7 | deaths=7 | avg_survival=35.0s | first_death=3.8s | early_death_rate=29% | avg_retry=3.6s | spawn_saves=3 | last_run=4.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=7 | deaths=7 | avg_survival=35.0s | first_death=3.8s | early_death_rate=29% | avg_retry=3.6s | spawn_saves=3 | last_run=4.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=7 | deaths=7 | avg_survival=35.0s | first_death=3.8s | early_death_rate=29% | avg_retry=3.6s | spawn_saves=3 | last_run=4.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:70 [telemetry] validation_report validation_sample | runs=8 | deaths=8 | avg_survival=31.1s | first_death=3.8s | early_death_rate=38% | avg_retry=3.6s | spawn_saves=3 | last_run=3.8s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:81 [telemetry] run_end Object
+index-BSvllvtk.js:81 [telemetry] run_start Object
+index-BSvllvtk.js:70 [telemetry] summary Objectlifetime: {label: 'lifetime', runs: 21, startedRuns: 22, deaths: 21, bestSurvivalTime: 80.6, …}session: {label: 'session', runs: 11, startedRuns: 12, deaths: 11, bestSurvivalTime: 80.6, …}[[Prototype]]: Object
+index-BSvllvtk.js:70 [telemetry] summary Objectlifetime: {label: 'lifetime', runs: 21, startedRuns: 22, deaths: 21, bestSurvivalTime: 80.6, …}averageRetryDelaySeconds: 3.038averageSurvivalTime: 37.1bestSurvivalTime: 80.6deaths: 21earlyDeathRate: 38firstDeathTime: 3label: "lifetime"lastSurvivalTime: 3.9recentDeathTimes: (4) [3.9, 4, 9.7, 3.8]runs: 21startedRuns: 22totalSpawnRerolls: 3[[Prototype]]: Objectsession: {label: 'session', runs: 11, startedRuns: 12, deaths: 11, bestSurvivalTime: 80.6, …}[[Prototype]]: Object
+export
+VM1075:1 Uncaught SyntaxError: Unexpected token 'export'
+exp
+VM1088:1 Uncaught ReferenceError: exp is not defined
+    at <anonymous>:1:1
+(anonim) @ VM1088:1
+export validation
+VM1129:1 Uncaught SyntaxError: Unexpected token 'export'
