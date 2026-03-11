@@ -2,6 +2,13 @@
 
 ---
 
+## Run #115
+
+- `project/game/src/game/telemetry.ts` validation export readiness icin `hasCompletedRunSample()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` `V` export'unu playing/paused fazlarinda ve sifir completed run durumunda bloke edip net support mesajlari gosteriyor
+- `project/game/scripts/telemetry-check.ts` export readiness helper'inin completed run oncesi/sonrasi davranisini regression guard altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #114
 
 - `project/game/src/game/pointerSteering.ts` pointer steering icin yeni saf helper ekledi; pointer hedefi artik oyuncunun erisebildigi arena icine clamp'leniyor

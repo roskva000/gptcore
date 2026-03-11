@@ -19,6 +19,7 @@ import {
   buildTelemetrySummary,
   createEmptyTelemetry,
   getCompletedRunCount,
+  hasCompletedRunSample,
   getRetryDelayMs,
 } from '../src/game/telemetry.ts';
 import {
@@ -226,6 +227,21 @@ assert.deepEqual(
     rerollsUsed: 0,
   },
   'Projected-path forward-pressure should keep a safe left-edge spawn instead of rerolling into right-edge crossfire.',
+);
+
+assert.equal(
+  hasCompletedRunSample(createEmptyTelemetry()),
+  false,
+  'Validation export readiness should stay false before the first completed run.',
+);
+
+const completedRunSampleTelemetry = createEmptyTelemetry();
+completedRunSampleTelemetry.totalRuns = 2;
+completedRunSampleTelemetry.totalDeaths = 1;
+assert.equal(
+  hasCompletedRunSample(completedRunSampleTelemetry),
+  true,
+  'Validation export readiness should unlock once at least one run has ended.',
 );
 
 const wallEdgeProjectedSelection = selectSpawnPoint({

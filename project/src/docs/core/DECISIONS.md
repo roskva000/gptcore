@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #115]
+
+Decision:
+Validation export yalnizca stable fazlarda (`waiting` / `gameOver`) ve en az bir tamamlanmis run varken alinacak.
+
+Reason:
+Bu tur `stabilization` modunda, headed runtime yine blokluyken audit'in kapattigi input/fairness/death-guidance zincirine geri donmeden dar ve gercek bir validation-integrity bug'i secildi. `GameScene.ts` mevcut durumda aktif veya pause halindeki yarim run sirasinda da `V` export'una izin veriyor, sifir completed run ile de yerel export alinabiliyordu. Bu durum export'un stable bir sample gibi gorunmesine ragmen yari kalmis veya bos bir durumu kaydetme riski tasiyordu.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `hasCompletedRunSample()` helper'i ile export-readiness kontratini tek kaynaga tasidi. `project/game/src/game/GameScene.ts` artik playing/paused fazinda validation export'u reddediyor ve completed run yoksa kullaniciya net support mesaji veriyor. `project/game/scripts/telemetry-check.ts` export readiness'in ilk completed run oncesi kapali, sonrasi acik kalmasini regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Host browser sample'i aktif/pause fazinda ara export'un gercek bir operasyon ihtiyaci oldugunu gosterirse bu ancak ayri bir "snapshot" kontrati olarak acikca adlandirilmis yeni yuzeyle cozulmeli; mevcut validation export sessizce yari sample'a geri acilmamali.
+
 ### [Run #114]
 
 Decision:

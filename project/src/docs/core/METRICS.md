@@ -240,6 +240,11 @@ current: `npm run telemetry:browser-validation-smoke` and `npm run telemetry:val
 baseline: Run #57 fixed the smoke script to connect to a page CDP target instead of the browser websocket and to verify reset/export through scene methods plus storage state; Run #61 aligned smoke-visible `first death` with the same minimum-death semantics used by deterministic validation
 target: keep smoke green as a lightweight browser harness, but treat it as prerequisite evidence only; replay/start/pause friction still requires human sample
 
+validation_export_readiness:
+current: Run #115 now blocks validation export while a run is `playing` or `paused`, and also blocks export until at least one completed run exists in session telemetry
+baseline: before Run #115 `V` could save a validation summary from a half-finished active sample or from a zero-completion session, which made the export surface look "ready" before the sample was stable
+target: keep validation export tied to stable completed-run states only; if mid-run snapshots are ever needed, they must use an explicitly separate contract instead of weakening validation semantics
+
 build_health:
 current: `npm run build` passes; Vite still reports a large chunk warning for the main bundle
 baseline: build stayed green in Run #35

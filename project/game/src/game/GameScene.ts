@@ -31,6 +31,7 @@ import {
   buildValidationReport,
   createEmptyTelemetry,
   getCompletedRunCount,
+  hasCompletedRunSample,
   getBestSurvivalTime,
   getBestSurvivalTimeText,
   formatValidationReportSummaryText,
@@ -633,6 +634,20 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handleValidationExport(): void {
+    if (this.phase === 'playing' || this.phase === 'paused') {
+      this.supportText.setText(
+        'Finish the current run before exporting validation so the summary reflects only completed attempts.',
+      );
+      return;
+    }
+
+    if (!hasCompletedRunSample(this.sessionTelemetry)) {
+      this.supportText.setText(
+        'No completed run yet. Finish at least one run before exporting a validation summary.',
+      );
+      return;
+    }
+
     const validationReport = buildValidationReport(this.sessionTelemetry);
     this.saveValidationReport(validationReport);
 
