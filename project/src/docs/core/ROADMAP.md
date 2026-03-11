@@ -4,28 +4,26 @@
 
 # NOW
 
-- `Human-Proven Survival Core` icin ilk manuel sample'i topla.
+- Run #121 sonrasi death screen declutter etkisini hedefli insan sample ile dogrula.
 - Sample checklist:
-  - held `Space` / `Enter` auto-repeat artik death/pause overlay'ini delmiyor mu
-  - `Enter` start/retry/resume shell focus kaymasinda da durust mu
-  - pointer/touch steer arena disina kaysa bile wall-edge kacis ekseni durust mu
-  - death sonrasi held movement/pointer input kendi kendine retry uretmiyor mu
-  - right-click veya middle-click artik istemsiz start/retry/resume ya da steer uretmiyor mu
+  - death overlay artik olum nedeni, retry aksiyonu ve kacis yonunu daha rahat okutuyor mu
+  - sag ust telemetry paneli game-over aninda artik daha az bunaltici mi
+  - retry istegi ilk sample'a gore iyilesti mi
+  - `60s clear!` milestone feedback'i hala earned ve akis bozmayan bir an gibi hissettiriyor mu
   - pause/death freeze ve `20s+` chase insan gozunde adil mi
-  - `60s clear!` milestone feedback'i run icinde yeterince gorunur ve earned hissettiriyor mu
 - Runtime yoksa ayni fairness/control/telemetry hattina donmeden tek bir yeni gameplay/UX source bug'i sec.
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde tarihli ilk sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #121 sonrasi hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi.
 
 ---
 
 # NEXT
 
-- Manuel sample sonuclarina gore fairness, replay veya readability tarafinda en yuksek etkili dar bug fix'i sec.
-- Sample olursa yeni `60s clear` milestone feedback'inin keep/tune karari insan notuyla verilsin.
+- Manuel sample sonuclarina gore death/readability, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
+- Sample olursa yeni game-over bilgilenme seviyesi keep/tune karari insan notuyla verilsin.
 - Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara.
 - Seed `#3` opener fairness paketini ancak manuel evidence veya yeni dar hipotez varsa yeniden ac.
 

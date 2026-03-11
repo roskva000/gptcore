@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #121]
+
+Decision:
+Game-over anindaki telemetry ve overlay istatistikleri daraltilacak; olum ekrani tekrar once olum nedeni, retry aksiyonu ve kisa session baglamina odaklanacak.
+
+Reason:
+Bu tur `stabilization` modunda ve secilen ana hedef dogrudan insan sinyaline baglandi. `HUMAN_SIGNALS.md` 11.03.2026 girdisinde olum ekraninin "inanilmaz fazla veri/yazi" ile karmasik ve rahatsiz edici hissettirdigi acikca yazildi. Audit'in yasakladigi fairness/input zincirine donmeden en dar, urun etkisi yuksek cevap; game-over anindaki cift telemetry duvarini azaltmakti.
+
+Impact:
+`project/game/src/game/GameScene.ts` game-over overlay stats blokunu `retry instantly + session summary + validation/export status` formatina indirdi. Ayni run'da sag ust telemetry paneli de `Session snapshot` basligi altinda iki ozet satira daraltildi. Boylece death aninda duplicate telemetry, `spawn saves`, `retry avg` ve `early death %` gibi ikincil metrikler ana replay/readability akisindan cekildi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Bir sonraki manuel sample bu sadelestirmenin validation/export affordance'ini gereksiz sakladigini veya oyuncunun kendi ilerlemesini okumayi zorlastirdigini gosterirse yalnizca game-over bilgi yogunlugu dar kapsamda yeniden ayarlanir; fairness/input zinciri veya yeni governance/tooling katmani bu bahaneyle acilmaz.
+
 ### [Run #120]
 
 Decision:

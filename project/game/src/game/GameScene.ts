@@ -1323,10 +1323,8 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           `Press ${this.getRetryActionText()} to retry instantly.`,
-          `Best ${getBestSurvivalTimeText(this.telemetry)} lifetime | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
-          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
-          `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
-          `Validation ${getValidationProgressText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
+          this.getGameOverSessionSummaryLine(),
+          this.getGameOverValidationSummaryLine(),
         ].join('\n'),
       )
       .setVisible(true);
@@ -2008,11 +2006,9 @@ export class GameScene extends Phaser.Scene {
 
     if (this.phase === 'gameOver') {
       return [
-        'Local telemetry',
-        `Last run ${this.getLastRunTimeText(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry ${getAverageRetryDelayText(this.sessionTelemetry)}`,
-        `Session best ${getBestSurvivalTimeText(this.sessionTelemetry)} | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
-        `Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | Validation ${getValidationProgressText(this.sessionTelemetry)}`,
-        this.getValidationExportLine(),
+        'Session snapshot',
+        this.getGameOverSessionSummaryLine(),
+        this.getGameOverValidationSummaryLine(),
       ];
     }
 
@@ -2126,6 +2122,20 @@ export class GameScene extends Phaser.Scene {
     }
 
     return 'No saved export yet | Press V after a fresh 5-run sample.';
+  }
+
+  private getGameOverSessionSummaryLine(): string {
+    return `Last run ${this.getLastRunTimeText(this.sessionTelemetry)} | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`;
+  }
+
+  private getGameOverValidationSummaryLine(): string {
+    const validationSummary = `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation ${getValidationProgressText(this.sessionTelemetry)}`;
+
+    if (this.lastValidationReport) {
+      return `${validationSummary} | Export saved`;
+    }
+
+    return `${validationSummary} | Press V after a fresh 5-run sample`;
   }
 
   private getLastRunTimeText(telemetry: GameplayTelemetry): string {

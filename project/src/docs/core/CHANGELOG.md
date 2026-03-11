@@ -2,6 +2,12 @@
 
 ---
 
+## Run #121
+
+- `project/game/src/game/GameScene.ts` game-over overlay stats satirlarini uc kisa satira indirdi; death ekraninda retry aksiyonu, session ozeti ve validation/export durumu disindaki ikincil telemetry kalabaligi cikartildi
+- ayni dosya game-over sirasindaki sag ust telemetry panelini `Session snapshot` altinda daha kisa bir ozet haline getirdi; duplicate telemetry duvari azaltildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #120
 
 - `project/game/src/game/balance.ts` oyunun namesake hedefini tek kaynaktan tasimak icin `SURVIVAL_GOAL_SECONDS = 60` ve `hasReachedSurvivalGoal()` helper'ini ekledi
