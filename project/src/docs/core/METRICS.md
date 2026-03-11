@@ -56,6 +56,11 @@ current: Run #117 now ignores repeated `Space` / `Enter` keyboard events on the 
 baseline: before Run #117 `keydown-SPACE` and `keydown-ENTER` flowed straight into primary action handling; OS/browser auto-repeat could therefore generate extra primary-action events while a key stayed held
 target: confirm manually that held Space/Enter no longer skip the pause or death read, while a fresh desktop key press still feels instant and unchanged
 
+primary_pointer_button_integrity:
+current: Run #118 now limits pointer primary action to primary-button presses, so right-click and middle-click no longer trigger desktop start/retry/resume by accident
+baseline: before Run #118 any pointerdown reached the same primary-action path, which let non-primary mouse buttons act like replay/start intents
+target: confirm manually that left-click and touch still feel instant while non-primary mouse buttons are ignored
+
 pointer_edge_control_integrity:
 current: Run #114 now clamps pointer/touch steering targets to the player-reachable arena (`16px` inner margin), so dragging beyond the canvas or arena edge no longer spends movement velocity into an impossible outward lane while the player is already pinned to the wall
 baseline: before Run #114 pointer steering aimed directly at the raw pointer world coordinate, so offscreen or outside-arena drag targets could keep wall-edge movement biased into the boundary instead of the nearest reachable escape axis

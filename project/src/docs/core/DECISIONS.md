@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #118]
+
+Decision:
+Non-primary mouse click'ler primary action olarak kabul edilmeyecek; yalnızca primary pointer press start/retry/resume hattina girecek.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in yasakladigi fairness/telemetry/readiness zincirine donmeden dar bir control-honesty kusuru secildi. Mevcut pointer primary action akisi mouse button ayrimi yapmadigi icin right-click veya middle-click desktop'ta istemsiz start/retry/resume uretebiliyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` pointer icin saf guard ekledi. `project/game/src/game/GameScene.ts` pointer primary action'i bu guard ile kullaniyor. `project/game/scripts/telemetry-check.ts` primary vs non-primary pointer davranisini regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample bu guard'in touch veya normal left-click akisini bozdugunu gosterirse yalnizca pointer button yorumu dar kapsamda yeniden ayarlanir; fairness, telemetry, browser-control veya readiness yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #117]
 
 Decision:

@@ -14,7 +14,10 @@ import {
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
-import { shouldHandlePrimaryActionKey } from '../src/game/primaryAction.ts';
+import {
+  shouldHandlePrimaryActionKey,
+  shouldHandlePrimaryActionPointer,
+} from '../src/game/primaryAction.ts';
 import {
   buildValidationReport,
   buildTelemetrySummary,
@@ -145,6 +148,24 @@ assert.equal(
   shouldHandlePrimaryActionKey({ repeat: true }),
   false,
   'Held Space/Enter auto-repeat should not retrigger primary actions during waiting, pause, or game-over overlays.',
+);
+assert.equal(
+  shouldHandlePrimaryActionPointer({ button: 0 }),
+  true,
+  'Primary pointer presses should still trigger start/retry/resume.',
+);
+assert.equal(
+  shouldHandlePrimaryActionPointer({ button: 1 }),
+  false,
+  'Middle-click should not trigger primary actions.',
+);
+assert.equal(
+  shouldHandlePrimaryActionPointer({
+    button: 0,
+    event: { button: 2 } as PointerEvent,
+  }),
+  false,
+  'Secondary-click native events should not trigger start/retry/resume even if the cached pointer button looks primary.',
 );
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');

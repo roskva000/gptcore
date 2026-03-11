@@ -2,6 +2,13 @@
 
 ---
 
+## Run #118
+
+- `project/game/src/game/primaryAction.ts` primary pointer action icin non-primary mouse button guard'i ekledi
+- `project/game/src/game/GameScene.ts` pointerdown akisinda artık yalnizca primary pointer press ile start/retry/resume aciyor; right-click ve middle-click istemsiz primary action uretmiyor
+- `project/game/scripts/telemetry-check.ts` pointer button regression assert'leri eklendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #117
 
 - `project/game/src/game/primaryAction.ts` fresh-vs-repeat primary key kabulunu tek kaynaga tasiyan yeni saf helper ekledi

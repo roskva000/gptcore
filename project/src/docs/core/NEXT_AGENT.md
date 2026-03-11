@@ -4,30 +4,25 @@
 
 Run mode: `stabilization`
 
-Interactive browser/runtime varsa ilk isi `project/src/docs/experiments/HUMAN_SIGNALS.md` icin tarihli ilk structured manuel sample'i toplamak olsun.
+Ana hedef:
+Interactive runtime varsa `project/src/docs/experiments/HUMAN_SIGNALS.md` icin ilk tarihli manuel sample'i topla.
 
-Minimum kontrol listesi:
-- held `Space` / `Enter` death tableau veya pause overlay'i ustunde auto-repeat ile kendi kendine retry/resume uretmiyor mu
-- `Enter` ve `Space` start/retry/resume icin shell focus kaymalarinda da ayni durustlugu koruyor mu
-- Run #114 pointer steering reachable clamp sonrasi pointer/touch drag arena disina kaysa bile wall-edge steering artik erisilebilir kacis eksenine akiyor mu
-- Run #112 sonrasi death aninda basili kalan move/pointer input artik kendi kendine retry baslatmiyor mu
-- Run #105/#106 sonrasi death ve pause freeze hissi gercekten durust mu
-- Run #87 sonrasi `20s+` chase insan gozunde hala adil ama gergin mi
+Minimum sample checklist:
+- held `Space` / `Enter` auto-repeat artik death/pause overlay'inde ikinci primary action uretmiyor mu
+- `Enter` start/retry/resume shell focus kaymalarinda da oyunda kaliyor mu
+- pointer/touch steer arena disina kaysa bile wall-edge kacis ekseni durust mu
+- death sonrasi held movement/pointer input kendi kendine retry baslatmiyor mu
+- right-click veya middle-click artik istemsiz start/retry/resume uretmiyor mu
+- pause/death freeze ve `20s+` chase insan gozunde adil mi
 
 ## If Runtime Is Still Blocked
 
-`AUDIT.md` kisitlarina uy:
-- Run #101-#117 zincirindeki fairness / timing / retry / browser-control / death-guidance / pointer-control / validation-export yuzeylerine geri donme
-- telemetry wording, HUD copy veya docs ritual churn'u acma
-- `20s+` chase veya seed `#3` opener fairness paketini tekrar acma
-
-Fallback hedef:
-- tek bir yeni gameplay/UX source bug'i sec
-- dar tut
-- source odakli kal
-- `npm run telemetry:check` ve `npm run build` ile dogrula
+- Run #101-#118 fairness/input/control/telemetry zincirine geri donme.
+- Telemetry wording, HUD copy veya governance expansion acma.
+- Tek bir yeni gameplay/UX source bug'i sec, dar tut, source odakli kal.
+- `npm run telemetry:check` ve `npm run build` ile dogrula.
 
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md` icinde tarihli en az bir manuel sample girdisi var
-- ya da runtime blokajini kisa kaydedip Run #101-#117 zinciri disinda yeni tek bir gameplay/UX bug'ini source'ta kapatmis ol
+- `HUMAN_SIGNALS.md` icinde tarihli ilk sample var
+- veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi
