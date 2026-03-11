@@ -46,6 +46,7 @@ import {
   type GameplayTelemetry,
   type TelemetrySummary,
 } from './telemetry.ts';
+import { getPointerSteeringVelocity } from './pointerSteering.ts';
 
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
@@ -1128,25 +1129,20 @@ export class GameScene extends Phaser.Scene {
       return null;
     }
 
-    const pointerVelocity = new Phaser.Math.Vector2(
-      worldPoint.x - this.player.x,
-      worldPoint.y - this.player.y,
-    );
-    const distance = pointerVelocity.length();
+    const pointerVelocity = getPointerSteeringVelocity({
+      playerPosition: { x: this.player.x, y: this.player.y },
+      pointerPosition: { x: worldPoint.x, y: worldPoint.y },
+      playerReachabilityMargin: PLAYER_COLLISION_RADIUS,
+      playerSpeed: PLAYER_SPEED,
+      deadZonePx: POINTER_DEAD_ZONE_PX,
+      fullSpeedDistancePx: POINTER_FULL_SPEED_DISTANCE_PX,
+    });
 
-    if (distance <= POINTER_DEAD_ZONE_PX) {
+    if (!pointerVelocity) {
       return null;
     }
 
-    const normalizedDistance = Phaser.Math.Clamp(
-      (distance - POINTER_DEAD_ZONE_PX) /
-        (POINTER_FULL_SPEED_DISTANCE_PX - POINTER_DEAD_ZONE_PX),
-      0,
-      1,
-    );
-    const pointerSpeed = PLAYER_SPEED * Math.sqrt(normalizedDistance);
-
-    return pointerVelocity.scale(pointerSpeed / distance);
+    return new Phaser.Math.Vector2(pointerVelocity.x, pointerVelocity.y);
   }
 
   private cullObstacles(): void {

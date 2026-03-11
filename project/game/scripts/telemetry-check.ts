@@ -13,6 +13,7 @@ import {
 } from '../src/game/spawn.ts';
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
+import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
 import {
   buildValidationReport,
   buildTelemetrySummary,
@@ -284,6 +285,30 @@ assert.deepEqual(
     y: 584,
   },
   'Obstacle target lag should clamp to the player-reachable arena instead of impossible wall coordinates.',
+);
+assert.deepEqual(
+  getPointerSteeringVelocity({
+    playerPosition: { x: 16, y: 300 },
+    pointerPosition: { x: -200, y: 180 },
+    playerReachabilityMargin: 16,
+    playerSpeed: 260,
+    deadZonePx: 10,
+    fullSpeedDistancePx: 120,
+  }),
+  { x: 0, y: -260 },
+  'Pointer steering should clamp offscreen targets to the player-reachable arena so wall-edge drags do not waste velocity into an impossible outward lane.',
+);
+assert.deepEqual(
+  getPointerSteeringVelocity({
+    playerPosition: { x: 400, y: 300 },
+    pointerPosition: { x: 404, y: 304 },
+    playerReachabilityMargin: 16,
+    playerSpeed: 260,
+    deadZonePx: 10,
+    fullSpeedDistancePx: 120,
+  }),
+  null,
+  'Pointer steering should preserve the dead-zone when the clamped target still sits inside the close-control radius.',
 );
 
 assert.deepEqual(

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #114]
+
+Decision:
+Pointer steering hedefi arena disina kacsa bile hareket vektoru oyuncunun fiziksel olarak erisebildigi arena icinden hesaplanacak.
+
+Reason:
+Bu tur `stabilization` modunda, headed runtime yine blokluyken audit'in yasakladigi fairness/input-retry/death-tableau zincirine geri donmeden yeni ve dar bir kontrol kusuru secildi. `GameScene.ts` pointer steering'i aktif pointer koordinatini dogrudan hedef aldigi icin imlec canvas veya arena disina tastiginda ozellikle duvar kenarinda oyuncu gercekte ulasamayacagi bir noktaya dogru hiz harciyordu. Bu, wall-edge drag/touch kontrolunu gereksiz sert ve boguk hissettirebilecek gercek bir agency problemiydi.
+
+Impact:
+`project/game/src/game/pointerSteering.ts` yeni saf helper'i ile pointer hedefini reachable arena icine clamp'ledi. `project/game/src/game/GameScene.ts` pointer steering'i artik bu clamp'li hedef uzerinden hesapliyor; wall-edge drag artik imkansiz outward lane'e hiz kaybetmiyor. `project/game/scripts/telemetry-check.ts` offscreen pointer hedefinin reachable clamp ile saf yukari/asagi kacis vektoru uretmesini ve dead-zone davranisinin korunmasini regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample clamp'in pointer/touch steering'i fazla rayli, yapay veya precision kaybettiren bir hisse cevirdigini gosterirse yalnizca pointer target clamp marji dar kapsamda yeniden ayarlanir; spawn fairness, retry, death guidance, telemetry veya browser-control yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #113]
 
 Decision:

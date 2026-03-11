@@ -4,33 +4,30 @@
 
 Run mode: `stabilization`
 
-Interactive browser/runtime varsa `5-10` manuel run topla ve ilk structured girdiyi `project/src/docs/experiments/HUMAN_SIGNALS.md` icine yaz.
+Interactive browser/runtime varsa ilk isi `project/src/docs/experiments/HUMAN_SIGNALS.md` icin tarihli ilk structured manuel sample'i toplamak olsun.
 
-Kontrol et:
-- Run #113 center-overlap neutral escape guide sonrasi `CENTER COLLISION` / `RESET CENTER` death'lerinde guide artik sahte yukari lane cizmiyor mu; marker/label oyuncu merkezinde yeterince okunur ve aksiyon verici kaliyor mu
-- Run #112 game-over held-input retry release guard sonrasi olum aninda basili kalan move/pointer input artik death tableau'yu okumadan kendi kendine retry baslatmiyor mu; release sonrasi fresh retry hala anlik mi
-- Run #111 death tableau visual priority sonrasi overlap death anlarinda secilen killer obstacle gercekten stack'in ustunde ve en okunur silhouette olarak kaliyor mu, yoksa fade edilen diger obstacle'lar hala spotlight'i bulandiriyor mu
-- Run #110 fatal threat attribution sonrasi ayni frame'de veya cok yakin aralikta iki obstacle ust uste bindiginde spotlight, `FATAL LANE` ve retry guidance callback order'a degil oyuncunun gercek algiladigi killer'a baglaniyor mu
-- Run #109 yatay clamp sonrasi sol/sag edge death anlarinda impact, fatal spotlight ve `BREAK ...` etiketi arena disina tasmadan okunuyor mu
-- Run #108 browser control guard'i sonrasi `Space`, ok tuslari ve `WASD` ile start/retry/move sirasinda sayfa veya panel scroll'u tetiklenmiyor mu
-- touch steering sirasinda `.game-root` artik browser pan/drag jestine kacmadan kontrolu oyunda tutuyor mu
-- Run #107 pre-spawn cull cleanup sonrasi uzun hayatta kalma anlarinda spawn ritminin boslamadigini ve stale edge obstacle birikimi hissi olup olmadigini
-- Run #106 pause overlay zamaninin beklerken durust kalip kalmadigini ve resume sonrasi clock'in sicrama yapip yapmadigini
-- Run #105 death tableau'nun gercekten frozen hissedip hissettirmedigini ve retry'nin temiz state'ten baslayip baslamadigini
-- Run #104 `10-11s` grace fade / pause snapshot timing'inin frame gerisi his verip vermedigini
-- Run #103 keyboard/Space start-resume neutralitesini ve held-pointer yolunun korunup korunmadigini
+Minimum kontrol listesi:
+- Run #114 pointer steering reachable clamp sonrasi pointer/touch drag arena disina kaysa bile wall-edge steering artik duvara bosuna itilmeden erisilebilir kacis eksenine akiyor mu
+- Run #112 sonrasi death aninda basili kalan move/pointer input artik kendi kendine retry baslatmiyor mu; fresh retry hala anlik mi
+- Run #113 sonrasi center-overlap death'lerde `RESET CENTER` marker/guide sahte yon telkini vermeden notr kaliyor mu
+- Run #108 sonrasi keyboard start/retry veya touch steering browser scroll/pan kacagi uretiyor mu
+- Run #105/#106 sonrasi death ve pause freeze hissi gercekten durust mu
+- Run #87 sonrasi `20s+` chase insan gozunde hala adil ama gergin mi
 
 ## If Runtime Is Still Blocked
 
-`AUDIT.md` verdigine uy:
-- Run #101-#113 zincirindeki input/pause/fairness/timing/validation/cull/browser-control/edge-callout-layout/fatal-attribution/death-tableau-visual-priority/replay-release/center-guide yuzeylerine geri donme
-- telemetry wording, latest-run copy veya docs ritual churn'u acma
-- tek bir yeni gameplay/UX bug'i sec; Run #101-#113 zincirindeki kapali yuzeylere geri donmeden gercekten farkli tek bir surface sec.
+`AUDIT.md` kisitlarina uy:
+- Run #101-#114 zincirindeki fairness / timing / retry / browser-control / death-guidance / pointer-control yuzeylerine geri donme
+- telemetry wording, HUD copy veya docs ritual churn'u acma
+- `20s+` chase veya seed `#3` opener fairness paketini tekrar acma
 
-Not:
-Yukardaki onerilen aday Run #113 ile kapanmis kabul ediliyor. Runtime yine blokluysa baska tek bir gameplay/UX surface sec; bu fix'i ikinci kez mikrotune etme.
+Fallback hedef:
+- tek bir yeni gameplay/UX source bug'i sec
+- dar tut
+- source odakli kal
+- `npm run telemetry:check` ve `npm run build` ile dogrula
 
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli en az bir manuel sample girdisi var
-- ya da runtime blokajini kisa ve net kaydedip Run #101-#113 zinciri disinda yeni ama farkli bir gameplay bug'i source'ta kapatmis ol
+- ya da runtime blokajini kisa kaydedip Run #101-#114 zinciri disinda yeni tek bir gameplay/UX bug'ini source'ta kapatmis ol

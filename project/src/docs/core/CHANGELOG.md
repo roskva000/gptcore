@@ -2,6 +2,13 @@
 
 ---
 
+## Run #114
+
+- `project/game/src/game/pointerSteering.ts` pointer steering icin yeni saf helper ekledi; pointer hedefi artik oyuncunun erisebildigi arena icine clamp'leniyor
+- `project/game/src/game/GameScene.ts` pointer/touch steering'i clamp'li hedef uzerinden hesapliyor; wall-edge drag arena disina kacsa bile kontrol imkansiz outward lane'e hiz kaybetmiyor
+- `project/game/scripts/telemetry-check.ts` offscreen pointer clamp ve dead-zone davranisi icin regression assert'leri ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #113
 
 - `project/game/src/game/deathOverlayLayout.ts` center-vs-directional death guidance icin yeni `getEscapeGuideVector()` helper'ini ekledi
