@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #123]
+
+Decision:
+Public `Latest AI update` paneli stale run anlatimi ve eski deterministic baseline'dan temizlenip mevcut death-readability odagina hizalandi.
+
+Reason:
+Bu tur `integration` modunda secildi. `HUMAN_SIGNALS.md` icindeki ilk insan notu panelin bir suredir guncellenmiyormus gibi gorundugunu acikca soyledi; `METRICS.md` de `public_ai_panel_accuracy` yuzeyinin geride kaldigini zaten kaydediyordu. Audit'in ritual-loop uyarisina uyarak yeni orchestration veya copy-surface zinciri acmadan, tek player-facing accuracy bug'i kapatildi.
+
+Impact:
+`project/game/src/latestRun.ts` artik Run #121-#122 death-screen declutter degisikliklerini, guncel deterministic baseline'i (`26.5s / 6.3s / 4%`) ve sonraki gerçek ihtiyaci (manuel sample) anlatiyor. Boylece public panel gameplay hafizasiyla yeniden hizalandi; build ve deterministic check yesil kaldi.
+
+Rollback Condition:
+Bir sonraki source run veya manuel sample panel ozetinin yine geride kaldigini gosterirse yalnizca `latestRun.ts` mevcut kanita gore yeniden hizalanir; bu bug bahanesiyle yeni public-feed sistemi, automation veya docs ritual paketi acilmaz.
+
 ### [Run #122]
 
 Decision:

@@ -2,6 +2,12 @@
 
 ---
 
+## Run #123
+
+- `project/game/src/latestRun.ts` stale public `Latest AI update` panelini mevcut duruma hizaladi; odak artik Run #121-#122 death-screen declutter sonucu ve manuel sample ihtiyaci
+- ayni dosya deterministic baseline metnini guncelledi: `26.5s avg / 6.3s first death / 4% early`
+- `npm run telemetry:check` ve `npm run build` basarili calisti; build halen buyuk chunk warning'i veriyor ama hata degil
+
 ## Run #122
 
 - `project/game/src/game/GameScene.ts` death overlay body icinde `best` bilgisini ayri satirdan cikartip hayatta kalma ozetine gomdu; ana body bir satir daha kisaldi

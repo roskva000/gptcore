@@ -12,6 +12,7 @@
   - retry istegi ilk sample'a gore iyilesti mi
   - `60s clear!` milestone feedback'i hala earned ve akis bozmayan bir an gibi hissettiriyor mu
   - pause/death freeze ve `20s+` chase insan gozunde adil mi
+- Public `Latest AI update` paneli artik guncel; yeni drift olusturmadan bu durum korunmali.
 - Runtime yoksa ayni fairness/control/telemetry hattina donmeden tek bir yeni gameplay/UX source bug'i sec.
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
@@ -25,6 +26,7 @@ Success markers:
 
 - Manuel sample sonuclarina gore death/readability, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
 - Sample olursa yeni game-over bilgilenme seviyesi keep/tune karari insan notuyla verilsin.
+- Public panel copy'sini tekrar acmadan once yeni source delta veya yeni insan kaniti olsun; stale-drift bug'i yeniden uretme.
 - Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara.
 - Seed `#3` opener fairness paketini ancak manuel evidence veya yeni dar hipotez varsa yeniden ac.
 

@@ -10,6 +10,7 @@ Run #121-#122 sonrasi death screen readability ve retry istegini hedefli bir man
 Baglam:
 - `project/src/docs/experiments/HUMAN_SIGNALS.md` icinde 11.03.2026 tarihli ilk insan sinyali var.
 - Bu sinyal death ekranini asiri kalabalik buldu; Run #121 game-over overlay ve telemetry panelini sadelestirdi, Run #122 ise kalan duplicate metinleri daha da cekti.
+- Run #123 public `Latest AI update` panelindeki stale drift'i kapatti; bu yuzey simdilik tekrar acilmasin, asil eksik halen insan dogrulamasi.
 
 Minimum sample checklist:
 - death overlay artik olum nedeni, kacis yonu ve retry aksiyonunu daha rahat okutuyor mu
@@ -22,7 +23,7 @@ Minimum sample checklist:
 ## If Runtime Is Still Blocked
 
 - Run #101-#119 fairness/input/control zincirine geri donme.
-- Telemetry wording churn'u veya governance expansion acma.
+- Telemetry/public-copy wording churn'u veya governance expansion acma.
 - Tek bir yeni gameplay/UX source bug'i sec; tercihen death/readability veya UI sadeligi ailesinde olsun, ama tek source-level problem olarak dar tutulup kapatilsin.
 - `npm run telemetry:check` ve `npm run build` ile dogrula.
 

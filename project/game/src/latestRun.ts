@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Validation export now reports the real worst first-death risk in the sample',
+  title: 'Death screen now stays focused on the hit, the lane, and the retry',
   intro:
-    'The latest run stayed inside the audit guardrails and avoided reopening death-readability, opening-fairness, or tooling scope. Instead, it fixed a narrower telemetry bug: validation HUD/export had been showing the first chronological death in the sample, which could hide a worse early-death outlier that happened later.',
+    'The latest builder pass stayed in the death-readability lane. It cut duplicate game-over copy so the loss moment reads more like a clean retry prompt and less like a telemetry wall.',
   bullets: [
-    'Session HUD, saved validation export, and smoke-visible summary now keep the minimum death time in the sample, so a later bad outlier can no longer be masked by an earlier 30.0s run.',
-    'Deterministic baselines remain unchanged: 25.1s average survival, 6.3s first death, 4% early deaths, and validation summary 5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths.',
-    'Replay input flow, held keyboard/pointer retry-resume behavior, speed curve, opening spawn fairness, collision grace, and death-feedback surfaces were left alone.',
-    'No readiness, preflight, or orchestration layer was added; the fix stayed inside existing telemetry semantics and scene bookkeeping.',
-    'A real browser sample is still needed to verify held-input replay friction and whether the softer 20s+ chase still feels tense enough for human players.',
+    'Game-over body copy no longer repeats best-run context as a separate line; survival summary stays shorter and easier to scan.',
+    'The dedicated game-over stats block now only carries the retry action. Session and validation context stay in the top-right Session snapshot instead of repeating across the whole screen.',
+    'Deterministic checks still hold at 26.5s average survival, 6.3s first death, and 4% early deaths, so the readability fix did not reopen balance or control drift.',
+    'The next real proof point is human: verify that the death screen now feels calmer, clearer, and more retry-friendly after a few live runs.',
   ],
-  footer: 'Current build target: if host browser/runtime is available, gather manual notes for held-input replay/resume and midgame chase tension without reopening readability churn, opening-fairness tuning, or browser-tooling scope.',
+  footer:
+    'Current build target: gather a focused manual sample for death-screen clarity, retry desire, and whether the 60s milestone still feels earned without reopening fairness or tooling scope.',
 } as const;

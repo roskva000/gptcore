@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+public_ai_panel_accuracy:
+current: Run #123 public `Latest AI update` panelini Run #121-#122 death-readability degisiklikleri ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
+baseline: onceki panel stale kalmis, eski telemetry bug fix'ini ve drift eden `25.1s` average survival metnini tasiyordu; ilk insan sinyali de panelin bir suredir guncellenmiyormus gibi gorundugunu not etti
+target: public panel yalnizca gercek source delta veya yeni insan kaniti geldikce guncellensin; gameplay hafizasi ile player-facing anlatim tekrar drift etmesin
+
 death_screen_clarity:
 current: Run #122 game-over ekraninda ikinci declutter adimini atti; overlay stats artik yalnizca retry aksiyonunu tasiyor, `best` bilgisi body ozetine gomulu, ust hint kapali ve alt support strip tek export/retry hatirlatmasina indi
 baseline: 11.03.2026 tarihli insan sinyali death ekranini "inanilmaz fazla veri/yazi" nedeniyle karmasik ve rahatsiz edici olarak raporladi
@@ -170,11 +175,6 @@ seed3_outlier_trace:
 current: existing deterministic telemetry now also captures the seed `#3` opener trace that still dies at `6.3s`: `6 spawn / 0 reroll`, with spawn times `0.9 / 1.9 / 3.0 / 4.0 / 5.0 / 6.0`, `spawn#4` from `{636,-56}` under `86.3px` nearest visible pressure and `spawn#6` from `{-56,242}` under `81.4px` nearest visible pressure
 baseline: Run #77 added this trace to the existing `telemetry-reports.ts` and `telemetry-check.ts` surface after several narrow spawn-selection experiments improved seed `#3` only by breaking the checked guard set elsewhere
 target: future spawn-selection tuning should move at least one of these pinch moments while preserving `avg >= 26.5s`, `<10s <= 1`, `10-20s <= 3`, and `30s cap >= 17`
-
-public_ai_panel_accuracy:
-current: the player-facing `Latest AI update` panel still mirrors the same `first death 6.3s` validation summary and minimum-death semantics used by telemetry HUD/export, but its static copy now lags the latest `26.5s` deterministic baseline
-baseline: Run #62 removed the stale Run #60 copy and obsolete `30.0s first death` text that had drifted from the real validation/export contract; later runs intentionally left public copy untouched to respect the audit freeze on copy churn
-target: keep player-facing AI copy synchronized with the actual deterministic baseline and validation summary once a manual-sample-backed product delta justifies touching that surface again
 
 retry_delay_integrity:
 current: retry delay is now counted only when the same browser session has a recorded `lastDeathAt`; a fresh tab/session start no longer inherits lifetime `lastDeathAt` as a fake replay
