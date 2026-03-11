@@ -2,6 +2,12 @@
 
 ---
 
+## Run #104
+
+- `project/game/src/game/GameScene.ts` spawn delay, spawn secimi, obstacle hiz/target-lag/collision-grace ve pause/death zamani icin canli active-run saatini okumaya basladi
+- boylece spawn timer veya focus-loss/death callback'i `update()`ten once geldiyse gameplay kararlarinin bir frame eski `survivalTime` ile alinmasi engellendi; `10-11s` grace fade ve pause snapshot'i daha durust hale geldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #103
 
 - `project/game/src/game/GameScene.ts` primary action kaynagini ayirdi; `primary-key`, movement fresh/held ve pointer press/held akislarini start/resume sirasinda farkli yorumluyor

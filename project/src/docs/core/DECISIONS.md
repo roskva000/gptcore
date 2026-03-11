@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #104]
+
+Decision:
+Runtime spawn ve pause/death zaman kararlarinda frame-cache'li `survivalTime` yerine canli active-run saati kullanilacak.
+
+Reason:
+Headed runtime yine bloklu oldugu icin audit fallback olarak yeni ve dar bir gameplay problemi secilmeliydi. Source incelemesi `GameScene.ts` icinde spawn delay, spawn secimi, obstacle hiz/target-lag/collision-grace ve pause overlay/death kaydinin son `update()` frame'inden kalan `this.survivalTime` uzerinden okundugunu gosterdi. Bu, ozellikle `10s` ve `11s` grace fade esiklerinde, spawn timer callback'i veya focus-loss/death callback'i update'ten once geldiyse kararlarin bir frame geriden okunmasi riskini tasiyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` yeni canli run-time helper'i ile spawn delay, spawn secimi, obstacle velocity/grace, pause snapshot'i ve hit anindaki survival kaydini aktif run saatine bagladi. Deterministic checked baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample bu degisikligin `10-11s` bandinda spawn baskisini hissedilir sekilde sertlestirdigini, grace fade'i beklenmedik sekilde kisalttigini veya pause snapshot'ini oyuncuya tutarsiz gosterdigini kanitlarsa yalnizca canli run-time helper kullanimi dar kapsamda yeniden ayarlanir; input, HUD, telemetry/export ve opening-fairness yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #103]
 
 Decision:

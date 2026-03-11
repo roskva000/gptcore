@@ -665,6 +665,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    const pausedAtSeconds = this.getCurrentSurvivalTimeSeconds();
     this.phase = 'paused';
     const movementInputActive = this.hasMovementInput();
     this.movementHoldActionStartedAt = null;
@@ -686,7 +687,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody
       .setText(
         [
-          `You made it ${this.survivalTime.toFixed(1)} seconds before the pause.`,
+          `You made it ${pausedAtSeconds.toFixed(1)} seconds before the pause.`,
           'The run is frozen so focus loss does not turn into a cheap death.',
         ].join('\n'),
       )
@@ -713,6 +714,7 @@ export class GameScene extends Phaser.Scene {
     this.supportText.setText(
       'Pause guard active: refocus click only restores focus, and any held move key must be released before it can resume. No spawn, movement, or survival time advances while unfocused.',
     );
+    this.survivalTime = pausedAtSeconds;
     this.updateTelemetryText();
   }
 
@@ -825,16 +827,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnDelayMs(): number {
-    return getSpawnDelayMs(this.survivalTime);
+    return getSpawnDelayMs(this.getCurrentSurvivalTimeSeconds());
   }
 
   private getObstacleSpeed(): number {
-    return getObstacleSpeed(this.survivalTime);
+    return getObstacleSpeed(this.getCurrentSurvivalTimeSeconds());
   }
 
   private spawnObstacle(): void {
+    const currentSurvivalTimeSeconds = this.getCurrentSurvivalTimeSeconds();
     const { point: spawnPoint, rerollsUsed } = selectSpawnPoint({
-      survivalTimeSeconds: this.survivalTime,
+      survivalTimeSeconds: currentSurvivalTimeSeconds,
       playerPosition: { x: this.player.x, y: this.player.y },
       playerVelocity: {
         x: (this.player.body as Phaser.Physics.Arcade.Body).velocity.x,
@@ -872,7 +875,7 @@ export class GameScene extends Phaser.Scene {
       .setVelocity(0, 0);
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
-    const spawnTargetLagSeconds = getSpawnTargetLagSeconds(this.survivalTime);
+    const spawnTargetLagSeconds = getSpawnTargetLagSeconds(currentSurvivalTimeSeconds);
     const targetPoint = clampPointToArena(
       {
         x: this.player.x - playerBody.velocity.x * spawnTargetLagSeconds,
@@ -881,9 +884,12 @@ export class GameScene extends Phaser.Scene {
       { margin: PLAYER_COLLISION_RADIUS },
     );
     const target = new Phaser.Math.Vector2(targetPoint.x, targetPoint.y);
-    const velocity = target.subtract(spawnPoint).normalize().scale(this.getObstacleSpeed());
+    const velocity = target
+      .subtract(spawnPoint)
+      .normalize()
+      .scale(getObstacleSpeed(currentSurvivalTimeSeconds));
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
-    const collisionGraceMs = getSpawnCollisionGraceMs(this.survivalTime);
+    const collisionGraceMs = getSpawnCollisionGraceMs(currentSurvivalTimeSeconds);
     const collisionUnlockElapsedMs =
       collisionGraceMs > 0 ? this.getActiveRunElapsedMs(this.time.now) + collisionGraceMs : null;
 
@@ -1122,6 +1128,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.survivalTime = this.getCurrentSurvivalTimeSeconds();
     const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
     const hitDirection = this.getHitDirection(obstacle);
     const escapePrompt = this.getEscapePrompt(hitDirection);
@@ -1821,6 +1828,14 @@ export class GameScene extends Phaser.Scene {
 
   private getActiveRunElapsedMs(time: number): number {
     return time - this.runStartedAt - this.pausedRunElapsedMs;
+  }
+
+  private getCurrentSurvivalTimeSeconds(time = this.time.now): number {
+    if (this.phase !== 'playing' && this.phase !== 'paused') {
+      return this.survivalTime;
+    }
+
+    return this.getActiveRunElapsedMs(time) / 1000;
   }
 
   private restorePlayingHintAfterPause(): void {
