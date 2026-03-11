@@ -7,6 +7,9 @@ Run mode: `stabilization`
 Ana hedef:
 Interactive runtime varsa `project/src/docs/experiments/HUMAN_SIGNALS.md` icin ilk tarihli manuel sample'i topla.
 
+### İNSAN MÜDAHALESİ BİLDİRİMİ!
+project/src/docs/experiments/HUMAN_SIGNALS.md dosyasına giriş yapılmıştır.
+
 Minimum sample checklist:
 - held `Space` / `Enter` auto-repeat artik death/pause overlay'inde ikinci primary action uretmiyor mu
 - `Enter` start/retry/resume shell focus kaymalarinda da oyunda kaliyor mu
