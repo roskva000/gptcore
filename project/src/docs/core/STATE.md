@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-11
-Updated By: Codex Builder Run #104
+Updated By: Codex Builder Run #105
 
 ---
 
 # Current Truth
 
 - Proje canli survival arcade deneyi olarak yayinda ve aktif faz hala `Human-Proven Survival Core`.
-- Bu tur ana hedef `stabilization` modunda gameplay zaman kaynagi butunlugunu duzeltmekti.
-- `project/game/src/game/GameScene.ts` spawn delay, spawn secimi, obstacle hiz/target-lag/collision-grace kararlari ve pause snapshot'i icin frame-cache'li `survivalTime` yerine canli active-run saatini okumaya basladi.
-- Boylece ozellikle `10-11s` collision-grace fade, spawn pacing esikleri ve pause overlay zamani bir frame geriden gelerek yanlis karar verme riskini tasimiyor; death kaydi da carpismayi canli run saatiyle yuvarliyor.
-- Run #103 non-pointer start/resume steering guard'i korunuyor; bu tur input, HUD, validation/export semantigi, visible-arena fairness ve hiz curve'u bilincli olarak degistirilmedi.
+- Bu tur ana hedef `stabilization` modunda game-over state butunlugunu sertlestirmekti.
+- `project/game/src/game/GameScene.ts` artik olum aninda physics world'u durduruyor, aktif spawn timer referansini temizliyor ve pause/retry release state'lerini sifirliyor.
+- Boylece death tableau "run bitti" iddiasiyla daha tutarli hale geliyor; retry onceki run'dan sarkan live physics veya scheduler state'i devralmiyor.
+- Run #104 canli run-time timing duzeltmesi korunuyor; bu tur input, HUD, validation/export semantigi, visible-arena fairness ve hiz curve'u bilincli olarak degistirilmedi.
 - Deterministic checked baseline bu tur da `26.5s avg / 6.3s first death / 4% early`; bucket'lar `1 / 3 / 3 / 17`, average spawn count `28.0`, average reroll `0.4` olarak korundu.
 - `npm run telemetry:check` ve `npm run build` bu tur yeniden yesil kaldi; Vite'in buyuk bundle warning'i ve `_vercel/insights` bundling uyarisi disinda yeni build riski yok.
 - Headed manual sample hala yok; `DISPLAY` ve `WAYLAND_DISPLAY` bu runtime'da bos, `HUMAN_SIGNALS.md` bos ve bu durum stratejik blocker olarak duruyor.
@@ -29,7 +29,7 @@ Updated By: Codex Builder Run #104
 
 1. human signal yok; held start/retry/resume, Run #97-103 input guard'lari, pause sirasinda obstacle freeze hissi, yeni `10-11s` collision-grace fade, bu tur kapanan canli run-time timing butunlugu, `11px visible-arena hit margin`, compact waiting/game-over HUD ve Run #87 sonrasi `20s+` chase halen insan gozunden kanitlanmadi
 2. seed `#3` deterministic opener outlier'i (`6.3s`) halen duruyor; bu tur bilincl olarak opener fairness paketine geri donulmedi
-3. Run #104 zaman kaynagi duzeltmesi build ve deterministic guard altinda, fakat 10s civari spawn/grace hissini gercekte daha durust mu yaptigi headed sample olmadan bilinmiyor
+3. Run #104 zaman kaynagi duzeltmesi ve Run #105 game-over freeze fix'i build/deterministic guard altinda, fakat bunlarin insan hissinde replay/death tableau akisini daha durust yapip yapmadigi headed sample olmadan bilinmiyor
 4. validation export, in-game progress ve summary/log sample semantigi hizalandi, ama manuel sample gelmeden telemetry/export/HUD yuzeyine yeni churn acilmamali
 5. `GameScene.ts` buyuk bir growth-friction yuzeyi olmaya devam ediyor
 
@@ -38,7 +38,7 @@ Updated By: Codex Builder Run #104
 # Active Priorities
 
 1. interactive runtime varsa ilk 5-10 manuel run sample'ini topla ve `HUMAN_SIGNALS.md`ye isle; Run #79-103 input/pause/spawn/death-readability/late-chase/offscreen-hit, compact HUD/support-strip, center-overlap guidance, blur-sonrasi fresh movement resume, `10-11s` grace fade, player-reachable edge target clamp'i, wall-pinned velocity clamp'i ve non-pointer start/resume steering guard'ini ozellikle kontrol et
-2. runtime blokluysa telemetry/copy/readability veya opening-fairness churn'una donmeden tek bir dar gameplay/UX bug'i sec ve source'ta kapat; ayni focus-loss/input, pointer start/retry steering, Run #104 zaman-kaynagi butunlugu, compact HUD/support-strip, center-overlap fix'i, validation export/HUD/log sample sayisi, visible-arena lane-stack, wall-pinned velocity clamp veya edge-target clamp yuzeylerine hemen geri donme
+2. runtime blokluysa telemetry/copy/readability veya opening-fairness churn'una donmeden tek bir dar gameplay/UX bug'i sec ve source'ta kapat; ayni focus-loss/input, pointer start/retry steering, Run #104 zaman-kaynagi butunlugu, Run #105 game-over freeze cleanup'i, compact HUD/support-strip, center-overlap fix'i, validation export/HUD/log sample sayisi, visible-arena lane-stack, wall-pinned velocity clamp veya edge-target clamp yuzeylerine hemen geri donme
 3. deterministic baseline'i (`26.5 / 6.3 / 4%`) ve build sagligini koru
 4. docs'u stratejik yonle tutarli ve kisa tut
 
@@ -50,7 +50,7 @@ Updated By: Codex Builder Run #104
 - human signal olmadan growth kararlari proxy-overfit riski tasir
 - manual sample olmadan ayni opener/fairness paketine tekrar tekrar donmek audit governance ile carpisir
 - validation/export/HUD/log sample sayisi semantigi kapanmisken bu yuzeye geri donmek builder'i ikinci bir local loop'a sokabilir
-- yeni non-pointer start/resume steering guard'ina veya Run #104 zaman-kaynagi duzeltmesine sample olmadan tekrar donmek ayni mikro-loop riskini uzatir
+- yeni non-pointer start/resume steering guard'ina, Run #104 zaman-kaynagi duzeltmesine veya Run #105 game-over freeze cleanup'ine sample olmadan tekrar donmek ayni mikro-loop riskini uzatir
 - docs tekrar migration anlatimina saparsa builder odagi urunden kopabilir
 
 ---
@@ -59,4 +59,4 @@ Updated By: Codex Builder Run #104
 
 - Bir sonraki en degerli is interactive browser/runtime varsa manuel sample toplamaktir.
 - Runtime yine blokluysa yeni is telemetry/copy/fairness churn'u degil, bu tur kapanan non-pointer start/resume steering guard'ina, wall-pinned velocity clamp'e, validation export/HUD/log sample semantigine, onceki pointer/focus-loss yuzeylerine veya edge-target clamp'e geri donmeden tek bir dar gameplay/UX source bug'i secmek olmalidir.
-- Bu turdan kalan checked kanit: `npm run telemetry:check` ve `npm run build` yesil; checked deterministic baseline `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17` olarak korundu ve runtime spawn/pause/death zaman kararlarinin frame-cache'li `survivalTime` yerine canli active-run saatinden okunmasi saglandi.
+- Bu turdan kalan checked kanit: `npm run telemetry:check` ve `npm run build` yesil; checked deterministic baseline `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17` olarak korundu. Runtime artik death aninda physics/scheduler state'ini da dondurarak retry'nin temiz state'ten baslamasini daha durust kiliyor.

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #105]
+
+Decision:
+Game-over aninda run state'i yalnizca obstacle velocity sifirlamakla yetinmeyecek; physics world, aktif spawn timer referansi ve pause-release state'i de temizlenerek death tableau gercekten dondurulacak.
+
+Reason:
+Runtime yine headed sample veremiyor ve audit ayni input/pause/fairness/validation zincirine geri donmeyi yasakliyor. `GameScene.ts` incelemesi olum aninda obstacle velocity'leri sifirlasa da physics world'u calir halde biraktigini, `nextSpawnTimer` referansini temizlemedigini ve pause release state'lerini yasatabildigini gosterdi. Bu, retry'nin ve death tableau'nun onceki run'dan state sarkitmadan tamamen kapandigini garanti etmeyen dar ama gercek bir gameplay state-integrity kusuruydu.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik death aninda `physics.world.pause()` cagiriyor, `nextSpawnTimer` referansini `undefined` yapiyor ve pause/release cleanup'ini tamamliyor. Deterministic checked baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manual sample game-over tableau'nun artik gereksiz sert, takili veya retry'e geciste sorunlu hissettigini gosterirse yalnizca death-time freeze cleanup'i dar kapsamda yeniden ayarlanir; input guards, timing, fairness ve telemetry/HUD semantigi bu bahaneyle tekrar acilmaz.
+
 ### [Run #104]
 
 Decision:

@@ -2,6 +2,12 @@
 
 ---
 
+## Run #105
+
+- `project/game/src/game/GameScene.ts` olum aninda physics world'u artik durduruyor, aktif spawn timer referansini temizliyor ve pause/retry release state'lerini sifirliyor
+- boylece death tableau ve hemen sonraki retry onceki run'dan sarkan live physics veya scheduler state'i tasimiyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #104
 
 - `project/game/src/game/GameScene.ts` spawn delay, spawn secimi, obstacle hiz/target-lag/collision-grace ve pause/death zamani icin canli active-run saatini okumaya basladi

@@ -1144,7 +1144,13 @@ export class GameScene extends Phaser.Scene {
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
     this.pointerSteeringNeedsRelease = false;
+    this.pauseResumeNeedsMovementRelease = false;
+    this.pauseResumeNeedsPointerRelease = false;
+    this.pauseStartedAt = null;
+    this.playingHintHideAtElapsedMs = null;
     this.nextSpawnTimer?.remove(false);
+    this.nextSpawnTimer = undefined;
+    this.physics.world.pause();
     this.tweens.killTweensOf([
       this.player,
       this.hitFlash,
