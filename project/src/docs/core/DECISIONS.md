@@ -4,6 +4,22 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #124]
+
+Decision:
+Death ekraninda alt support strip'in varsayilan gorunurlugu kapatildi; strip metni korunuyor ama sadece start/pause/resume ve explicit telemetry/export aksiyonlarinda geri geliyor.
+
+Reason:
+Bu tur `stabilization` modunda secildi. `HUMAN_SIGNALS.md` death ekranini kalabalik ve rahatsiz edici buluyordu; Run #121-#122 duplicate metni azaltmisti ama game-over aninda alt strip hala overlay ile ayni anda gorunerek gereksiz ikinci odak noktasi yaratiyordu. Audit'in wording-churn ve ayni fairness hattina donmeme kisitlariga uyarak, tek source-level UX problemi dar sekilde kapatildi.
+
+Impact:
+`project/game/src/game/GameScene.ts` game-over aninda support strip'i gizliyor; fatal callout, death overlay ve sag ust `Session snapshot` daha temiz bir bilgi hiyerarsisiyle kaliyor. Retry/export affordance'i explicit hotkey aksiyonlarinda ve oyun faz gecislerinde korunuyor. Deterministic baseline degismedi.
+
+Rollback Condition:
+Bir sonraki manuel sample support strip'in kaybolmasinin retry/export affordance'ini zararli sekilde azalttigini gosterirse strip game-over icin daha dar bir mesajla veya daha kontrollu gorunurluk kuraliyla geri getirilebilir.
+
+## Decision Log
+
 ### [Run #123]
 
 Decision:

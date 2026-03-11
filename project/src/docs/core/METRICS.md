@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+game_over_support_strip_focus:
+current: Run #124 game-over aninda alt support strip'i varsayilan olarak gizliyor; strip sadece start/pause/resume ve explicit telemetry/export aksiyonlarinda geri geliyor
+baseline: Run #122 support strip metnini tek export/retry hatirlatmasina daraltmisti, ancak strip hala death overlay ile ayni anda gorunerek ikinci bir dikkat noktasi yaratabiliyordu
+target: sonraki manuel sample'da death ani daha sakin okunur hissetmeli; retry/export affordance'i ise kaybolmus degil, sadece daha az istilaci algilanmali
+
 public_ai_panel_accuracy:
 current: Run #123 public `Latest AI update` panelini Run #121-#122 death-readability degisiklikleri ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
 baseline: onceki panel stale kalmis, eski telemetry bug fix'ini ve drift eden `25.1s` average survival metnini tasiyordu; ilk insan sinyali de panelin bir suredir guncellenmiyormus gibi gorundugunu not etti

@@ -628,7 +628,7 @@ export class GameScene extends Phaser.Scene {
     if (this.phase === 'playing' || this.phase === 'paused') {
       this.supportText.setText(
         'Finish the current run before resetting telemetry so first-death and retry samples stay coherent.',
-      );
+      ).setVisible(true);
       return;
     }
 
@@ -641,7 +641,7 @@ export class GameScene extends Phaser.Scene {
 
     this.supportText.setText(
       'Telemetry sample reset. Previous validation export cleared; play 5-10 runs, then press V to copy a fresh summary.',
-    );
+    ).setVisible(true);
 
     console.info('[telemetry] reset', this.getTelemetryReport());
   }
@@ -652,21 +652,21 @@ export class GameScene extends Phaser.Scene {
     console.info('[telemetry] summary', report);
     this.supportText.setText(
       'Telemetry summary logged to console. Use session metrics for the current validation sample or press V to copy it.',
-    );
+    ).setVisible(true);
   }
 
   private handleValidationExport(): void {
     if (this.phase === 'playing' || this.phase === 'paused') {
       this.supportText.setText(
         'Finish the current run before exporting validation so the summary reflects only completed attempts.',
-      );
+      ).setVisible(true);
       return;
     }
 
     if (!hasCompletedRunSample(this.sessionTelemetry)) {
       this.supportText.setText(
         'No completed run yet. Finish at least one run before exporting a validation summary.',
-      );
+      ).setVisible(true);
       return;
     }
 
@@ -677,7 +677,7 @@ export class GameScene extends Phaser.Scene {
       console.info('[telemetry] validation_report', validationReport);
       this.supportText.setText(
         `Clipboard unavailable here. Validation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
-      );
+      ).setVisible(true);
       return;
     }
 
@@ -687,13 +687,13 @@ export class GameScene extends Phaser.Scene {
         console.info('[telemetry] validation_report', validationReport);
         this.supportText.setText(
           `Validation summary copied. Latest export: ${this.getLastValidationReportSummaryText()}`,
-        );
+        ).setVisible(true);
       })
       .catch(() => {
         console.info('[telemetry] validation_report', validationReport);
         this.supportText.setText(
           `Clipboard copy failed. Validation summary saved locally: ${this.getLastValidationReportSummaryText()}`,
-        );
+        ).setVisible(true);
       });
   }
 
@@ -719,7 +719,7 @@ export class GameScene extends Phaser.Scene {
     this.runSpawnRerolls = 0;
     this.scoreText.setText('0.0s');
     this.hintText.setText(this.getPlayingHintText()).setVisible(true);
-    this.supportText.setText(this.getBaseSupportText());
+    this.supportText.setText(this.getBaseSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
     this.recordRunStart();
     this.armPointerSteeringGuardAfterActivation(source);
@@ -780,7 +780,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.supportText.setText(
       'Pause guard active: refocus click only restores focus, and any held move key must be released before it can resume. No spawn, movement, or survival time advances while unfocused.',
-    );
+    ).setVisible(true);
     this.survivalTime = pausedAtSeconds;
     this.updateTelemetryText();
   }
@@ -812,7 +812,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
     this.restorePlayingHintAfterPause();
-    this.supportText.setText(this.getBaseSupportText());
+    this.supportText.setText(this.getBaseSupportText()).setVisible(true);
     this.movementInputWasActive = this.hasMovementInput();
     this.armPointerSteeringGuardAfterActivation(source);
     this.updateTelemetryText();
@@ -1322,7 +1322,7 @@ export class GameScene extends Phaser.Scene {
       .setText(`Retry: ${this.getRetryActionText()}.`)
       .setVisible(true);
     this.hintText.setVisible(false);
-    this.supportText.setText(this.getGameOverSupportText());
+    this.supportText.setText(this.getGameOverSupportText()).setVisible(false);
   }
 
   private deactivateObstacle(obstacle: Phaser.Physics.Arcade.Image): void {
@@ -2046,7 +2046,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.supportText.setText(
       `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`,
-    );
+    ).setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + SURVIVAL_GOAL_HINT_DURATION_MS;
   }
 

@@ -4,11 +4,11 @@
 
 # NOW
 
-- Run #121-#122 sonrasi death screen declutter etkisini hedefli insan sample ile dogrula.
+- Run #124 sonrasi death screen declutter etkisini hedefli insan sample ile dogrula.
 - Sample checklist:
   - death overlay artik olum nedeni, retry aksiyonu ve kacis yonunu daha rahat okutuyor mu
   - sag ust `Session snapshot` paneli game-over aninda artik tek basina yeterince sakin mi
-  - alt support strip artik duplicate bilgi hissi vermeden export/retry affordance'ini koruyor mu
+  - alt support strip'in artik gizli olmasi death anini daha az kalabalik hissettiriyor mu
   - retry istegi ilk sample'a gore iyilesti mi
   - `60s clear!` milestone feedback'i hala earned ve akis bozmayan bir an gibi hissettiriyor mu
   - pause/death freeze ve `20s+` chase insan gozunde adil mi
@@ -17,7 +17,7 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #121 sonrasi hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #124 sonrasi hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi.
 
 ---
@@ -25,7 +25,7 @@ Success markers:
 # NEXT
 
 - Manuel sample sonuclarina gore death/readability, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
-- Sample olursa yeni game-over bilgilenme seviyesi keep/tune karari insan notuyla verilsin.
+- Sample olursa support strip gizleme kararini keep/tune/revert formatinda insan notuyla bagla.
 - Public panel copy'sini tekrar acmadan once yeni source delta veya yeni insan kaniti olsun; stale-drift bug'i yeniden uretme.
 - Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara.
 - Seed `#3` opener fairness paketini ancak manuel evidence veya yeni dar hipotez varsa yeniden ac.
@@ -35,7 +35,7 @@ Success markers:
 # BLOCKED
 
 - headed browser/runtime eksikligi (`DISPLAY` / `WAYLAND_DISPLAY` yok)
-- human signal eksikligi
+- ikinci hedefli human signal eksikligi
 
 ---
 

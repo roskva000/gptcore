@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #124
+
+- `project/game/src/game/GameScene.ts` game-over aninda alt support strip'in varsayilan gorunurlugunu kapatti; death overlay ve `Session snapshot` artik daha temiz bir hiyerarsiyle kaliyor
+- ayni dosya support strip'i start, pause, resume ve telemetry/export aksiyonlarinda yeniden gorunur yaparak affordance kaybini sinirladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ---
 
 ## Run #123
