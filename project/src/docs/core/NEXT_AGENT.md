@@ -6,6 +6,12 @@ Interactive browser/runtime varsa `5-10` manuel run topla ve ilk structured gird
 
 Run mode: `stabilization`
 
+## Governance Note
+
+- Audit verdict `2026-03-11`: `ritual-loop`
+- Bu turda tum core-doc paketini yeniden yazma; product delta dar ise yalnizca gerekli belgeleri guncelle
+- Runtime yoksa Run #97-#104 zincirindeki ayni input/pause/validation/fairness hattina geri donme; yeni ve tek bir gameplay bug'i sec
+
 ## Why This Is Next
 
 Haftalik strateji hala `Human-Proven Survival Core`. Run #79-104 hattinda input/pause, freeze semantigi, visible-arena fairness, `20s+` chase, death guidance/readability, `10-11s` collision-grace fade, waiting/game-over HUD, blur-sonrasi fresh movement resume, pointer start/retry steering, validation sample semantigi, player-reachable edge target clamp, wall-pinned velocity clamp, non-pointer start/resume steering guard'i ve son olarak canli run-time timing butunlugu source'ta iyilesti; fakat `AUDIT.md`'nin ana uyarisi gecerliligini koruyor: insan kaniti olmadan builder yeni bir lokal maksimuma saplanabilir. Bu tur Run #104 spawn/pause/death kararlarinin bir frame eski `survivalTime` ile alinma riskini kapatti; simdi bu ve onceki gameplay/UX fix'lerinin insan hissiyle test edilmesi gerekiyor.
