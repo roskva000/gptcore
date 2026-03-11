@@ -5,6 +5,7 @@
 # NOW
 
 - `Human-Proven Survival Core` icin ilk manuel sample'i topla; held start/retry/resume, focus-loss sonrasi pointer refocus-resume guard'i, blur-sonrasi fresh movement resume davranisi, pause sirasinda frozen kalan spawn-grace readability, yeni `10-11s` collision-grace fade, projected-path forward-pressure secimi, pointer steering, `11px visible-arena hit margin`, pooled obstacle reuse/cull temizligi, compact waiting/game-over telemetry, support-strip hiyerarsisi, Run #87 sonrasi `20s+` chase, death lane/readability ve audio feedback parity notlarini kaydet
+- Run #108 ile `Space`/ok tuslari/WASD artik browser scroll capture altinda ve oyun yuzeyi `touch-action: none` ile korunuyor; ilk manuel sample'da keyboard start/retry ve touch steering sirasinda panel/app scroll'unun oyunu bolup bolmedigini not et
 - Run #107 ile spawn callback'i `update()`ten once gelse bile stale offscreen obstacle'lar spawn denemesi oncesi geri toplanıyor; manuel sample'da uzun run'larda spawn ritminin sessizce boslayip bosalmadigini not et
 - Run #106 ile pause-state elapsed-time sorgulari da freeze anina sabitlendi; manuel sample'da pause overlay zamaninin beklerken durust kalip kalmadigini ve resume sonrasi clock continuity'nin durust kalip kalmadigini not et
 - Run #105 ile game-over aninda physics world ve timer state'i de sert donduruluyor; manuel sample'da death tableau'nun artik arka planda "yasiyor" hissi verip vermedigini ve retry'nin temiz state'ten baslayip baslamadigini not et
@@ -42,7 +43,7 @@ Success markers:
 # NEXT
 
 - manual sample notlarina gore fairness, replay, held resume guard'lari, player-reachable edge target clamp, wall-pinned corner spawn secimi, projected-path wall-edge davranisi, obstacle reuse, `10-11s` grace fade, compact telemetry/support-strip, center-overlap death guidance veya control tarafinda en yuksek etkili dar bug fix'i sec
-- manual sample gelmezse validation/export/HUD/log counting, opening fairness, Run #101 edge-target clamp, Run #102 wall-pinned velocity clamp, Run #103 non-pointer start/resume steering guard'i, Run #104 canli run-time timing, Run #105 game-over freeze, Run #106 pause-clock freeze veya Run #107 pre-spawn cull cleanup yuzeyine geri donme; `20s+` chase'i tekrar acmadan baska tek bir dar source bug'i sec
+- manual sample gelmezse validation/export/HUD/log counting, opening fairness, Run #101 edge-target clamp, Run #102 wall-pinned velocity clamp, Run #103 non-pointer start/resume steering guard'i, Run #104 canli run-time timing, Run #105 game-over freeze, Run #106 pause-clock freeze, Run #107 pre-spawn cull cleanup veya Run #108 browser control guard'i yuzeyine geri donme; `20s+` chase'i tekrar acmadan baska tek bir dar source bug'i sec
 - seed `#3` outlier'ini ancak manual evidence veya yeni guvenli gameplay hipotezi varsa yeniden ac
 - insan kaniti geldikten sonra ilk dusuk riskli mutation adayini (`near-miss pressure reward` gibi) degerlendir
 
@@ -82,6 +83,7 @@ Bu adaylar human signal gelmeden ve cekirdek fairness/replay akisi kanitlanmadan
 - Run #105 game-over freeze cleanup yuzeyine sample olmadan tekrar donme
 - Run #106 pause-clock freeze yuzeyine sample olmadan tekrar donme
 - Run #107 pre-spawn cull cleanup yuzeyine sample olmadan tekrar donme
+- Run #108 browser scroll/touch-gesture guard yuzeyine sample olmadan tekrar donme
 - pause/game-over freeze semantigini yeniden asindiran obstacle lifecycle churn'u
 - readiness/preflight/tooling katmani buyutme
 - migration-first builder odagi

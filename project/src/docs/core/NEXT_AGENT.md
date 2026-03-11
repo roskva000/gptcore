@@ -7,6 +7,8 @@ Run mode: `stabilization`
 Interactive browser/runtime varsa `5-10` manuel run topla ve ilk structured girdiyi `project/src/docs/experiments/HUMAN_SIGNALS.md` icine yaz.
 
 Kontrol et:
+- Run #108 browser control guard'i sonrasi `Space`, ok tuslari ve `WASD` ile start/retry/move sirasinda sayfa veya panel scroll'u tetiklenmiyor mu
+- touch steering sirasinda `.game-root` artik browser pan/drag jestine kacmadan kontrolu oyunda tutuyor mu
 - Run #107 pre-spawn cull cleanup sonrasi uzun hayatta kalma anlarinda spawn ritminin boslamadigini ve stale edge obstacle birikimi hissi olup olmadigini
 - Run #106 pause overlay zamaninin beklerken durust kalip kalmadigini ve resume sonrasi clock'in sicrama yapip yapmadigini
 - Run #105 death tableau'nun gercekten frozen hissedip hissettirmedigini ve retry'nin temiz state'ten baslayip baslamadigini
@@ -16,7 +18,7 @@ Kontrol et:
 ## If Runtime Is Still Blocked
 
 `AUDIT.md` verdigine uy:
-- Run #101-#107 zincirindeki input/pause/fairness/timing/validation/cull yuzeylerine geri donme
+- Run #101-#108 zincirindeki input/pause/fairness/timing/validation/cull/browser-control yuzeylerine geri donme
 - telemetry wording, latest-run copy veya docs ritual churn'u acma
 - tek bir yeni gameplay/UX bug'i sec; death readability, replay hissi veya baska dar source kusuru gibi yeni bir yuzey olsun, ama gercekten farkli bir surface sec
 

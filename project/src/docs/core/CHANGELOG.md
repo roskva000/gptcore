@@ -2,6 +2,13 @@
 
 ---
 
+## Run #108
+
+- `project/game/src/game/GameScene.ts` gameplay icin kullanilan `Space`, ok tuslari ve `WASD` uzerinde keyboard capture acti
+- boylece oyun aktifken bu tuslar `#app` scroll davranisini tetikleyip keyboard control hissini bozmuyor
+- `project/game/src/style.css` `.game-root` ve `canvas` icin `touch-action: none` ve `overscroll-behavior: contain` guard'i ekledi; touch steer sirasinda browser pan/scroll mudahalesi azaltildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #107
 
 - `project/game/src/game/GameScene.ts` her spawn denemesi oncesi `cullObstacles()` cagiracak sekilde guncellendi

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #108]
+
+Decision:
+Gameplay inputleri browser scroll ve touch pan jestlerinden izole edilecek.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in yasakladigi fairness/pause/timing mikro-zincirine geri donmeden dogrudan kontrol hissini bozan yeni bir web-runtime kusuru secildi. App kabugu `#app` uzerinde scroll barindiriyor; `Space`, ok tuslari ve touch drag jestleri browser seviyesinde ele alinabildigi icin keyboard start/move veya touch steering anlari panel/app scroll'una kacma riski tasiyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` gameplay tuslari icin Phaser keyboard capture ekledi. `project/game/src/style.css` `.game-root` ve `canvas` icin `touch-action: none` ve `overscroll-behavior: contain` guard'i ekledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Manuel sample keyboard kisayollarinin beklenmedik sekilde baska UI davranislarini kilitledigini veya touch guard'in browser zoom/interaction beklentisini bozdugunu gosterirse yalnizca bu browser-control guard'i dar kapsamda yeniden ayarlanir; fairness, timing, telemetry ve HUD yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #107]
 
 Decision:
