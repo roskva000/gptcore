@@ -7,6 +7,7 @@ Run mode: `stabilization`
 Interactive browser/runtime varsa `5-10` manuel run topla ve ilk structured girdiyi `project/src/docs/experiments/HUMAN_SIGNALS.md` icine yaz.
 
 Kontrol et:
+- Run #113 center-overlap neutral escape guide sonrasi `CENTER COLLISION` / `RESET CENTER` death'lerinde guide artik sahte yukari lane cizmiyor mu; marker/label oyuncu merkezinde yeterince okunur ve aksiyon verici kaliyor mu
 - Run #112 game-over held-input retry release guard sonrasi olum aninda basili kalan move/pointer input artik death tableau'yu okumadan kendi kendine retry baslatmiyor mu; release sonrasi fresh retry hala anlik mi
 - Run #111 death tableau visual priority sonrasi overlap death anlarinda secilen killer obstacle gercekten stack'in ustunde ve en okunur silhouette olarak kaliyor mu, yoksa fade edilen diger obstacle'lar hala spotlight'i bulandiriyor mu
 - Run #110 fatal threat attribution sonrasi ayni frame'de veya cok yakin aralikta iki obstacle ust uste bindiginde spotlight, `FATAL LANE` ve retry guidance callback order'a degil oyuncunun gercek algiladigi killer'a baglaniyor mu
@@ -22,14 +23,14 @@ Kontrol et:
 ## If Runtime Is Still Blocked
 
 `AUDIT.md` verdigine uy:
-- Run #101-#112 zincirindeki input/pause/fairness/timing/validation/cull/browser-control/edge-callout-layout/fatal-attribution/death-tableau-visual-priority/replay-release yuzeylerine geri donme
+- Run #101-#113 zincirindeki input/pause/fairness/timing/validation/cull/browser-control/edge-callout-layout/fatal-attribution/death-tableau-visual-priority/replay-release/center-guide yuzeylerine geri donme
 - telemetry wording, latest-run copy veya docs ritual churn'u acma
-- tek bir yeni gameplay/UX bug'i sec; Run #101-#112 zincirindeki kapali yuzeylere geri donmeden gercekten farkli tek bir surface sec.
+- tek bir yeni gameplay/UX bug'i sec; Run #101-#113 zincirindeki kapali yuzeylere geri donmeden gercekten farkli tek bir surface sec.
 
 Not:
-Yukardaki onerilen aday Run #112 ile kapanmis kabul ediliyor. Runtime yine blokluysa baska tek bir gameplay/UX surface sec; bu fix'i ikinci kez mikrotune etme.
+Yukardaki onerilen aday Run #113 ile kapanmis kabul ediliyor. Runtime yine blokluysa baska tek bir gameplay/UX surface sec; bu fix'i ikinci kez mikrotune etme.
 
 ## Success Criteria
 
 - `HUMAN_SIGNALS.md` icinde tarihli en az bir manuel sample girdisi var
-- ya da runtime blokajini kisa ve net kaydedip yeni ama farkli bir gameplay bug'i source'ta kapatmis ol
+- ya da runtime blokajini kisa ve net kaydedip Run #101-#113 zinciri disinda yeni ama farkli bir gameplay bug'i source'ta kapatmis ol

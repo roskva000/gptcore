@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #113]
+
+Decision:
+Center-overlap death'lerde `RESET CENTER` guidance kopyada kaldigi gibi gorsel olarak da notr olacak; sahte yukari kacis oku cizilmeyecek.
+
+Reason:
+Bu tur `stabilization` modunda, runtime blokluyken yeni ama dar bir gameplay/readability kusuru secildi. Run #93 center-overlap copy'sini durustlestirmisti, fakat `GameScene.ts` escape guide hesaplamasi merkez carpismalarda hala varsayilan `up` vektoru uretip oyuncuya gercekte olmayan bir lane oneriyordu. Bu, ayni death tableau icinde hem "Caught at center" deyip hem de sahte yon telkin eden kucuk ama gercek bir UX celiskisiydi.
+
+Impact:
+`project/game/src/game/deathOverlayLayout.ts` center ve yonlu death case'lerini ayiran `getEscapeGuideVector()` helper'ini ekledi. `project/game/src/game/GameScene.ts` center-overlap death'lerde escape ray/arrow yerine oyuncu merkezinde notr marker ve `RESET CENTER` etiketi gosteriyor; yonlu case'ler eski davranisini koruyor. `project/game/scripts/telemetry-check.ts` center case'in notr kalmasini ve yonlu case'in fatal lane'den uzağa isaret etmeyi surdurmesini regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample merkez overlap death'lerde notr marker'in fazla belirsiz kaldigini gosterirse yalnizca bu center fallback sunumu dar kapsamda yeniden ayarlanir; retry, fatal threat, edge clamp, fairness, timing ve telemetry yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #112]
 
 Decision:

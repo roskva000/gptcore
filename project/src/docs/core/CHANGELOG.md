@@ -2,6 +2,13 @@
 
 ---
 
+## Run #113
+
+- `project/game/src/game/deathOverlayLayout.ts` center-vs-directional death guidance icin yeni `getEscapeGuideVector()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` center-overlap death'lerde escape ray/arrow'u kapatip oyuncu merkezinde notr `RESET CENTER` marker/label gosteriyor; yonlu death guidance degismeden korunuyor
+- `project/game/scripts/telemetry-check.ts` centered guidance'in sahte yukari lane uretmemesini ve yonlu case'in hala fatal lane'den uzağa isaret etmesini regression guard altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #112
 
 - `project/game/src/game/GameScene.ts` game-over sonrasi movement ve pointer icin ayri retry release guard'lari ekledi

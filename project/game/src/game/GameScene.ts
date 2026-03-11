@@ -19,7 +19,11 @@ import {
   selectSpawnPoint,
 } from './spawn';
 import { selectFatalThreatIndex, type FatalThreatCandidate } from './deathAttribution';
-import { getHorizontalCalloutCenterX, getVerticalCalloutPlacement } from './deathOverlayLayout';
+import {
+  getEscapeGuideVector,
+  getHorizontalCalloutCenterX,
+  getVerticalCalloutPlacement,
+} from './deathOverlayLayout';
 import { getImpactDirection, type ImpactDirection } from './impactDirection';
 import {
   TELEMETRY_RECENT_RUN_LIMIT,
@@ -1503,10 +1507,49 @@ export class GameScene extends Phaser.Scene {
   }
 
   private showEscapeGuide(hitDirection: ImpactDirection, promptTitle: string): void {
-    const guideOffsetX =
-      hitDirection.offsetX === 0 && hitDirection.offsetY === 0 ? 0 : -hitDirection.offsetX;
-    const guideOffsetY =
-      hitDirection.offsetX === 0 && hitDirection.offsetY === 0 ? -1 : -hitDirection.offsetY;
+    const { guideOffsetX, guideOffsetY, isCentered } = getEscapeGuideVector(
+      hitDirection.offsetX,
+      hitDirection.offsetY,
+    );
+
+    if (isCentered) {
+      this.escapeRay.setAlpha(0).setVisible(false);
+      this.escapeArrowHead.setAlpha(0).setVisible(false);
+      this.escapeMarker
+        .setPosition(this.player.x, this.player.y)
+        .setScale(0.78)
+        .setAlpha(0.92)
+        .setVisible(true);
+      this.escapeMarkerLabel
+        .setText(promptTitle.replace(' ', '\n'))
+        .setPosition(
+          getHorizontalCalloutCenterX({
+            preferredCenterX: this.player.x,
+            labelHalfWidth: this.escapeMarkerLabel.displayWidth / 2,
+            minX: ESCAPE_LABEL_MIN_X_PX,
+            maxX: ESCAPE_LABEL_MAX_X_PX,
+          }),
+          this.player.y,
+        )
+        .setAlpha(1)
+        .setVisible(true);
+
+      this.tweens.add({
+        targets: this.escapeMarker,
+        scale: 1,
+        alpha: 0.72,
+        duration: 180,
+        ease: 'Quad.Out',
+      });
+      this.tweens.add({
+        targets: this.escapeMarkerLabel,
+        alpha: 0.86,
+        duration: 180,
+        ease: 'Quad.Out',
+      });
+      return;
+    }
+
     const guideStartOffset = 28;
     const guideLength = 122;
     const guideStartX = this.player.x + guideOffsetX * guideStartOffset;

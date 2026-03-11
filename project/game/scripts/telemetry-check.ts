@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {
+  getEscapeGuideVector,
   getHorizontalCalloutCenterX,
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
@@ -283,6 +284,25 @@ assert.deepEqual(
     y: 584,
   },
   'Obstacle target lag should clamp to the player-reachable arena instead of impossible wall coordinates.',
+);
+
+assert.deepEqual(
+  getEscapeGuideVector(0, 0),
+  {
+    guideOffsetX: 0,
+    guideOffsetY: 0,
+    isCentered: true,
+  },
+  'Centered overlaps should keep the escape guide neutral instead of drawing a fake upward lane.',
+);
+assert.deepEqual(
+  getEscapeGuideVector(1, -1),
+  {
+    guideOffsetX: -1,
+    guideOffsetY: 1,
+    isCentered: false,
+  },
+  'Directional overlaps should still point the escape guide away from the fatal lane.',
 );
 
 assert.deepEqual(
