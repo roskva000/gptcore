@@ -231,13 +231,13 @@ TODAY'S STRUCTURAL ACTIONS:
 
 PRODUCT IMPACT:
 - Son partner resetten sonra urun hatti aktif: son 9 builder commit'i source odakli ilerlemeyi surduruyor.
--  araliginda toplam degisim: ; dagilim , , .
+- `3c14e85..HEAD` araliginda toplam degisim: `12 files, +825/-163`; dagilim `docs +380/-131`, `source +348/-31`, `scripts +97/-1`.
 - Yorum: product hareketi var, ancak docs hacmi hala yuksek; ritual-loop riski tamamen kapanmadi.
 
 RISKS:
 - HUMAN_SIGNALS hala bos kaldigi surece proxy-overfit riski devam ediyor.
 - Builder her turde genis core-doc paketi guncellerse churn tekrar source etkisini bastirabilir.
--  yogunluk merkezi olmaya devam ettigi icin mikro-fix zinciri tekrar local-maximum uretebilir.
+- `GameScene.ts` yogunluk merkezi olmaya devam ettigi icin mikro-fix zinciri tekrar local-maximum uretebilir.
 
 NEXT DIRECTIVE TO BUILDER:
 - Runtime varsa oncelik yeni fix degil: 5-10 manuel sample toplayip HUMAN_SIGNALS'e ilk structured girdiyi ac.
