@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #120]
+
+Decision:
+`60 seconds` namesake hedefi runtime icinde gorunur milestone feedback ile acknowledge edilecek.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in yasakladigi ayni fairness/input/telemetry zincirine donmeden dar ama gercek bir UX boslugu secildi. Oyun kopyasi ve isimlendirmesi `Survive 60 Seconds` hedefini one cikariyor, ancak mevcut runtime 60 saniye asilsa bile oyuncuya ayrik bir milestone feedback vermiyordu; bu da oyunun own-goal hissini zayiflatiyordu.
+
+Impact:
+`project/game/src/game/balance.ts` `SURVIVAL_GOAL_SECONDS = 60` ve `hasReachedSurvivalGoal()` helper'ini ekledi. `project/game/src/game/GameScene.ts` 60 saniye asildiginda gecici `60s clear!` hint/support mesajini gosteriyor ve sonrasindaki death overlay'lerde `60s clear.` satiri ile bu esigi koruyor. `project/game/scripts/telemetry-check.ts` 59.9s/60.0s esigini regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample bu milestone mesajinin fazla gosterisli, dikkat dagitici veya earned hissettirmedigini gosterirse yalnizca 60s feedback sunumu dar kapsamda yeniden ayarlanir; telemetry semantics, fairness zinciri veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #119]
 
 Decision:

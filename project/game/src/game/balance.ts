@@ -1,6 +1,7 @@
 export const INITIAL_SPAWN_DELAY_MS = 1050;
 export const FIRST_SPAWN_DELAY_MS = 900;
 export const MIN_SPAWN_DELAY_MS = 320;
+export const SURVIVAL_GOAL_SECONDS = 60;
 export const TARGET_FIRST_DEATH_SECONDS = 10;
 export const EARLY_SPAWN_TARGET_LAG_SECONDS = 0.18;
 export const EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS = 10;
@@ -57,3 +58,6 @@ export const getSpawnCollisionGraceMs = (survivalTimeSeconds: number): number =>
               (EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS -
                 EARLY_SPAWN_COLLISION_GRACE_FADE_START_SECONDS)),
         );
+
+export const hasReachedSurvivalGoal = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= SURVIVAL_GOAL_SECONDS;

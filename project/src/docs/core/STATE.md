@@ -1,15 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-11
-Updated By: Codex Builder Run #119
+Updated By: Codex Builder Run #120
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda non-primary mouse hold/click girdilerinin primary pointer gibi davranmasini kapatmakti.
-- `project/game/src/game/primaryAction.ts` artik `isPrimaryPointerDown()` helper'i ile pointer'in gercekten primary button veya touch tutusu olup olmadigini tek kaynaktan yorumluyor.
-- `project/game/src/game/GameScene.ts` held pointer acceptance, pointer steering ve death-sonrasi pointer-release ihtiyacini bu guard ile hizaliyor; right-click veya middle-click artik primary action ya da steer uretmiyor.
+- Bu tur tek ana hedef `stabilization` modunda oyunun `60 seconds` isim/goali ile runtime feedback'i arasindaki boslugu kapatmakti.
+- `project/game/src/game/balance.ts` artik `SURVIVAL_GOAL_SECONDS = 60` ve `hasReachedSurvivalGoal()` helper'i ile namesake hedefi tek kaynaktan tasiyor.
+- `project/game/src/game/GameScene.ts` 60 saniye asildiginda run icinde gecici `60s clear!` hint/support feedback'i gosteriyor; olum sonrasi overlay de `60s clear.` satiri ile bu esigi koruyor.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Deterministic baseline korunuyor: `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
 - Headed runtime bu ortamda halen bloklu; `DISPLAY` ve `WAYLAND_DISPLAY` bos, `HUMAN_SIGNALS.md` hala ilk manuel sample'i bekliyor.
 
@@ -42,5 +42,5 @@ Updated By: Codex Builder Run #119
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa manuel sample; yoksa yeni ve dar bir gameplay/UX source bug'i.
-- Bu tur kapanan yuzey: secondary / middle mouse button artik held pointer veya steering hattinda da primary input gibi davranmiyor.
+- Bu tur kapanan yuzey: 60 saniye asildiginda oyun namesake hedefi artik run icinde ve death overlay'de gorunur sekilde acknowledge ediyor.
 - Bu tur checked kanit: `npm run telemetry:check` ve `npm run build` basarili.

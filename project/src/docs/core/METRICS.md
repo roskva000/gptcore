@@ -11,6 +11,11 @@ current: 26.5s in deterministic survival snapshot
 baseline: 26.5s
 target: hold `>= 26.5s` while checking manually that the slightly firmer `20s+` chase plus the forward-pressure and lane-stack spawn filters still feel fair and readable
 
+survival_goal_feedback:
+current: Run #120 now promotes the namesake `60s` threshold into runtime feedback; clearing `60s` during a live run raises a temporary `60s clear!` hint/support message, and any later death overlay preserves that milestone with a `60s clear.` summary line
+baseline: before Run #120 the game title and onboarding framed `Survive 60 Seconds` as a meaningful goal, but clearing `60s` produced no dedicated in-run acknowledgement and only the raw survival timer changed
+target: confirm manually that the `60s clear!` moment feels visible and earned without breaking flow, overstating success, or reading as noisy UI during a long survival streak
+
 first_death_time:
 current: 6.3s in deterministic survival snapshot
 baseline: 6.3s

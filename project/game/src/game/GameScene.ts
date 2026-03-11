@@ -3,8 +3,10 @@ import {
   EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS,
   EARLY_SPAWN_TARGET_LAG_SECONDS,
   FIRST_SPAWN_DELAY_MS,
+  SURVIVAL_GOAL_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
+  hasReachedSurvivalGoal,
   getSpawnDelayMs,
   getSpawnCollisionGraceMs,
   getSpawnTargetLagSeconds,
@@ -62,6 +64,7 @@ const POINTER_DEAD_ZONE_PX = 10;
 const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;
+const SURVIVAL_GOAL_HINT_DURATION_MS = 2200;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = 2;
 const FATAL_OBSTACLE_DEPTH = 3;
@@ -153,6 +156,7 @@ export class GameScene extends Phaser.Scene {
   private overlayStats!: Phaser.GameObjects.Text;
   private runStartedAt = 0;
   private survivalTime = 0;
+  private survivalGoalReachedThisRun = false;
   private runSpawnRerolls = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
@@ -529,6 +533,10 @@ export class GameScene extends Phaser.Scene {
       this.hintText.setVisible(false);
       this.playingHintHideAtElapsedMs = null;
     }
+
+    if (!this.survivalGoalReachedThisRun && hasReachedSurvivalGoal(this.survivalTime)) {
+      this.celebrateSurvivalGoal(activeRunElapsedMs);
+    }
   }
 
   private createTextures(): void {
@@ -707,6 +715,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseStartedAt = null;
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
+    this.survivalGoalReachedThisRun = false;
     this.runSpawnRerolls = 0;
     this.scoreText.setText('0.0s');
     this.hintText.setText(this.getPlayingHintText()).setVisible(true);
@@ -817,6 +826,7 @@ export class GameScene extends Phaser.Scene {
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
     this.pointerSteeringNeedsRelease = false;
+    this.survivalGoalReachedThisRun = false;
     this.tweens.killTweensOf([
       this.player,
       this.hitFlash,
@@ -1209,6 +1219,9 @@ export class GameScene extends Phaser.Scene {
     const previousBestSurvivalTime = getBestSurvivalTime(this.telemetry);
     const isNewBest =
       previousBestSurvivalTime === null || roundedSurvivalTime > previousBestSurvivalTime;
+    const goalClearSummary = hasReachedSurvivalGoal(roundedSurvivalTime)
+      ? `${SURVIVAL_GOAL_SECONDS}s clear.`
+      : null;
     const bestSurvivalSummary = isNewBest
       ? `New best ${roundedSurvivalTime.toFixed(1)}s.`
       : `Best ${getBestSurvivalTimeText(this.telemetry)}.`;
@@ -1294,10 +1307,13 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody
       .setText(
         [
+          goalClearSummary,
           bestSurvivalSummary,
           `You survived ${roundedSurvivalTime.toFixed(1)} seconds.`,
           `Cause: ${hitDirection.sentence}.`,
-        ].join('\n'),
+        ]
+          .filter(Boolean)
+          .join('\n'),
       )
       .setVisible(true);
     this.overlayPrompt
@@ -2020,7 +2036,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getBaseSupportText(): string {
-    return `Goal: break ${TARGET_FIRST_DEATH_SECONDS}s, then chase your best. Hotkeys: C summary | V export | R reset between runs.`;
+    return `Goal: break ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s. Hotkeys: C summary | V export | R reset between runs.`;
   }
 
   private getRetryActionText(): string {
@@ -2032,7 +2048,20 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getPlayingHintText(): string {
-    return 'Stay moving and break into open space.\nTarget: survive past 10s, then chase your best.';
+    return `Stay moving and break into open space.\nTarget: survive past ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s.`;
+  }
+
+  private celebrateSurvivalGoal(activeRunElapsedMs: number): void {
+    this.survivalGoalReachedThisRun = true;
+    this.hintText
+      .setText(
+        `${SURVIVAL_GOAL_SECONDS}s clear!\nYou beat the namesake goal. Keep the lane open and push your best.`,
+      )
+      .setVisible(true);
+    this.supportText.setText(
+      `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`,
+    );
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + SURVIVAL_GOAL_HINT_DURATION_MS;
   }
 
   private getActiveRunElapsedMs(time: number): number {

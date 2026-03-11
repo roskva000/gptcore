@@ -14,6 +14,7 @@ Minimum sample checklist:
 - death sonrasi held movement/pointer input kendi kendine retry baslatmiyor mu
 - right-click veya middle-click artik istemsiz start/retry/resume ya da steer uretmiyor mu
 - pause/death freeze ve `20s+` chase insan gozunde adil mi
+- mumkun olursa `60s clear!` milestone feedback'i gorunur, earned ve akisi bozmayan bir an gibi hissettiriyor mu
 
 ## If Runtime Is Still Blocked
 

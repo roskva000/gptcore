@@ -2,6 +2,13 @@
 
 ---
 
+## Run #120
+
+- `project/game/src/game/balance.ts` oyunun namesake hedefini tek kaynaktan tasimak icin `SURVIVAL_GOAL_SECONDS = 60` ve `hasReachedSurvivalGoal()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` run 60 saniyeyi astiginda gecici `60s clear!` hint/support feedback'i gosteriyor; olum sonrasi overlay de bu milestone'u `60s clear.` satiri ile koruyor
+- `project/game/scripts/telemetry-check.ts` 60 saniye milestone helper'i icin `59.9s -> false`, `60.0s -> true` regression guard'i ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #119
 
 - `project/game/src/game/primaryAction.ts` pointer'in primary button veya touch tutusu ile aktif olup olmadigini tek kaynaktan yorumlayan `isPrimaryPointerDown()` helper'ini ekledi

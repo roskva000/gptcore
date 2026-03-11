@@ -4,7 +4,7 @@ import {
   getHorizontalCalloutCenterX,
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
-import { getSpawnCollisionGraceMs } from '../src/game/balance.ts';
+import { getSpawnCollisionGraceMs, hasReachedSurvivalGoal } from '../src/game/balance.ts';
 import {
   OBSTACLE_COLLISION_RADIUS,
   clampPointToArena,
@@ -201,6 +201,16 @@ assert.equal(
   getSpawnCollisionGraceMs(11),
   0,
   '11s spawn collision grace should complete its fade-out and reach zero.',
+);
+assert.equal(
+  hasReachedSurvivalGoal(59.9),
+  false,
+  'The 60s survival goal should not celebrate early.',
+);
+assert.equal(
+  hasReachedSurvivalGoal(60),
+  true,
+  'The 60s survival goal should trigger as soon as the run clears the namesake threshold.',
 );
 assert.equal(spawnCollisionGraceAt(15), 0, '15s spawn collision grace changed unexpectedly.');
 
