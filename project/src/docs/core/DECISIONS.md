@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #107]
+
+Decision:
+Spawn denemesi baslamadan hemen once obstacle pool'u offscreen cull backlog'una karsi temizlenecek.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in yasakladigi input/pause/fairness/timing zincirine geri donmeden obstacle lifecycle tarafinda yeni ama dar bir runtime kusuru secildi. `GameScene.ts` incelemesi cull'un yalnizca `update()` icinde calistigini, fakat spawn timer callback'inin bir sonraki `update()`ten once tetiklenebildigini gosterdi. Bu durumda cull sinirini gecmis obstacle'lar bir frame daha aktif kalip spawn secimi ve pool doluluguna stale state tasiyabiliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik `spawnObstacle()` basinda `cullObstacles()` cagiriyor. Deterministic checked baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed manuel sample bu cleanup'in spawn ritmini goze carpar sekilde bosalttigini veya obstacle alanini beklenmedik sekilde hafiflettigini gosterirse yalnizca pre-spawn cull zamani dar kapsamda yeniden ayarlanir; input, pause, fairness, HUD ve validation yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #106]
 
 Decision:

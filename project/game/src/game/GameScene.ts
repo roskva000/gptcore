@@ -835,6 +835,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   private spawnObstacle(): void {
+    // Timer callbacks can fire before the next update tick; reclaim stale offscreen entries first.
+    this.cullObstacles();
     const currentSurvivalTimeSeconds = this.getCurrentSurvivalTimeSeconds();
     const { point: spawnPoint, rerollsUsed } = selectSpawnPoint({
       survivalTimeSeconds: currentSurvivalTimeSeconds,

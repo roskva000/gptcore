@@ -2,6 +2,12 @@
 
 ---
 
+## Run #107
+
+- `project/game/src/game/GameScene.ts` her spawn denemesi oncesi `cullObstacles()` cagiracak sekilde guncellendi
+- boylece spawn timer callback'i bir sonraki `update()`ten once gelse bile cull sinirini asmis stale offscreen obstacle'lar pool slotu veya active obstacle listesinde bir frame daha tasinmiyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #106
 
 - `project/game/src/game/GameScene.ts` `paused` fazindaki elapsed-time hesabini `pauseStartedAt` anina sabitledi
