@@ -1308,8 +1308,7 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           goalClearSummary,
-          bestSurvivalSummary,
-          `You survived ${roundedSurvivalTime.toFixed(1)} seconds.`,
+          `You survived ${roundedSurvivalTime.toFixed(1)} seconds. ${bestSurvivalSummary}`,
           `Cause: ${hitDirection.sentence}.`,
         ]
           .filter(Boolean)
@@ -1320,19 +1319,10 @@ export class GameScene extends Phaser.Scene {
       .setText(`${escapePrompt.title}\n${escapePrompt.sentence}`)
       .setVisible(true);
     this.overlayStats
-      .setText(
-        [
-          `Press ${this.getRetryActionText()} to retry instantly.`,
-          this.getGameOverSessionSummaryLine(),
-          this.getGameOverValidationSummaryLine(),
-        ].join('\n'),
-      )
+      .setText(`Retry: ${this.getRetryActionText()}.`)
       .setVisible(true);
-    this.hintText
-      .setText(
-        `Retry now: ${this.getRetryActionText()}.\nThen ${escapePrompt.title.toLowerCase()} on the next rush.`,
-      )
-      .setVisible(true);
+    this.hintText.setVisible(false);
+    this.supportText.setText(this.getGameOverSupportText());
   }
 
   private deactivateObstacle(obstacle: Phaser.Physics.Arcade.Image): void {
@@ -2125,17 +2115,25 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getGameOverSessionSummaryLine(): string {
-    return `Last run ${this.getLastRunTimeText(this.sessionTelemetry)} | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`;
+    return `Run ${this.getLastRunTimeText(this.sessionTelemetry)} | Best ${getBestSurvivalTimeText(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`;
   }
 
   private getGameOverValidationSummaryLine(): string {
-    const validationSummary = `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Validation ${getValidationProgressText(this.sessionTelemetry)}`;
+    const validationSummary = `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | ${getValidationProgressText(this.sessionTelemetry)}`;
 
     if (this.lastValidationReport) {
       return `${validationSummary} | Export saved`;
     }
 
-    return `${validationSummary} | Press V after a fresh 5-run sample`;
+    return `${validationSummary} | Press V to export`;
+  }
+
+  private getGameOverSupportText(): string {
+    if (this.lastValidationReport) {
+      return 'Retry when ready. Press V to refresh the saved validation export after a new 5-run sample.';
+    }
+
+    return 'Retry when ready. Press V after a fresh 5-run sample to save a validation export.';
   }
 
   private getLastRunTimeText(telemetry: GameplayTelemetry): string {

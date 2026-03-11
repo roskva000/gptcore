@@ -7,9 +7,9 @@
 ## Gameplay
 
 death_screen_clarity:
-current: Run #121 game-over overlay stats ve game-over telemetry panelini kisaltti; death aninda ana bilgi seti artik retry aksiyonu, olum nedeni ve kisa session snapshot etrafinda toplaniyor
+current: Run #122 game-over ekraninda ikinci declutter adimini atti; overlay stats artik yalnizca retry aksiyonunu tasiyor, `best` bilgisi body ozetine gomulu, ust hint kapali ve alt support strip tek export/retry hatirlatmasina indi
 baseline: 11.03.2026 tarihli insan sinyali death ekranini "inanilmaz fazla veri/yazi" nedeniyle karmasik ve rahatsiz edici olarak raporladi
-target: sonraki manuel sample'da death ekraninin daha sakin, daha rahat okunur ve retry istegini daha az bozan bir his vermesi
+target: sonraki manuel sample'da death ekraninin daha sakin, daha rahat okunur ve retry istegini daha az bozan bir his vermesi; ozellikle sag ust snapshot tek basina yeterli baglam sagliyor mu netlestirilsin
 
 average_survival_time:
 current: 26.5s in deterministic survival snapshot
@@ -247,8 +247,8 @@ baseline: added in Run #51 to soften unfair early intercept lines without changi
 target: confirm manually that this improves fairness without making the opening chase feel soft
 
 manual_validation_sample:
-current: ilk insan sinyali alinmis durumda, fakat bu runtime'da headed sample hala bloklu (`DISPLAY` / `WAYLAND_DISPLAY` yok). Run #121 sonrasi en kritik manuel dogrulama death screen clarity / retry istegi / game-over telemetry yogunlugu uzerinde.
-target: sonraki hedefli sample'da death ekraninin artik daha rahat okunup okunmadigi, retry istegini iyilestirip iyilestirmedigi, `60s clear!` mesajinin earned kalip kalmadigi ve onceki control/fairness fix'lerinin insan gozunde ucuz hissettirmeden calisip calismadigi not edilmeli
+current: ilk insan sinyali alinmis durumda, fakat bu runtime'da headed sample hala bloklu (`DISPLAY` / `WAYLAND_DISPLAY` yok). Run #121 ve #122 sonrasi en kritik manuel dogrulama death screen clarity / retry istegi / game-over bilgi dagilimi uzerinde.
+target: sonraki hedefli sample'da death ekraninin artik daha rahat okunup okunmadigi, retry istegini iyilestirip iyilestirmedigi, sag ust snapshot + alt support kombinasyonunun yeterince sakin olup olmadigi, `60s clear!` mesajinin earned kalip kalmadigi ve onceki control/fairness fix'lerinin insan gozunde ucuz hissettirmeden calisip calismadigi not edilmeli
 
 telemetry_sample_integrity:
 current: `R` reset is blocked while a run is active (`playing` or `paused`), so first-death, retry-delay, and validation sample counters cannot be zeroed mid-run

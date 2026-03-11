@@ -2,6 +2,13 @@
 
 ---
 
+## Run #122
+
+- `project/game/src/game/GameScene.ts` death overlay body icinde `best` bilgisini ayri satirdan cikartip hayatta kalma ozetine gomdu; ana body bir satir daha kisaldi
+- ayni dosya game-over overlay stats blokunu yalnizca `Retry:` satirina indirdi, death aninda ustteki hint metnini gizledi ve alt support strip'i tek export/retry hatirlatmasina daraltti
+- `Session snapshot` satirlari daha kisa etiketlere cekildi; session/validation baglami korunurken duplicate metin duvari azaltildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #121
 
 - `project/game/src/game/GameScene.ts` game-over overlay stats satirlarini uc kisa satira indirdi; death ekraninda retry aksiyonu, session ozeti ve validation/export durumu disindaki ikincil telemetry kalabaligi cikartildi

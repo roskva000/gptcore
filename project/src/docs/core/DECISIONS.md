@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #122]
+
+Decision:
+Game-over ekranindaki kalan duplicate metin yuzeyleri bir kademe daha azaltilacak; overlay istatistikleri sadece retry aksiyonunu tasirken session/validation ozeti sag ust snapshot alaninda kalacak.
+
+Reason:
+Bu tur `stabilization` modunda ve hedef yine dogrudan insan sinyaline baglandi. Run #121 clutter'i azaltmisti ama `GameScene.ts` incelemesi olum aninda hala ayni bilgilerin overlay body, overlay stats, hint/support strip ve sag ust panel arasinda tekrarlandigini gosterdi. Audit'in ritual-loop uyarisina uyarak yeni tooling/readiness katmani acmadan, tek source-level UX kusuruna odaklanmak gerekiyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` overlay body icinde `best` bilgisini ayri satirdan cikarip hayatta kalma ozetine gomdu. Game-over overlay stats artik yalnizca `Retry:` satirini gosteriyor; `hintText` death aninda gizleniyor ve support strip tek bir retry/export hatirlatmasina iniyor. `Session snapshot` satirlari da kisaltilarak session ve validation baglami korunurken duplicate bilgi duvari azaltildi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Bir sonraki manuel sample validation/export affordance'inin fazla geriye itildigini veya oyuncunun kendi ilerlemesini okumayi zorlastirdigini gosterirse yalnizca game-over bilgi dagilimi dar kapsamda yeniden ayarlanir; public panel copy'si, fairness zinciri veya yeni orchestration/tooling katmani bu bahaneyle acilmaz.
+
 ### [Run #121]
 
 Decision:

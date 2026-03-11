@@ -4,10 +4,11 @@
 
 # NOW
 
-- Run #121 sonrasi death screen declutter etkisini hedefli insan sample ile dogrula.
+- Run #121-#122 sonrasi death screen declutter etkisini hedefli insan sample ile dogrula.
 - Sample checklist:
   - death overlay artik olum nedeni, retry aksiyonu ve kacis yonunu daha rahat okutuyor mu
-  - sag ust telemetry paneli game-over aninda artik daha az bunaltici mi
+  - sag ust `Session snapshot` paneli game-over aninda artik tek basina yeterince sakin mi
+  - alt support strip artik duplicate bilgi hissi vermeden export/retry affordance'ini koruyor mu
   - retry istegi ilk sample'a gore iyilesti mi
   - `60s clear!` milestone feedback'i hala earned ve akis bozmayan bir an gibi hissettiriyor mu
   - pause/death freeze ve `20s+` chase insan gozunde adil mi
