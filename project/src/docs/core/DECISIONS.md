@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #110]
+
+Decision:
+Ayni frame'de birden fazla obstacle overlap olursa fatal death attribution callback sirasina gore degil, gercek carpisma siddetine gore secilecek.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in yasakladigi input/pause/fairness/timing/telemetry zincirine geri donmeden yeni bir gameplay state-integrity kusuru secildi. `GameScene.ts` incelemesi overlap callback'inin ilk gelen obstacle'i dogrudan fatal kabul ettigini gosterdi. Ust uste binen obstacle anlarinda bu durum `FATAL LANE`, spotlight ve retry guidance'i gercek tehdide degil callback order'a baglayabiliyordu.
+
+Impact:
+`project/game/src/game/deathAttribution.ts` yeni fatal threat secim helper'ini ekledi. `project/game/src/game/GameScene.ts` artik o frame'de gercekten player ile overlap eden collision-ready obstacle'lari toplayip en derin overlap'i, esitlikte daha guclu closing vector'u secerek death tableau'yu buna bagliyor. `project/game/scripts/telemetry-check.ts` derin overlap ve esitlikte closing-vector secimi icin regression guard ekledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample coklu-overlap death anlarinda yeni secimin oyuncunun gercek algiladigi threat ile ters dustugunu gosterirse yalnizca fatal threat scoring agirliklari dar kapsamda yeniden ayarlanir; input, pause, fairness, timing, telemetry, browser-control ve edge-callout yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #109]
 
 Decision:

@@ -18,6 +18,7 @@ import {
   isPointOutsideCullBounds,
   selectSpawnPoint,
 } from './spawn';
+import { selectFatalThreatIndex, type FatalThreatCandidate } from './deathAttribution';
 import { getHorizontalCalloutCenterX, getVerticalCalloutPlacement } from './deathOverlayLayout';
 import { getImpactDirection, type ImpactDirection } from './impactDirection';
 import {
@@ -1148,8 +1149,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.survivalTime = this.getCurrentSurvivalTimeSeconds();
-    const obstacle = obstacleGameObject as Phaser.Physics.Arcade.Image;
-    const hitDirection = this.getHitDirection(obstacle);
+    const fatalObstacle = this.resolveFatalObstacle(
+      obstacleGameObject as Phaser.Physics.Arcade.Image,
+    );
+    const hitDirection = this.getHitDirection(fatalObstacle);
     const escapePrompt = this.getEscapePrompt(hitDirection);
     const roundedSurvivalTime = Number(this.survivalTime.toFixed(1));
     const previousBestSurvivalTime = getBestSurvivalTime(this.telemetry);
@@ -1188,12 +1191,12 @@ export class GameScene extends Phaser.Scene {
     this.player.setVelocity(0, 0);
     this.player.setTint(0xffd6cf);
     this.recordRunEnd();
-    this.tweens.killTweensOf(obstacle);
-    obstacle.setTint(0xfff0c7).setScale(1.12).setAlpha(1);
+    this.tweens.killTweensOf(fatalObstacle);
+    fatalObstacle.setTint(0xfff0c7).setScale(1.12).setAlpha(1);
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
-      const isFatalObstacle = obstacle === obstacleGameObject;
+      const isFatalObstacle = obstacle === fatalObstacle;
 
       this.tweens.killTweensOf(obstacle);
       obstacle.setVelocity(0, 0);
@@ -1227,7 +1230,7 @@ export class GameScene extends Phaser.Scene {
       ease: 'Cubic.Out',
     });
     this.showImpactMarker(hitDirection);
-    this.showFatalSpotlight(obstacle, hitDirection);
+    this.showFatalSpotlight(fatalObstacle, hitDirection);
     this.showEscapeGuide(hitDirection, escapePrompt.title);
 
     this.overlay.setVisible(true);
@@ -1544,6 +1547,63 @@ export class GameScene extends Phaser.Scene {
       duration: 180,
       ease: 'Quad.Out',
     });
+  }
+
+  private resolveFatalObstacle(
+    callbackObstacle: Phaser.Physics.Arcade.Image,
+  ): Phaser.Physics.Arcade.Image {
+    const playerBody = this.player.body as Phaser.Physics.Arcade.Body | undefined;
+    const overlappingObstacles: Phaser.Physics.Arcade.Image[] = [];
+    const fatalThreatCandidates: FatalThreatCandidate[] = [];
+
+    this.obstacles.children.each((child) => {
+      const obstacle = child as Phaser.Physics.Arcade.Image;
+
+      if (
+        !obstacle.active ||
+        !this.isObstacleCollisionReady(obstacle) ||
+        !this.isObstacleInsideVisibleArena(obstacle) ||
+        !this.isObstacleOverlappingPlayer(obstacle)
+      ) {
+        return true;
+      }
+
+      const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body | undefined;
+      overlappingObstacles.push(obstacle);
+      fatalThreatCandidates.push({
+        position: { x: obstacle.x, y: obstacle.y },
+        velocity: {
+          x: obstacleBody?.velocity.x ?? 0,
+          y: obstacleBody?.velocity.y ?? 0,
+        },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      });
+
+      return true;
+    });
+
+    if (overlappingObstacles.length <= 1) {
+      return overlappingObstacles[0] ?? callbackObstacle;
+    }
+
+    const fatalThreatIndex = selectFatalThreatIndex({
+      playerPosition: { x: this.player.x, y: this.player.y },
+      playerVelocity: {
+        x: playerBody?.velocity.x ?? 0,
+        y: playerBody?.velocity.y ?? 0,
+      },
+      playerCollisionRadius: PLAYER_COLLISION_RADIUS,
+      candidates: fatalThreatCandidates,
+    });
+
+    return overlappingObstacles[fatalThreatIndex] ?? callbackObstacle;
+  }
+
+  private isObstacleOverlappingPlayer(obstacle: Phaser.Physics.Arcade.Image): boolean {
+    const deltaX = this.player.x - obstacle.x;
+    const deltaY = this.player.y - obstacle.y;
+    const combinedRadius = PLAYER_COLLISION_RADIUS + OBSTACLE_COLLISION_RADIUS;
+    return deltaX * deltaX + deltaY * deltaY <= combinedRadius * combinedRadius;
   }
 
   private getHitDirection(obstacle: Phaser.Physics.Arcade.Image): ImpactDirection {

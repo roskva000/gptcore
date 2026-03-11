@@ -2,6 +2,14 @@
 
 ---
 
+## Run #110
+
+- `project/game/src/game/deathAttribution.ts` coklu overlap death'leri icin yeni fatal threat secim helper'i ekledi
+- `project/game/src/game/GameScene.ts` overlap callback'ten gelen ilk obstacle'i kor sartla fatal kabul etmek yerine o anda gercekten player ile cakişan obstacle'lari toplayip en derin overlap / esitlikte en guclu closing-vector adayini seciyor
+- boylece `FATAL LANE`, spotlight ve retry guidance callback order yerine gercek fatal threat ile hizalaniyor
+- `project/game/scripts/telemetry-check.ts` derin overlap ve closing-vector tie-break regression assert'leri ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #109
 
 - `project/game/src/game/deathOverlayLayout.ts` centered callout'lar icin yeni yatay clamp helper'i ekledi

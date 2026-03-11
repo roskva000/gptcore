@@ -10,6 +10,7 @@ import {
   isPointInsideArena,
   selectSpawnPoint,
 } from '../src/game/spawn.ts';
+import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import {
   buildValidationReport,
@@ -312,6 +313,48 @@ assert.deepEqual(
     offsetY: 0,
   },
   'Centered overlaps should stay centered so the death guidance can fall back to RESET CENTER instead of inventing a fake lane.',
+);
+assert.equal(
+  selectFatalThreatIndex({
+    playerPosition: { x: 400, y: 300 },
+    playerVelocity: { x: 0, y: 0 },
+    playerCollisionRadius: 16,
+    candidates: [
+      {
+        position: { x: 426, y: 300 },
+        velocity: { x: -120, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+      {
+        position: { x: 418, y: 300 },
+        velocity: { x: -80, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+    ],
+  }),
+  1,
+  'Fatal threat selection should prefer the deepest overlapping obstacle instead of callback order.',
+);
+assert.equal(
+  selectFatalThreatIndex({
+    playerPosition: { x: 400, y: 300 },
+    playerVelocity: { x: 40, y: 0 },
+    playerCollisionRadius: 16,
+    candidates: [
+      {
+        position: { x: 381, y: 300 },
+        velocity: { x: 10, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+      {
+        position: { x: 419, y: 300 },
+        velocity: { x: -140, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+    ],
+  }),
+  1,
+  'Fatal threat selection should break equal-depth ties toward the obstacle with the stronger closing vector.',
 );
 
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.5, 'Average survival snapshot regressed.');
