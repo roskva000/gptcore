@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #109]
+
+Decision:
+Death/readability callout'lari sol ve sag arena kenarinda yatay clamp ile tutulacak.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in yasakladigi input/pause/fairness/timing/telemetry zincirine geri donmeden yeni bir gameplay/UX kusuru secildi. Run #91 yalnizca dikey edge tasmasini kapatmisti; `GameScene.ts` incelemesi impact, fatal spotlight ve escape guide etiketlerinin merkezleri marker/spotlight noktasina sabit kaldigi icin genis `top-left` veya `break right` metinlerinin sol/sag kenarda arena disina tasabildigini gosterdi.
+
+Impact:
+`project/game/src/game/deathOverlayLayout.ts` yeni yatay callout clamp helper'i ekledi. `project/game/src/game/GameScene.ts` impact, fatal spotlight ve escape guide etiketlerini display width uzerinden arena icinde konumluyor. `project/game/scripts/telemetry-check.ts` sol edge, sag edge ve asiri genis label fallback assert'leri ekledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample yatay clamp'in label/marker hiyerarsisini bozdugunu veya edge death anlarini daha karmasik hissettirdigini gosterirse yalnizca callout X clamp marjlari dar kapsamda yeniden ayarlanir; input, pause, fairness, timing, telemetry ve browser-control yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #108]
 
 Decision:

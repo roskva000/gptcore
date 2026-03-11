@@ -18,7 +18,7 @@ import {
   isPointOutsideCullBounds,
   selectSpawnPoint,
 } from './spawn';
-import { getVerticalCalloutPlacement } from './deathOverlayLayout';
+import { getHorizontalCalloutCenterX, getVerticalCalloutPlacement } from './deathOverlayLayout';
 import { getImpactDirection, type ImpactDirection } from './impactDirection';
 import {
   TELEMETRY_RECENT_RUN_LIMIT,
@@ -55,10 +55,16 @@ const IMPACT_LABEL_HALF_HEIGHT_PX = 12;
 const IMPACT_LABEL_GAP_PX = 22;
 const IMPACT_LABEL_MIN_Y_PX = 28;
 const IMPACT_LABEL_MAX_Y_PX = ARENA_HEIGHT - 28;
+const IMPACT_LABEL_MIN_X_PX = 20;
+const IMPACT_LABEL_MAX_X_PX = ARENA_WIDTH - 20;
 const FATAL_LABEL_HALF_HEIGHT_PX = 20;
 const FATAL_LABEL_GAP_PX = 18;
 const FATAL_LABEL_MIN_Y_PX = 40;
 const FATAL_LABEL_MAX_Y_PX = ARENA_HEIGHT - 40;
+const FATAL_LABEL_MIN_X_PX = 20;
+const FATAL_LABEL_MAX_X_PX = ARENA_WIDTH - 20;
+const ESCAPE_LABEL_MIN_X_PX = 20;
+const ESCAPE_LABEL_MAX_X_PX = ARENA_WIDTH - 20;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
 const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
@@ -1303,11 +1309,19 @@ export class GameScene extends Phaser.Scene {
         .setScale(0.72)
         .setAlpha(0.95)
         .setVisible(true);
-      this.impactMarkerLabel
-        .setPosition(this.player.x, this.player.y)
-        .setText('CENTER')
-        .setAlpha(1)
-        .setVisible(true);
+    this.impactMarkerLabel
+      .setText('CENTER')
+      .setPosition(
+        getHorizontalCalloutCenterX({
+          preferredCenterX: this.player.x,
+          labelHalfWidth: this.impactMarkerLabel.displayWidth / 2,
+          minX: IMPACT_LABEL_MIN_X_PX,
+          maxX: IMPACT_LABEL_MAX_X_PX,
+        }),
+        this.player.y,
+      )
+      .setAlpha(1)
+      .setVisible(true);
 
       this.tweens.add({
         targets: this.impactMarker,
@@ -1357,8 +1371,16 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(0.95)
       .setVisible(true);
     this.impactMarkerLabel
-      .setPosition(markerX, impactLabelPlacement.labelY)
       .setText(hitDirection.label.toUpperCase())
+      .setPosition(
+        getHorizontalCalloutCenterX({
+          preferredCenterX: markerX,
+          labelHalfWidth: this.impactMarkerLabel.displayWidth / 2,
+          minX: IMPACT_LABEL_MIN_X_PX,
+          maxX: IMPACT_LABEL_MAX_X_PX,
+        }),
+        impactLabelPlacement.labelY,
+      )
       .setAlpha(1)
       .setVisible(true);
 
@@ -1418,8 +1440,16 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(0.96)
       .setVisible(true);
     this.fatalSpotlightLabel
-      .setPosition(spotlightX, fatalLabelPlacement.labelY)
       .setText(this.getFatalSpotlightLabelText(hitDirection))
+      .setPosition(
+        getHorizontalCalloutCenterX({
+          preferredCenterX: spotlightX,
+          labelHalfWidth: this.fatalSpotlightLabel.displayWidth / 2,
+          minX: FATAL_LABEL_MIN_X_PX,
+          maxX: FATAL_LABEL_MAX_X_PX,
+        }),
+        fatalLabelPlacement.labelY,
+      )
       .setAlpha(1)
       .setVisible(true);
 
@@ -1475,8 +1505,16 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(0.92)
       .setVisible(true);
     this.escapeMarkerLabel
-      .setPosition(markerX, markerY)
       .setText(promptTitle.replace(' ', '\n'))
+      .setPosition(
+        getHorizontalCalloutCenterX({
+          preferredCenterX: markerX,
+          labelHalfWidth: this.escapeMarkerLabel.displayWidth / 2,
+          minX: ESCAPE_LABEL_MIN_X_PX,
+          maxX: ESCAPE_LABEL_MAX_X_PX,
+        }),
+        markerY,
+      )
       .setAlpha(1)
       .setVisible(true);
 

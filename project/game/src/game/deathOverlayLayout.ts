@@ -4,6 +4,13 @@ export type VerticalCalloutPlacement = {
   placeBelow: boolean;
 };
 
+type HorizontalCalloutPlacementParams = {
+  preferredCenterX: number;
+  labelHalfWidth: number;
+  minX: number;
+  maxX: number;
+};
+
 type VerticalCalloutPlacementParams = {
   anchorY: number;
   gap: number;
@@ -13,6 +20,22 @@ type VerticalCalloutPlacementParams = {
 };
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
+
+export const getHorizontalCalloutCenterX = ({
+  preferredCenterX,
+  labelHalfWidth,
+  minX,
+  maxX,
+}: HorizontalCalloutPlacementParams): number => {
+  const minCenterX = minX + labelHalfWidth;
+  const maxCenterX = maxX - labelHalfWidth;
+
+  if (minCenterX > maxCenterX) {
+    return (minX + maxX) / 2;
+  }
+
+  return clamp(preferredCenterX, minCenterX, maxCenterX);
+};
 
 export const getVerticalCalloutPlacement = ({
   anchorY,

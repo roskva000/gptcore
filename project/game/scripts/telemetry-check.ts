@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
-import { getVerticalCalloutPlacement } from '../src/game/deathOverlayLayout.ts';
+import {
+  getHorizontalCalloutCenterX,
+  getVerticalCalloutPlacement,
+} from '../src/game/deathOverlayLayout.ts';
 import { getSpawnCollisionGraceMs } from '../src/game/balance.ts';
 import {
   OBSTACLE_COLLISION_RADIUS,
@@ -92,6 +95,36 @@ assert.deepEqual(
     placeBelow: false,
   },
   'Bottom-edge fatal callouts should stay above the spotlight instead of running off the screen.',
+);
+assert.equal(
+  getHorizontalCalloutCenterX({
+    preferredCenterX: 48,
+    labelHalfWidth: 60,
+    minX: 20,
+    maxX: 780,
+  }),
+  80,
+  'Left-edge callouts should clamp their label center inside the arena instead of clipping offscreen.',
+);
+assert.equal(
+  getHorizontalCalloutCenterX({
+    preferredCenterX: 752,
+    labelHalfWidth: 84,
+    minX: 20,
+    maxX: 780,
+  }),
+  696,
+  'Right-edge callouts should clamp their label center inside the arena instead of clipping offscreen.',
+);
+assert.equal(
+  getHorizontalCalloutCenterX({
+    preferredCenterX: 44,
+    labelHalfWidth: 420,
+    minX: 20,
+    maxX: 780,
+  }),
+  400,
+  'Overwide callouts should fall back to the arena midpoint instead of producing an inverted clamp range.',
 );
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');

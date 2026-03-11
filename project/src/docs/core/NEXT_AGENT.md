@@ -7,6 +7,7 @@ Run mode: `stabilization`
 Interactive browser/runtime varsa `5-10` manuel run topla ve ilk structured girdiyi `project/src/docs/experiments/HUMAN_SIGNALS.md` icine yaz.
 
 Kontrol et:
+- Run #109 yatay clamp sonrasi sol/sag edge death anlarinda impact, fatal spotlight ve `BREAK ...` etiketi arena disina tasmadan okunuyor mu
 - Run #108 browser control guard'i sonrasi `Space`, ok tuslari ve `WASD` ile start/retry/move sirasinda sayfa veya panel scroll'u tetiklenmiyor mu
 - touch steering sirasinda `.game-root` artik browser pan/drag jestine kacmadan kontrolu oyunda tutuyor mu
 - Run #107 pre-spawn cull cleanup sonrasi uzun hayatta kalma anlarinda spawn ritminin boslamadigini ve stale edge obstacle birikimi hissi olup olmadigini
@@ -18,9 +19,9 @@ Kontrol et:
 ## If Runtime Is Still Blocked
 
 `AUDIT.md` verdigine uy:
-- Run #101-#108 zincirindeki input/pause/fairness/timing/validation/cull/browser-control yuzeylerine geri donme
+- Run #101-#109 zincirindeki input/pause/fairness/timing/validation/cull/browser-control/edge-callout-layout yuzeylerine geri donme
 - telemetry wording, latest-run copy veya docs ritual churn'u acma
-- tek bir yeni gameplay/UX bug'i sec; death readability, replay hissi veya baska dar source kusuru gibi yeni bir yuzey olsun, ama gercekten farkli bir surface sec
+- tek bir yeni gameplay/UX bug'i sec; onerilen aday su: ayni frame'de birden fazla obstacle overlap olursa game-over'in fatal obstacle secimi callback sirasina kalmasin, oyuncuya en yakin/gercek carpisan threat kaynagini secsin. Bunu source'ta kapat ve deterministik guard ekle. Bu aday uygun degilse yine gercekten farkli tek bir surface sec.
 
 ## Success Criteria
 

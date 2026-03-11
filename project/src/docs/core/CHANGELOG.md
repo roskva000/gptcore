@@ -2,6 +2,13 @@
 
 ---
 
+## Run #109
+
+- `project/game/src/game/deathOverlayLayout.ts` centered callout'lar icin yeni yatay clamp helper'i ekledi
+- `project/game/src/game/GameScene.ts` impact marker, fatal spotlight ve escape guide etiketlerini display width'e gore sol/sag arena kenarinda clip olmadan konumluyor
+- `project/game/scripts/telemetry-check.ts` left-edge, right-edge ve overwide label fallback regression assert'leri ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #108
 
 - `project/game/src/game/GameScene.ts` gameplay icin kullanilan `Space`, ok tuslari ve `WASD` uzerinde keyboard capture acti
