@@ -2,6 +2,12 @@
 
 ---
 
+## Run #106
+
+- `project/game/src/game/GameScene.ts` `paused` fazindaki elapsed-time hesabini `pauseStartedAt` anina sabitledi
+- boylece focus-loss pause sirasinda survival clock sorgulari beklerken akmaya devam etmiyor; pause overlay'in freeze vaadi runtime state ile hizalandi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #105
 
 - `project/game/src/game/GameScene.ts` olum aninda physics world'u artik durduruyor, aktif spawn timer referansini temizliyor ve pause/retry release state'lerini sifirliyor

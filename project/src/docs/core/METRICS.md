@@ -36,6 +36,11 @@ current: 145 at 0s, 183 at 10s, 217 at 20s, 253 at 30s, 308 at 45s, 320 at 60s
 baseline: Run #87 nudged only the `20s+` speed slope from `3.6` to `3.62` after the prior softened chase had drifted to `18/24` deterministic `30s` caps; opener pacing, spawn-distance helpers, lag/grace guards, collider, and input/pause surfaces were intentionally left untouched
 target: preserve the early-death guard and validate manually that the slightly firmer `20s+` chase restores tension without feeling sharp or cheap
 
+pause_clock_freeze_integrity:
+current: Run #106 now freezes paused elapsed-time queries at `pauseStartedAt`, so any pause-state survival clock read stays pinned to the actual freeze moment instead of drifting with wall-clock time
+baseline: before Run #106 `getActiveRunElapsedMs()` always subtracted from live `time.now`, which meant pause state bookkeeping could still observe a growing survival clock even while the overlay promised that time was frozen
+target: confirm manually that pause overlay timing feels fully honest during a held pause and resumes without a visible jump, stall, or double-count
+
 runtime_timing_integrity:
 current: Run #104 now derives spawn delay, spawn selection time, obstacle speed/target-lag/collision-grace, pause snapshot time, and death-time rounding from the live active-run clock instead of the last cached `survivalTime` frame
 baseline: before Run #104 these runtime-only decisions reused `this.survivalTime`, so a spawn timer or focus-loss/death callback landing before the next `update()` could read a one-frame stale time around thresholds like the `10-11s` grace fade

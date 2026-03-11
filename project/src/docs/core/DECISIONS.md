@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #106]
+
+Decision:
+`paused` fazindaki active-run zaman sorgulari artik canli `time.now` yerine `pauseStartedAt` anina sabitlenecek.
+
+Reason:
+Bu tur `stabilization` modunda, audit'in yasakladigi ayni fairness/input/telemetry yuzeylerine geri donmeden dar bir runtime-state kusuru secildi. `GameScene.ts` incelemesi pause overlay'in "survival time ilerlemiyor" dedigini, fakat `getActiveRunElapsedMs()`in `paused` fazinda da canli zamani okumaya devam ettigini gosterdi. Bu, pause sirasinda runtime'in kendi zaman sorgulari ile oyuncuya verilen freeze vaadini ayni kaynaktan tasimayan gercek bir state-integrity acigiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` elapsed-time hesabinda `paused` fazinda `pauseStartedAt` referansini kullaniyor. Deterministic checked baseline degismedi: `26.5s / 6.3s / 4%`, bucket'lar `1 / 3 / 3 / 17`. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Headed manuel sample pause/resume sonrasi survival clock continuity'sinin takildigini, cift saydigini veya resume aninda beklenmedik sicrama urettigini gosterirse yalnizca pause-time elapsed hesaplama dar kapsamda yeniden ayarlanir; input, fairness, HUD ve validation yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #105]
 
 Decision:

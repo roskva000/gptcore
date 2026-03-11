@@ -1833,7 +1833,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getActiveRunElapsedMs(time: number): number {
-    return time - this.runStartedAt - this.pausedRunElapsedMs;
+    const elapsedReferenceTime =
+      this.phase === 'paused' && this.pauseStartedAt !== null ? this.pauseStartedAt : time;
+
+    return elapsedReferenceTime - this.runStartedAt - this.pausedRunElapsedMs;
   }
 
   private getCurrentSurvivalTimeSeconds(time = this.time.now): number {
