@@ -46,6 +46,11 @@ current: Run #108 now captures `Space`, arrow keys, and `WASD` at the Phaser key
 baseline: before Run #108 the app shell could still scroll inside `#app`, so keyboard start/move inputs and touch steering were vulnerable to browser-level scroll/pan interference outside the game loop itself
 target: confirm manually that keyboard-first start/retry and touch steering never drag the page/panel or feel like the browser is stealing control
 
+enter_primary_action_capture:
+current: Run #116 now captures `Enter` alongside the existing gameplay keys, so start/retry/resume remains on the game's primary-action path even when shell focus drifts onto the side-panel `details/summary` UI or another focusable wrapper element
+baseline: before Run #116 `keydown-ENTER` triggered the scene action, but `Enter` was not in the keyboard capture list; focused shell UI could still consume it and turn a retry/start intent into panel toggling or another default interaction
+target: confirm manually that `Enter` feels as reliable as `Space` for start/retry/resume across desktop focus changes without breaking any intentionally focusable non-game shell control
+
 pointer_edge_control_integrity:
 current: Run #114 now clamps pointer/touch steering targets to the player-reachable arena (`16px` inner margin), so dragging beyond the canvas or arena edge no longer spends movement velocity into an impossible outward lane while the player is already pinned to the wall
 baseline: before Run #114 pointer steering aimed directly at the raw pointer world coordinate, so offscreen or outside-arena drag targets could keep wall-edge movement biased into the boundary instead of the nearest reachable escape axis

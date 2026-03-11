@@ -203,6 +203,7 @@ export class GameScene extends Phaser.Scene {
     }) as MovementKeys;
     keyboard.addCapture([
       Phaser.Input.Keyboard.KeyCodes.SPACE,
+      Phaser.Input.Keyboard.KeyCodes.ENTER,
       Phaser.Input.Keyboard.KeyCodes.UP,
       Phaser.Input.Keyboard.KeyCodes.DOWN,
       Phaser.Input.Keyboard.KeyCodes.LEFT,

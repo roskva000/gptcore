@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #116]
+
+Decision:
+`Enter` tusu da gameplay capture listesine alinacak; start/retry/resume icin vaat edilen primary action shell focus kaymalarinda panel toggle veya default browser davranisina dusmeyecek.
+
+Reason:
+Bu tur `stabilization` modunda, headed runtime yine blokluyken audit'in kapattigi fairness/death-guidance/pointer-control/validation zincirine geri donmeden yeni ve dar bir replay/control kusuru secildi. `GameScene.ts` `keydown-ENTER` ile primary action acsa da keyboard capture listesi yalnizca `Space`, yon tuslari ve `WASD`'yi tutuyordu. Uygulama kabugunda focus alabilen `details/summary` elemanlari oldugu icin `Enter` bazen shell UI'yi toggle edip oyunun tek aksiyonla start/retry/resume vaadini bozabilecek gercek bir UX sizintisiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik `Phaser.Input.Keyboard.KeyCodes.ENTER` icin de capture aciyor. Boylece `Enter` primary action'i `Space` ile ayni capture hattinda, side panel odagi veya diger focusable shell elemanlari altinda da oyuna ait kaliyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample `Enter` capture'inin shell icindeki baska kritik klavye etkilesimlerini beklenmedik sekilde kilitledigini gosterirse yalnizca primary-action capture kapsami daraltilarak yeniden yorumlanir; browser scroll, fairness, telemetry veya death-readability yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #115]
 
 Decision:

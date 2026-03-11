@@ -2,6 +2,12 @@
 
 ---
 
+## Run #116
+
+- `project/game/src/game/GameScene.ts` gameplay keyboard capture listesine `Enter` tusunu ekledi
+- boylece start/retry/resume icin vaat edilen `Enter` primary action'i side panel `details/summary` odagi veya baska focusable shell elemanlari tarafindan yutulmadan oyuna ulasiyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #115
 
 - `project/game/src/game/telemetry.ts` validation export readiness icin `hasCompletedRunSample()` helper'ini ekledi
