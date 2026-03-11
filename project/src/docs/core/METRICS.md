@@ -61,6 +61,11 @@ current: Run #105 now pauses the physics world, clears the active spawn-timer re
 baseline: before Run #105 the fatal obstacle field had its velocity zeroed, but the physics world itself stayed live and `nextSpawnTimer` kept its last object reference even after removal, leaving game-over as a softer state cleanup than the on-screen "run ended" promise
 target: confirm manually that death tableau now feels fully frozen and that immediate retry starts cleanly without feeling sticky, delayed, or over-frozen
 
+game_over_retry_release_integrity:
+current: Run #112 now snapshots whether movement or pointer input was already held at the moment of death and blocks held retry until that input is released; stale held input no longer auto-restarts the run `180ms` into game-over
+baseline: before Run #112 the same held-input confirmation path used for intentional replay also stayed armed after death, so a player dying while still holding move/pointer input could skip most of the death tableau without a fresh retry decision
+target: confirm manually that death feedback remains readable until a deliberate retry, while fresh `Space`/`Enter`/tap/click and release-then-hold replay still feel instant and friction-light
+
 non_pointer_start_resume_guard:
 current: Run #103 now rearms pointer steering release/held-delay protection whenever a run starts or resumes from keyboard/Space/movement input while the pointer is already down; keyboard-first starts/resumes should no longer drift into immediate pointer steering from a stale held click/touch
 baseline: before Run #103 the start/resume path did not distinguish activation source, so a held pointer could still hijack a keyboard- or Space-led start/resume on the very next playing frame even though neutral pointer start/retry guarding already existed

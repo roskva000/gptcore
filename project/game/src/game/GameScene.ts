@@ -100,6 +100,8 @@ export class GameScene extends Phaser.Scene {
   private pointerSteeringNeedsRelease = false;
   private pauseResumeNeedsMovementRelease = false;
   private pauseResumeNeedsPointerRelease = false;
+  private gameOverRetryNeedsMovementRelease = false;
+  private gameOverRetryNeedsPointerRelease = false;
   private playingHintHideAtElapsedMs: number | null = null;
   private pausedRunElapsedMs = 0;
   private pauseStartedAt: number | null = null;
@@ -665,6 +667,8 @@ export class GameScene extends Phaser.Scene {
     this.pointerSteeringNeedsRelease = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
+    this.gameOverRetryNeedsMovementRelease = false;
+    this.gameOverRetryNeedsPointerRelease = false;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
     this.runStartedAt = this.time.now;
@@ -821,6 +825,8 @@ export class GameScene extends Phaser.Scene {
     this.movementInputWasActive = this.hasMovementInput();
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsPointerRelease = false;
+    this.gameOverRetryNeedsMovementRelease = false;
+    this.gameOverRetryNeedsPointerRelease = false;
 
     this.obstacles.children.each((child) => {
       const obstacle = child as Phaser.Physics.Arcade.Image;
@@ -957,10 +963,16 @@ export class GameScene extends Phaser.Scene {
     if (!movementInputActive) {
       this.movementHoldActionStartedAt = null;
       this.pauseResumeNeedsMovementRelease = false;
+      this.gameOverRetryNeedsMovementRelease = false;
       return false;
     }
 
     if (this.phase === 'paused' && this.pauseResumeNeedsMovementRelease) {
+      this.movementHoldActionStartedAt = null;
+      return false;
+    }
+
+    if (this.phase === 'gameOver' && this.gameOverRetryNeedsMovementRelease) {
       this.movementHoldActionStartedAt = null;
       return false;
     }
@@ -978,10 +990,16 @@ export class GameScene extends Phaser.Scene {
       this.pointerHoldActionStartedAt = null;
       this.pointerSteeringNeedsRelease = false;
       this.pauseResumeNeedsPointerRelease = false;
+      this.gameOverRetryNeedsPointerRelease = false;
       return false;
     }
 
     if (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) {
+      this.pointerHoldActionStartedAt = null;
+      return false;
+    }
+
+    if (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease) {
       this.pointerHoldActionStartedAt = null;
       return false;
     }
@@ -1151,6 +1169,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.survivalTime = this.getCurrentSurvivalTimeSeconds();
+    const movementInputActive = this.hasMovementInput();
+    const pointerInputActive = this.input.activePointer.isDown;
     const fatalObstacle = this.resolveFatalObstacle(
       obstacleGameObject as Phaser.Physics.Arcade.Image,
     );
@@ -1170,6 +1190,8 @@ export class GameScene extends Phaser.Scene {
     this.pointerSteeringNeedsRelease = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
+    this.gameOverRetryNeedsMovementRelease = movementInputActive;
+    this.gameOverRetryNeedsPointerRelease = pointerInputActive;
     this.pauseStartedAt = null;
     this.playingHintHideAtElapsedMs = null;
     this.nextSpawnTimer?.remove(false);
@@ -1934,7 +1956,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getRetryActionText(): string {
-    return 'Space, Enter, tap/click, or keep holding your move input';
+    return 'Space, Enter, tap/click, or press/hold your move input';
   }
 
   private getResumeActionText(): string {

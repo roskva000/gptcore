@@ -2,6 +2,13 @@
 
 ---
 
+## Run #112
+
+- `project/game/src/game/GameScene.ts` game-over sonrasi movement ve pointer icin ayri retry release guard'lari ekledi
+- boylece olum aninda zaten basili kalan input artik release gormeden `180ms` sonra kendiliginden yeni run baslatmiyor; fresh `Space`/`Enter`/tap/click veya release sonrasi yeni move-input ile instant retry korunuyor
+- retry yardim metni yeni davranisla hizalandi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #111
 
 - `project/game/src/game/GameScene.ts` obstacle depth'ini ortak sabite tasidi; spawn/deactivate akislarinda baseline obstacle depth'i artik tek kaynaktan kuruluyor

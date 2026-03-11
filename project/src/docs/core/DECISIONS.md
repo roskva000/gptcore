@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #112]
+
+Decision:
+Death aninda zaten basili kalan movement/pointer input, release gormeden game-over ekraninda otomatik retry baslatmayacak.
+
+Reason:
+Bu tur `stabilization` modunda, headed sample yokken replay/control akisinda yeni ve dar bir urun kusuru secildi. `GameScene.ts` akisi olumden hemen sonra `movement-held` ve `pointer-held` yollarini acik biraktigi icin oyuncu olum aninda input'u basili tutuyorsa `180ms` sonra death tableau'yu okumadan istemsiz retry tetiklenebiliyordu. Bu, hizli replay hedefini korusa da olumu anlamlandirma ve bilincli retry niyetini zedeliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` game-over fazi icin ayri movement/pointer release guard'lari ekledi. Olum aninda aktif olan input yeniden deneme icin once release bekliyor; fresh `Space`/`Enter`/tap/click veya release sonrasi yeni move-input ile instant retry korunuyor. Retry hint metni de yeni davranisla hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Headed manuel sample fresh retry'nin gereksiz sertlestigini veya deliberate held retry niyetinin fazla zorlandigini gosterirse yalnizca game-over retry release kosulu dar kapsamda yeniden ayarlanir; fairness, timing, browser-control, telemetry ve death-readability yuzeyleri bu bahaneyle tekrar acilmaz.
+
 ### [Run #111]
 
 Decision:
