@@ -769,19 +769,13 @@ export class GameScene extends Phaser.Scene {
       .setText(
         [
           `Best ${getBestSurvivalTimeText(this.telemetry)} lifetime | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
-          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)}`,
-          `Validation ${getValidationProgressText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
+          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Validation ${getValidationProgressText(this.sessionTelemetry)}`,
+          `Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
         ].join('\n'),
       )
       .setVisible(true);
-    this.hintText
-      .setText(
-        `Run paused on focus loss.\nRefocus, then press ${this.getResumeActionText()} to resume.`,
-      )
-      .setVisible(true);
-    this.supportText.setText(
-      'Pause guard active: refocus click only restores focus, and any held move key must be released before it can resume. No spawn, movement, or survival time advances while unfocused.',
-    ).setVisible(true);
+    this.hintText.setVisible(false);
+    this.supportText.setVisible(false);
     this.survivalTime = pausedAtSeconds;
     this.updateHudChromeVisibility();
     this.updateTelemetryText();
@@ -1986,6 +1980,7 @@ export class GameScene extends Phaser.Scene {
     );
     this.telemetryText
       .setText(this.getTelemetryLinesForCurrentPhase().join('\n'))
+      .setVisible(this.phase !== 'paused')
       .setAlpha(this.phase === 'playing' ? 0.9 : 1);
   }
 

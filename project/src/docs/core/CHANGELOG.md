@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #126
+
+- `project/game/src/game/GameScene.ts` pause state'te sag ust telemetry panelini gizledi; pause overlay artik sag panelde ayri bir `Local telemetry` kopyasi tasimiyor
+- ayni dosya pause aninda ust hint ve alt support strip'i kapatti, overlay stats satirlarini kisaltti; focus-loss pause daha tek parca bir ekran haline geldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #125
 
 - `project/game/src/game/GameScene.ts` faz-tabanli HUD gorunurluk helper'i ekledi; `score` ve `best` satirlari artik yalnizca `waiting` ve `playing` fazlarinda gorunuyor

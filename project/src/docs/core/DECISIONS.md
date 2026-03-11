@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #126]
+
+Decision:
+Pause durumunda overlay disindaki ikincil chrome gizlenecek; sag ust telemetry paneli ile ust/alt hint-support metinleri artik pause ekraninda gorunmeyecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Runtime yine blokluydu ve audit ayni fairness/input/telemetry zincirine donmek yerine death/readability veya UI sadeligi ailesinde tek bir source bug'i kapatmaya zorluyordu. `GameScene.ts` incelemesi pause state'te overlay body/prompt/stats'a ek olarak sag panel, hint ve support strip'in de ayni resume/focus-loss/telemetry bilgisini tekrar ettigini gosterdi; bu da pause ekranini gereksiz seremonik ve daginik hale getiriyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` pause state'te `hintText`, `supportText` ve `telemetryText` chrome'unu gizliyor; pause overlay stats da daha kisa iki telemetry satirina indirildi. Boylece focus-loss pause artik tek overlay hiyerarsisiyle okunuyor. Deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample pause state'te sag panel veya alt support metninin yoklugunun resume/validation orientasyonunu zayiflattigini gosterirse yalnizca pause chrome gorunurlugu dar kapsamda yeniden ayarlanir; fairness, spawn, telemetry semantics veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #125]
 
 Decision:

@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+paused_overlay_focus:
+current: Run #126 pause state'te overlay disindaki `Local telemetry`, `hint`, ve alt support strip chrome'unu gizledi; focus-loss pause artik yalnizca overlay body/prompt/stats ile okunuyor
+baseline: Run #125 sonrasi pause ekraninda ust HUD gizlenmisti, ancak sag panel, ust hint ve alt support strip hala overlay ile ayni resume/focus-loss/telemetry bilgisini tekrar edip ikinci ve ucuncu odak noktalarini acik birakiyordu
+target: sonraki manuel sample'da pause state daha sakin, daha az burokratik ve resume niyetini daha dogrudan anlatan tek ekran gibi hissedilsin; gerekli orientation kaybi olursa keep/tune/revert karari insan notuyla verilsin
+
 non_playing_hud_chrome_focus:
 current: Run #125 `score` ve `best` HUD satirlarini `paused` ve `gameOver` fazlarinda gizliyor; ust sol runtime chrome artik overlay ozetiyle ayni anda rekabet etmiyor
 baseline: Run #124 support strip game-over aninda gizlenmisti, fakat ustteki skor ve best HUD'si hala gorunur kalip death/pause overlay'lerinin kendi ozetleriyle duplicate zaman/best baglami yaratiyordu
