@@ -1,52 +1,45 @@
 # MIGRATION_STATUS.md
-Last Updated: 2026-03-10
+Last Updated: 2026-03-11
 Updated By: Partner Layer
 
 ---
 
-# Purpose
-
-Bu dosya partner/factory migration'in hangi asamada oldugunu kisa ve operasyonel bicimde takip eder.
-
----
-
-# Current Status
+## Current Status
 
 Migration State:
-active, nearing closure
+founder-reset-applied
 
 Cron State:
 paused intentionally
 
-Current Focus:
-- factory docs ve role map'i tam hizalamak
-- runner/cron davranisini maintenance-aware hale getirmek
-- partner layer'i read-only by default olacak sekilde kurmak
-- human signal / experiments / retention hattini acmak
+Overall:
+closure-candidate (governance alignment completed, operational validation pending)
 
 ---
 
-# Completed
+## What Was Completed In Founder Reset
 
-- partner docs seti eklendi
-- human signals / experiments / retention / identity arc dosyalari eklendi
-- global lock / maintenance mantigi runner scriptlerine girdi
-- cron'lar guvenli sekilde pause'a alindi
-- cron re-enable plani yazildi
-- partner pulse / deep review script iskeletleri olusturuldu
-
----
-
-# Remaining Before Re-enable
-
-1. migration dalgasinin repoda commitlenebilir hale gelmesi
-2. `REENABLE_CHECKLIST.md` uzerinden son kontrol gecilmesi
-3. cron yeniden acilis sirasinin kontrollu uygulanmasi
-4. builder hattinin yeni docs setiyle stabil calistiginin gozlenmesi
+- Partner contract v3.0 ile tek kanonik governance modeli yazildi
+- Role hierarchy netlestirildi (Partner > God > Auditor > Builder)
+- Override yetkisi ve acil mudahale kurallari dokumante edildi
+- Gunluk partner run protokolu sertlestirildi
+- Memory modeli genisletildi (`PARTNER_MEMORY.md`, `PARTNER_DECISIONS.md`)
+- Concurrency policy override/timeout katinda netlestirildi
+- Role contract catismasi yaratan eski metinler archive altina yedeklendi
 
 ---
 
-# Principle
+## Remaining Before Re-enable
 
-Migration tamamlanmadan eski ritmi yeniden acmak yerine,
-kisa bir bekleme ile daha saglam bir fabrika kurmak tercih edilir.
+1. `REENABLE_CHECKLIST.md` kalan maddelerin kapatilmasi
+2. builder-only re-enable ile 1-2 cycle stabilite gozlemi
+3. audit + god cycle sonrasi drift/bloat teyidi
+
+---
+
+## Re-enable Gate
+
+Cron yeniden acilisina gecmeden once su 3 kosul birlikte saglanmali:
+- contract consistency: yes
+- lock behavior stability: yes
+- bureaucracy-risk trend: down

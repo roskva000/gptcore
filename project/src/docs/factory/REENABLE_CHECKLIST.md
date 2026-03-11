@@ -16,6 +16,7 @@ Bu dosya cron'lar tekrar acilmadan once tek bakista kontrol edilecek son listedi
 - [x] human signal / experiments / retention docs seti eklendi
 - [x] README yeni role map ile hizalandi
 - [x] state / roadmap / next-agent compaction dalgasi uygulandi
+- [x] partner supremacy + override contract role dosyalarina hizalandi
 - [ ] migration degisiklikleri repoda commitlenebilir final pakete getirildi
 - [ ] cron yeniden acilis sirasi kontrollu sekilde uygulandi
 - [ ] builder yeniden acilis sonrasi stabil davranis gozlemlendi

@@ -1,69 +1,60 @@
 # FACTORY_RHYTHM.md
+Last Updated: 2026-03-11
 
-Bu dosya urunu ureten fabrikanin zaman olceklerini ve rol ritmini tanimlar.
-
----
-
-# Current Rhythm
-
-## Builder
-Cadence:
-Hourly
-
-Purpose:
-- urun uzerinde dar ve olculebilir ilerleme uretmek
-- bug fix, gameplay tuning, mutation veya integration run'lari yapmak
-
-## Auditor
-Cadence:
-Daily
-
-Purpose:
-- drift / loop / ritual-risk denetimi
-- urun gercekten ilerliyor mu kontrolu
-- builder davranisini duzeltici yonlendirme
-
-## God
-Cadence:
-Weekly
-
-Purpose:
-- haftalik faz tanimi
-- stratejik yon
-- mutation izni / yasagi
-- buyuk urun yayininin korunmasi
-
-## Partner
-Cadence:
-Planned / staged activation
-
-Planned Rhythm:
-- light partner pulse: gunde 2-3 kez, varsayilan olarak read-only observe mode
-- deep partner review: haftada 2 kez
-- intervention mode: yalnizca net gerekce ve kontrollu write penceresi ile
-
-Purpose:
-- fabrikanin kendisini denetlemek
-- role'lar arasi koordinasyonu guclendirmek
-- process, memory ve growth disiplinini korumak
-- Furkan'a fikir ve escalation sunmak
+Bu dosya fabrikanin zaman olceklerini ve yetki akisini tek modele baglar.
 
 ---
 
-# Rhythm Rules
+## Canonical Cadence
 
-- ayni repo uzerinde ayni anda tek writer calisir
-- observe mode mumkun oldugunca read-only kalir
-- intervention mode maintenance mantigiyla ele alinir
-- builder ritmi urun hareketi icin kalir; partner onu kopyalamaz
-- audit ve god, partner tarafindan degil kendi rollerine uygun zaman olceginde dusunur
+### Builder
+- cadence: hourly
+- scope: urun implementation
+- output: kod + minimum gerekli docs
+
+### Auditor
+- cadence: daily
+- scope: drift/loop/churn denetimi
+- output: audit verdict + governance direction
+
+### God
+- cadence: weekly
+- scope: stratejik faz/yol
+- output: kisa, uygulanabilir stratejik kararlar
+
+### Partner (Supreme)
+- cadence: gunde 1 ana uyanis
+- default mode: observe
+- mode switch: gerekirse intervention
+- output: factory mode, health, direktifler, hafiza guncellemesi
 
 ---
 
-# Planned Future Additions
+## Rhythm Rules
 
-- factory-wide global lock protocol
-- maintenance marker policy
-- partner pulse / partner review scriptleri
-- timeout / skip / defer davranis standardi
-- `CONCURRENCY_POLICY.md` kurallarinin runner katmanina uygulanmasi
+1. **Tek repo, tek writer** (mutlak)
+2. Partner observe modunda yazim acmaz; intervention'da kontrollu yazar
+3. Builder urun ritmidir; Partner builder'i kopyalamaz, yonlendirir
+4. Auditor ve God kendi zaman olceklerinde kalir; Partner bunlari hizalar
+5. Ritim bozulursa Partner override eder
+
+---
+
+## Override Timing
+
+- Normal durumda:
+  - Partner gunluk ana capta yon verir
+  - Alt roller bir sonraki ciklusunda uygular
+- Acil durumda:
+  - Partner aninda intervention acabilir
+  - Gerekirse maintenance penceresi tanimlar
+
+---
+
+## Anti-Ritual Guard
+
+Asagidaki semptomlardan ikisi birlikte gorulurse Partner intervention tetikler:
+- ayni doc paketinin tekrarli yazimi
+- product delta'nin 2+ run dusmesi
+- ayni mikro-problem etrafinda donen fix zinciri
+- churn oraninin source etkisini bastirmasi

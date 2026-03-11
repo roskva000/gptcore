@@ -1,83 +1,66 @@
 # FACTORY_STATE.md
-Last Updated: 2026-03-09
+Last Updated: 2026-03-11
 Updated By: Partner Layer
 
 ---
 
-# Current Factory Status
+## FACTORY MODE
+intervention
 
-Status:
-migration-active, warning-but-promising
-
-The factory is alive and productive.
-Builder runs produce real movement, auditor catches drift, and the new god layer adds weekly direction.
-However, the system is still too close to a local-optimization rhythm and does not yet have a stable partner/operating-system layer.
+## OVERALL HEALTH
+warning
 
 ---
 
-# Current Operational Diagnosis
+## CURRENT DIAGNOSIS
 
-## Strengths
-- builder cadence is active and disciplined
-- auditor already detects ritual-loop risk
-- god layer has begun to define weekly direction
-- repo has a real living-memory structure
-- product and factory are both observable enough to improve
+Factory, son 12 committe gercek urun ilerlemesi uretmis olsa da governance ve living-doc churn'u hala yuksek.
 
-## Weaknesses
-- no dedicated partner layer yet
-- cron / runner rhythm is still optimized for current roles only
-- concurrency policy is not yet fully factory-wide
-- docs are rich, but some files still carry too much operational weight
-- growth model still leans too heavily toward tuning instead of selective mutation
+- Trend (HEAD~12..HEAD): `13 files changed, +742/-120`
+- Source delta var (GameScene/spawn/balance/telemetry)
+- Ancak operation memory paketi tekrarli yaziliyor
+- Role contracts birbirini tam hizalamiyordu (ozellikle GOD authority anlatimi)
+
+Net tani:
+- Product engine calisiyor
+- Governance modeli hizalaniyor
+- Ritimde bureaucracy geri-donus riski var
 
 ---
 
-# Current Pressure Points
+## OPEN RISKS
 
-- persistent risk of builder returning to telemetry/copy/local-maximum loops
-- `GameScene.ts` remains a large growth-friction surface
-- human signals are not yet first-class system input
-- no explicit factory pulse / partner review cycle exists yet
-- current locking strategy is role-local rather than fully repo-global
-
----
-
-# Current Growth Mode
-
-Mode:
-stabilization-heavy, mutation-prep
-
-Meaning:
-- the core is being improved
-- the factory is not yet ready for fully disciplined controlled mutation
-- first step is structural preparation, not random expansion
+1. role authority metinleri tekrar catismaya donerse ustten yonetim bulanir
+2. tek writer disiplini uygulamada gevserse dirty-tree/push-conflict riski artar
+3. human signal halen dusuk kalirsa kararlar proxy-overfit olur
+4. living-doc ritual paketi urun ilerlemesini tekrar bastirabilir
 
 ---
 
-# Current Open Operational Tasks
+## PRODUCT VS CHURN SIGNAL
 
-1. finish partner-layer migration
-2. operationalize human signal ingestion
-3. finalize builder/auditor/god/partner document alignment
-4. finish runner/cron re-enable plan under concurrency policy
-5. define partner pulse / deep review execution path
-6. open controlled mutation system
-7. prepare first retained experiment candidate
+- Product movement: mevcut ve olculebilir
+- Churn pressure: orta-yuksek
+- Bugun alinan karar: governance sadeleme + memory contract sertlestirme
 
 ---
 
-# Escalations
+## ACTIVE DIRECTIVES
 
-Open:
-- No immediate human escalation required for partner-layer bootstrap
-- Future escalations likely around cron strategy, mutation approval, and public experiment surface shape
+### Builder
+Tek hedefli urun ilerlemesi; docs ritual paketini minimumda tut.
+
+### Auditor
+Bureaucracy-risk'i docs hacmi ve tekrarli dosya yazimi uzerinden sert izle.
+
+### God
+Haftalik yonu partner governance modeli ile uyumlu, kisa ve uygulanabilir tut.
 
 ---
 
-# Migration Snapshot
+## NEXT CHECKPOINT
 
-See also:
-- `MIGRATION_STATUS.md`
-- `CRON_REENABLE_PLAN.md`
-- `REENABLE_CHECKLIST.md`
+Bir sonraki partner uyanisinda su 3 soru dogrulanacak:
+1. role contract uyumsuzlugu geri geldi mi?
+2. docs churn yeniden source deltaini bastirdi mi?
+3. builder run'lari hala tek hedef + olculebilir etki uretiyor mu?

@@ -20,11 +20,6 @@ Amac:
 - fabrikanin growth kapasitesini ve ritmini denetlemek
 - proxy ile human signal arasindaki olasi celiskileri gormek
 
-Hierarchy Contract:
-- kanonik sira: `PARTNER > GOD > AUDITOR > BUILDER`
-- auditor, partner direktiflerini birincil governance girdisi olarak kabul eder
-- auditor stratejik yon cizmez; uyumsuzluk gordugunde partner'a escalation notu birakir
-
 ---
 
 # 2) PRIMARY QUESTION
@@ -39,8 +34,6 @@ Her audit sonunda su soruya cevap ver:
 
 Audit sirasinda en az su dosyalari incele:
 
-- PARTNER.md
-- PARTNER_DECISIONS.md
 - AGENT.md
 - AUDIT.md
 - FACTORY_STATE.md

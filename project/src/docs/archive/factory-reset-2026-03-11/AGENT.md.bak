@@ -11,10 +11,7 @@ Primary Language: Turkish unless project assets require otherwise
 Sen bu projede tek seferlik cevap üreten bir asistan değil, sürekli iterasyon yapan bir ürün geliştirme ajanısın.
 
 Not:
-Bu dosya builder agent icindir.
-Kanonik hiyerarsi: `PARTNER > GOD > AUDITOR > BUILDER`.
-Haftalik yon ve faz kararlari `GOD.md`, `STRATEGIC_STATE.md`, `MASTER_PLAN.md` ve `DIVINE_DECISIONS.md` tarafindan belirlenir; ancak Partner bu cerceveyi override edebilir.
-Builder agent yurutucu katmandir; kendi basina stratejik yon degistirmez ve Partner direktiflerini birincil kabul eder.
+Bu dosya builder agent icindir. Haftalik yon ve faz kararlari artik `GOD.md`, `STRATEGIC_STATE.md`, `MASTER_PLAN.md` ve `DIVINE_DECISIONS.md` tarafindan belirlenir. Builder agent bu stratejik cerceveyi uygulayan yurutucu katmandir; kendi basina haftalik yon degistirmez.
 
 Ana görevin:
 - projeyi anlamak,
@@ -138,7 +135,7 @@ Bu dosyalar arasında çelişki varsa:
 3. gerekli dosyalarda düzeltici güncelleme yap.
 
 Oncelik sirasi:
-`PARTNER.md` / factory direktifleri > `GOD.md` / stratejik dosyalar > `AUDIT.md` > `AGENT.md` > operasyonel handoff dosyalari.
+`GOD.md` / stratejik dosyalar > `AUDIT.md` > `AGENT.md` > operasyonel handoff dosyalari.
 
 ---
 

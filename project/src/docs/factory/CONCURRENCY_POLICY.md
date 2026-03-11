@@ -1,136 +1,73 @@
 # CONCURRENCY_POLICY.md
+Last Updated: 2026-03-11
 
-Bu dosya canli fabrikada ayni repo uzerinde calisan farkli rollerin nasil cakismadan calisacagini tanimlar.
-
----
-
-# Problem
-
-Bu projede birden fazla katman vardir:
-- Codex builder
-- Codex auditor
-- Codex god
-- OpenClaw partner
-- gerekirse human manual intervention
-
-Bu roller ayni repo uzerinde write isleri yapabilir.
-Ayni anda birden fazla writer calisirse:
-- git yarisi
-- dirty tree
-- push conflict
-- state drift
-- bozuk handoff
-olabilir.
+Canli fabrikada write cakismasini engellemek icin kanonik politika.
 
 ---
 
-# Core Rule
+## 1) Core Rule
 
-## Tek repo, tek writer
-
-Ayni anda ayni repo uzerinde yalnizca **tek writer** calisabilir.
-
-Read-only gozlem / analiz akislari mumkun oldugunca write lock almadan calismalidir.
+**Tek repo, tek writer.**
+Ayni anda birden fazla write akisi calisamaz.
 
 ---
 
-# Lock Model
+## 2) Lock Layers
 
-## Role locks
-- builder lock
-- audit lock
-- god lock
-- partner lock
+- Global repo write lock (zorunlu)
+- Role intent lock (builder/auditor/god/partner)
+- Maintenance marker (buyuk yapisal mudahale)
 
-## Global repo lock
-Ayri bir global lock da olmalidir.
-
-Amaç:
-- rol bazli ayristirma + repo bazli mutlak write serializasyonu
+Write islemine girmeden once lock alinmadan devam edilmez.
 
 ---
 
-# Mode Model
+## 3) Mode Contract
 
-## Observe mode
+### Observe mode
 - read-only analiz
-- log okuma
-- state degerlendirme
-- fikir uretimi
-- gereksiz write yapmama
+- lock alma zorunlulugu yok
+- write yok
 
-## Intervention mode
-- docs degistirme
-- runner/cron revizyonu
-- yapisal migration
-- gameplay veya process write islemleri
-
-Intervention mode global write lock gerektirir.
-Observe mode varsayilan moddur.
+### Intervention mode
+- docs/policy/code write serbest
+- global lock + maintenance marker zorunlu
 
 ---
 
-# Maintenance Marker
+## 4) Priority / Override Order
 
-Buyuk yapisal veya process degisikliginde maintenance marker kullanilmalidir.
+Ayni zaman araliginda cakisma olursa sira:
+1. Human emergency intervention
+2. Partner intervention
+3. God strategic write
+4. Auditor governance write
+5. Builder product write
 
-Marker mantigi:
-- owner
-- reason
-- started_at
-- expected_until
-
-Builder / audit / god cronlari marker gorurse:
-- skip
-- wait-with-timeout
-- veya defer
-politikasina gore davranmalidir.
+Not: Normalde oncelik degil, **serializasyon** esastir. Bu sira yalnizca cakisma cözumu icindir.
 
 ---
 
-# Timeout Philosophy
+## 5) Timeout Behavior
 
-## Builder
-- kisa bekleme
-- sik calistigi icin lock varsa skip edebilir
-
-## Auditor
-- daha uzun bekleyebilir
-- lock varsa log dusup skip/defer edebilir
-
-## God
-- en sabirli roldur
-- gerekirse maintenance penceresi bekler
-
-## Partner
-- gozlem modunda write lock istemez
-- intervention modunda maintenance ciddiyetiyle davranir
+- Builder: lock varsa kisa bekle, sonra defer/skip
+- Auditor: orta bekleme, sonra defer ve log
+- God: daha uzun bekleme, sonra yeniden plan
+- Partner: observe modda beklemez; intervention modda lock bosalmadan yazmaz
 
 ---
 
-# Priority Guidance
+## 6) Stop / Escalation Conditions
 
-Normal operasyon onceligi:
-1. aktif writer'in isi bitsin
-2. sonra stratejik / denetim rolleri
-3. sonra sik cadence rolleri devam etsin
-
-Ancak human emergency intervention her zaman usttedir.
-
----
-
-# Preferred Behavior
-
-- partner pulse cogunlukla read-only calisir
-- partner intervention daha seyrek ama daha kontrollu olur
-- builder urun hareketini surdurur
-- audit loop ve ritual-risk'i gorur
-- god haftalik yonu belirler
-- partner fabrikanin isleyisini optimize eder
+Asagidaki durumlardan biri olursa write akisi durdurulur ve FACTORY_STATE'e risk yazilir:
+- dirty tree catisma riski
+- lock stale durumu
+- art arda skip firtinasi
+- push conflict
 
 ---
 
-# Future Work
+## 7) Principle
 
-Bu politika runner scriptlerine ve cron davranisina tasinmalidir.
-Ilk adim belgelemek, ikinci adim uygulamaktir.
+Hizdan once tutarlilik.
+Cakisma yasayan hizli sistem yerine, seri ama stabil bir fabrika tercih edilir.

@@ -106,3 +106,113 @@ Expected Effect:
 Next Recommendation:
 - degisiklikleri commitlenebilir final migration paketi gibi gozden gecir
 - sonra builder-only yeniden acilis karari icin hazirlik yap
+
+---
+
+## [2026-03-11T00:17:54Z] Partner Pulse
+
+Context:
+Scheduled partner pulse under observe mode.
+
+Partner Identity:
+- role: Furkan'in ortagi / factory operating system katmani
+- mode: observe
+
+Factory Health:
+- overall: warning
+- factory-status: migration-active, warning-but-promising
+- audit-verdict: bureaucracy-risk
+- git-tree: clean
+
+Observation:
+- audit verdict is bureaucracy-risk
+- factory still carries migration-active status; normalize docs when stable
+
+Action:
+- scheduled observe-first pulse executed
+
+Recommendation:
+- Keep partner in observe mode but watch the next builder/audit cycle closely.
+
+---
+
+## [2026-03-11T00:17:56Z] Deep Partner Review
+
+Context:
+Scheduled deeper factory review under observe mode.
+
+Partner Identity:
+- role: Furkan'in ortagi / factory operating system katmani
+- mode: observe
+
+Factory Health:
+- overall: warning
+- factory-status: migration-active, warning-but-promising
+- audit-verdict: bureaucracy-risk
+- docs-commit-count(last12 scoped): 12
+- game-commit-count(last12 scoped): 12
+- active-experiment: (none yet)
+
+Trend Summary:
+- a8a09e1 agent: live iteration 20260310-233001
+- 96f6547 agent: live iteration 20260310-223001
+- ebb49c0 agent: live iteration 20260310-213001
+- 32ae456 agent: live iteration 20260310-203001
+- ed94a59 agent: live iteration 20260310-193001
+- e114e79 agent: live iteration 20260310-183001
+- 531fce1 agent: live iteration 20260310-173001
+- 224534a agent: live iteration 20260310-163001
+
+Current Goal:
+- unknown
+
+Action:
+- deep review executed as factory-level supervisory pass
+
+---
+
+## [2026-03-11T00:40:00Z] Founder Activation Run (Kayyum Etkisi)
+
+FACTORY MODE: intervention
+OVERALL HEALTH: warning
+
+Ne gozlemledim?
+- Son 12 committe urun ilerlemesi var, fakat role governance metinleri tek modele tam hizali degil.
+- Ozellikle GOD authority anlatimi ile Partner supreme modeli cakisiyordu.
+- Memory seti operasyonel gunlukte guclu ama kalici karar/ogrenim izi eksikti.
+
+Ne degistirdim?
+- `PARTNER.md` v3.0 ile tek kanonik governance modeli yazildi.
+- `FACTORY_STATE.md`, `FACTORY_RHYTHM.md`, `CONCURRENCY_POLICY.md`, `MIGRATION_STATUS.md` yeniden hizalandi.
+- `PARTNER_MEMORY.md` ve `PARTNER_DECISIONS.md` eklendi.
+- `AGENT.md`, `AUDITOR.md`, `GOD.md` role contractlari Partner ust hiyerarsisine hizalandi.
+- Yikici degisiklik izi icin onceki kontratlar `archive/factory-reset-2026-03-11/` altina yedeklendi.
+
+Neden?
+- Tek model olmadan override zinciri ve sorumluluk dagilimi bulanik kaliyordu.
+- Fabrika, urunu degil sureci optimize eden bir ritual-loop'a kayma riski tasiyordu.
+
+Beklenen etki?
+- Yetki ve override belirsizligi azalir.
+- Gunluk partner denetimi daha net karar uretebilir.
+- Alt roller, tek governance contract altinda daha stabil calisir.
+
+Bir sonraki run'da ne dogrulanacak?
+- Role contract catisma geri donuyor mu?
+- Docs churn/source impact dengesi iyilesiyor mu?
+- Builder run'lari tek hedefli ve olculebilir kaliyor mu?
+
+NEXT DIRECTIVE TO BUILDER:
+- Product-first kal; docs ritual paketini minimumda tut; tek hedefli run disiplini bozma.
+
+NEXT DIRECTIVE TO AUDITOR:
+- Churn vs product impact oranini sert izle; role uyumsuzlugu gorursen aninda escalation yaz.
+
+NEXT DIRECTIVE TO GOD:
+- Haftalik stratejiyi 1 ana hedef + 2 destek hedef formatina indir; uygulanabilirlik disina cikma.
+
+MEMORY UPDATES:
+- guncellendi: PARTNER.md, FACTORY_STATE.md, FACTORY_RHYTHM.md, CONCURRENCY_POLICY.md, MIGRATION_STATUS.md
+- eklendi: PARTNER_MEMORY.md, PARTNER_DECISIONS.md
+- hizalandi: core/AGENT.md, audit/AUDITOR.md, strategy/GOD.md
+- archive: docs/archive/factory-reset-2026-03-11/*

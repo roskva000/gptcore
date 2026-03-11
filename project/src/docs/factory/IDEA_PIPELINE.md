@@ -56,7 +56,13 @@ proposed
 
 ## Approved
 
-(none yet)
+### Idea: Founder Reset Governance Model
+Why:
+Role authority metinleri tek modele hizali degildi.
+Value:
+Yetki zinciri netlesti, override contract kanonik oldu.
+Status:
+approved-and-applied (2026-03-11)
 
 ---
 
