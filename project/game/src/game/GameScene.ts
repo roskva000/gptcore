@@ -755,22 +755,21 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody
       .setText(
         [
-          `You made it ${pausedAtSeconds.toFixed(1)} seconds before the pause.`,
-          'The run is frozen so focus loss does not turn into a cheap death.',
+          `Run frozen at ${pausedAtSeconds.toFixed(1)}s.`,
+          'No time passes while focus is away.',
         ].join('\n'),
       )
       .setVisible(true);
     this.overlayPrompt
       .setText(
-        `Return to the game, then press ${this.getResumeActionText()} to resume.`,
+        `Refocus, then ${this.getResumeActionText()} to resume.`,
       )
       .setVisible(true);
     this.overlayStats
       .setText(
         [
-          `Best ${getBestSurvivalTimeText(this.telemetry)} lifetime | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
-          `Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s | Validation ${getValidationProgressText(this.sessionTelemetry)}`,
-          `Retry avg ${getAverageRetryDelayText(this.sessionTelemetry)} | Spawn saves ${this.runSpawnRerolls} this run`,
+          `Session best ${getBestSurvivalTimeText(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+          `Validation ${getValidationProgressText(this.sessionTelemetry)} | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
         ].join('\n'),
       )
       .setVisible(true);

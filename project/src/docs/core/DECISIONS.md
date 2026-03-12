@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #128]
+
+Decision:
+Focus-loss pause overlay'i daha kisa bir body/prompt ve daha dar bir stats blogu ile gosterilecek; retry avg, spawn saves ve lifetime best gibi ikincil satirlar pause ekranindan cikarilacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Headed runtime yine blokluydu (`DISPLAY` / `WAYLAND_DISPLAY` bos) ve audit ayni fairness/input zincirine donmeden death/readability ailesinde tek dar bir UX problemi kapatmaya zorluyordu. `GameScene.ts` incelemesi pause ekraninin chrome gizlemelerine ragmen overlay body, prompt ve stats satirlarinda ayni focus-loss/resume/telemetry bilgisini gereksiz tekrar ettigini gosterdi.
+
+Impact:
+`project/game/src/game/GameScene.ts` pause body copy'sini `Run frozen at ...` ve `No time passes while focus is away.` satirlarina indirdi. Prompt `Refocus, then ... to resume.` formatina kisaldi. Stats blogu ise `Session best/avg` ve `Validation/First death` ozetine indi. Deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample bu kisalmanin pause state'te orientasyonu veya resume niyetini zayiflattigini gosterirse yalnizca pause overlay metin dagilimi dar kapsamda yeniden ayarlanir; fairness, telemetry semantics veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #127]
 
 Decision:

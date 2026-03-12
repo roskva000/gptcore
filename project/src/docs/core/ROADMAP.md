@@ -4,13 +4,13 @@
 
 # NOW
 
-- Run #125-#127 sonrasi death/pause overlay declutter etkisini hedefli insan sample ile dogrula.
+- Run #125-#128 sonrasi death/pause overlay declutter etkisini hedefli insan sample ile dogrula.
 - Sample checklist:
   - death overlay artik olum nedeni, retry aksiyonu ve kacis yonunu daha rahat okutuyor mu
   - sag ust `Session snapshot` paneli game-over aninda artik daha kisa ve yeterince sakin mi
   - alt support strip'in artik gizli olmasi death anini daha az kalabalik hissettiriyor mu
   - ust sol `score` / `best` HUD'nin gizlenmesi pause ve game-over ekranlarini daha az "iki UI ust uste binmis" gibi hissettiriyor mu
-  - pause ekrani artik sag panel ve alt hint/support satirlari olmadan daha net bir tek-overlay deneyimi veriyor mu
+  - pause ekrani artik kisalmis body/prompt copy ve iki satirlik stats ozetiyle daha net bir tek-overlay deneyimi veriyor mu
   - retry istegi ilk sample'a gore iyilesti mi
   - `60s clear!` milestone feedback'i hala earned ve akis bozmayan bir an gibi hissettiriyor mu
   - pause/death freeze ve `20s+` chase insan gozunde adil mi
@@ -29,7 +29,7 @@ Success markers:
 - Manuel sample sonuclarina gore death/readability, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
 - Sample olursa support strip gizleme kararini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa ust HUD gizleme kararini da keep/tune/revert formatinda insan notuyla bagla.
-- Sample olursa pause-state chrome gizleme kararini da keep/tune/revert formatinda insan notuyla bagla.
+- Sample olursa pause-state chrome gizleme ve Run #128 pause copy kisalmasi kararlarini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa Run #127 `Session snapshot` sadeleştirmesini de keep/tune/revert formatinda insan notuyla bagla.
 - Public panel copy'sini tekrar acmadan once yeni source delta veya yeni insan kaniti olsun; stale-drift bug'i yeniden uretme.
 - Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara.

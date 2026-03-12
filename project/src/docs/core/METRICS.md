@@ -6,13 +6,18 @@
 
 ## Gameplay
 
+paused_overlay_copy_density:
+current: Run #128 focus-loss pause overlay body copy'sini iki kisa satira indirdi, prompt'u `Refocus, then ... to resume.` formatina cekti ve stats blogunu `Session best/avg` ile `Validation/First death` olmak uzere iki satira dusurdu
+baseline: Run #126 pause state'te sag panel ve hint/support chrome'unu gizlemisti, ancak overlay'in kendi body/prompt/stats metni hala ayni pause-safe, resume ve telemetry baglamini gereksiz uzunlukla tekrar ediyordu
+target: sonraki manuel sample'da pause ekrani daha hizli okunur, daha az burokratik ve resume aksiyonunu daha net tasiyan tek ekran gibi hissedilsin; orientasyon kaybi olursa keep/tune/revert karari insan notuyla verilsin
+
 game_over_snapshot_density:
 current: Run #127 death sonrasi sag ust `Session snapshot` panelini iki kisa bilgi satirina indirdi; `avg` artik game-over panelinde degil ve validation/export affordance'i sample durumuna gore `First death`, `Export ready` veya `Press V` seviyesinde kaliyor
 baseline: Run #125-#126 sonrasi death ekraninda ust HUD, support strip ve pause chrome azaltilmisti, ancak game-over paneli hala `Run + Best + Avg` ve `First death + validation + export` yogunluguyla insan sinyalindeki "fazla veri/yazi" sorununu tam kapatmiyordu
 target: sonraki manuel sample'da death anindaki sag panel overlay ile rekabet etmeyen, daha kisa ve yeterince yonlendirici bir ozet gibi hissetsin; export affordance'i kaybolmamis ama daha az istilaci olsun
 
 paused_overlay_focus:
-current: Run #126 pause state'te overlay disindaki `Local telemetry`, `hint`, ve alt support strip chrome'unu gizledi; focus-loss pause artik yalnizca overlay body/prompt/stats ile okunuyor
+current: Run #128 pause state'te hem overlay disindaki `Local telemetry`, `hint`, ve alt support strip chrome'unu gizliyor hem de overlay body/prompt/stats metnini daha kisa tutuyor; focus-loss pause artik daha dar bir tek-overlay ozetle okunuyor
 baseline: Run #125 sonrasi pause ekraninda ust HUD gizlenmisti, ancak sag panel, ust hint ve alt support strip hala overlay ile ayni resume/focus-loss/telemetry bilgisini tekrar edip ikinci ve ucuncu odak noktalarini acik birakiyordu
 target: sonraki manuel sample'da pause state daha sakin, daha az burokratik ve resume niyetini daha dogrudan anlatan tek ekran gibi hissedilsin; gerekli orientation kaybi olursa keep/tune/revert karari insan notuyla verilsin
 

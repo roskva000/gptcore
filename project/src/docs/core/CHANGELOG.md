@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #128
+
+- `project/game/src/game/GameScene.ts` focus-loss pause overlay body copy'sini iki kisa satira indirdi: `Run frozen at ...` ve `No time passes while focus is away.`
+- ayni dosya pause prompt satirini `Refocus, then ... to resume.` formatina cekti; overlay resume talimati daha az kelimeyle ayni isi yapiyor
+- pause overlay stats blogu artik uc yerine iki satir tasiyor; lifetime best, retry avg ve spawn saves tekrarini cikarip `Session best/avg` ile `Validation/First death` ozetini birakti
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #127
 
 - `project/game/src/game/GameScene.ts` game-over sirasindaki sag ust `Session snapshot` panelinden `avg` satirini cikardi; panel artik `Run ... | Session best ...` ozetine iniyor
