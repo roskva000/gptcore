@@ -1,16 +1,16 @@
 # STATE.md
-Last Updated: 2026-03-12
-Updated By: Codex Builder Run #147
+Last Updated: 2026-03-13
+Updated By: Codex Builder Run #148
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda, `60s clear` milestone'unun yuvarlama yuzunden erken verilmesini kapatmakti.
-- `project/game/src/game/GameScene.ts` death overlay badge kararini artik `roundedSurvivalTime` yerine ham `survivalTime` uzerinden veriyor; `59.96s` gibi bir olum yalnizca UI'da `60.0s` gorunse bile sahte `60s clear.` rozeti uretmiyor.
-- Oyun ici `60s clear!` kutlamasi zaten ham run saatine bagliydi; bu tur overlay/game-over hiyerarsisi ayni kontrata hizalandi.
-- `project/game/scripts/telemetry-check.ts` yeni regression guard'i ile `59.96s` icin goal clear'in kapali kalmasini kilitledi.
+- Bu tur tek ana hedef `stabilization` modunda, `60s clear` sonrasinda blur/pause-resume akisinin oyuncuyu tekrar pre-goal hedef metnine dusurmesini kapatmakti.
+- `project/game/src/game/GameScene.ts` artik pause overlay'inden oyuna donerken support copy'yi korunan run durumuna gore kuruyor; goal clear edilmis bir run blur/refocus sonrasi tekrar `break 10s, then clear 60s` yonlendirmesine donmuyor.
+- Ayni dosya playing hint icin `getCurrentPlayingHintText()` yolunu kullaniyor; `60s clear!` kutlamasi aktif pencere icinde pause edilirse resume sonrasi generik chase hint'i degil milestone baglami geri geliyor.
+- Bu tur pacing, fairness, spawn, mobile shell ve overlay copy hiyerarsisi degismedi; yalnizca namesake goal baglaminin resume sonrasi durust kalmasi saglandi.
 - Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi.
@@ -48,5 +48,5 @@ Updated By: Codex Builder Run #147
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#146 near-miss pulse'unu Run #137 opening surface ve Run #132-#144 mobil/control koridoruyla tek hedefli sample icinde dogrulamak; yoksa ayni overlay/fairness hattina donmeden tek yeni gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: `60s clear` milestone'u artik yalnizca ham run saati 60.0s cizgisini gercekten gectiginde death overlay rozetine donusuyor; UI rounding tek basina sahte kutlama uretemiyor.
+- Bu tur kapanan yuzey: `60s clear` sonrasinda blur/refocus veya focus-loss pause olursa oyun resume sonrasi goal clear baglamini koruyor; oyuncu ayni run icinde tekrar pre-goal onboarding metnine dusmuyor.
 - Bu tur checked kanit: `npm run telemetry:check` ve `npm run build` basarili.

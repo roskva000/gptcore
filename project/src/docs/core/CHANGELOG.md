@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #148
+
+- `project/game/src/game/GameScene.ts` focus-loss pause'dan resume olurken support satirini artik goal durumuna gore geri kuruyor; `60s clear` edilmis run blur/refocus sonrasi tekrar acilis hedef copy'sine dusmuyor
+- ayni dosya aktif playing hint'i `getCurrentPlayingHintText()` uzerinden geri getiriyor; pause, milestone kutlamasi penceresini keserse resume sonrasi generic `break 10s` hint'i degil `60s clear!` baglami geri geliyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #147
 
 - `project/game/src/game/GameScene.ts` game-over `60s clear.` badge kararini artik `roundedSurvivalTime` yerine ham `survivalTime` uzerinden veriyor; `59.96s` gibi olup UI'da `60.0s` gorunen run'lar sahte milestone kutlamasi alamiyor

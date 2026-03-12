@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #148]
+
+Decision:
+`60s clear` sonrasi focus-loss pause/resume akisinda playing hint ve support copy goal-complete run baglamini koruyacak sekilde `stabilization` modunda daraltildi.
+
+Reason:
+Runtime yine blokluydu; audit verdict `proxy-overfit` altinda ayni death/pause readability veya mobile-shell koridoruna yeni tuning acmak yasakti. Buna ragmen source'ta gercek bir UX kusuru vardi: oyuncu namesake goal'u gectikten sonra blur/refocus ile pause olursa `resumePausedRun()` support satirini kosulsuz baz hedef metnine donduruyor, `restorePlayingHintAfterPause()` da aktif goal-clear penceresi icinde bile generic chase hint'ini geri getiriyordu. Bu, milestone'u tamamlamis bir run'i ayni seansta yeniden onboarding copy'sine dusurup urun durustlugunu zedeliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik resume sonrasi support copy'yi `getCurrentPlayingSupportText()` uzerinden kuruyor ve aktif playing hint'i goal-clear durumuna gore geri getiriyor. `60s clear` kutlamasi pause ile kesilse bile resume sonrasi tekrar generic hedef metnine donmuyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample goal clear sonrasi support/hint baglaminin fazla kalici, gurultulu veya replay istegini bozan bir sunum yarattigini gosterirse yalnizca post-clear runtime copy davranisi dar kapsamda ayarlanir; ayni bahaneyle overlay/copy churn'u, fairness tuning veya yeni reward/meta katmani acilmaz.
+
 ### [Run #147]
 
 Decision:

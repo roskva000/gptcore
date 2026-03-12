@@ -995,7 +995,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayStats.setVisible(false).setText('');
     this.nearMissText.setVisible(false).setText('');
     this.restorePlayingHintAfterPause();
-    this.supportText.setText(this.getBaseSupportText()).setVisible(true);
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.movementInputWasActive = this.hasMovementInput();
     this.armPointerSteeringGuardAfterActivation(source);
     this.updateHudChromeVisibility();
@@ -2382,6 +2382,24 @@ export class GameScene extends Phaser.Scene {
     return `Stay moving and break into open space.\nTarget: survive past ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s.`;
   }
 
+  private getSurvivalGoalHintText(): string {
+    return `${SURVIVAL_GOAL_SECONDS}s clear!\nYou beat the namesake goal. Keep the lane open and push your best.`;
+  }
+
+  private getCurrentPlayingHintText(): string {
+    return this.survivalGoalReachedThisRun
+      ? this.getSurvivalGoalHintText()
+      : this.getPlayingHintText();
+  }
+
+  private getCurrentPlayingSupportText(): string {
+    if (this.survivalGoalReachedThisRun) {
+      return `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`;
+    }
+
+    return this.getBaseSupportText();
+  }
+
   private getWaitingHintText(): string {
     return [
       'Steer with WASD / arrows or hold click / touch.',
@@ -2392,13 +2410,9 @@ export class GameScene extends Phaser.Scene {
   private celebrateSurvivalGoal(activeRunElapsedMs: number): void {
     this.survivalGoalReachedThisRun = true;
     this.hintText
-      .setText(
-        `${SURVIVAL_GOAL_SECONDS}s clear!\nYou beat the namesake goal. Keep the lane open and push your best.`,
-      )
+      .setText(this.getSurvivalGoalHintText())
       .setVisible(true);
-    this.supportText.setText(
-      `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`,
-    ).setVisible(true);
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + SURVIVAL_GOAL_HINT_DURATION_MS;
   }
 
@@ -2431,7 +2445,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    this.hintText.setText(this.getPlayingHintText()).setVisible(true);
+    this.hintText.setText(this.getCurrentPlayingHintText()).setVisible(true);
   }
 
   private getWaitingProgressLine(): string {

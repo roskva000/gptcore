@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+survival_goal_resume_context_integrity:
+current: Run #148 `project/game/src/game/GameScene.ts` icinde focus-loss pause/resume sonrasi playing hint ve support copy'yi `survivalGoalReachedThisRun` durumuna gore geri kuruyor; `60s clear` edilmis bir run ayni seansta tekrar `break 10s, then clear 60s` yonlendirmesine dusmuyor
+baseline: onceki source blur/refocus pause'undan sonra support satirini kosulsuz baz hedef metnine donduruyor, aktif milestone hint penceresi icindeyse bile resume sonrasi generic chase hint'ini geri getiriyordu; namesake goal baglami ayni run icinde kaybolabiliyordu
+target: sonraki manuel sample'da `60s clear` sonrasi pause/refocus goal-complete baglamini korusun; milestone earned hissettirsin ama gereksiz uzun veya gurultulu kalmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 survival_goal_badge_integrity:
 current: Run #147 game-over `60s clear.` badge kararini `project/game/src/game/GameScene.ts` icinde ham `survivalTime` uzerine tasidi; `59.96s` gibi run'lar UI'da `60.0s` gorunse bile milestone rozetini acmiyor
 baseline: onceki source death overlay'de `roundedSurvivalTime` kullandigi icin display rounding tek basina namesake hedef gecilmis gibi davranabiliyordu; oyun ici clear kutlamasi ham saate bagli olsa da game-over rozet mantigi ondan daha gevsekti

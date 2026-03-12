@@ -5,6 +5,7 @@
 - Audit verdict `proxy-overfit`. Run #121-#129 death/pause readability zincirini yeni sample olmadan tekrar acma.
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
+- Run #148 `60s clear` sonrasi pause/resume baglam kaybini kapatti; bunu sample almadan yeni milestone copy/polish dalgasina cevirme.
 - Run #147 `60s clear` badge kararini ham run saatine hizaladi; `59.96s -> UI'da 60.0s` gibi display rounding durumlarini yeniden acma.
 - Run #146 near-miss visible-arena gate'i source/build seviyesinde acildi; bunu sample almadan "near-miss hissi artik tam cozuldu" diye yorumlama.
 - Run #145 near-miss pulse davranisi source/build seviyesinde acildi; bunu sample almadan "run artik daha heyecanli" diye yorumlama.
@@ -27,10 +28,11 @@
 Run mode: `integration`
 
 Ana hedef:
-Run #145-#146 near-miss pulse'unu Run #137 waiting/start launch surface ve Run #132-#144 mobil shell/input checklist'iyle ayni touch-capable sample icinde dogrula: yakin gecen ama carpmayan obstacle pulse'u gercekten close shave anini belirginlestiriyor mu, zincirli `2x` / `3x` callout earned hissettiriyor mu, gereksiz gurultu yaratiyor mu ve obstacle gorunur arena disina tastiktan sonra gecikmis kutlama gibi davranmiyor mu; ayni seansta `60s clear` badge'i yalnizca gercek clear run'larda mi gorunuyor; canvas ilk ekranda daha gorunur kaliyor mu, waiting veya game-over ekraninda swipe canvas ustunde baslasa bile panel akisi dogal kayiyor mu, panelin altlarindayken start/pause ile viewport oyuna geri geliyor mu, run aktifken panel gercekten cekiliyor mu, orientation/resize/browser chrome degisimi dar moda iterse focus-mode yeniden kuruluyor mu, pointer hizasi korunuyor mu, blur/refocus veya app-switch sonrasi stale movement ya da stale press kalmiyor mu ve Run #125-#129 death/pause overlay sakinligi ikinci insan sinyalinde daha okunur gorunuyor mu kontrol et.
+Run #145-#146 near-miss pulse'unu Run #137 waiting/start launch surface ve Run #132-#144 mobil shell/input checklist'iyle ayni touch-capable sample icinde dogrula: yakin gecen ama carpmayan obstacle pulse'u gercekten close shave anini belirginlestiriyor mu, zincirli `2x` / `3x` callout earned hissettiriyor mu, gereksiz gurultu yaratiyor mu ve obstacle gorunur arena disina tastiktan sonra gecikmis kutlama gibi davranmiyor mu; ayni seansta `60s clear` badge'i yalnizca gercek clear run'larda mi gorunuyor; Run #148 sonrasi `60s clear` yapilmis bir run blur/refocus veya focus-loss pause'dan donunce milestone hint/support baglamini koruyor mu; canvas ilk ekranda daha gorunur kaliyor mu, waiting veya game-over ekraninda swipe canvas ustunde baslasa bile panel akisi dogal kayiyor mu, panelin altlarindayken start/pause ile viewport oyuna geri geliyor mu, run aktifken panel gercekten cekiliyor mu, orientation/resize/browser chrome degisimi dar moda iterse focus-mode yeniden kuruluyor mu, pointer hizasi korunuyor mu, blur/refocus veya app-switch sonrasi stale movement ya da stale press kalmiyor mu ve Run #125-#129 death/pause overlay sakinligi ikinci insan sinyalinde daha okunur gorunuyor mu kontrol et.
 
 Baglam:
 - Run #147 `project/game/src/game/GameScene.ts` death overlay `60s clear.` badge kararini ham `survivalTime` uzerine tasidi; `project/game/scripts/telemetry-check.ts` `59.96s` icin erken clear olusmamasini regression altina aldi.
+- Run #148 `project/game/src/game/GameScene.ts` focus-loss pause'dan donunce support satirini ve aktif playing hint'i `survivalGoalReachedThisRun` durumuna gore geri kuruyor; milestone penceresi pause ile kesilirse resume sonrasi generic onboarding copy'sine dusmuyor.
 - Run #146 `project/game/src/game/nearMiss.ts` helper'ini obstacle gorunur arena disina ciktiginda gec tetik vermeyecek sekilde daraltti; `project/game/scripts/telemetry-check.ts` bu guard'i regression altina aldi.
 - Run #145 `project/game/src/game/nearMiss.ts` helper'i obstacle'in gercekten kapanip carpmadan gecmesini izliyor; `project/game/src/game/GameScene.ts` artik yakin gecislerde kisa `NEAR MISS` / `2x`, `3x` pulse'u uretiyor.
 - Mutation pacing, fairness, spawn veya skor kontratini degistirmedi; yalnizca close shave anlarini gorunur hale getirdi.
@@ -72,6 +74,7 @@ Minimum sample checklist:
 - near-miss pulse'u ekran gurultusunu arttiriyor mu, yoksa yeterince kisa ve net mi kaliyor
 - obstacle gorunur arena disina tastiktan sonra gecikmis `NEAR MISS` pulse'u goruluyor mu, yoksa feedback artik olay anina daha yakin mi kaliyor
 - `60s clear` badge'i yalnizca gercek threshold gecildiginde mi gorunuyor, yoksa `60.0s` gorunen ama gercekte clear olmayan olumlerde hala sahte kutlama izi var mi
+- `60s clear` yapilmis bir run blur/refocus veya focus-loss pause'dan donunce hint/support copy milestone baglamini koruyor mu, yoksa tekrar `break 10s` onboarding metnine mi dusuyor
 - panelin altlarinda scroll durumundayken run baslatildiginda viewport tekrar oyunun ustune geliyor mu
 - panelin altlarinda scroll durumundayken pause'a girince canvas odagi korunuyor mu
 - waiting veya game-over'a donunce onceki panel scroll konumu geri geliyor mu, yoksa AI paneli okumasi sifirdan mi basliyor
@@ -117,6 +120,7 @@ Minimum sample checklist:
 - Telemetry/public-copy wording churn'u veya governance expansion acma.
 - Run #145-#146 near-miss pulse'unu sample olmadan scoring/combo/meta katmanina buyutme.
 - Run #147 survival-goal badge kararini sample olmadan yeni copy/celebration katmanlariyla buyutme; bu tur yalnizca erken-award bug'i kapandi.
+- Run #148 post-clear pause/resume baglam duzeltmesini sample olmadan yeni milestone copy/celebration katmanlariyla buyutme; bu tur yalnizca resume sonrasi yanlis hedef metnine donus kapandi.
 - Run #137 waiting launch surface'i sample olmadan tekrar tekrar cilalama.
 - Run #138 active-run panel hide/focus mode'unu sample olmadan yeni shell/orchestration katmanlariyla buyutme.
 - Run #139 active-run scroll lock davranisini sample olmadan yeni shell/orchestration katmanlariyla buyutme.
@@ -136,6 +140,7 @@ Minimum sample checklist:
 
 - `HUMAN_SIGNALS.md` icinde Run #145-#146 near-miss pulse'u icin keep/tune/revert karari var
 - `HUMAN_SIGNALS.md` icinde Run #147 `60s clear` badge'i icin keep/tune/revert notu var
+- `HUMAN_SIGNALS.md` icinde Run #148 post-clear pause/resume baglami icin keep/tune/revert notu var
 - `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi
