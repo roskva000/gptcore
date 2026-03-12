@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #134
+
+- `project/game/src/main.ts` viewport/panel kaynakli CSS boyut degisimlerinden sonra Phaser scale manager'i icin RAF tabanli tekil refresh planliyor; panel toggle, window resize ve visual viewport resize sonrasi stale scale/input bounds riski azaliyor
+- ayni dosya bekleyen refresh frame'ini HMR dispose sirasinda iptal ediyor; sicak yenilemede stale refresh callback sarkmiyor
+- `npm run build` basarili calisti; gameplay mantigi degismedigi icin bu tur ek telemetry check kosulmadi
+
 ## Run #133
 
 - `project/game/src/main.ts` viewport yuksekligi, shell padding/gap ve narrow layout'ta acik panel yuksekliginden `--game-max-height` hesaplayip resize, visual viewport resize ve panel toggle anlarinda senkronize ediyor

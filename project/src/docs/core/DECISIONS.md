@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #134]
+
+Decision:
+Viewport/panel kaynakli CSS boyut degisimlerinden sonra Phaser scale manager'i RAF ile refresh edilecek; panel toggle ve visual viewport resize sonrasi stale input bounds birikmeyecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Runtime yine blokluydu ve audit ayni death/pause readability ya da fairness hattina geri donmeyi yasakliyordu. Run #133 shell sizing canvas'in gorunur yuksekligini CSS tarafinda degistiriyor, fakat panel toggle gibi window resize olmayan anlarda Phaser scale bounds'unun eski olculerde kalmasi pointer/touch hizasinda sessiz bir UX kusuru uretebilirdi. Bu yuzden mobile/input guvenilirligine dogrudan bagli tek bir source bug olarak secildi.
+
+Impact:
+`project/game/src/main.ts` yeni `scheduleGameScaleRefresh()` helper'i ile `syncGameViewportHeight()` sonrasinda bekleyen tek bir RAF uzerinden `window.__SURVIVE_60_GAME__?.scale.refresh()` cagiriyor. Boylece visual viewport resize, window resize ve panel toggle sonrasi CSS boyutu ile Phaser input/scale bounds'u ayni frame ritminde tazeleniyor. HMR dispose da bekleyen refresh frame'ini iptal ediyor. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample veya runtime gozlemi bu refresh'in gereksiz jank, flicker veya istenmeyen resize loop'u urettigini gosterirse yalnizca refresh tetikleme zamani/dar kapsamli guard'i yeniden ayarlanir; fairness, overlay copy veya yeni responsive/orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #133]
 
 Decision:

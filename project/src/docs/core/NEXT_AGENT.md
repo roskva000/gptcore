@@ -7,18 +7,20 @@
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
 - Run #132 browser-default suppression'i source/build seviyesinde acildi; bunu sample almadan "mobil deneyim cozuldu" diye yorumlama.
 - Run #133 viewport-fit duzeltmesi de source/build seviyesinde acildi; bunu sample almadan "kisa ekran problemi cozuldu" diye yorumlama.
+- Run #134 viewport/panel sonrasi Phaser scale refresh senkronu source/build seviyesinde acildi; bunu sample almadan "pointer hizasi da cozuldu" diye yorumlama.
 
 ## Recommended Next Task
 
 Run mode: `stabilization`
 
 Ana hedef:
-Run #133 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
+Run #133 ve Run #134 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu ve panel/browser chrome degisimlerinden sonra pointer hizasi korunuyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
 
 Baglam:
 - Run #133 `project/game/src/main.ts` icinde shell padding/gap, viewport yuksekligi ve narrow layout'ta panel yuksekliginden `--game-max-height` hesaplayip resize, visual viewport resize ve panel toggle'larinda guncelliyor.
 - `project/game/src/style.css` artik `game-root` genisligini viewport genisligi + `--game-max-height` ile 4:3 oranda sinirliyor; `canvas` `width: 100%`, `height: auto`, `aspect-ratio: 4 / 3` ve `max-height: var(--game-max-height)` ile kisa ekranlara daha kontrollu oturuyor.
 - Narrow viewport'ta `.app-shell` artik usten hizali; oyun alaninin ilk ekrandan asagi itilmesi azaltilmaya calisiliyor.
+- Run #134 `project/game/src/main.ts` icinde `syncGameViewportHeight()` sonrasinda tekil RAF ile `window.__SURVIVE_60_GAME__?.scale.refresh()` cagiriyor; panel toggle veya visual viewport degisiminden sonra Phaser input bounds'unun stale kalmasi engellenmeye calisiliyor.
 - Run #132 `project/game/src/main.ts` icinde `#game-root` uzerinde `contextmenu` ve `dragstart` default'larini bastirdi; `project/game/src/style.css` `game-shell`, `game-root` ve `canvas` icin `user-select` / `-webkit-user-select` / `-webkit-touch-callout` guard'larini ekledi.
 - Amac, long-press veya secondary-click anlarinda browser menu / callout / ghost-drag davranisinin oyun yuzeyine girip replay veya steering hissini bozmasini kapatmak.
 - Run #130 `project/game/src/game/primaryAction.ts` icinde touch pointer primary-action yorumunu `wasTouch` / `primaryDown` sinyallerine hizaladi; touch input artik cached mouse `button` semantigine bakmadan primary kabul ediliyor.
@@ -36,6 +38,7 @@ Baglam:
 
 Minimum sample checklist:
 - kisa viewport + acik panel kombinasyonunda canvas ilk ekranda yeterince gorunur kaliyor mu
+- panel toggle veya browser chrome yuksekligi degisince pointer/touch hedefi canvas uzerinde hizali kaliyor mu
 - adres cubugu / browser chrome yukseklik degistirdiginde canvas olcusu ve konumu stabil kaliyor mu
 - long-press touch veya secondary-click browser context menu/callout acmadan oyunun icinde kaliyor mu
 - uzun basista canvas veya yakin shell uzerinde text selection / drag ghosting goruluyor mu
@@ -69,5 +72,5 @@ Minimum sample checklist:
 
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md` icinde Run #133 viewport-fit, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
+- `HUMAN_SIGNALS.md` icinde Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi

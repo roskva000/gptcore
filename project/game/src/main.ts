@@ -81,6 +81,7 @@ gameRootElement.addEventListener('dragstart', preventGameSurfaceBrowserDefault);
 
 const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.message-panel__details');
 const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
+let pendingScaleRefreshFrame: number | null = null;
 
 const readPxValue = (value: string): number => {
   const parsedValue = Number.parseFloat(value);
@@ -89,6 +90,17 @@ const readPxValue = (value: string): number => {
 
 const getViewportHeight = (): number =>
   window.visualViewport?.height ?? window.innerHeight;
+
+const scheduleGameScaleRefresh = (): void => {
+  if (pendingScaleRefreshFrame !== null) {
+    window.cancelAnimationFrame(pendingScaleRefreshFrame);
+  }
+
+  pendingScaleRefreshFrame = window.requestAnimationFrame(() => {
+    pendingScaleRefreshFrame = null;
+    window.__SURVIVE_60_GAME__?.scale.refresh();
+  });
+};
 
 const syncGameViewportHeight = (): void => {
   const shellStyles = window.getComputedStyle(shellElement);
@@ -105,6 +117,7 @@ const syncGameViewportHeight = (): void => {
   );
 
   document.documentElement.style.setProperty('--game-max-height', `${maxGameHeight}px`);
+  scheduleGameScaleRefresh();
 };
 
 if (panelDetailsElements.length > 0) {
@@ -166,6 +179,11 @@ window.__SURVIVE_60_GAME__ = game;
 
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
+    if (pendingScaleRefreshFrame !== null) {
+      window.cancelAnimationFrame(pendingScaleRefreshFrame);
+      pendingScaleRefreshFrame = null;
+    }
+
     gameRootElement.removeEventListener('contextmenu', preventGameSurfaceBrowserDefault);
     gameRootElement.removeEventListener('dragstart', preventGameSurfaceBrowserDefault);
     window.removeEventListener('resize', syncGameViewportHeight);

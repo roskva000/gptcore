@@ -6,10 +6,16 @@
 
 ## Gameplay
 
+viewport_scale_bounds_sync:
+current: Run #134 `syncGameViewportHeight()` sonrasinda RAF ile Phaser `scale.refresh()` cagiriyor; panel toggle, window resize ve visual viewport resize sonrasi CSS canvas boyutu ile input/scale bounds daha yakin senkronize kaliyor
+baseline: Run #133 `--game-max-height` ve `canvas` boyutunu CSS tarafinda guncelliyordu, fakat panel toggle gibi Phaser'in kendi resize akisina girmeyen anlarda stale bounds pointer/touch hedefinde sessiz kayma riski tasiyordu
+target: sonraki manuel sample'da panel ac/kapa veya browser chrome yuksekligi degisikliginden sonra pointer/touch hedefi canvas uzerinde hizali kalsin; keep/tune/revert karari insan notuyla verilsin
+validation: `npm run build`
+
 mobile_viewport_playfield_fit:
 current: Run #133 shell viewport yuksekligi, padding/gap ve narrow layout'ta acik panel yuksekliginden `--game-max-height` hesapliyor; `game-root` genisligi ve `canvas` yuksekligi bu sinira gore 4:3 oraninda kontrol ediliyor
 baseline: onceki shell yalnizca viewport genisligine gore olculuyordu; kisa mobil ekranlarda acik panel yuksekligi canvas'i ilk ekrandan asagi itip gorunur playfield'i daraltabiliyordu
-target: sonraki manuel sample'da kisa viewport + acik panel kombinasyonunda canvas ilk ekranda daha gorunur kalsin ve browser chrome yukseklik degisimlerinde asiri ziplama yapmasin
+target: sonraki manuel sample'da kisa viewport + acik panel kombinasyonunda canvas ilk ekranda daha gorunur kalsin, browser chrome yukseklik degisimlerinde asiri ziplama yapmasin ve Run #134 ile pointer hizasi korunmus olsun
 validation: `npm run build`
 
 game_surface_browser_default_interference:
