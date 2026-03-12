@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #150
+
+- `project/game/src/game/GameScene.ts` yakin gecis `NEAR MISS` pulse'una hafif bir synth chirp ekledi; close shave anlari artik yalnizca gorsel etikete bagli degil
+- ayni dosya zincirli `2x` / `3x` near-miss anlarinda chirp pitch ve gain'ini hafifce yukseltip earned escalation hissi vermeye calisiyor
+- mevcut Web Audio unlock yolu tekrar kullanildi; browser audio askida kalirsa oyun davranisi degismiyor ve feedback sessizce pas geciliyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu yeni near-miss audio entegrasyonuyla hizaladi
+- `npm run build` basarili calisti
+
 ## Run #149
 
 - `project/game/src/game/nearMiss.ts` near-miss label metnini ve aktif hint penceresi kararini saf helper'lara tasidi; trigger zamani ile resume zamani ayni string/timing kontratini kullaniyor

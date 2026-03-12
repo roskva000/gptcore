@@ -1618,6 +1618,7 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(1)
       .setScale(0.92)
       .setVisible(true);
+    this.playNearMissFeedbackTone(this.nearMissChainCount);
     this.player.clearTint();
     this.player.setTint(0xd8fff4);
 
@@ -2116,6 +2117,42 @@ export class GameScene extends Phaser.Scene {
 
     oscillator.start(now);
     oscillator.stop(now + 0.14);
+  }
+
+  private playNearMissFeedbackTone(chainCount: number): void {
+    const audioContext = this.feedbackAudioContext;
+
+    if (!audioContext || audioContext.state !== 'running') {
+      return;
+    }
+
+    const now = audioContext.currentTime;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    const clampedChainCount = Phaser.Math.Clamp(chainCount, 1, 3);
+    const baseFrequency = 560 + (clampedChainCount - 1) * 48;
+    const endFrequency = baseFrequency * 1.16;
+    const peakGain = 0.011 + (clampedChainCount - 1) * 0.003;
+
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(baseFrequency, now);
+    oscillator.frequency.exponentialRampToValueAtTime(endFrequency, now + 0.06);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(baseFrequency * 1.35, now);
+    filter.Q.setValueAtTime(2.4, now);
+
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.exponentialRampToValueAtTime(peakGain, now + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.1);
   }
 
   private loadTelemetry(

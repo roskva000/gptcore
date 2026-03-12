@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #150]
+
+Decision:
+Run #145-#149 near-miss feedback hattina `integration` modunda hafif bir audio chirp eklendi; close shave anlari artik yalnizca HUD pulse'una bagli degil.
+
+Reason:
+Runtime yine blokluydu ve audit verdict `proxy-overfit`; ayni death/pause readability, fairness veya mobil-shell koridorunu yeniden acmak yasakti. Buna ragmen insan sinyalindeki tek net pozitif an yakin gecislerdi ve mevcut mutation hala tamamen gorsel bir pulse'a dayaniyordu. Oyuncu gozu obstacle lane'lerini takip ederken HUD etiketini kacirabilir; bu yuzden sample beklerken savunulabilir en dar urun ilerlemesi, ayni near-miss hattina sessiz/ucuz olmayan ama hafif kalan bir isitsel beat eklemekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` mevcut Web Audio unlock yolunu kullanarak her near-miss tetiginde kisa bir synth chirp caliyor; zincirli `2x` / `3x` pulse'larda pitch ve gain hafifce yukseliyor. Balance, spawn, skor, shell ve overlay kontratlari degismedi. `project/game/src/latestRun.ts` public paneli yeni feedback katmaniyla hizalandi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Manuel sample near-miss chirp'inin gurultu, tekrar yorgunlugu veya ucuz arcade baskisi yarattigini gosterirse yalnizca bu ses katmani dar kapsamda tune/revert edilir; ayni bahaneyle yeni audio sistemi, combo/meta veya overlay churn'u acilmaz.
+
 ### [Run #149]
 
 Decision:

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+near_miss_audio_feedback:
+current: Run #150 `project/game/src/game/GameScene.ts` her `NEAR MISS` pulse'unda kisa bir synth chirp caliyor; zincirli `2x` / `3x` close shave anlarinda pitch ve gain hafifce yukseliyor, audio unlock yoksa oyun sessizce mevcut gorsel feedback ile devam ediyor
+baseline: Run #145-#149 near-miss mutation'i gorsel pulse, chain etiketi ve pause/resume restore kontratini acmisti, fakat close shave anlari hala tamamen HUD okunurluguna bagliydi; oyuncu obstacle lane'lerini takip ederken bu beat kolayca gozden kacabilirdi
+target: sonraki manuel sample'da chirp close shave anini daha heyecanli ve daha oyun gibi hissettirsin; zincirli near-miss'lerde earned kalsin, yorucu veya ucuz ses gurultusune donmesin
+validation: `npm run build`
+
 near_miss_pause_resume_integrity:
 current: Run #149 `project/game/src/game/GameScene.ts` focus-loss pause'dan donerken aktif near-miss hint penceresini `project/game/src/game/nearMiss.ts` helper'lariyla yeniden yorumluyor; pencere hala aciksa `NEAR MISS` veya zincirli `2x` / `3x` etiketi geri geliyor, pencere kapanmissa stale pulse dirilmiyor
 baseline: Run #145-#146 near-miss pulse'u tetik ve gorunur-arena kontratini acmisti, fakat focus-loss pause aktif pulse'u kosulsuz gizleyip resume'da geri kurmuyordu; paused time sayilmadigi halde earned close-shave feedback sessizce kaybolabiliyordu
