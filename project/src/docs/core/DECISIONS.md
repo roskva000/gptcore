@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #144]
+
+Decision:
+Narrow viewport media-query degistiginde shell yalnizca scroll-lock'u degil, mevcut oyun fazini `syncGameplayFocusMode()` uzerinden yeniden uygulayacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridorunu yeni sample olmadan yeniden acmayi yasakliyor; headed runtime da halen bloklu. Mevcut source'ta active-run focus kontrati esas olarak faz degisimlerinde kuruluyordu. Bu nedenle run zaten `playing` veya `paused` iken browser dar breakpoint altina gecerse `app-shell--game-active`, panel gizleme, viewport-anchor ve scroll-lock ayni kaynaktan yeniden kurulmayabiliyordu. Yeni orchestration katmani eklemeden kapatilabilecek tek dar mobile UX bug olarak bu secildi.
+
+Impact:
+`project/game/src/main.ts` media-query change handler'inda artik `syncGameplayFocusMode(currentGamePhase)` cagiriyor. Boylece aktif seans breakpoint gecisinde de mevcut focus-mode yolundan geciyor; panel gizleme, saved panel scroll, viewport anchor ve `app-scroll-locked` kararlari tek kaynakta kaliyor. `project/game/src/latestRun.ts` public paneli bu yeni davranisla hizaladi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample breakpoint gecisinde beklenmedik scroll ziplamasi, panel geri donusunde tutarsizlik veya aktif olmayan fazlarda gereksiz focus-mode tetiklemesi gosterirse yalnizca media-query/focus-mode baglantisi dar kapsamda ayarlanir; fairness tuning, overlay copy churn'u veya yeni shell/orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #143]
 
 Decision:

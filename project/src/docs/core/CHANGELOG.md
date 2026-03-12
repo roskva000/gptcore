@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #144
+
+- `project/game/src/main.ts` narrow viewport media-query degistiginde artik yalnizca `app-scroll-locked` durumunu degil, mevcut oyun fazini `syncGameplayFocusMode()` uzerinden yeniden uyguluyor
+- boylece run zaten `playing` veya `paused` iken pencere dar breakpoint altina gecerse `.app-shell--game-active`, panel gizleme, viewport-anchor ve saved panel scroll davranislari ayni focus-mode zincirinden yeniden kuruluyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu yeni breakpoint-crossing mobile focus davranisiyla hizaladi
+- `npm run build` basarili calisti
+
 ## Run #143
 
 - `project/game/src/style.css` non-active fazlarda `game-root` icin `overscroll-behavior: auto` kullaniyor; waiting ve game-over ekranlarinda canvas ustunde baslayan dikey swipe'in panel/page scroll'una daha dogal zincirlenmesi hedefleniyor

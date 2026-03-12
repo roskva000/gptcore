@@ -225,7 +225,7 @@ if (panelDetailsElements.length > 0) {
 
   const handleViewportQueryChange = (event: MediaQueryListEvent): void => {
     syncRunPanelVisibility(event.matches);
-    syncActiveRunScrollLock();
+    syncGameplayFocusMode(currentGamePhase);
   };
 
   narrowViewportQuery.addEventListener('change', handleViewportQueryChange);

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+narrow_viewport_phase_sync_integrity:
+current: Run #144 narrow viewport media-query degistiginde mevcut oyun fazini `syncGameplayFocusMode()` uzerinden yeniden uygular; aktif seans breakpoint altina sonradan gecse bile panel gizleme, scroll lock, saved panel scroll ve viewport anchor ayni focus-mode yoluna geri baglanir
+baseline: Run #138-#140 active-run focus, scroll lock ve viewport anchor davranislarini acmisti, fakat breakpoint listener yalnizca panel visibility ve scroll lock'u parcali sekilde guncelliyordu; run zaten aktifken pencere daralirsa shell'in tam focus-mode kontrati sessizce eksik kalabilirdi
+target: sonraki manuel sample'da orientation/resize/browser chrome degisimi run sirasinda viewport'u dar moda iterse panel otomatik geri cekilsin, sayfa scroll'u yeniden kilitlensin ve viewport canvas'a geri hizalansin; waiting/game-over'a donunce panel scroll'u yine dogal sekilde restore edilsin
+validation: `npm run build`
+
 non_active_canvas_scroll_chain:
 current: Run #143 non-active fazlarda `game-root` icin `overscroll-behavior: auto` kullaniyor; Run #142'nin `touch-action: manipulation` gecisi artik canvas ustunde baslayan dikey swipe'in page/panel scroll'una zincirlenmesini CSS seviyesinde de aciyor
 baseline: Run #142 `touch-action`i gevsetmisti, fakat `game-root` hala `overscroll-behavior: contain` tasidigi icin waiting veya game-over ekraninda swipe canvas ustunde baslarsa scroll zinciri yine de yapiskan kalabilirdi
