@@ -150,6 +150,7 @@ export class GameScene extends Phaser.Scene {
   private escapeMarkerLabel!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
   private fatalCallout!: Phaser.GameObjects.Text;
+  private overlayBadge!: Phaser.GameObjects.Text;
   private overlayTitle!: Phaser.GameObjects.Text;
   private overlayBody!: Phaser.GameObjects.Text;
   private overlayPrompt!: Phaser.GameObjects.Text;
@@ -401,6 +402,23 @@ export class GameScene extends Phaser.Scene {
         fontFamily: 'Trebuchet MS',
         fontSize: '44px',
         fontStyle: 'bold',
+      })
+      .setDepth(11)
+      .setOrigin(0.5)
+      .setVisible(false);
+
+    this.overlayBadge = this.add
+      .text(ARENA_WIDTH / 2, 182, '', {
+        align: 'center',
+        backgroundColor: '#123f36',
+        color: '#d8fff4',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '16px',
+        fontStyle: 'bold',
+        padding: {
+          x: 12,
+          y: 6,
+        },
       })
       .setDepth(11)
       .setOrigin(0.5)
@@ -751,6 +769,8 @@ export class GameScene extends Phaser.Scene {
     this.movementInputWasActive = movementInputActive;
     this.overlay.setVisible(true);
     this.fatalCallout.setVisible(false).setText('');
+    this.overlayBadge.setVisible(false).setText('');
+    this.setOverlayLayout(false);
     this.overlayTitle.setText('Run paused').setVisible(true);
     this.overlayBody
       .setText(
@@ -802,6 +822,8 @@ export class GameScene extends Phaser.Scene {
     this.resumeActiveObstacleSpawnGraceTweens();
     this.overlay.setVisible(false);
     this.fatalCallout.setVisible(false).setText('');
+    this.overlayBadge.setVisible(false).setText('');
+    this.setOverlayLayout(false);
     this.overlayTitle.setVisible(false);
     this.overlayBody.setVisible(false).setText('');
     this.overlayPrompt.setVisible(false).setText('');
@@ -858,6 +880,8 @@ export class GameScene extends Phaser.Scene {
     this.escapeMarkerLabel.setAlpha(0).setVisible(false).setText('');
     this.overlay.setVisible(false);
     this.fatalCallout.setVisible(false).setText('');
+    this.overlayBadge.setVisible(false).setText('');
+    this.setOverlayLayout(false);
     this.overlayTitle.setVisible(false);
     this.overlayBody.setVisible(false);
     this.overlayPrompt.setVisible(false).setText('');
@@ -1297,14 +1321,18 @@ export class GameScene extends Phaser.Scene {
     this.showEscapeGuide(hitDirection, escapePrompt.title);
 
     this.overlay.setVisible(true);
+    const hasGoalClearSummary = goalClearSummary !== null;
+    this.setOverlayLayout(hasGoalClearSummary);
     this.fatalCallout
       .setText(this.getFatalCalloutText(hitDirection))
       .setVisible(true);
+    this.overlayBadge
+      .setText(goalClearSummary ?? '')
+      .setVisible(hasGoalClearSummary);
     this.overlayTitle.setText(this.getDeathOverlayTitle(hitDirection)).setVisible(true);
     this.overlayBody
       .setText(
         [
-          goalClearSummary,
           `You survived ${roundedSurvivalTime.toFixed(1)} seconds. ${bestSurvivalSummary}`,
           `Cause: ${hitDirection.sentence}.`,
         ]
@@ -1321,6 +1349,13 @@ export class GameScene extends Phaser.Scene {
     this.hintText.setVisible(false);
     this.supportText.setText(this.getGameOverSupportText()).setVisible(false);
     this.updateHudChromeVisibility();
+  }
+
+  private setOverlayLayout(hasBadge: boolean): void {
+    this.overlayTitle.setY(hasBadge ? 228 : 220);
+    this.overlayBody.setY(hasBadge ? 314 : 300);
+    this.overlayPrompt.setY(hasBadge ? 396 : 382);
+    this.overlayStats.setY(hasBadge ? 466 : 452);
   }
 
   private deactivateObstacle(obstacle: Phaser.Physics.Arcade.Image): void {

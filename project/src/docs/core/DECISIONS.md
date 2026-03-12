@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #129]
+
+Decision:
+`60s clear` milestone'u death overlay body copy'sinden ayrilip title ustunde ayrik bir badge olarak gosterilecek; badge gorundugunde overlay bloklari asagi kaydirilarak hierarchy korunacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Headed runtime yine blokluydu (`DISPLAY` / `WAYLAND_DISPLAY` bos) ve audit ayni overlay/readability ailesini sample almadan mikro-copy churn ile tekrar acmama konusunda uyari veriyordu. `NEXT_AGENT.md` icindeki dar adaylardan biri olarak `60s clear.` satirinin game-over body copy icinde survival/best ve cause ozetiyle ayni agirlikta akmasi secildi; bu milestone urunun isimlendirdigi cekirdek hedef oldugu halde death overlay hiyerarsisinde kolayca kayboluyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` yeni bir overlay badge text objesi ekledi. `60s clear.` artik game-over body'nin ilk satiri degil; title ustunde ayri bir rozet olarak gorunuyor. Badge aktif oldugunda title/body/prompt/stats konumlari hafif asagi kayiyor, normal death ve pause layout'u ise eski hiyerarsisini koruyor. Deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample badge'in dikkat dagittigini, yapay kutlama gibi hissettigini veya death reason okumayi zayiflattigini gosterirse yalnizca badge metni/konumu dar kapsamda yeniden ayarlanir ya da kaldirilir; fairness, telemetry semantics veya yeni UI orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #128]
 
 Decision:

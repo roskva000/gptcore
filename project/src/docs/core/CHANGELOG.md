@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #129
+
+- `project/game/src/game/GameScene.ts` game-over overlay'e `60s clear.` icin ayrik bir milestone badge ekledi; namesake hedef artik death body copy'sinde kaybolmak yerine title ustunde rozet olarak gorunuyor
+- ayni dosya badge aktif oldugunda overlay title/body/prompt/stats bloklarini hafif asagi kaydiriyor; normal death ve pause layout'u degismeden kaliyor
+- death overlay body artik milestone satirini tekrar etmiyor; survival/best ve cause ozeti daha temiz bir hiyerarside kaliyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #128
 
 - `project/game/src/game/GameScene.ts` focus-loss pause overlay body copy'sini iki kisa satira indirdi: `Run frozen at ...` ve `No time passes while focus is away.`

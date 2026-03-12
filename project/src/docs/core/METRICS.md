@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+survival_goal_game_over_hierarchy:
+current: Run #129 `60s clear.` milestone'unu death overlay body copy'sinden cikarip title ustunde ayrik bir badge olarak gostermeye basladi; badge aktif oldugunda overlay title/body/prompt/stats bloklari da hafif asagi kayiyor
+baseline: Run #120 namesake goal icin in-run ve post-death feedback eklemisti, ancak game-over aninda `60s clear.` body copy'nin ilk satiri olarak survival/best ve cause metinleriyle ayni hizada akiyor, bu da milestone'u kolayca arka plana itiyordu
+target: sonraki manuel sample'da `60s clear` aninin olum sonrasi daha earned, daha gorunur ve death reason hiyerarsisini bozmayan bir kutlama gibi hissedip hissetmedigi netlestirilsin; keep/tune/revert karari insan notuyla verilsin
+
 paused_overlay_copy_density:
 current: Run #128 focus-loss pause overlay body copy'sini iki kisa satira indirdi, prompt'u `Refocus, then ... to resume.` formatina cekti ve stats blogunu `Session best/avg` ile `Validation/First death` olmak uzere iki satira dusurdu
 baseline: Run #126 pause state'te sag panel ve hint/support chrome'unu gizlemisti, ancak overlay'in kendi body/prompt/stats metni hala ayni pause-safe, resume ve telemetry baglamini gereksiz uzunlukla tekrar ediyordu
@@ -47,7 +52,7 @@ baseline: 26.5s
 target: hold `>= 26.5s` while checking manually that the slightly firmer `20s+` chase plus the forward-pressure and lane-stack spawn filters still feel fair and readable
 
 survival_goal_feedback:
-current: Run #120 now promotes the namesake `60s` threshold into runtime feedback; clearing `60s` during a live run raises a temporary `60s clear!` hint/support message, and any later death overlay preserves that milestone with a `60s clear.` summary line
+current: Run #120 promoted the namesake `60s` threshold into runtime feedback, and Run #129 now also preserves that milestone on death as a dedicated overlay badge instead of burying it in the body copy
 baseline: before Run #120 the game title and onboarding framed `Survive 60 Seconds` as a meaningful goal, but clearing `60s` produced no dedicated in-run acknowledgement and only the raw survival timer changed
 target: confirm manually that the `60s clear!` moment feels visible and earned without breaking flow, overstating success, or reading as noisy UI during a long survival streak
 

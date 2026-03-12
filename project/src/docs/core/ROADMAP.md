@@ -4,10 +4,11 @@
 
 # NOW
 
-- Run #125-#128 sonrasi death/pause overlay declutter etkisini hedefli insan sample ile dogrula.
+- Run #125-#129 sonrasi death/pause overlay declutter etkisini hedefli insan sample ile dogrula.
 - Sample checklist:
   - death overlay artik olum nedeni, retry aksiyonu ve kacis yonunu daha rahat okutuyor mu
   - sag ust `Session snapshot` paneli game-over aninda artik daha kisa ve yeterince sakin mi
+  - `60s clear` badge'i milestone'u body copy'den daha okunur ve daha earned hissettiriyor mu
   - alt support strip'in artik gizli olmasi death anini daha az kalabalik hissettiriyor mu
   - ust sol `score` / `best` HUD'nin gizlenmesi pause ve game-over ekranlarini daha az "iki UI ust uste binmis" gibi hissettiriyor mu
   - pause ekrani artik kisalmis body/prompt copy ve iki satirlik stats ozetiyle daha net bir tek-overlay deneyimi veriyor mu
@@ -19,7 +20,7 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #125-#127 sonrasi hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #125-#129 sonrasi hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi.
 
 ---
@@ -27,6 +28,7 @@ Success markers:
 # NEXT
 
 - Manuel sample sonuclarina gore death/readability, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
+- Manuel sample varsa `60s clear` badge'ini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa support strip gizleme kararini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa ust HUD gizleme kararini da keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa pause-state chrome gizleme ve Run #128 pause copy kisalmasi kararlarini keep/tune/revert formatinda insan notuyla bagla.

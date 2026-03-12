@@ -2,7 +2,7 @@
 
 ## Governance Note
 
-- Audit verdict `proxy-overfit`. Run #121-#128 death/pause readability zincirini yeni sample olmadan tekrar acma.
+- Audit verdict `proxy-overfit`. Run #121-#129 death/pause readability zincirini yeni sample olmadan tekrar acma.
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
 
@@ -11,7 +11,7 @@
 Run mode: `stabilization`
 
 Ana hedef:
-Run #125-#128 sonrasi death ve pause overlay'lerinin artik daha sakin hissedilip hissedilmedigini hedefli bir manuel sample ile dogrula.
+Run #125-#129 sonrasi death ve pause overlay'lerinin artik daha sakin hissedilip hissedilmedigini hedefli bir manuel sample ile dogrula.
 
 Baglam:
 - `project/src/docs/experiments/HUMAN_SIGNALS.md` icinde 11.03.2026 tarihli ilk insan sinyali death ekranini fazla kalabalik buldu.
@@ -21,11 +21,13 @@ Baglam:
 - Run #126 pause ekraninda sag ust telemetry paneli ile ust/alt hint-support chrome'unu gizledi; focus-loss pause artik daha tek-overlay hisse yaklasiyor.
 - Run #127 game-over `Session snapshot` panelinden `avg` yogunlugunu cikardi ve validation/export satirini kisaltti; death anindaki sag panel artik daha hafif olmali.
 - Run #128 pause overlay body/prompt copy'sini kisaltti ve stats blogunu iki satira indirdi; pause ekraninda ayni bilgi daha az tekrar edilmeli.
+- Run #129 `60s clear.` milestone'unu game-over body copy'den cikarip title ustunde ayrik bir badge'e tasidi; namesake hedefin artik death hiyerarsisinde daha gorunur olup olmadigi dogrulanmali.
 - Bu ortamda headed runtime bloklu oldugu icin builder burada yeni sample alamadi; asil eksik halen insan dogrulamasi.
 
 Minimum sample checklist:
 - death overlay artik olum nedeni, kacis yonu ve retry aksiyonunu daha rahat okutuyor mu
 - sag ust `Session snapshot` paneli artik tek basina yeterli ve daha az bunaltici mi
+- `60s clear` badge'i namesake hedefi daha earned ve daha gorunur hissettiriyor mu, yoksa dikkat dagitiyor mu
 - `Run ... | Session best ...` ozeti olum aninda yeterli baglam veriyor mu, yoksa `avg` eksikligi orientasyonu zayiflatiyor mu
 - `Validation ... | First death ...` / `Export ready` / `Press V` kisaltmasi export affordance'ini daha temiz ama hala anlasilir tutuyor mu
 - alt support strip'in artik gorunmemesi death anini daha sakinlestiriyor mu
@@ -40,10 +42,10 @@ Minimum sample checklist:
 - Run #101-#119 fairness/input/control zincirine geri donme.
 - Telemetry/public-copy wording churn'u veya governance expansion acma.
 - Tek bir yeni gameplay/UX source bug'i sec; tercihen death/readability veya UI sadeligi ailesinde olsun, ama tek source-level problem olarak dar tutulup kapatilsin.
-- Olası aday: `60s clear.` satirinin gorsel agirligi veya game-over body copy'nin milestone satiri ile survival/best satiri arasindaki hiyerarsi; fakat tek bir problem sec ve fairness zincirine kayma.
+- Olası aday: yeni `60s clear` badge'inin spacing/agirlik ayari veya pause/game-over prompt hiyerarsisinde tek bir kalan clutter noktasi; fakat tek bir problem sec ve fairness zincirine kayma.
 - `npm run telemetry:check` ve `npm run build` ile dogrula.
 
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md` icinde Run #125-#128 sonrasi death/pause readability odakli ikinci sample var
+- `HUMAN_SIGNALS.md` icinde Run #125-#129 sonrasi death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi
