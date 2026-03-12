@@ -60,6 +60,19 @@ appElement.innerHTML = `
   </main>
 `;
 
+const gameRootElement = document.querySelector<HTMLDivElement>('#game-root');
+
+if (!gameRootElement) {
+  throw new Error('Game root element was not created.');
+}
+
+const preventGameSurfaceBrowserDefault = (event: Event): void => {
+  event.preventDefault();
+};
+
+gameRootElement.addEventListener('contextmenu', preventGameSurfaceBrowserDefault);
+gameRootElement.addEventListener('dragstart', preventGameSurfaceBrowserDefault);
+
 const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.message-panel__details');
 
 if (panelDetailsElements.length > 0) {
@@ -80,7 +93,7 @@ if (panelDetailsElements.length > 0) {
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
-  parent: 'game-root',
+  parent: gameRootElement,
   width: 800,
   height: 600,
   backgroundColor: '#081018',

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #132
+
+- `project/game/src/main.ts` artik `#game-root` uzerinde `contextmenu` ve `dragstart` default'larini bastiriyor; long-press veya secondary-click browser menu/ghost-drag ile oyunun ustune cikmamali
+- ayni dosya Phaser parent'ini string yerine olusturulan `gameRootElement` uzerinden bagliyor; game-surface guard'i ayni DOM noduna sabitlendi
+- `project/game/src/style.css` `game-shell`, `game-root` ve `canvas` uzerinde `user-select`, `-webkit-user-select` ve `-webkit-touch-callout` guard'lari ekledi; game yuzeyinde text selection ve touch callout daha az araya girmeli
+- `npm run build` basarili calisti; gameplay mantigi degismedigi icin bu tur ek telemetry check kosulmadi
+
 ## Run #131
 
 - `project/game/src/game/primaryAction.ts` focus-loss pause sonrasi pointer release gerekip gerekmedigini tek kaynaktan yorumlayan `shouldRequirePointerReleaseAfterPause()` helper'ini ekledi

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+game_surface_browser_default_interference:
+current: Run #132 `#game-root` uzerinde `contextmenu` ve `dragstart` default'larini bastiriyor; `game-shell`, `game-root` ve `canvas` ayrica `user-select` / `-webkit-user-select` / `-webkit-touch-callout` guard'lari tasiyor
+baseline: onceki shell oyunun uzerinde browser context menu, ghost drag veya touch callout/text selection davranislarini acik birakiyordu; bu da mobil ve pointer replay/steering akisini browser UI tarafindan kesilebilir bir hale getiriyordu
+target: sonraki manuel sample'da long-press ve secondary-click browser UI acmadan oyunda kalsin; replay ve pointer steering browser shell tarafindan bolunmesin
+validation: `npm run build`
+
 focus_loss_pointer_resume_reliability:
 current: Run #131 focus-loss pause sirasinda pointer release guard'ini yalnizca aktif primary touch/click varsa aciyor; pointer aktif degilken refocus sonrasi ilk tap/click ekstra ikinci deneme gerektirmeden resume'a ulasabiliyor
 baseline: onceki kontrat blur ile pause'a her girdiginde `pauseResumeNeedsPointerRelease = true` kuruyordu; pointer bos olsa bile ilk tap guard'a takilip ancak release sonrasi ikinci tap/click ile resume mumkun oluyordu

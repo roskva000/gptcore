@@ -4,8 +4,10 @@
 
 # NOW
 
-- Touch-capable browser'da Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligini hedefli sample ile dogrula.
+- Touch-capable browser'da Run #132 browser-default suppression ile birlikte Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligini hedefli sample ile dogrula.
 - Sample checklist:
+  - long-press veya secondary-click browser context menu / callout acmadan oyunun icinde kaliyor mu
+  - drag veya uzun basista text-selection / ghost-drag yuzunden steering/retry akisi kopuyor mu
   - touch start ilk dokunusta tutarli aciliyor mu
   - held touch steering run basladiktan sonra stale mouse-button state'ine takilmadan devam ediyor mu
   - game-over sonrasi retry touch ile hafif ve tutarli mi
@@ -20,14 +22,15 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi.
+- `HUMAN_SIGNALS.md` icinde Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- En az `npm run build` yesil kaldi; gameplay mantigi degisirse ilgili deterministic check de yeniden yesil kaldi.
 
 ---
 
 # NEXT
 
 - Manuel sample sonuclarina gore touch control, focus-loss resume, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
+- Manuel sample varsa Run #132 browser-default suppression'i keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #130 touch-primary action sertlestirmesini ve Run #131 tek-tap resume fix'ini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa `60s clear` badge'ini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa support strip gizleme kararini keep/tune/revert formatinda insan notuyla bagla.

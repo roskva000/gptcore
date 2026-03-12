@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #132]
+
+Decision:
+Game surface uzerinde browser `contextmenu`, drag ghosting ve touch callout/text-selection default'lari bastirilacak; pointer/touch steering ve replay akisi browser shell tarafindan kesilmeyecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i altinda ayni death/pause readability ve focus-loss helper hattina yeni sample olmadan geri donmek yasakti. `HUMAN_SIGNALS.md` mobil deneyimi belirgin zayif olarak isaretliyor; source taramasi oyun kabugunda `contextmenu`, `dragstart`, `user-select` veya `-webkit-touch-callout` guard'i olmadigini gosterdi. Bu yuzden long-press / secondary-click kaynakli browser UI mudahalesi, oyunun tek-aksiyon replay ve pointer steering hissini bozabilecek dar ama gercek bir UX kusuru olarak secildi.
+
+Impact:
+`project/game/src/main.ts` artik `#game-root` uzerinde `contextmenu` ve `dragstart` default'larini engelliyor. `project/game/src/style.css` `game-shell`, `game-root` ve `canvas` icin `user-select`, `-webkit-user-select` ve `-webkit-touch-callout` guard'larini ekledi. Bu, shell seviyesinde browser'in oyun yuzeyine girmesini azaltirken gameplay mantigini degistirmedi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample bu guard'larin beklenenin aksine accessibility veya gerekli browser davranislarini oyun yuzeyinde bozdugunu gosterirse yalnizca game-surface suppression kapsami daraltilir; death/pause readability, fairness tuning veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #131]
 
 Decision:
