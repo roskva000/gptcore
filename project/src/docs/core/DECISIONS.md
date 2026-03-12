@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #142]
+
+Decision:
+`game-root` ve `canvas` icin varsayilan `touch-action` davranisi yalnizca non-active fazlarda `manipulation` olacak; shell `playing` veya `paused` fazina girdiginde `.app-shell--game-active` altinda tekrar `touch-action: none` uygulanacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridorunu yeni sample olmadan tekrar acmayi yasakliyor; headed runtime da halen bloklu. Mevcut shell Run #139 ile aktif run sirasinda scroll lock kuruyordu, ancak `project/game/src/style.css` canvas yuzeyini waiting ve game-over'da da `touch-action: none` altinda tuttugu icin touch browser'da panel okumaya veya game-over sonrasi asagi kaymaya calisan swipe'lar, gesture canvas ustunde basladiysa gereksiz sekilde yutulabiliyordu. Bu, mobil launch/retry hissine bagli tek dar source-level UX kusuru olarak secildi.
+
+Impact:
+`project/game/src/style.css` artik `game-root` ve `canvas` icin varsayilan `touch-action`i `manipulation` yapiyor; waiting ve game-over'da canvas ustunden baslayan swipe'lar sayfa akisina daha dogal devam edebilmeli. Ayni dosya `.app-shell--game-active` altinda `touch-action: none` guard'ini koruyor; aktif run steering ve accidental page drag savunmasi kaybolmuyor. `project/game/src/latestRun.ts` public paneli yeni davranisla hizaladi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample non-active fazlardaki `touch-action: manipulation` davranisinin start/retry tap'lerini guvensizlestirdigini, browser callout/gesture gurultusunu geri getirdigini veya aktif run'a geciste guard'in gec devreye girdigini gosterirse yalnizca bu touch-action kapsami dar kapsamda ayarlanir; fairness tuning, overlay copy churn'u veya yeni shell/orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #141]
 
 Decision:

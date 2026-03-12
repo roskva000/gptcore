@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #142
+
+- `project/game/src/style.css` `game-root` ve `canvas` icin varsayilan `touch-action` davranisini `manipulation` seviyesine cekti; waiting ve game-over ekranlarinda swipe canvas ustunde baslasa bile panel akisinin daha dogal kaymasi hedefleniyor
+- ayni dosya `.app-shell--game-active` altinda `game-root` ve `canvas`i tekrar `touch-action: none` moduna aliyor; `playing` ve `paused` sirasinda mevcut steering/page-drag guard'i korunuyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu yeni non-active canvas scroll davranisiyla hizaladi
+- `npm run build` basarili calisti
+
 ## Run #141
 
 - `project/game/src/game/GameScene.ts` focus-loss pause'a girerken yeni `resetKeyboardState()` helper'ini cagiriyor; blur veya `visibilitychange` sirasinda stale kalan Phaser movement key state'i temizleniyor

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+non_active_canvas_scroll_accessibility:
+current: Run #142 `game-root` ve `canvas` icin varsayilan `touch-action`i `manipulation` seviyesine cekiyor; waiting ve game-over fazlarinda swipe canvas ustunde baslasa bile panel/readout scroll'u daha dogal akabilmeli, aktif run'da ise `.app-shell--game-active` bunlari tekrar `touch-action: none` altina aliyor
+baseline: Run #139 aktif run sirasinda sayfa scroll'unu kilitledi, fakat shell hala non-active fazlarda da canvas'i `touch-action: none` altinda tutuyordu; bu da touch browser'da panel okumaya calisan drag'in canvas ustunde baslamasi halinde launch veya game-over sonrasi akis hissini gereksiz sekilde yapiskanlastirabiliyordu
+target: sonraki manuel sample'da waiting/game-over ekraninda canvas ustunden baslayan swipe panel akisini dogal sekilde kaydirsin; run baslayinca veya pause'a girince ayni yuzey tekrar scroll yerine oyuna hizmet etsin
+validation: `npm run build`
+
 focus_loss_keyboard_state_reset_integrity:
 current: Run #141 focus-loss pause'a girerken aktif movement snapshot'ini aldiktan sonra Phaser `keyboard.resetKeys()` cagiriyor; blur sirasinda pencere disinda birakilan movement tuslari stale `isDown` olarak tasinmiyor
 baseline: Run #131 pointer tarafinda extra tap friksiyonunu daraltmisti, fakat keyboard state Phaser seviyesinde resetlenmedigi icin blur veya tab/window degisimi sonrasi fiziksel olarak birakilmis movement tuslari resume'a hayalet hareket veya takili held-input state'i tasiyabilirdi
@@ -21,7 +27,7 @@ validation: `npm run build`
 active_run_scroll_lock_stability:
 current: Run #139 narrow viewport'ta `playing` veya `paused` fazina girince `html.app-scroll-locked` class'i aciyor; `body` ve `#app` overflow'u kapanip overscroll bastiriliyor, aktif run sirasinda sayfa scroll'u daha zor hale geliyor
 baseline: Run #138 aktif run sirasinda side paneli gizleyip canvas'a alan geri veriyordu, fakat `body/#app` hala scrollable kaldigi icin kazara page drag veya browser chrome hareketi kisa ekranda canvas odağini bozabilirdi
-target: sonraki manuel sample'da aktif run sirasinda canvas viewport icinde daha sabit kalsin, accidental page movement azalsin ve Run #140 ile birlikte aktif seans dogru scroll offset'te baslasin
+target: sonraki manuel sample'da aktif run sirasinda canvas viewport icinde daha sabit kalsin, accidental page movement azalsin, Run #140 ile birlikte aktif seans dogru scroll offset'te baslasin ve Run #142 sonrasi non-active scroll serbestligi aktif run guard'ini zayiflatmasin
 validation: `npm run build`
 
 narrow_viewport_active_run_focus:
@@ -107,8 +113,8 @@ baseline: Run #122 support strip metnini tek export/retry hatirlatmasina daraltm
 target: sonraki manuel sample'da death ani daha sakin okunur hissetmeli; retry/export affordance'i ise kaybolmus degil, sadece daha az istilaci algilanmali
 
 public_ai_panel_accuracy:
-current: Run #141 public `Latest AI update` panelini focus-loss keyboard reset davranisi ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
-baseline: onceki panel stale kalmis, eski telemetry bug fix'ini ve drift eden `25.1s` average survival metnini tasiyordu; ilk insan sinyali de panelin bir suredir guncellenmiyormus gibi gorundugunu not etti
+current: Run #142 public `Latest AI update` panelini non-active canvas scroll davranisi ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
+baseline: onceki panel stale kalmis, eski input/shell fix'ini ve drift eden `25.1s` average survival metnini tasiyordu; ilk insan sinyali de panelin bir suredir guncellenmiyormus gibi gorundugunu not etti
 target: public panel yalnizca gercek source delta veya yeni insan kaniti geldikce guncellensin; gameplay hafizasi ile player-facing anlatim tekrar drift etmesin
 
 death_screen_clarity:
