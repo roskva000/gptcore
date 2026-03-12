@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #143]
+
+Decision:
+Non-active waiting ve game-over fazlarinda `game-root` artik `overscroll-behavior: auto` kullanacak; `.app-shell--game-active` aktifken `game-root` ve `canvas` tekrar `overscroll-behavior: contain` altina alinacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridorunu yeni sample olmadan tekrar acmayi yasakliyor; headed runtime da halen bloklu. Run #142 non-active fazlarda `touch-action`i gevsetmisti, fakat `project/game/src/style.css` icindeki kalici `overscroll-behavior: contain` hala canvas ustunde baslayan dikey swipe'in page/panel scroll'una zincirlenmesini kesebiliyordu. Bu, yeni orchestration katmani acmadan kapatilabilecek tek dar mobile-shell UX kusuru olarak secildi.
+
+Impact:
+`project/game/src/style.css` non-active fazlarda `game-root` icin `overscroll-behavior: auto` kullaniyor; waiting ve game-over ekranlarinda swipe zinciri canvas kenarinda daha az hapsolmali. Ayni dosya aktif run sirasinda `touch-action: none` ile birlikte `overscroll-behavior: contain` guard'ini geri aciyor; steering ve accidental page drag savunmasi korunuyor. `project/game/src/latestRun.ts` public paneli bu yeni davranisla hizaladi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample non-active fazlardaki overscroll zincirinin browser chrome veya page bounce gurultusunu geri getirdigini, start/retry niyetini bozdugunu veya aktif run guard'inin gec devreye girdigini gosterirse yalnizca bu overscroll kapsami dar kapsamda ayarlanir; fairness tuning, overlay copy churn'u veya yeni shell/orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #142]
 
 Decision:

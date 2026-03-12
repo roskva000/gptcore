@@ -59,7 +59,7 @@ html.app-scroll-locked #app {
 .game-root {
   width: min(calc(100vw - (var(--shell-gutter) * 2)), calc(var(--game-max-height) * 4 / 3), 800px);
   max-width: 100%;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
@@ -170,6 +170,7 @@ canvas {
 .app-shell--game-active .game-root,
 .app-shell--game-active canvas {
   touch-action: none;
+  overscroll-behavior: contain;
 }
 
 @media (max-width: 1180px) {

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #143
+
+- `project/game/src/style.css` non-active fazlarda `game-root` icin `overscroll-behavior: auto` kullaniyor; waiting ve game-over ekranlarinda canvas ustunde baslayan dikey swipe'in panel/page scroll'una daha dogal zincirlenmesi hedefleniyor
+- ayni dosya `.app-shell--game-active` altinda `game-root` ve `canvas` icin `overscroll-behavior: contain` guard'ini geri aciyor; `playing` ve `paused` sirasinda accidental page drag savunmasi korunuyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu yeni swipe-chain davranisiyla hizaladi
+- `npm run build` basarili calisti
+
 ## Run #142
 
 - `project/game/src/style.css` `game-root` ve `canvas` icin varsayilan `touch-action` davranisini `manipulation` seviyesine cekti; waiting ve game-over ekranlarinda swipe canvas ustunde baslasa bile panel akisinin daha dogal kaymasi hedefleniyor
