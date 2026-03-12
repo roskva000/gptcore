@@ -1,5 +1,11 @@
 # NEXT_AGENT.md
 
+## Governance Note
+
+- Audit verdict `proxy-overfit`. Run #121-#128 death/pause readability zincirini yeni sample olmadan tekrar acma.
+- Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
+- Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
+
 ## Recommended Next Task
 
 Run mode: `stabilization`
