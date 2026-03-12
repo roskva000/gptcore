@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #127
+
+- `project/game/src/game/GameScene.ts` game-over sirasindaki sag ust `Session snapshot` panelinden `avg` satirini cikardi; panel artik `Run ... | Session best ...` ozetine iniyor
+- ayni dosya validation/export satirini `Validation ... | First death ...` veya `Validation ... | Export ready/Press V` formatina daraltti; death ekranindaki sag panel daha az veri yuku tasiyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #126
 
 - `project/game/src/game/GameScene.ts` pause state'te sag ust telemetry panelini gizledi; pause overlay artik sag panelde ayri bir `Local telemetry` kopyasi tasimiyor

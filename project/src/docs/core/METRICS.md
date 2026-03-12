@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+game_over_snapshot_density:
+current: Run #127 death sonrasi sag ust `Session snapshot` panelini iki kisa bilgi satirina indirdi; `avg` artik game-over panelinde degil ve validation/export affordance'i sample durumuna gore `First death`, `Export ready` veya `Press V` seviyesinde kaliyor
+baseline: Run #125-#126 sonrasi death ekraninda ust HUD, support strip ve pause chrome azaltilmisti, ancak game-over paneli hala `Run + Best + Avg` ve `First death + validation + export` yogunluguyla insan sinyalindeki "fazla veri/yazi" sorununu tam kapatmiyordu
+target: sonraki manuel sample'da death anindaki sag panel overlay ile rekabet etmeyen, daha kisa ve yeterince yonlendirici bir ozet gibi hissetsin; export affordance'i kaybolmamis ama daha az istilaci olsun
+
 paused_overlay_focus:
 current: Run #126 pause state'te overlay disindaki `Local telemetry`, `hint`, ve alt support strip chrome'unu gizledi; focus-loss pause artik yalnizca overlay body/prompt/stats ile okunuyor
 baseline: Run #125 sonrasi pause ekraninda ust HUD gizlenmisti, ancak sag panel, ust hint ve alt support strip hala overlay ile ayni resume/focus-loss/telemetry bilgisini tekrar edip ikinci ve ucuncu odak noktalarini acik birakiyordu
@@ -27,9 +32,9 @@ baseline: onceki panel stale kalmis, eski telemetry bug fix'ini ve drift eden `2
 target: public panel yalnizca gercek source delta veya yeni insan kaniti geldikce guncellensin; gameplay hafizasi ile player-facing anlatim tekrar drift etmesin
 
 death_screen_clarity:
-current: Run #125 ile birlikte game-over ekrani artik duplicate `score` / `best` HUD'si olmadan aciliyor; Run #122'nin retry-only stats, kisaltilmis body ve gizli hint degisiklikleri ustune ekran tek overlay hiyerarsisine biraz daha yaklasti
+current: Run #127 ile birlikte game-over ekrani duplicate `score` / `best` HUD'si olmadan aciliyor ve sag ust `Session snapshot` paneli de daha kisa bir ozet tasiyor; Run #122-#126 sadeleştirmeleri ustune ekran tek overlay hiyerarsisine biraz daha yaklasti
 baseline: 11.03.2026 tarihli insan sinyali death ekranini "inanilmaz fazla veri/yazi" nedeniyle karmasik ve rahatsiz edici olarak raporladi
-target: sonraki manuel sample'da death ekraninin daha sakin, daha rahat okunur ve retry istegini daha az bozan bir his vermesi; ozellikle sag ust snapshot tek basina yeterli baglam sagliyor mu ve ust HUD'nin gizlenmesi clutter'i gercekten azaltiyor mu netlestirilsin
+target: sonraki manuel sample'da death ekraninin daha sakin, daha rahat okunur ve retry istegini daha az bozan bir his vermesi; ozellikle sag ust snapshot kisalmasinin gercekten clutter'i azaltip azaltmadigi netlestirilsin
 
 average_survival_time:
 current: 26.5s in deterministic survival snapshot

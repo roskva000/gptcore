@@ -2121,17 +2121,21 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getGameOverSessionSummaryLine(): string {
-    return `Run ${this.getLastRunTimeText(this.sessionTelemetry)} | Best ${getBestSurvivalTimeText(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`;
+    return `Run ${this.getLastRunTimeText(this.sessionTelemetry)} | Session best ${getBestSurvivalTimeText(this.sessionTelemetry)}`;
   }
 
   private getGameOverValidationSummaryLine(): string {
-    const validationSummary = `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | ${getValidationProgressText(this.sessionTelemetry)}`;
+    const validationProgress = getValidationProgressText(this.sessionTelemetry);
 
-    if (this.lastValidationReport) {
-      return `${validationSummary} | Export saved`;
+    if (this.sessionTelemetry.totalDeaths < 5) {
+      return `Validation ${validationProgress} | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`;
     }
 
-    return `${validationSummary} | Press V to export`;
+    if (this.lastValidationReport) {
+      return `Validation ${validationProgress} | Export ready`;
+    }
+
+    return `Validation ${validationProgress} | Press V`;
   }
 
   private getGameOverSupportText(): string {

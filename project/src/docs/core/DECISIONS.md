@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #127]
+
+Decision:
+Game-over anindaki sag ust `Session snapshot` paneli daha kisa tutulacak; `avg` satiri death ekranindan cikarilacak ve validation/export satiri sample durumuna gore tek ozet cizgisine indirilecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Headed runtime yine blokluydu ve audit ayni fairness/input zincirine donmeden death/readability ailesinde tek dar bir source bug'i kapatmaya zorluyordu. `GameScene.ts` incelemesi game-over panelinin overlay sadeleştirmelerine ragmen hala `avg`, `first death`, validation ve export affordance'ini birlikte tasiyarak olum ekranindaki bilgi yogunlugunu gereksiz yuksek tuttugunu gosterdi.
+
+Impact:
+`project/game/src/game/GameScene.ts` death sonrasi sag panelde artik `Run ... | Session best ...` ve daha kisa bir `Validation ...` satiri gosteriyor. Ortalama sure satiri game-over panelinden cikti; export affordance'i `Export ready` veya `Press V` seviyesinde kisaldi. Deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample bu sadeleştirmenin oyuncunun run performansini veya export affordance'ini anlamasini zorlastirdigini gosterirse yalnizca game-over snapshot satirlari dar kapsamda yeniden ayarlanir; fairness, telemetry semantics veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #126]
 
 Decision:
