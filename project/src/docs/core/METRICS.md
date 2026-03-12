@@ -7,9 +7,9 @@
 ## Gameplay
 
 near_miss_pressure_feedback:
-current: Run #145 yakin gecen ama carpmayan obstacle'lari `project/game/src/game/nearMiss.ts` helper'i ile izliyor; gercek closing approach sonrasi gelen close shave anlari sahnede kisa `NEAR MISS` / `2x NEAR MISS` pulse'u olarak gorunur oluyor
+current: Run #145-#146 yakin gecen ama carpmayan obstacle'lari `project/game/src/game/nearMiss.ts` helper'i ile izliyor; gercek closing approach sonrasi gelen close shave anlari sahnede kisa `NEAR MISS` / `2x NEAR MISS` pulse'u olarak gorunur oluyor ve trigger artik obstacle gorunur arena disina tastiktan sonra gec acilmiyor
 baseline: onceki build'de run'in en heyecanli anlarindan biri olan close shave tamamen sessiz geciyordu; insan sinyalindeki en pozitif his oyun icinde ayrik bir feedback tasimiyordu
-target: sonraki manuel sample'da bu pulse'lar earned, heyecanli ve replay istegini artiran mikro-oduller gibi hissettirsin; gurultu, sahte kutlama veya fairness algisi bozmasi uretmesin
+target: sonraki manuel sample'da bu pulse'lar earned, heyecanli ve replay istegini artiran mikro-oduller gibi hissettirsin; gurultu, sahte kutlama veya ekran disi gecikmis kutlama hissi uretmesin
 validation: `npm run telemetry:check`, `npm run build`
 
 narrow_viewport_phase_sync_integrity:

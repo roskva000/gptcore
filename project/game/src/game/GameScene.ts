@@ -1581,6 +1581,7 @@ export class GameScene extends Phaser.Scene {
             y: obstacleBody?.velocity.y ?? 0,
           },
           obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+          obstacleInsideVisibleArena: this.isObstacleInsideVisibleArena(obstacle),
           extraNearMissDistance: NEAR_MISS_EXTRA_DISTANCE_PX,
         },
         previousState ?? createNearMissState(),

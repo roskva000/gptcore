@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #146
+
+- `project/game/src/game/nearMiss.ts` near-miss tetigini `obstacleInsideVisibleArena` kosuluyla daraltti; obstacle artik gorunur arena disina tastiktan sonra gec `NEAR MISS` pulse'u uretemiyor
+- `project/game/src/game/GameScene.ts` helper'e obstacle visibility durumunu geciyor; mevcut mutation pacing, spawn, fairness ve skor kontrati degismeden kaliyor
+- `project/game/scripts/telemetry-check.ts` near-miss regression setine yeni bir assert ekledi; gorunur arena disina cikmis obstacle'in gec tetik uretememesi kilitlendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #145
 
 - `project/game/src/game/nearMiss.ts` yeni saf helper'i bir obstacle'in oyuncuya gercekten kapanip carpmadan kildan payi gecip gecmedigini izliyor; trigger ancak close shave artik uzaklasmaya donunce aciliyor

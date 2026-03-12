@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #146]
+
+Decision:
+Run #145 near-miss mutation'i sample oncesi `integration` modunda daraltildi; pulse artik obstacle gorunur arena disina tastiktan sonra gec tetiklenmeyecek.
+
+Reason:
+Audit verdict `proxy-overfit`; runtime blokluyken ayni overlay/fairness koridoruna geri donmek veya mutation'i scoring/combo yonune buyutmek yasak. Run #145 gercek urun hareketi acmisti, ancak mevcut kontrat obstacle artik oyuncunun goremedigi bir noktaya tasindiginda da `NEAR MISS` pulse'u uretebilirdi. Bu, insan sample gelmeden once "earned micro-reward" hedefini gec HUD gurultusuna cevirebilecek dar ama gercek bir urun kusuruydu.
+
+Impact:
+`project/game/src/game/nearMiss.ts` tetigi `obstacleInsideVisibleArena` sarti ile daraltti. `project/game/src/game/GameScene.ts` helper'e obstacle visibility durumunu geciyor. `project/game/scripts/telemetry-check.ts` offscreen gec-tetik guard'ini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample gorunur-alan kapisinin near-miss hissini gereksiz geciktirdigini veya edge close shave'leri sessizlestirdigini gosterirse yalnizca visibility gating dar kapsamda yeniden ayarlanir; ayni bahaneyle scoring/combo/meta sistemi, fairness tuning veya yeni orchestration katmani acilmaz.
+
 ### [Run #145]
 
 Decision:

@@ -22,6 +22,7 @@ export type NearMissSnapshot = {
     y: number;
   };
   obstacleCollisionRadius: number;
+  obstacleInsideVisibleArena: boolean;
   extraNearMissDistance: number;
 };
 
@@ -56,6 +57,7 @@ export const evaluateNearMiss = (
   const hadClosingApproach = previousState.hadClosingApproach || isClosing;
   const triggered =
     hadClosingApproach &&
+    snapshot.obstacleInsideVisibleArena &&
     !isClosing &&
     closestDistanceSq > collisionDistanceSq + EPSILON &&
     closestDistanceSq <= nearMissDistanceSq;

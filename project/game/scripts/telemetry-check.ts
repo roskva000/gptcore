@@ -453,6 +453,7 @@ assert.deepEqual(
       obstaclePosition: { x: 435, y: 300 },
       obstacleVelocity: { x: -120, y: 0 },
       obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      obstacleInsideVisibleArena: true,
       extraNearMissDistance: 22,
     },
     createNearMissState(),
@@ -474,6 +475,7 @@ assert.deepEqual(
       obstaclePosition: { x: 452, y: 300 },
       obstacleVelocity: { x: 120, y: 0 },
       obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      obstacleInsideVisibleArena: true,
       extraNearMissDistance: 22,
     },
     {
@@ -498,12 +500,33 @@ assert.equal(
       obstaclePosition: { x: 470, y: 300 },
       obstacleVelocity: { x: 120, y: 0 },
       obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      obstacleInsideVisibleArena: true,
       extraNearMissDistance: 22,
     },
     createNearMissState(),
   ).triggered,
   false,
   'Near-miss tracking should ignore obstacles that only move away without ever threatening the player.',
+);
+assert.equal(
+  evaluateNearMiss(
+    {
+      playerPosition: { x: 400, y: 300 },
+      playerVelocity: { x: 0, y: 0 },
+      playerCollisionRadius: 16,
+      obstaclePosition: { x: 790, y: 300 },
+      obstacleVelocity: { x: 120, y: 0 },
+      obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      obstacleInsideVisibleArena: false,
+      extraNearMissDistance: 22,
+    },
+    {
+      closestDistanceSq: 1225,
+      hadClosingApproach: true,
+    },
+  ).triggered,
+  false,
+  'Near-miss tracking should not fire once the obstacle has already left the visible arena.',
 );
 
 assert.deepEqual(
