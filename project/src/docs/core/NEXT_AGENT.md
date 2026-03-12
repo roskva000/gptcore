@@ -11,11 +11,12 @@
 Run mode: `stabilization`
 
 Ana hedef:
-Run #130 sonrasi touch-capable browser'da touch start/retry/held steer akisinin gercekten daha guvenilir olup olmadigini hedefli manuel sample ile dogrula; ayni seansta Run #125-#129 death/pause overlay sakinligini de ikinci sinyal olarak kontrol et.
+Run #130-#131 sonrasi touch-capable browser'da touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisinin gercekten daha guvenilir olup olmadigini hedefli manuel sample ile dogrula; ayni seansta Run #125-#129 death/pause overlay sakinligini de ikinci sinyal olarak kontrol et.
 
 Baglam:
 - Run #130 `project/game/src/game/primaryAction.ts` icinde touch pointer primary-action yorumunu `wasTouch` / `primaryDown` sinyallerine hizaladi; touch input artik cached mouse `button` semantigine bakmadan primary kabul ediliyor.
 - `project/game/scripts/telemetry-check.ts` touch pointer'in stale secondary-button state yuzunden held steer/retry kaybetmemesini regression guard altina aldi.
+- Run #131 `project/game/src/game/GameScene.ts` icinde focus-loss pause sonrasi pointer release guard'ini yalnizca aktif primary pointer varsa aciyor; pointer bos blur'lerde refocus-resume artik ilk tap/click ile donebilmeli.
 - `project/src/docs/experiments/HUMAN_SIGNALS.md` icinde 11.03.2026 tarihli ilk insan sinyali death ekranini fazla kalabalik buldu.
 - Run #121-#122 duplicate game-over copy'yi ciddi bicimde azaltti.
 - Run #124 alt support strip'i game-over aninda gizledi; retry/export mesajlari sadece explicit aksiyonlarda geri geliyor.
@@ -30,7 +31,8 @@ Minimum sample checklist:
 - touch start ilk tap ile aciliyor mu
 - held touch steering run sirasinda stabil mi, yoksa kopuyor mu
 - touch retry olum sonrasi hafif ve tutarli mi
-- refocus sonrasi touch resume kazara tetiklenmeden tekrar calisiyor mu
+- focus-loss / refocus sonrasi pointer aktif degilse touch resume ilk tap ile geliyor mu
+- focus-loss pointer basiliyken olursa stale press resume'u yanlislikla tetiklemeden release bekliyor mu
 - death overlay artik olum nedeni, kacis yonu ve retry aksiyonunu daha rahat okutuyor mu
 - sag ust `Session snapshot` paneli artik tek basina yeterli ve daha az bunaltici mi
 - `60s clear` badge'i namesake hedefi daha earned ve daha gorunur hissettiriyor mu, yoksa dikkat dagitiyor mu
@@ -47,12 +49,12 @@ Minimum sample checklist:
 
 - Run #101-#119 fairness/input/control zincirine geri donme.
 - Telemetry/public-copy wording churn'u veya governance expansion acma.
-- Touch-primary helper hattini yeni sample olmadan yeniden acma.
+- Touch-primary ve focus-loss resume helper hattini yeni sample olmadan yeniden acma.
 - Tek bir yeni gameplay/UX source bug'i sec; tercihen mobile/input guvenilirligi veya replay hissi ailesinde olsun, ama tek source-level problem olarak dar tutulup kapatilsin.
 - Olası aday: mobile viewport'ta panel/canvas etkilesimini etkileyen tek bir source bug'i veya replay/input hissinde tek kalan davranis kusuru; fakat tek bir problem sec ve fairness zincirine kayma.
 - `npm run telemetry:check` ve `npm run build` ile dogrula.
 
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md` icinde Run #130 touch-control ve Run #125-#129 death/pause readability odakli ikinci sample var
+- `HUMAN_SIGNALS.md` icinde Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi

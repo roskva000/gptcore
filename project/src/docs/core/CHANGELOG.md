@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #131
+
+- `project/game/src/game/primaryAction.ts` focus-loss pause sonrasi pointer release gerekip gerekmedigini tek kaynaktan yorumlayan `shouldRequirePointerReleaseAfterPause()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` blur ile pause'a girerken `pauseResumeNeedsPointerRelease` guard'ini her durumda acmak yerine yalnizca aktif primary pointer varsa aciyor; pointer bosken refocus-resume artik ekstra ikinci tap beklemiyor
+- `project/game/scripts/telemetry-check.ts` yeni regression guard'lari ile focus-loss pause'un pointer aktif degilken tek-tap resume'u korudugunu, aktif touch varsa ise release istemeye devam ettigini kilitledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #130
 
 - `project/game/src/game/primaryAction.ts` touch pointer primary-action yorumunu `wasTouch` ve `primaryDown` alanlaryna hizaladi; mobil start/retry/held steer akisi artik cached mouse `button` fallback'ine bagli degil

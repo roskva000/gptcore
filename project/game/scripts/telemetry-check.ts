@@ -16,6 +16,7 @@ import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
 import {
   isPrimaryPointerDown,
+  shouldRequirePointerReleaseAfterPause,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
 } from '../src/game/primaryAction.ts';
@@ -192,6 +193,24 @@ assert.equal(
   }),
   false,
   'Touch pointers without a primary-down state should not be treated as active held input.',
+);
+assert.equal(
+  shouldRequirePointerReleaseAfterPause({
+    isDown: false,
+    wasTouch: true,
+    primaryDown: false,
+  }),
+  false,
+  'Focus-loss pause should not force an extra tap/click to resume when no primary pointer was active.',
+);
+assert.equal(
+  shouldRequirePointerReleaseAfterPause({
+    isDown: true,
+    wasTouch: true,
+    primaryDown: true,
+  }),
+  true,
+  'Focus-loss pause should still require a release when a touch pointer was already holding input.',
 );
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');

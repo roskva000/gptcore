@@ -4,12 +4,13 @@
 
 # NOW
 
-- Touch-capable browser'da Run #130 sonrasi start/retry/held steer guvenilirligini hedefli sample ile dogrula.
+- Touch-capable browser'da Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligini hedefli sample ile dogrula.
 - Sample checklist:
   - touch start ilk dokunusta tutarli aciliyor mu
   - held touch steering run basladiktan sonra stale mouse-button state'ine takilmadan devam ediyor mu
   - game-over sonrasi retry touch ile hafif ve tutarli mi
-  - focus-loss / refocus sonrasi touch resume kazara tetiklenmeden tekrar calisiyor mu
+  - focus-loss / refocus sonrasi pointer zaten basili degilse resume ilk tap ile geri geliyor mu
+  - focus-loss / refocus pointer basiliyken olursa yine release isteyip kazara resume'u engelliyor mu
   - death overlay artik olum nedeni, retry aksiyonu ve kacis yonunu daha rahat okutuyor mu
   - sag ust `Session snapshot` paneli game-over aninda artik daha kisa ve yeterince sakin mi
   - `60s clear` badge'i milestone'u body copy'den daha okunur ve daha earned hissettiriyor mu
@@ -19,15 +20,15 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #130 touch-control ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi.
 
 ---
 
 # NEXT
 
-- Manuel sample sonuclarina gore touch control, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
-- Manuel sample varsa Run #130 touch-primary action sertlestirmesini keep/tune/revert formatinda insan notuyla bagla.
+- Manuel sample sonuclarina gore touch control, focus-loss resume, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
+- Manuel sample varsa Run #130 touch-primary action sertlestirmesini ve Run #131 tek-tap resume fix'ini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa `60s clear` badge'ini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa support strip gizleme kararini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa ust HUD gizleme kararini da keep/tune/revert formatinda insan notuyla bagla.

@@ -52,6 +52,7 @@ import {
 import { getPointerSteeringVelocity } from './pointerSteering.ts';
 import {
   isPrimaryPointerDown,
+  shouldRequirePointerReleaseAfterPause,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
 } from './primaryAction.ts';
@@ -754,10 +755,11 @@ export class GameScene extends Phaser.Scene {
     const pausedAtSeconds = this.getCurrentSurvivalTimeSeconds();
     this.phase = 'paused';
     const movementInputActive = this.hasMovementInput();
+    const pointerInputActive = shouldRequirePointerReleaseAfterPause(this.input.activePointer);
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsMovementRelease = movementInputActive;
-    this.pauseResumeNeedsPointerRelease = true;
+    this.pauseResumeNeedsPointerRelease = pointerInputActive;
     this.pauseStartedAt = this.time.now;
     this.physics.world.pause();
     if (this.nextSpawnTimer) {

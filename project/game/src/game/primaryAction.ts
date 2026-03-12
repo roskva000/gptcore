@@ -58,3 +58,10 @@ export const isPrimaryPointerDown = (
 
   return shouldHandlePrimaryActionPointer(pointer);
 };
+
+export const shouldRequirePointerReleaseAfterPause = (
+  pointer?: Pick<
+    Phaser.Input.Pointer,
+    'isDown' | 'button' | 'event' | 'wasTouch' | 'primaryDown'
+  > | null,
+): boolean => isPrimaryPointerDown(pointer);

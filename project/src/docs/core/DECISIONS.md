@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #131]
+
+Decision:
+Focus-loss pause sonrasi pointer release guard'i yalnizca o anda gercekten aktif bir primary touch/click varsa acilacak; pointer aktif degilken refocus-resume ilk tap ile tekrar calisacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Runtime bu ortamda yine blokluydu (`DISPLAY` / `WAYLAND_DISPLAY` bos) ve audit ayni death/pause readability koridoruna yeni sample olmadan donmeyi yasakliyordu. `GameScene.ts` incelemesi `pauseRunForFocusLoss()` icinde `pauseResumeNeedsPointerRelease` guard'inin pointer aktif olup olmadigina bakmadan her blur'de `true` yapildigini gosterdi. Bu kontrat, focus kaybi pointer basili degilken bile touch/click resume'u bir release + ikinci tap akisina iterek mobil/refocus hissini bozuyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni `shouldRequirePointerReleaseAfterPause()` helper'i ile pointer-release ihtiyacini aktif primary pointer durumuna bagladi. `project/game/src/game/GameScene.ts` pause aninda bu helper'i kullanarak yalnizca gercekten tutulmus pointer icin release guard'i kuruyor. `project/game/scripts/telemetry-check.ts` pointer aktif degilken ekstra tap istememe ve aktif touch varsa release istemeye devam etme kontratini regression guard altina aldi. Deterministic baseline degismedi.
+
+Rollback Condition:
+Headed mobile sample focus-loss sonrasi ilk tap resume'un kazara, oyuncu niyeti olmadan veya stale pointer state ile calistigini gosterirse yalnizca pause-release kontrati dar kapsamda yeniden ayarlanir; death/pause copy, fairness tuning veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #130]
 
 Decision:

@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+focus_loss_pointer_resume_reliability:
+current: Run #131 focus-loss pause sirasinda pointer release guard'ini yalnizca aktif primary touch/click varsa aciyor; pointer aktif degilken refocus sonrasi ilk tap/click ekstra ikinci deneme gerektirmeden resume'a ulasabiliyor
+baseline: onceki kontrat blur ile pause'a her girdiginde `pauseResumeNeedsPointerRelease = true` kuruyordu; pointer bos olsa bile ilk tap guard'a takilip ancak release sonrasi ikinci tap/click ile resume mumkun oluyordu
+target: sonraki manuel mobile/touch sample'da refocus sonrasi touch/click resume tek tap ile geri gelsin; pointer gercekten basili tutulurken ise stale press kazara resume tetiklemesin
+
 touch_primary_action_reliability:
 current: Run #130 touch pointer primary-action yorumunu Phaser `wasTouch` / `primaryDown` sinyallerine hizaladi; held touch input artik stale mouse `button` durumuna bakmadan primary steer/retry olarak okunuyor
 baseline: onceki helper touch pointer'lari dogrudan touch-state ile degil, son event'teki mouse-button fallback'leri ile yorumluyordu; bu da mobil/hybrid cihazlarda primary touch akisini gereksiz kirilgan bir semantik uzerine yasliyordu
