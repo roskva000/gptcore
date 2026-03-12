@@ -4,9 +4,12 @@
 
 # NOW
 
+- Touch-capable browser'da Run #145 near-miss pulse'unun earned hissedip hissettirmedigini, zincirli close shave'lerde replay istegini artirip artirmadigini ve gorsel gurultu yaratip yaratmadigini Run #137 opening surface ile Run #132-#144 mobil shell/input checklist'iyle ayni sample icinde dogrula.
 - Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
 - Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
 - Sample checklist:
+  - yakin gecen ama carpmayan obstacle pulse'u gercekten "close shave" anini belirginlestiriyor mu, yoksa gereksiz HUD gurultusu mu uretiyor
+  - zincirli `2x` / `3x` near-miss callout'lari earned hissettiriyor mu, yoksa yapay skor benzeri bir baski mi olusturuyor
   - waiting veya game-over ekraninda swipe canvas ustunde baslasa bile panel/not akisi asagi-yukari dogal kayiyor mu; swipe zinciri canvas kenarinda hapsolmuyor mu
   - panelin altlarindayken run baslatildiginda viewport canvas'a geri geliyor mu, yoksa aktif run halen panel offset'inde mi aciliyor
   - waiting veya game-over'a donunce onceki panel scroll konumu dogal sekilde geri geliyor mu, yoksa okuyucuyu tepeden baslatip akisi bozuyor mu
@@ -40,13 +43,14 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run focus mode, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #145 near-miss pulse, Run #137 opening launch surface, Run #138 active-run focus mode, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - En az `npm run build` yesil kaldi; gameplay mantigi degisirse ilgili deterministic check de yeniden yesil kaldi.
 
 ---
 
 # NEXT
 
+- Manuel sample varsa Run #145 near-miss pulse'unu keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample sonuclarina gore touch control, browser interruption, breakpoint-crossing focus mode, focus-loss resume, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
 - Manuel sample varsa Run #137 opening launch paneli ve pulse marker'i keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #138 active-run panel hide/focus mode'unu ve Run #144 breakpoint-crossing focus-mode senkronunu keep/tune/revert formatinda insan notuyla bagla.
@@ -88,10 +92,11 @@ Success markers:
 - sample olmadan Run #139 active-run scroll lock davranisini yeni shell/orchestration katmanlariyla buyutmek
 - sample olmadan Run #140 viewport-anchor davranisini yeni shell/orchestration katmanlariyla buyutmek
 - sample olmadan Run #143 overscroll-chain duzeltmesini yeni shell/orchestration katmanlariyla buyutmek
+- sample olmadan Run #145 near-miss pulse'unu yeni scoring/combo/meta katmanlariyla buyutmek
 
 ---
 
 # LATER
 
 - `GameScene.ts` seam extraction
-- hafif mutation adaylari (`near-miss pressure reward` vb.) ancak human evidence sonrasi
+- near-miss pulse keep kalirsa daha sonra daha derin ama yine dar replay mutasyonlari

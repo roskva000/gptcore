@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #145
+
+- `project/game/src/game/nearMiss.ts` yeni saf helper'i bir obstacle'in oyuncuya gercekten kapanip carpmadan kildan payi gecip gecmedigini izliyor; trigger ancak close shave artik uzaklasmaya donunce aciliyor
+- `project/game/src/game/GameScene.ts` aktif obstacle'lar icin near-miss state tutuyor ve yakin gecislerde kisa `NEAR MISS` / zincirli `2x`, `3x` pulse'u ile oyuncu sprite'inda hafif bir feedback veriyor
+- mutation pacing, spawn, fairness veya skor kontratini degistirmedi; run'in en iyi anlarina hafif bir okunurluk/identity feedback'i ekledi
+- `project/game/scripts/telemetry-check.ts` near-miss helper'i icin erken tetiklenmeme, gercek close shave sonrasi tetiklenme ve tehdit olusmamis uzaklasan obstacle'i yok sayma assert'leri ekledi
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini yeni near-miss mutation'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #144
 
 - `project/game/src/main.ts` narrow viewport media-query degistiginde artik yalnizca `app-scroll-locked` durumunu degil, mevcut oyun fazini `syncGameplayFocusMode()` uzerinden yeniden uyguluyor

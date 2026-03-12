@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+near_miss_pressure_feedback:
+current: Run #145 yakin gecen ama carpmayan obstacle'lari `project/game/src/game/nearMiss.ts` helper'i ile izliyor; gercek closing approach sonrasi gelen close shave anlari sahnede kisa `NEAR MISS` / `2x NEAR MISS` pulse'u olarak gorunur oluyor
+baseline: onceki build'de run'in en heyecanli anlarindan biri olan close shave tamamen sessiz geciyordu; insan sinyalindeki en pozitif his oyun icinde ayrik bir feedback tasimiyordu
+target: sonraki manuel sample'da bu pulse'lar earned, heyecanli ve replay istegini artiran mikro-oduller gibi hissettirsin; gurultu, sahte kutlama veya fairness algisi bozmasi uretmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 narrow_viewport_phase_sync_integrity:
 current: Run #144 narrow viewport media-query degistiginde mevcut oyun fazini `syncGameplayFocusMode()` uzerinden yeniden uygular; aktif seans breakpoint altina sonradan gecse bile panel gizleme, scroll lock, saved panel scroll ve viewport anchor ayni focus-mode yoluna geri baglanir
 baseline: Run #138-#140 active-run focus, scroll lock ve viewport anchor davranislarini acmisti, fakat breakpoint listener yalnizca panel visibility ve scroll lock'u parcali sekilde guncelliyordu; run zaten aktifken pencere daralirsa shell'in tam focus-mode kontrati sessizce eksik kalabilirdi

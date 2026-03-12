@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #145]
+
+Decision:
+Runtime blokluyken ayni death/pause readability veya mobile-shell zincirine donmek yerine dar bir `near-miss pressure reward` mutation'i acilacak; pacing ve fairness'i degistirmeden close shave anlari gorunur hale getirilecek.
+
+Reason:
+Bu tur `mutation` modunda secildi. Audit verdict `proxy-overfit`; ayni overlay/fairness koridoruna yeni sample olmadan donmek ve yeni orchestration katmani acmak yasakli. Mevcut insan sinyalindeki tek net pozitif his "toplarin cok yakinindan gecmek" oldugu halde runtime bu anlari hic vurgulamiyordu. Runtime blokluyken urun ilerlemesi icin en dar ama gercek aday, oyuncunun zaten iyi buldugu close shave anlarini hissedilir kilan dusuk riskli bir mutation'di.
+
+Impact:
+`project/game/src/game/nearMiss.ts` saf helper'i obstacle'in gercek bir closing approach sonrasi carpmadan gecip gecmedigini hesapliyor. `project/game/src/game/GameScene.ts` obstacle bazli near-miss state tutup kisa `NEAR MISS` / zincirli pulse geri bildirimi uretiyor. `project/game/scripts/telemetry-check.ts` helper kontratini regression altina aliyor. `project/game/src/latestRun.ts` public paneli yeni mutation ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample near-miss pulse'unun sahte kutlama, HUD gurultusu veya fairness algisini zedeleyen bir baski hissettirdigini gosterirse yalnizca bu feedback katmani dar kapsamda tune/revert edilir; ayni bahaneyle scoring/combo/meta sistemi veya yeni orchestration katmani acilmaz.
+
 ### [Run #144]
 
 Decision:

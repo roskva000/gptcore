@@ -15,19 +15,6 @@ Bu dosya mutation ve deney akisini takip eder.
 
 ## Proposed
 
-### Experiment: Near-Miss Pressure Reward
-Status: proposed
-Why:
-Survival cekirdegi adil hale gelirken run'larin kimligini ve replay arzusunu artirabilecek dusuk riskli bir mutation adayi.
-Potential Value:
-- risk/reward hissi
-- daha belirgin story moments
-- replay motivasyonu
-Retention Criteria:
-- fairness guard'larini bozmaz
-- insan gozleminde ucuz degil heyecanli hissettirir
-- run kimligine anlamli katkisi olur
-
 ### Experiment: Factory Pulse Public Surface
 Status: proposed
 Why:
@@ -43,7 +30,18 @@ Retention Criteria:
 
 ## Active
 
-(none yet)
+### Experiment: Near-Miss Pressure Reward
+Status: active
+Why:
+Insan sinyalindeki en pozitif an yakin gecislerdi; runtime blokluyken ayni overlay/shell koridoruna donmeden run kimligini ve replay istegini artirabilecek en dar mutation buydu.
+Current Shape:
+- yakin gecen ama carpmayan obstacle artik sahnede kisa `NEAR MISS` pulse'u uretiyor
+- kisa pencere icindeki ardisk close shave'ler kompakt zincir (`2x`, `3x`) olarak gorunuyor
+- pacing, spawn, fairness ve skor kontrati degismiyor; yalnizca hissedilen risk anlari gorunur hale geliyor
+Retention Criteria:
+- fairness guard'larini bozmaz
+- insan gozleminde ucuz degil heyecanli hissettirir
+- run kimligine anlamli katkisi olur
 
 ---
 

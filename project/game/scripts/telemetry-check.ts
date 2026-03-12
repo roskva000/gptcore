@@ -14,6 +14,7 @@ import {
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
+import { createNearMissState, evaluateNearMiss } from '../src/game/nearMiss.ts';
 import {
   isPrimaryPointerDown,
   shouldRequirePointerReleaseAfterPause,
@@ -442,6 +443,67 @@ assert.deepEqual(
   }),
   null,
   'Pointer steering should preserve the dead-zone when the clamped target still sits inside the close-control radius.',
+);
+assert.deepEqual(
+  evaluateNearMiss(
+    {
+      playerPosition: { x: 400, y: 300 },
+      playerVelocity: { x: 0, y: 0 },
+      playerCollisionRadius: 16,
+      obstaclePosition: { x: 435, y: 300 },
+      obstacleVelocity: { x: -120, y: 0 },
+      obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      extraNearMissDistance: 22,
+    },
+    createNearMissState(),
+  ),
+  {
+    currentDistanceSq: 1225,
+    closestDistanceSq: 1225,
+    hadClosingApproach: true,
+    triggered: false,
+  },
+  'Near-miss tracking should arm while a close obstacle is still closing instead of firing too early.',
+);
+assert.deepEqual(
+  evaluateNearMiss(
+    {
+      playerPosition: { x: 400, y: 300 },
+      playerVelocity: { x: 0, y: 0 },
+      playerCollisionRadius: 16,
+      obstaclePosition: { x: 452, y: 300 },
+      obstacleVelocity: { x: 120, y: 0 },
+      obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      extraNearMissDistance: 22,
+    },
+    {
+      closestDistanceSq: 1225,
+      hadClosingApproach: true,
+    },
+  ),
+  {
+    currentDistanceSq: 2704,
+    closestDistanceSq: 1225,
+    hadClosingApproach: true,
+    triggered: true,
+  },
+  'Near-miss tracking should fire once the obstacle exits a close pass after a real closing approach without requiring a collision.',
+);
+assert.equal(
+  evaluateNearMiss(
+    {
+      playerPosition: { x: 400, y: 300 },
+      playerVelocity: { x: 0, y: 0 },
+      playerCollisionRadius: 16,
+      obstaclePosition: { x: 470, y: 300 },
+      obstacleVelocity: { x: 120, y: 0 },
+      obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      extraNearMissDistance: 22,
+    },
+    createNearMissState(),
+  ).triggered,
+  false,
+  'Near-miss tracking should ignore obstacles that only move away without ever threatening the player.',
 );
 
 assert.deepEqual(

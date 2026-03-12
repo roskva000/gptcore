@@ -50,6 +50,7 @@ import {
   type TelemetrySummary,
 } from './telemetry.ts';
 import { getPointerSteeringVelocity } from './pointerSteering.ts';
+import { createNearMissState, evaluateNearMiss } from './nearMiss.ts';
 import {
   isPrimaryPointerDown,
   shouldRequirePointerReleaseAfterPause,
@@ -66,6 +67,9 @@ const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;
 const SURVIVAL_GOAL_HINT_DURATION_MS = 2200;
+const NEAR_MISS_EXTRA_DISTANCE_PX = 22;
+const NEAR_MISS_CHAIN_WINDOW_MS = 1800;
+const NEAR_MISS_HINT_DURATION_MS = 900;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = 2;
 const FATAL_OBSTACLE_DEPTH = 3;
@@ -160,6 +164,7 @@ export class GameScene extends Phaser.Scene {
   private waitingPulseRing!: Phaser.GameObjects.Arc;
   private waitingPulseLabel!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
+  private nearMissText!: Phaser.GameObjects.Text;
   private supportText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
   private hitFlash!: Phaser.GameObjects.Rectangle;
@@ -184,6 +189,9 @@ export class GameScene extends Phaser.Scene {
   private runStartedAt = 0;
   private survivalTime = 0;
   private survivalGoalReachedThisRun = false;
+  private nearMissChainCount = 0;
+  private nearMissChainExpiresAtElapsedMs = 0;
+  private nearMissHintHideAtElapsedMs: number | null = null;
   private runSpawnRerolls = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
@@ -345,6 +353,23 @@ export class GameScene extends Phaser.Scene {
       )
       .setDepth(3)
       .setOrigin(0.5, 0);
+
+    this.nearMissText = this.add
+      .text(ARENA_WIDTH / 2, 208, '', {
+        align: 'center',
+        backgroundColor: '#123f36',
+        color: '#d8fff4',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '18px',
+        fontStyle: 'bold',
+        padding: {
+          x: 12,
+          y: 6,
+        },
+      })
+      .setDepth(4)
+      .setOrigin(0.5)
+      .setVisible(false);
 
     this.supportText = this.add
       .text(
@@ -660,6 +685,7 @@ export class GameScene extends Phaser.Scene {
     const activeRunElapsedMs = this.getActiveRunElapsedMs(time);
     this.survivalTime = activeRunElapsedMs / 1000;
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
+    this.updateNearMissTracking(activeRunElapsedMs);
 
     if (
       this.playingHintHideAtElapsedMs !== null &&
@@ -667,6 +693,14 @@ export class GameScene extends Phaser.Scene {
     ) {
       this.hintText.setVisible(false);
       this.playingHintHideAtElapsedMs = null;
+    }
+
+    if (
+      this.nearMissHintHideAtElapsedMs !== null &&
+      activeRunElapsedMs >= this.nearMissHintHideAtElapsedMs
+    ) {
+      this.nearMissText.setVisible(false).setText('');
+      this.nearMissHintHideAtElapsedMs = null;
     }
 
     if (!this.survivalGoalReachedThisRun && hasReachedSurvivalGoal(this.survivalTime)) {
@@ -854,10 +888,14 @@ export class GameScene extends Phaser.Scene {
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
     this.survivalGoalReachedThisRun = false;
+    this.nearMissChainCount = 0;
+    this.nearMissChainExpiresAtElapsedMs = 0;
+    this.nearMissHintHideAtElapsedMs = null;
     this.runSpawnRerolls = 0;
     this.updateHudChromeVisibility();
     this.scoreText.setText('0.0s');
     this.hintText.setText(this.getPlayingHintText()).setVisible(true);
+    this.nearMissText.setVisible(false).setText('');
     this.supportText.setText(this.getBaseSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
     this.recordRunStart();
@@ -919,6 +957,7 @@ export class GameScene extends Phaser.Scene {
       )
       .setVisible(true);
     this.hintText.setVisible(false);
+    this.nearMissText.setVisible(false).setText('');
     this.supportText.setVisible(false);
     this.survivalTime = pausedAtSeconds;
     this.updateHudChromeVisibility();
@@ -954,6 +993,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody.setVisible(false).setText('');
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
+    this.nearMissText.setVisible(false).setText('');
     this.restorePlayingHintAfterPause();
     this.supportText.setText(this.getBaseSupportText()).setVisible(true);
     this.movementInputWasActive = this.hasMovementInput();
@@ -967,6 +1007,9 @@ export class GameScene extends Phaser.Scene {
     this.nextSpawnTimer = undefined;
     this.physics.world.resume();
     this.playingHintHideAtElapsedMs = null;
+    this.nearMissChainCount = 0;
+    this.nearMissChainExpiresAtElapsedMs = 0;
+    this.nearMissHintHideAtElapsedMs = null;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
     this.pointerSteeringNeedsRelease = false;
@@ -1012,6 +1055,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody.setVisible(false);
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
+    this.nearMissText.setVisible(false).setText('');
     this.movementInputWasActive = this.hasMovementInput();
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsPointerRelease = false;
@@ -1115,6 +1159,8 @@ export class GameScene extends Phaser.Scene {
     obstacleBody.enable = true;
     obstacle.setData('collisionReady', collisionGraceMs === 0);
     obstacle.setData('collisionUnlockElapsedMs', collisionUnlockElapsedMs);
+    obstacle.setData('nearMissConsumed', false);
+    obstacle.setData('nearMissState', createNearMissState());
     obstacle.setData('spawnGraceTween', null);
     obstacle.setVelocity(velocity.x, velocity.y);
 
@@ -1480,6 +1526,7 @@ export class GameScene extends Phaser.Scene {
       .setText(`Retry: ${this.getRetryActionText()}.`)
       .setVisible(true);
     this.hintText.setVisible(false);
+    this.nearMissText.setVisible(false).setText('');
     this.supportText.setText(this.getGameOverSupportText()).setVisible(false);
     this.updateHudChromeVisibility();
   }
@@ -1495,9 +1542,101 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(obstacle);
     obstacle.setData('collisionReady', false);
     obstacle.setData('collisionUnlockElapsedMs', null);
+    obstacle.setData('nearMissConsumed', false);
+    obstacle.setData('nearMissState', createNearMissState());
     obstacle.setData('spawnGraceTween', null);
     obstacle.clearTint().setAlpha(1).setScale(1).setDepth(OBSTACLE_DEPTH).setVelocity(0, 0);
     obstacle.disableBody(true, true);
+  }
+
+  private updateNearMissTracking(activeRunElapsedMs: number): void {
+    const playerBody = this.player.body as Phaser.Physics.Arcade.Body | undefined;
+
+    this.obstacles.children.each((child) => {
+      const obstacle = child as Phaser.Physics.Arcade.Image;
+
+      if (
+        !obstacle.active ||
+        obstacle.getData('nearMissConsumed') === true ||
+        !this.isObstacleCollisionReady(obstacle)
+      ) {
+        return true;
+      }
+
+      const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body | undefined;
+      const previousState = obstacle.getData('nearMissState') as
+        | ReturnType<typeof createNearMissState>
+        | undefined;
+      const nextState = evaluateNearMiss(
+        {
+          playerPosition: { x: this.player.x, y: this.player.y },
+          playerVelocity: {
+            x: playerBody?.velocity.x ?? 0,
+            y: playerBody?.velocity.y ?? 0,
+          },
+          playerCollisionRadius: PLAYER_COLLISION_RADIUS,
+          obstaclePosition: { x: obstacle.x, y: obstacle.y },
+          obstacleVelocity: {
+            x: obstacleBody?.velocity.x ?? 0,
+            y: obstacleBody?.velocity.y ?? 0,
+          },
+          obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+          extraNearMissDistance: NEAR_MISS_EXTRA_DISTANCE_PX,
+        },
+        previousState ?? createNearMissState(),
+      );
+
+      obstacle.setData('nearMissState', {
+        closestDistanceSq: nextState.closestDistanceSq,
+        hadClosingApproach: nextState.hadClosingApproach,
+      });
+
+      if (nextState.triggered) {
+        obstacle.setData('nearMissConsumed', true);
+        this.triggerNearMissFeedback(activeRunElapsedMs);
+      }
+
+      return true;
+    });
+  }
+
+  private triggerNearMissFeedback(activeRunElapsedMs: number): void {
+    const withinChainWindow = activeRunElapsedMs <= this.nearMissChainExpiresAtElapsedMs;
+    this.nearMissChainCount = withinChainWindow ? this.nearMissChainCount + 1 : 1;
+    this.nearMissChainExpiresAtElapsedMs = activeRunElapsedMs + NEAR_MISS_CHAIN_WINDOW_MS;
+    this.nearMissHintHideAtElapsedMs = activeRunElapsedMs + NEAR_MISS_HINT_DURATION_MS;
+
+    this.tweens.killTweensOf(this.nearMissText);
+    this.tweens.killTweensOf(this.player);
+    this.nearMissText
+      .setText(
+        this.nearMissChainCount > 1 ? `${this.nearMissChainCount}x NEAR MISS` : 'NEAR MISS',
+      )
+      .setAlpha(1)
+      .setScale(0.92)
+      .setVisible(true);
+    this.player.clearTint();
+    this.player.setTint(0xd8fff4);
+
+    this.tweens.add({
+      targets: this.nearMissText,
+      scale: 1,
+      alpha: 0.82,
+      duration: 140,
+      ease: 'Quad.Out',
+    });
+    this.tweens.add({
+      targets: this.player,
+      scaleX: 1.08,
+      scaleY: 1.08,
+      duration: 90,
+      yoyo: true,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        this.player.clearTint();
+        this.player.setScale(1);
+      },
+    });
   }
 
   private pauseActiveObstacleSpawnGraceTweens(): void {
@@ -2155,6 +2294,9 @@ export class GameScene extends Phaser.Scene {
     const hudVisible = this.phase === 'waiting' || this.phase === 'playing';
     this.scoreText.setVisible(hudVisible);
     this.bestText.setVisible(hudVisible);
+    if (this.phase !== 'playing') {
+      this.nearMissText.setVisible(false);
+    }
     this.updateWaitingPresentation();
   }
 

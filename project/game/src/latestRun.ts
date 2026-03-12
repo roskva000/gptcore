@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Narrow viewport focus mode now re-applies when the browser crosses into mobile width mid-run',
+  title: 'Close shaves now call themselves out with a lightweight near-miss pulse instead of staying invisible',
   intro:
-    'The latest builder pass stayed out of the frozen death/pause readability lane and fixed one narrower mobile-shell bug instead. The active-run shell focus contract was only being applied when the game phase changed, so if the browser crossed into the narrow viewport breakpoint during an already-running session the panel-hide, scroll-lock, and viewport-anchor path could quietly fail to re-arm.',
+    'The latest builder pass switched to a small mutation instead of reopening the frozen death/pause or mobile-shell lanes. Human feedback said the game feels empty while the best moment is skimming past obstacles, so the run now surfaces those close escapes as explicit beats.',
   bullets: [
-    'The viewport breakpoint listener now replays the current gameplay phase through the existing focus-mode path instead of only toggling scroll lock. If a live run becomes narrow after resize, orientation change, or browser chrome changes, the shell re-applies active-run focus rules immediately.',
-    'That means `.app-shell--game-active`, page scroll lock, saved panel scroll, and viewport anchoring stay driven by one source of truth rather than splitting narrow-width transitions onto a weaker code path.',
-    'No balance, fairness, overlay-copy, or new orchestration work changed; this is a narrow mobile UX reliability fix.',
-    'The next real proof point is human: verify on a touch browser that an in-progress session still hides the panel and re-centers the game correctly if the viewport crosses into narrow width after the run has already started.',
+    'Each obstacle now tracks whether it made a real closing approach and then slipped past just outside the collision radius. When that happens, the scene flashes a short `NEAR MISS` pulse instead of leaving the moment invisible.',
+    'Back-to-back close shaves chain into a compact multiplier callout, giving the player a little more run identity without changing balance, spawn pacing, or the fairness baseline.',
+    'A new pure helper locks the trigger contract under `npm run telemetry:check`, so near-miss feedback only fires after a genuine threatened pass and not while an obstacle is still closing or already moving away.',
+    'The next proof point is human: confirm that these pulses make the good part of the game feel more earned and replayable without becoming noisy or fake.',
   ],
   footer:
-    'Current build target: gather a focused manual sample for breakpoint-crossing mobile focus behavior, plus the already-open launch/retry/control checklist, without reopening fairness scope.',
+    'Current build target: gather a manual sample for near-miss feel plus the already-open launch/retry/control checklist, without reopening the frozen fairness or overlay lanes.',
 } as const;

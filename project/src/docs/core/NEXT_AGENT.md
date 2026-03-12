@@ -5,6 +5,7 @@
 - Audit verdict `proxy-overfit`. Run #121-#129 death/pause readability zincirini yeni sample olmadan tekrar acma.
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
+- Run #145 near-miss pulse davranisi source/build seviyesinde acildi; bunu sample almadan "run artik daha heyecanli" diye yorumlama.
 - Run #144 breakpoint-crossing focus-mode davranisi source/build seviyesinde acildi; bunu sample almadan "orientation/resize sonrasi mobil focus artik cozuldu" diye yorumlama.
 - Run #143 non-active canvas overscroll-chain davranisi source/build seviyesinde acildi; bunu sample almadan "canvas ustunden scroll artik tamamen dogal" diye yorumlama.
 - Run #142 non-active canvas scroll davranisi source/build seviyesinde acildi; bunu sample almadan "mobil launch/retry akisi artik rahat kayiyor" diye yorumlama.
@@ -21,12 +22,14 @@
 
 ## Recommended Next Task
 
-Run mode: `stabilization`
+Run mode: `integration`
 
 Ana hedef:
-Run #137 waiting/start launch surface ile birlikte Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133, Run #134, Run #135 ve Run #136 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu, waiting veya game-over ekraninda swipe canvas ustunde baslasa bile panel akisi dogal kayiyor mu, swipe zinciri canvas kenarinda hapsolmuyor mu, panelin altlarindayken start/pause ile viewport oyuna geri geliyor mu, run aktifken panel gercekten cekiliyor mu, run zaten aktifken orientation/resize/browser chrome degisimi viewport'u dar moda iterse panel yeniden kapanip viewport canvas'a hizalaniyor mu, waiting/game-over'a donunce panel scroll konumu dogal sekilde geri geliyor mu, run baslayinca canvas yeniden scroll yerine input'a adanmis kaliyor mu, sayfa scroll'u kilitlenip browser chrome/page drag daha az mudahale ediyor mu, panel/browser chrome/scroll degisimlerinden sonra pointer hizasi korunuyor mu, blur/refocus veya app-switch sonrasi released movement tuslari hayalet movement uretmiyor mu ve gesture/interruption sonrasi stale press kalmadan retry/resume/steer geri geliyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
+Run #145 near-miss pulse'unu Run #137 waiting/start launch surface ve Run #132-#144 mobil shell/input checklist'iyle ayni touch-capable sample icinde dogrula: yakin gecen ama carpmayan obstacle pulse'u gercekten close shave anini belirginlestiriyor mu, zincirli `2x` / `3x` callout earned hissettiriyor mu, gereksiz gurultu yaratiyor mu; ayni seansta canvas ilk ekranda daha gorunur kaliyor mu, waiting veya game-over ekraninda swipe canvas ustunde baslasa bile panel akisi dogal kayiyor mu, panelin altlarindayken start/pause ile viewport oyuna geri geliyor mu, run aktifken panel gercekten cekiliyor mu, orientation/resize/browser chrome degisimi dar moda iterse focus-mode yeniden kuruluyor mu, pointer hizasi korunuyor mu, blur/refocus veya app-switch sonrasi stale movement ya da stale press kalmiyor mu ve Run #125-#129 death/pause overlay sakinligi ikinci insan sinyalinde daha okunur gorunuyor mu kontrol et.
 
 Baglam:
+- Run #145 `project/game/src/game/nearMiss.ts` helper'i obstacle'in gercekten kapanip carpmadan gecmesini izliyor; `project/game/src/game/GameScene.ts` artik yakin gecislerde kisa `NEAR MISS` / `2x`, `3x` pulse'u uretiyor.
+- Mutation pacing, fairness, spawn veya skor kontratini degistirmedi; yalnizca close shave anlarini gorunur hale getirdi.
 - Run #137 `project/game/src/game/GameScene.ts` waiting fazina yeni bir launch paneli, `Break 10s. Then chase 60.` basligi ve oyuncu spawn noktasini isaretleyen pulse marker ekledi.
 - Waiting hint text artik kontrol bilgisini ayri iki satira boluyor; alt support satiri da daha kompakt `goal / export / reset` ozetine cekildi.
 - `project/game/src/latestRun.ts` stale death-screen anlatimini kaldirip public paneli opening-surface degisikligiyle hizaladi.
@@ -60,6 +63,9 @@ Baglam:
 - Bu ortamda headed runtime bloklu oldugu icin builder burada yeni sample alamadi; asil eksik halen insan dogrulamasi.
 
 Minimum sample checklist:
+- yakin gecen ama carpmayan obstacle pulse'u gercekten iyi bir "close shave" hissi veriyor mu
+- zincirli `2x` / `3x` near-miss pulse'u replay istegini artiriyor mu, yoksa yapay mi hissettiriyor
+- near-miss pulse'u ekran gurultusunu arttiriyor mu, yoksa yeterince kisa ve net mi kaliyor
 - panelin altlarinda scroll durumundayken run baslatildiginda viewport tekrar oyunun ustune geliyor mu
 - panelin altlarinda scroll durumundayken pause'a girince canvas odagi korunuyor mu
 - waiting veya game-over'a donunce onceki panel scroll konumu geri geliyor mu, yoksa AI paneli okumasi sifirdan mi basliyor
@@ -103,6 +109,7 @@ Minimum sample checklist:
 
 - Run #101-#119 fairness/input/control zincirine geri donme.
 - Telemetry/public-copy wording churn'u veya governance expansion acma.
+- Run #145 near-miss pulse'unu sample olmadan scoring/combo/meta katmanina buyutme.
 - Run #137 waiting launch surface'i sample olmadan tekrar tekrar cilalama.
 - Run #138 active-run panel hide/focus mode'unu sample olmadan yeni shell/orchestration katmanlariyla buyutme.
 - Run #139 active-run scroll lock davranisini sample olmadan yeni shell/orchestration katmanlariyla buyutme.
@@ -120,6 +127,7 @@ Minimum sample checklist:
 
 ## Success Criteria
 
+- `HUMAN_SIGNALS.md` icinde Run #145 near-miss pulse'u icin keep/tune/revert karari var
 - `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi
