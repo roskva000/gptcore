@@ -143,6 +143,9 @@ export class GameScene extends Phaser.Scene {
   private readonly handlePointerRelease = (): void => {
     this.pointerCancellationActive = false;
   };
+  private resetKeyboardState(): void {
+    this.input.keyboard?.resetKeys();
+  }
   private player!: Phaser.Physics.Arcade.Image;
   private obstacles!: Phaser.Physics.Arcade.Group;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -879,6 +882,7 @@ export class GameScene extends Phaser.Scene {
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsMovementRelease = movementInputActive;
     this.pauseResumeNeedsPointerRelease = pointerInputActive;
+    this.resetKeyboardState();
     this.pauseStartedAt = this.time.now;
     this.physics.world.pause();
     if (this.nextSpawnTimer) {

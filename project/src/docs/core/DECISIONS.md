@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #141]
+
+Decision:
+Focus-loss pause'a girerken aktif movement snapshot'i alindiktan sonra Phaser `keyboard.resetKeys()` cagrilacak; blur sirasinda pencere disinda birakilan tuslar stale `isDown` state'i olarak tasinmayacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridorunu yeni sample olmadan tekrar acmayi yasakliyor; headed runtime da halen bloklu. Mevcut source blur veya `visibilitychange` aninda sadece physics'i durdurup overlay aciyordu, fakat sahne Phaser acisindan pause/sleep edilmedigi icin engine'in otomatik keyboard reset korumasi devreye girmiyordu. Bu da movement tusu fokus disinda birakildiginda resume sonrasi hayalet movement veya takili held-input friksiyonu uretebilecek dar ama gercek bir replay/control kusuru olarak secildi.
+
+Impact:
+`project/game/src/game/GameScene.ts` blur ile pause'a girerken once movement-release gereksinimini snapshot'liyor, sonra keyboard state'i sifirliyor. Boylece stale key state'i pause/resume ve retry hissine sizmiyor. `project/game/src/latestRun.ts` public paneli yeni davranisla hizaladi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample keyboard reset'inin blur sonrasi mesru held-movement resume beklentisini gereksiz sertlestirdigini veya desktop fokus gecislerinde beklenmedik input kaybi yarattigini gosterirse yalnizca blur-time keyboard reset kapsami dar kapsamda ayarlanir; overlay copy churn'u, fairness tuning veya yeni orchestration/readiness katmani bu bahaneyle acilmaz.
+
 ### [Run #140]
 
 Decision:

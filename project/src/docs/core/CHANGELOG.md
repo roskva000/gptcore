@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #141
+
+- `project/game/src/game/GameScene.ts` focus-loss pause'a girerken yeni `resetKeyboardState()` helper'ini cagiriyor; blur veya `visibilitychange` sirasinda stale kalan Phaser movement key state'i temizleniyor
+- ayni dosya movement-release snapshot'ini keyboard reset'ten once alip mevcut safety guard'i koruyor; ama kullanici tusu pencere disinda biraktiginda resume sonrasi hayalet movement tasinmamasi hedefleniyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu yeni focus-loss keyboard-reset davranisiyla hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #140
 
 - `project/game/src/main.ts` narrow viewport'ta aktif `playing` / `paused` fazina girerken mevcut sayfa scroll konumunu sakliyor ve bir sonraki frame'de viewport'u `#game-root` hizasina geri cekiyor; run panelin altlarindan baslatilsa bile canvas odagi tekrar gorunur kalmaya calisiliyor

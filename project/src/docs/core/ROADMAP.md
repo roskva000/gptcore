@@ -4,7 +4,7 @@
 
 # NOW
 
-- Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
+- Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
 - Sample checklist:
   - panelin altlarindayken run baslatildiginda viewport canvas'a geri geliyor mu, yoksa aktif run halen panel offset'inde mi aciliyor
   - waiting veya game-over'a donunce onceki panel scroll konumu dogal sekilde geri geliyor mu, yoksa okuyucuyu tepeden baslatip akisi bozuyor mu
@@ -24,6 +24,8 @@
   - held touch steering run basladiktan sonra stale mouse-button state'ine takilmadan devam ediyor mu
   - game-over sonrasi retry touch ile hafif ve tutarli mi
   - browser gesture, callout veya sistem interruption `pointercancel` / `touchcancel` urettiginde stale press steering/retry/resume guard'larini kilitliyor mu
+  - tab, adres cubugu, pencere blur'u veya uygulama switch sonrasi fiziksel olarak birakilmis movement tuslari halen basiliymis gibi hayalet movement uretiyor mu
+  - blur/refocus sonrasi movement-temelli resume/retry akisi gereksiz release ya da ikinci deneme friksiyonu uretiyor mu
   - focus-loss / refocus sonrasi pointer zaten basili degilse resume ilk tap ile geri geliyor mu
   - focus-loss / refocus pointer basiliyken olursa yine release isteyip kazara resume'u engelliyor mu
   - death overlay artik olum nedeni, retry aksiyonu ve kacis yonunu daha rahat okutuyor mu
@@ -35,7 +37,7 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run focus mode, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run focus mode, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - En az `npm run build` yesil kaldi; gameplay mantigi degisirse ilgili deterministic check de yeniden yesil kaldi.
 
 ---
@@ -47,6 +49,7 @@ Success markers:
 - Manuel sample varsa Run #138 active-run panel hide/focus mode'unu keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #139 active-run scroll lock davranisini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #140 viewport-anchor + panel-scroll-restore davranisini keep/tune/revert formatinda insan notuyla bagla.
+- Manuel sample varsa Run #141 blur-sonrasi keyboard reset davranisini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #133 viewport-fit duzeltmesini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #134 scale-refresh senkronunu keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #135 scroll/viewport-position refresh guard'ini keep/tune/revert formatinda insan notuyla bagla.
@@ -59,7 +62,7 @@ Success markers:
 - Sample olursa pause-state chrome gizleme ve Run #128 pause copy kisalmasi kararlarini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa Run #127 `Session snapshot` sadeleştirmesini de keep/tune/revert formatinda insan notuyla bagla.
 - Public panel copy'sini tekrar acmadan once yeni source delta veya yeni insan kaniti olsun; stale-drift bug'i yeniden uretme.
-- Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara.
+- Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara; Run #141 blur-key reset hattini yeni shell/input orchestration katmanlariyla buyutme.
 - Seed `#3` opener fairness paketini ancak manuel evidence veya yeni dar hipotez varsa yeniden ac.
 
 ---

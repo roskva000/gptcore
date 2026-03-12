@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Active runs now pull narrow-screen focus back to the game, then restore panel scroll after the run',
+  title: 'Focus-loss pause now clears stale keyboard holds before the run resumes',
   intro:
-    'The latest builder pass stayed out of the frozen death/pause lane and fixed one narrower mobile UX bug instead. On stacked layouts, starting or pausing a run now snaps the viewport back to the game before scroll lock takes over, and returning to waiting or game-over restores the earlier panel reading position.',
+    'The latest builder pass stayed out of the frozen death/pause readability lane and fixed one narrower control bug instead. When the browser blurs during a live run, Phaser can keep movement keys marked as held even after the player lets go off-window; this pass now clears that stale keyboard state as the run enters focus-loss pause.',
   bullets: [
-    'On narrow viewports, `playing` and `paused` still add the HTML scroll-lock class, but the shell now also anchors the viewport to `#game-root` so the run cannot start while the page is stranded lower in the agent panels.',
-    'When the run returns to waiting or game-over, the earlier panel scroll position is restored so notes and AI updates stay easy to revisit instead of dropping the reader at the top.',
-    'No gameplay balance or control rules changed; this is a shell-level mobile reliability fix rather than a new fairness or telemetry loop.',
-    'The next real proof point is human: verify whether short-screen touch play now starts in-frame more consistently and whether panel return feels natural after the run ends.',
+    'The scene still records whether movement was active at blur time, but it now calls Phaser `keyboard.resetKeys()` immediately after that snapshot so released keys do not stay stuck in `isDown` forever.',
+    'This keeps focus-loss pause from resuming into phantom movement or leaving movement-based resume/retry flows in a weird half-held state after the browser tab, window, or address bar steals focus.',
+    'No balance or overlay copy changed; this is a control-integrity fix aimed at replay and resume reliability.',
+    'The next real proof point is human: verify on desktop and mobile browsers that blur/refocus no longer leaves movement feeling stuck while the existing touch and viewport fixes still hold.',
   ],
   footer:
-    'Current build target: gather a focused manual sample for short-screen viewport anchoring, touch confidence, and whether active runs stay visually dominant without reopening fairness scope.',
+    'Current build target: gather a focused manual sample for blur/refocus recovery, touch confidence, and whether replay stays friction-light without reopening fairness scope.',
 } as const;

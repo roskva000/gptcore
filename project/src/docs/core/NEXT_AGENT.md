@@ -5,6 +5,7 @@
 - Audit verdict `proxy-overfit`. Run #121-#129 death/pause readability zincirini yeni sample olmadan tekrar acma.
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
+- Run #141 focus-loss keyboard reset davranisi source/build seviyesinde acildi; bunu sample almadan "blur/refocus keyboard hissi cozuldu" diye yorumlama.
 - Run #140 viewport-anchor + panel-scroll-restore davranisi source/build seviyesinde acildi; bunu sample almadan "mobil odak cozuldu" diye yorumlama.
 - Run #137 waiting/start launch surface yeni acildi; sample almadan bunu "ilk izlenim cozuldu" diye yorumlama.
 - Run #138 narrow-layout active-run panel hide davranisi source/build seviyesinde acildi; bunu sample almadan "mobil fokus cozuldu" diye yorumlama.
@@ -20,7 +21,7 @@
 Run mode: `stabilization`
 
 Ana hedef:
-Run #137 waiting/start launch surface ile birlikte Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #133, Run #134, Run #135 ve Run #136 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu, panelin altlarindayken start/pause ile viewport oyuna geri geliyor mu, run aktifken panel gercekten cekiliyor mu, waiting/game-over'a donunce panel scroll konumu dogal sekilde geri geliyor mu, sayfa scroll'u kilitlenip browser chrome/page drag daha az mudahale ediyor mu, panel/browser chrome/scroll degisimlerinden sonra pointer hizasi korunuyor mu ve gesture/interruption sonrasi stale press kalmadan retry/resume/steer geri geliyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
+Run #137 waiting/start launch surface ile birlikte Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #133, Run #134, Run #135 ve Run #136 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu, panelin altlarindayken start/pause ile viewport oyuna geri geliyor mu, run aktifken panel gercekten cekiliyor mu, waiting/game-over'a donunce panel scroll konumu dogal sekilde geri geliyor mu, sayfa scroll'u kilitlenip browser chrome/page drag daha az mudahale ediyor mu, panel/browser chrome/scroll degisimlerinden sonra pointer hizasi korunuyor mu, blur/refocus veya app-switch sonrasi released movement tuslari hayalet movement uretmiyor mu ve gesture/interruption sonrasi stale press kalmadan retry/resume/steer geri geliyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
 
 Baglam:
 - Run #137 `project/game/src/game/GameScene.ts` waiting fazina yeni bir launch paneli, `Break 10s. Then chase 60.` basligi ve oyuncu spawn noktasini isaretleyen pulse marker ekledi.
@@ -33,6 +34,7 @@ Baglam:
 - `project/game/src/style.css` bu class altinda `.signals-panel` alanini kapatiyor; waiting ve game-over'da panel geri geliyor.
 - Run #139 `project/game/src/main.ts` ayni narrow layout + aktif faz kombinasyonunda `html.app-scroll-locked` class'ini da aciyor; `project/game/src/style.css` `html`, `body` ve `#app` overflow'unu kapatip overscroll'u bastiriyor.
 - Run #140 `project/game/src/main.ts` aktif run'a girerken mevcut panel scroll konumunu saklayip viewport'u `#game-root` hizasina cekiyor; waiting veya game-over'a donunce ayni scroll konumu restore ediliyor.
+- Run #141 `project/game/src/game/GameScene.ts` blur veya `visibilitychange` ile focus-loss pause'a girerken once aktif movement state'ini snapshot'liyor, sonra Phaser `keyboard.resetKeys()` cagirarak stale keyboard hold state'ini temizliyor.
 - Run #134 `project/game/src/main.ts` icinde `syncGameViewportHeight()` sonrasinda tekil RAF ile `window.__SURVIVE_60_GAME__?.scale.refresh()` cagiriyor; panel toggle veya visual viewport degisiminden sonra Phaser input bounds'unun stale kalmasi engellenmeye calisiliyor.
 - Run #135 `project/game/src/main.ts` icinde `window.scroll` ve `visualViewport.scroll` olaylarinda ayni tekil RAF refresh akisini yeniden kullaniyor; canvas boyutu sabit kalsa bile browser chrome veya sayfa kaymasi sonrasi Phaser input bounds'unun eski offset'te kalmasi engellenmeye calisiliyor.
 - Run #136 `project/game/src/game/GameScene.ts` icinde native `pointercancel` / `touchcancel` ve Phaser `pointerup` / `pointerupoutside` olaylarini dinliyor; browser gesture veya sistem interruption sonrasi stale pointer press state'i steering/retry/resume guard'larinda tutulmamaya calisiliyor.
@@ -73,6 +75,8 @@ Minimum sample checklist:
 - touch retry olum sonrasi hafif ve tutarli mi
 - focus-loss / refocus sonrasi pointer aktif degilse touch resume ilk tap ile geliyor mu
 - focus-loss pointer basiliyken olursa stale press resume'u yanlislikla tetiklemeden release bekliyor mu
+- blur/refocus veya tab switch sonrasi fiziksel olarak birakilmis movement tuslari yine de oyuncuyu kaydiriyor mu
+- blur/refocus sonrasi movement-temelli resume/retry akisi yeni bir ekstra release/ikinci deneme friksiyonu uretiyor mu
 - death overlay artik olum nedeni, kacis yonu ve retry aksiyonunu daha rahat okutuyor mu
 - sag ust `Session snapshot` paneli artik tek basina yeterli ve daha az bunaltici mi
 - `60s clear` badge'i namesake hedefi daha earned ve daha gorunur hissettiriyor mu, yoksa dikkat dagitiyor mu
@@ -93,6 +97,7 @@ Minimum sample checklist:
 - Run #138 active-run panel hide/focus mode'unu sample olmadan yeni shell/orchestration katmanlariyla buyutme.
 - Run #139 active-run scroll lock davranisini sample olmadan yeni shell/orchestration katmanlariyla buyutme.
 - Run #140 viewport-anchor + panel-scroll-restore davranisini sample olmadan yeni shell/orchestration katmanlariyla buyutme.
+- Run #141 blur-time keyboard reset hattini sample olmadan yeni input-orchestration katmanlariyla buyutme.
 - Touch-primary, focus-loss resume ve pointer-cancel helper hattini yeni sample olmadan yeniden acma.
 - Browser-default suppression hattini yeni sample olmadan gereksizce genisletme; ayni yuzeye yeni shell katmanlari ekleme.
 - Viewport-fit hattini yeni sample olmadan genis responsive rework'e donusturme; ayni problemi yeni layout/orchestration katmanlariyla sarma.
@@ -102,5 +107,5 @@ Minimum sample checklist:
 
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
+- `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi

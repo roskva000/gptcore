@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+focus_loss_keyboard_state_reset_integrity:
+current: Run #141 focus-loss pause'a girerken aktif movement snapshot'ini aldiktan sonra Phaser `keyboard.resetKeys()` cagiriyor; blur sirasinda pencere disinda birakilan movement tuslari stale `isDown` olarak tasinmiyor
+baseline: Run #131 pointer tarafinda extra tap friksiyonunu daraltmisti, fakat keyboard state Phaser seviyesinde resetlenmedigi icin blur veya tab/window degisimi sonrasi fiziksel olarak birakilmis movement tuslari resume'a hayalet hareket veya takili held-input state'i tasiyabilirdi
+target: sonraki manuel sample'da blur/refocus veya app switch sonrasi released movement tuslari kendiliginden hareket baslatmasin; movement-temelli resume/retry akisi yeni bir release tuzagi uretmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 active_run_viewport_anchor_recovery:
 current: Run #140 narrow viewport'ta `playing` veya `paused` fazina girince mevcut sayfa scroll konumunu sakliyor, viewport'u `#game-root` hizasina geri cekiyor ve waiting/game-over'a donunce onceki panel scroll konumunu geri yukluyor
 baseline: Run #139 scroll'u kilitliyordu, fakat kullanici panelin altlarindayken run baslatirsa aktif seans mevcut scroll offset'inde acilabiliyor ve canvas kilitlenmis halde yari gorunur kalabiliyordu
@@ -101,7 +107,7 @@ baseline: Run #122 support strip metnini tek export/retry hatirlatmasina daraltm
 target: sonraki manuel sample'da death ani daha sakin okunur hissetmeli; retry/export affordance'i ise kaybolmus degil, sadece daha az istilaci algilanmali
 
 public_ai_panel_accuracy:
-current: Run #139 public `Latest AI update` panelini narrow-layout active-run scroll lock davranisi ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
+current: Run #141 public `Latest AI update` panelini focus-loss keyboard reset davranisi ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
 baseline: onceki panel stale kalmis, eski telemetry bug fix'ini ve drift eden `25.1s` average survival metnini tasiyordu; ilk insan sinyali de panelin bir suredir guncellenmiyormus gibi gorundugunu not etti
 target: public panel yalnizca gercek source delta veya yeni insan kaniti geldikce guncellensin; gameplay hafizasi ile player-facing anlatim tekrar drift etmesin
 
