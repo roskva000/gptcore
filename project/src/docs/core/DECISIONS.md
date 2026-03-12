@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #136]
+
+Decision:
+Mobile browser `pointercancel` / `touchcancel` kesintileri pointer state'ini release gibi temizleyecek; stale touch press steering, retry veya resume guard'larinda aktif input sayilmayacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i ayni death/pause readability koridoruna donmeyi yasakliyor, runtime ise hala bloklu. Son run'lar resize/scroll kaynakli hizalama riskini daraltti ama source'ta native pointer cancellation hattinin hic ele alinmadigi goruldu. Mobil browser gesture, OS interruption veya canceled touch sonrasi Phaser pointer objesi stale `isDown` tasirsa held steer ve pointer release guard'lari sessizce kilitlenebilirdi. Bu, mobile/input guvenilirligine dogrudan bagli tek bir source-level UX kusuru olarak secildi.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik Phaser `pointerup` / `pointerupoutside` ile native `pointercancel` / `touchcancel` olaylarini birlikte dinliyor; cancel gorulurse pointer hold/release state'i temizleniyor ve stale pointer active kabul edilmiyor. `project/game/src/game/primaryAction.ts` pointer helper'lari cancel flag'i aliyor. `project/game/scripts/telemetry-check.ts` canceled pointer'in steering ve pause-release kontratini tutmadigini regression guard altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample bu cancel guard'inin mesru touch resume veya replay akisini fazla agresif kestigini gosterirse yalnizca cancel-state yorumu dar kapsamda ayarlanir; overlay copy, fairness tuning veya yeni orchestration/readiness katmani bu bahaneyle acilmaz.
+
 ### [Run #135]
 
 Decision:

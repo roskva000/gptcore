@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+pointer_cancel_release_integrity:
+current: Run #136 native `pointercancel` / `touchcancel` sonrasi GameScene pointer hold/release state'ini temizliyor ve primary pointer helper'lari canceled pointer'i release gibi yorumluyor
+baseline: onceki source hattinda cancel edilmis touch/pointer icin ayrik guard yoktu; mobile browser gesture veya sistem interruption sonrasi Phaser pointer stale `isDown` tasirsa steering veya retry/resume gate'i gereksiz kilitlenebilirdi
+target: sonraki manuel sample'da browser gesture, touch callout veya sistem interruption sonrasi stale press steering/retry/resume akisini kilitlemesin; keep/tune/revert karari insan notuyla verilsin
+validation: `npm run telemetry:check`, `npm run build`
+
 viewport_position_bounds_sync:
 current: Run #135 `window.scroll` ve `visualViewport.scroll` olaylarinda da mevcut RAF tabanli Phaser `scale.refresh()` akisina giriyor; canvas boyutu degismese bile sayfa offset'i veya mobile browser chrome konumu degistiginde input/scale bounds daha hizli tazeleniyor
 baseline: Run #134 resize, panel toggle ve visual viewport resize sonrasi stale bounds riskini daraltmisti, fakat canvas'in sayfadaki konumu sadece scroll veya viewport-origin kaymasiyla degistiginde Phaser bounds eski offset'te kalabilirdi

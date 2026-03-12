@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #136
+
+- `project/game/src/game/GameScene.ts` artik Phaser `pointerup` / `pointerupoutside` ile native `pointercancel` / `touchcancel` olaylarini birlikte dinliyor; mobile browser gesture veya sistem interruption sonrasi stale pointer press state'i steering/retry/resume guard'larinda tasinmiyor
+- ayni dosya canceled pointer gorulurse pointer-held zamanlayicisini ve pointer release gate'lerini temizliyor; aktif movement yoksa oyuncu velocity'si de sifirlaniyor
+- `project/game/src/game/primaryAction.ts` `isPrimaryPointerDown()` ve `shouldRequirePointerReleaseAfterPause()` helper'larina cancel flag'i ekledi; stale Phaser pointer state'i source tarafinda release gibi yorumlaniyor
+- `project/game/scripts/telemetry-check.ts` canceled touch pointer icin yeni regression assert'leri ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
 ## Run #135
 
 - `project/game/src/main.ts` artik `window.scroll` ve `visualViewport.scroll` olaylarinda da tekil RAF tabanli Phaser `scale.refresh()` planliyor; canvas boyutu degismese bile sayfa scroll'u veya browser chrome yer kaymasi sonrasi stale input bounds riski azaltiliyor

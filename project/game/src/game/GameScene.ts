@@ -112,6 +112,7 @@ export class GameScene extends Phaser.Scene {
   private movementInputWasActive = false;
   private movementHoldActionStartedAt: number | null = null;
   private pointerHoldActionStartedAt: number | null = null;
+  private pointerCancellationActive = false;
   private pointerSteeringNeedsRelease = false;
   private pauseResumeNeedsMovementRelease = false;
   private pauseResumeNeedsPointerRelease = false;
@@ -127,6 +128,20 @@ export class GameScene extends Phaser.Scene {
   };
   private readonly handleWindowBlur = (): void => {
     this.pauseRunForFocusLoss();
+  };
+  private readonly handleNativePointerCancel = (): void => {
+    this.pointerCancellationActive = true;
+    this.pointerHoldActionStartedAt = null;
+    this.pointerSteeringNeedsRelease = false;
+    this.pauseResumeNeedsPointerRelease = false;
+    this.gameOverRetryNeedsPointerRelease = false;
+
+    if (this.phase === 'playing' && !this.hasMovementInput()) {
+      this.player.setVelocity(0, 0);
+    }
+  };
+  private readonly handlePointerRelease = (): void => {
+    this.pointerCancellationActive = false;
   };
   private player!: Phaser.Physics.Arcade.Image;
   private obstacles!: Phaser.Physics.Arcade.Group;
@@ -488,8 +503,12 @@ export class GameScene extends Phaser.Scene {
     keyboard.on('keydown-C', this.handleTelemetryLog, this);
     keyboard.on('keydown-V', this.handleValidationExport, this);
     this.input.on('pointerdown', this.handlePointerPrimaryAction, this);
+    this.input.on('pointerup', this.handlePointerRelease, this);
+    this.input.on('pointerupoutside', this.handlePointerRelease, this);
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
     window.addEventListener('blur', this.handleWindowBlur);
+    this.input.manager.canvas?.addEventListener('pointercancel', this.handleNativePointerCancel);
+    this.input.manager.canvas?.addEventListener('touchcancel', this.handleNativePointerCancel);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupFocusListeners, this);
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanupFocusListeners, this);
   }
@@ -614,6 +633,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePointerPrimaryAction(pointer: Phaser.Input.Pointer): void {
+    this.pointerCancellationActive = false;
+
     if (!shouldHandlePrimaryActionPointer(pointer)) {
       return;
     }
@@ -725,6 +746,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pointerCancellationActive = false;
     this.pointerSteeringNeedsRelease = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
@@ -755,7 +777,10 @@ export class GameScene extends Phaser.Scene {
     const pausedAtSeconds = this.getCurrentSurvivalTimeSeconds();
     this.phase = 'paused';
     const movementInputActive = this.hasMovementInput();
-    const pointerInputActive = shouldRequirePointerReleaseAfterPause(this.input.activePointer);
+    const pointerInputActive = shouldRequirePointerReleaseAfterPause(
+      this.input.activePointer,
+      this.pointerCancellationActive,
+    );
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsMovementRelease = movementInputActive;
@@ -815,6 +840,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'playing';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pointerCancellationActive = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.physics.world.resume();
@@ -1053,7 +1079,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private hasConfirmedHeldPointerInput(time: number): boolean {
-    if (!isPrimaryPointerDown(this.input.activePointer)) {
+    if (!isPrimaryPointerDown(this.input.activePointer, this.pointerCancellationActive)) {
       this.pointerHoldActionStartedAt = null;
       this.pointerSteeringNeedsRelease = false;
       this.pauseResumeNeedsPointerRelease = false;
@@ -1080,7 +1106,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private armPointerSteeringGuardAfterActivation(source: PrimaryActionSource): void {
-    if (!isPrimaryPointerDown(this.input.activePointer) || source === 'pointer-held') {
+    if (
+      !isPrimaryPointerDown(this.input.activePointer, this.pointerCancellationActive) ||
+      source === 'pointer-held'
+    ) {
       return;
     }
 
@@ -1153,7 +1182,7 @@ export class GameScene extends Phaser.Scene {
 
     const pointer = this.input.activePointer;
 
-    if (!isPrimaryPointerDown(pointer)) {
+    if (!isPrimaryPointerDown(pointer, this.pointerCancellationActive)) {
       this.pointerSteeringNeedsRelease = false;
       this.pointerHoldActionStartedAt = null;
       this.player.setVelocity(0, 0);
@@ -1232,7 +1261,10 @@ export class GameScene extends Phaser.Scene {
 
     this.survivalTime = this.getCurrentSurvivalTimeSeconds();
     const movementInputActive = this.hasMovementInput();
-    const pointerInputActive = isPrimaryPointerDown(this.input.activePointer);
+    const pointerInputActive = isPrimaryPointerDown(
+      this.input.activePointer,
+      this.pointerCancellationActive,
+    );
     const fatalObstacle = this.resolveFatalObstacle(
       obstacleGameObject as Phaser.Physics.Arcade.Image,
     );
@@ -1252,6 +1284,7 @@ export class GameScene extends Phaser.Scene {
     this.phase = 'gameOver';
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
+    this.pointerCancellationActive = false;
     this.pointerSteeringNeedsRelease = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
@@ -2232,7 +2265,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private cleanupFocusListeners(): void {
+    this.input.off('pointerup', this.handlePointerRelease, this);
+    this.input.off('pointerupoutside', this.handlePointerRelease, this);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     window.removeEventListener('blur', this.handleWindowBlur);
+    this.input.manager.canvas?.removeEventListener('pointercancel', this.handleNativePointerCancel);
+    this.input.manager.canvas?.removeEventListener('touchcancel', this.handleNativePointerCancel);
   }
 }

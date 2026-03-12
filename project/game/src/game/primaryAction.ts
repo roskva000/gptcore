@@ -33,7 +33,12 @@ export const isPrimaryPointerDown = (
     Phaser.Input.Pointer,
     'isDown' | 'button' | 'event' | 'wasTouch' | 'primaryDown'
   > | null,
+  pointerWasCancelled = false,
 ): boolean => {
+  if (pointerWasCancelled) {
+    return false;
+  }
+
   if (!pointer?.isDown) {
     return false;
   }
@@ -64,4 +69,5 @@ export const shouldRequirePointerReleaseAfterPause = (
     Phaser.Input.Pointer,
     'isDown' | 'button' | 'event' | 'wasTouch' | 'primaryDown'
   > | null,
-): boolean => isPrimaryPointerDown(pointer);
+  pointerWasCancelled = false,
+): boolean => isPrimaryPointerDown(pointer, pointerWasCancelled);

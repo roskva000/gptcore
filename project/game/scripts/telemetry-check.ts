@@ -185,6 +185,19 @@ assert.equal(
   'Held touch input should keep steering/retry eligibility even if cached mouse-button state looks secondary.',
 );
 assert.equal(
+  isPrimaryPointerDown(
+    {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+    },
+    true,
+  ),
+  false,
+  'Canceled touch input should be treated as released so stale pointer state cannot keep steering or retry guards armed.',
+);
+assert.equal(
   isPrimaryPointerDown({
     isDown: true,
     wasTouch: true,
@@ -211,6 +224,18 @@ assert.equal(
   }),
   true,
   'Focus-loss pause should still require a release when a touch pointer was already holding input.',
+);
+assert.equal(
+  shouldRequirePointerReleaseAfterPause(
+    {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+    },
+    true,
+  ),
+  false,
+  'Canceled touch input should not force a stale release gate after focus loss or browser gesture interruption.',
 );
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');
