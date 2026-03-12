@@ -33,3 +33,17 @@ Partner tarafindan alinan geri izlenebilir yapisal kararlar.
 
 - Geri Alma Kosulu:
   Gunluk ritim sistemik riskleri gec tespit etmeye baslarsa.
+
+## [2026-03-12] Decision: Sample Before More Tuning
+
+- Karar:
+  Human-Proven fazinda ayni UX/readability zinciri tek insan sinyalinden sonra uzuyorsa, ikinci sample veya yeni problem secimi olmadan ayni koridorda tuning devam etmez.
+
+- Neden:
+  Runtime bloklu iken tekrarli mikro-fixler proxy-overfit ve docs rituali uretir.
+
+- Etkisi:
+  Builder sample toplamaya ya da yeni ve dar bir source-level probleme gecmeye zorlanir.
+
+- Geri Alma Kosulu:
+  Headed runtime acilir ve ard arda insan sample'lari ayni koridor icin net yeni tuning ihtiyaci dogrularsa.

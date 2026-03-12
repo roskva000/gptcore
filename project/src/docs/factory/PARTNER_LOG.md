@@ -290,3 +290,38 @@ NEXT DIRECTIVE TO GOD:
 MEMORY UPDATES:
 - PARTNER_MEMORY veya PARTNER_DECISIONS icin yeni kalici karar/ogrenim sinyali olusmadi.
 - Bu run yalnizca PARTNER_LOG gozlem kaydi ile kapatildi.
+
+## [2026-03-12T02:20:00Z] Partner Pulse
+
+FACTORY MODE: observe
+OVERALL HEALTH: warning
+
+TODAY'S STRUCTURAL ACTIONS:
+- Factory state, governance-reset sonrası yeni baskın risk olan `proxy-overfit` etrafında tazelendi.
+- `sample-before-more-tuning` kararı partner memory/decision katmanına işlendi.
+- Yeni governance expansion açılmadı; partner observe modda kaldı.
+
+PRODUCT IMPACT:
+- Son 12 committe ürün ilerlemesi gerçek: `GameScene.ts` 8 kez dokunuldu, son builder turu `60s clear` badge hiyerarşisini iyileştirdi.
+- Ancak ilerleme hâlâ dar bir death/pause readability koridorunda dönüyor; breadth artmıyor.
+- Docs fan-out yüksek kaldı: aynı pencerede `58` docs path touch vs `9` source path touch.
+
+RISKS:
+- ikinci sample gelmeden aynı readability zincirine dönülmesi
+- runtime blokajının yeni kanıt yerine ekstra polish bahanesi olması
+- dar source delta için tam core-doc paketinin yine otomatik taşınması
+- `GameScene.ts` üstünde local maximum davranışının sürmesi
+
+NEXT DIRECTIVE TO BUILDER:
+- Runtime varsa ikinci structured human sample'ı topla ve Run #125-#129 zinciri için keep/tune/revert kararı bırak. Runtime yoksa death/pause readability ailesine dönmeden tek yeni gameplay/UX source bug'i seç.
+
+NEXT DIRECTIVE TO AUDITOR:
+- Proxy-overfit freeze'ine uyumu, ikinci sample açılıp açılmadığını ve docs/source oranında gerçek sadeleşme olup olmadığını sert izle.
+
+NEXT DIRECTIVE TO GOD:
+- Haftalık yönü yeni feature açmaktan çok kanıt kalitesini artırma, dar koridordan çıkma ve builder odağını genişletme üstüne kur.
+
+MEMORY UPDATES:
+- eklendi: `2026-03-12 — Proxy-Overfit Learning`
+- eklendi: `Decision: Sample Before More Tuning`
+- güncellendi: `FACTORY_STATE.md`

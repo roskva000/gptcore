@@ -20,3 +20,9 @@ Sadece run-log degil, tekrar kullanilacak prensipler tutulur.
 2. Memory must produce decisions, not just history.
 3. Churn controls must be explicit.
 4. Partner should intervene rarely but decisively.
+
+## 2026-03-12 — Proxy-Overfit Learning
+
+- Governance reset sonrası baskın risk role conflict değil, son insan sinyaline aşırı yük bindiren proxy-overfit olabiliyor.
+- Runtime blokluysa aynı UX yüzeyinde tekrar eden mikro-fix zinciri ilerleme kadar local-maximum sinyali de sayılmalı.
+- Human-Proven fazında yeni sample çoğu zaman bir ek polish turundan daha değerlidir.
