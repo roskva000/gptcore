@@ -4,12 +4,14 @@
 
 # NOW
 
-- Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
+- Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
 - Sample checklist:
   - waiting ekranindaki yeni launch paneli ilk bakista goal'u ve ilk aksiyonu daha net veriyor mu
   - spawn noktasindaki pulse marker ilk inputu ve oyuncu konumunu daha rahat okutuyor mu, yoksa gereksiz dekor gibi mi kaliyor
   - run basladiginda veya pause'a girildiginde stacked side panel kapanip canvas'a alan geri veriyor mu
+  - run basladiginda veya pause'a girildiginde sayfa scroll'u kilitlenip canvas viewport icinde daha sabit kaliyor mu
   - waiting veya game-over'a donunce panel geri gelip sample notlarini okumayi zorlamadan tekrar gorunur oluyor mu
+  - waiting veya game-over'a donunce scroll tekrar acilip panel/notlar normale donuyor mu
   - kisa viewport + acik panel kombinasyonunda game canvas ilk ekranda yeterince gorunur kaliyor mu, yoksa shell yine asiri asagi itiyor mu
   - panel toggle veya browser chrome yuksekligi degistikten sonra pointer/touch hedefi canvas ustunde dogru hizayi koruyor mu, yoksa stale bounds yuzunden kayma hissi var mi
   - sadece sayfa scroll'u veya browser chrome yer degisimi oldugunda da pointer/touch hedefi canvas ustunde hizali kaliyor mu
@@ -31,7 +33,7 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run focus mode, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run focus mode, Run #139 active-run scroll lock, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - En az `npm run build` yesil kaldi; gameplay mantigi degisirse ilgili deterministic check de yeniden yesil kaldi.
 
 ---
@@ -41,6 +43,7 @@ Success markers:
 - Manuel sample sonuclarina gore touch control, browser interruption, focus-loss resume, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
 - Manuel sample varsa Run #137 opening launch paneli ve pulse marker'i keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #138 active-run panel hide/focus mode'unu keep/tune/revert formatinda insan notuyla bagla.
+- Manuel sample varsa Run #139 active-run scroll lock davranisini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #133 viewport-fit duzeltmesini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #134 scale-refresh senkronunu keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #135 scroll/viewport-position refresh guard'ini keep/tune/revert formatinda insan notuyla bagla.
@@ -72,6 +75,7 @@ Success markers:
 - sample olmadan Run #101-#119 fairness/input/control zincirine geri donus
 - sample olmadan Run #137 opening launch surface'ini tekrar tekrar copy-polisajina cevirmek
 - sample olmadan Run #138 active-run panel hide davranisini yeni shell/orchestration katmanlariyla genisletmek
+- sample olmadan Run #139 active-run scroll lock davranisini yeni shell/orchestration katmanlariyla buyutmek
 
 ---
 

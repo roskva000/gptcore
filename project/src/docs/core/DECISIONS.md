@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #139]
+
+Decision:
+Dar viewport'ta aktif run (`playing` / `paused`) sirasinda sayfa scroll'u kilitlenecek; aktif seans boyunca canvas'in kazara page drag veya browser chrome kaymasiyla viewport disina itilmesi azaltilacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridorunu yeni sample olmadan tekrar acmayi yasakliyor; headed runtime da halen bloklu. Run #133-#138 shell ve input tarafini daraltti ama `body` / `#app` hala scrollable kaldigi icin kisa mobil ekranlarda aktif run sirasinda kazara page scroll veya toolbar hareketi canvas odağini bozabiliyordu. Bu, insan sinyalindeki "mobil deneyim cok kotu" notuna baglanabilen tek dar source-level UX kusuru olarak secildi.
+
+Impact:
+`project/game/src/main.ts` artik aktif faz + narrow viewport kombinasyonunda `html.app-scroll-locked` class'ini aciyor ve viewport query / faz degistiginde bunu yeniden senkronize ediyor. `project/game/src/style.css` `html`, `body` ve `#app` icin overflow'u kapatip overscroll'u bastiriyor; aktif run sirasinda sayfa kaymasi daha zor hale geliyor. `project/game/src/latestRun.ts` public paneli bu yeni davranisla hizaladi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample scroll lock davranisinin pause, waiting veya game-over'a donuste orientasyonu bozdugunu, iOS/Android browser chrome ile beklenmedik layout kilitleri yarattigini veya not/panel erisimini gereksiz zorlastirdigini gosterirse yalnizca scroll lock kapsami dar kapsamda ayarlanir; fairness tuning, overlay copy churn'u veya yeni shell/orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #138]
 
 Decision:

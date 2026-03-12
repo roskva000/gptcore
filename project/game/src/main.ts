@@ -86,6 +86,7 @@ gameRootElement.addEventListener('dragstart', preventGameSurfaceBrowserDefault);
 const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.message-panel__details');
 const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
 let pendingScaleRefreshFrame: number | null = null;
+let currentGamePhase: 'waiting' | 'playing' | 'paused' | 'gameOver' = 'waiting';
 
 const readPxValue = (value: string): number => {
   const parsedValue = Number.parseFloat(value);
@@ -110,11 +111,20 @@ const handleViewportPositionChange = (): void => {
   scheduleGameScaleRefresh();
 };
 
+const syncActiveRunScrollLock = (): void => {
+  const shouldLockScroll =
+    narrowViewportQuery.matches &&
+    (currentGamePhase === 'playing' || currentGamePhase === 'paused');
+  document.documentElement.classList.toggle('app-scroll-locked', shouldLockScroll);
+};
+
 const syncGameplayFocusMode = (
   phase: 'waiting' | 'playing' | 'paused' | 'gameOver',
 ): void => {
+  currentGamePhase = phase;
   const gameActive = phase === 'playing' || phase === 'paused';
   shellElement.classList.toggle('app-shell--game-active', gameActive);
+  syncActiveRunScrollLock();
   syncGameViewportHeight();
 };
 const handleGamePhaseChange = (
@@ -154,6 +164,7 @@ if (panelDetailsElements.length > 0) {
 
   const handleViewportQueryChange = (event: MediaQueryListEvent): void => {
     syncRunPanelVisibility(event.matches);
+    syncActiveRunScrollLock();
   };
 
   narrowViewportQuery.addEventListener('change', handleViewportQueryChange);
@@ -176,6 +187,7 @@ window.addEventListener('scroll', handleViewportPositionChange, { passive: true 
 window.visualViewport?.addEventListener('resize', syncGameViewportHeight);
 window.visualViewport?.addEventListener('scroll', handleViewportPositionChange);
 window.addEventListener('survive60:phasechange', handleGamePhaseChange);
+syncActiveRunScrollLock();
 syncGameViewportHeight();
 
 const game = new Phaser.Game({
@@ -215,6 +227,7 @@ if (import.meta.hot) {
     window.visualViewport?.removeEventListener('resize', syncGameViewportHeight);
     window.visualViewport?.removeEventListener('scroll', handleViewportPositionChange);
     window.removeEventListener('survive60:phasechange', handleGamePhaseChange);
+    document.documentElement.classList.remove('app-scroll-locked');
     game.destroy(true);
     window.__SURVIVE_60_GAME__ = undefined;
   });

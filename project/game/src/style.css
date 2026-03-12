@@ -31,6 +31,13 @@ body {
   overflow: auto;
 }
 
+html.app-scroll-locked,
+html.app-scroll-locked body,
+html.app-scroll-locked #app {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 .app-shell {
   min-height: 100dvh;
   display: flex;
@@ -179,6 +186,12 @@ canvas {
 
   .app-shell--game-active .signals-panel {
     display: none;
+  }
+
+  html.app-scroll-locked,
+  html.app-scroll-locked body,
+  html.app-scroll-locked #app {
+    height: 100dvh;
   }
 
   .message-panel__summary {

@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #139
+
+- `project/game/src/main.ts` narrow viewport + aktif `playing` / `paused` fazlarinda `html.app-scroll-locked` class'ini aciyor; faz veya media-query degisince scroll lock yeniden senkronize oluyor
+- ayni dosya HMR dispose sirasinda scroll-lock class'ini temizliyor; sicak yenilemede stale locked-page durumu birakmiyor
+- `project/game/src/style.css` `html.app-scroll-locked`, `body` ve `#app` icin overflow'u kapatip overscroll'u bastiriyor; aktif run sirasinda kazara page drag/scroll ile canvas'in yer degistirmesi azaltilmaya calisiliyor
+- dar viewport'ta scroll-lock durumunda `html/body/#app` yuksekligi `100dvh`'e sabitleniyor; aktif seans boyunca viewport daha sabit tutuluyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini active-run scroll lock davranisiyla hizaladi
+- `npm run build` basarili calisti
+
 ## Run #138
 
 - `project/game/src/game/GameScene.ts` oyun fazi degisimlerini `survive60:phasechange` event'i olarak yayinliyor; shell artik `waiting / playing / paused / gameOver` ayrimini takip edebiliyor

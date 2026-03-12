@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+active_run_scroll_lock_stability:
+current: Run #139 narrow viewport'ta `playing` veya `paused` fazina girince `html.app-scroll-locked` class'i aciyor; `body` ve `#app` overflow'u kapanip overscroll bastiriliyor, aktif run sirasinda sayfa scroll'u daha zor hale geliyor
+baseline: Run #138 aktif run sirasinda side paneli gizleyip canvas'a alan geri veriyordu, fakat `body/#app` hala scrollable kaldigi icin kazara page drag veya browser chrome hareketi kisa ekranda canvas odağini bozabilirdi
+target: sonraki manuel sample'da aktif run sirasinda canvas viewport icinde daha sabit kalsin, accidental page movement azalsin ve waiting/game-over'a donunce scroll tekrar normale donsun
+validation: `npm run build`
+
 narrow_viewport_active_run_focus:
 current: Run #138 narrow viewport'ta `playing` veya `paused` fazina girince side paneli gizliyor, `--game-max-height` hesabini yeniden yapiyor ve aktif canvas'a panelin kapladigi alanı geri veriyor
 baseline: Run #133 canvas'i kisa ekrana sigdiriyordu, fakat stacked signal panel aktif seans sirasinda da ayni viewport'u paylasmaya devam ettigi icin oyun alani ve dikkat odagi dar kalabiliyordu
@@ -89,7 +95,7 @@ baseline: Run #122 support strip metnini tek export/retry hatirlatmasina daraltm
 target: sonraki manuel sample'da death ani daha sakin okunur hissetmeli; retry/export affordance'i ise kaybolmus degil, sadece daha az istilaci algilanmali
 
 public_ai_panel_accuracy:
-current: Run #123 public `Latest AI update` panelini Run #121-#122 death-readability degisiklikleri ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
+current: Run #139 public `Latest AI update` panelini narrow-layout active-run scroll lock davranisi ve guncel deterministic baseline (`26.5s avg / 6.3s first death / 4% early`) ile tekrar hizaladi
 baseline: onceki panel stale kalmis, eski telemetry bug fix'ini ve drift eden `25.1s` average survival metnini tasiyordu; ilk insan sinyali de panelin bir suredir guncellenmiyormus gibi gorundugunu not etti
 target: public panel yalnizca gercek source delta veya yeni insan kaniti geldikce guncellensin; gameplay hafizasi ile player-facing anlatim tekrar drift etmesin
 
