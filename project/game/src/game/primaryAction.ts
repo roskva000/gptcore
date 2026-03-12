@@ -5,9 +5,13 @@ export const shouldHandlePrimaryActionKey = (
 ): boolean => !event?.repeat;
 
 export const shouldHandlePrimaryActionPointer = (
-  pointer?: Pick<Phaser.Input.Pointer, 'button' | 'event'> | null,
+  pointer?: Pick<Phaser.Input.Pointer, 'button' | 'event' | 'wasTouch'> | null,
 ): boolean => {
   if (!pointer) {
+    return true;
+  }
+
+  if (pointer.wasTouch) {
     return true;
   }
 
@@ -25,10 +29,17 @@ export const shouldHandlePrimaryActionPointer = (
 };
 
 export const isPrimaryPointerDown = (
-  pointer?: Pick<Phaser.Input.Pointer, 'isDown' | 'button' | 'event'> | null,
+  pointer?: Pick<
+    Phaser.Input.Pointer,
+    'isDown' | 'button' | 'event' | 'wasTouch' | 'primaryDown'
+  > | null,
 ): boolean => {
   if (!pointer?.isDown) {
     return false;
+  }
+
+  if (pointer.wasTouch) {
+    return pointer.primaryDown !== false;
   }
 
   const nativeEvent = pointer.event;

@@ -6,6 +6,11 @@
 
 ## Gameplay
 
+touch_primary_action_reliability:
+current: Run #130 touch pointer primary-action yorumunu Phaser `wasTouch` / `primaryDown` sinyallerine hizaladi; held touch input artik stale mouse `button` durumuna bakmadan primary steer/retry olarak okunuyor
+baseline: onceki helper touch pointer'lari dogrudan touch-state ile degil, son event'teki mouse-button fallback'leri ile yorumluyordu; bu da mobil/hybrid cihazlarda primary touch akisini gereksiz kirilgan bir semantik uzerine yasliyordu
+target: sonraki manuel mobile/touch sample'da touch start, held steer ve retry akisi tutarli hissetsin; keep/tune/revert karari insan notuyla verilsin
+
 survival_goal_game_over_hierarchy:
 current: Run #129 `60s clear.` milestone'unu death overlay body copy'sinden cikarip title ustunde ayrik bir badge olarak gostermeye basladi; badge aktif oldugunda overlay title/body/prompt/stats bloklari da hafif asagi kayiyor
 baseline: Run #120 namesake goal icin in-run ve post-death feedback eklemisti, ancak game-over aninda `60s clear.` body copy'nin ilk satiri olarak survival/best ve cause metinleriyle ayni hizada akiyor, bu da milestone'u kolayca arka plana itiyordu

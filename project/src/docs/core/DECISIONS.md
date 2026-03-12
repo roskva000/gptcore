@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #130]
+
+Decision:
+Touch pointer primary-action ve held-input yorumu Phaser `wasTouch` / `primaryDown` alanlaryna hizalanacak; mobil start/retry/steer akisi cached mouse `button` fallback'ine bagli kalmayacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit ayni death/pause readability koridoruna yeni sample olmadan geri donmeyi yasakliyordu; insan sinyalindeki en net urun bosluklarindan biri mobil deneyimin zayifligiydi. `project/game/src/game/primaryAction.ts` incelemesi touch pointer'larin primary-action kabulunu dolayli olarak mouse button semantiklerine yasladigini gosterdi. Phaser touch pointer'lari zaten `wasTouch` ve `primaryDown` sinyallerini tasidigi icin, mobil kontrolu bu alana dogrudan baglamak daha dar ve daha dogru bir source-level bug fix'ti.
+
+Impact:
+`project/game/src/game/primaryAction.ts` touch pointer'lari primary kabul ediyor ve held-state'i `primaryDown` uzerinden okuyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'leri ile touch pointer'in stale secondary-button state yuzunden start/retry/steer kaybetmemesini kilitliyor. Deterministic survival baseline degismedi.
+
+Rollback Condition:
+Headed mobile sample bu hizanin touch steering'i beklenmedik sekilde asiri genislettigini veya non-primary pointer davranislarini yanlis yorumladigini gosterirse yalnizca touch-primary helper kontrati dar kapsamda yeniden ayarlanir; death/pause readability, telemetry wording veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #129]
 
 Decision:

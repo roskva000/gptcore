@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #130
+
+- `project/game/src/game/primaryAction.ts` touch pointer primary-action yorumunu `wasTouch` ve `primaryDown` alanlaryna hizaladi; mobil start/retry/held steer akisi artik cached mouse `button` fallback'ine bagli degil
+- `project/game/scripts/telemetry-check.ts` touch pointer icin yeni regression guard'lari ekledi; stale secondary-button state'in touch input'u bloke etmemesi deterministic olarak kilitlendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; deterministic baseline `26.5s / 6.3s / 4%` korundu
+
 ## Run #129
 
 - `project/game/src/game/GameScene.ts` game-over overlay'e `60s clear.` icin ayrik bir milestone badge ekledi; namesake hedef artik death body copy'sinde kaybolmak yerine title ustunde rozet olarak gorunuyor
