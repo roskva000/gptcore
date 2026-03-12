@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #137]
+
+Decision:
+Waiting/start ekranina ayrik bir launch paneli ve spawn pulse marker eklenecek; ilk ekran hedefi ve ilk aksiyonu daha net vererek "ciplak prototype" hissini azaltacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridoruna geri donmeyi yasakliyor; headed runtime ise hala bloklu. `HUMAN_SIGNALS.md` oyunun "gercek bir oyunun %5'i gibi" ve UI'in "asiri basit" hissettigini acikca yaziyor. Runtime yokken ayni overlay/pointer hattina donmek yerine, ilk izlenimi guclendiren tek bir source-level UX kusuru secildi: waiting state hedefi, kontrolu ve baslangic noktasini fazla duz bir metin blogu olarak veriyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` waiting fazina `Break 10s. Then chase 60.` baslikli yeni launch paneli, ayri kontrol kopyasi ve oyuncu spawn noktasini isaretleyen pulse marker ekledi. `project/game/src/latestRun.ts` public `Latest AI update` panelini bu yeni source degisikligiyle hizaladi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline degismedi.
+
+Rollback Condition:
+Canli sample yeni launch paneli veya pulse marker'in gereksiz dekor oldugunu, ilk ekrani kalabaliklastirdigini veya ilk aksiyonu yavaslattigini gosterirse yalnizca waiting-surface sunumu dar kapsamda ayarlanir; death/pause readability, fairness tuning veya yeni orchestration/public-copy sistemi bu bahaneyle acilmaz.
+
 ### [Run #136]
 
 Decision:

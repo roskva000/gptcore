@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+waiting_launch_surface_identity:
+current: Run #137 waiting/start ekranina ayrik launch paneli, `Break 10s. Then chase 60.` basligi ve spawn noktasini isaretleyen pulse marker ekledi
+baseline: onceki waiting state goal, controls ve start eylemini tek bir duz hint blogu olarak veriyordu; insan sinyali bu yuzeyi "asiri basit" ve "gercek bir oyunun %5'i gibi" hissettiren bir giris olarak isaretledi
+target: sonraki manuel sample'da ilk ekran hedefi ve ilk aksiyonu daha hizli anlatsin; oyuncu ilk inputu daha guvenli versin ve opening hissi daha oyun gibi gelsin
+validation: `npm run telemetry:check`, `npm run build`
+
 pointer_cancel_release_integrity:
 current: Run #136 native `pointercancel` / `touchcancel` sonrasi GameScene pointer hold/release state'ini temizliyor ve primary pointer helper'lari canceled pointer'i release gibi yorumluyor
 baseline: onceki source hattinda cancel edilmis touch/pointer icin ayrik guard yoktu; mobile browser gesture veya sistem interruption sonrasi Phaser pointer stale `isDown` tasirsa steering veya retry/resume gate'i gereksiz kilitlenebilirdi

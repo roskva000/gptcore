@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #137
+
+- `project/game/src/game/GameScene.ts` waiting/start ekranina ayrik bir launch paneli ekledi; hedef artik `Break 10s. Then chase 60.` basligi ve ayri kontrol satirlariyla tek parca metin blogundan daha okunur aciliyor
+- ayni dosya oyuncu spawn noktasina pulse marker ve `Tap, click, or press to launch` etiketi ekledi; ilk input oncesi odak noktasi daha belirgin hale geldi
+- waiting hint/support copy'si kisaltildi; goal/export/reset ozetini daha kompakt bir support satiri tasiyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini waiting-surface degisikligiyle hizaladi; stale death-screen anlatisi kaldirildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
 ## Run #136
 
 - `project/game/src/game/GameScene.ts` artik Phaser `pointerup` / `pointerupoutside` ile native `pointercancel` / `touchcancel` olaylarini birlikte dinliyor; mobile browser gesture veya sistem interruption sonrasi stale pointer press state'i steering/retry/resume guard'larinda tasinmiyor

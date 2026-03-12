@@ -149,6 +149,13 @@ export class GameScene extends Phaser.Scene {
   private movementKeys!: MovementKeys;
   private scoreText!: Phaser.GameObjects.Text;
   private bestText!: Phaser.GameObjects.Text;
+  private waitingIntroPanel!: Phaser.GameObjects.Rectangle;
+  private waitingIntroAccent!: Phaser.GameObjects.Rectangle;
+  private waitingIntroEyebrow!: Phaser.GameObjects.Text;
+  private waitingIntroTitle!: Phaser.GameObjects.Text;
+  private waitingPulseCore!: Phaser.GameObjects.Arc;
+  private waitingPulseRing!: Phaser.GameObjects.Arc;
+  private waitingPulseLabel!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
   private supportText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
@@ -180,6 +187,8 @@ export class GameScene extends Phaser.Scene {
   private lastValidationReport: string | null = null;
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
   private feedbackAudioContext: FeedbackAudioContext = null;
+  private waitingPulseCoreTween?: Phaser.Tweens.Tween;
+  private waitingPulseRingTween?: Phaser.Tweens.Tween;
 
   constructor() {
     super('GameScene');
@@ -254,17 +263,72 @@ export class GameScene extends Phaser.Scene {
       fontStyle: 'bold',
     });
 
+    this.waitingIntroPanel = this.add
+      .rectangle(ARENA_WIDTH / 2, 146, 560, 150, 0x08131d, 0.82)
+      .setDepth(2)
+      .setStrokeStyle(2, 0x2e596c, 0.95);
+
+    this.waitingIntroAccent = this.add
+      .rectangle(ARENA_WIDTH / 2, 93, 560, 30, 0x123f36, 0.9)
+      .setDepth(2);
+
+    this.waitingIntroEyebrow = this.add
+      .text(ARENA_WIDTH / 2, 93, 'START WINDOW', {
+        align: 'center',
+        color: '#d8fff4',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '14px',
+        fontStyle: 'bold',
+      })
+      .setDepth(3)
+      .setOrigin(0.5);
+
+    this.waitingIntroTitle = this.add
+      .text(ARENA_WIDTH / 2, 126, 'Break 10s. Then chase 60.', {
+        align: 'center',
+        color: '#f5f7ff',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '28px',
+        fontStyle: 'bold',
+      })
+      .setDepth(3)
+      .setOrigin(0.5);
+
+    this.waitingPulseCore = this.add
+      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 34, 0x123f36, 0.28)
+      .setDepth(1)
+      .setVisible(false);
+
+    this.waitingPulseRing = this.add
+      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 54)
+      .setDepth(1)
+      .setStrokeStyle(3, 0x7ce8ff, 0.68)
+      .setFillStyle(0x000000, 0)
+      .setVisible(false);
+
+    this.waitingPulseLabel = this.add
+      .text(ARENA_WIDTH / 2, ARENA_HEIGHT / 2 + 72, 'Tap, click, or press to launch', {
+        align: 'center',
+        color: '#d8fff4',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '15px',
+        fontStyle: 'bold',
+      })
+      .setDepth(3)
+      .setOrigin(0.5)
+      .setVisible(false);
+
     this.hintText = this.add
       .text(
         ARENA_WIDTH / 2,
-        78,
-        'Survive 60 seconds.\nMove with WASD / arrows or hold click / touch to steer.\nPress Space, Enter, tap, or any movement key to start.',
+        156,
+        this.getWaitingHintText(),
         {
           align: 'center',
           color: '#b8cde0',
           fontFamily: 'Trebuchet MS',
-          fontSize: '20px',
-          lineSpacing: 8,
+          fontSize: '18px',
+          lineSpacing: 7,
         },
       )
       .setDepth(3)
@@ -511,6 +575,26 @@ export class GameScene extends Phaser.Scene {
     this.input.manager.canvas?.addEventListener('touchcancel', this.handleNativePointerCancel);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupFocusListeners, this);
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanupFocusListeners, this);
+    this.waitingPulseCoreTween = this.tweens.add({
+      targets: this.waitingPulseCore,
+      scale: { from: 0.92, to: 1.08 },
+      alpha: { from: 0.32, to: 0.14 },
+      duration: 1300,
+      repeat: -1,
+      yoyo: true,
+      ease: 'Sine.InOut',
+      paused: true,
+    });
+    this.waitingPulseRingTween = this.tweens.add({
+      targets: this.waitingPulseRing,
+      scale: { from: 0.88, to: 1.16 },
+      alpha: { from: 0.8, to: 0.18 },
+      duration: 1450,
+      repeat: -1,
+      ease: 'Sine.Out',
+      paused: true,
+    });
+    this.updateWaitingPresentation();
   }
 
   update(time: number): void {
@@ -2057,6 +2141,34 @@ export class GameScene extends Phaser.Scene {
     const hudVisible = this.phase === 'waiting' || this.phase === 'playing';
     this.scoreText.setVisible(hudVisible);
     this.bestText.setVisible(hudVisible);
+    this.updateWaitingPresentation();
+  }
+
+  private updateWaitingPresentation(): void {
+    const waitingVisible = this.phase === 'waiting';
+
+    this.waitingIntroPanel.setVisible(waitingVisible);
+    this.waitingIntroAccent.setVisible(waitingVisible);
+    this.waitingIntroEyebrow.setVisible(waitingVisible);
+    this.waitingIntroTitle.setVisible(waitingVisible);
+    this.waitingPulseCore.setVisible(waitingVisible);
+    this.waitingPulseRing.setVisible(waitingVisible);
+    this.waitingPulseLabel.setVisible(waitingVisible);
+
+    if (waitingVisible) {
+      this.waitingPulseCore
+        .setScale(1)
+        .setAlpha(0.28);
+      this.waitingPulseRing
+        .setScale(1)
+        .setAlpha(0.68);
+      this.waitingPulseCoreTween?.resume();
+      this.waitingPulseRingTween?.resume();
+      return;
+    }
+
+    this.waitingPulseCoreTween?.pause();
+    this.waitingPulseRingTween?.pause();
   }
 
   private getTelemetryLinesForCurrentPhase(): string[] {
@@ -2097,7 +2209,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getBaseSupportText(): string {
-    return `Goal: break ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s. Hotkeys: C summary | V export | R reset between runs.`;
+    return `Goal: break ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s. C summary | V export | R reset between runs.`;
   }
 
   private getRetryActionText(): string {
@@ -2110,6 +2222,13 @@ export class GameScene extends Phaser.Scene {
 
   private getPlayingHintText(): string {
     return `Stay moving and break into open space.\nTarget: survive past ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s.`;
+  }
+
+  private getWaitingHintText(): string {
+    return [
+      'Steer with WASD / arrows or hold click / touch.',
+      'Start with Space, Enter, tap, or any move input.',
+    ].join('\n');
   }
 
   private celebrateSurvivalGoal(activeRunElapsedMs: number): void {
