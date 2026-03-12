@@ -14,7 +14,12 @@ import {
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
-import { createNearMissState, evaluateNearMiss } from '../src/game/nearMiss.ts';
+import {
+  createNearMissState,
+  evaluateNearMiss,
+  getNearMissLabel,
+  isNearMissHintActive,
+} from '../src/game/nearMiss.ts';
 import {
   isPrimaryPointerDown,
   shouldRequirePointerReleaseAfterPause,
@@ -287,6 +292,31 @@ assert.equal(
   hasReachedSurvivalGoal(60),
   true,
   'The 60s survival goal should trigger as soon as the run clears the namesake threshold.',
+);
+assert.equal(
+  getNearMissLabel(1),
+  'NEAR MISS',
+  'Single close shaves should keep the compact near-miss label.',
+);
+assert.equal(
+  getNearMissLabel(3),
+  '3x NEAR MISS',
+  'Chained close shaves should restore the earned multiplier label after interruptions.',
+);
+assert.equal(
+  isNearMissHintActive(6400, 6500),
+  true,
+  'Near-miss feedback should stay restorable while its active-run hint window is still open.',
+);
+assert.equal(
+  isNearMissHintActive(6500, 6500),
+  false,
+  'Near-miss feedback should expire exactly at the configured hide time instead of reviving stale pulses.',
+);
+assert.equal(
+  isNearMissHintActive(6400, null),
+  false,
+  'Near-miss feedback should not restore after pause when no hint window is armed.',
 );
 assert.equal(spawnCollisionGraceAt(15), 0, '15s spawn collision grace changed unexpectedly.');
 

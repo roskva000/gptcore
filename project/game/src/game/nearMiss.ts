@@ -38,6 +38,14 @@ export const createNearMissState = (): NearMissState => ({
   hadClosingApproach: false,
 });
 
+export const getNearMissLabel = (chainCount: number): string =>
+  chainCount > 1 ? `${chainCount}x NEAR MISS` : 'NEAR MISS';
+
+export const isNearMissHintActive = (
+  activeRunElapsedMs: number,
+  hideAtElapsedMs: number | null,
+): boolean => hideAtElapsedMs !== null && activeRunElapsedMs < hideAtElapsedMs;
+
 export const evaluateNearMiss = (
   snapshot: NearMissSnapshot,
   previousState: NearMissState,

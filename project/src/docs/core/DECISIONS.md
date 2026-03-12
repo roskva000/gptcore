@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #149]
+
+Decision:
+Run #145-#146 near-miss mutation'i `integration` modunda focus-loss pause/resume akisiyla hizalandi; aktif near-miss pulse hint penceresi halen aciksa resume sonrasi geri kurulacak.
+
+Reason:
+Runtime yine blokluydu ve audit verdict `proxy-overfit`; ayni death/pause readability, fairness veya mobil-shell koridorunu yeniden acmak yasakti. Buna ragmen source'ta dar ama gercek bir urun kusuru vardi: near-miss pulse aktifken focus-loss pause girerse `pauseRunForFocusLoss()` etiketi korumasiz kapatiyor, `resumePausedRun()` ise survival-goal hint'inin aksine bunu geri kurmuyordu. Paused time run clock'tan sayilmadigi halde earned close-shave feedback'i sessizce yok oluyordu. Bu, son mutation'in durust entegrasyonu icin tek hedefli ve savunulabilir bir bug fix'ti.
+
+Impact:
+`project/game/src/game/nearMiss.ts` yeni `getNearMissLabel()` ve `isNearMissHintActive()` helper'lariyla label/timing kontratini tek kaynaga tasidi. `project/game/src/game/GameScene.ts` trigger ve resume yollarini bu helper'larla hizaladi; aktif pencere icindeki `NEAR MISS` veya `2x` / `3x` etiketi pause sonrasi geri geliyor, stale pulse ise dirilmiyor. `project/game/scripts/telemetry-check.ts` regression assert'leri eklendi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample near-miss pulse'unun pause sonrasi geri gelmesinin gurultu, fazla kalicilik veya odak dagitma yarattigini gosterirse yalnizca restore kapsami daraltılır; ayni bahaneyle new reward/meta, overlay churn'u veya shell orchestration acilmaz.
+
 ### [Run #148]
 
 Decision:

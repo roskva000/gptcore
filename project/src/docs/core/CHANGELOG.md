@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #149
+
+- `project/game/src/game/nearMiss.ts` near-miss label metnini ve aktif hint penceresi kararini saf helper'lara tasidi; trigger zamani ile resume zamani ayni string/timing kontratini kullaniyor
+- `project/game/src/game/GameScene.ts` focus-loss pause'dan donerken aktif near-miss hint penceresi hala aciksa `NEAR MISS` veya zincirli `2x` / `3x` etiketini geri kuruyor; pause artik earned close-shave pulse'unu sessizce silmiyor
+- `project/game/scripts/telemetry-check.ts` near-miss label ve hint-window restore kontratini regression altina aldi
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu integration duzeltmesiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #148
 
 - `project/game/src/game/GameScene.ts` focus-loss pause'dan resume olurken support satirini artik goal durumuna gore geri kuruyor; `60s clear` edilmis run blur/refocus sonrasi tekrar acilis hedef copy'sine dusmuyor

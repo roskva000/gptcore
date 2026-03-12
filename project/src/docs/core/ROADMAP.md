@@ -4,14 +4,17 @@
 
 # NOW
 
+- Run #149 near-miss pulse'un focus-loss pause/resume kesintisinde kaybolmasini kapatti; bu integration yuzeyi sample olmadan yeni reward/copy dalgasina cevirme.
 - Run #148 `60s clear` sonrasinda blur/pause-resume akisinin goal-complete run'i tekrar pre-goal hint/support copy'sine dusurmesini kapatti; bu yuzeyi sample olmadan yeniden copy churn'una acma.
 - Touch-capable browser'da Run #145-#146 near-miss pulse'unun earned hissedip hissettirmedigini, zincirli close shave'lerde replay istegini artirip artirmadigini, gorsel gurultu yaratip yaratmadigini ve artik obstacle gorunur arena disina tastiktan sonra gec tetik vermedigini Run #137 opening surface ile Run #132-#144 mobil shell/input checklist'iyle ayni sample icinde dogrula.
+- Ayni sample icinde Run #149 sonrasi aktif near-miss pulse focus-loss pause ile kesilirse resume sonrasi kalan hint penceresi gercekten geri geliyor mu, yoksa feedback yine sessizce dusuyor mu kontrol et.
 - Run #147 `60s clear` milestone'unun game-over badge'ini ham run saatine hizaladi; `59.96s -> 60.0s` gibi display rounding durumlari artik sahte clear odulu uretmiyor. Bu yuzey sample olmadan yeniden acilmasin.
 - Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
 - Touch-capable browser'da Run #137 opening launch surface'i, Run #138 active-run panel hide/focus mode'u, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu, Run #135 scroll/viewport-position refresh guard'i ve Run #136 pointer-cancel release guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
 - Sample checklist:
   - yakin gecen ama carpmayan obstacle pulse'u gercekten "close shave" anini belirginlestiriyor mu, yoksa gereksiz HUD gurultusu mu uretiyor
   - zincirli `2x` / `3x` near-miss callout'lari earned hissettiriyor mu, yoksa yapay skor benzeri bir baski mi olusturuyor
+  - aktif near-miss pulse focus-loss pause ile kesilirse resume sonrasi kalan sure boyunca geri geliyor mu, yoksa earned beat pause tarafinda sessizce dusuyor mu
   - waiting veya game-over ekraninda swipe canvas ustunde baslasa bile panel/not akisi asagi-yukari dogal kayiyor mu; swipe zinciri canvas kenarinda hapsolmuyor mu
   - panelin altlarindayken run baslatildiginda viewport canvas'a geri geliyor mu, yoksa aktif run halen panel offset'inde mi aciliyor
   - waiting veya game-over'a donunce onceki panel scroll konumu dogal sekilde geri geliyor mu, yoksa okuyucuyu tepeden baslatip akisi bozuyor mu
@@ -54,6 +57,7 @@ Success markers:
 
 - Manuel sample varsa `60s clear` sonrasi blur/refocus veya focus-loss pause yapip milestone hint/support baglaminin resume sonrasi korunup korunmadigini keep/tune/revert formatinda notla.
 - Manuel sample varsa Run #145-#146 near-miss pulse'unu keep/tune/revert formatinda insan notuyla bagla.
+- Manuel sample varsa Run #149 near-miss pause/resume restore davranisini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa `60s clear` badge'inin artik sadece gercek clear run'larda gorundugunu ve milestone hissinin earned kalip kalmadigini kisa notla bagla.
 - Manuel sample sonuclarina gore touch control, browser interruption, breakpoint-crossing focus mode, focus-loss resume, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
 - Manuel sample varsa Run #137 opening launch paneli ve pulse marker'i keep/tune/revert formatinda insan notuyla bagla.
@@ -99,6 +103,7 @@ Success markers:
 - sample olmadan Run #140 viewport-anchor davranisini yeni shell/orchestration katmanlariyla buyutmek
 - sample olmadan Run #143 overscroll-chain duzeltmesini yeni shell/orchestration katmanlariyla buyutmek
 - sample olmadan Run #145 near-miss pulse'unu yeni scoring/combo/meta katmanlariyla buyutmek
+- sample olmadan Run #149 near-miss restore hattini yeni feedback/orchestration katmanlariyla buyutmek
 
 ---
 

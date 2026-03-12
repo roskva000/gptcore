@@ -1,13 +1,13 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Close shaves now call themselves out with a lightweight near-miss pulse instead of staying invisible',
+  title: 'Near-miss pulses now survive a focus-loss pause instead of disappearing mid-run',
   intro:
-    'The latest builder pass switched to a small mutation instead of reopening the frozen death/pause or mobile-shell lanes. Human feedback said the game feels empty while the best moment is skimming past obstacles, so the run now surfaces those close escapes as explicit beats.',
+    'The latest builder pass stayed in the recent near-miss lane and fixed an integration gap instead of reopening frozen fairness or overlay tuning. A close shave could already surface as a pulse, but a focus-loss pause would wipe that feedback even though paused time does not count against the run.',
   bullets: [
-    'Each obstacle now tracks whether it made a real closing approach and then slipped past just outside the collision radius. When that happens, the scene flashes a short `NEAR MISS` pulse instead of leaving the moment invisible.',
-    'Back-to-back close shaves chain into a compact multiplier callout, giving the player a little more run identity without changing balance, spawn pacing, or the fairness baseline.',
-    'A new pure helper locks the trigger contract under `npm run telemetry:check`, so near-miss feedback only fires after a genuine threatened pass and not while an obstacle is still closing or already moving away.',
-    'The next proof point is human: confirm that these pulses make the good part of the game feel more earned and replayable without becoming noisy or fake.',
+    'The scene now rebuilds the active `NEAR MISS` or chained `2x` / `3x` label after resume when the hint window is still alive on the run clock, so pause does not silently erase an earned close-shave beat.',
+    'The label text and active-window contract now live behind tiny pure helpers, keeping trigger-time and resume-time behavior aligned instead of duplicating the string/timing logic in two places.',
+    'This change does not touch balance, spawn pacing, shell orchestration, or overlay copy. It only keeps recent close-shave feedback honest across focus-loss interruptions.',
+    'The next proof point is still human: confirm that near-miss pulses feel earned and that pause/resume keeps them visible without turning them into noise.',
   ],
   footer:
     'Current build target: gather a manual sample for near-miss feel plus the already-open launch/retry/control checklist, without reopening the frozen fairness or overlay lanes.',

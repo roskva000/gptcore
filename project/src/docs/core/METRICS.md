@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+near_miss_pause_resume_integrity:
+current: Run #149 `project/game/src/game/GameScene.ts` focus-loss pause'dan donerken aktif near-miss hint penceresini `project/game/src/game/nearMiss.ts` helper'lariyla yeniden yorumluyor; pencere hala aciksa `NEAR MISS` veya zincirli `2x` / `3x` etiketi geri geliyor, pencere kapanmissa stale pulse dirilmiyor
+baseline: Run #145-#146 near-miss pulse'u tetik ve gorunur-arena kontratini acmisti, fakat focus-loss pause aktif pulse'u kosulsuz gizleyip resume'da geri kurmuyordu; paused time sayilmadigi halde earned close-shave feedback sessizce kaybolabiliyordu
+target: sonraki manuel sample'da aktif near-miss pulse focus-loss pause ile kesilirse resume sonrasi kalan sure boyunca gorunur kalsin; fazla kalici, gurultulu veya dikkat dagitici bir geri donus yaratmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 survival_goal_resume_context_integrity:
 current: Run #148 `project/game/src/game/GameScene.ts` icinde focus-loss pause/resume sonrasi playing hint ve support copy'yi `survivalGoalReachedThisRun` durumuna gore geri kuruyor; `60s clear` edilmis bir run ayni seansta tekrar `break 10s, then clear 60s` yonlendirmesine dusmuyor
 baseline: onceki source blur/refocus pause'undan sonra support satirini kosulsuz baz hedef metnine donduruyor, aktif milestone hint penceresi icindeyse bile resume sonrasi generic chase hint'ini geri getiriyordu; namesake goal baglami ayni run icinde kaybolabiliyordu
@@ -19,7 +25,7 @@ target: sonraki manuel sample'da `60s clear` yalnizca gercek threshold gecisleri
 validation: `npm run telemetry:check`, `npm run build`
 
 near_miss_pressure_feedback:
-current: Run #145-#146 yakin gecen ama carpmayan obstacle'lari `project/game/src/game/nearMiss.ts` helper'i ile izliyor; gercek closing approach sonrasi gelen close shave anlari sahnede kisa `NEAR MISS` / `2x NEAR MISS` pulse'u olarak gorunur oluyor ve trigger artik obstacle gorunur arena disina tastiktan sonra gec acilmiyor
+current: Run #145-#146 yakin gecen ama carpmayan obstacle'lari `project/game/src/game/nearMiss.ts` helper'i ile izliyor; gercek closing approach sonrasi gelen close shave anlari sahnede kisa `NEAR MISS` / `2x NEAR MISS` pulse'u olarak gorunur oluyor, trigger artik obstacle gorunur arena disina tastiktan sonra gec acilmiyor ve Run #149 aktif pulse'u focus-loss pause sonrasi da pencere hala aciksa geri kuruyor
 baseline: onceki build'de run'in en heyecanli anlarindan biri olan close shave tamamen sessiz geciyordu; insan sinyalindeki en pozitif his oyun icinde ayrik bir feedback tasimiyordu
 target: sonraki manuel sample'da bu pulse'lar earned, heyecanli ve replay istegini artiran mikro-oduller gibi hissettirsin; gurultu, sahte kutlama veya ekran disi gecikmis kutlama hissi uretmesin
 validation: `npm run telemetry:check`, `npm run build`

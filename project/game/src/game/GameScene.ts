@@ -50,7 +50,12 @@ import {
   type TelemetrySummary,
 } from './telemetry.ts';
 import { getPointerSteeringVelocity } from './pointerSteering.ts';
-import { createNearMissState, evaluateNearMiss } from './nearMiss.ts';
+import {
+  createNearMissState,
+  evaluateNearMiss,
+  getNearMissLabel,
+  isNearMissHintActive,
+} from './nearMiss.ts';
 import {
   isPrimaryPointerDown,
   shouldRequirePointerReleaseAfterPause,
@@ -695,10 +700,7 @@ export class GameScene extends Phaser.Scene {
       this.playingHintHideAtElapsedMs = null;
     }
 
-    if (
-      this.nearMissHintHideAtElapsedMs !== null &&
-      activeRunElapsedMs >= this.nearMissHintHideAtElapsedMs
-    ) {
+    if (!isNearMissHintActive(activeRunElapsedMs, this.nearMissHintHideAtElapsedMs)) {
       this.nearMissText.setVisible(false).setText('');
       this.nearMissHintHideAtElapsedMs = null;
     }
@@ -995,6 +997,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayStats.setVisible(false).setText('');
     this.nearMissText.setVisible(false).setText('');
     this.restorePlayingHintAfterPause();
+    this.restoreNearMissHintAfterPause();
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.movementInputWasActive = this.hasMovementInput();
     this.armPointerSteeringGuardAfterActivation(source);
@@ -1611,9 +1614,7 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.nearMissText);
     this.tweens.killTweensOf(this.player);
     this.nearMissText
-      .setText(
-        this.nearMissChainCount > 1 ? `${this.nearMissChainCount}x NEAR MISS` : 'NEAR MISS',
-      )
+      .setText(getNearMissLabel(this.nearMissChainCount))
       .setAlpha(1)
       .setScale(0.92)
       .setVisible(true);
@@ -2446,6 +2447,27 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.hintText.setText(this.getCurrentPlayingHintText()).setVisible(true);
+  }
+
+  private restoreNearMissHintAfterPause(): void {
+    if (this.nearMissHintHideAtElapsedMs === null || this.nearMissChainCount <= 0) {
+      this.nearMissText.setVisible(false).setText('');
+      return;
+    }
+
+    const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
+
+    if (!isNearMissHintActive(activeRunElapsedMs, this.nearMissHintHideAtElapsedMs)) {
+      this.nearMissText.setVisible(false).setText('');
+      this.nearMissHintHideAtElapsedMs = null;
+      return;
+    }
+
+    this.nearMissText
+      .setText(getNearMissLabel(this.nearMissChainCount))
+      .setAlpha(0.82)
+      .setScale(1)
+      .setVisible(true);
   }
 
   private getWaitingProgressLine(): string {
