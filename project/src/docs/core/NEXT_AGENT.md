@@ -6,15 +6,19 @@
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
 - Run #132 browser-default suppression'i source/build seviyesinde acildi; bunu sample almadan "mobil deneyim cozuldu" diye yorumlama.
+- Run #133 viewport-fit duzeltmesi de source/build seviyesinde acildi; bunu sample almadan "kisa ekran problemi cozuldu" diye yorumlama.
 
 ## Recommended Next Task
 
 Run mode: `stabilization`
 
 Ana hedef:
-Run #132 sonrasi touch-capable browser'da browser context menu / long-press callout / drag secimi artik steering ve retry akisini boluyor mu dogrula; ayni seansta Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisinin gercekten daha guvenilir olup olmadigini ve Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
+Run #133 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
 
 Baglam:
+- Run #133 `project/game/src/main.ts` icinde shell padding/gap, viewport yuksekligi ve narrow layout'ta panel yuksekliginden `--game-max-height` hesaplayip resize, visual viewport resize ve panel toggle'larinda guncelliyor.
+- `project/game/src/style.css` artik `game-root` genisligini viewport genisligi + `--game-max-height` ile 4:3 oranda sinirliyor; `canvas` `width: 100%`, `height: auto`, `aspect-ratio: 4 / 3` ve `max-height: var(--game-max-height)` ile kisa ekranlara daha kontrollu oturuyor.
+- Narrow viewport'ta `.app-shell` artik usten hizali; oyun alaninin ilk ekrandan asagi itilmesi azaltilmaya calisiliyor.
 - Run #132 `project/game/src/main.ts` icinde `#game-root` uzerinde `contextmenu` ve `dragstart` default'larini bastirdi; `project/game/src/style.css` `game-shell`, `game-root` ve `canvas` icin `user-select` / `-webkit-user-select` / `-webkit-touch-callout` guard'larini ekledi.
 - Amac, long-press veya secondary-click anlarinda browser menu / callout / ghost-drag davranisinin oyun yuzeyine girip replay veya steering hissini bozmasini kapatmak.
 - Run #130 `project/game/src/game/primaryAction.ts` icinde touch pointer primary-action yorumunu `wasTouch` / `primaryDown` sinyallerine hizaladi; touch input artik cached mouse `button` semantigine bakmadan primary kabul ediliyor.
@@ -31,6 +35,8 @@ Baglam:
 - Bu ortamda headed runtime bloklu oldugu icin builder burada yeni sample alamadi; asil eksik halen insan dogrulamasi.
 
 Minimum sample checklist:
+- kisa viewport + acik panel kombinasyonunda canvas ilk ekranda yeterince gorunur kaliyor mu
+- adres cubugu / browser chrome yukseklik degistirdiginde canvas olcusu ve konumu stabil kaliyor mu
 - long-press touch veya secondary-click browser context menu/callout acmadan oyunun icinde kaliyor mu
 - uzun basista canvas veya yakin shell uzerinde text selection / drag ghosting goruluyor mu
 - touch start ilk tap ile aciliyor mu
@@ -56,11 +62,12 @@ Minimum sample checklist:
 - Telemetry/public-copy wording churn'u veya governance expansion acma.
 - Touch-primary ve focus-loss resume helper hattini yeni sample olmadan yeniden acma.
 - Browser-default suppression hattini yeni sample olmadan gereksizce genisletme; ayni yuzeye yeni shell katmanlari ekleme.
+- Viewport-fit hattini yeni sample olmadan genis responsive rework'e donusturme; ayni problemi yeni layout/orchestration katmanlariyla sarma.
 - Tek bir yeni gameplay/UX source bug'i sec; tercihen mobile/input guvenilirligi veya replay hissi ailesinde olsun, ama tek source-level problem olarak dar tutulup kapatilsin.
 - Olası aday: mobile viewport'ta panel/canvas etkilesimini etkileyen tek bir source bug'i veya replay/input hissinde tek kalan davranis kusuru; fakat tek bir problem sec ve fairness zincirine kayma.
 - Gameplay mantigi degisirse `npm run telemetry:check` ve `npm run build`; shell-only degisirse en az `npm run build` ile dogrula.
 
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md` icinde Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
+- `HUMAN_SIGNALS.md` icinde Run #133 viewport-fit, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi

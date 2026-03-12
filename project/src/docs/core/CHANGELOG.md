@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #133
+
+- `project/game/src/main.ts` viewport yuksekligi, shell padding/gap ve narrow layout'ta acik panel yuksekliginden `--game-max-height` hesaplayip resize, visual viewport resize ve panel toggle anlarinda senkronize ediyor
+- ayni dosya HMR dispose sirasinda media-query, viewport resize ve game-surface listener'larini temizliyor; shell sizing listener'lari sicak yenilemede sarkmiyor
+- `project/game/src/style.css` game root genisligini hem viewport genisligi hem `--game-max-height` ile sinirliyor; canvas artik `width: 100%`, `height: auto`, `aspect-ratio: 4 / 3` ve `max-height: var(--game-max-height)` ile kisa ekranlara daha kontrollu sigiyor
+- narrow viewport'ta `.app-shell` artik usten hizalaniyor; oyun alaninin panel/shell yuzunden ilk ekrandan asagi itilmesi azaltiliyor
+- `npm run build` basarili calisti; gameplay mantigi degismedigi icin bu tur ek telemetry check kosulmadi
+
 ## Run #132
 
 - `project/game/src/main.ts` artik `#game-root` uzerinde `contextmenu` ve `dragstart` default'larini bastiriyor; long-press veya secondary-click browser menu/ghost-drag ile oyunun ustune cikmamali

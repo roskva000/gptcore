@@ -61,9 +61,15 @@ appElement.innerHTML = `
 `;
 
 const gameRootElement = document.querySelector<HTMLDivElement>('#game-root');
+const shellElement = document.querySelector<HTMLElement>('.app-shell');
+const signalsPanelElement = document.querySelector<HTMLElement>('.signals-panel');
 
 if (!gameRootElement) {
   throw new Error('Game root element was not created.');
+}
+
+if (!shellElement) {
+  throw new Error('App shell element was not created.');
 }
 
 const preventGameSurfaceBrowserDefault = (event: Event): void => {
@@ -74,22 +80,66 @@ gameRootElement.addEventListener('contextmenu', preventGameSurfaceBrowserDefault
 gameRootElement.addEventListener('dragstart', preventGameSurfaceBrowserDefault);
 
 const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.message-panel__details');
+const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
+
+const readPxValue = (value: string): number => {
+  const parsedValue = Number.parseFloat(value);
+  return Number.isFinite(parsedValue) ? parsedValue : 0;
+};
+
+const getViewportHeight = (): number =>
+  window.visualViewport?.height ?? window.innerHeight;
+
+const syncGameViewportHeight = (): void => {
+  const shellStyles = window.getComputedStyle(shellElement);
+  const shellPadding =
+    readPxValue(shellStyles.paddingTop) + readPxValue(shellStyles.paddingBottom);
+  const shellGap = readPxValue(shellStyles.rowGap || shellStyles.gap);
+  const stackedPanelHeight =
+    narrowViewportQuery.matches && signalsPanelElement
+      ? signalsPanelElement.getBoundingClientRect().height + shellGap
+      : 0;
+  const maxGameHeight = Math.max(
+    240,
+    Math.floor(getViewportHeight() - shellPadding - stackedPanelHeight),
+  );
+
+  document.documentElement.style.setProperty('--game-max-height', `${maxGameHeight}px`);
+};
 
 if (panelDetailsElements.length > 0) {
-  const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
-
   const syncRunPanelVisibility = (matches: boolean): void => {
     panelDetailsElements.forEach((detailsElement, index) => {
       detailsElement.open = !matches || index === 0;
     });
+
+    syncGameViewportHeight();
   };
 
   syncRunPanelVisibility(narrowViewportQuery.matches);
 
-  narrowViewportQuery.addEventListener('change', (event) => {
+  const handleViewportQueryChange = (event: MediaQueryListEvent): void => {
     syncRunPanelVisibility(event.matches);
+  };
+
+  narrowViewportQuery.addEventListener('change', handleViewportQueryChange);
+  panelDetailsElements.forEach((detailsElement) => {
+    detailsElement.addEventListener('toggle', syncGameViewportHeight);
   });
+
+  if (import.meta.hot) {
+    import.meta.hot.dispose(() => {
+      narrowViewportQuery.removeEventListener('change', handleViewportQueryChange);
+      panelDetailsElements.forEach((detailsElement) => {
+        detailsElement.removeEventListener('toggle', syncGameViewportHeight);
+      });
+    });
+  }
 }
+
+window.addEventListener('resize', syncGameViewportHeight);
+window.visualViewport?.addEventListener('resize', syncGameViewportHeight);
+syncGameViewportHeight();
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -116,6 +166,10 @@ window.__SURVIVE_60_GAME__ = game;
 
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
+    gameRootElement.removeEventListener('contextmenu', preventGameSurfaceBrowserDefault);
+    gameRootElement.removeEventListener('dragstart', preventGameSurfaceBrowserDefault);
+    window.removeEventListener('resize', syncGameViewportHeight);
+    window.visualViewport?.removeEventListener('resize', syncGameViewportHeight);
     game.destroy(true);
     window.__SURVIVE_60_GAME__ = undefined;
   });

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #133]
+
+Decision:
+Kisa viewport'larda oyun canvas'i shell/panel yuksekligine gore sinirlanacak; narrow layout'ta acik paneller oyunu ilk ekrandan asiri asagi itmeyecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit freeze'i yeni death/pause readability veya fairness mikro-turlerini kapatiyor; runtime da bloklu oldugu icin ikinci insan sample'i burada alinmadi. Mevcut shell sadece viewport genisligine gore boyutlandigi icin kisa mobil ekranlarda panel yuksekligi canvas'i katlayip asagi itebilecek gercek bir UX kusuru tasiyordu. Bu, insan sinyalindeki "mobil deneyim cok kotu" notuna baglanabilen, dar kapsamlI ve source-level bir shell bug'i olarak secildi.
+
+Impact:
+`project/game/src/main.ts` viewport, shell padding/gap ve narrow layout'ta panel yuksekligini okuyup `--game-max-height` degiskenini resize, visual viewport resize ve panel toggle'larinda senkronize ediyor. `project/game/src/style.css` game root genisligini bu yukseklikle 4:3 oraninda sinirliyor, canvas'i `width: 100%` / `height: auto` ile kisa ekranlara daha iyi uyduruyor ve narrow layout'ta shell'i usten hizaliyor. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample bu viewport-fit mantiginin canvas'i gereksiz kuculttugunu, panel davranisini bozdugunu veya browser toolbar degisimlerinde gorunur regressiyon urettigini gosterirse yalnizca shell sizing/formulasyonu dar kapsamda yeniden ayarlanir; fairness, overlay copy veya yeni orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #132]
 
 Decision:

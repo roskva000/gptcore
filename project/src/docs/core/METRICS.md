@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+mobile_viewport_playfield_fit:
+current: Run #133 shell viewport yuksekligi, padding/gap ve narrow layout'ta acik panel yuksekliginden `--game-max-height` hesapliyor; `game-root` genisligi ve `canvas` yuksekligi bu sinira gore 4:3 oraninda kontrol ediliyor
+baseline: onceki shell yalnizca viewport genisligine gore olculuyordu; kisa mobil ekranlarda acik panel yuksekligi canvas'i ilk ekrandan asagi itip gorunur playfield'i daraltabiliyordu
+target: sonraki manuel sample'da kisa viewport + acik panel kombinasyonunda canvas ilk ekranda daha gorunur kalsin ve browser chrome yukseklik degisimlerinde asiri ziplama yapmasin
+validation: `npm run build`
+
 game_surface_browser_default_interference:
 current: Run #132 `#game-root` uzerinde `contextmenu` ve `dragstart` default'larini bastiriyor; `game-shell`, `game-root` ve `canvas` ayrica `user-select` / `-webkit-user-select` / `-webkit-touch-callout` guard'lari tasiyor
 baseline: onceki shell oyunun uzerinde browser context menu, ghost drag veya touch callout/text selection davranislarini acik birakiyordu; bu da mobil ve pointer replay/steering akisini browser UI tarafindan kesilebilir bir hale getiriyordu
