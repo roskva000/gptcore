@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+narrow_viewport_active_run_focus:
+current: Run #138 narrow viewport'ta `playing` veya `paused` fazina girince side paneli gizliyor, `--game-max-height` hesabini yeniden yapiyor ve aktif canvas'a panelin kapladigi alanı geri veriyor
+baseline: Run #133 canvas'i kisa ekrana sigdiriyordu, fakat stacked signal panel aktif seans sirasinda da ayni viewport'u paylasmaya devam ettigi icin oyun alani ve dikkat odagi dar kalabiliyordu
+target: sonraki manuel sample'da run aktifken canvas daha baskin hissedilsin, touch start/replay odaği iyilessin ve waiting/game-over'a donunce panel geri gelerek orientation kaybi yaratmasin
+validation: `npm run build`
+
 waiting_launch_surface_identity:
 current: Run #137 waiting/start ekranina ayrik launch paneli, `Break 10s. Then chase 60.` basligi ve spawn noktasini isaretleyen pulse marker ekledi
 baseline: onceki waiting state goal, controls ve start eylemini tek bir duz hint blogu olarak veriyordu; insan sinyali bu yuzeyi "asiri basit" ve "gercek bir oyunun %5'i gibi" hissettiren bir giris olarak isaretledi

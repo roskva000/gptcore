@@ -194,6 +194,15 @@ export class GameScene extends Phaser.Scene {
     super('GameScene');
   }
 
+  private setPhase(phase: GamePhase): void {
+    this.phase = phase;
+    window.dispatchEvent(
+      new CustomEvent('survive60:phasechange', {
+        detail: { phase },
+      }),
+    );
+  }
+
   create(): void {
     this.createTextures();
     this.createBackdrop();
@@ -594,6 +603,7 @@ export class GameScene extends Phaser.Scene {
       ease: 'Sine.Out',
       paused: true,
     });
+    this.setPhase('waiting');
     this.updateWaitingPresentation();
   }
 
@@ -827,7 +837,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.resetArenaForRun();
-    this.phase = 'playing';
+    this.setPhase('playing');
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
     this.pointerCancellationActive = false;
@@ -859,7 +869,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     const pausedAtSeconds = this.getCurrentSurvivalTimeSeconds();
-    this.phase = 'paused';
+    this.setPhase('paused');
     const movementInputActive = this.hasMovementInput();
     const pointerInputActive = shouldRequirePointerReleaseAfterPause(
       this.input.activePointer,
@@ -921,7 +931,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.pauseStartedAt = null;
-    this.phase = 'playing';
+    this.setPhase('playing');
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
     this.pointerCancellationActive = false;
@@ -1365,7 +1375,7 @@ export class GameScene extends Phaser.Scene {
       ? `New best ${roundedSurvivalTime.toFixed(1)}s.`
       : `Best ${getBestSurvivalTimeText(this.telemetry)}.`;
 
-    this.phase = 'gameOver';
+    this.setPhase('gameOver');
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
     this.pointerCancellationActive = false;

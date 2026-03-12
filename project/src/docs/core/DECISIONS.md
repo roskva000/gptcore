@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #138]
+
+Decision:
+Dar viewport'ta aktif run (`playing` / `paused`) sirasinda side panel gizlenecek; waiting ve game-over fazlarinda geri gelerek canvas aktif seans sirasinda daha baskin kalacak.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridorunu yeni sample olmadan tekrar acmayi yasakliyor; headed runtime da halen bloklu. Run #133 viewport-fit dar ekranlarda canvas'i sigdirsa da stacked signal panel aktif seans sirasinda hala ayni viewport'u paylasiyordu. Insan sinyalindeki "mobil deneyim cok kotu" ve "UI asiri basit" notuna baglanabilen dar bir UX kusuru olarak, oyun aktifken panelin alan ve dikkat rekabetini surdurmesi secildi.
+
+Impact:
+`project/game/src/game/GameScene.ts` faz degisimlerini `survive60:phasechange` event'i ile window'a yayinliyor. `project/game/src/main.ts` bu sinyali dinleyip narrow layout'ta aktif run sirasinda `app-shell--game-active` class'ini aciyor ve viewport yuksekligini yeniden hesapliyor. `project/game/src/style.css` bu class altinda `.signals-panel` alanini gizliyor ve shell'i tekrar oyuna odakliyor. `project/game/src/latestRun.ts` public paneli bu degisiklikle hizaladi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample panelin gizlenmesinin orientasyonu bozdugunu, pause durumunda istenmeyen yalnizlik yarattigini veya waiting/game-over geri donuslerini kotulestirdigini gosterirse yalnizca narrow-layout focus davranisi dar kapsamda ayarlanir; fairness tuning, overlay copy churn'u veya yeni shell orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #137]
 
 Decision:

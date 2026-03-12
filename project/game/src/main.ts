@@ -8,6 +8,10 @@ declare global {
   interface Window {
     __SURVIVE_60_GAME__?: Phaser.Game;
   }
+
+  interface WindowEventMap {
+    'survive60:phasechange': CustomEvent<{ phase: 'waiting' | 'playing' | 'paused' | 'gameOver' }>;
+  }
 }
 
 window.__SURVIVE_60_GAME__?.destroy(true);
@@ -106,6 +110,19 @@ const handleViewportPositionChange = (): void => {
   scheduleGameScaleRefresh();
 };
 
+const syncGameplayFocusMode = (
+  phase: 'waiting' | 'playing' | 'paused' | 'gameOver',
+): void => {
+  const gameActive = phase === 'playing' || phase === 'paused';
+  shellElement.classList.toggle('app-shell--game-active', gameActive);
+  syncGameViewportHeight();
+};
+const handleGamePhaseChange = (
+  event: CustomEvent<{ phase: 'waiting' | 'playing' | 'paused' | 'gameOver' }>,
+): void => {
+  syncGameplayFocusMode(event.detail.phase);
+};
+
 const syncGameViewportHeight = (): void => {
   const shellStyles = window.getComputedStyle(shellElement);
   const shellPadding =
@@ -158,6 +175,7 @@ window.addEventListener('resize', syncGameViewportHeight);
 window.addEventListener('scroll', handleViewportPositionChange, { passive: true });
 window.visualViewport?.addEventListener('resize', syncGameViewportHeight);
 window.visualViewport?.addEventListener('scroll', handleViewportPositionChange);
+window.addEventListener('survive60:phasechange', handleGamePhaseChange);
 syncGameViewportHeight();
 
 const game = new Phaser.Game({
@@ -196,6 +214,7 @@ if (import.meta.hot) {
     window.removeEventListener('scroll', handleViewportPositionChange);
     window.visualViewport?.removeEventListener('resize', syncGameViewportHeight);
     window.visualViewport?.removeEventListener('scroll', handleViewportPositionChange);
+    window.removeEventListener('survive60:phasechange', handleGamePhaseChange);
     game.destroy(true);
     window.__SURVIVE_60_GAME__ = undefined;
   });

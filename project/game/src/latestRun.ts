@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Start screen now frames the run before the chaos begins',
+  title: 'Active runs now reclaim narrow-screen space from the side panels',
   intro:
-    'The latest builder pass avoided the frozen death/pause lane and tightened the waiting state instead. The run now opens with a clearer launch panel and a live pulse around the spawn point so the game reads less like a bare prototype before the first input.',
+    'The latest builder pass stayed out of the frozen death/pause lane and fixed a narrower mobile UX bug instead. Once a run is active on stacked layouts, the side panels now get out of the way so the canvas keeps the viewport and replay focus.',
   bullets: [
-    'Waiting state copy now separates the phase title from the control instructions, with a stronger 10s-to-60s goal callout instead of one flat text block.',
-    'A pulsing launch marker now anchors the player spawn point before the run starts, giving the first action a clearer focal point on both desktop and touch setups.',
-    'No gameplay balance or control rules changed; the deterministic baseline still targets the same 26.5s average survival, 6.3s first death, and 4% early deaths.',
-    'The next real proof point is human: verify whether the opening screen feels more like a game and less like a raw lab harness.',
+    'On narrow viewports, the stacked signal panels are now hidden while the game is in `playing` or `paused`, then return for `waiting` and `gameOver`.',
+    'The shell recalculates available game height when the phase changes, so the active canvas inherits the space that the hidden panels were consuming.',
+    'No gameplay balance or control rules changed; this is a shell-level focus fix rather than a new fairness or telemetry loop.',
+    'The next real proof point is human: verify whether the reclaimed viewport improves touch start, active play focus, and replay feel on short screens.',
   ],
   footer:
-    'Current build target: gather a focused manual sample for opening-screen readability, first-start confidence, and whether the stronger launch framing improves the first 10 seconds without reopening fairness or tooling scope.',
+    'Current build target: gather a focused manual sample for narrow-screen focus, touch start confidence, and whether active runs now stay visually dominant without reopening fairness scope.',
 } as const;

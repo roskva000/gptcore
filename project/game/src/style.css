@@ -167,10 +167,18 @@ canvas {
     justify-content: flex-start;
   }
 
+  .app-shell--game-active {
+    justify-content: center;
+  }
+
   .game-root,
   .signals-panel {
     width: min(100%, 800px);
     margin: 0 auto;
+  }
+
+  .app-shell--game-active .signals-panel {
+    display: none;
   }
 
   .message-panel__summary {

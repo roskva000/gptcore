@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #138
+
+- `project/game/src/game/GameScene.ts` oyun fazi degisimlerini `survive60:phasechange` event'i olarak yayinliyor; shell artik `waiting / playing / paused / gameOver` ayrimini takip edebiliyor
+- `project/game/src/main.ts` narrow viewport'ta aktif run sirasinda `app-shell--game-active` class'ini acip `--game-max-height` hesabini tekrarliyor; stacked signal panel kapanirken canvas bu alanı geri aliyor
+- `project/game/src/style.css` `.app-shell--game-active .signals-panel` kuralini ekledi; playing/paused sirasinda side panel gizleniyor, waiting/game-over'da geri donuyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini active-run focus davranisiyla hizaladi
+- `npm run build` basarili calisti
 ## Run #137
 
 - `project/game/src/game/GameScene.ts` waiting/start ekranina ayrik bir launch paneli ekledi; hedef artik `Break 10s. Then chase 60.` basligi ve ayri kontrol satirlariyla tek parca metin blogundan daha okunur aciliyor

@@ -6,6 +6,7 @@
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
 - Run #137 waiting/start launch surface yeni acildi; sample almadan bunu "ilk izlenim cozuldu" diye yorumlama.
+- Run #138 narrow-layout active-run panel hide davranisi source/build seviyesinde acildi; bunu sample almadan "mobil fokus cozuldu" diye yorumlama.
 - Run #136 pointer-cancel release guard'i source/build seviyesinde acildi; bunu sample almadan "gesture interruption artik cozuldu" diye yorumlama.
 - Run #132 browser-default suppression'i source/build seviyesinde acildi; bunu sample almadan "mobil deneyim cozuldu" diye yorumlama.
 - Run #133 viewport-fit duzeltmesi de source/build seviyesinde acildi; bunu sample almadan "kisa ekran problemi cozuldu" diye yorumlama.
@@ -17,7 +18,7 @@
 Run mode: `stabilization`
 
 Ana hedef:
-Run #137 waiting/start launch surface ile birlikte Run #133, Run #134, Run #135 ve Run #136 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu, panel/browser chrome/scroll degisimlerinden sonra pointer hizasi korunuyor mu ve gesture/interruption sonrasi stale press kalmadan retry/resume/steer geri geliyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
+Run #137 waiting/start launch surface ile birlikte Run #138 active-run panel hide/focus mode'u, Run #133, Run #134, Run #135 ve Run #136 sonrasi kisa viewport'lu touch-capable browser'da canvas ilk ekranda daha gorunur kaliyor mu, run aktifken panel gercekten cekiliyor mu, panel/browser chrome/scroll degisimlerinden sonra pointer hizasi korunuyor mu ve gesture/interruption sonrasi stale press kalmadan retry/resume/steer geri geliyor mu dogrula; ayni seansta Run #132 browser context menu / long-press callout / drag secimi, Run #130-#131 touch start/retry/held steer ve focus-loss sonrasi tek-tap resume akisi ile Run #125-#129 death/pause overlay sakinligini ikinci sinyal olarak kontrol et.
 
 Baglam:
 - Run #137 `project/game/src/game/GameScene.ts` waiting fazina yeni bir launch paneli, `Break 10s. Then chase 60.` basligi ve oyuncu spawn noktasini isaretleyen pulse marker ekledi.
@@ -26,6 +27,8 @@ Baglam:
 - Run #133 `project/game/src/main.ts` icinde shell padding/gap, viewport yuksekligi ve narrow layout'ta panel yuksekliginden `--game-max-height` hesaplayip resize, visual viewport resize ve panel toggle'larinda guncelliyor.
 - `project/game/src/style.css` artik `game-root` genisligini viewport genisligi + `--game-max-height` ile 4:3 oranda sinirliyor; `canvas` `width: 100%`, `height: auto`, `aspect-ratio: 4 / 3` ve `max-height: var(--game-max-height)` ile kisa ekranlara daha kontrollu oturuyor.
 - Narrow viewport'ta `.app-shell` artik usten hizali; oyun alaninin ilk ekrandan asagi itilmesi azaltilmaya calisiliyor.
+- Run #138 `project/game/src/game/GameScene.ts` faz degisimlerini `survive60:phasechange` event'i olarak yayinliyor; `project/game/src/main.ts` narrow layout'ta `playing` / `paused` sirasinda `app-shell--game-active` class'ini acip side paneli gizliyor ve oyun yuksekligini yeniden hesapliyor.
+- `project/game/src/style.css` bu class altinda `.signals-panel` alanini kapatiyor; waiting ve game-over'da panel geri geliyor.
 - Run #134 `project/game/src/main.ts` icinde `syncGameViewportHeight()` sonrasinda tekil RAF ile `window.__SURVIVE_60_GAME__?.scale.refresh()` cagiriyor; panel toggle veya visual viewport degisiminden sonra Phaser input bounds'unun stale kalmasi engellenmeye calisiliyor.
 - Run #135 `project/game/src/main.ts` icinde `window.scroll` ve `visualViewport.scroll` olaylarinda ayni tekil RAF refresh akisini yeniden kullaniyor; canvas boyutu sabit kalsa bile browser chrome veya sayfa kaymasi sonrasi Phaser input bounds'unun eski offset'te kalmasi engellenmeye calisiliyor.
 - Run #136 `project/game/src/game/GameScene.ts` icinde native `pointercancel` / `touchcancel` ve Phaser `pointerup` / `pointerupoutside` olaylarini dinliyor; browser gesture veya sistem interruption sonrasi stale pointer press state'i steering/retry/resume guard'larinda tutulmamaya calisiliyor.
@@ -47,6 +50,8 @@ Baglam:
 Minimum sample checklist:
 - waiting ekranindaki yeni launch paneli ilk bakista goal'u ve ilk aksiyonu daha net veriyor mu
 - spawn noktasindaki pulse marker ilk start anini daha guvenli ve daha oyun gibi hissettiriyor mu, yoksa dekor olarak mi kaliyor
+- run basladiginda veya pause'a girildiginde stacked side panel kapanip canvas'a alan geri veriyor mu
+- waiting veya game-over'a donunce panel geri gelip orientation bozmadan yeniden kullanilabilir kaliyor mu
 - kisa viewport + acik panel kombinasyonunda canvas ilk ekranda yeterince gorunur kaliyor mu
 - panel toggle veya browser chrome yuksekligi degisince pointer/touch hedefi canvas uzerinde hizali kaliyor mu
 - sadece sayfa scroll'u veya browser chrome yer degisimi oldugunda da pointer/touch hedefi canvas uzerinde hizali kaliyor mu
@@ -76,6 +81,7 @@ Minimum sample checklist:
 - Run #101-#119 fairness/input/control zincirine geri donme.
 - Telemetry/public-copy wording churn'u veya governance expansion acma.
 - Run #137 waiting launch surface'i sample olmadan tekrar tekrar cilalama.
+- Run #138 active-run panel hide/focus mode'unu sample olmadan yeni shell/orchestration katmanlariyla buyutme.
 - Touch-primary, focus-loss resume ve pointer-cancel helper hattini yeni sample olmadan yeniden acma.
 - Browser-default suppression hattini yeni sample olmadan gereksizce genisletme; ayni yuzeye yeni shell katmanlari ekleme.
 - Viewport-fit hattini yeni sample olmadan genis responsive rework'e donusturme; ayni problemi yeni layout/orchestration katmanlariyla sarma.
