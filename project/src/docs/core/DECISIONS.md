@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #135]
+
+Decision:
+Viewport boyutu degismese bile sayfa scroll'u veya mobile browser viewport-origin kayarsa Phaser scale manager yeniden refresh edilecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit ayni death/pause readability hattina donmeyi yasakliyor; runtime ise hala bloklu. Run #134 yalnizca resize ve panel toggle tabanli stale bounds riskini daraltti, fakat `body/#app` scroll'u veya mobile browser chrome kaymasi canvas'in sayfadaki konumunu degistirirken Phaser input bounds'unu sessizce eski offset'te birakabilirdi. Bu, mobil/input guvenilirligine dogrudan bagli tek bir source-level UX kusuru olarak secildi.
+
+Impact:
+`project/game/src/main.ts` yeni `handleViewportPositionChange()` helper'i ile `window.scroll` ve `visualViewport.scroll` olaylarinda mevcut tekil RAF tabanli `scale.refresh()` akisina yeniden giriyor. Boylece adres cubugu, browser chrome veya sayfa scroll'u canvas'i yeniden konumlandirdiginda pointer hedefi ile CSS yerlesiminin senkronu daha hizli tazeleniyor. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample bu ek refresh'in gereksiz jank, flicker veya scroll-perf problemi urettigini gosterirse yalnizca scroll tetikleme kapsami daraltilir; overlay/fairness tuning'i veya yeni orchestration/readiness katmani bu bahaneyle acilmaz.
+
 ### [Run #134]
 
 Decision:

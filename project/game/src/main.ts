@@ -102,6 +102,10 @@ const scheduleGameScaleRefresh = (): void => {
   });
 };
 
+const handleViewportPositionChange = (): void => {
+  scheduleGameScaleRefresh();
+};
+
 const syncGameViewportHeight = (): void => {
   const shellStyles = window.getComputedStyle(shellElement);
   const shellPadding =
@@ -151,7 +155,9 @@ if (panelDetailsElements.length > 0) {
 }
 
 window.addEventListener('resize', syncGameViewportHeight);
+window.addEventListener('scroll', handleViewportPositionChange, { passive: true });
 window.visualViewport?.addEventListener('resize', syncGameViewportHeight);
+window.visualViewport?.addEventListener('scroll', handleViewportPositionChange);
 syncGameViewportHeight();
 
 const game = new Phaser.Game({
@@ -187,7 +193,9 @@ if (import.meta.hot) {
     gameRootElement.removeEventListener('contextmenu', preventGameSurfaceBrowserDefault);
     gameRootElement.removeEventListener('dragstart', preventGameSurfaceBrowserDefault);
     window.removeEventListener('resize', syncGameViewportHeight);
+    window.removeEventListener('scroll', handleViewportPositionChange);
     window.visualViewport?.removeEventListener('resize', syncGameViewportHeight);
+    window.visualViewport?.removeEventListener('scroll', handleViewportPositionChange);
     game.destroy(true);
     window.__SURVIVE_60_GAME__ = undefined;
   });

@@ -6,10 +6,16 @@
 
 ## Gameplay
 
+viewport_position_bounds_sync:
+current: Run #135 `window.scroll` ve `visualViewport.scroll` olaylarinda da mevcut RAF tabanli Phaser `scale.refresh()` akisina giriyor; canvas boyutu degismese bile sayfa offset'i veya mobile browser chrome konumu degistiginde input/scale bounds daha hizli tazeleniyor
+baseline: Run #134 resize, panel toggle ve visual viewport resize sonrasi stale bounds riskini daraltmisti, fakat canvas'in sayfadaki konumu sadece scroll veya viewport-origin kaymasiyla degistiginde Phaser bounds eski offset'te kalabilirdi
+target: sonraki manuel sample'da sayfa scroll'u, browser chrome kaymasi veya viewport-origin degisimi sonrasi pointer/touch hedefi canvas ustunde hizali kalsin; keep/tune/revert karari insan notuyla verilsin
+validation: `npm run build`
+
 viewport_scale_bounds_sync:
 current: Run #134 `syncGameViewportHeight()` sonrasinda RAF ile Phaser `scale.refresh()` cagiriyor; panel toggle, window resize ve visual viewport resize sonrasi CSS canvas boyutu ile input/scale bounds daha yakin senkronize kaliyor
 baseline: Run #133 `--game-max-height` ve `canvas` boyutunu CSS tarafinda guncelliyordu, fakat panel toggle gibi Phaser'in kendi resize akisina girmeyen anlarda stale bounds pointer/touch hedefinde sessiz kayma riski tasiyordu
-target: sonraki manuel sample'da panel ac/kapa veya browser chrome yuksekligi degisikliginden sonra pointer/touch hedefi canvas uzerinde hizali kalsin; keep/tune/revert karari insan notuyla verilsin
+target: sonraki manuel sample'da panel ac/kapa veya browser chrome yuksekligi degisikliginden sonra pointer/touch hedefi canvas uzerinde hizali kalsin; Run #135 ile birlikte sadece offset kaymalarinda da ayni koruma gozlemlensin
 validation: `npm run build`
 
 mobile_viewport_playfield_fit:

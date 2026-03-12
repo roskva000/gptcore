@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #135
+
+- `project/game/src/main.ts` artik `window.scroll` ve `visualViewport.scroll` olaylarinda da tekil RAF tabanli Phaser `scale.refresh()` planliyor; canvas boyutu degismese bile sayfa scroll'u veya browser chrome yer kaymasi sonrasi stale input bounds riski azaltiliyor
+- ayni dosya bu yeni scroll listener'larini HMR dispose sirasinda temizliyor; sicak yenilemede viewport-position refresh handler'lari sarkmiyor
+- `npm run build` basarili calisti; gameplay mantigi degismedigi icin bu tur ek telemetry check kosulmadi
+
 ## Run #134
 
 - `project/game/src/main.ts` viewport/panel kaynakli CSS boyut degisimlerinden sonra Phaser scale manager'i icin RAF tabanli tekil refresh planliyor; panel toggle, window resize ve visual viewport resize sonrasi stale scale/input bounds riski azaliyor

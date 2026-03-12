@@ -4,10 +4,11 @@
 
 # NOW
 
-- Touch-capable browser'da Run #133 viewport-fit ile Run #134 viewport-sonrasi Phaser scale refresh senkronunu birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
+- Touch-capable browser'da Run #133 viewport-fit, Run #134 viewport-sonrasi Phaser scale refresh senkronu ve Run #135 scroll/viewport-position refresh guard'ini birlikte, Run #132 browser-default suppression ve Run #130-#131 sonrasi start/retry/held steer ve focus-loss sonrasi tek-tap resume guvenilirligiyle ayni hedefli sample icinde dogrula.
 - Sample checklist:
   - kisa viewport + acik panel kombinasyonunda game canvas ilk ekranda yeterince gorunur kaliyor mu, yoksa shell yine asiri asagi itiyor mu
   - panel toggle veya browser chrome yuksekligi degistikten sonra pointer/touch hedefi canvas ustunde dogru hizayi koruyor mu, yoksa stale bounds yuzunden kayma hissi var mi
+  - sadece sayfa scroll'u veya browser chrome yer degisimi oldugunda da pointer/touch hedefi canvas ustunde hizali kaliyor mu
   - adres cubugu / mobil browser chrome yukseklik degistirdiginde canvas olcusu ve konumu stabil kaliyor mu
   - long-press veya secondary-click browser context menu / callout acmadan oyunun icinde kaliyor mu
   - drag veya uzun basista text-selection / ghost-drag yuzunden steering/retry akisi kopuyor mu
@@ -25,7 +26,7 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
-- `HUMAN_SIGNALS.md` icinde Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
+- `HUMAN_SIGNALS.md` icinde Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - En az `npm run build` yesil kaldi; gameplay mantigi degisirse ilgili deterministic check de yeniden yesil kaldi.
 
 ---
@@ -35,6 +36,7 @@ Success markers:
 - Manuel sample sonuclarina gore touch control, focus-loss resume, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
 - Manuel sample varsa Run #133 viewport-fit duzeltmesini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #134 scale-refresh senkronunu keep/tune/revert formatinda insan notuyla bagla.
+- Manuel sample varsa Run #135 scroll/viewport-position refresh guard'ini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #132 browser-default suppression'i keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #130 touch-primary action sertlestirmesini ve Run #131 tek-tap resume fix'ini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa `60s clear` badge'ini keep/tune/revert formatinda insan notuyla bagla.
