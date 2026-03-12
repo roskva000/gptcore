@@ -6,10 +6,16 @@
 
 ## Gameplay
 
+active_run_viewport_anchor_recovery:
+current: Run #140 narrow viewport'ta `playing` veya `paused` fazina girince mevcut sayfa scroll konumunu sakliyor, viewport'u `#game-root` hizasina geri cekiyor ve waiting/game-over'a donunce onceki panel scroll konumunu geri yukluyor
+baseline: Run #139 scroll'u kilitliyordu, fakat kullanici panelin altlarindayken run baslatirsa aktif seans mevcut scroll offset'inde acilabiliyor ve canvas kilitlenmis halde yari gorunur kalabiliyordu
+target: sonraki manuel sample'da aktif run her seferinde oyun alani odaginda baslasin; run bitince panel ve AI update akisi dogal scroll konumuna donsun
+validation: `npm run build`
+
 active_run_scroll_lock_stability:
 current: Run #139 narrow viewport'ta `playing` veya `paused` fazina girince `html.app-scroll-locked` class'i aciyor; `body` ve `#app` overflow'u kapanip overscroll bastiriliyor, aktif run sirasinda sayfa scroll'u daha zor hale geliyor
 baseline: Run #138 aktif run sirasinda side paneli gizleyip canvas'a alan geri veriyordu, fakat `body/#app` hala scrollable kaldigi icin kazara page drag veya browser chrome hareketi kisa ekranda canvas odağini bozabilirdi
-target: sonraki manuel sample'da aktif run sirasinda canvas viewport icinde daha sabit kalsin, accidental page movement azalsin ve waiting/game-over'a donunce scroll tekrar normale donsun
+target: sonraki manuel sample'da aktif run sirasinda canvas viewport icinde daha sabit kalsin, accidental page movement azalsin ve Run #140 ile birlikte aktif seans dogru scroll offset'te baslasin
 validation: `npm run build`
 
 narrow_viewport_active_run_focus:

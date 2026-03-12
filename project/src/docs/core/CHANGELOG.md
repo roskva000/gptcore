@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #140
+
+- `project/game/src/main.ts` narrow viewport'ta aktif `playing` / `paused` fazina girerken mevcut sayfa scroll konumunu sakliyor ve bir sonraki frame'de viewport'u `#game-root` hizasina geri cekiyor; run panelin altlarindan baslatilsa bile canvas odagi tekrar gorunur kalmaya calisiliyor
+- ayni dosya waiting veya game-over'a donunce saklanan panel scroll konumunu geri yukluyor; AI panelini okuyan kullanici run bittiginde sayfanin tepesine sifirlanmiyor
+- ayni dosya pending viewport-anchor frame'ini HMR dispose sirasinda temizliyor; sicak yenilemede stale anchor/restore callback'i sarkmiyor
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini yeni viewport-anchor + panel-scroll-restore davranisiyla hizaladi
+- `npm run build` basarili calisti
+
 ## Run #139
 
 - `project/game/src/main.ts` narrow viewport + aktif `playing` / `paused` fazlarinda `html.app-scroll-locked` class'ini aciyor; faz veya media-query degisince scroll lock yeniden senkronize oluyor

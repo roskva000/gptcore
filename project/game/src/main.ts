@@ -86,7 +86,9 @@ gameRootElement.addEventListener('dragstart', preventGameSurfaceBrowserDefault);
 const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.message-panel__details');
 const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
 let pendingScaleRefreshFrame: number | null = null;
+let pendingViewportAnchorFrame: number | null = null;
 let currentGamePhase: 'waiting' | 'playing' | 'paused' | 'gameOver' = 'waiting';
+let savedPanelScrollY: number | null = null;
 
 const readPxValue = (value: string): number => {
   const parsedValue = Number.parseFloat(value);
@@ -107,8 +109,49 @@ const scheduleGameScaleRefresh = (): void => {
   });
 };
 
+const cancelPendingViewportAnchor = (): void => {
+  if (pendingViewportAnchorFrame === null) {
+    return;
+  }
+
+  window.cancelAnimationFrame(pendingViewportAnchorFrame);
+  pendingViewportAnchorFrame = null;
+};
+
+const scheduleViewportAnchor = (callback: () => void): void => {
+  cancelPendingViewportAnchor();
+  pendingViewportAnchorFrame = window.requestAnimationFrame(() => {
+    pendingViewportAnchorFrame = null;
+    callback();
+  });
+};
+
 const handleViewportPositionChange = (): void => {
   scheduleGameScaleRefresh();
+};
+
+const getScrollTop = (): number =>
+  window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+
+const anchorViewportToGame = (): void => {
+  const shellStyles = window.getComputedStyle(shellElement);
+  const shellPaddingTop = readPxValue(shellStyles.paddingTop);
+  const targetScrollTop = Math.max(
+    0,
+    Math.round(getScrollTop() + gameRootElement.getBoundingClientRect().top - shellPaddingTop),
+  );
+
+  window.scrollTo({ top: targetScrollTop, behavior: 'auto' });
+};
+
+const restorePanelScrollPosition = (): void => {
+  if (savedPanelScrollY === null) {
+    return;
+  }
+
+  const targetScrollTop = savedPanelScrollY;
+  savedPanelScrollY = null;
+  window.scrollTo({ top: targetScrollTop, behavior: 'auto' });
 };
 
 const syncActiveRunScrollLock = (): void => {
@@ -123,9 +166,27 @@ const syncGameplayFocusMode = (
 ): void => {
   currentGamePhase = phase;
   const gameActive = phase === 'playing' || phase === 'paused';
+  const shouldAnchorViewport = narrowViewportQuery.matches && gameActive;
+  const shouldRestorePanelScroll = !gameActive && savedPanelScrollY !== null;
+
+  if (shouldAnchorViewport && savedPanelScrollY === null) {
+    savedPanelScrollY = getScrollTop();
+  }
+
   shellElement.classList.toggle('app-shell--game-active', gameActive);
   syncActiveRunScrollLock();
   syncGameViewportHeight();
+
+  if (shouldAnchorViewport) {
+    scheduleViewportAnchor(anchorViewportToGame);
+    return;
+  }
+
+  cancelPendingViewportAnchor();
+
+  if (shouldRestorePanelScroll) {
+    scheduleViewportAnchor(restorePanelScrollPosition);
+  }
 };
 const handleGamePhaseChange = (
   event: CustomEvent<{ phase: 'waiting' | 'playing' | 'paused' | 'gameOver' }>,
@@ -219,6 +280,9 @@ if (import.meta.hot) {
       window.cancelAnimationFrame(pendingScaleRefreshFrame);
       pendingScaleRefreshFrame = null;
     }
+
+    cancelPendingViewportAnchor();
+    savedPanelScrollY = null;
 
     gameRootElement.removeEventListener('contextmenu', preventGameSurfaceBrowserDefault);
     gameRootElement.removeEventListener('dragstart', preventGameSurfaceBrowserDefault);

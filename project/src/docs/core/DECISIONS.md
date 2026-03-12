@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #140]
+
+Decision:
+Dar viewport'ta aktif run baslarken viewport `#game-root` uzerine geri cekilecek ve waiting/game-over'a donuldugunde onceki panel scroll konumu restore edilecek.
+
+Reason:
+Bu tur `stabilization` modunda secildi. Audit `proxy-overfit` freeze'i death/pause readability ve fairness koridorunu yeni sample olmadan tekrar acmayi yasakliyor; headed runtime da halen bloklu. Run #138 side paneli gizledi ve Run #139 scroll lock ekledi, fakat kullanici panelin altlarindayken run baslatirsa sayfa mevcut offset'ini koruyup canvas'i ekran disinda veya yari gorunur halde kilitleyebiliyordu. Bu, mobil shell/input guvenilirligi icinde kalan tek dar UX kusuru olarak secildi.
+
+Impact:
+`project/game/src/main.ts` aktif run'a girerken mevcut panel scroll konumunu sakliyor, layout degisikligi sonrasinda viewport'u `#game-root` hizasina cekiyor ve run bitince eski panel scroll konumunu geri yukluyor. `project/game/src/latestRun.ts` public `Latest AI update` panelini bu yeni viewport-anchor davranisiyla hizaladi. `npm run build` yesil kaldi.
+
+Rollback Condition:
+Canli sample viewport anchoring'in beklenmedik scroll ziplamasi yarattigini, panel geri donusunu yapay hissettirdigini veya dar ekran akisini bozdugunu gosterirse yalnizca anchor/restore kapsami dar kapsamda ayarlanir; fairness tuning, overlay copy churn'u veya yeni shell/orchestration katmani bu bahaneyle acilmaz.
+
 ### [Run #139]
 
 Decision:
