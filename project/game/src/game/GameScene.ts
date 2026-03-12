@@ -1415,10 +1415,11 @@ export class GameScene extends Phaser.Scene {
     const hitDirection = this.getHitDirection(fatalObstacle);
     const escapePrompt = this.getEscapePrompt(hitDirection);
     const roundedSurvivalTime = Number(this.survivalTime.toFixed(1));
+    const reachedSurvivalGoal = hasReachedSurvivalGoal(this.survivalTime);
     const previousBestSurvivalTime = getBestSurvivalTime(this.telemetry);
     const isNewBest =
       previousBestSurvivalTime === null || roundedSurvivalTime > previousBestSurvivalTime;
-    const goalClearSummary = hasReachedSurvivalGoal(roundedSurvivalTime)
+    const goalClearSummary = reachedSurvivalGoal
       ? `${SURVIVAL_GOAL_SECONDS}s clear.`
       : null;
     const bestSurvivalSummary = isNewBest

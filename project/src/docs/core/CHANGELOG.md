@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #147
+
+- `project/game/src/game/GameScene.ts` game-over `60s clear.` badge kararini artik `roundedSurvivalTime` yerine ham `survivalTime` uzerinden veriyor; `59.96s` gibi olup UI'da `60.0s` gorunen run'lar sahte milestone kutlamasi alamiyor
+- `project/game/scripts/telemetry-check.ts` `59.96s` regression guard'i ekledi; namesake hedefin yalnizca gercek threshold gecisinde kutlanmasi kilitlendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #146
 
 - `project/game/src/game/nearMiss.ts` near-miss tetigini `obstacleInsideVisibleArena` kosuluyla daraltti; obstacle artik gorunur arena disina tastiktan sonra gec `NEAR MISS` pulse'u uretemiyor

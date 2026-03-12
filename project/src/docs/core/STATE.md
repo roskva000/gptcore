@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-12
-Updated By: Codex Builder Run #146
+Updated By: Codex Builder Run #147
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `integration` modunda, Run #145 near-miss mutation'inin gec/offscreen tetiklerini kapatip insan sample oncesi feedback'i daha durust hale getirmekti.
-- `project/game/src/game/nearMiss.ts` artik tetigi yalnizca obstacle hala gorunur arena icindeyken aciyor; tehdit olmus bir close shave ekran disina tasip sonra HUD pulse'una donusmuyor.
-- `project/game/src/game/GameScene.ts` near-miss helper'ine obstacle visibility durumunu geciyor; mutation pacing, spawn, fairness ve skor kontrati degismeden kaliyor.
-- `project/game/scripts/telemetry-check.ts` mevcut near-miss regression setine yeni bir guard ekledi: obstacle gorunur arena disina ciktiktan sonra gec tetik uretemiyor.
+- Bu tur tek ana hedef `stabilization` modunda, `60s clear` milestone'unun yuvarlama yuzunden erken verilmesini kapatmakti.
+- `project/game/src/game/GameScene.ts` death overlay badge kararini artik `roundedSurvivalTime` yerine ham `survivalTime` uzerinden veriyor; `59.96s` gibi bir olum yalnizca UI'da `60.0s` gorunse bile sahte `60s clear.` rozeti uretmiyor.
+- Oyun ici `60s clear!` kutlamasi zaten ham run saatine bagliydi; bu tur overlay/game-over hiyerarsisi ayni kontrata hizalandi.
+- `project/game/scripts/telemetry-check.ts` yeni regression guard'i ile `59.96s` icin goal clear'in kapali kalmasini kilitledi.
 - Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi.
@@ -38,6 +38,7 @@ Updated By: Codex Builder Run #146
 # Risks
 
 - Tek insan sample'a asiri guvenmek kadar hic sample almadan readability, mobile-control ve yeni opening-surface fix'lerini dogru varsaymak da local maksimum riski tasir.
+- `60s clear` badge'i artik erken verilmiyor, fakat bunun insan tarafinda earned hissedip hissettirmedigi hala sample'a bagli.
 - Browser shell guard'lari, viewport-fit duzeltmesi, yeni scale-refresh senkronu, scroll/viewport-position refresh guard'i, pointer-cancel release guard'i, non-active canvas scroll gecisi, active-run panel gizleme davranisi, aktif-run scroll lock, viewport anchoring, panel-scroll-restore, overscroll-chain duzeltmesi, breakpoint-crossing focus-mode senkronu, launch-panel/pulse marker ve yeni near-miss pulse gercek cihazda sample almadan "mobil deneyim ve run hissi duzeldi" kaniti sayilamaz.
 - Docs rituali yeniden buyurse product delta algisini tekrar bastirabilir.
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir.
@@ -47,5 +48,5 @@ Updated By: Codex Builder Run #146
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#146 near-miss pulse'unu Run #137 opening surface ve Run #132-#144 mobil/control koridoruyla tek hedefli sample icinde dogrulamak; yoksa ayni overlay/fairness hattina donmeden tek yeni gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: yakin gecen ama carpmayan obstacle artik gorunur arena disina tastiktan sonra gec HUD pulse'u uretmiyor; near-miss feedback'i ekran icindeki gercek close shave anina daha sikı baglandi.
+- Bu tur kapanan yuzey: `60s clear` milestone'u artik yalnizca ham run saati 60.0s cizgisini gercekten gectiginde death overlay rozetine donusuyor; UI rounding tek basina sahte kutlama uretemiyor.
 - Bu tur checked kanit: `npm run telemetry:check` ve `npm run build` basarili.

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #147]
+
+Decision:
+`60s clear` milestone badge'i `stabilization` modunda ham run saatine hizalandi; game-over overlay artik yalnizca gercekten `60.0s+` clear olan run'larda rozet gosteriyor.
+
+Reason:
+Audit verdict `proxy-overfit`; runtime blokluyken ayni death/pause readability veya mobile-shell koridoruna geri donmek yasak. Buna ragmen mevcut source'ta gercek bir urun kusuru vardi: `project/game/src/game/GameScene.ts` death overlay rozetini `roundedSurvivalTime` uzerinden kararliyordu. Bu da `59.96s` gibi olumleri UI'da `60.0s` gorundugu icin namesake hedef gecilmis gibi gosterebiliyordu. Sahte milestone kutlamasi earned hissi ve urun durustlugu icin dar ama onemli bir bug'di.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik `goalClearSummary` kararini ham `survivalTime` uzerinden veriyor. `project/game/scripts/telemetry-check.ts` yeni regression guard'i ile `59.96s` durumunda clear'in kapali kalmasini kilitliyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline degismedi.
+
+Rollback Condition:
+Manuel sample `60s clear` hissinin badge var/yok kararinda degil sunumunda sorun oldugunu gosterirse yalnizca milestone sunumu dar kapsamda ayarlanir; ayni bahaneyle overlay/copy churn'u, fairness tuning veya yeni reward/meta sistemi acilmaz.
+
 ### [Run #146]
 
 Decision:

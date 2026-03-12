@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+survival_goal_badge_integrity:
+current: Run #147 game-over `60s clear.` badge kararini `project/game/src/game/GameScene.ts` icinde ham `survivalTime` uzerine tasidi; `59.96s` gibi run'lar UI'da `60.0s` gorunse bile milestone rozetini acmiyor
+baseline: onceki source death overlay'de `roundedSurvivalTime` kullandigi icin display rounding tek basina namesake hedef gecilmis gibi davranabiliyordu; oyun ici clear kutlamasi ham saate bagli olsa da game-over rozet mantigi ondan daha gevsekti
+target: sonraki manuel sample'da `60s clear` yalnizca gercek threshold gecislerinde gorunsun ve oyuncuda earned milestone hissi yaratsin; erken/sahte kutlama gorulmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 near_miss_pressure_feedback:
 current: Run #145-#146 yakin gecen ama carpmayan obstacle'lari `project/game/src/game/nearMiss.ts` helper'i ile izliyor; gercek closing approach sonrasi gelen close shave anlari sahnede kisa `NEAR MISS` / `2x NEAR MISS` pulse'u olarak gorunur oluyor ve trigger artik obstacle gorunur arena disina tastiktan sonra gec acilmiyor
 baseline: onceki build'de run'in en heyecanli anlarindan biri olan close shave tamamen sessiz geciyordu; insan sinyalindeki en pozitif his oyun icinde ayrik bir feedback tasimiyordu

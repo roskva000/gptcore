@@ -279,6 +279,11 @@ assert.equal(
   'The 60s survival goal should not celebrate early.',
 );
 assert.equal(
+  hasReachedSurvivalGoal(59.96),
+  false,
+  'The 60s survival goal should stay locked until the raw run clock clears the threshold, even if the UI rounds to 60.0s.',
+);
+assert.equal(
   hasReachedSurvivalGoal(60),
   true,
   'The 60s survival goal should trigger as soon as the run clears the namesake threshold.',
