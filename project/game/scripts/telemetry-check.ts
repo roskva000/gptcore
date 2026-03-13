@@ -498,6 +498,26 @@ assert.deepEqual(
   'Opening spawn scoring should reroll a new projected corridor when a visible near-player threat cluster already occupies the same approach lane.',
 );
 
+const earlySpawnEdgeClusterSelection = selectSpawnPoint({
+  survivalTimeSeconds: 3,
+  playerPosition: { x: 404, y: 280 },
+  playerVelocity: { x: -24, y: 140 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 628, y: 34 },
+    { x: 724, y: 140 },
+  ],
+  randomInt: createQueuedRandom([0, 632, 1, 146]),
+});
+assert.deepEqual(
+  earlySpawnEdgeClusterSelection,
+  {
+    point: { x: 856, y: 146 },
+    rerollsUsed: 1,
+  },
+  'Opening spawn scoring should reroll a second obstacle out of the same top-entry column when an earlier threat is still descending through that corridor.',
+);
+
 const projectedForwardSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
   playerPosition: { x: 308.6, y: 290.3 },

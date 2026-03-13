@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #165
+
+- `project/game/src/game/spawn.ts` ilk `6s` icinde ayni edge corridor'da hala inmekte olan obstacle varken ikinci ayni dar spawn-column girisini yeni `same-edge spawn cluster` cezasi ile reroll etmeye basladi
+- `project/game/scripts/telemetry-check.ts` ayni top-entry column tekrarini alternatif corridor'a iten regression case ekledi
+- `project/game/scripts/telemetry-reports.ts` deterministic controller anlatimini yeni spawn-column guard'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #164
 
 - `project/game/src/latestRun.ts` stale kalan public `AI latest update` panelini Run #161-#163 runtime-facing readability fix'leriyle yeniden hizaladi; centered death attribution ve spawn-grace improvements artik panelde gercek son durumla gorunuyor

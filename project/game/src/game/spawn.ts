@@ -17,6 +17,10 @@ export const EARLY_THREAT_CROWDING_REROLL_CUTOFF_SECONDS = 6;
 export const EARLY_THREAT_CROWDING_DISTANCE = 110;
 export const EARLY_THREAT_CROWDING_ALIGNMENT_THRESHOLD = 0.7;
 export const EARLY_THREAT_CROWDING_PENALTY = 160;
+export const EARLY_SPAWN_EDGE_CLUSTER_REROLL_CUTOFF_SECONDS = 6;
+export const EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE = 96;
+export const EARLY_SPAWN_EDGE_CLUSTER_DEPTH = 140;
+export const EARLY_SPAWN_EDGE_CLUSTER_PENALTY = 180;
 
 export type Point = {
   x: number;
@@ -35,6 +39,8 @@ type SpawnSelectionParams = {
   activeObstaclePositions?: Point[];
   randomInt: (min: number, max: number) => number;
 };
+
+type SpawnEdge = 'top' | 'right' | 'bottom' | 'left';
 
 export const clampPointToArena = (
   point: Point,
@@ -108,6 +114,50 @@ const normalize = (point: Point): Point => {
   return {
     x: point.x / magnitude,
     y: point.y / magnitude,
+  };
+};
+
+const getSpawnEdge = (spawnPoint: Point): SpawnEdge => {
+  if (spawnPoint.y < 0) {
+    return 'top';
+  }
+
+  if (spawnPoint.x > ARENA_WIDTH) {
+    return 'right';
+  }
+
+  if (spawnPoint.y > ARENA_HEIGHT) {
+    return 'bottom';
+  }
+
+  return 'left';
+};
+
+const getSpawnEdgeOffset = (point: Point, edge: SpawnEdge): { lateral: number; depth: number } => {
+  if (edge === 'top') {
+    return {
+      lateral: point.x,
+      depth: point.y,
+    };
+  }
+
+  if (edge === 'right') {
+    return {
+      lateral: point.y,
+      depth: ARENA_WIDTH - point.x,
+    };
+  }
+
+  if (edge === 'bottom') {
+    return {
+      lateral: point.x,
+      depth: ARENA_HEIGHT - point.y,
+    };
+  }
+
+  return {
+    lateral: point.y,
+    depth: point.x,
   };
 };
 
@@ -272,6 +322,47 @@ const getThreatCrowdingPenalty = (
   }, 0);
 };
 
+const getSpawnEdgeClusterPenalty = (
+  survivalTimeSeconds: number,
+  activeObstaclePositions: Point[] | undefined,
+  spawnPoint: Point,
+): number => {
+  if (
+    survivalTimeSeconds > EARLY_SPAWN_EDGE_CLUSTER_REROLL_CUTOFF_SECONDS ||
+    !activeObstaclePositions?.length
+  ) {
+    return 0;
+  }
+
+  const spawnEdge = getSpawnEdge(spawnPoint);
+  const spawnOffset = getSpawnEdgeOffset(spawnPoint, spawnEdge);
+
+  return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
+    const obstacleOffset = getSpawnEdgeOffset(obstaclePosition, spawnEdge);
+    const lateralDistance = Math.abs(obstacleOffset.lateral - spawnOffset.lateral);
+
+    if (lateralDistance > EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE) {
+      return totalPenalty;
+    }
+
+    if (
+      obstacleOffset.depth < -SPAWN_MARGIN ||
+      obstacleOffset.depth > EARLY_SPAWN_EDGE_CLUSTER_DEPTH
+    ) {
+      return totalPenalty;
+    }
+
+    return (
+      totalPenalty +
+      ((EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE - lateralDistance) /
+        EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE) *
+        ((EARLY_SPAWN_EDGE_CLUSTER_DEPTH - Math.max(obstacleOffset.depth, 0)) /
+          EARLY_SPAWN_EDGE_CLUSTER_DEPTH) *
+        EARLY_SPAWN_EDGE_CLUSTER_PENALTY
+    );
+  }, 0);
+};
+
 export const rollSpawnPoint = (randomInt: (min: number, max: number) => number): Point => {
   const edge = randomInt(0, 3);
 
@@ -348,6 +439,11 @@ export const selectSpawnPoint = ({
       playerReachabilityMargin,
       activeObstaclePositions,
       selectedSpawnPoint,
+    ) -
+    getSpawnEdgeClusterPenalty(
+      survivalTimeSeconds,
+      activeObstaclePositions,
+      selectedSpawnPoint,
     );
 
   if (bestScore >= 0) {
@@ -382,6 +478,11 @@ export const selectSpawnPoint = ({
         playerPosition,
         reachableVelocity,
         playerReachabilityMargin,
+        activeObstaclePositions,
+        candidate,
+      ) -
+      getSpawnEdgeClusterPenalty(
+        survivalTimeSeconds,
         activeObstaclePositions,
         candidate,
       );

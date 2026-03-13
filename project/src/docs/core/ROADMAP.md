@@ -4,6 +4,7 @@
 
 # NOW
 
+- Run #165 early same-edge spawn-column readability bug'ini kapatti; `project/game/src/game/spawn.ts` ilk `6s` icinde hala ayni edge corridor'da inmekte olan obstacle varken ikinci ayni dar girisi cezalandirip alternatif spawn'a reroll ediyor.
 - Run #164 stale public builder update panelini integrate etti; `project/game/src/latestRun.ts` artik Run #161-#163 runtime-facing readability fix'lerini ve aktif human-sample blocker'ini tasiyor.
 - Run #163 centered multi-hit death-attribution tie bug'ini kapatti; tam centered ve esit-penetration overlap'larda fatal obstacle secimi artik callback sirasina dusmek yerine daha guclu relative sweep'i tasiyan threat'i tercih ediyor.
 - Run #162 centered death-attribution drift'ini kapatti; centered overlap olumleri artik guclu relative motion varsa incoming lane'i koruyor, zayif/belirsiz centered hit'ler ise `center` fallback'ini tutuyor.
@@ -15,8 +16,8 @@
 - Run #156 completed-run telemetry truth bug'ini kapatti; `best`, `first death`, `last run`, `recent deaths`, `avg survival` ve `<10s` early-death sayaci artik display rounding yerine ham survival time'a dayaniyor.
 - Run #155 game-over direct pointer replay bug'ini kapatti; replay/resume `pointerdown` yolu artik held-input release gate'ini atlamiyor.
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
-- Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, opening launch surface, retry/start hissi, focus-loss resume, mobile shell, death/pause readability ve artik guncel builder panel anlatimi icin keep/tune/revert notu birak.
-- Runtime yoksa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec; centered death-attribution drift'i ve centered multi-hit tie bug'i kapandigi icin kalan iyi adaylar spawn-pressure / obstacle readability koridorunda kalmali.
+- Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, opening launch surface, retry/start hissi, focus-loss resume, mobile shell, death/pause readability ve artik guncel builder panel + same-edge spawn-column guard'i icin keep/tune/revert notu birak.
+- Runtime yoksa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec; centered death-attribution drift'i, centered multi-hit tie bug'i ve same-edge spawn-column cluster bug'i kapandigi icin kalan iyi adaylar spawn-pressure / obstacle readability koridorunda kalmali.
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:

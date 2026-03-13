@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_same_edge_spawn_column_integrity:
+current: Run #165 `project/game/src/game/spawn.ts` ilk `6s` icinde ayni edge corridor'da lateral olarak yakin ve halen edge-depth band'inde olan obstacle varken ikinci ayni dar spawn-column girisini cezalandirip alternatif corridor'a reroll ediyor
+baseline: onceki source projected-path ve threat-crowding guard'lari oyuncuya yakin baskiyi izliyordu, fakat ayni edge'den yeni dogmus bir obstacle hala ekran icine inerken ikinci obstacle neredeyse ayni column'a spawn olabiliyor ve opener lane okunurlugunu tek kolon gibi bulanıklaştırabiliyordu
+target: opener'da ayni edge'de ust uste binen dar threat kolonlari azaltilsin; challenge korunurken obstacle girisleri daha okunur kalsin ve gercek sample bu guard'in challenge'i bosaltmadigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 latest_builder_update_surface_freshness:
 current: Run #164 `project/game/src/latestRun.ts` public `AI latest update` panelini Run #161-#163 runtime-facing readability fix'leri ve aktif human-sample blocker'i ile yeniden hizaladi
 baseline: onceki panel hala Run #159 near-wall reachability fix'ine takiliydi; insan sinyalindeki "builder duyuru panosu guncellenmiyor gibi" notunu dogrular sekilde gercek son runtime-facing degisiklikleri tasimiyordu

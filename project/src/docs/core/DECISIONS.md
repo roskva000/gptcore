@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #165]
+
+Decision:
+`stabilization` modunda early same-edge spawn-column readability bug'i kapatildi; ilk `6s` icinde ayni giris kenarinda hala inmekte olan obstacle varken ikinci spawn ayni dar column'a daha zor dusuyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina sample olmadan geri donmeyi yasakliyor. Buna ragmen spawn tarafinda dar ama gercek bir readability kusuru kalmisti: `project/game/src/game/spawn.ts` projected-path ve threat-crowding guard'lari oyuncuya yakin koridor baskisini izliyordu, ama ayni edge column'da yeni dogmus bir obstacle hala ekran icine inerken ikinci obstacle neredeyse ayni column'a spawn olabiliyordu. Bu, ozellikle opener'da "tek kolon gibi okunan cift threat" ureterek lane okunurlugunu gereksiz bulandirma riski tasiyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` ayni edge uzerinde lateral olarak yakin ve halen edge-depth band'inde olan obstacle'lari ilk `6s` icin yeni `same-edge spawn cluster` cezasi ile hesaba katiyor. `project/game/scripts/telemetry-check.ts` regression assert'i ayni top-entry column tekrarinin alternatif corridor'a reroll edilmesini kilitliyor. `project/game/scripts/telemetry-reports.ts` controller anlatimini yeni guard ile hizaladi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample yeni guard'in opener'i gereksiz bosalttigini, ayni edge cesitliligini fazla daralttigini veya challenge'i sulandirdigini gosterirse yalnizca lateral/depth/penalty sabitleri dar kapsamda yeniden ayarlanir; bu bahaneyle yeni fairness framework'u, spawn director'u veya orchestration katmani acilmaz.
+
 ### [Run #164]
 
 Decision:
