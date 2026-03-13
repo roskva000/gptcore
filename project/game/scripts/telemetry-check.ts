@@ -385,16 +385,24 @@ assert.deepEqual(
 assert.equal(
   hasCompletedRunSample(createEmptyTelemetry()),
   false,
-  'Validation export readiness should stay false before the first completed run.',
+  'Validation export readiness should stay false before the sample reaches five completed runs.',
 );
 
 const completedRunSampleTelemetry = createEmptyTelemetry();
-completedRunSampleTelemetry.totalRuns = 2;
-completedRunSampleTelemetry.totalDeaths = 1;
+completedRunSampleTelemetry.totalRuns = 4;
+completedRunSampleTelemetry.totalDeaths = 4;
+assert.equal(
+  hasCompletedRunSample(completedRunSampleTelemetry),
+  false,
+  'Validation export readiness should stay locked while the sample is still below five completed runs.',
+);
+
+completedRunSampleTelemetry.totalRuns = 5;
+completedRunSampleTelemetry.totalDeaths = 5;
 assert.equal(
   hasCompletedRunSample(completedRunSampleTelemetry),
   true,
-  'Validation export readiness should unlock once at least one run has ended.',
+  'Validation export readiness should unlock once five runs have ended.',
 );
 
 const wallEdgeProjectedSelection = selectSpawnPoint({

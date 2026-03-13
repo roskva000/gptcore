@@ -414,9 +414,9 @@ baseline: Run #57 fixed the smoke script to connect to a page CDP target instead
 target: keep smoke green as a lightweight browser harness, but treat it as prerequisite evidence only; replay/start/pause friction still requires human sample
 
 validation_export_readiness:
-current: Run #115 now blocks validation export while a run is `playing` or `paused`, and also blocks export until at least one completed run exists in session telemetry
-baseline: before Run #115 `V` could save a validation summary from a half-finished active sample or from a zero-completion session, which made the export surface look "ready" before the sample was stable
-target: keep validation export tied to stable completed-run states only; if mid-run snapshots are ever needed, they must use an explicitly separate contract instead of weakening validation semantics
+current: Run #151 validation export hazirligini ortak `5-run` sample kontratina hizaladi; `V` export run aktifken hala bloklu ve artik session telemetry'de yalnizca `5` tamamlanmis run oldugunda aciliyor
+baseline: Run #115 `V` export'u aktif run ve sifir-completion session durumunda bloke etmisti, fakat readiness kontrati hala "en az bir bitmis run" seviyesindeydi; bu da oyuncuya soylenen `fresh 5-run sample` copy'siyle davranis arasinda drift birakiyordu
+target: keep validation export tied to stable `5`-run completed samples only; if mid-run snapshots or earlier checkpoints are ever needed, they must use an explicitly separate contract instead of weakening validation semantics
 
 build_health:
 current: `npm run build` passes; Vite still reports a large chunk warning for the main bundle

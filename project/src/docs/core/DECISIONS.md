@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #151]
+
+Decision:
+Validation/export affordance'i `stabilization` modunda ortak `5-run` sample kontratina hizalandi; `V` export artik ilk olumden sonra degil ancak `5` tamamlanmis run sonrasi hazir sayiliyor.
+
+Reason:
+Runtime yine blokluydu ve audit verdict `proxy-overfit`; ayni death/pause readability, fairness veya mobil-shell koridorunu yeniden acmak yasakti. Buna ragmen source'ta dar ama gercek bir UX durustluk kusuru vardi: HUD ve support copy oyuncudan surekli "fresh 5-run sample" istiyor, fakat `hasCompletedRunSample()` ilk biten run'dan sonra export'u aciyordu. Bu, validation surface'ini oldugundan daha hazir gosterip sample disiplinini asindiriyordu.
+
+Impact:
+`project/game/src/game/telemetry.ts` ortak `VALIDATION_SAMPLE_RUN_TARGET = 5` kontratini tanimladi ve export hazirligini bu esige bagladi. `project/game/src/game/GameScene.ts` block mesajini ve waiting/game-over validation copy'sini ayni esikle hizaladi. `project/game/scripts/telemetry-check.ts` artik `4 run -> locked`, `5 run -> unlocked` guard'ini tasiyor. `project/game/src/latestRun.ts` public paneli bu yeni stabilization degisikligiyle hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Insan sample veya product karari validation export'un daha erken bir ara snapshot olarak da kullanilmasi gerektigini gosterirse bu yalnizca yeni ve acik bir ikinci kontratla yapilir; mevcut `5-run` validation export'un anlami zayiflatilmaz.
+
 ### [Run #150]
 
 Decision:

@@ -29,6 +29,7 @@ import {
 import { getImpactDirection, type ImpactDirection } from './impactDirection';
 import {
   TELEMETRY_RECENT_RUN_LIMIT,
+  VALIDATION_SAMPLE_RUN_TARGET,
   buildTelemetrySummary,
   buildValidationReport,
   createEmptyTelemetry,
@@ -813,7 +814,7 @@ export class GameScene extends Phaser.Scene {
     this.updateTelemetryText();
 
     this.supportText.setText(
-      'Telemetry sample reset. Previous validation export cleared; play 5-10 runs, then press V to copy a fresh summary.',
+      `Telemetry sample reset. Previous validation export cleared; play ${VALIDATION_SAMPLE_RUN_TARGET}-${VALIDATION_SAMPLE_RUN_TARGET * 2} runs, then press V to copy a fresh summary.`,
     ).setVisible(true);
 
     console.info('[telemetry] reset', this.getTelemetryReport());
@@ -838,7 +839,7 @@ export class GameScene extends Phaser.Scene {
 
     if (!hasCompletedRunSample(this.sessionTelemetry)) {
       this.supportText.setText(
-        'No completed run yet. Finish at least one run before exporting a validation summary.',
+        `Validation export unlocks after ${VALIDATION_SAMPLE_RUN_TARGET} completed runs. Finish the sample first.`,
       ).setVisible(true);
       return;
     }
@@ -2517,7 +2518,7 @@ export class GameScene extends Phaser.Scene {
 
   private getWaitingRiskLine(): string {
     if (this.sessionTelemetry.totalDeaths === 0) {
-      return 'Build a 5-run sample, then press V to export the validation snapshot.';
+      return `Build a ${VALIDATION_SAMPLE_RUN_TARGET}-run sample, then press V to export the validation snapshot.`;
     }
 
     return `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | Retry ${getAverageRetryDelayText(this.sessionTelemetry)}`;
@@ -2536,7 +2537,7 @@ export class GameScene extends Phaser.Scene {
       return `Last export ${this.getLastValidationReportSummaryText()}`;
     }
 
-    return 'No saved export yet | Press V after a fresh 5-run sample.';
+    return `No saved export yet | Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
   }
 
   private getGameOverSessionSummaryLine(): string {
@@ -2559,10 +2560,10 @@ export class GameScene extends Phaser.Scene {
 
   private getGameOverSupportText(): string {
     if (this.lastValidationReport) {
-      return 'Retry when ready. Press V to refresh the saved validation export after a new 5-run sample.';
+      return `Retry when ready. Press V to refresh the saved validation export after a new ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
     }
 
-    return 'Retry when ready. Press V after a fresh 5-run sample to save a validation export.';
+    return `Retry when ready. Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample to save a validation export.`;
   }
 
   private getLastRunTimeText(telemetry: GameplayTelemetry): string {

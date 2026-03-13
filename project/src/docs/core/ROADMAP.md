@@ -4,6 +4,7 @@
 
 # NOW
 
+- Run #151 validation export hazirligini gercek `5-run` sample kontratina hizaladi; bu stabilization yuzeyini sample olmadan tekrar wording/tooling churn'una acma.
 - Run #150 near-miss pulse'unu hafif bir audio chirp ile destekledi; bu integration yuzeyi sample olmadan yeni reward/meta veya daha buyuk audio katmanina cevirme.
 - Run #149 near-miss pulse'un focus-loss pause/resume kesintisinde kaybolmasini kapatti; bu integration yuzeyi sample olmadan yeni reward/copy dalgasina cevirme.
 - Run #148 `60s clear` sonrasinda blur/pause-resume akisinin goal-complete run'i tekrar pre-goal hint/support copy'sine dusurmesini kapatti; bu yuzeyi sample olmadan yeniden copy churn'una acma.
@@ -61,6 +62,7 @@ Success markers:
 - Manuel sample varsa Run #145-#146 near-miss pulse'unu keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #149 near-miss pause/resume restore davranisini keep/tune/revert formatinda insan notuyla bagla.
 - Manuel sample varsa Run #150 near-miss audio chirp'ini keep/tune/revert formatinda insan notuyla bagla.
+- Validation/export yuzeyini ancak yeni sample veya yeni davranis-celiski varsa yeniden ac; Run #151'in kapattigi `1 run` sonra export hazir gorunmesi bug'ini tekrar wording dalgasina cevirme.
 - Manuel sample varsa `60s clear` badge'inin artik sadece gercek clear run'larda gorundugunu ve milestone hissinin earned kalip kalmadigini kisa notla bagla.
 - Manuel sample sonuclarina gore touch control, browser interruption, breakpoint-crossing focus mode, focus-loss resume, replay istegi veya UI sadeligi tarafinda en yuksek etkili dar bug fix'i sec.
 - Manuel sample varsa Run #137 opening launch paneli ve pulse marker'i keep/tune/revert formatinda insan notuyla bagla.
@@ -96,6 +98,7 @@ Success markers:
 # RETIRED / DEFERRED
 
 - telemetry wording / HUD copy churn'u
+- sample olmadan validation/export affordance'ini yeniden acmak
 - yeni readiness / preflight / orchestration katmani
 - `60s clear` yuzeyinde display rounding kaynakli erken kutlama bug'i kapandi; ayni milestone hattini sample olmadan tekrar copy-polisajina cevirme
 - `60s clear` sonrasi pause/resume baglam kaybi kapandi; ayni milestone hattini sample olmadan yeni metin/polish dalgasina cevirme

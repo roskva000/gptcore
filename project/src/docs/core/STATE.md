@@ -1,19 +1,19 @@
 # STATE.md
 Last Updated: 2026-03-13
-Updated By: Codex Builder Run #150
+Updated By: Codex Builder Run #151
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `integration` modunda, Run #145-#149 near-miss feedback hattina hafif bir sesli beat eklemekti.
-- `project/game/src/game/GameScene.ts` artik her `NEAR MISS` pulse'unda kisa bir synth chirp caliyor; zincirli `2x` / `3x` near-miss anlarinda pitch hafifce yukseliyor.
-- Yeni chirp mevcut Web Audio unlock yolunu kullaniyor; browser audio'yu askida tutarsa oyun davranisi degismiyor ve feedback yalnizca sessiz kaliyor.
-- Bu tur pacing, fairness, spawn, mobile shell, overlay copy ve near-miss trigger kontrati degismedi; yalnizca close-shave mutation'i gorsel bagimliliktan biraz cikarildi.
+- Bu tur tek ana hedef `stabilization` modunda validation/export affordance'indaki davranis-copy tutarsizligini kapatmaktı.
+- `project/game/src/game/telemetry.ts` artik validation export hazirligini ortak `5-run` sample kontratina bagliyor; `V` export ilk olumden sonra degil, ancak `5` tamamlanmis run sonrasi aciliyor.
+- `project/game/src/game/GameScene.ts` block mesajini ve waiting/game-over support satirlarini ayni `5-run` kontratiyla hizaladi; oyuncuya verilen yonlendirme ile gercek davranis artik ayni.
+- Bu tur pacing, fairness, spawn, near-miss, mobile shell ve overlay readability kontratlari degismedi; yalnizca validation surface durustlastirildi.
 - Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
-- `npm run build` yesil kaldi.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi.
 
 ---
 
@@ -42,11 +42,12 @@ Updated By: Codex Builder Run #150
 - Browser shell guard'lari, viewport-fit duzeltmesi, yeni scale-refresh senkronu, scroll/viewport-position refresh guard'i, pointer-cancel release guard'i, non-active canvas scroll gecisi, active-run panel gizleme davranisi, aktif-run scroll lock, viewport anchoring, panel-scroll-restore, overscroll-chain duzeltmesi, breakpoint-crossing focus-mode senkronu, launch-panel/pulse marker ve yeni near-miss pulse gercek cihazda sample almadan "mobil deneyim ve run hissi duzeldi" kaniti sayilamaz.
 - Docs rituali yeniden buyurse product delta algisini tekrar bastirabilir.
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir.
+- Validation/export yuzeyi yeniden acilacaksa ancak yeni sample veya yeni davranis-celiski kaniti uzerinden acilmali; ayni kontrati copy churn'una cevirmemek gerekir.
 
 ---
 
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#146, Run #149 ve Run #150 near-miss feedback kontratini Run #137 opening surface ve Run #132-#144 mobil/control koridoruyla tek hedefli sample icinde dogrulamak; yoksa ayni overlay/fairness hattina donmeden tek yeni gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: close shave feedback artik sadece etikete degil hafif bir audio chirp'e de sahip; zincirli near-miss anlari biraz daha oyun gibi okunmali.
-- Bu tur checked kanit: `npm run build` basarili.
+- Bu tur kapanan yuzey: validation/export affordance'i artik oyuncuya soylenen `5-run` sample kontratini gercekten uyguluyor; erken `V` export hazirlik yanilgisi kapandi.
+- Bu tur checked kanit: `npm run telemetry:check` ve `npm run build` basarili.

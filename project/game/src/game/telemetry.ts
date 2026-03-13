@@ -1,6 +1,7 @@
 import { TARGET_FIRST_DEATH_SECONDS } from './balance.ts';
 
 export const TELEMETRY_RECENT_RUN_LIMIT = 4;
+export const VALIDATION_SAMPLE_RUN_TARGET = 5;
 export const VALIDATION_BASELINE_TEXT =
   'baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early';
 
@@ -73,7 +74,7 @@ export const getAverageSurvivalTime = (telemetry: GameplayTelemetry): number => 
 export const getCompletedRunCount = (telemetry: GameplayTelemetry): number => telemetry.totalDeaths;
 
 export const hasCompletedRunSample = (telemetry: GameplayTelemetry): boolean =>
-  getCompletedRunCount(telemetry) > 0;
+  getCompletedRunCount(telemetry) >= VALIDATION_SAMPLE_RUN_TARGET;
 
 export const getBestSurvivalTime = (telemetry: GameplayTelemetry): number | null =>
   telemetry.bestSurvivalTime;
@@ -143,12 +144,12 @@ export const getLowestDeathTime = (
 
 export const getValidationProgressText = (telemetry: GameplayTelemetry): string => {
   if (telemetry.totalDeaths === 0) {
-    return '0/5 runs';
+    return `0/${VALIDATION_SAMPLE_RUN_TARGET} runs`;
   }
 
-  const completedRunCountText = `${Math.min(telemetry.totalDeaths, 5)}/5 runs`;
+  const completedRunCountText = `${Math.min(telemetry.totalDeaths, VALIDATION_SAMPLE_RUN_TARGET)}/${VALIDATION_SAMPLE_RUN_TARGET} runs`;
 
-  if (telemetry.totalDeaths < 5) {
+  if (telemetry.totalDeaths < VALIDATION_SAMPLE_RUN_TARGET) {
     return completedRunCountText;
   }
 

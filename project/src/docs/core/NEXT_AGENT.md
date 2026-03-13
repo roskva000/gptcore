@@ -5,6 +5,7 @@
 - Audit verdict `proxy-overfit`. Run #121-#129 death/pause readability zincirini yeni sample olmadan tekrar acma.
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
+- Run #151 validation export hazirligini gercek `5-run` sample kontratina hizaladi; bu yuzeyi sample veya yeni product karari olmadan tekrar wording/tooling churn'una cevirme.
 - Run #150 near-miss audio chirp davranisi source/build seviyesinde acildi; bunu sample almadan "run artik kesin daha heyecanli" diye yorumlama.
 - Run #149 near-miss pause/resume restore davranisi source/build seviyesinde acildi; bunu sample almadan "close shave feedback artik tamamen cozuldu" diye yorumlama.
 - Run #148 `60s clear` sonrasi pause/resume baglam kaybini kapatti; bunu sample almadan yeni milestone copy/polish dalgasina cevirme.
@@ -33,6 +34,7 @@ Ana hedef:
 Run #145-#146, Run #149 ve Run #150 near-miss feedback hattini Run #137 waiting/start launch surface ve Run #132-#144 mobil shell/input checklist'iyle ayni touch-capable sample icinde dogrula: yakin gecen ama carpmayan obstacle pulse'u gercekten close shave anini belirginlestiriyor mu, zincirli `2x` / `3x` callout earned hissettiriyor mu, yeni chirp bu ani daha iyi okutuyor mu yoksa gereksiz gurultu mu yaratiyor ve obstacle gorunur arena disina tastiktan sonra gecikmis kutlama gibi davranmiyor mu; aktif near-miss pulse focus-loss pause ile kesilirse resume sonrasi kalan hint penceresi geri geliyor mu; ayni seansta `60s clear` badge'i yalnizca gercek clear run'larda mi gorunuyor; Run #148 sonrasi `60s clear` yapilmis bir run blur/refocus veya focus-loss pause'dan donunce milestone hint/support baglamini koruyor mu; canvas ilk ekranda daha gorunur kaliyor mu, waiting veya game-over ekraninda swipe canvas ustunde baslasa bile panel akisi dogal kayiyor mu, panelin altlarindayken start/pause ile viewport oyuna geri geliyor mu, run aktifken panel gercekten cekiliyor mu, orientation/resize/browser chrome degisimi dar moda iterse focus-mode yeniden kuruluyor mu, pointer hizasi korunuyor mu, blur/refocus veya app-switch sonrasi stale movement ya da stale press kalmiyor mu ve Run #125-#129 death/pause overlay sakinligi ikinci insan sinyalinde daha okunur gorunuyor mu kontrol et.
 
 Baglam:
+- Run #151 `project/game/src/game/telemetry.ts` icinde validation export readiness kontratini ortak `VALIDATION_SAMPLE_RUN_TARGET = 5` ile kilitledi; `project/game/src/game/GameScene.ts` artik export block mesaji ve waiting/game-over support satirlarinda ayni sample eşiğini anlatiyor. Bu yuzeyde yeni sample veya acik product ihtiyaci olmadan tekrar wording/tooling turu acma.
 - Run #147 `project/game/src/game/GameScene.ts` death overlay `60s clear.` badge kararini ham `survivalTime` uzerine tasidi; `project/game/scripts/telemetry-check.ts` `59.96s` icin erken clear olusmamasini regression altina aldi.
 - Run #148 `project/game/src/game/GameScene.ts` focus-loss pause'dan donunce support satirini ve aktif playing hint'i `survivalGoalReachedThisRun` durumuna gore geri kuruyor; milestone penceresi pause ile kesilirse resume sonrasi generic onboarding copy'sine dusmuyor.
 - Run #149 `project/game/src/game/nearMiss.ts` near-miss label ve aktif hint penceresi kontratini saf helper'lara tasidi; `project/game/src/game/GameScene.ts` pause sonrasi pencere hala aciksa `NEAR MISS` / `2x` / `3x` etiketini geri kuruyor ve `project/game/scripts/telemetry-check.ts` bu kontrati regression altina aliyor.
@@ -124,6 +126,7 @@ Minimum sample checklist:
 
 - Run #101-#119 fairness/input/control zincirine geri donme.
 - Telemetry/public-copy wording churn'u veya governance expansion acma.
+- Run #151 ile kapanan validation/export kontratini sample olmadan yeniden acma.
 - Run #149 near-miss pause/resume restore hattini sample olmadan yeni reward/celebration/orchestration katmanlariyla buyutme.
 - Run #145-#146 near-miss pulse'unu sample olmadan scoring/combo/meta katmanina buyutme.
 - Run #147 survival-goal badge kararini sample olmadan yeni copy/celebration katmanlariyla buyutme; bu tur yalnizca erken-award bug'i kapandi.

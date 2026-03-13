@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #151
+
+- `project/game/src/game/telemetry.ts` validation export hazirligini ortak `VALIDATION_SAMPLE_RUN_TARGET = 5` kontratina bagladi; `V` export artik ilk olumden sonra degil, `5` tamamlanmis run sonrasi aciliyor
+- `project/game/src/game/GameScene.ts` validation export block mesaji ile waiting/game-over support satirlarini ayni `5-run` sample kontratiyla hizaladi
+- `project/game/scripts/telemetry-check.ts` `4 run -> locked`, `5 run -> unlocked` regression guard'larini ekledi
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu validation/export stabilization degisikligiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #150
 
 - `project/game/src/game/GameScene.ts` yakin gecis `NEAR MISS` pulse'una hafif bir synth chirp ekledi; close shave anlari artik yalnizca gorsel etikete bagli degil
