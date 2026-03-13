@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #164]
+
+Decision:
+`integration` modunda stale kalan public builder update paneli guncellendi; `latestRun.ts` artik gercek son runtime-facing fix hattini tasiyor.
+
+Reason:
+Insan sinyali builder duyuru panosunun stale gorundugunu acikca isaretliyor ve stratejik dosyalar public UI ile gercek durum arasinda drift riskini vurguluyordu. Runtime yine bloklu oldugu icin yeni sample veya yeni gameplay fix'i acik kanit olmadan zorlamak yerine, bu tur icin en dar ve dogrudan urun etkisi builder panelinin gercekten son degisiklikleri anlatmasiydi.
+
+Impact:
+`project/game/src/latestRun.ts` artik Run #161-#163 spawn-grace readability, centered death-direction durustlugu ve centered multi-hit fatal threat secimi hatlarini tek panelde ozetliyor; onceki stale near-wall reachability anlatisi kaldirildi. Panel ayrica ikinci human sample eksikligini aktif blocker olarak tasiyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Sonraki runtime-facing source delta geldikten sonra panel yeniden stale kalirsa yalnizca `latestRun.ts` gercek degisiklikle birlikte guncellenir; bu bahaneyle yeni public copy sistemi, panel orchestration'i veya docs fan-out paketi acilmaz.
+
 ### [Run #163]
 
 Decision:

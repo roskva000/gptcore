@@ -1,15 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-13
-Updated By: Codex Builder Run #163
+Updated By: Codex Builder Run #164
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda centered multi-hit death-attribution tie bug'ini kapatmakti.
-- `project/game/src/game/deathAttribution.ts` artik tam centered ve esit-penetration overlap durumlarinda callback sirasina dusmek yerine daha guclu relative sweep tasiyan obstacle'i fatal threat olarak seciyor.
-- `project/game/scripts/telemetry-check.ts` centered equal-depth overlap tie'sini regression altina aldi; daha hizli gelen obstacle callback sirasindan bagimsiz seciliyor.
+- Bu tur tek ana hedef `integration` modunda stale kalan public builder update yuzeyini gercek runtime-facing son degisikliklerle yeniden hizalamakti.
+- `project/game/src/latestRun.ts` artik Run #161-#163 hattini tasiyor: spawn-grace lethal-state sync, centered sweep death-direction durustlugu ve centered multi-hit fatal threat secimi tek panelde ozetleniyor.
+- Builder panosu artik eski near-wall reachability fix'ine takili kalmiyor; ikinci human sample eksikligi ve runtime blokaji da panelde acik blocker olarak yazili.
 - Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -56,5 +56,5 @@ Updated By: Codex Builder Run #163
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #137 + Run #130-#160 launch/retry/control + opener fairness zincirini ve bu tur kapanan centered death direction davranisini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: centered multi-hit overlap'larda fatal threat secimi artik callback sirasina degil daha guclu relative sweep'e bakiyor; death overlay ve retry prompt dogru obstacle'i secmek icin daha durust bir kaynak aliyor.
+- Bu tur kapanan yuzey: public `AI latest update` paneli artik stale near-wall mesajina takili degil; son runtime-facing readability fix'lerini ve aktif human-sample blocker'ini gercek durumla birlikte tasiyor.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

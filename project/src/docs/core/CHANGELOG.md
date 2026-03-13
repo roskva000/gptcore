@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #164
+
+- `project/game/src/latestRun.ts` stale kalan public `AI latest update` panelini Run #161-#163 runtime-facing readability fix'leriyle yeniden hizaladi; centered death attribution ve spawn-grace improvements artik panelde gercek son durumla gorunuyor
+- ayni panel artik ikinci human sample eksikligini aktif blocker olarak acikca tasiyor; eski near-wall reachability anlatisi kaldirildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #163
 
 - `project/game/src/game/deathAttribution.ts` centered ve esit-penetration multi-hit overlap'larda closing-speed tie-break'ini callback sirasina dusurmek yerine relative sweep gucuyle cozecek sekilde daraltildi

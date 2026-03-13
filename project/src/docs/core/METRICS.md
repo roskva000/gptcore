@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+latest_builder_update_surface_freshness:
+current: Run #164 `project/game/src/latestRun.ts` public `AI latest update` panelini Run #161-#163 runtime-facing readability fix'leri ve aktif human-sample blocker'i ile yeniden hizaladi
+baseline: onceki panel hala Run #159 near-wall reachability fix'ine takiliydi; insan sinyalindeki "builder duyuru panosu guncellenmiyor gibi" notunu dogrular sekilde gercek son runtime-facing degisiklikleri tasimiyordu
+target: public builder update paneli son source delta ile tutarli kalsin; stale urun anlatisi yeni sample veya gameplay fix'lerini golgelemesin
+validation: `npm run build`
+
 centered_multi_hit_fatal_selection_integrity:
 current: Run #163 `project/game/src/game/deathAttribution.ts` tam centered ve esit-penetration overlap'larda fatal threat'i callback sirasina gore degil daha guclu relative sweep'e gore seciyor
 baseline: onceki source `distance === 0` oldugunda closing-speed tiebreak'ini `0` birakiyordu; centered multi-hit collision'larda secim dolayli olarak obstacle enumeration sirasina kayabiliyordu
