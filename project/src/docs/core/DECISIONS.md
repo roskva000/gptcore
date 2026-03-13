@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #162]
+
+Decision:
+`stabilization` modunda centered death-attribution drift'i kapatildi; centered overlap olumleri artik guclu relative motion varsa generic `center` yerine gelen lane'i koruyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen death readability tarafinda dar ama gercek bir source kusuru vardi: `project/game/src/game/impactDirection.ts` centered overlap'i kosulsuz `center` sayiyor, `project/game/src/game/GameScene.ts` de death overlay prompt'unu yalniz bu ciktiya bagliyordu. Obstacle oyuncunun merkezinden sert bir sweep ile gectiginde overlay `RESET CENTER` diyebiliyor ve gelen lane bilgisini gereksiz siliyordu.
+
+Impact:
+`project/game/src/game/impactDirection.ts` centered overlap icin relative velocity fallback'i ekledi; yalnizca guclu incoming motion varsa `top/left/right/bottom` veya diagonal etiket donuyor, zayif / belirsiz centered hit'ler `center` kalmaya devam ediyor. `project/game/src/game/GameScene.ts` hit direction hesabina player velocity'sini de geciyor. `project/game/scripts/telemetry-check.ts` centered strong-motion ve weak-motion kontratlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample centered sweep hit'lerde yeni lane bilgisinin fazla iddiali, yanlis yonlendirici veya gereksiz gürültülü oldugunu gosterirse yalnizca centered relative-motion esigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni death overlay sistemi, coaching/orchestration katmani veya copy paketi acilmaz.
+
 ### [Run #161]
 
 Decision:

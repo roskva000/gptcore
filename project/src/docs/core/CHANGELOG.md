@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #162
+
+- `project/game/src/game/impactDirection.ts` centered overlap'larda guclu relative motion varsa incoming lane'i (`top`, `left`, vb.) koruyan fallback ekledi; weak centered hit'ler `center` kalmaya devam ediyor
+- `project/game/src/game/GameScene.ts` death direction hesabina player velocity'sini de geciyor; fatal lane ve retry prompt centered sweep hit'lerde daha durust cikaliyor
+- `project/game/scripts/telemetry-check.ts` centered strong-motion ve weak-motion ayrimi icin regression assert'leri ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #161
 
 - `project/game/src/game/spawnGrace.ts` spawn-grace obstacle sunumu icin ortak visual-state kontrati ekledi

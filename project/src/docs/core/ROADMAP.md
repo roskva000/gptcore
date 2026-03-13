@@ -4,6 +4,7 @@
 
 # NOW
 
+- Run #162 centered death-attribution drift'ini kapatti; centered overlap olumleri artik guclu relative motion varsa incoming lane'i koruyor, zayif/belirsiz centered hit'ler ise `center` fallback'ini tutuyor.
 - Run #161 spawn-grace readability drift'ini kapatti; collision grace aktif obstacle artik soluk/tintli basliyor ve collision gate acildigi anda tween bitisini beklemeden tam guc gorunume donuyor.
 - Run #160 opening threat-crowding spawn bug'ini kapatti; projected-path reference'a yakin gorunur threat cluster'i ayni approach lane'i dolduruyorsa spawn secimi artik ikinci ayni corridor girisini daha sert reroll ediyor.
 - Run #159 spawn projected-path fairness mismatch'ini kapatti; near-wall forward/lane-stack reroll skorlamasi artik runtime'in kullandigi player-reachable clamp ile hizali.
@@ -13,7 +14,7 @@
 - Run #155 game-over direct pointer replay bug'ini kapatti; replay/resume `pointerdown` yolu artik held-input release gate'ini atlamiyor.
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
 - Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, opening launch surface, retry/start hissi, focus-loss resume, mobile shell ve death/pause readability icin keep/tune/revert notu birak.
-- Runtime yoksa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec; spawn-grace readability drift'i kapandigi icin kalan iyi adaylar spawn-pressure / death attribution readability koridorunda kalmali.
+- Runtime yoksa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec; centered death-attribution drift'i de kapandigi icin kalan iyi adaylar spawn-pressure / death-attribution'in diger dar source kusurlari koridorunda kalmali.
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
@@ -25,7 +26,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #137 opening surface, Run #130-#160 launch/input/replay hattı, Run #125-#129 death/pause readability.
-- Runtime yine blokluysa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay veya UX source bug'i sec; spawn-grace readability drift'i kapali, projected-path clamp mismatch ve threat-crowding guard'i de kapali, bu yuzden spawn-pressure veya death attribution readability tarafinda bir sonraki gercek kusura in, yeni orchestration katmani acma.
+- Runtime yine blokluysa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay veya UX source bug'i sec; centered death direction drift'i, spawn-grace readability drift'i, projected-path clamp mismatch ve threat-crowding guard'i kapali, bu yuzden spawn-pressure veya death attribution readability tarafinda bir sonraki gercek kusura in, yeni orchestration katmani acma.
 - Yeni source deltasi olmadan public panel veya core docs fan-out acma.
 
 ---

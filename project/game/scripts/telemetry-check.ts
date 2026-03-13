@@ -765,6 +765,22 @@ assert.deepEqual(
     { x: 400, y: 300 },
     { x: 401, y: 299 },
     { x: 0, y: 180 },
+    { x: 0, y: 0 },
+  ),
+  {
+    label: 'top',
+    sentence: 'the obstacle cut through from the top',
+    offsetX: 0,
+    offsetY: -1,
+  },
+  'Centered overlaps with strong relative motion should preserve the incoming lane instead of collapsing to a generic center hit.',
+);
+assert.deepEqual(
+  getImpactDirection(
+    { x: 400, y: 300 },
+    { x: 401, y: 299 },
+    { x: 40, y: 30 },
+    { x: 0, y: 0 },
   ),
   {
     label: 'center',
@@ -772,7 +788,7 @@ assert.deepEqual(
     offsetX: 0,
     offsetY: 0,
   },
-  'Centered overlaps should stay centered so the death guidance can fall back to RESET CENTER instead of inventing a fake lane.',
+  'Centered overlaps with only weak relative motion should still fall back to the center-call guidance.',
 );
 assert.equal(
   selectFatalThreatIndex({

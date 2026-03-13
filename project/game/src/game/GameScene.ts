@@ -2083,6 +2083,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getHitDirection(obstacle: Phaser.Physics.Arcade.Image): ImpactDirection {
+    const playerBody = this.player.body as Phaser.Physics.Arcade.Body | undefined;
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body | undefined;
     return getImpactDirection(
       { x: this.player.x, y: this.player.y },
@@ -2090,6 +2091,10 @@ export class GameScene extends Phaser.Scene {
       {
         x: obstacleBody?.velocity.x ?? 0,
         y: obstacleBody?.velocity.y ?? 0,
+      },
+      {
+        x: playerBody?.velocity.x ?? 0,
+        y: playerBody?.velocity.y ?? 0,
       },
     );
   }

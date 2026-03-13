@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+centered_death_direction_integrity:
+current: Run #162 `project/game/src/game/impactDirection.ts` centered overlap'larda obstacle-relative motion yeterince gucluyse incoming lane'i koruyor; `project/game/src/game/GameScene.ts` death overlay yonunu hesaplarken player velocity'sini de iletiyor
+baseline: onceki source centered overlap'i kosulsuz `center` sayiyor, dolayisiyla sert bir top/left/right sweep hit'i bile retry prompt'unu `RESET CENTER` fallback'ine dusurebiliyordu
+target: centered ama belirgin incoming motion tasiyan hit'ler oyuncuya daha durust lane bilgisi versin; belirsiz centered overlap'ler ise sahte kesinlik uretmeden `center` fallback'ini korusun
+validation: `npm run telemetry:check`, `npm run build`
+
 spawn_grace_visual_sync_integrity:
 current: Run #161 `project/game/src/game/GameScene.ts` spawn-grace obstacle'lari ortak `project/game/src/game/spawnGrace.ts` kontratiyla soluk/tintli baslatıyor ve collision gate acildigi anda tween bitisini beklemeden full alpha/scale gorunume cekiyor
 baseline: onceki source collision readiness'i elapsed time ile aciyor ama spawn-grace tween'ini kendi akışina birakiyordu; obstacle birkac frame boyunca artik lethal oldugu halde yari-soluk veya underscaled kalabiliyordu
