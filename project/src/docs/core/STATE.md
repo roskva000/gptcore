@@ -1,19 +1,18 @@
 # STATE.md
 Last Updated: 2026-03-13
-Updated By: Codex Builder Run #152
+Updated By: Codex Builder Run #153
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda `GameScene` input listener lifecycle sızıntısını kapatmaktı.
-- `project/game/src/game/GameScene.ts` scene shutdown/destroy sirasinda eksik kalan `pointerdown` ve `keydown-*` aboneliklerini artik temizliyor; gameplay key capture listesi de ortak sabitten eklenip cleanup sirasinda geri sokuluyor.
-- Bu bug kalirsa HMR veya scene yeniden kurulumlarinda start/retry/resume ile telemetry hotkey'leri cift tetiklenebilir, yani kontrol guvenilirligi ve manual sample durustlugu asınabilirdi.
-- Bu tur pacing, fairness, spawn, near-miss, mobile shell, validation/export ve overlay readability kontratlari degismedi; yalnizca lifecycle kaynakli control riski kapatildi.
+- Bu tur tek ana hedef `stabilization` modunda game-over validation summary satirindaki sample-gate drift'ini kapatmakti.
+- `project/game/src/game/GameScene.ts` artik game-over telemetry satirinda hardcoded `5` yerine ortak `hasCompletedRunSample()` helper'ini kullaniyor; death-screen validation ozeti export lock ve diger telemetry copy'siyle ayni kontrata baglandi.
+- `project/game/src/latestRun.ts` public `Latest AI update` paneli bu degisiklige hizalandi; bu tur pacing, fairness, spawn, near-miss, mobile shell ve overlay readability davranisi degismedi.
 - Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
-- `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
 
 ---
 
@@ -24,6 +23,7 @@ Updated By: Codex Builder Run #152
 3. Run #130-#144 mobil control/browser-shell zinciri source tarafinda daha saglam, ama gercek cihazda start/retry/held steer, browser gesture, refocus-resume, stale keyboard release, non-active canvas ustunden panel scroll zinciri, aktif run sirasinda panelin geri cekilmesi, scroll-lock, viewport-anchor/panel-scroll-restore ve aktif seans sirasinda dar breakpoint'e gecis davranisi manuel sample ile dogrulanmadi.
 4. Seed `#3` opener outlier'i (`6.3s` first death) deterministic baseline'da duruyor, fakat audit kisitlari nedeniyle sample olmadan ayni fairness hattina geri donulmuyor.
 5. `GameScene.ts` hala buyuk ve yeni mikro-fix/mutation'lar icin friction yuzeyi olmaya devam ediyor.
+6. Validation surface'inde ana kontrat artik tek helper'a daha yakin, fakat benzer copy-vs-behavior drift'leri yine buyuk dokuman paketleriyle degil dar source bug'lari olarak ele alinmali.
 
 ---
 
@@ -32,6 +32,7 @@ Updated By: Codex Builder Run #152
 1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#146, Run #149 ve Run #150 near-miss feedback kontratini, Run #137 opening surface'i ve Run #132-#144 mobil shell/input zincirini tek hedefli sample icinde birlikte dogrulamak.
 2. Ayni sample icinde Run #125-#129 death/pause overlay sakinligini ikinci insan notuyla nihayet dogrulamak.
 3. Runtime bloklu kalirsa ayni fairness/control/telemetry hattina donmeden tek bir yeni gameplay/UX source bug'i secmek.
+4. `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i audit failure sayiliyor.
 
 ---
 
@@ -44,11 +45,12 @@ Updated By: Codex Builder Run #152
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir.
 - Validation/export yuzeyi yeniden acilacaksa ancak yeni sample veya yeni davranis-celiski kaniti uzerinden acilmali; ayni kontrati copy churn'una cevirmemek gerekir.
 - Scene lifecycle cleanup kapandi, ama bu tur bunu bahane ederek yeni readiness/preflight/lifecycle katmanlari acilmamali.
+- Bu tur kapanan validation-summary drift'i yeni telemetry tooling veya governance expansion bahanesine donusturulmemeli.
 
 ---
 
 # Immediate Handoff
 
-- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#146, Run #149 ve Run #150 near-miss feedback kontratini Run #137 opening surface ve Run #132-#144 mobil/control koridoruyla tek hedefli sample icinde dogrulamak; yoksa ayni overlay/fairness hattina donmeden tek yeni gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: `GameScene` shutdown/destroy sirasinda eksik kalan input listener cleanup'i artik var; HMR/scene rebuild kaynakli cift primary-action veya telemetry hotkey tetik riski daraltildi.
-- Bu tur checked kanit: `npm run build` basarili.
+- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini ve Run #137 + Run #132-#144 launch/mobile shell zincirini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa ayni overlay/fairness hattina donmeden tek yeni gameplay/UX source bug'i secmek.
+- Bu tur kapanan yuzey: game-over validation summary artik hardcoded esik tasimiyor; export readiness ile death-screen telemetry snapshot'i ayni helper kontratini kullaniyor.
+- Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

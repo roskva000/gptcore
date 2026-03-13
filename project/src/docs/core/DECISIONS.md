@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #153]
+
+Decision:
+Game-over validation summary `stabilization` modunda ortak sample helper'ina baglandi; death-screen telemetry satiri artik hardcoded `5` tasimiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni fairness/mobile-shell/near-miss koridorlarina donmeyi yasakliyor. Buna ragmen source'ta dar ama gercek bir kontrat kusuru vardi: `project/game/src/game/GameScene.ts` game-over validation satirinda `this.sessionTelemetry.totalDeaths < 5` kontrolu kullaniyordu. Export readiness ve diger telemetry copy'si ise paylasilan `hasCompletedRunSample()` helper'ina bagliydi. Bu duplicate esik bug'u bugun davranis degistirmese bile gelecekte validation contract drift'i uretirdi.
+
+Impact:
+`project/game/src/game/GameScene.ts` game-over validation summary yolunu ortak helper'a tasidi. `project/game/src/latestRun.ts` public paneli bu degisiklikle hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; pacing, fairness, shell ve replay davranisi degismedi.
+
+Rollback Condition:
+Validation summary davranisi ancak validation sample kontrati bilincli olarak degistirilirse yeniden acilir; bu bahaneyle yeni telemetry tooling veya copy churn paketi acilmaz.
+
 ### [Run #152]
 
 Decision:

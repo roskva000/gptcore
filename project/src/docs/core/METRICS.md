@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+validation_summary_contract_integrity:
+current: Run #153 `project/game/src/game/GameScene.ts` game-over validation summary satirini ortak `hasCompletedRunSample()` helper'ina bagliyor; death-screen telemetry snapshot'i artik export readiness ile ayni sample gate kontratini kullaniyor
+baseline: onceki source ayni validation ailesinde hardcoded `this.sessionTelemetry.totalDeaths < 5` esigine bakiyordu; export lock ve diger telemetry copy'si ortak helper'a bagli oldugu icin gelecekte contract drift riski tasiyordu
+target: validation sample esigi tek kaynaktan okunmaya devam etsin; game-over, waiting ve export affordance satirlari farkli threshold davranisi uretmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 scene_input_listener_cleanup_integrity:
 current: Run #152 `project/game/src/game/GameScene.ts` shutdown/destroy sirasinda `pointerdown`, `keydown-SPACE`, `keydown-ENTER`, `keydown-R`, `keydown-C` ve `keydown-V` listener'larini temizliyor; gameplay keyboard capture listesi de ortak sabitten eklenip cleanup'te geri sokuluyor
 baseline: onceki source create tarafinda bu listener'lari kaydediyor ama cleanup yolunda yalnizca `pointerup`, `pointerupoutside` ve blur/visibility DOM listener'larini sokuyordu; scene yeniden kurulumlarinda primary action ve telemetry hotkey'leri birikip cift tetik riski tasiyordu

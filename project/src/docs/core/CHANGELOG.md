@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #153
+
+- `project/game/src/game/GameScene.ts` game-over validation summary satirinda hardcoded `5` yerine ortak `hasCompletedRunSample()` helper'ini kullanmaya basladi
+- boylece death-screen telemetry snapshot'i export readiness ve diger validation copy'siyle ayni sample gate kontratini paylasiyor
+- `project/game/src/latestRun.ts` public `Latest AI update` paneli bu stabilization degisikligiyle hizalandi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #152
 
 - `project/game/src/game/GameScene.ts` gameplay key capture listesini ortak sabite tasidi; create ve cleanup ayni key seti uzerinden calisiyor

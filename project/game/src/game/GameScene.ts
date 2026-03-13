@@ -2548,7 +2548,7 @@ export class GameScene extends Phaser.Scene {
   private getGameOverValidationSummaryLine(): string {
     const validationProgress = getValidationProgressText(this.sessionTelemetry);
 
-    if (this.sessionTelemetry.totalDeaths < 5) {
+    if (!hasCompletedRunSample(this.sessionTelemetry)) {
       return `Validation ${validationProgress} | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`;
     }
 
