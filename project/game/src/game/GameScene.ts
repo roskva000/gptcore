@@ -59,9 +59,9 @@ import {
 } from './nearMiss.ts';
 import {
   isPrimaryPointerDown,
-  shouldRequirePointerReleaseAfterPause,
+  shouldAllowPointerPrimaryActionPress,
   shouldHandlePrimaryActionKey,
-  shouldHandlePrimaryActionPointer,
+  shouldRequirePointerReleaseAfterPause,
 } from './primaryAction.ts';
 
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
@@ -768,16 +768,21 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePointerPrimaryAction(pointer: Phaser.Input.Pointer): void {
+    const releaseRequired =
+      (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
+      (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease);
+
+    if (
+      !shouldAllowPointerPrimaryActionPress({
+        pointer,
+        pointerWasCancelled: this.pointerCancellationActive,
+        releaseRequired,
+      })
+    ) {
+      return;
+    }
+
     this.pointerCancellationActive = false;
-
-    if (!shouldHandlePrimaryActionPointer(pointer)) {
-      return;
-    }
-
-    if (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) {
-      return;
-    }
-
     this.activatePrimaryAction('pointer-press');
   }
 

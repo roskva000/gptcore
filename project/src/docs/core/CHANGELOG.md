@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #155
+
+- `project/game/src/game/primaryAction.ts` direct pointer primary-action press'i fresh-release gate'iyle yorumlayan `shouldAllowPointerPrimaryActionPress()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` pause/game-over `pointerdown` yolunu ayni helper'a bagladi; death-time held touch/click artik direct replay/resume'i release olmadan acmiyor
+- `project/game/scripts/telemetry-check.ts` replay release regression assert'leri ekledi
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu stabilization deltasiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #154
 
 - `project/game/src/game/primaryAction.ts` mouse pointer primary-down yorumunda native `buttons===0` durumunu dogrudan release sayacak sekilde daraltildi; cached `button===0` fallback'i artik stale steer/retry/resume eligibility tasimiyor

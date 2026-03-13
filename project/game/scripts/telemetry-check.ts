@@ -23,6 +23,7 @@ import {
 import {
   isPrimaryPointerDown,
   shouldRequirePointerReleaseAfterPause,
+  shouldAllowPointerPrimaryActionPress,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
 } from '../src/game/primaryAction.ts';
@@ -252,6 +253,46 @@ assert.equal(
   ),
   false,
   'Canceled touch input should not force a stale release gate after focus loss or browser gesture interruption.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+    },
+    releaseRequired: true,
+  }),
+  false,
+  'Direct pointer presses should stay blocked while replay still requires a fresh release.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: false,
+      wasTouch: true,
+      primaryDown: false,
+      button: 0,
+    },
+    releaseRequired: true,
+  }),
+  true,
+  'A fresh pointer press should be allowed again once the held-input release gate is cleared.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+    },
+    pointerWasCancelled: true,
+    releaseRequired: true,
+  }),
+  true,
+  'Canceled pointers should not keep direct replay/start presses blocked after the browser already released the old hold.',
 );
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #155]
+
+Decision:
+Game-over direct pointer replay yolu `stabilization` modunda fresh-release gate'ine baglandi; held replay guard'i ile direct `pointerdown` davranisi ayni kontrati paylasiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen source'ta dar ama gercek bir replay-control kusuru vardi: `project/game/src/game/GameScene.ts` icinde `gameOverRetryNeedsPointerRelease` sadece held-pointer yolunda dikkate aliniyor, direct `pointerdown` aktivasyonu ise bu gate'i atliyordu. Bu da death-time held touch/click state'inin kazara ani restart'a sizma riskini acik birakiyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni `shouldAllowPointerPrimaryActionPress()` helper'i ile direct pointer press eligibility'sini release gate'ine bagladi. `project/game/src/game/GameScene.ts` pause ve game-over direct pointer aksiyonlarini bu helper'dan geciriyor. `project/game/scripts/telemetry-check.ts` replay release regression assert'leri ekledi, `project/game/src/latestRun.ts` public paneli yeni delta ile hizalandi. Deterministic baseline degismedi; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed sample direct pointer replay'in gereksiz sertlestigini veya fresh press'i yanlis bloke ettigini gosterirse yalnizca direct pointer press gate'i dar kapsamda ayarlanir; ayni bahaneyle yeni input orchestration, overlay churn'u veya mobil shell paketi acilmaz.
+
 ### [Run #154]
 
 Decision:

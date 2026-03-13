@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+pointer_replay_release_integrity:
+current: Run #155 `project/game/src/game/primaryAction.ts` direct pointer primary-action press'ini fresh-release gate'ine bagliyor; `project/game/src/game/GameScene.ts` game-over/pause `pointerdown` yolu artik held replay/resume guard'ini atlamiyor
+baseline: onceki source `gameOverRetryNeedsPointerRelease` ve `pauseResumeNeedsPointerRelease` guard'larini held-input yolunda uyguluyor, ama direct `pointerdown` aktivasyonu bu release beklentisini atlayabiliyordu; death-time held touch/click kazara ani restart'a sizabilirdi
+target: sonraki headed sample'da death veya focus-loss sonrasi replay/resume ancak gercek release + fresh press ile acilsin; accidental restart kalmasin ve mesru yeni tap/click gecersiz yere bloke edilmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 mouse_primary_release_integrity:
 current: Run #154 `project/game/src/game/primaryAction.ts` non-touch pointer icin native `event.buttons===0` gordugunde input'u dogrudan release sayiyor; stale cached `button===0` artik active primary hold olarak yorumlanmiyor
 baseline: onceki helper `isDown===true` ve `buttons===0` kombinasyonunda tekrar `shouldHandlePrimaryActionPointer()` fallback'ine donup cached left-button durumunu primary-down sayabiliyordu; bu da mouse release sonrasi ghost steer veya stale retry/resume eligibility riski tasiyordu
