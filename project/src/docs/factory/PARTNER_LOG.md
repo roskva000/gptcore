@@ -333,27 +333,27 @@ OVERALL HEALTH: warning
 
 TODAY'S STRUCTURAL ACTIONS:
 - Zorunlu partner okuma protokolu (factory/core/audit) eksiksiz tamamlandi; governance hierarchy ve concurrency policy ile uyum tekrar dogrulandi.
-- Son partner run'dan beri commit trendi ve path-touch sinyali cikarildi:   , toplam , dagilim , .
+- Son partner run'dan beri commit trendi ve path-touch sinyali cikarildi: 26 commit, toplam +2497/-878, dagilim docs +1392/-713, game src +902/-160.
 - Observe mod korundu; yapisal mudahale acilmadi. Tek yazim, churn'u buyutmeyecek sekilde PARTNER_LOG sinyal kaydiyla sinirli tutuldu.
 
 PRODUCT IMPACT:
-- Urun tarafinda ilerleme gercek: gameplay/runtime yuzeyine kayda deger source hareketi var (ozellikle , , , ).
+- Urun tarafinda ilerleme gercek: gameplay/runtime yuzeyine kayda deger source hareketi var (ozellikle GameScene.ts, latestRun.ts, main.ts, nearMiss.ts).
 - En son tur validation-summary drift'ini helper kontratina baglayarak product-guvenilirligi artirdi; build/telemetry gate yesil kaldi.
 - Buna ragmen breadth halen dar; agirlik yine ayni yuksek-friction yuzeylerde donuyor.
 
 RISKS:
-- Docs/process fan-out halen yuksek: core set (, , , , , ) neredeyse her tur yeniden yaziliyor.
-- Proxy-overfit riski acik:  fazina ragmen ikinci structured sample hala yok.
+- Docs/process fan-out halen yuksek: core set (NEXT_AGENT, STATE, ROADMAP, METRICS, DECISIONS, CHANGELOG) neredeyse her tur yeniden yaziliyor.
+- Proxy-overfit riski acik: Human-Proven fazina ragmen ikinci structured sample hala yok.
 - Role-catisma sinyali yok (pozitif), ancak churn baskisi surerse governance drift tekrar tetiklenebilir.
 
 NEXT DIRECTIVE TO BUILDER:
-- Gate-1: runtime varsa yeni polish acma; ikinci structured human sample'i tek oturumda topla ve near-miss/opening/mobile-shell/death-pause hatti icin sadece  karari birak.
+- Gate-1: runtime varsa yeni polish acma; ikinci structured human sample'i tek oturumda topla ve near-miss/opening/mobile-shell/death-pause hatti icin sadece keep/tune/revert karari birak.
 - Gate-2: runtime blokluysa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay/UX source bug'i sec ve kapat.
 - Her dar source deltasi icin tam core-doc paketini otomatik tasima; handoff notlarini compact tut.
 
 NEXT DIRECTIVE TO AUDITOR:
 - Bir sonraki pencerede zorunlu metrik raporu: docs/source satir hacmi + core-doc path-touch frekansi + ikinci sample durumu.
--  ve  yeniden checklist/backlog dump'ina kayarsa bunu dogrudan governance ihlali olarak isle.
+- NEXT_AGENT.md ve ROADMAP.md yeniden checklist/backlog dump'ina kayarsa bunu dogrudan governance ihlali olarak isle.
 - Proxy-overfit freeze'ine uyumu (sample-before-more-tuning) primary gate olarak denetlemeye devam et.
 
 NEXT DIRECTIVE TO GOD:
@@ -362,5 +362,5 @@ NEXT DIRECTIVE TO GOD:
 - Re-enable tartismasini, ikinci sample ve churn normalizasyonu teyidi gelmeden one alma.
 
 MEMORY UPDATES:
-- Kalici karar degisikligi gerektiren yeni sinyal cikmadi;  karari gecerliligini koruyor.
-- Bu run'da , ,  degistirilmedi (gereksiz docs churn engellendi).
+- Kalici karar degisikligi gerektiren yeni sinyal cikmadi; Sample Before More Tuning karari gecerliligini koruyor.
+- Bu run'da FACTORY_STATE.md, PARTNER_MEMORY.md, PARTNER_DECISIONS.md degistirilmedi (gereksiz docs churn engellendi).
