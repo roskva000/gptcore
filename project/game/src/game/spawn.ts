@@ -36,11 +36,15 @@ type SpawnSelectionParams = {
   playerPosition: Point;
   playerVelocity?: Point;
   playerReachabilityMargin?: number;
-  activeObstaclePositions?: Point[];
+  activeObstaclePositions?: ActiveObstaclePosition[];
   randomInt: (min: number, max: number) => number;
 };
 
-type SpawnEdge = 'top' | 'right' | 'bottom' | 'left';
+export type SpawnEdge = 'top' | 'right' | 'bottom' | 'left';
+
+export type ActiveObstaclePosition = Point & {
+  spawnEdge?: SpawnEdge;
+};
 
 const CORNER_EDGE_SHARE_TOLERANCE = 8;
 
@@ -119,7 +123,7 @@ const normalize = (point: Point): Point => {
   };
 };
 
-const getSpawnEdge = (spawnPoint: Point): SpawnEdge => {
+export const getSpawnEdge = (spawnPoint: Point): SpawnEdge => {
   if (spawnPoint.y < 0) {
     return 'top';
   }
@@ -364,9 +368,27 @@ const getThreatCrowdingPenalty = (
   }, 0);
 };
 
+const doesObstacleOccupySpawnEdge = (
+  obstaclePosition: ActiveObstaclePosition,
+  spawnEdge: SpawnEdge,
+): boolean => {
+  if (!sharesSpawnEdge(obstaclePosition, spawnEdge)) {
+    return false;
+  }
+
+  if (!obstaclePosition.spawnEdge) {
+    return true;
+  }
+
+  return (
+    obstaclePosition.spawnEdge === spawnEdge ||
+    sharesSpawnEdge(obstaclePosition, obstaclePosition.spawnEdge)
+  );
+};
+
 const getSpawnEdgeClusterPenalty = (
   survivalTimeSeconds: number,
-  activeObstaclePositions: Point[] | undefined,
+  activeObstaclePositions: ActiveObstaclePosition[] | undefined,
   spawnPoint: Point,
 ): number => {
   if (
@@ -380,7 +402,7 @@ const getSpawnEdgeClusterPenalty = (
   const spawnOffset = getSpawnEdgeOffset(spawnPoint, spawnEdge);
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
-    if (!sharesSpawnEdge(obstaclePosition, spawnEdge)) {
+    if (!doesObstacleOccupySpawnEdge(obstaclePosition, spawnEdge)) {
       return totalPenalty;
     }
 

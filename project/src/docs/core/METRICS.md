@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_cross_edge_drift_origin_integrity:
+current: Run #170 `project/game/src/game/spawn.ts` aktif obstacle'lara opsiyonel `spawnEdge` metadata'si tasiyor ve same-edge spawn-column guard'i artik yalniz mevcut pozisyonu degil gercek entry edge'i de okuyarak cross-edge drift false-positive'lerini kapatiyor
+baseline: onceki source soldan/sagdan dogup baska bir kenara yakin kayan obstacle'i yalniz mevcut konumuna gore yorumluyor, bu da gercekte o corridor'dan gelmemis threat'in yeni top/left/right/bottom spawn'ini sahte sekilde reroll etmesine yol acabiliyordu
+target: spawn readability guard'i sadece gercek entry pressure veya halen corner-sharing durumda olan threat'lere tepki versin; drift eden cross-edge obstacle'lar safe corridor'u bos yere kapatmasin ve headed sample challenge'i bosaltmadan daha durust lane okunurlugu gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_same_edge_partial_entry_integrity:
 current: Run #169 `project/game/src/game/spawn.ts` same-edge spawn-column guard'ini ancak obstacle collider'i `11px` visible-arena marjiniyle tam iceri girdiginde uyguluyor; kenari yeni asmis ayni-edge threat artik yeni kolonu erken occupied saymiyor
 baseline: Run #165-#168 same-edge readability guard'lari visible, offscreen ve corner varyantlarini duzeltmisti, fakat kontrol collider tam iceri girmeden de ceza verebildigi icin oyuncunun henuz tam okuyamadigi partial-entry baski opener variety'yi gereksiz daraltabiliyordu

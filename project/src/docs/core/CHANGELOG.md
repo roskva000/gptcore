@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #170
+
+- `project/game/src/game/spawn.ts` same-edge spawn-column guard'ina obstacle origin-edge context'i ekledi; soldan gelip baska kenara yakin drift eden threat artik yeni corridor'u sahte sekilde occupied saydirmiyor
+- `project/game/src/game/GameScene.ts` obstacle'lara spawn aninda `spawnEdge` metadata'si yazmaya basladi; `project/game/scripts/telemetry-reports.ts` ayni bilgiyi deterministic simulasyona tasidi
+- `project/game/scripts/telemetry-check.ts` yeni regression case'i ile left-entry obstacle top kenara drift ettiginde top spawn'in korunmasini kilitledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu opener readability deltasiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #169
 
 - `project/game/src/game/spawn.ts` same-edge spawn cluster guard'ini partial-entry threat'leri yok sayacak sekilde daraltti; collider arena icine tam girmeden corridor occupied sayilmiyor

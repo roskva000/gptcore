@@ -16,6 +16,7 @@ import {
   ARENA_WIDTH,
   OBSTACLE_COLLISION_RADIUS,
   clampPointToArena,
+  getSpawnEdge,
   isPointInsideArena,
   isPointOutsideCullBounds,
   selectSpawnPoint,
@@ -1183,7 +1184,11 @@ export class GameScene extends Phaser.Scene {
           (entry): entry is Phaser.Physics.Arcade.Image =>
             entry instanceof Phaser.Physics.Arcade.Image && entry.active,
         )
-        .map((obstacle) => ({ x: obstacle.x, y: obstacle.y })),
+        .map((obstacle) => ({
+          x: obstacle.x,
+          y: obstacle.y,
+          spawnEdge: obstacle.getData('spawnEdge') as ReturnType<typeof getSpawnEdge> | undefined,
+        })),
       randomInt: Phaser.Math.Between,
     });
     this.runSpawnRerolls += rerollsUsed;
@@ -1225,6 +1230,7 @@ export class GameScene extends Phaser.Scene {
       collisionGraceMs > 0 ? this.getActiveRunElapsedMs(this.time.now) + collisionGraceMs : null;
 
     obstacleBody.enable = true;
+    obstacle.setData('spawnEdge', getSpawnEdge(spawnPoint));
     obstacle.setData('collisionReady', collisionGraceMs === 0);
     obstacle.setData('collisionUnlockElapsedMs', collisionUnlockElapsedMs);
     obstacle.setData('nearMissConsumed', false);

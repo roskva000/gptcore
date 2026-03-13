@@ -14,6 +14,7 @@ import {
   getSpawnTargetLagSeconds,
 } from '../src/game/balance.ts';
 import {
+  getSpawnEdge,
   ARENA_HEIGHT,
   ARENA_WIDTH,
   EARLY_LANE_STACK_ALIGNMENT_THRESHOLD,
@@ -37,6 +38,7 @@ import {
   isPointOutsideCullBounds,
   OFFSCREEN_CULL_MARGIN,
   selectSpawnPoint,
+  type SpawnEdge,
   type Point,
 } from '../src/game/spawn.ts';
 
@@ -65,6 +67,7 @@ type Obstacle = {
   y: number;
   vx: number;
   vy: number;
+  spawnEdge: SpawnEdge;
   collisionReadyAtSeconds: number | null;
 };
 
@@ -264,6 +267,7 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
         activeObstaclePositions: obstacles.map((obstacle) => ({
           x: obstacle.x,
           y: obstacle.y,
+          spawnEdge: obstacle.spawnEdge,
         })),
         randomInt,
       });
@@ -287,6 +291,7 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
         y: selection.point.y,
         vx: direction.x * speed,
         vy: direction.y * speed,
+        spawnEdge: getSpawnEdge(selection.point),
         collisionReadyAtSeconds:
           collisionGraceMs > 0 ? survivalTimeSeconds + collisionGraceMs / 1000 : null,
       });

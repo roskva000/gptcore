@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #170]
+
+Decision:
+`stabilization` modunda same-edge spawn-column guard'inin cross-edge drift false-positive kusuru kapatildi; obstacle'in mevcut konumu kadar gercek entry edge'i de hesaba katiliyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina donmeyi yasakliyor. Spawn/readability hattinda ise dar ama gercek bir source kusuru kalmisti: `project/game/src/game/spawn.ts` ayni-edge cluster cezasini yalniz obstacle'in mevcut konumundan cikariyordu. Bu da soldan veya sagdan dogup baska bir kenara yakin kayan threat'lerin, gercekte o corridor'dan gelmemis olsalar bile yeni top/left/right/bottom spawn'larini sahte sekilde reroll etmesine yol acabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` aktif obstacle icin opsiyonel `spawnEdge` metadata'si tasiyor; same-edge cluster guard'i artik ya gercek entry edge eslesmesini ya da halen corner-sharing durumda olmasini ariyor. `project/game/src/game/GameScene.ts` spawn aninda bu metadata'yi obstacle'a yaziyor, `project/game/scripts/telemetry-reports.ts` ayni origin bilgisini deterministic simulasyona tasiyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile left-entry obstacle top kenara drift ettiginde top spawn'in korunmasini kilitliyor. `project/game/src/latestRun.ts` bu runtime-facing delta ile guncellendi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample gercek corner-sharing baskinin origin filtresi yuzunden kacirildigini gosterirse yalnizca edge-share/origin birlikte yorumlama semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #169]
 
 Decision:

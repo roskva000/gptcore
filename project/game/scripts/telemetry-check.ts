@@ -552,6 +552,23 @@ assert.deepEqual(
   'Same-edge spawn-column rerolls should wait until the earlier threat collider fully clears the arena instead of treating a barely-entered edge sprite as an occupied corridor.',
 );
 
+const crossEdgeDriftSameEdgeClusterSelection = selectSpawnPoint({
+  survivalTimeSeconds: 3,
+  playerPosition: { x: 404, y: 280 },
+  playerVelocity: { x: -24, y: 140 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 120, y: 12, spawnEdge: 'left' }],
+  randomInt: createQueuedRandom([0, 120, 1, 146]),
+});
+assert.deepEqual(
+  crossEdgeDriftSameEdgeClusterSelection,
+  {
+    point: { x: 120, y: -56 },
+    rerollsUsed: 0,
+  },
+  'Same-edge spawn-column rerolls should not treat a left-entry obstacle that merely drifted near the top edge as if it still occupied the top-entry corridor.',
+);
+
 const crossEdgeCornerSelection = selectSpawnPoint({
   survivalTimeSeconds: 3,
   playerPosition: { x: 180, y: 280 },
