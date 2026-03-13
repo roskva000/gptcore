@@ -385,16 +385,18 @@ const getSpawnEdgeClusterPenalty = (
     }
 
     const obstacleOffset = getSpawnEdgeOffset(obstaclePosition, spawnEdge);
+
+    if (obstacleOffset.depth < 0) {
+      return totalPenalty;
+    }
+
     const lateralDistance = Math.abs(obstacleOffset.lateral - spawnOffset.lateral);
 
     if (lateralDistance > EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE) {
       return totalPenalty;
     }
 
-    if (
-      obstacleOffset.depth < -SPAWN_MARGIN ||
-      obstacleOffset.depth > EARLY_SPAWN_EDGE_CLUSTER_DEPTH
-    ) {
+    if (obstacleOffset.depth > EARLY_SPAWN_EDGE_CLUSTER_DEPTH) {
       return totalPenalty;
     }
 

@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #168
+
+- `project/game/src/game/spawn.ts` same-edge spawn cluster guard'ini offscreen pre-entry threat'leri yok sayacak sekilde daraltti; obstacle ayni edge'den henuz arena icine girmeden corridor occupied sayilmiyor
+- `project/game/scripts/telemetry-check.ts` yeni regression case'i ile offscreen same-edge top threat varken ayni top-entry spawn'in korunmasini kilitledi; visible same-edge ve corner varyantlari korunuyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #167
 
 - `project/game/src/game/spawn.ts` same-edge spawn cluster guard'ina corner-share toleransi ekledi; exact/near-corner obstacle artik yalniz tek `closest edge` olarak degil, gercekten paylastigi giris kenarlariyla yorumlaniyor

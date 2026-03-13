@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_same_edge_offscreen_preentry_integrity:
+current: Run #168 `project/game/src/game/spawn.ts` same-edge spawn-column guard'ini obstacle ilgili giris kenarindan arena icine girmeden uygulamiyor; tam offscreen same-edge threat artik yeni kolonu erken occupied saymiyor
+baseline: Run #165-#167 same-edge readability guard'lari visible ve near-corner threat'leri duzeltmisti, fakat kontrol obstacle tam offscreen iken de ceza verebildigi icin oyuncunun henuz okuyamadigi pre-entry baski opener variety'yi gereksiz daraltabiliyordu
+target: ayni edge readability guard'i yalniz gercekten okunabilir corridor baskisina tepki versin; headed sample challenge'i bosaltmadan lane okunurlugunu korudugunu gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_corner_shared_edge_cluster_integrity:
 current: Run #167 `project/game/src/game/spawn.ts` same-edge spawn-column guard'inda corner-share toleransi kullaniyor; exact/near-corner obstacle secilen spawn edge'i ile gercekten kenar paylasiyorsa ayni-edge cluster cezasi artik devreye girebiliyor
 baseline: Run #166 cross-edge false-positive bug'ini kapatirken kontrol yalniz obstacle'in tek `closest edge` sonucuna baglandi; bu da tam/yari-kose threat'lerin fiilen paylastigi ikinci entry edge'i yok sayip ayni-edge reroll guard'ini bosaltabiliyordu

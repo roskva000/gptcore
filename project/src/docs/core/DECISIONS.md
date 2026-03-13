@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #168]
+
+Decision:
+`stabilization` modunda same-edge spawn-column guard'inin offscreen pre-entry false-positive kusuru kapatildi; henuz arena icine girmemis ayni-edge threat yeni spawn corridor'unu erken doldurmus saymiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina donmeyi yasakliyor. Spawn/readability hattinda ise dar ama gercek bir source kusuru kalmisti: `project/game/src/game/spawn.ts` same-edge cluster cezasini obstacle daha tamamen offscreen iken de uyguluyordu. Bu, oyuncunun henuz goremedigi bir threat yuzunden ayni edge spawn'larini gereksiz reroll ederek opener variety'yi sessizce daraltabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` artik same-edge cluster cezasini obstacle ilgili spawn edge'inden arena icine girdikten sonra uyguluyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile offscreen same-edge top threat varken ayni top spawn'in korunmasini kilitliyor; visible same-edge, cross-edge corner ve corner-sharing same-edge kontratlari korunuyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample ayni-edge pre-entry threat'i tamamen yok saymanin opener lane tekrarini gereksiz artirdigini gosterirse yalnizca pre-entry depth gate'i dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #167]
 
 Decision:
