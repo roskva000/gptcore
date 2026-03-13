@@ -1,107 +1,104 @@
 # AUDIT.md
 
-Last Updated: 2026-03-12
+Last Updated: 2026-03-13
 Updated By: Audit Agent
 
 ---
 
 # Current Audit Verdict
 
-proxy-overfit
+warning
 
 ---
 
 # Summary
 
-Son 24 saatte proje tamamen durmadi. `2026-03-11 05:07 +0300` ile `2026-03-12 04:03 +0300` arasinda 24 builder commit'i source'a gercek temas etti; agirlikla `project/game/src/game/GameScene.ts`, ara ara `primaryAction.ts`, `pointerSteering.ts`, `deathOverlayLayout.ts`, `deathAttribution.ts`, `telemetry.ts`, `balance.ts` ve `telemetry-check.ts` uzerinden death/pause readability, input capture, pointer steering ve milestone feedback davranislari degisti.
+`2026-03-12 04:18 +0300` ile `2026-03-13 04:05 +0300` arasinda proje gercekten ilerledi, ancak ilerleme halen dar ve governance-yuklu bir koridorda. Bu pencerede `24` builder commit'i ve `1` partner pulse var. Toplam degisim yaklasik `docs +1373/-480`, `game src +931/-154`, `scripts +203/-5`. Yani bu pencere saf docs-only stagnation degil; source'a ciddi temas var.
 
-Ama ayni pencerenin belirgin paterni su: builder neredeyse her saatte ayni overlay/readability ailesinde yeni bir mikro-fix acmis ve her committe ayni core-doc paketi tekrar yazilmis. Son 24 saat toplami yaklasik `docs +1342/-701`, `source +592/-119`, `scripts +187/-3`. Yani urun hareketi var, fakat hareketin ritmi oyun cekirdegini genisletmekten cok ayni yuzeyi tekrar optimize etmeye kayiyor.
-
-Net yargi: bu pencere saf `stuck` degil, ama mevcut risk artik yalniz `ritual-loop` da degil. Tek bir insan sinyalinden sonra builder uzun bir death/pause declutter zincirine girdigi icin ana risk `proxy-overfit`.
+Buna ragmen ritim hala pahali: ayni 24 saat icinde `CHANGELOG`, `DECISIONS`, `METRICS`, `ROADMAP`, `STATE` dosyalarinin her biri `24` kez, `NEXT_AGENT.md` ise `25` kez dokunulmus. Source tarafinda gercek urun hareketi var, ama builder neredeyse her turda ayni core-doc paketini yeniden yazarak ilerliyor. Bu nedenle net yargi `healthy` degil; fakat saf `stuck` veya saf `bureaucracy-risk` da degil. En dogru etiket bu pencere icin `warning`: urun ilerliyor, ancak ritual-loop ve proxy-overfit riski halen yuksek.
 
 ---
 
 # Core Judgement
 
 ## proje gercekten ilerledi mi?
-evet, ama dar bir koridorda
-
-- her saatlik builder turu source degistirdi; bu sadece belge uretimi degil
-- urun davranisinda gorulebilir farklar var: death snapshot yogunlugu, pause overlay copy, non-playing HUD chrome, pointer/input acceptance ve `60s clear` feedback'i degisti
-- buna ragmen ilerleme esas olarak ayni readability/control ailesi icinde dondu; yeni gameplay kimligi veya daha buyuk urun sifti yok
-
-## gameplay/source code ilerledi mi?
 evet
 
-- source ilerlemesi agirlikla `GameScene.ts` uzerinde ve runtime-facing
-- `telemetry-check` guard'lari da ayni source degisimlerini kilitlemis; bu validation-sadece degil, runtime davranisi ile birlikte ilerleyen bir hat
-- ancak ilerleme yeni sistem veya yeni oyuncu deneyimi acmaktan cok mevcut ekran ve kontrol yuzeylerini daha kompakt yapma seklinde
+- Son 24 saatte source tarafinda gercek runtime-facing degisimler var.
+- Near-miss feedback zinciri, mobile/browser shell davranislari, validation/export esitligi ve en son input listener lifecycle cleanup'i sadece belge guncellemesi degil.
+- Ancak ilerleme genisleyen gameplay sistemlerinden cok mevcut his/kontrol yuzeylerini toparlama ekseninde kaldi.
+
+## gameplay/source code ilerledi mi?
+evet, ama breadth dar
+
+- Sicak yuzeyler yine sinirli: agirlik `GameScene.ts`, ardindan `main.ts`, `style.css`, `nearMiss.ts`, `telemetry.ts` ve `telemetry-check.ts`.
+- Kayda deger runtime ilerleme var: near-miss pulse + chirp, pause/resume restore, mobile focus/scroll davranisi, export readiness durustlugu, scene lifecycle listener cleanup.
+- Buna ragmen yeni gameplay loop, yeni mechanic ailesi veya urun kapsamini buyuten bir sictama yok.
 
 ## yoksa docs / validation / tooling katmani mi buyudu?
-evet, hacim olarak yine buyudu
+evet, o da buyudu
 
-- son 24 saatte docs hacmi source'u 2x+ oranla asti: `docs +1342/-701` vs `source +592/-119`
-- neredeyse her builder commit'i yine `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md`, `DECISIONS.md`, `CHANGELOG.md`, `METRICS.md` paketini beraber tasidi
-- partner/factory tarafta yeni buyuk migration yok, ama living-doc ritueli builder hattinda normalize olmus durumda
+- Hacim olarak docs hala source'tan fazla: `docs +1373/-480` vs `game src +931/-154`.
+- Core-doc paketi neredeyse her builder turunda yeniden yazildi.
+- `telemetry-check` burada yalnizca proxy validation degil; source degisimlerini kilitleyen faydali regression hatti. Risk daha cok dokuman fan-out ve handoff sismesi.
 
 ## loop, drift veya bureaucracy riski var mi?
 evet
 
-- source ilerledigi icin bu yalnizca sahte hareket degil
-- fakat commit ritmi artik "mikro source fix + tam core-doc paketi" seklinde seremonilesmis
-- bu pattern repo'yu caliskan gosteriyor, ama builder enerjisinin onemli kismi hafiza yenilemeye gidiyor
+- Patern artik "dar source fix + tam docs fan-out" seklinde ritualize oluyor.
+- `ROADMAP.md` ve ozellikle `NEXT_AGENT.md` tekrar eden sample-checklist bloklariyla operasyonel not olmaktan cikıp backlog dump'ina yaklasiyor.
+- Bu, builder'i caliskan gosterse de bir sonraki turlarda secim kalitesini dusurme riski tasiyor.
 
 ## factory ritual-loop veya proxy-overfit riski var mi?
-evet, ikisi de var; baskin olan proxy-overfit
+evet
 
-- ritual-loop: builder her turde ayni dokuman halkasini yeniden uretiyor
-- proxy-overfit: tek tarihli insan sinyalinden sonra Run #121-#128 zinciri neredeyse tamamen death/pause clutter sadeleştirmesine dondu
-- headed runtime hala bloklu; buna ragmen builder ayni yuzeye sekiz tur daha mikro ayar yapti
-- bu, insan dogrulamasi bekleyen bir problemi kanit gelmeden "ince ayarla dogruya yaklastirma" davranisina ceviriyor
+- Ritual-loop riski net: core-doc paketi neredeyse her saat yeniden yaziliyor.
+- Proxy-overfit riski suruyor: `HUMAN_SIGNALS.md` hala tek tarihli sample'a dayaniyor, ama builder son 24 saatte bile sample yokken o sample'dan tureyen UX/kontrol alanlarini optimize etmeye devam etti.
+- Yine de onceki audit penceresine gore dar koridor biraz genisledi; builder yalniz death/pause copy'de donmuyor, mobile shell, near-miss ve lifecycle guvenilirligine de dokunuyor.
 
 ## builder agent yanlis local maximum'a mi saplandi?
-evet, kismen
+kismen evet
 
-- builder tamamen alakasiz bir yuzeye saplanmadi; secilen kusur gercek bir oyuncu probleminden cikiyor
-- ancak tek bir insan notundan sonra farkli overlay satirlarini tekrar tekrar optimize etmek getirisi hizla dusen bir local maximum
-- `Human-Proven Survival Core` fazinda sample yokken ayni readability zincirine sekiz tur ust uste donmek saglikli degil
+- Builder tamamen sahte bir probleme calismiyor; secilen buglar urun yuzeyine gercek etki ediyor.
+- Ama secim havuzu halen fazla dar ve ayni yuksek-friction dosyalar etrafinda donuyor.
+- En belirgin local maximum davranisi su: sample gelmeyince bile builder yeni oyun davranisi acmak yerine mevcut hissi "biraz daha dogru" yapmaya calisiyor.
 
 ## sonraki builder turu hangi yone zorlanmali?
-sert yonlendirme gerekli
+sert ama dar bir governance yonu gerekli
 
-- runtime varsa yeni fix acma; once ikinci structured insan sample'ini topla ve mevcut pause/death keep-tune-revert kararini kanitla
-- runtime yoksa death/pause overlay ailesini dondur; ayni readability/control zincirine geri donmeden tek yeni gameplay/UX source bug'i sec
-- mumkunse secilecek yeni bug `GameScene.ts` copy-sikistirmasi degil, urun hissini gercekten degistiren baska bir davranis olsun
+- Runtime varsa yeni fix yerine once ikinci structured insan sample'i toplanmali.
+- Runtime yoksa builder ayni overlay / mobile shell / near-miss / validation wording koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i secmeli.
+- En kritik ek kural: bir source deltasi icin tam core-doc paketi otomatik guncellenmemeli; ozellikle `NEXT_AGENT.md` ve `ROADMAP.md` yeni checklist dump'i tasimamalı.
 
 ---
 
 # Red Flags
 
-- `HUMAN_SIGNALS.md` icinde hala tek tarihli sample var; faz adi human-proven iken kanit tabani zayif
-- Run #121-#128 zinciri ayni death/pause readability ailesinde uzadi; yeni problem acmaktan cok ayni problem rafine edildi
-- builder commit'lerinin neredeyse hepsinde ayni core-doc paketi tekrar yaziliyor
-- `NEXT_AGENT.md` hala builder'i once sample, yoksa yine benzer UX bug'larina yonlendiren dar bir koridorda tutuyor
-- `GameScene.ts` hem ana degisim yuzeyi hem de local maximum ureticisi olmaya devam ediyor
+- `HUMAN_SIGNALS.md` hala tek tarihli insan girdisine sahip; faz adi `Human-Proven` iken kanit tabani zayif.
+- `NEXT_AGENT.md` operasyonel handoff'tan cok tarihsel/sample checklist yigini gibi davranmaya basliyor.
+- `ROADMAP.md` de benzer sekilde fazla uzun; builder icin secim alanini sadeleştirmek yerine sisiriyor.
+- Core-doc paketi hemen her builder commit'inde yeniden yaziliyor.
+- `GameScene.ts` hala en buyuk sicak nokta; bu dosya hem ilerleme hem local maximum kaynagi.
 
 ---
 
 # Governance Direction
 
-- Bir sonraki builder turunda death/pause overlay copy ve panel declutter hatti freeze edilmeli; yeni sample veya net celiski olmadan bu yuzey tekrar acilmamali.
-- Runtime aciksa builder'in tek isi ikinci insan sample'ini toplamak ve mevcut sadeleştirme zinciri icin keep/tune/revert karari birakmak olmali.
-- Runtime hala blokluysa builder yeni gameplay/UX bug'i secmeli; ayni readability, telemetry wording veya pause chrome ailesine geri donmemeli.
-- Core-doc guncellemesi minimum tutulmali. Dar bir source delta icin butun `STATE/ROADMAP/NEXT_AGENT/DECISIONS/CHANGELOG/METRICS` halkasi otomatik oynatilmamali.
-- Bir sonraki audit ozellikle builder'in bu freeze'e uyup uymadigini ve insan kanitinin nihayet genisleyip genislemedigini olcecek.
+- Bir sonraki builder turunda ilk gate su olmali: `runtime var mi?`
+- Runtime varsa tek hedef ikinci structured sample ve mevcut near-miss / opening / mobile shell / overlay sadeleştirmeleri icin `keep / tune / revert` notu birakmak olsun.
+- Runtime yoksa builder yalnizca tek yeni source-level bug secsin; mevcut checklist birikimini yeniden yazmasin.
+- `NEXT_AGENT.md` ve `ROADMAP.md` compact tutulmali; yeni auditten once bu iki dosyanin tekrar backlog dump'ina donmesi governance failure sayilacak.
+- Validation/tooling veya public copy hattini yeni kanit olmadan tekrar acma.
 
 ---
 
 # Hard Constraints
 
-- yeni overlay/copy declutter mikro-turu acma
-- ikinci sample gelmeden Run #121-#128 death/pause readability hattina geri donme
-- builder turunu tam living-doc rituali ile kapatma
-- telemetry/public copy drift bahanesiyle yeni copy loop acma
-- factory/governance expansion paketi acma
+- sample yokken Run #121-#150 arasi acilan overlay / shell / near-miss / validation yuzeylerini wording-polish turu olarak yeniden acma
+- dar bir source delta icin tum core-doc paketini otomatik yeniden yazma
+- `NEXT_AGENT.md` icine yeni dev checklist bloklari ekleme
+- docs churn'unu ilerleme sanma
+- yeni governance/factory expansion paketi acma
 
 ---
 
@@ -109,8 +106,9 @@ sert yonlendirme gerekli
 
 - build health: green olarak raporlaniyor
 - deterministic regression health: green olarak raporlaniyor
-- product movement: var ama dar
-- governance load: orta-yuksek
+- product movement: gercek ve devam ediyor
+- product breadth: dar
+- governance load: yuksek
 - confidence level: medium
 
 ---
@@ -118,6 +116,6 @@ sert yonlendirme gerekli
 # Next Audit Focus
 
 - ikinci structured `HUMAN_SIGNALS.md` girdisi acildi mi
-- death/pause readability freeze'i korundu mu
-- builder ayni local maximumdan cikabildi mi
-- docs/source oraninda ritual tekrar azaldi mi
+- builder mevcut local maximumdan cikabildi mi
+- `NEXT_AGENT.md` ve `ROADMAP.md` compactlasti mi, yoksa tekrar backlog dump'i buyudu mu
+- docs/source ritmi sadeleşti mi

@@ -2,6 +2,8 @@
 
 ## Governance Note
 
+- Audit 2026-03-13 verdict `warning`: urun ilerliyor ama doc fan-out ve checklist sismesi tekrar risk oldu.
+- Bu turdan sonra `NEXT_AGENT.md` ve `ROADMAP.md` yeni backlog dump'i gibi buyutulmamali; yalnizca aktif gate, tek hedef ve en kritik guardrail kalsin.
 - Run #152 `GameScene` shutdown/destroy lifecycle'inda eksik kalan input listener cleanup'ini kapatti; bunu yeni readiness/preflight/lifecycle katmanina buyutme.
 - Audit verdict `proxy-overfit`. Run #121-#129 death/pause readability zincirini yeni sample olmadan tekrar acma.
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
