@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_threat_crowding_integrity:
+current: Run #160 `project/game/src/game/spawn.ts` projected-path reference'a yakin gorunur threat cluster'i ayni approach lane'i dolduruyorsa yeni `threat crowding` cezasi ile spawn'i alternatif corridor'a reroll ediyor
+baseline: onceki source broad lane-stack penalty kullaniyordu ama cok yakin gorunur tehditler ayni projected corridor'u zaten bastiginda bile "yeterince uzak" ilk spawn pozitif skorda kalabiliyor, acilis reaksiyon penceresini gereksiz daraltabiliyordu
+target: opening spawn'lari mevcut yakin threat cluster'inin ustune ikinci ayni corridor girisi bindirmesin; challenge korunurken reaksiyon penceresi daha okunur kalsin ve yeni headed sample'da opener gereksiz bosalmis hissedilmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 spawn_projected_path_reachability_integrity:
 current: Run #159 `project/game/src/game/spawn.ts` projected-path fairness referansini `playerReachabilityMargin` ile clamp'liyor; near-wall forward/lane-stack reroll skorlamasi artik runtime obstacle target-lag'inin kullandigi player-reachable arena ile ayni referansi paylasiyor
 baseline: onceki source projected-path skorlamasini tam arena sinirina clamp'liyordu; oyuncu duvara cok yakin ama tam temas etmemisken spawn secimi runtime'in asla hedefleyemeyecegi ekstra wall travel'i mumkun sayip bazi top/side lane adaylarini hatali degerlendirebiliyordu

@@ -13,6 +13,10 @@ export const EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS = 6;
 export const EARLY_LANE_STACK_DISTANCE = 160;
 export const EARLY_LANE_STACK_ALIGNMENT_THRESHOLD = 0.55;
 export const EARLY_LANE_STACK_PENALTY = 120;
+export const EARLY_THREAT_CROWDING_REROLL_CUTOFF_SECONDS = 6;
+export const EARLY_THREAT_CROWDING_DISTANCE = 110;
+export const EARLY_THREAT_CROWDING_ALIGNMENT_THRESHOLD = 0.7;
+export const EARLY_THREAT_CROWDING_PENALTY = 160;
 
 export type Point = {
   x: number;
@@ -209,6 +213,65 @@ const getLaneStackPenalty = (
   }, 0);
 };
 
+const getThreatCrowdingPenalty = (
+  survivalTimeSeconds: number,
+  playerPosition: Point,
+  playerVelocity: Point | undefined,
+  playerReachabilityMargin: number | undefined,
+  activeObstaclePositions: Point[] | undefined,
+  spawnPoint: Point,
+): number => {
+  if (
+    survivalTimeSeconds > EARLY_THREAT_CROWDING_REROLL_CUTOFF_SECONDS ||
+    !activeObstaclePositions?.length
+  ) {
+    return 0;
+  }
+
+  const threatReference = getProjectedPathReference(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
+  const spawnDirection = normalize({
+    x: spawnPoint.x - threatReference.x,
+    y: spawnPoint.y - threatReference.y,
+  });
+
+  return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
+    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+      return totalPenalty;
+    }
+
+    const obstacleVector = {
+      x: obstaclePosition.x - threatReference.x,
+      y: obstaclePosition.y - threatReference.y,
+    };
+    const obstacleDistance = Math.hypot(obstacleVector.x, obstacleVector.y);
+
+    if (obstacleDistance === 0 || obstacleDistance > EARLY_THREAT_CROWDING_DISTANCE) {
+      return totalPenalty;
+    }
+
+    const obstacleDirection = normalize(obstacleVector);
+    const alignment =
+      obstacleDirection.x * spawnDirection.x + obstacleDirection.y * spawnDirection.y;
+
+    if (alignment <= EARLY_THREAT_CROWDING_ALIGNMENT_THRESHOLD) {
+      return totalPenalty;
+    }
+
+    return (
+      totalPenalty +
+      ((alignment - EARLY_THREAT_CROWDING_ALIGNMENT_THRESHOLD) /
+        (1 - EARLY_THREAT_CROWDING_ALIGNMENT_THRESHOLD)) *
+        ((EARLY_THREAT_CROWDING_DISTANCE - obstacleDistance) /
+          EARLY_THREAT_CROWDING_DISTANCE) *
+        EARLY_THREAT_CROWDING_PENALTY
+    );
+  }, 0);
+};
+
 export const rollSpawnPoint = (randomInt: (min: number, max: number) => number): Point => {
   const edge = randomInt(0, 3);
 
@@ -277,6 +340,14 @@ export const selectSpawnPoint = ({
       playerReachabilityMargin,
       activeObstaclePositions,
       selectedSpawnPoint,
+    ) -
+    getThreatCrowdingPenalty(
+      survivalTimeSeconds,
+      playerPosition,
+      reachableVelocity,
+      playerReachabilityMargin,
+      activeObstaclePositions,
+      selectedSpawnPoint,
     );
 
   if (bestScore >= 0) {
@@ -299,6 +370,14 @@ export const selectSpawnPoint = ({
         candidate,
       ) -
       getLaneStackPenalty(
+        survivalTimeSeconds,
+        playerPosition,
+        reachableVelocity,
+        playerReachabilityMargin,
+        activeObstaclePositions,
+        candidate,
+      ) -
+      getThreatCrowdingPenalty(
         survivalTimeSeconds,
         playerPosition,
         reachableVelocity,

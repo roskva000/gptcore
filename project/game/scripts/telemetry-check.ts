@@ -459,6 +459,26 @@ assert.deepEqual(
   'Partially visible edge obstacles should not trigger lane-stack rerolls before their collider fully clears the arena.',
 );
 
+const projectedThreatCrowdingSelection = selectSpawnPoint({
+  survivalTimeSeconds: 4,
+  playerPosition: { x: 320, y: 320 },
+  playerVelocity: { x: 0, y: -200 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 360, y: 250 },
+    { x: 390, y: 210 },
+  ],
+  randomInt: createQueuedRandom([0, 620, 3, 120]),
+});
+assert.deepEqual(
+  projectedThreatCrowdingSelection,
+  {
+    point: { x: -56, y: 120 },
+    rerollsUsed: 1,
+  },
+  'Opening spawn scoring should reroll a new projected corridor when a visible near-player threat cluster already occupies the same approach lane.',
+);
+
 const projectedForwardSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
   playerPosition: { x: 308.6, y: 290.3 },

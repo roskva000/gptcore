@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #160
+
+- `project/game/src/game/spawn.ts` opening spawn secimine projected-path `threat crowding` cezasi ekledi; gorunur yakin threat cluster'i ayni approach lane'i zaten dolduruyorsa ikinci ayni corridor girisi daha sert reroll ediliyor
+- `project/game/scripts/telemetry-check.ts` yeni regression assert'iyle yakin projected corridor'un occupied oldugu durumda alternatif spawn koridoruna reroll kontratini kilitledi
+- `project/game/scripts/telemetry-reports.ts` deterministic controller anlatimini yeni spawn guard'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #159
 
 - `project/game/src/game/spawn.ts` projected-path fairness referansini `playerReachabilityMargin` ile clamp'lemeye basladi; near-wall forward ve lane-stack reroll skoru artik runtime obstacle target-lag davranisiyla ayni reachability kontratini kullaniyor

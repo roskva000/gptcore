@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #160]
+
+Decision:
+`stabilization` modunda opening spawn threat-crowding bug'i kapatildi; projected-path reference'a yakin gorunur threat cluster'i ayni approach corridor'u zaten dolduruyorsa spawn secimi ikinci ayni corridor girisini daha sert reroll ediyor.
+
+Reason:
+Headed runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen source'ta gercek bir gameplay/readability kusuru vardi: broad lane-stack guard'i mevcut tehditleri genel olarak cezalandirsa da oyuncuya cok yakin gorunur threat cluster'i ayni projected corridor'u bastiginda bile "teknik olarak pozitif" ilk spawn secilebiliyordu. Bu, acilista reaksiyon penceresini gereksiz daraltan dar ama gercek bir source kusuruydu.
+
+Impact:
+`project/game/src/game/spawn.ts` yeni `threat crowding` cezasi ile `6s` icinde `110px` threat ring ve `0.7+` alignment'ta ayni projected corridor tekrarini daha sert cezalandiriyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'iyle yakin threat cluster'i ayni lane'i doldururken spawn'in alternatif corridor'a reroll etmesini kilitliyor. `project/game/scripts/telemetry-reports.ts` deterministic controller anlatimini bu yeni guard ile hizaladi. `npm run telemetry:check` ve `npm run build` yesil kaldi; baseline `26.5s / 6.3s / 4%` degismedi.
+
+Rollback Condition:
+Yeni headed sample veya sonraki deterministic trace bu guard'in opener'i gereksiz bosalttigini, challenge'i geciktirdigini veya spawn cesitliligini anlamsiz daralttigini gosterirse yalnizca threat-crowding distance/alignment/penalty sabitleri dar kapsamda yeniden ayarlanir; ayni bahaneyle yeni fairness framework'u, orchestration katmani veya docs/tooling paketi acilmaz.
+
 ### [Run #159]
 
 Decision:
