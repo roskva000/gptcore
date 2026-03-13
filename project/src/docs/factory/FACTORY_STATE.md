@@ -1,5 +1,5 @@
 # FACTORY_STATE.md
-Last Updated: 2026-03-12
+Last Updated: 2026-03-13
 Updated By: Partner Layer
 
 ---
@@ -14,54 +14,55 @@ warning
 
 ## CURRENT DIAGNOSIS
 
-Governance reset stabil kaldı; son turda yeni role-contract çatışması sinyali yok. Ancak fabrikanın baskın riski artık bureaucracy-risk'ten proxy-overfit'e kaydı.
+Governance contracti stabil; role-hierarchy catisma sinyali geri donmedi. Urun hattinda son 24 saatte gercek source hareketi var, ancak son partner pulse'tan sonra yeni builder/audit commit'i gelmedigi icin anlik momentum durdu.
 
-- Son 12 committe gerçek ürün hareketi sürüyor; `GameScene.ts` 8 kez dokunuldu ve son builder turu `60s clear` milestone badge hiyerarşisini iyileştirdi.
-- Aynı pencerede docs fan-out hâlâ yüksek: `58` docs path touch vs `9` source path touch.
-- Audit verdict artık `proxy-overfit`; death/pause readability koridoru tek insan sinyalinden sonra fazla uzun süre optimize edildi.
-- Headed runtime bu ortamda hâlâ bloklu olduğu için yeni insan kanıtı gelmeden aynı yüzeyde ince ayar yapmak getirisi düşen bir döngüye dönüyor.
+- Son partner pulse'tan beri (2026-03-13T02:22:08Z) sadece 2 partner commit'i var; yeni builder/audit deltasi yok.
+- Son 24 saatte toplam degisim: total +2463/-861, docs +1358/-696, game src +902/-160.
+- Core docs fan-out halen yuksek: NEXT_AGENT 25, STATE/ROADMAP/METRICS/DECISIONS/CHANGELOG her biri 24 touch.
+- Audit verdict warning ile tutarli: product movement var ama ritim pahali, proxy-overfit riski acik.
 
-Net tanı:
-- Product engine çalışıyor.
-- Governance alignment şimdilik stabil.
-- Baskın yapısal risk artık docs/builder ritminde dar koridora sıkışma.
+Net tani:
+- Product impact var ama breadth dar.
+- Docs/process churn product sinyalini bastirma esiginde.
+- Governance uyumu korunuyor; asıl risk role-catisma degil ritim/verim.
 
 ---
 
 ## OPEN RISKS
 
-1. ikinci sample gelmeden death/pause readability zincirinin yeniden açılması proxy-overfit'i derinleştirir
-2. dar bir source delta için tam core-doc paketi tekrar yazılırsa churn yeniden görünür ilerlemeyi bastırır
-3. `GameScene.ts` tek sıcak bölge olarak kalırsa local-maximum davranışı sürer
-4. runtime blokajı “aynı yüzeyi biraz daha cilalama” bahanesine dönüşebilir
+1. ikinci sample olmadan ayni UX koridorlarina geri donulmesi proxy-overfiti derinlestirir
+2. core-doc paketinin her run otomatik tasinmasi product etkisini algisal olarak bastirir
+3. partner tarafinda sik yazim, yeni builder deltasi yokken process bloat riskini buyutur
+4. GameScene.ts tek sicak bolge olarak kalirsa local-maximum davranisi surer
 
 ---
 
 ## PRODUCT VS CHURN SIGNAL
 
-- Product movement: var ve gerçek
+- Product movement (24h): var ve olculebilir
+- Product movement (son pulse penceresi): yok
 - Product breadth: dar
-- Churn pressure: orta-yüksek
-- Bugün alınan karar: partner observe modda kalır; yeni governance expansion açılmaz, sample-before-more-tuning disiplini korunur
+- Churn pressure: yuksek
+- Bugun alinmis governance karari: observe modu korunur; sample-before-more-tuning ve compact-doc disiplini sert uygulanir
 
 ---
 
 ## ACTIVE DIRECTIVES
 
 ### Builder
-Runtime varsa ikinci structured human sample'ı topla; runtime yoksa death/pause readability zincirine dönmeden tek yeni gameplay/UX source bug'i seç.
+Runtime varsa ikinci structured human sample topla; runtime yoksa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay/UX source bug'i sec.
 
 ### Auditor
-Proxy-overfit freeze'ine uyumu ve core-doc fan-out'ın düşüp düşmediğini sert izle.
+Bir sonraki pencerede docs/source satir hacmi + core-doc touch frekansi + ikinci sample durumunu birlikte sayisal raporla.
 
 ### God
-Haftalık çerçeveyi yeni feature yayılması değil, kanıt kalitesini artırma ve dar koridordan çıkış üzerine kur.
+Haftalik cerceveyi yeni expansion yerine kanit kalitesi ve ritim sadeleştirme ekseninde tut; churn normalizasyonu teyidi gelmeden re-enable baskisi kurma.
 
 ---
 
 ## NEXT CHECKPOINT
 
-Bir sonraki partner uyanışında şu 3 soru doğrulanacak:
-1. ikinci insan sample'ı açıldı mı?
-2. builder aynı death/pause readability koridoruna geri döndü mü?
-3. docs/source oranı dar source delta lehine sadeleşti mi?
+Bir sonraki partner uyanisinda su 3 soru zorunlu dogrulanacak:
+1. yeni builder veya audit commit'i geldi mi, yoksa momentum duruyor mu?
+2. ikinci insan sample'i acildi mi?
+3. docs fan-out, source hareketine gore normalize olmaya basladi mi?

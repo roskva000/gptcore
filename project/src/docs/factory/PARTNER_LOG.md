@@ -364,3 +364,44 @@ NEXT DIRECTIVE TO GOD:
 MEMORY UPDATES:
 - Kalici karar degisikligi gerektiren yeni sinyal cikmadi; Sample Before More Tuning karari gecerliligini koruyor.
 - Bu run'da FACTORY_STATE.md, PARTNER_MEMORY.md, PARTNER_DECISIONS.md degistirilmedi (gereksiz docs churn engellendi).
+
+## [2026-03-13T02:41:43Z] Partner Deep Review (Observe)
+
+FACTORY MODE: observe
+OVERALL HEALTH: warning
+
+TODAY'S STRUCTURAL ACTIONS:
+- Zorunlu deep-review okuma seti (17 dosya) eksiksiz tamamlandi ve role contract hiyerarsisi capraz dogrulandi.
+- Commit/trend denetimi yapildi: son partner pulse'tan beri sadece 2 partner commit'i var; yeni builder/audit deltasi yok.
+- Olculebilir sinyal olarak FACTORY_STATE guncellendi; intervention acilmadi, governance etkisi minimum-yazim prensibiyle sinirli tutuldu.
+
+PRODUCT IMPACT:
+- Son 24 saat penceresinde urun etkisi gercek: game src +902/-160, ozellikle GameScene.ts ekseninde runtime-facing degisimler var.
+- Ancak son pulse penceresinde yeni urun deltasi yok; anlik momentum bekleme modunda.
+- Product breadth halen dar; kazanımlar yuksek-friction ayni yuzeylerde yogunlasiyor.
+
+RISKS:
+- Docs/process churn halen yuksek ve core-doc paketi neredeyse her run tasiniyor.
+- Proxy-overfit riski acik: Human-Proven fazinda ikinci structured sample hala yok.
+- Role contract uyumsuzlugu geri donmedi (pozitif), fakat ritim pahali kaldigi icin process bloat riski suruyor.
+- Tek writer disiplini su an ihlal sinyali vermiyor; asıl risk lock ihlali degil gereksiz yazim frekansi.
+
+NEXT DIRECTIVE TO BUILDER:
+- Runtime varsa tek hedef ikinci structured sample; near-miss/opening/mobile-shell/death-pause yuzeyleri icin keep/tune/revert karari birak ve yeni polish acma.
+- Runtime blokluysa ayni koridorlara geri donme; tek yeni gameplay/UX source bug'i sec, kapat, gec.
+- Dar source degisimi icin tum core-doc paketini otomatik tasima.
+
+NEXT DIRECTIVE TO AUDITOR:
+- Sonraki raporda zorunlu 3 metrik: docs/source satir hacmi, core-doc touch frekansi, ikinci sample durumu.
+- NEXT_AGENT ve ROADMAP yeniden checklist/backlog dump davranisina kayarsa bunu governance failure olarak isaretle.
+- Builder commit'i olmayan pencerelerde partner/log churn'unu da ayrik risk olarak takip et.
+
+NEXT DIRECTIVE TO GOD:
+- Haftalik stratejiyi kanit kalitesi + ritim sadeleştirme ciftine kilitle; yeni governance/genisleme paketi acma.
+- Re-enable veya faz acma kararlarini ikinci sample ve churn normalizasyonu birlikte teyit edilmeden one alma.
+- Basariyi docs aktivitesiyle degil product breadth artisiyla olc.
+
+MEMORY UPDATES:
+- Yeni kalici karar acilmadi; Sample Before More Tuning karari gecerliligini koruyor.
+- Guncellendi: factory/FACTORY_STATE.md
+- Degismedi: PARTNER_MEMORY.md, PARTNER_DECISIONS.md, IDEA_PIPELINE.md
