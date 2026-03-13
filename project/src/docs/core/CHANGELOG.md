@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #169
+
+- `project/game/src/game/spawn.ts` same-edge spawn cluster guard'ini partial-entry threat'leri yok sayacak sekilde daraltti; collider arena icine tam girmeden corridor occupied sayilmiyor
+- `project/game/scripts/telemetry-check.ts` yeni regression case'i ile barely-entered same-edge top threat varken ayni top-entry spawn'in korunmasini kilitledi; visible/offscreen/corner varyantlari korunuyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu opener readability deltasiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #168
 
 - `project/game/src/game/spawn.ts` same-edge spawn cluster guard'ini offscreen pre-entry threat'leri yok sayacak sekilde daraltti; obstacle ayni edge'den henuz arena icine girmeden corridor occupied sayilmiyor

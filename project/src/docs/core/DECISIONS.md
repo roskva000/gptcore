@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #169]
+
+Decision:
+`stabilization` modunda same-edge spawn-column guard'inin partial-entry false-positive kusuru kapatildi; collider arena icine tam girmemis ayni-edge threat yeni spawn corridor'unu erken dolu saymiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina sample olmadan donmeyi yasakliyor. Spawn/readability hattinda ise dar ama gercek bir source kusuru kalmisti: `project/game/src/game/spawn.ts` same-edge cluster cezasini obstacle kenari yeni asmissa bile uygulayabiliyordu. Bu, oyuncunun henuz tam okuyamadigi partially-entered edge sprite yuzunden ayni edge spawn'larini gereksiz reroll ederek opener variety'yi sessizce daraltabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` artik same-edge cluster cezasini yalniz `OBSTACLE_COLLISION_RADIUS` marjiniyle arena icine tam girmis obstacle'lara uyguluyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile partial-entry same-edge top threat varken ayni top-entry spawn'in korunmasini kilitliyor; visible/offscreen/cross-edge/corner-sharing kontratlari korunuyor. `project/game/src/latestRun.ts` bu runtime-facing delta ile guncellendi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample barely-entered threat'i tamamen yok saymanin ayni-edge tekrarlarini gereksiz artirdigini gosterirse yalnizca visibility/readability gate'i dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #168]
 
 Decision:

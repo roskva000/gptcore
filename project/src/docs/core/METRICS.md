@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_same_edge_partial_entry_integrity:
+current: Run #169 `project/game/src/game/spawn.ts` same-edge spawn-column guard'ini ancak obstacle collider'i `11px` visible-arena marjiniyle tam iceri girdiginde uyguluyor; kenari yeni asmis ayni-edge threat artik yeni kolonu erken occupied saymiyor
+baseline: Run #165-#168 same-edge readability guard'lari visible, offscreen ve corner varyantlarini duzeltmisti, fakat kontrol collider tam iceri girmeden de ceza verebildigi icin oyuncunun henuz tam okuyamadigi partial-entry baski opener variety'yi gereksiz daraltabiliyordu
+target: ayni edge readability guard'i yalniz gercekten okunabilir corridor baskisina tepki versin; headed sample challenge'i bosaltmadan lane okunurlugunu korudugunu gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_same_edge_offscreen_preentry_integrity:
 current: Run #168 `project/game/src/game/spawn.ts` same-edge spawn-column guard'ini obstacle ilgili giris kenarindan arena icine girmeden uygulamiyor; tam offscreen same-edge threat artik yeni kolonu erken occupied saymiyor
 baseline: Run #165-#167 same-edge readability guard'lari visible ve near-corner threat'leri duzeltmisti, fakat kontrol obstacle tam offscreen iken de ceza verebildigi icin oyuncunun henuz okuyamadigi pre-entry baski opener variety'yi gereksiz daraltabiliyordu

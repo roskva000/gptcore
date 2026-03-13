@@ -384,11 +384,11 @@ const getSpawnEdgeClusterPenalty = (
       return totalPenalty;
     }
 
-    const obstacleOffset = getSpawnEdgeOffset(obstaclePosition, spawnEdge);
-
-    if (obstacleOffset.depth < 0) {
+    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
       return totalPenalty;
     }
+
+    const obstacleOffset = getSpawnEdgeOffset(obstaclePosition, spawnEdge);
 
     const lateralDistance = Math.abs(obstacleOffset.lateral - spawnOffset.lateral);
 
