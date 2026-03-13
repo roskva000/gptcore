@@ -832,6 +832,27 @@ assert.equal(
   1,
   'Fatal threat selection should break equal-depth ties toward the obstacle with the stronger closing vector.',
 );
+assert.equal(
+  selectFatalThreatIndex({
+    playerPosition: { x: 400, y: 300 },
+    playerVelocity: { x: 0, y: 0 },
+    playerCollisionRadius: 16,
+    candidates: [
+      {
+        position: { x: 400, y: 300 },
+        velocity: { x: 40, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+      {
+        position: { x: 400, y: 300 },
+        velocity: { x: -180, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+    ],
+  }),
+  1,
+  'Fatal threat selection should break fully centered overlap ties toward the obstacle with the stronger relative sweep instead of callback order.',
+);
 
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.5, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');

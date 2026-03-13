@@ -9,6 +9,29 @@ export type FatalThreatCandidate = {
   collisionRadius: number;
 };
 
+const CENTERED_DISTANCE_EPSILON = 0.0001;
+
+const getThreatClosingScore = (
+  playerPosition: Vector2Like,
+  playerVelocity: Vector2Like,
+  candidate: FatalThreatCandidate,
+): number => {
+  const deltaX = playerPosition.x - candidate.position.x;
+  const deltaY = playerPosition.y - candidate.position.y;
+  const distanceSq = deltaX * deltaX + deltaY * deltaY;
+  const relativeVelocityX = candidate.velocity.x - playerVelocity.x;
+  const relativeVelocityY = candidate.velocity.y - playerVelocity.y;
+
+  if (distanceSq <= CENTERED_DISTANCE_EPSILON) {
+    return Math.hypot(relativeVelocityX, relativeVelocityY);
+  }
+
+  const distance = Math.sqrt(distanceSq);
+  const normalX = deltaX / distance;
+  const normalY = deltaY / distance;
+  return relativeVelocityX * normalX + relativeVelocityY * normalY;
+};
+
 type FatalThreatSelectionConfig = {
   playerPosition: Vector2Like;
   playerVelocity: Vector2Like;
@@ -34,16 +57,7 @@ export const selectFatalThreatIndex = ({
     const distance = Math.sqrt(distanceSq);
     const combinedRadius = playerCollisionRadius + candidate.collisionRadius;
     const penetration = combinedRadius - distance;
-
-    let closingSpeed = 0;
-
-    if (distance > 0) {
-      const normalX = deltaX / distance;
-      const normalY = deltaY / distance;
-      const relativeVelocityX = candidate.velocity.x - playerVelocity.x;
-      const relativeVelocityY = candidate.velocity.y - playerVelocity.y;
-      closingSpeed = relativeVelocityX * normalX + relativeVelocityY * normalY;
-    }
+    const closingSpeed = getThreatClosingScore(playerPosition, playerVelocity, candidate);
 
     const isBetterCandidate =
       penetration > bestPenetration + 0.0001 ||

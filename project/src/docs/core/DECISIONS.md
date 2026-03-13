@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #163]
+
+Decision:
+`stabilization` modunda centered multi-hit death-attribution tie bug'i kapatildi; fatal obstacle secimi tam centered esit-overlap durumlarinda callback sirasina dusmuyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen death readability tarafinda dar ama gercek bir source kusuru kalmisti: `project/game/src/game/deathAttribution.ts` esit penetration ve esit distance tie'larinda `distance === 0` ise closing-speed tiebreak'ini devre disi birakiyor, secim dolayli olarak overlap callback sirasina kayiyordu. Iki obstacle oyuncu merkezinde ayni anda ust uste bindiginde daha hizli sweep eden threat yerine ilk enumerate edilen obstacle secilebiliyor, bu da Run #162 ile duzeltilen impact direction bilgisini yanlis obstacle'a baglama riski tasiyordu.
+
+Impact:
+`project/game/src/game/deathAttribution.ts` centered-distance tie'larinda relative velocity buyuklugunu tiebreak olarak kullaniyor; esit-penetration centered overlap'larda daha guclu sweep tasiyan obstacle seciliyor. `project/game/scripts/telemetry-check.ts` centered equal-depth overlap regression assert'i ekledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample centered multi-hit olumlerde yeni secimin daha yanlis veya fazla agresif threat atfi yaptigini gosterirse yalnizca centered tie-break semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni death overlay sistemi, orchestration katmani veya copy paketi acilmaz.
+
 ### [Run #162]
 
 Decision:

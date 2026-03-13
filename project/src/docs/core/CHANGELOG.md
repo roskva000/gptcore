@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #163
+
+- `project/game/src/game/deathAttribution.ts` centered ve esit-penetration multi-hit overlap'larda closing-speed tie-break'ini callback sirasina dusurmek yerine relative sweep gucuyle cozecek sekilde daraltildi
+- `project/game/scripts/telemetry-check.ts` centered equal-depth multi-hit overlap regression assert'i ekledi; daha hizli gelen threat'in secilmesi deterministic olarak kilitlendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #162
 
 - `project/game/src/game/impactDirection.ts` centered overlap'larda guclu relative motion varsa incoming lane'i (`top`, `left`, vb.) koruyan fallback ekledi; weak centered hit'ler `center` kalmaya devam ediyor
