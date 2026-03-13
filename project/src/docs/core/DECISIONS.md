@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #154]
+
+Decision:
+Mouse pointer primary-down kontrati `stabilization` modunda native `buttons===0` release sinyaline hizalandi; stale cached button state artik held steer/retry/resume eligibility tasimiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen source'ta dar ama gercek bir kontrol kusuru vardi: `project/game/src/game/primaryAction.ts` icindeki `isPrimaryPointerDown()` helper'i mouse pointer'da `nativeEvent.buttons === 0` oldugunda tekrar `button === 0` fallback'ine donuyordu. Phaser `isDown` stale kalirsa bu yol mouse release sonrasinda bile pointer'i aktif sayip ghost steer, stale resume guard'i veya held retry eligibility tasiyabilirdi.
+
+Impact:
+`project/game/src/game/primaryAction.ts` artik non-touch pointer icin `buttons===0` durumunu dogrudan release sayiyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile stale mouse release yolunu guard altina aldi. `project/game/src/latestRun.ts` public paneli bu source deltasiyle hizalandi. Deterministic pacing/fairness baseline degismedi; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed desktop sample bu guard'in belirli mouse/browser kombinasyonlarinda gercek basili primary input'u gec okudugunu gosterirse yalnizca mouse `buttons` fallback semantigi dar kapsamda yeniden ayarlanir; ayni bahaneyle mobile shell, near-miss, overlay readability veya yeni input orchestration katmani acilmaz.
+
 ### [Run #153]
 
 Decision:

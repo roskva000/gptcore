@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+mouse_primary_release_integrity:
+current: Run #154 `project/game/src/game/primaryAction.ts` non-touch pointer icin native `event.buttons===0` gordugunde input'u dogrudan release sayiyor; stale cached `button===0` artik active primary hold olarak yorumlanmiyor
+baseline: onceki helper `isDown===true` ve `buttons===0` kombinasyonunda tekrar `shouldHandlePrimaryActionPointer()` fallback'ine donup cached left-button durumunu primary-down sayabiliyordu; bu da mouse release sonrasi ghost steer veya stale retry/resume eligibility riski tasiyordu
+target: sonraki headed desktop sample'da mouse release sonrasi pointer steering hemen dusmeli, stale hold retry/resume zinciri kalmamali ve gercek basili primary input gecersiz yere yok sayilmamali
+validation: `npm run telemetry:check`, `npm run build`
+
 validation_summary_contract_integrity:
 current: Run #153 `project/game/src/game/GameScene.ts` game-over validation summary satirini ortak `hasCompletedRunSample()` helper'ina bagliyor; death-screen telemetry snapshot'i artik export readiness ile ayni sample gate kontratini kullaniyor
 baseline: onceki source ayni validation ailesinde hardcoded `this.sessionTelemetry.totalDeaths < 5` esigine bakiyordu; export lock ve diger telemetry copy'si ortak helper'a bagli oldugu icin gelecekte contract drift riski tasiyordu

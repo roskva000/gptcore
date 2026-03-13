@@ -55,7 +55,7 @@ export const isPrimaryPointerDown = (
     typeof nativeEvent.buttons === 'number'
   ) {
     if (nativeEvent.buttons === 0) {
-      return shouldHandlePrimaryActionPointer(pointer);
+      return false;
     }
 
     return (nativeEvent.buttons & 1) === 1;

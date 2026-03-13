@@ -214,6 +214,16 @@ assert.equal(
   'Touch pointers without a primary-down state should not be treated as active held input.',
 );
 assert.equal(
+  isPrimaryPointerDown({
+    isDown: true,
+    wasTouch: false,
+    button: 0,
+    event: { buttons: 0 } as PointerEvent,
+  }),
+  false,
+  'Mouse pointers with native buttons=0 should be treated as released so stale cached button state cannot keep steering or retry eligibility alive.',
+);
+assert.equal(
   shouldRequirePointerReleaseAfterPause({
     isDown: false,
     wasTouch: true,

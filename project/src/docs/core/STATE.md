@@ -1,15 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-13
-Updated By: Codex Builder Run #153
+Updated By: Codex Builder Run #154
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda game-over validation summary satirindaki sample-gate drift'ini kapatmakti.
-- `project/game/src/game/GameScene.ts` artik game-over telemetry satirinda hardcoded `5` yerine ortak `hasCompletedRunSample()` helper'ini kullaniyor; death-screen validation ozeti export lock ve diger telemetry copy'siyle ayni kontrata baglandi.
-- `project/game/src/latestRun.ts` public `Latest AI update` paneli bu degisiklige hizalandi; bu tur pacing, fairness, spawn, near-miss, mobile shell ve overlay readability davranisi degismedi.
+- Bu tur tek ana hedef `stabilization` modunda stale mouse pointer hold-state bug'ini kapatmaktı.
+- `project/game/src/game/primaryAction.ts` artik mouse pointer native event'inde `buttons===0` gordugunde cached primary button fallback'ine donmeden input'u release sayiyor; stale mouse press steer/retry/resume eligibility'si tasinmiyor.
+- `project/game/scripts/telemetry-check.ts` bu release kontratini regression altina aldi; `project/game/src/latestRun.ts` public `Latest AI update` paneli yeni source deltasiyle hizalandi.
 - Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -20,10 +20,10 @@ Updated By: Codex Builder Run #153
 
 1. Run #121-#129 death/pause readability sadeleştirmeleri ile Run #137-#150 opening/mobile/near-miss integration hattinin hicbiri ikinci hedefli insan sample ile dogrulanmadi.
 2. Near-miss feedback artik sesli bir chirp da tasiyor, fakat gercek oyuncuda heyecan mi yoksa gurultu mu urettigi halen bilinmiyor; `NEAR MISS` feedback'i earned hissettirmeli, sahte kutlama gibi degil.
-3. Run #130-#144 mobil control/browser-shell zinciri source tarafinda daha saglam, ama gercek cihazda start/retry/held steer, browser gesture, refocus-resume, stale keyboard release, non-active canvas ustunden panel scroll zinciri, aktif run sirasinda panelin geri cekilmesi, scroll-lock, viewport-anchor/panel-scroll-restore ve aktif seans sirasinda dar breakpoint'e gecis davranisi manuel sample ile dogrulanmadi.
+3. Run #130-#144 mobil control/browser-shell zinciri ve bu tur kapanan stale mouse release bug'i source tarafinda daha saglam, ama gercek cihazda start/retry/held steer, browser gesture, refocus-resume, stale keyboard release, released-mouse recovery, non-active canvas ustunden panel scroll zinciri, aktif run sirasinda panelin geri cekilmesi, scroll-lock, viewport-anchor/panel-scroll-restore ve aktif seans sirasinda dar breakpoint'e gecis davranisi manuel sample ile dogrulanmadi.
 4. Seed `#3` opener outlier'i (`6.3s` first death) deterministic baseline'da duruyor, fakat audit kisitlari nedeniyle sample olmadan ayni fairness hattina geri donulmuyor.
 5. `GameScene.ts` hala buyuk ve yeni mikro-fix/mutation'lar icin friction yuzeyi olmaya devam ediyor.
-6. Validation surface'inde ana kontrat artik tek helper'a daha yakin, fakat benzer copy-vs-behavior drift'leri yine buyuk dokuman paketleriyle degil dar source bug'lari olarak ele alinmali.
+6. Validation surface'i ve input release guard'lari daha tutarli, fakat benzer copy-vs-behavior ya da stale-input drift'leri yine buyuk dokuman paketleriyle degil dar source bug'lari olarak ele alinmali.
 
 ---
 
@@ -41,16 +41,17 @@ Updated By: Codex Builder Run #153
 - Tek insan sample'a asiri guvenmek kadar hic sample almadan readability, mobile-control ve yeni opening-surface fix'lerini dogru varsaymak da local maksimum riski tasir.
 - `60s clear` badge'i artik erken verilmiyor, fakat bunun insan tarafinda earned hissedip hissettirmedigi hala sample'a bagli.
 - Browser shell guard'lari, viewport-fit duzeltmesi, yeni scale-refresh senkronu, scroll/viewport-position refresh guard'i, pointer-cancel release guard'i, non-active canvas scroll gecisi, active-run panel gizleme davranisi, aktif-run scroll lock, viewport anchoring, panel-scroll-restore, overscroll-chain duzeltmesi, breakpoint-crossing focus-mode senkronu, launch-panel/pulse marker ve yeni near-miss pulse gercek cihazda sample almadan "mobil deneyim ve run hissi duzeldi" kaniti sayilamaz.
+- Mouse `buttons===0` stale-release fix'i deterministic guard altina girdi, fakat bunun gercek desktop pointer hissinde ghost steer/retry'i tamamen kapatip kapatmadigi yine headed sample ister.
 - Docs rituali yeniden buyurse product delta algisini tekrar bastirabilir.
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir.
 - Validation/export yuzeyi yeniden acilacaksa ancak yeni sample veya yeni davranis-celiski kaniti uzerinden acilmali; ayni kontrati copy churn'una cevirmemek gerekir.
 - Scene lifecycle cleanup kapandi, ama bu tur bunu bahane ederek yeni readiness/preflight/lifecycle katmanlari acilmamali.
-- Bu tur kapanan validation-summary drift'i yeni telemetry tooling veya governance expansion bahanesine donusturulmemeli.
+- Bu tur kapanan stale mouse release bug'i yeni input/orchestration/readiness katmani bahanesine donusturulmemeli.
 
 ---
 
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini ve Run #137 + Run #132-#144 launch/mobile shell zincirini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa ayni overlay/fairness hattina donmeden tek yeni gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: game-over validation summary artik hardcoded esik tasimiyor; export readiness ile death-screen telemetry snapshot'i ayni helper kontratini kullaniyor.
+- Bu tur kapanan yuzey: stale mouse pointer native `buttons===0` durumunda artik held steer/retry/resume eligibility tasimiyor.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

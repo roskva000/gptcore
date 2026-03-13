@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #154
+
+- `project/game/src/game/primaryAction.ts` mouse pointer primary-down yorumunda native `buttons===0` durumunu dogrudan release sayacak sekilde daraltildi; cached `button===0` fallback'i artik stale steer/retry/resume eligibility tasimiyor
+- `project/game/scripts/telemetry-check.ts` mouse `buttons===0` stale-release regression assert'i ekledi
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu stabilization deltasiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #153
 
 - `project/game/src/game/GameScene.ts` game-over validation summary satirinda hardcoded `5` yerine ortak `hasCompletedRunSample()` helper'ini kullanmaya basladi

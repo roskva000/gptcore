@@ -4,6 +4,7 @@
 
 - Audit 2026-03-13 verdict `warning`: urun ilerliyor, ama docs fan-out ve proxy-overfit riski halen aktif.
 - `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i acma.
+- Run #154 stale mouse release bug'ini kapatti; bunu yeni input/orchestration katmani bahanesine cevirme.
 - Run #153 game-over validation summary'deki hardcoded sample gate'i kapatti; validation/export yuzeyini yeni sample olmadan tekrar wording churn'una cevirme.
 - Run #121-#129 death/pause readability hattini ve Run #132-#150 mobile/near-miss hattini yeni sample olmadan tekrar cilalama.
 - Yeni orchestration, readiness veya preflight katmani acma.
@@ -33,6 +34,7 @@ Ayni overlay/fairness/validation koridoruna donmeden tek yeni gameplay veya UX s
 Guardrails:
 - Run #121-#129 death/pause readability zincirine donme.
 - Run #132-#150 mobile shell / near-miss / validation yuzeylerini wording veya polish bahanesiyle yeniden acma.
+- Input tarafinda yeni refactor/orchestration acma; varsa tek helper seviyesinde dar bug kapat.
 - Tek source-level problem sec; yeni sistem katmani ekleme.
 - Gameplay/helper kontrati degisirse `npm run telemetry:check` ve `npm run build`, aksi halde en az `npm run build` calistir.
 
