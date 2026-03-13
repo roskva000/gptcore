@@ -533,6 +533,27 @@ assert.deepEqual(
   'Blocked wall movement should not reroll a safe top spawn solely because stale corner velocity still points further into the wall.',
 );
 
+const nearWallReachabilitySelection = selectSpawnPoint({
+  survivalTimeSeconds: 2,
+  playerPosition: { x: 17, y: 80 },
+  playerVelocity: { x: -260, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 100, y: 80 },
+    { x: 150, y: 120 },
+    { x: 200, y: 100 },
+  ],
+  randomInt: createQueuedRandom([0, 40, 0, 120, 0, 400, 1, 300, 2, 300, 3, 300, 0, 300]),
+});
+assert.deepEqual(
+  nearWallReachabilitySelection,
+  {
+    point: { x: 856, y: 300 },
+    rerollsUsed: 3,
+  },
+  'Projected-path spawn scoring should clamp near-wall movement to the same player-reachable margin the runtime uses, instead of overvaluing impossible top-lane travel while the player is pinned near the left wall.',
+);
+
 assert.equal(
   isPointInsideArena({ x: 10, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),
   false,

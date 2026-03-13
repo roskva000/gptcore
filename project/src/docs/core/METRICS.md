@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+spawn_projected_path_reachability_integrity:
+current: Run #159 `project/game/src/game/spawn.ts` projected-path fairness referansini `playerReachabilityMargin` ile clamp'liyor; near-wall forward/lane-stack reroll skorlamasi artik runtime obstacle target-lag'inin kullandigi player-reachable arena ile ayni referansi paylasiyor
+baseline: onceki source projected-path skorlamasini tam arena sinirina clamp'liyordu; oyuncu duvara cok yakin ama tam temas etmemisken spawn secimi runtime'in asla hedefleyemeyecegi ekstra wall travel'i mumkun sayip bazi top/side lane adaylarini hatali degerlendirebiliyordu
+target: near-wall opener baskisi gercek reachability uzerinden kalsin; yeni fairness guard'i deterministic baseline'i bozmadan impossible wall-travel bias'ini geri getirmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 movement_release_gate_frame_integrity:
 current: Run #158 `project/game/src/game/GameScene.ts` movement key `keyup` aninda tum movement tuslari kalkmissa `movementInputWasActive`, held-action zamani ve replay/resume release gate'lerini temizliyor; game-over retry ve focus-loss resume artik keyboard release sonrasi ekstra update tick beklemiyor
 baseline: onceki source movement release gate'lerini yalnizca update icindeki `!movementInputActive` yolunda dusuruyordu; hizli `release -> fresh key press` zincirinde yeni keyboard retry/resume stale release state'iyle gereksiz bloke kalabiliyordu

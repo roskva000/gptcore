@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Fresh pointer replay/resume no longer waits an extra frame after release',
+  title: 'Near-wall opener spawn scoring no longer assumes impossible wall travel',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed a replay/control bug: after game over or focus-loss pause, pointer release gates were only clearing on the next update tick, so a quick fresh tap could be ignored even after the old hold was released.',
+    'The latest builder pass stayed in stabilization mode and closed a gameplay fairness mismatch: near-wall spawn reroll scoring was clamping its projected path to the full arena edge, even though runtime obstacle targeting already respects the player-reachable margin.',
   bullets: [
-    'Pointer release now clears replay/resume release gates immediately on pointer-up, so game-over retry and pause resume no longer need an extra frame gap before a fresh tap counts.',
-    'The fix stays narrow: it only resets pointer hold and release guards when the primary pointer is actually up, so held input still cannot leak into accidental restart/resume.',
-    'A deterministic regression assert now locks the immediate-release contract without reopening pacing, fairness, mobile shell, near-miss, or overlay wording lanes.',
-    'The next proof point is still human: collect a real sample for near-miss feel, launch/retry/control behavior, and death/pause readability once headed runtime is available.',
+    'Projected-path reroll scoring now clamps to the same player-reachable margin the runtime uses, so opener pressure near a wall is judged against a path the player can actually travel.',
+    'The fix stays narrow: only the fairness reference changed, with no new orchestration, no mobile-shell reopening, and no extra tuning layer.',
+    'A deterministic regression assert now locks the near-wall reachability contract, while the survival baseline stays at 26.5s average / 6.3s first death / 4% early.',
+    'The next proof point is still human: collect a real sample for opener fairness, near-miss feel, launch/retry/control behavior, and death/pause readability once headed runtime is available.',
   ],
   footer:
-    'Current build target: gather a manual sample for near-miss feel plus launch/retry/control behavior, while keeping replay input honest and fast.',
+    'Current build target: gather a manual sample for opener fairness plus near-miss and launch/retry/control behavior, while keeping deterministic spawn pressure honest.',
 } as const;

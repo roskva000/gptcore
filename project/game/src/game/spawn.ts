@@ -79,15 +79,19 @@ const getReachableVelocity = (
 const getProjectedPathReference = (
   playerPosition: Point,
   playerVelocity: Point | undefined,
+  playerReachabilityMargin = 0,
 ): Point => {
   if (!playerVelocity || (playerVelocity.x === 0 && playerVelocity.y === 0)) {
-    return playerPosition;
+    return clampPointToArena(playerPosition, { margin: playerReachabilityMargin });
   }
 
-  return clampPointToArena({
-    x: playerPosition.x + playerVelocity.x * EARLY_SPAWN_TARGET_LAG_SECONDS,
-    y: playerPosition.y + playerVelocity.y * EARLY_SPAWN_TARGET_LAG_SECONDS,
-  });
+  return clampPointToArena(
+    {
+      x: playerPosition.x + playerVelocity.x * EARLY_SPAWN_TARGET_LAG_SECONDS,
+      y: playerPosition.y + playerVelocity.y * EARLY_SPAWN_TARGET_LAG_SECONDS,
+    },
+    { margin: playerReachabilityMargin },
+  );
 };
 
 const normalize = (point: Point): Point => {
@@ -120,6 +124,7 @@ const getForwardSpawnPenalty = (
   survivalTimeSeconds: number,
   playerPosition: Point,
   playerVelocity: Point | undefined,
+  playerReachabilityMargin: number | undefined,
   spawnPoint: Point,
 ): number => {
   if (
@@ -130,7 +135,11 @@ const getForwardSpawnPenalty = (
     return 0;
   }
 
-  const forwardReference = getProjectedPathReference(playerPosition, playerVelocity);
+  const forwardReference = getProjectedPathReference(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
   const movementDirection = normalize(playerVelocity);
   const spawnDirection = normalize({
     x: spawnPoint.x - forwardReference.x,
@@ -149,6 +158,7 @@ const getLaneStackPenalty = (
   survivalTimeSeconds: number,
   playerPosition: Point,
   playerVelocity: Point | undefined,
+  playerReachabilityMargin: number | undefined,
   activeObstaclePositions: Point[] | undefined,
   spawnPoint: Point,
 ): number => {
@@ -156,7 +166,11 @@ const getLaneStackPenalty = (
     return 0;
   }
 
-  const laneStackReference = getProjectedPathReference(playerPosition, playerVelocity);
+  const laneStackReference = getProjectedPathReference(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
   const spawnDirection = normalize({
     x: spawnPoint.x - laneStackReference.x,
     y: spawnPoint.y - laneStackReference.y,
@@ -253,12 +267,14 @@ export const selectSpawnPoint = ({
       survivalTimeSeconds,
       playerPosition,
       reachableVelocity,
+      playerReachabilityMargin,
       selectedSpawnPoint,
     ) -
     getLaneStackPenalty(
       survivalTimeSeconds,
       playerPosition,
       reachableVelocity,
+      playerReachabilityMargin,
       activeObstaclePositions,
       selectedSpawnPoint,
     );
@@ -279,12 +295,14 @@ export const selectSpawnPoint = ({
         survivalTimeSeconds,
         playerPosition,
         reachableVelocity,
+        playerReachabilityMargin,
         candidate,
       ) -
       getLaneStackPenalty(
         survivalTimeSeconds,
         playerPosition,
         reachableVelocity,
+        playerReachabilityMargin,
         activeObstaclePositions,
         candidate,
       );

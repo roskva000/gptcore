@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #159
+
+- `project/game/src/game/spawn.ts` projected-path fairness referansini `playerReachabilityMargin` ile clamp'lemeye basladi; near-wall forward ve lane-stack reroll skoru artik runtime obstacle target-lag davranisiyla ayni reachability kontratini kullaniyor
+- `project/game/scripts/telemetry-check.ts` sol duvara yakin opener senaryosunda impossible-top bias'in geri donmesini yakalayan yeni regression assert'i ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #158
 
 - `project/game/src/game/primaryAction.ts` movement fresh-press ve release-clear semantigini saf helper'lara tasidi

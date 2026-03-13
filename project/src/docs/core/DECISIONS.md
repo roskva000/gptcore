@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #159]
+
+Decision:
+`stabilization` modunda spawn projected-path fairness mismatch'i kapatildi; near-wall forward ve lane-stack reroll skorlamasi artik runtime obstacle target-lag davranisiyla ayni player-reachable clamp'i kullaniyor.
+
+Reason:
+Headed runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen source'ta dar ama gercek bir gameplay kusuru vardi: `project/game/src/game/spawn.ts` projected-path skorlamasini tam arena kenarina clamp'lerken, runtime obstacle target'ini `PLAYER_COLLISION_RADIUS` margin'iyle clamp'liyordu. Oyuncu duvara cok yakin ama tamamen temas etmemisken bu mismatch, opener spawn reroll'lerinin hayali ekstra duvar hareketini mumkun saniyor ve bazi near-wall top-lane baskilarini gereksiz sert degerlendirebiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` projected-path referansina `playerReachabilityMargin` tasidi; forward ve lane-stack penalty hesaplari artik ayni reachability kontratini paylasiyor. `project/game/scripts/telemetry-check.ts` near-wall regression assert'i ile eski impossible-top bias'in geri donmesini kilitledi. Deterministic baseline degismedi; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Yeni headed sample veya sonraki deterministic trace bu clamp'in near-wall spawn cesitliligini gereksiz daralttigini gosterirse yalnizca projected-path reachability margin'i dar kapsamda yeniden ayarlanir; ayni bahaneyle yeni fairness framework'u, orchestration katmani veya docs/tooling paketi acilmaz.
+
 ### [Run #158]
 
 Decision:
