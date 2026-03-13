@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #166
+
+- `project/game/src/game/spawn.ts` `same-edge spawn cluster` cezasini obstacle'in en yakin arena kenari ile sinirladi; near-corner farkli edge threat'leri artik ust/alt/yan spawn column'unu yanlis reroll etmiyor
+- `project/game/scripts/telemetry-check.ts` cross-edge corner false-positive regression case'i ekledi; left-edge kose threat'i varken top spawn'in korunmasi deterministic olarak kilitlendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #165
 
 - `project/game/src/game/spawn.ts` ilk `6s` icinde ayni edge corridor'da hala inmekte olan obstacle varken ikinci ayni dar spawn-column girisini yeni `same-edge spawn cluster` cezasi ile reroll etmeye basladi

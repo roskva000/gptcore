@@ -518,6 +518,23 @@ assert.deepEqual(
   'Opening spawn scoring should reroll a second obstacle out of the same top-entry column when an earlier threat is still descending through that corridor.',
 );
 
+const crossEdgeCornerSelection = selectSpawnPoint({
+  survivalTimeSeconds: 3,
+  playerPosition: { x: 180, y: 280 },
+  playerVelocity: { x: 0, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 8, y: 20 }],
+  randomInt: createQueuedRandom([0, 0, 2, 400]),
+});
+assert.deepEqual(
+  crossEdgeCornerSelection,
+  {
+    point: { x: 0, y: -56 },
+    rerollsUsed: 0,
+  },
+  'Same-edge spawn-column rerolls should ignore near-corner threats whose closest arena edge is different from the new spawn edge.',
+);
+
 const projectedForwardSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
   playerPosition: { x: 308.6, y: 290.3 },

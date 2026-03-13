@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_cross_edge_corner_spawn_integrity:
+current: Run #166 `project/game/src/game/spawn.ts` same-edge spawn-column cezasini obstacle'in en yakin arena kenari ile sinirliyor; near-corner left/right threat'leri artik top/bottom spawn column'unu sanki ayni giris edge'indeymis gibi cezalandirmiyor
+baseline: onceki source `getSpawnEdgeOffset()` hesabini obstacle'in gercek edge baglamini kontrol etmeden secilen spawn edge'i uzerinden yurutuyordu; koseye yakin farkli edge threat'i yanlis same-edge penalty alip opener variety'yi gereksiz daraltabiliyordu
+target: ayni-edge spawn okunurlugu korunurken koseye yakin cross-edge threat'ler sahte reroll uretmesin; headed sample opener challenge'inin bosalmadigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_same_edge_spawn_column_integrity:
 current: Run #165 `project/game/src/game/spawn.ts` ilk `6s` icinde ayni edge corridor'da lateral olarak yakin ve halen edge-depth band'inde olan obstacle varken ikinci ayni dar spawn-column girisini cezalandirip alternatif corridor'a reroll ediyor
 baseline: onceki source projected-path ve threat-crowding guard'lari oyuncuya yakin baskiyi izliyordu, fakat ayni edge'den yeni dogmus bir obstacle hala ekran icine inerken ikinci obstacle neredeyse ayni column'a spawn olabiliyor ve opener lane okunurlugunu tek kolon gibi bulanıklaştırabiliyordu

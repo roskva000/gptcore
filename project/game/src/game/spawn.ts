@@ -133,6 +133,19 @@ const getSpawnEdge = (spawnPoint: Point): SpawnEdge => {
   return 'left';
 };
 
+const getClosestArenaEdge = (point: Point): SpawnEdge => {
+  const distances: Array<{ edge: SpawnEdge; distance: number }> = [
+    { edge: 'top', distance: Math.abs(point.y) },
+    { edge: 'right', distance: Math.abs(ARENA_WIDTH - point.x) },
+    { edge: 'bottom', distance: Math.abs(ARENA_HEIGHT - point.y) },
+    { edge: 'left', distance: Math.abs(point.x) },
+  ];
+
+  return distances.reduce((closest, candidate) =>
+    candidate.distance < closest.distance ? candidate : closest,
+  ).edge;
+};
+
 const getSpawnEdgeOffset = (point: Point, edge: SpawnEdge): { lateral: number; depth: number } => {
   if (edge === 'top') {
     return {
@@ -338,6 +351,10 @@ const getSpawnEdgeClusterPenalty = (
   const spawnOffset = getSpawnEdgeOffset(spawnPoint, spawnEdge);
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
+    if (getClosestArenaEdge(obstaclePosition) !== spawnEdge) {
+      return totalPenalty;
+    }
+
     const obstacleOffset = getSpawnEdgeOffset(obstaclePosition, spawnEdge);
     const lateralDistance = Math.abs(obstacleOffset.lateral - spawnOffset.lateral);
 
