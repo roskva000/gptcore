@@ -325,3 +325,42 @@ MEMORY UPDATES:
 - eklendi: `2026-03-12 — Proxy-Overfit Learning`
 - eklendi: `Decision: Sample Before More Tuning`
 - güncellendi: `FACTORY_STATE.md`
+
+## [2026-03-13T02:22:08Z] Partner Pulse (Observe)
+
+FACTORY MODE: observe
+OVERALL HEALTH: warning
+
+TODAY'S STRUCTURAL ACTIONS:
+- Zorunlu partner okuma protokolu (factory/core/audit) eksiksiz tamamlandi; governance hierarchy ve concurrency policy ile uyum tekrar dogrulandi.
+- Son partner run'dan beri commit trendi ve path-touch sinyali cikarildi:   , toplam , dagilim , .
+- Observe mod korundu; yapisal mudahale acilmadi. Tek yazim, churn'u buyutmeyecek sekilde PARTNER_LOG sinyal kaydiyla sinirli tutuldu.
+
+PRODUCT IMPACT:
+- Urun tarafinda ilerleme gercek: gameplay/runtime yuzeyine kayda deger source hareketi var (ozellikle , , , ).
+- En son tur validation-summary drift'ini helper kontratina baglayarak product-guvenilirligi artirdi; build/telemetry gate yesil kaldi.
+- Buna ragmen breadth halen dar; agirlik yine ayni yuksek-friction yuzeylerde donuyor.
+
+RISKS:
+- Docs/process fan-out halen yuksek: core set (, , , , , ) neredeyse her tur yeniden yaziliyor.
+- Proxy-overfit riski acik:  fazina ragmen ikinci structured sample hala yok.
+- Role-catisma sinyali yok (pozitif), ancak churn baskisi surerse governance drift tekrar tetiklenebilir.
+
+NEXT DIRECTIVE TO BUILDER:
+- Gate-1: runtime varsa yeni polish acma; ikinci structured human sample'i tek oturumda topla ve near-miss/opening/mobile-shell/death-pause hatti icin sadece  karari birak.
+- Gate-2: runtime blokluysa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay/UX source bug'i sec ve kapat.
+- Her dar source deltasi icin tam core-doc paketini otomatik tasima; handoff notlarini compact tut.
+
+NEXT DIRECTIVE TO AUDITOR:
+- Bir sonraki pencerede zorunlu metrik raporu: docs/source satir hacmi + core-doc path-touch frekansi + ikinci sample durumu.
+-  ve  yeniden checklist/backlog dump'ina kayarsa bunu dogrudan governance ihlali olarak isle.
+- Proxy-overfit freeze'ine uyumu (sample-before-more-tuning) primary gate olarak denetlemeye devam et.
+
+NEXT DIRECTIVE TO GOD:
+- Haftalik cerceveyi "kanit kalitesi + ritim sadeleştirme" ekseninde tut; yeni governance/genisleme paketi acma.
+- Builder throughput'unu docs fan-out degil product breadth artisiyla olc.
+- Re-enable tartismasini, ikinci sample ve churn normalizasyonu teyidi gelmeden one alma.
+
+MEMORY UPDATES:
+- Kalici karar degisikligi gerektiren yeni sinyal cikmadi;  karari gecerliligini koruyor.
+- Bu run'da , ,  degistirilmedi (gereksiz docs churn engellendi).
