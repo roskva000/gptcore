@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+spawn_grace_visual_sync_integrity:
+current: Run #161 `project/game/src/game/GameScene.ts` spawn-grace obstacle'lari ortak `project/game/src/game/spawnGrace.ts` kontratiyla soluk/tintli baslatıyor ve collision gate acildigi anda tween bitisini beklemeden full alpha/scale gorunume cekiyor
+baseline: onceki source collision readiness'i elapsed time ile aciyor ama spawn-grace tween'ini kendi akışina birakiyordu; obstacle birkac frame boyunca artik lethal oldugu halde yari-soluk veya underscaled kalabiliyordu
+target: collision-ready obstacle ile gorsel sunum ayni anda senkron kalsin; yeni headed sample'da hit okunurlugu daha durust hissedilsin ama threat ciddiyeti oyuncaklasmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_threat_crowding_integrity:
 current: Run #160 `project/game/src/game/spawn.ts` projected-path reference'a yakin gorunur threat cluster'i ayni approach lane'i dolduruyorsa yeni `threat crowding` cezasi ile spawn'i alternatif corridor'a reroll ediyor
 baseline: onceki source broad lane-stack penalty kullaniyordu ama cok yakin gorunur tehditler ayni projected corridor'u zaten bastiginda bile "yeterince uzak" ilk spawn pozitif skorda kalabiliyor, acilis reaksiyon penceresini gereksiz daraltabiliyordu

@@ -14,6 +14,7 @@ import {
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
+import { getSpawnGraceVisualState } from '../src/game/spawnGrace.ts';
 import {
   createNearMissState,
   evaluateNearMiss,
@@ -195,6 +196,24 @@ assert.equal(
   shouldHandlePrimaryActionPointer({ button: 1 }),
   false,
   'Middle-click should not trigger primary actions.',
+);
+assert.deepEqual(
+  getSpawnGraceVisualState(false),
+  {
+    alpha: 0.58,
+    scale: 0.88,
+    tint: 0xffd6cf,
+  },
+  'Spawn-grace obstacles should stay visibly softened until their collision gate opens.',
+);
+assert.deepEqual(
+  getSpawnGraceVisualState(true),
+  {
+    alpha: 1,
+    scale: 1,
+    tint: null,
+  },
+  'Collision-ready obstacles should return to their full-strength visual state immediately.',
 );
 assert.equal(
   shouldHandlePrimaryActionPointer({

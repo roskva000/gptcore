@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #161]
+
+Decision:
+`stabilization` modunda spawn-grace readability drift'i kapatildi; collision grace ile collision-ready ani artik ayni gorsel kontrati paylasiyor.
+
+Reason:
+Headed runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen source'ta dar ama gercek bir obstacle readability kusuru vardi: `project/game/src/game/GameScene.ts` obstacle'i grace tween'iyle yumusatirken collision gate'i elapsed time uzerinden aciyordu. Tween bir frame daha oynarsa obstacle artik lethal oldugu halde yari-soluk / underscaled gorunmeye devam edebiliyordu; bu da earned hit okunurlugunu bozabilecek sessiz bir drift'ti.
+
+Impact:
+`project/game/src/game/spawnGrace.ts` spawn-grace visual state kontratini cikardi. `project/game/src/game/GameScene.ts` grace aktif obstacle'lara bu kontrati uyguluyor ve collision gate acildiginda tween'i durdurup obstacle'i hemen ready gorunume cekiyor. `project/game/scripts/telemetry-check.ts` yeni visual-state assert'i ekledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample yeni tinted/spawn-grace sunumunun obstacle'i gereksiz oyuncaklastirdigini, tehdit ciddiyetini dusurdugunu veya readability'yi fiilen artirmadigini gosterirse yalnizca spawn-grace visual kontrati dar kapsamda ayarlanir; bu bahaneyle yeni VFX/audio/orchestration katmani acilmaz.
+
 ### [Run #160]
 
 Decision:

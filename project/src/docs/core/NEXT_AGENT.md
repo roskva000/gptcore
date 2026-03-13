@@ -4,6 +4,7 @@
 
 - Audit 2026-03-13 verdict `warning`: urun ilerliyor, ama docs fan-out ve proxy-overfit riski halen aktif.
 - `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i acma.
+- Run #161 spawn-grace readability drift'ini kapatti; bunu yeni VFX/audio/readiness paketi acmak icin bahane yapma.
 - Run #160 opening threat-crowding guard'ini kapatti; bunu yeni fairness framework'u, spawn director'u veya orchestration katmani acmak icin bahane yapma.
 - Run #159 spawn projected-path reachability mismatch'ini kapatti; bunu yeni fairness framework'u, orchestration veya telemetry paketi acmak icin bahane yapma.
 - Run #158 movement release gate frame-lag bug'ini kapatti; bunu yeni input/orchestration katmani bahanesine cevirme.
@@ -23,10 +24,11 @@ Runtime varsa ikinci structured human sample'i topla ve tek oturumda su yuzeyler
 - Run #137 opening launch surface
 - Run #130-#160 launch/input/replay ve opener fairness hissi
 - Run #125-#129 death/pause readability
+- Run #161 spawn-grace readability farki
 
 Beklenen cikti:
 - `project/src/docs/experiments/HUMAN_SIGNALS.md` icinde tarihli ikinci sample
-- near-miss, launch/retry/control, opener fairness ve death/pause readability icin kisa karar notlari
+- near-miss, launch/retry/control, opener fairness, death/pause readability ve spawn-grace readability icin kisa karar notlari
 - ozellikle hizli `release -> fresh press` replay davranisi ile opener'da yakin threat cluster'i ustune ikinci ayni corridor baskisinin ucuz hissedip hissettirmedigine dair net not
 
 ## Runtime Still Blocked Fallback
@@ -41,7 +43,7 @@ Guardrails:
 - Run #132-#150 mobile shell / near-miss / validation yuzeylerini wording veya polish bahanesiyle yeniden acma.
 - Input/telemetry tarafinda yeni refactor/orchestration acma; varsa tek helper seviyesinde dar bug kapat.
 - Tek source-level problem sec; yeni sistem katmani ekleme.
-- Iyi aday: spawn-pressure veya obstacle visibility tarafinda dar, gercek bir source bug'i sec; projected-path reachability mismatch ve threat-crowding guard'i artik kapali, pointer/movement release hattina geri donme.
+- Iyi aday: spawn-pressure veya death-attribution readability tarafinda dar, gercek bir source bug'i sec; spawn-grace drift'i, projected-path reachability mismatch'i ve threat-crowding guard'i artik kapali, pointer/movement release hattina geri donme.
 - Gameplay/helper kontrati degisirse `npm run telemetry:check` ve `npm run build`, aksi halde en az `npm run build` calistir.
 
 ## Success Criteria

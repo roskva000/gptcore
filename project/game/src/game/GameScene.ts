@@ -66,6 +66,11 @@ import {
   shouldHandlePrimaryActionKey,
   shouldRequirePointerReleaseAfterPause,
 } from './primaryAction.ts';
+import {
+  getSpawnGraceVisualState,
+  SPAWN_GRACE_INITIAL_ALPHA,
+  SPAWN_GRACE_INITIAL_SCALE,
+} from './spawnGrace.ts';
 
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
@@ -1145,6 +1150,21 @@ export class GameScene extends Phaser.Scene {
     return getObstacleSpeed(this.getCurrentSurvivalTimeSeconds());
   }
 
+  private applySpawnGraceVisualState(
+    obstacle: Phaser.Physics.Arcade.Image,
+    collisionReady: boolean,
+  ): void {
+    const visualState = getSpawnGraceVisualState(collisionReady);
+    obstacle.setAlpha(visualState.alpha).setScale(visualState.scale);
+
+    if (visualState.tint === null) {
+      obstacle.clearTint();
+      return;
+    }
+
+    obstacle.setTint(visualState.tint);
+  }
+
   private spawnObstacle(): void {
     // Timer callbacks can fire before the next update tick; reclaim stale offscreen entries first.
     this.cullObstacles();
@@ -1180,11 +1200,9 @@ export class GameScene extends Phaser.Scene {
       .setActive(true)
       .setVisible(true)
       .clearTint()
-      .setAlpha(1)
       .setDepth(OBSTACLE_DEPTH)
       .setPosition(spawnPoint.x, spawnPoint.y)
       .setCircle(OBSTACLE_COLLISION_RADIUS)
-      .setScale(1)
       .setVelocity(0, 0);
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
@@ -1213,6 +1231,7 @@ export class GameScene extends Phaser.Scene {
     obstacle.setData('nearMissState', createNearMissState());
     obstacle.setData('spawnGraceTween', null);
     obstacle.setVelocity(velocity.x, velocity.y);
+    this.applySpawnGraceVisualState(obstacle, collisionGraceMs === 0);
 
     if (collisionGraceMs === 0) {
       return;
@@ -1220,13 +1239,14 @@ export class GameScene extends Phaser.Scene {
 
     const spawnGraceTween = this.tweens.add({
       targets: obstacle,
-      alpha: { from: 0.58, to: 1 },
-      scaleX: { from: 0.88, to: 1 },
-      scaleY: { from: 0.88, to: 1 },
+      alpha: { from: SPAWN_GRACE_INITIAL_ALPHA, to: 1 },
+      scaleX: { from: SPAWN_GRACE_INITIAL_SCALE, to: 1 },
+      scaleY: { from: SPAWN_GRACE_INITIAL_SCALE, to: 1 },
       duration: collisionGraceMs,
       ease: 'Quad.Out',
       onComplete: () => {
         obstacle.setData('spawnGraceTween', null);
+        this.applySpawnGraceVisualState(obstacle, true);
       },
     });
     obstacle.setData('spawnGraceTween', spawnGraceTween);
@@ -1337,6 +1357,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     obstacle.setData('collisionReady', true);
+    const spawnGraceTween = obstacle.getData('spawnGraceTween') as Phaser.Tweens.Tween | null;
+    spawnGraceTween?.stop();
+    obstacle.setData('spawnGraceTween', null);
+    this.applySpawnGraceVisualState(obstacle, true);
     return true;
   }
 

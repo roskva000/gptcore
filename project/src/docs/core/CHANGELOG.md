@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #161
+
+- `project/game/src/game/spawnGrace.ts` spawn-grace obstacle sunumu icin ortak visual-state kontrati ekledi
+- `project/game/src/game/GameScene.ts` collision grace aktif obstacle'lari soluk/tintli baslatip collision gate acildigi anda tween'i durdurarak tam gorunume cekiyor; lethal state ile yari-grace gorunum arasindaki frame drift kapandi
+- `project/game/scripts/telemetry-check.ts` spawn-grace visual state regression assert'i ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #160
 
 - `project/game/src/game/spawn.ts` opening spawn secimine projected-path `threat crowding` cezasi ekledi; gorunur yakin threat cluster'i ayni approach lane'i zaten dolduruyorsa ikinci ayni corridor girisi daha sert reroll ediliyor
