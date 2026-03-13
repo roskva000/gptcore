@@ -1428,7 +1428,7 @@ export class GameScene extends Phaser.Scene {
     const reachedSurvivalGoal = hasReachedSurvivalGoal(this.survivalTime);
     const previousBestSurvivalTime = getBestSurvivalTime(this.telemetry);
     const isNewBest =
-      previousBestSurvivalTime === null || roundedSurvivalTime > previousBestSurvivalTime;
+      previousBestSurvivalTime === null || this.survivalTime > previousBestSurvivalTime;
     const goalClearSummary = reachedSurvivalGoal
       ? `${SURVIVAL_GOAL_SECONDS}s clear.`
       : null;
@@ -2267,50 +2267,51 @@ export class GameScene extends Phaser.Scene {
   }
 
   private recordRunEnd(): void {
-    const roundedSurvivalTime = Number(this.survivalTime.toFixed(1));
+    const survivalTime = this.survivalTime;
+    const roundedSurvivalTime = Number(survivalTime.toFixed(1));
 
     this.telemetry.totalDeaths += 1;
-    this.telemetry.totalSurvivalTime += roundedSurvivalTime;
-    this.telemetry.bestSurvivalTime = Math.max(this.telemetry.bestSurvivalTime ?? 0, roundedSurvivalTime);
+    this.telemetry.totalSurvivalTime += survivalTime;
+    this.telemetry.bestSurvivalTime = Math.max(this.telemetry.bestSurvivalTime ?? 0, survivalTime);
     this.telemetry.firstDeathTime = getLowestDeathTime(
       this.telemetry.firstDeathTime,
-      roundedSurvivalTime,
+      survivalTime,
     );
     this.telemetry.lastDeathAt = Date.now();
-    this.telemetry.lastSurvivalTime = roundedSurvivalTime;
+    this.telemetry.lastSurvivalTime = survivalTime;
     this.telemetry.lastRunSpawnRerolls = this.runSpawnRerolls;
     this.telemetry.totalSpawnRerolls += this.runSpawnRerolls;
 
-    if (roundedSurvivalTime < TARGET_FIRST_DEATH_SECONDS) {
+    if (survivalTime < TARGET_FIRST_DEATH_SECONDS) {
       this.telemetry.earlyDeathsUnderTarget += 1;
     }
 
     this.telemetry.recentDeathTimes = [
-      roundedSurvivalTime,
+      survivalTime,
       ...this.telemetry.recentDeathTimes,
     ].slice(0, TELEMETRY_RECENT_RUN_LIMIT);
 
     this.sessionTelemetry.totalDeaths += 1;
-    this.sessionTelemetry.totalSurvivalTime += roundedSurvivalTime;
+    this.sessionTelemetry.totalSurvivalTime += survivalTime;
     this.sessionTelemetry.bestSurvivalTime = Math.max(
       this.sessionTelemetry.bestSurvivalTime ?? 0,
-      roundedSurvivalTime,
+      survivalTime,
     );
     this.sessionTelemetry.firstDeathTime = getLowestDeathTime(
       this.sessionTelemetry.firstDeathTime,
-      roundedSurvivalTime,
+      survivalTime,
     );
     this.sessionTelemetry.lastDeathAt = this.telemetry.lastDeathAt;
-    this.sessionTelemetry.lastSurvivalTime = roundedSurvivalTime;
+    this.sessionTelemetry.lastSurvivalTime = survivalTime;
     this.sessionTelemetry.lastRunSpawnRerolls = this.runSpawnRerolls;
     this.sessionTelemetry.totalSpawnRerolls += this.runSpawnRerolls;
 
-    if (roundedSurvivalTime < TARGET_FIRST_DEATH_SECONDS) {
+    if (survivalTime < TARGET_FIRST_DEATH_SECONDS) {
       this.sessionTelemetry.earlyDeathsUnderTarget += 1;
     }
 
     this.sessionTelemetry.recentDeathTimes = [
-      roundedSurvivalTime,
+      survivalTime,
       ...this.sessionTelemetry.recentDeathTimes,
     ].slice(0, TELEMETRY_RECENT_RUN_LIMIT);
 

@@ -822,6 +822,20 @@ assert.equal(
   'Validation export should report only completed runs even if a fresh start increased totalRuns beyond totalDeaths.',
 );
 assert.equal(
+  buildValidationReport({
+    ...createEmptyTelemetry(),
+    totalRuns: 1,
+    totalDeaths: 1,
+    totalSurvivalTime: 9.96,
+    bestSurvivalTime: 9.96,
+    firstDeathTime: 9.96,
+    earlyDeathsUnderTarget: 1,
+    lastSurvivalTime: 9.96,
+  }),
+  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early',
+  'Telemetry exports should keep under-10s deaths flagged even when UI-facing times round up to 10.0s.',
+);
+assert.equal(
   getCompletedRunCount({
     ...createEmptyTelemetry(),
     totalRuns: 6,

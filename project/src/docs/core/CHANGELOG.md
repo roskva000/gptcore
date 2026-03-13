@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #156
+
+- `project/game/src/game/GameScene.ts` completed run telemetry'sinde ham `survivalTime` yazmaya basladi; `best`, `first death`, `last run`, `recent deaths`, `avg survival` ve `<10s` early-death sayaci artik display rounding ile yumusamiyor
+- ayni dosya game-over `New best` kararini da ham runtime sureye bagladi; `9.96s` gibi run'lar UI'da `10.0s` gorunse bile validation/progress truth'unu erken iyilestirmiyor
+- `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile `9.96s` run'in report'ta `10.0s` gorunurken halen `%100 early` sayilmasini kilitledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #155
 
 - `project/game/src/game/primaryAction.ts` direct pointer primary-action press'i fresh-release gate'iyle yorumlayan `shouldAllowPointerPrimaryActionPress()` helper'ini ekledi

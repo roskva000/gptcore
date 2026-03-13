@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+telemetry_threshold_truth_integrity:
+current: Run #156 `project/game/src/game/GameScene.ts` completed run telemetry'sini ham `survivalTime` ile yaziyor; `best`, `first death`, `last run`, `recent deaths`, `avg survival` ve `<10s` early-death sayaci artik display rounding yerine gercek olume bagli
+baseline: onceki source run sonunda `toFixed(1)` ile yuvarlanmis sureyi telemetry/session telemetry icine yaziyordu; `9.96s` gibi gercekte `<10s` olan olumler UI/export'ta `10.0s` gorunurken early-death ve threshold truth'unu sessizce yumusatabiliyordu
+target: validation/export ve game-over progress metni tek ondalik gosterimde kalirken under-target death'ler, best ve first-death truth'u ham runtime sureye sadik kalsin; yeni sample veya sonraki telemetry bug'leri bu kontrati bozmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 pointer_replay_release_integrity:
 current: Run #155 `project/game/src/game/primaryAction.ts` direct pointer primary-action press'ini fresh-release gate'ine bagliyor; `project/game/src/game/GameScene.ts` game-over/pause `pointerdown` yolu artik held replay/resume guard'ini atlamiyor
 baseline: onceki source `gameOverRetryNeedsPointerRelease` ve `pauseResumeNeedsPointerRelease` guard'larini held-input yolunda uyguluyor, ama direct `pointerdown` aktivasyonu bu release beklentisini atlayabiliyordu; death-time held touch/click kazara ani restart'a sizabilirdi

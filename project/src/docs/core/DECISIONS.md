@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #156]
+
+Decision:
+Completed-run telemetry `stabilization` modunda ham survival time truth'una geri baglandi; runtime metrikleri artik display rounding yuzunden threshold'lari oldugundan iyi gostermiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/readability koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen source'ta dar ama gercek bir integrity kusuru vardi: `project/game/src/game/GameScene.ts` completed run telemetry'sini `toFixed(1)` ile yuvarlanmis sure uzerinden kaydediyordu. Bu da `9.96s` gibi gercekte `<10s` olan olumleri validation/export ve progress tarafinda `10.0s` gibi gosterebilir, early-death ve best/first-death truth'unu sessizce yumusatabilirdi.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik telemetry/session telemetry alanlarina ham `survivalTime` yaziyor; `best`, `first death`, `last run`, `recent deaths`, `avg survival` ve under-target sayaci gercek runtime sure uzerinden ilerliyor. UI ve export metni yine tek ondalik gosterimle kaliyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile `9.96s` run'in report'ta `10.0s` gorunse bile `%100 early` olarak kalmasini kilitliyor. Deterministic baseline degismedi; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Eski rounded telemetry verisiyle karisik saklama beklenmedik bir migration sorunu cikarirsa yalnizca persistence/readback seviyesi dar kapsamda normalize edilir; bu bahaneyle yeni analytics tooling, validation workflow'u veya orchestration katmani acilmaz.
+
 ### [Run #155]
 
 Decision:
