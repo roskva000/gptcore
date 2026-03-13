@@ -1,12 +1,12 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Spawn columns stop confusing cross-edge drift with true entry pressure',
+  title: 'Spawn columns stop treating corner drift as a new entry lane',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed one narrow opener-readability bug instead of opening a new system: same-edge spawn-column rerolls now carry each obstacle\'s real entry edge, so a threat that drifted near another border no longer pretends to occupy that new spawn corridor.',
+    'The latest builder pass stayed in stabilization mode and closed one narrow opener-readability bug instead of opening a new system: same-edge spawn-column rerolls now stop treating a left-entry threat as fresh top-entry pressure after it has drifted far enough into the corner that top became its dominant edge.',
   bullets: [
-    'A left-entry obstacle sliding near the top edge no longer scares the spawn selector out of a safe top-entry lane just because its current position hugs the border.',
-    'The same-edge cluster guard still protects against fully visible column stacking and true corner-sharing pressure; only the cross-edge drift false positive was removed.',
-    'A new deterministic regression locks this edge-origin case so the opener readability fix does not quietly drift back.',
+    'A left-entry obstacle that has actually become top-dominant near the corner no longer scares the spawn selector out of a safe top-entry lane.',
+    'True top-entry corner pressure still blocks the adjacent left-entry corridor while top remains the obstacle\'s dominant edge, so the opener guard does not collapse into a free-corner loophole.',
+    'New deterministic regressions lock both halves of that rule so the corner-drift false positive does not quietly return.',
     'Deterministic checks still pass at 26.5s average / 6.3s first death / 4% early; the next missing proof is a headed human sample for opener fairness, near-miss feel, and death/pause readability.',
   ],
   footer:

@@ -380,9 +380,11 @@ const doesObstacleOccupySpawnEdge = (
     return true;
   }
 
+  const dominantEdge = getClosestArenaEdge(obstaclePosition);
+
   return (
     obstaclePosition.spawnEdge === spawnEdge ||
-    sharesSpawnEdge(obstaclePosition, obstaclePosition.spawnEdge)
+    dominantEdge === obstaclePosition.spawnEdge
   );
 };
 

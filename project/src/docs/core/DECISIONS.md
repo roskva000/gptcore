@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #171]
+
+Decision:
+`stabilization` modunda same-edge spawn-column guard'inin corner-drift false-positive kusuru kapatildi; origin metadata'si olan obstacle, dominant edge'i origin'den koptuktan sonra yeni adjacent edge'i occupied saydirmiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina sample olmadan donmeyi yasakliyor. Spawn/readability hattinda ise dar ama gercek bir source kusuru kalmisti: Run #170 soldan gelip tavana yakin kayan obstacle'in top-entry corridor'unu sahte sekilde kapatmasini durdurdu, fakat same-edge guard koseye kadar kayan varyantta hala `corner-sharing` semantigine takilip obstacle dominant edge'i artik top oldugu halde yeni top spawn'i reroll edebiliyordu. Bu, origin bilgisi tasinmasina ragmen adjacent-edge baskisini dominant edge degisiminden sonra fazla uzun sure hayatta tutan dar bir readability drift'iydi.
+
+Impact:
+`project/game/src/game/spawn.ts` artik `spawnEdge` metadata'si olan aktif obstacle icin adjacent edge baskisini yalniz dominant mevcut edge halen origin edge ile ayniysa koruyor. Boylece left-origin obstacle top-dominant corner drift'e donunce top spawn serbest kaliyor; true top-origin corner-share baskisi ise korunuyor. `project/game/scripts/telemetry-check.ts` iki yeni regression assert'i ile bu iki davranisi birlikte kilitledi. `project/game/src/latestRun.ts` bu runtime-facing delta ile guncellendi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample dominant-edge filtresinin gercek corner baskisini fazla erken dusurdugunu gosterirse yalnizca adjacent-edge occupancy semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #170]
 
 Decision:

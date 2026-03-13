@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_corner_drift_origin_integrity:
+current: Run #171 `project/game/src/game/spawn.ts` same-edge spawn-column guard'inda origin metadata'si olan obstacle'i adjacent edge baskisi saymadan once dominant mevcut edge'inin halen origin ile ayni olup olmadigini kontrol ediyor
+baseline: Run #170 soldan gelip tavana yakin kayan threat'in top-entry corridor'unu sahte sekilde kapatmasini durdurmustu, fakat obstacle koseye kadar kayip top edge baskin hale gelse bile `corner-sharing` semantigi yeni top spawn'i gereksiz reroll edebiliyordu
+target: origin-edge guard'i gercek top-origin corner baskisini korurken, dominant edge'i baska kenara kaymis cross-edge threat'i yeni corridor baskisi gibi saymasin; headed sample challenge'i bosaltmadan daha durust lane okunurlugu gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_cross_edge_drift_origin_integrity:
 current: Run #170 `project/game/src/game/spawn.ts` aktif obstacle'lara opsiyonel `spawnEdge` metadata'si tasiyor ve same-edge spawn-column guard'i artik yalniz mevcut pozisyonu degil gercek entry edge'i de okuyarak cross-edge drift false-positive'lerini kapatiyor
 baseline: onceki source soldan/sagdan dogup baska bir kenara yakin kayan obstacle'i yalniz mevcut konumuna gore yorumluyor, bu da gercekte o corridor'dan gelmemis threat'in yeni top/left/right/bottom spawn'ini sahte sekilde reroll etmesine yol acabiliyordu

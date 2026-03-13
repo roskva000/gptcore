@@ -569,6 +569,40 @@ assert.deepEqual(
   'Same-edge spawn-column rerolls should not treat a left-entry obstacle that merely drifted near the top edge as if it still occupied the top-entry corridor.',
 );
 
+const crossEdgeCornerDriftSameEdgeClusterSelection = selectSpawnPoint({
+  survivalTimeSeconds: 3,
+  playerPosition: { x: 180, y: 280 },
+  playerVelocity: { x: 0, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 20, y: 20, spawnEdge: 'left' }],
+  randomInt: createQueuedRandom([0, 12, 1, 400]),
+});
+assert.deepEqual(
+  crossEdgeCornerDriftSameEdgeClusterSelection,
+  {
+    point: { x: 12, y: -56 },
+    rerollsUsed: 0,
+  },
+  'Same-edge spawn-column rerolls should stop treating a left-entry obstacle as top-entry pressure once its dominant edge has drifted to the top corner.',
+);
+
+const originDominantCornerShareSelection = selectSpawnPoint({
+  survivalTimeSeconds: 3,
+  playerPosition: { x: 180, y: 280 },
+  playerVelocity: { x: 0, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 20, y: 12, spawnEdge: 'top' }],
+  randomInt: createQueuedRandom([3, 12, 1, 400]),
+});
+assert.deepEqual(
+  originDominantCornerShareSelection,
+  {
+    point: { x: 856, y: 400 },
+    rerollsUsed: 1,
+  },
+  'Same-edge spawn-column rerolls should still treat a true top-entry corner threat as occupying the adjacent left-entry corridor while top remains its dominant edge.',
+);
+
 const crossEdgeCornerSelection = selectSpawnPoint({
   survivalTimeSeconds: 3,
   playerPosition: { x: 180, y: 280 },

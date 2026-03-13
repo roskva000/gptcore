@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #171
+
+- `project/game/src/game/spawn.ts` same-edge spawn-column guard'ina dominant-edge kontrolu ekledi; origin metadata'si olan obstacle corner'da baska bir edge baskin hale geldiyse yeni adjacent spawn corridor'unu sahte sekilde occupied saymiyor
+- `project/game/scripts/telemetry-check.ts` iki yeni regression case'i ile left-entry obstacle top-dominant corner drift'e donunce top spawn'in korunmasini ve true top-origin corner-share baskisinin korunmasini birlikte kilitledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu opener readability deltasiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #170
 
 - `project/game/src/game/spawn.ts` same-edge spawn-column guard'ina obstacle origin-edge context'i ekledi; soldan gelip baska kenara yakin drift eden threat artik yeni corridor'u sahte sekilde occupied saydirmiyor

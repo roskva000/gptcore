@@ -4,6 +4,7 @@
 
 - Audit 2026-03-13 verdict `warning`: urun ilerliyor, ama docs fan-out ve proxy-overfit riski halen aktif.
 - `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i acma.
+- Run #171 same-edge spawn-column guard'inin corner-drift false-positive bug'ini kapatti; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
 - Run #170 same-edge spawn-column guard'inin cross-edge drift false-positive bug'ini kapatti; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
 - Run #169 same-edge spawn-column guard'inin partial-entry false-positive bug'ini kapatti; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
 - Run #168 same-edge spawn-column guard'inin offscreen pre-entry false-positive bug'ini kapatti; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
@@ -32,7 +33,7 @@ Runtime varsa ikinci structured human sample'i topla ve tek oturumda su yuzeyler
 - Run #145-#150 near-miss pulse / restore / chirp hissi
 - Run #137 opening launch surface
 - Run #130-#160 launch/input/replay ve opener fairness hissi
-- Run #165-#170 spawn readability guard'larinin challenge'i bosaltmadan lane okunurlugunu arttirip arttirmadigi
+- Run #165-#171 spawn readability guard'larinin challenge'i bosaltmadan lane okunurlugunu arttirip arttirmadigi
 - Run #125-#129 death/pause readability
 - Run #161 spawn-grace readability farki
 - Run #162 centered death direction anlatimi
@@ -49,6 +50,7 @@ Beklenen cikti:
 - ozellikle kenari yeni gecmis ama collider'i tam iceri girmemis ayni-edge threat'in artik erken occupied hissi uretmeyip uretmedigine dair net not
 - ozellikle koseye oturan obstacle'larin ayni entry edge'i gereksiz daraltmadan ama gercekten paylastigi lane'i de kacirmadan davranip davranmadigina dair net not
 - ozellikle koseye yakin farkli edge threat'lerin artik ust/alt spawn column'unu gereksiz cezalandirip cezalandirmadigina dair net not
+- ozellikle corner'a kadar kaymis ama dominant edge'i origin'den kopmus threat'lerin artik yeni adjacent corridor'u sahte sekilde occupied saydirip saydirmadigina dair net not
 - centered overlap olumlerinde yeni yon bilgisinin gercekten daha yardimci mi yoksa fazla iddiali mi hissettirdigine dair net not
 - centered multi-hit overlap'larda fatal lane/callout'un artik daha dogru obstacle'i sectigine dair net not
 
@@ -65,13 +67,14 @@ Guardrails:
 - Run #164 panel sync fix'ini yeni copy/cms/panel orchestration isine cevirmeme.
 - Run #169 partial-entry same-edge fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #170 drift-origin same-edge fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
+- Run #171 corner-drift same-edge fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #168 offscreen same-edge pre-entry fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #167 corner-sharing same-edge fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #166 cross-edge corner false-positive fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #165 same-edge spawn-column fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Input/telemetry tarafinda yeni refactor/orchestration acma; varsa tek helper seviyesinde dar bug kapat.
 - Tek source-level problem sec; yeni sistem katmani ekleme.
-- Iyi aday: spawn-pressure veya obstacle readability tarafinda dar, gercek bir source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace drift'i, projected-path reachability mismatch'i, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin varyantlari artik kapali, pointer/movement release hattina geri donme.
+- Iyi aday: spawn-pressure veya obstacle readability tarafinda dar, gercek bir source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace drift'i, projected-path reachability mismatch'i, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift varyantlari artik kapali, pointer/movement release hattina geri donme. Seed `#3` outlier'inda halen `0` reroll ile gecen spawn-pressure kusuru iyi fallback adayidir.
 - Gameplay/helper kontrati degisirse `npm run telemetry:check` ve `npm run build`, aksi halde en az `npm run build` calistir.
 
 ## Success Criteria
