@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #158
+
+- `project/game/src/game/primaryAction.ts` movement fresh-press ve release-clear semantigini saf helper'lara tasidi
+- `project/game/src/game/GameScene.ts` movement key `keyup` aninda tum movement tuslari kalktiysa replay/resume release guard'larini ve `movementInputWasActive` state'ini hemen temizliyor; quick `release -> fresh key press` retry/resume artik ekstra update tick beklemiyor
+- `project/game/scripts/telemetry-check.ts` movement release-clear regression assert'leri ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #157
 
 - `project/game/src/game/primaryAction.ts` pointer release sonrasi replay/resume gate'inin temizlenip temizlenmeyecegini saf helper ile yorumlayan `shouldClearPointerReleaseRequirement()` fonksiyonunu ekledi

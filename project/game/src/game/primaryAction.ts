@@ -4,6 +4,15 @@ export const shouldHandlePrimaryActionKey = (
   event?: Pick<KeyboardEvent, 'repeat'> | null,
 ): boolean => !event?.repeat;
 
+export const hasFreshMovementInput = (
+  movementInputActive: boolean,
+  movementInputWasActive: boolean,
+): boolean => movementInputActive && !movementInputWasActive;
+
+export const shouldClearMovementReleaseRequirement = (
+  movementInputActive: boolean,
+): boolean => !movementInputActive;
+
 export const shouldHandlePrimaryActionPointer = (
   pointer?: Pick<Phaser.Input.Pointer, 'button' | 'event' | 'wasTouch'> | null,
 ): boolean => {

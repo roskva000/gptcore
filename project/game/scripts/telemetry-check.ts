@@ -21,9 +21,11 @@ import {
   isNearMissHintActive,
 } from '../src/game/nearMiss.ts';
 import {
+  hasFreshMovementInput,
   isPrimaryPointerDown,
   shouldRequirePointerReleaseAfterPause,
   shouldAllowPointerPrimaryActionPress,
+  shouldClearMovementReleaseRequirement,
   shouldClearPointerReleaseRequirement,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
@@ -148,6 +150,26 @@ assert.equal(
   shouldHandlePrimaryActionKey(),
   true,
   'Primary action keys should still work for fresh Space/Enter presses.',
+);
+assert.equal(
+  hasFreshMovementInput(true, false),
+  true,
+  'A fresh movement press should be recognized immediately after all movement keys were released.',
+);
+assert.equal(
+  hasFreshMovementInput(true, true),
+  false,
+  'Held movement should not be misread as a fresh press every frame.',
+);
+assert.equal(
+  shouldClearMovementReleaseRequirement(false),
+  true,
+  'Movement release should clear replay/resume release gates immediately when no movement key remains held.',
+);
+assert.equal(
+  shouldClearMovementReleaseRequirement(true),
+  false,
+  'Movement release gates must stay armed while at least one movement key is still held.',
 );
 assert.equal(
   shouldHandlePrimaryActionKey({ repeat: false }),

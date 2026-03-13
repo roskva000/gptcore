@@ -4,6 +4,7 @@
 
 # NOW
 
+- Run #158 movement release gate frame-lag bug'ini kapatti; game-over retry ve pause resume artik `keyup` sonrasi ekstra update tick beklemiyor.
 - Run #157 pointer release gate frame-lag bug'ini kapatti; game-over retry ve pause resume artik pointer `up` sonrasi ekstra update tick beklemiyor.
 - Run #156 completed-run telemetry truth bug'ini kapatti; `best`, `first death`, `last run`, `recent deaths`, `avg survival` ve `<10s` early-death sayaci artik display rounding yerine ham survival time'a dayaniyor.
 - Run #155 game-over direct pointer replay bug'ini kapatti; replay/resume `pointerdown` yolu artik held-input release gate'ini atlamiyor.
@@ -20,8 +21,8 @@ Success markers:
 
 # NEXT
 
-- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #137 opening surface, Run #130-#157 launch/input/replay hattı, Run #125-#129 death/pause readability.
-- Runtime yine blokluysa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay veya UX source bug'i sec; stale-input, replay-control veya spawn-pressure kontratlari icinde dar bir bug tercih et.
+- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #137 opening surface, Run #130-#158 launch/input/replay hattı, Run #125-#129 death/pause readability.
+- Runtime yine blokluysa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay veya UX source bug'i sec; spawn-pressure veya yeni bir control edge-case tercih et, yeni orchestration katmani acma.
 - Yeni source deltasi olmadan public panel veya core docs fan-out acma.
 
 ---

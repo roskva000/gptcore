@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+movement_release_gate_frame_integrity:
+current: Run #158 `project/game/src/game/GameScene.ts` movement key `keyup` aninda tum movement tuslari kalkmissa `movementInputWasActive`, held-action zamani ve replay/resume release gate'lerini temizliyor; game-over retry ve focus-loss resume artik keyboard release sonrasi ekstra update tick beklemiyor
+baseline: onceki source movement release gate'lerini yalnizca update icindeki `!movementInputActive` yolunda dusuruyordu; hizli `release -> fresh key press` zincirinde yeni keyboard retry/resume stale release state'iyle gereksiz bloke kalabiliyordu
+target: headed desktop sample'da replay/resume ilk taze movement press'te acilsin; accidental restart veya held-input sizintisi geri donmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 pointer_release_gate_frame_integrity:
 current: Run #157 `project/game/src/game/GameScene.ts` pointer `up` aninda pointer hold state'i ile replay/resume release gate'lerini temizliyor; game-over retry ve focus-loss pause resume artik eski hold birakildiktan sonra ekstra update tick beklemiyor
 baseline: onceki source release gate'lerini yalnizca update icindeki `!isPrimaryPointerDown(...)` yolunda dusuruyordu; hizli `release -> fresh tap` zincirinde yeni press bir frame gec bloklu kalabiliyordu

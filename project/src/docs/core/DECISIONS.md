@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #158]
+
+Decision:
+`stabilization` modunda movement release gate frame-lag bug'i kapatildi; game-over retry ve focus-loss pause resume artik keyboard `keyup` sonrasi ekstra update tick beklemiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen source'ta pointer tarafinda kapanan kusurun movement versiyonu acik kalmisti: `project/game/src/game/GameScene.ts` movement release gate'lerini yalnizca update icindeki `!movementInputActive` yolunda dusuruyordu. Bu da tum movement tuslari bir frame icinde birakilip yeni tus tekrar basildiginda replay/resume'in stale release state'iyle gereksiz bloke kalmasina yol acabiliyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` movement fresh-press ve release-clear kontratini saf helper'lara tasidi. `project/game/src/game/GameScene.ts` movement `keyup` aninda tum movement tuslari kalkmissa `movementInputWasActive`, held-action zamani ve replay/resume release guard'larini temizliyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'leriyle bu semantigi kilitledi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed desktop sample bu degisiklikten sonra accidental restart/resume veya movement-held semantiginde yumusama gosterirse yalnizca movement release-clear semantigi dar kapsamda yeniden ayarlanir; ayni bahaneyle yeni input orchestration, mobile shell veya overlay paketi acilmaz.
+
 ### [Run #157]
 
 Decision:

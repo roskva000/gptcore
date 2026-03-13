@@ -58,8 +58,10 @@ import {
   isNearMissHintActive,
 } from './nearMiss.ts';
 import {
+  hasFreshMovementInput,
   isPrimaryPointerDown,
   shouldAllowPointerPrimaryActionPress,
+  shouldClearMovementReleaseRequirement,
   shouldClearPointerReleaseRequirement,
   shouldHandlePrimaryActionKey,
   shouldRequirePointerReleaseAfterPause,
@@ -109,6 +111,16 @@ const CAPTURED_GAMEPLAY_KEYS = [
   Phaser.Input.Keyboard.KeyCodes.S,
   Phaser.Input.Keyboard.KeyCodes.D,
 ];
+const MOVEMENT_KEY_UP_EVENTS = [
+  'keyup-UP',
+  'keyup-DOWN',
+  'keyup-LEFT',
+  'keyup-RIGHT',
+  'keyup-W',
+  'keyup-A',
+  'keyup-S',
+  'keyup-D',
+] as const;
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -174,6 +186,18 @@ export class GameScene extends Phaser.Scene {
     this.pointerSteeringNeedsRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.gameOverRetryNeedsPointerRelease = false;
+  };
+  private readonly handleMovementRelease = (): void => {
+    const movementInputActive = this.hasMovementInput();
+
+    if (!shouldClearMovementReleaseRequirement(movementInputActive)) {
+      return;
+    }
+
+    this.movementHoldActionStartedAt = null;
+    this.movementInputWasActive = false;
+    this.pauseResumeNeedsMovementRelease = false;
+    this.gameOverRetryNeedsMovementRelease = false;
   };
   private resetKeyboardState(): void {
     this.input.keyboard?.resetKeys();
@@ -620,6 +644,9 @@ export class GameScene extends Phaser.Scene {
     keyboard.on('keydown-R', this.handleTelemetryReset, this);
     keyboard.on('keydown-C', this.handleTelemetryLog, this);
     keyboard.on('keydown-V', this.handleValidationExport, this);
+    for (const eventName of MOVEMENT_KEY_UP_EVENTS) {
+      keyboard.on(eventName, this.handleMovementRelease, this);
+    }
     this.input.on('pointerdown', this.handlePointerPrimaryAction, this);
     this.input.on('pointerup', this.handlePointerRelease, this);
     this.input.on('pointerupoutside', this.handlePointerRelease, this);
@@ -654,7 +681,10 @@ export class GameScene extends Phaser.Scene {
 
   update(time: number): void {
     const movementInputActive = this.hasMovementInput();
-    const hasFreshMovementInput = movementInputActive && !this.movementInputWasActive;
+    const movementJustStarted = hasFreshMovementInput(
+      movementInputActive,
+      this.movementInputWasActive,
+    );
     const hasConfirmedHeldMovementInput = this.hasConfirmedHeldMovementInput(
       time,
       movementInputActive,
@@ -667,7 +697,7 @@ export class GameScene extends Phaser.Scene {
     if (
       this.phase === 'waiting' || this.phase === 'gameOver'
     ) {
-      if (hasFreshMovementInput) {
+      if (movementJustStarted) {
         this.activatePrimaryAction('movement-fresh');
       } else if (hasConfirmedHeldMovementInput) {
         this.activatePrimaryAction('movement-held');
@@ -681,7 +711,7 @@ export class GameScene extends Phaser.Scene {
       !document.hidden &&
       document.hasFocus()
     ) {
-      if (hasFreshMovementInput) {
+      if (movementJustStarted) {
         this.activatePrimaryAction('movement-fresh');
       } else if (hasConfirmedHeldMovementInput) {
         this.activatePrimaryAction('movement-held');
@@ -2638,6 +2668,9 @@ export class GameScene extends Phaser.Scene {
     this.input.keyboard?.off('keydown-R', this.handleTelemetryReset, this);
     this.input.keyboard?.off('keydown-C', this.handleTelemetryLog, this);
     this.input.keyboard?.off('keydown-V', this.handleValidationExport, this);
+    for (const eventName of MOVEMENT_KEY_UP_EVENTS) {
+      this.input.keyboard?.off(eventName, this.handleMovementRelease, this);
+    }
     this.input.keyboard?.removeCapture(CAPTURED_GAMEPLAY_KEYS);
     this.input.off('pointerdown', this.handlePointerPrimaryAction, this);
     this.input.off('pointerup', this.handlePointerRelease, this);
