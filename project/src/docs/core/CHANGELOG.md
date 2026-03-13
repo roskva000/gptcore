@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #152
+
+- `project/game/src/game/GameScene.ts` gameplay key capture listesini ortak sabite tasidi; create ve cleanup ayni key seti uzerinden calisiyor
+- ayni dosya scene shutdown/destroy sirasinda eksik kalan `pointerdown`, `keydown-SPACE`, `keydown-ENTER`, `keydown-R`, `keydown-C` ve `keydown-V` listener'larini artik temizliyor
+- keyboard capture cleanup'i de eklendi; HMR veya scene yeniden kurulumlarinda primary action ve telemetry hotkey'lerinin birikerek cift tetiklenme riski daraltildi
+- `npm run build` basarili calisti
+
 ## Run #151
 
 - `project/game/src/game/telemetry.ts` validation export hazirligini ortak `VALIDATION_SAMPLE_RUN_TARGET = 5` kontratina bagladi; `V` export artik ilk olumden sonra degil, `5` tamamlanmis run sonrasi aciliyor

@@ -4,6 +4,7 @@
 
 # NOW
 
+- Run #152 `GameScene` shutdown/destroy lifecycle'inda eksik kalan `pointerdown` ve `keydown-*` cleanup'ini kapatti; bu stabilization yuzeyini yeni lifecycle/orchestration katmanina buyutme.
 - Run #151 validation export hazirligini gercek `5-run` sample kontratina hizaladi; bu stabilization yuzeyini sample olmadan tekrar wording/tooling churn'una acma.
 - Run #150 near-miss pulse'unu hafif bir audio chirp ile destekledi; bu integration yuzeyi sample olmadan yeni reward/meta veya daha buyuk audio katmanina cevirme.
 - Run #149 near-miss pulse'un focus-loss pause/resume kesintisinde kaybolmasini kapatti; bu integration yuzeyi sample olmadan yeni reward/copy dalgasina cevirme.
@@ -51,6 +52,7 @@
 - Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
 
 Success markers:
+- HMR veya scene yeniden kurulumlarinda start/retry/resume ile telemetry hotkey'leri cift tetikleyecek acik listener birikimi kalmadi.
 - `HUMAN_SIGNALS.md` icinde Run #145-#146 near-miss pulse, Run #137 opening launch surface, Run #138 active-run focus mode, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 overlay sakinligi icin hedefli ikinci sample var, ya da runtime blokaji kisa not edilip yeni tek source bug'i kapatildi.
 - En az `npm run build` yesil kaldi; gameplay mantigi degisirse ilgili deterministic check de yeniden yesil kaldi.
 
@@ -82,6 +84,7 @@ Success markers:
 - Sample olursa ust HUD gizleme kararini da keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa pause-state chrome gizleme ve Run #128 pause copy kisalmasi kararlarini keep/tune/revert formatinda insan notuyla bagla.
 - Sample olursa Run #127 `Session snapshot` sadeleştirmesini de keep/tune/revert formatinda insan notuyla bagla.
+- Runtime yine yoksa lifecycle cleanup'i kapali tutup ayni overlay/fairness/validation koridoruna donmeden tek yeni gameplay veya mobile UX source bug'i sec.
 - Public panel copy'sini tekrar acmadan once yeni source delta veya yeni insan kaniti olsun; stale-drift bug'i yeniden uretme.
 - Sample yine yoksa Run #101-#119 zinciri disinda kalacak yeni source-level gameplay problemi ara; Run #141-#143 shell/input hattini yeni orchestration katmanlariyla buyutme.
 - Seed `#3` opener fairness paketini ancak manuel evidence veya yeni dar hipotez varsa yeniden ac.

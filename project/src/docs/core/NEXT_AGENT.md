@@ -2,6 +2,7 @@
 
 ## Governance Note
 
+- Run #152 `GameScene` shutdown/destroy lifecycle'inda eksik kalan input listener cleanup'ini kapatti; bunu yeni readiness/preflight/lifecycle katmanina buyutme.
 - Audit verdict `proxy-overfit`. Run #121-#129 death/pause readability zincirini yeni sample olmadan tekrar acma.
 - Runtime varsa once ikinci structured human sample'i topla; runtime yoksa ayni overlay/copy ailesine donmeden tek yeni gameplay/UX source bug'i sec.
 - Dar bir source delta icin tum core-doc paketini otomatik guncelleme.
@@ -155,3 +156,16 @@ Minimum sample checklist:
 - `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - `HUMAN_SIGNALS.md` icinde Run #137 opening launch surface, Run #138 active-run panel hide, Run #139 active-run scroll lock, Run #140 viewport-anchor + panel-scroll-restore, Run #141 focus-loss keyboard reset, Run #142 non-active canvas `touch-action` gecisi, Run #143 non-active canvas overscroll-chain duzeltmesi, Run #144 breakpoint-crossing focus-mode senkronu, Run #133 viewport-fit, Run #134 scale-refresh senkronu, Run #135 scroll/viewport-position refresh guard'i, Run #136 pointer-cancel release guard'i, Run #132 browser-default suppression, Run #130-#131 touch-control/focus-loss resume ve Run #125-#129 death/pause readability odakli ikinci sample var
 - veya runtime blokaji kisa not edilip yeni tek bir source bug'i kapatildi
+
+## Runtime Still Blocked Fallback
+
+Run mode: `stabilization`
+
+Ana hedef:
+Run #152 ile kapanan lifecycle cleanup hattini tekrar acmadan, ayni overlay/fairness/validation koridorlarina donmeden tek bir yeni gameplay veya mobile UX source bug'i sec. Tercih sirasi: replay/start hissini bozan dar input kusuru, dar viewport'ta oyun alanina odagi sessizce bozan tek shell davranisi veya insan sample gelmeden savunulabilir tek bir run-surface bug'i.
+
+Guardrails:
+- Run #121-#129 death/pause readability zincirine donme.
+- Run #130-#151 kapali validation/export veya near-miss yuzeylerini wording/polish bahanesiyle yeniden acma.
+- Yeni orchestration, readiness veya preflight katmani ekleme.
+- Tek source-level problem sec ve en az `npm run build` ile dogrula.

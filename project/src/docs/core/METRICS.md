@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+scene_input_listener_cleanup_integrity:
+current: Run #152 `project/game/src/game/GameScene.ts` shutdown/destroy sirasinda `pointerdown`, `keydown-SPACE`, `keydown-ENTER`, `keydown-R`, `keydown-C` ve `keydown-V` listener'larini temizliyor; gameplay keyboard capture listesi de ortak sabitten eklenip cleanup'te geri sokuluyor
+baseline: onceki source create tarafinda bu listener'lari kaydediyor ama cleanup yolunda yalnizca `pointerup`, `pointerupoutside` ve blur/visibility DOM listener'larini sokuyordu; scene yeniden kurulumlarinda primary action ve telemetry hotkey'leri birikip cift tetik riski tasiyordu
+target: HMR veya scene rebuild sonrasi start/retry/resume ile telemetry aksiyonlari tek tetik mantigini korusun; lifecycle cleanup yeni orchestration katmanina donusmesin
+validation: `npm run build`
+
 near_miss_audio_feedback:
 current: Run #150 `project/game/src/game/GameScene.ts` her `NEAR MISS` pulse'unda kisa bir synth chirp caliyor; zincirli `2x` / `3x` close shave anlarinda pitch ve gain hafifce yukseliyor, audio unlock yoksa oyun sessizce mevcut gorsel feedback ile devam ediyor
 baseline: Run #145-#149 near-miss mutation'i gorsel pulse, chain etiketi ve pause/resume restore kontratini acmisti, fakat close shave anlari hala tamamen HUD okunurluguna bagliydi; oyuncu obstacle lane'lerini takip ederken bu beat kolayca gozden kacabilirdi

@@ -96,6 +96,18 @@ const ESCAPE_LABEL_MAX_X_PX = ARENA_WIDTH - 20;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
 const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
+const CAPTURED_GAMEPLAY_KEYS = [
+  Phaser.Input.Keyboard.KeyCodes.SPACE,
+  Phaser.Input.Keyboard.KeyCodes.ENTER,
+  Phaser.Input.Keyboard.KeyCodes.UP,
+  Phaser.Input.Keyboard.KeyCodes.DOWN,
+  Phaser.Input.Keyboard.KeyCodes.LEFT,
+  Phaser.Input.Keyboard.KeyCodes.RIGHT,
+  Phaser.Input.Keyboard.KeyCodes.W,
+  Phaser.Input.Keyboard.KeyCodes.A,
+  Phaser.Input.Keyboard.KeyCodes.S,
+  Phaser.Input.Keyboard.KeyCodes.D,
+];
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -262,18 +274,7 @@ export class GameScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
     }) as MovementKeys;
-    keyboard.addCapture([
-      Phaser.Input.Keyboard.KeyCodes.SPACE,
-      Phaser.Input.Keyboard.KeyCodes.ENTER,
-      Phaser.Input.Keyboard.KeyCodes.UP,
-      Phaser.Input.Keyboard.KeyCodes.DOWN,
-      Phaser.Input.Keyboard.KeyCodes.LEFT,
-      Phaser.Input.Keyboard.KeyCodes.RIGHT,
-      Phaser.Input.Keyboard.KeyCodes.W,
-      Phaser.Input.Keyboard.KeyCodes.A,
-      Phaser.Input.Keyboard.KeyCodes.S,
-      Phaser.Input.Keyboard.KeyCodes.D,
-    ]);
+    keyboard.addCapture(CAPTURED_GAMEPLAY_KEYS);
 
     this.scoreText = this.add.text(24, 20, '0.0s', {
       color: '#f5f7ff',
@@ -2616,6 +2617,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   private cleanupFocusListeners(): void {
+    this.input.keyboard?.off('keydown-SPACE', this.handlePrimaryAction, this);
+    this.input.keyboard?.off('keydown-ENTER', this.handlePrimaryAction, this);
+    this.input.keyboard?.off('keydown-R', this.handleTelemetryReset, this);
+    this.input.keyboard?.off('keydown-C', this.handleTelemetryLog, this);
+    this.input.keyboard?.off('keydown-V', this.handleValidationExport, this);
+    this.input.keyboard?.removeCapture(CAPTURED_GAMEPLAY_KEYS);
+    this.input.off('pointerdown', this.handlePointerPrimaryAction, this);
     this.input.off('pointerup', this.handlePointerRelease, this);
     this.input.off('pointerupoutside', this.handlePointerRelease, this);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);

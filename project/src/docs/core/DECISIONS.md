@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #152]
+
+Decision:
+`GameScene` input listener lifecycle'i `stabilization` modunda daraltildi; scene shutdown/destroy sirasinda eksik kalan primary-action ve telemetry hotkey cleanup'i tamamlandi.
+
+Reason:
+Runtime yine blokluydu ve audit verdict `proxy-overfit`; ayni death/pause readability, fairness, mobile shell veya validation surface'ini yeniden acmak bu tur icin yanlis olurdu. Buna ragmen source'ta gercek bir kontrol kusuru vardi: `project/game/src/game/GameScene.ts` create tarafinda `pointerdown` ile bes ayri `keydown-*` listener'i kaydediyor, fakat cleanup yolunda bunlari sokmuyordu. Bu da HMR veya scene yeniden kurulumlarinda start/retry/resume ve telemetry aksiyonlarini cift tetikleyebilecek bir lifecycle sızıntısıydı.
+
+Impact:
+`project/game/src/game/GameScene.ts` gameplay key capture listesini ortak sabite tasidi, shutdown/destroy cleanup'inde `pointerdown`, `keydown-SPACE`, `keydown-ENTER`, `keydown-R`, `keydown-C`, `keydown-V` listener'larini kapatti ve keyboard capture'i geri soktu. Build yesil kaldi; gameplay, pacing ve telemetry baseline degismedi.
+
+Rollback Condition:
+Eger ileride scene lifecycle tasarimi degisirse bu cleanup davranisi ancak ayni listener'larin tek kaynakta yeniden kuruldugu acik bir kontratla degistirilir; bu bahaneyle yeni readiness/orchestration katmani acilmaz.
+
 ### [Run #151]
 
 Decision:
