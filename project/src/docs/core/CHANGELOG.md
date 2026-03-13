@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #172
+
+- `project/game/src/game/spawn.ts` opening window icin dar bir same-edge near-player acceptance guard'i ekledi; gorunur ayni-edge threat oyuncuya yakin kaldiysa marjinal ayni-edge aday artik otomatik kabul edilmeyip bir kez daha reroll ariyor
+- `project/game/scripts/telemetry-check.ts` bu davranis icin yeni deterministic regression case'i ekledi
+- deterministic `averageSpawnRerolls` snapshot'i `0.4`ten `0.5`e guncellendi; ana survival baseline `26.5s / 6.3s / 4%` korunuyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu opener-pressure deltasiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #171
 
 - `project/game/src/game/spawn.ts` same-edge spawn-column guard'ina dominant-edge kontrolu ekledi; origin metadata'si olan obstacle corner'da baska bir edge baskin hale geldiyse yeni adjacent spawn corridor'unu sahte sekilde occupied saymiyor

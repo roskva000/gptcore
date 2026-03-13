@@ -732,6 +732,25 @@ assert.deepEqual(
   'Projected-path spawn scoring should clamp near-wall movement to the same player-reachable margin the runtime uses, instead of overvaluing impossible top-lane travel while the player is pinned near the left wall.',
 );
 
+const pressuredOpeningSelection = selectSpawnPoint({
+  survivalTimeSeconds: 5,
+  playerPosition: { x: 690, y: 220 },
+  playerVelocity: { x: -120, y: 80 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 640, y: 250, spawnEdge: 'right' },
+  ],
+  randomInt: createQueuedRandom([1, 210, 0, 400]),
+});
+assert.deepEqual(
+  pressuredOpeningSelection,
+  {
+    point: { x: 400, y: -56 },
+    rerollsUsed: 1,
+  },
+  'Opening spawn selection should reroll a merely-positive same-edge candidate when a visible same-edge threat is already sitting near the player.',
+);
+
 assert.equal(
   isPointInsideArena({ x: 10, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),
   false,
@@ -1013,7 +1032,7 @@ assert.deepEqual(
   'Survival bucket distribution regressed.',
 );
 assert.equal(survivalReport.averageSpawnCount, 28, 'Average spawn count snapshot changed unexpectedly.');
-assert.equal(survivalReport.averageSpawnRerolls, 0.4, 'Spawn reroll snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnRerolls, 0.5, 'Spawn reroll snapshot changed unexpectedly.');
 assert.equal(seed3TrajectoryReport.deathTimeSeconds, 6.3, 'Seed #3 trajectory baseline drifted.');
 assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 6, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(

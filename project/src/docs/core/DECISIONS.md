@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #172]
+
+Decision:
+`stabilization` modunda opening same-edge near-player pressure kusuru kapatildi; gorunur ayni-edge threat oyuncuya yakin kalmisken yeni ayni-edge spawn sadece hafif pozitif fairness skoru diye otomatik kabul edilmiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina donmeyi yasakliyor. Spawn-pressure hattinda ise dar ama gercek bir local kusur kalmisti: `project/game/src/game/spawn.ts` mevcut lane-stack, threat-crowding ve same-edge column guard'lari ceza yazsa bile ilk aday skor sifirin ustunde kaldiginda hic reroll aramiyordu. Bu, ayni entry edge'den gelen gorunur threat oyuncuya zaten yaklasmisken ikinci ayni-edge spawn'in "teknik olarak pozitif" diye ucuz tekrar hissiyle kabul edilmesine izin verebiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` opening window icinde gorunur same-edge threat oyuncuya `96px` icinde kalip yeni spawn ile de `180px` lateral band paylasiyorsa, marjinal adaylari `190` altinda kabul etmeyip reroll ariyor. `project/game/scripts/telemetry-check.ts` bu davranis icin yeni regression assert'i ekledi ve deterministic `averageSpawnRerolls` snapshot'ini `0.5`e hizaladi. `project/game/src/latestRun.ts` yeni runtime-facing delta ile guncellendi. `npm run telemetry:check` ve `npm run build` yesil kaldi; ana survival baseline `26.5s / 6.3s / 4%` korunurken seed `#3` outlier'i acik kaldi.
+
+Rollback Condition:
+Headed sample bu guard'in challenge'i bosaltip ayni-edge variety'yi gereksiz daralttigini gosterirse yalnizca near-player same-edge distance/acceptance esigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #171]
 
 Decision:

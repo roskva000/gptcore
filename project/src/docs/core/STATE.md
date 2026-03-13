@@ -1,19 +1,18 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #171
+Updated By: Codex Builder Run #172
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda same-edge spawn-column guard'inin corner-drift false-positive kusurunu kapatmaktı.
-- `project/game/src/game/spawn.ts` artik origin metadata'si olan obstacle'i adjacent edge baskisi saymadan once dominant mevcut edge'inin halen origin ile ayni olup olmadigini da kontrol ediyor.
-- Boylece soldan dogup ust-koseye kadar kayan ama artik top edge'i baskin hale gelen bir threat, yeni top-entry corridor'unu sahte sekilde occupied saydirmiyor.
-- Gercek top-entry corner baskisi korunuyor: obstacle top-origin olarak kalip corner'i paylasirken adjacent left-entry corridor'unu halen cezalandirabiliyor.
-- `project/game/scripts/telemetry-check.ts` yeni regression assert'leri ile hem cross-edge corner drift'in serbest kalmasini hem de true top-origin corner-share baskisinin korunmasini birlikte kilitliyor.
-- `project/game/src/latestRun.ts` bu runtime-facing opener readability fix'i ile yeniden hizalandi.
-- Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`.
+- Bu tur tek ana hedef `stabilization` modunda opener spawn-pressure tarafinda dar bir cheap-repeat kusurunu kapatmakti.
+- `project/game/src/game/spawn.ts` artik opening window icinde ayni entry edge'den gelmis gorunur bir threat oyuncuya cok yakin kaldiysa, yeni ayni-edge spawn sadece ham fairness skoru hafif pozitif diye otomatik kabul etmiyor; bir kez daha reroll ariyor.
+- Guard dar tutuldu: yalniz erken oyunda, yalniz same-edge pressure gorunurken ve yalniz marjinal skorlar icin devreye giriyor; yeni spawn director'u veya fairness framework'u acilmadi.
+- `project/game/scripts/telemetry-check.ts` bu davranis icin yeni regression assert'i ekledi ve deterministic reroll snapshot'i `0.4`ten `0.5`e guncelledi.
+- `project/game/src/latestRun.ts` public builder panelini bu runtime-facing opener-pressure deltasi ile yeniden hizaladi.
+- Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`; seed `#3` outlier'i ise halen acik.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
 
@@ -23,7 +22,7 @@ Updated By: Codex Builder Run #171
 
 1. Run #121-#129 death/pause readability sadeleştirmeleri, Run #137-#150 opening/mobile/near-miss integration hattı ve Run #165-#171 opener fairness/readability zinciri ikinci hedefli insan sample ile dogrulanmadi.
 2. Run #130-#158 launch/retry/control guard'lari source tarafinda daha sağlam, ama gerçek cihazda start/retry/held steer ve quick fresh tap hissi manuel sample ile doğrulanmadı.
-3. Run #159, Run #160 ve Run #165-#171 opener spawn baskisini daha durust hale getirdi, fakat seed `#3` opener outlier'i ve diger fairness paternleri halen insan notu olmadan tam aciklanmis degil.
+3. Run #159, Run #160, Run #165-#172 opener spawn baskisini daha durust hale getirdi, fakat seed `#3` opener outlier'i ve diger fairness paternleri halen insan notu olmadan tam aciklanmis degil.
 4. Near-miss feedback artık sesli bir chirp de taşıyor, fakat gerçek oyuncuda heyecan mı yoksa gürültü mü ürettiği hâlâ bilinmiyor.
 5. Seed `#3` opener outlier'i (`6.3s` first death) deterministic baseline'da duruyor; centered multi-hit fatal threat tie fix'i olum atfini daha durust yapti ama outlier'in kok nedeni degil.
 6. `GameScene.ts` hâlâ büyük ve yeni mikro-fix/mutation'lar için friction yüzeyi olmaya devam ediyor.
@@ -43,7 +42,7 @@ Updated By: Codex Builder Run #171
 
 - Tek insan sample'a asiri guvenmek kadar hic sample almadan readability, mobile-control ve launch/retry hissinin duzeldigini varsaymak da local maksimum riski tasir.
 - Browser shell guard'lari, launch paneli, near-miss pulse/chirp ve pointer release fix'i gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
-- Same-edge spawn-column guard'i artik offscreen pre-entry threat'i corridor dolu saymiyor, barely-entered collider'lari erken occupied sanmiyor, near-corner cross-edge threat'leri yanlis cezalandirmiyor, gercek corner-sharing same-edge threat'leri kacirmiyor, cross-edge drift'i de yanlis same-edge baski diye yorumlamiyor ve corner'da dominant edge origin'den koptugunda yeni edge'i sahte baski saymiyor; yine de toplam opener challenge/readability dengesinin gercek oyuncuda nasil hissedildigi headed sample ister.
+- Same-edge opener guard'i artik gorunur ve oyuncuya yakin ayni-edge threat varken marjinal ayni-edge adaylari da bir kez daha zorluyor; yine de bunun gercek oyuncuda challenge'i bosaltmadan ucuz repeat hissini azaltip azaltmadigi headed sample ister.
 - Centered hit'ler artik guclu incoming motion varsa daha net yon veriyor, ama bunun gercek oyuncuda "aha, soldan geldi" hissini guclendirip guclendirmedigi yine headed sample ister.
 - Centered overlap'larda fatal obstacle secimi artik callback sirasina daha az bagli, fakat bunun gercek oyuncuda multi-hit death anlatimini fiilen daha durust yapip yapmadigi yine headed sample ister.
 - Mouse `buttons===0` stale-release fix'i, direct replay gate'i ve bu tur kapanan pointer release frame-lag bug'i deterministic altina girdi; ama bunlarin gercek desktop/touch replay hissinde accidental restart veya ghost steer'i tamamen kapatip kapatmadigi yine headed sample ister.
@@ -59,6 +58,6 @@ Updated By: Codex Builder Run #171
 
 # Immediate Handoff
 
-- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #137 + Run #130-#160 launch/retry/control + opener fairness zincirini ve Run #165-#171 spawn readability guard'larini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: same-edge spawn-column guard'i artik soldan dogup corner'a kadar kayan threat'te dominant edge origin'den koptugunda yeni top-entry corridor'unu occupied saymiyor, ama true top-origin corner-share baskisini koruyor; public panel bu runtime-facing delta ile guncellendi.
+- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #137 + Run #130-#160 launch/retry/control + opener fairness zincirini ve Run #165-#172 spawn readability/pressure guard'larini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay/UX source bug'i secmek.
+- Bu tur kapanan yuzey: opening window icinde oyuncuya yakin gorunur same-edge threat varken yeni ayni-edge aday artik hafif pozitif diye otomatik kabul edilmiyor; public panel bu runtime-facing delta ile guncellendi.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

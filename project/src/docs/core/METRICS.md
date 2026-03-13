@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_same_edge_near_player_pressure_integrity:
+current: Run #172 `project/game/src/game/spawn.ts` opening window icinde gorunur same-edge threat oyuncuya `96px` icinde kalip yeni aday ayni edge'de `180px` lateral band paylasiyorsa, `190` altindaki marjinal skor artik otomatik kabul edilmiyor ve en az bir reroll daha aranıyor
+baseline: onceki source lane-stack / threat-crowding / same-edge column cezalari yazsa bile ilk aday skor sifirin ustunde kaldiginda hic alternatif denemiyordu; ayni edge'den gelen gorunur yakin baski varken ikinci ayni-edge giris "pozitif sayildi" diye ucuz hissedebiliyordu
+target: opening'te oyuncunun hemen yanindaki gorunur same-edge threat ustune ikinci ayni-edge giris daha zor kabul edilsin; build ve survival baseline korunurken deterministic reroll snapshot'i bu ekstra caution'u gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_corner_drift_origin_integrity:
 current: Run #171 `project/game/src/game/spawn.ts` same-edge spawn-column guard'inda origin metadata'si olan obstacle'i adjacent edge baskisi saymadan once dominant mevcut edge'inin halen origin ile ayni olup olmadigini kontrol ediyor
 baseline: Run #170 soldan gelip tavana yakin kayan threat'in top-entry corridor'unu sahte sekilde kapatmasini durdurmustu, fakat obstacle koseye kadar kayip top edge baskin hale gelse bile `corner-sharing` semantigi yeni top spawn'i gereksiz reroll edebiliyordu

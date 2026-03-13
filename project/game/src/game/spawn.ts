@@ -21,6 +21,10 @@ export const EARLY_SPAWN_EDGE_CLUSTER_REROLL_CUTOFF_SECONDS = 6;
 export const EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE = 96;
 export const EARLY_SPAWN_EDGE_CLUSTER_DEPTH = 140;
 export const EARLY_SPAWN_EDGE_CLUSTER_PENALTY = 180;
+export const EARLY_PRESSURED_SPAWN_REROLL_CUTOFF_SECONDS = 6;
+export const EARLY_PRESSURED_SPAWN_ACCEPT_SCORE = 190;
+export const EARLY_PRESSURED_SAME_EDGE_PLAYER_DISTANCE = 96;
+export const EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE = 180;
 
 export type Point = {
   x: number;
@@ -29,6 +33,12 @@ export type Point = {
 
 type ArenaContainmentOptions = {
   margin?: number;
+};
+
+type SpawnScore = {
+  fairness: number;
+  totalPenalty: number;
+  score: number;
 };
 
 type SpawnSelectionParams = {
@@ -435,6 +445,108 @@ const getSpawnEdgeClusterPenalty = (
   }, 0);
 };
 
+const hasPressuredSameEdgeNearPlayer = (
+  playerPosition: Point,
+  activeObstaclePositions: ActiveObstaclePosition[] | undefined,
+  spawnPoint: Point,
+): boolean => {
+  if (!activeObstaclePositions?.length) {
+    return false;
+  }
+
+  const spawnEdge = getSpawnEdge(spawnPoint);
+  const spawnOffset = getSpawnEdgeOffset(spawnPoint, spawnEdge);
+
+  return activeObstaclePositions.some((obstaclePosition) => {
+    if (!doesObstacleOccupySpawnEdge(obstaclePosition, spawnEdge)) {
+      return false;
+    }
+
+    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+      return false;
+    }
+
+    const playerDistance = Math.hypot(
+      obstaclePosition.x - playerPosition.x,
+      obstaclePosition.y - playerPosition.y,
+    );
+
+    if (playerDistance > EARLY_PRESSURED_SAME_EDGE_PLAYER_DISTANCE) {
+      return false;
+    }
+
+    const obstacleOffset = getSpawnEdgeOffset(obstaclePosition, spawnEdge);
+
+    return (
+      Math.abs(obstacleOffset.lateral - spawnOffset.lateral) <=
+      EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE
+    );
+  });
+};
+
+const getSpawnScore = ({
+  survivalTimeSeconds,
+  playerPosition,
+  playerVelocity,
+  playerReachabilityMargin,
+  activeObstaclePositions,
+  spawnPoint,
+}: Omit<SpawnSelectionParams, 'randomInt'> & { spawnPoint: Point }): SpawnScore => {
+  const fairness = getSpawnFairnessScore(survivalTimeSeconds, playerPosition, spawnPoint);
+  const reachableVelocity = getReachableVelocity(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
+  const forwardPenalty = getForwardSpawnPenalty(
+    survivalTimeSeconds,
+    playerPosition,
+    reachableVelocity,
+    playerReachabilityMargin,
+    spawnPoint,
+  );
+  const laneStackPenalty = getLaneStackPenalty(
+    survivalTimeSeconds,
+    playerPosition,
+    reachableVelocity,
+    playerReachabilityMargin,
+    activeObstaclePositions,
+    spawnPoint,
+  );
+  const threatCrowdingPenalty = getThreatCrowdingPenalty(
+    survivalTimeSeconds,
+    playerPosition,
+    reachableVelocity,
+    playerReachabilityMargin,
+    activeObstaclePositions,
+    spawnPoint,
+  );
+  const spawnEdgeClusterPenalty = getSpawnEdgeClusterPenalty(
+    survivalTimeSeconds,
+    activeObstaclePositions,
+    spawnPoint,
+  );
+  const totalPenalty =
+    forwardPenalty + laneStackPenalty + threatCrowdingPenalty + spawnEdgeClusterPenalty;
+
+  return {
+    fairness,
+    totalPenalty,
+    score: fairness - totalPenalty,
+  };
+};
+
+const shouldKeepRerollingForOpeningPressure = (
+  survivalTimeSeconds: number,
+  playerPosition: Point,
+  activeObstaclePositions: ActiveObstaclePosition[] | undefined,
+  spawnPoint: Point,
+  spawnScore: SpawnScore,
+): boolean =>
+  survivalTimeSeconds <= EARLY_PRESSURED_SPAWN_REROLL_CUTOFF_SECONDS &&
+  hasPressuredSameEdgeNearPlayer(playerPosition, activeObstaclePositions, spawnPoint) &&
+  spawnScore.score < EARLY_PRESSURED_SPAWN_ACCEPT_SCORE;
+
 export const rollSpawnPoint = (randomInt: (min: number, max: number) => number): Point => {
   const edge = randomInt(0, 3);
 
@@ -487,38 +599,25 @@ export const selectSpawnPoint = ({
     playerReachabilityMargin,
   );
   let selectedSpawnPoint = rollSpawnPoint(randomInt);
-  let bestScore =
-    getSpawnFairnessScore(survivalTimeSeconds, playerPosition, selectedSpawnPoint) -
-    getForwardSpawnPenalty(
-      survivalTimeSeconds,
-      playerPosition,
-      reachableVelocity,
-      playerReachabilityMargin,
-      selectedSpawnPoint,
-    ) -
-    getLaneStackPenalty(
-      survivalTimeSeconds,
-      playerPosition,
-      reachableVelocity,
-      playerReachabilityMargin,
-      activeObstaclePositions,
-      selectedSpawnPoint,
-    ) -
-    getThreatCrowdingPenalty(
-      survivalTimeSeconds,
-      playerPosition,
-      reachableVelocity,
-      playerReachabilityMargin,
-      activeObstaclePositions,
-      selectedSpawnPoint,
-    ) -
-    getSpawnEdgeClusterPenalty(
-      survivalTimeSeconds,
-      activeObstaclePositions,
-      selectedSpawnPoint,
-    );
+  let bestSpawnScore = getSpawnScore({
+    survivalTimeSeconds,
+    playerPosition,
+    playerVelocity: reachableVelocity,
+    playerReachabilityMargin,
+    activeObstaclePositions,
+    spawnPoint: selectedSpawnPoint,
+  });
 
-  if (bestScore >= 0) {
+  if (
+    bestSpawnScore.score >= 0 &&
+    !shouldKeepRerollingForOpeningPressure(
+      survivalTimeSeconds,
+      playerPosition,
+      activeObstaclePositions,
+      selectedSpawnPoint,
+      bestSpawnScore,
+    )
+  ) {
     return { point: selectedSpawnPoint, rerollsUsed: 0 };
   }
 
@@ -528,43 +627,30 @@ export const selectSpawnPoint = ({
     rerollsUsed += 1;
 
     const candidate = rollSpawnPoint(randomInt);
-    const candidateScore =
-      getSpawnFairnessScore(survivalTimeSeconds, playerPosition, candidate) -
-      getForwardSpawnPenalty(
-        survivalTimeSeconds,
-        playerPosition,
-        reachableVelocity,
-        playerReachabilityMargin,
-        candidate,
-      ) -
-      getLaneStackPenalty(
-        survivalTimeSeconds,
-        playerPosition,
-        reachableVelocity,
-        playerReachabilityMargin,
-        activeObstaclePositions,
-        candidate,
-      ) -
-      getThreatCrowdingPenalty(
-        survivalTimeSeconds,
-        playerPosition,
-        reachableVelocity,
-        playerReachabilityMargin,
-        activeObstaclePositions,
-        candidate,
-      ) -
-      getSpawnEdgeClusterPenalty(
-        survivalTimeSeconds,
-        activeObstaclePositions,
-        candidate,
-      );
+    const candidateSpawnScore = getSpawnScore({
+      survivalTimeSeconds,
+      playerPosition,
+      playerVelocity: reachableVelocity,
+      playerReachabilityMargin,
+      activeObstaclePositions,
+      spawnPoint: candidate,
+    });
 
-    if (candidateScore > bestScore) {
+    if (candidateSpawnScore.score > bestSpawnScore.score) {
       selectedSpawnPoint = candidate;
-      bestScore = candidateScore;
+      bestSpawnScore = candidateSpawnScore;
     }
 
-    if (candidateScore >= 0) {
+    if (
+      candidateSpawnScore.score >= 0 &&
+      !shouldKeepRerollingForOpeningPressure(
+        survivalTimeSeconds,
+        playerPosition,
+        activeObstaclePositions,
+        candidate,
+        candidateSpawnScore,
+      )
+    ) {
       return { point: candidate, rerollsUsed };
     }
   }
