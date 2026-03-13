@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #167
+
+- `project/game/src/game/spawn.ts` same-edge spawn cluster guard'ina corner-share toleransi ekledi; exact/near-corner obstacle artik yalniz tek `closest edge` olarak degil, gercekten paylastigi giris kenarlariyla yorumlaniyor
+- `project/game/scripts/telemetry-check.ts` yeni regression case'i ile corner-sharing left-edge threat varken ikinci left-edge kolonun reroll edilmesini kilitledi; Run #166 cross-edge false-positive kontrati da korunuyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #166
 
 - `project/game/src/game/spawn.ts` `same-edge spawn cluster` cezasini obstacle'in en yakin arena kenari ile sinirladi; near-corner farkli edge threat'leri artik ust/alt/yan spawn column'unu yanlis reroll etmiyor

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+opening_corner_shared_edge_cluster_integrity:
+current: Run #167 `project/game/src/game/spawn.ts` same-edge spawn-column guard'inda corner-share toleransi kullaniyor; exact/near-corner obstacle secilen spawn edge'i ile gercekten kenar paylasiyorsa ayni-edge cluster cezasi artik devreye girebiliyor
+baseline: Run #166 cross-edge false-positive bug'ini kapatirken kontrol yalniz obstacle'in tek `closest edge` sonucuna baglandi; bu da tam/yari-kose threat'lerin fiilen paylastigi ikinci entry edge'i yok sayip ayni-edge reroll guard'ini bosaltabiliyordu
+target: near-corner cross-edge threat'ler sahte reroll uretmesin, ama gercek corner-sharing same-edge threat'ler de ayni dar kolon tekrarina izin vermesin; headed sample opener challenge/readability dengesinin korundugunu gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_cross_edge_corner_spawn_integrity:
 current: Run #166 `project/game/src/game/spawn.ts` same-edge spawn-column cezasini obstacle'in en yakin arena kenari ile sinirliyor; near-corner left/right threat'leri artik top/bottom spawn column'unu sanki ayni giris edge'indeymis gibi cezalandirmiyor
 baseline: onceki source `getSpawnEdgeOffset()` hesabini obstacle'in gercek edge baglamini kontrol etmeden secilen spawn edge'i uzerinden yurutuyordu; koseye yakin farkli edge threat'i yanlis same-edge penalty alip opener variety'yi gereksiz daraltabiliyordu

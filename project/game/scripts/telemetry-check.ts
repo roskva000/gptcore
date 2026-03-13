@@ -535,6 +535,23 @@ assert.deepEqual(
   'Same-edge spawn-column rerolls should ignore near-corner threats whose closest arena edge is different from the new spawn edge.',
 );
 
+const cornerSharingLeftSelection = selectSpawnPoint({
+  survivalTimeSeconds: 3,
+  playerPosition: { x: 180, y: 280 },
+  playerVelocity: { x: 0, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 20, y: 20 }],
+  randomInt: createQueuedRandom([3, 12, 1, 400]),
+});
+assert.deepEqual(
+  cornerSharingLeftSelection,
+  {
+    point: { x: 856, y: 400 },
+    rerollsUsed: 1,
+  },
+  'Same-edge spawn-column rerolls should still treat true corner-sharing threats as occupying the matching spawn edge instead of only the single closest edge.',
+);
+
 const projectedForwardSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
   playerPosition: { x: 308.6, y: 290.3 },

@@ -42,6 +42,8 @@ type SpawnSelectionParams = {
 
 type SpawnEdge = 'top' | 'right' | 'bottom' | 'left';
 
+const CORNER_EDGE_SHARE_TOLERANCE = 8;
+
 export const clampPointToArena = (
   point: Point,
   options: ArenaContainmentOptions = {},
@@ -144,6 +146,33 @@ const getClosestArenaEdge = (point: Point): SpawnEdge => {
   return distances.reduce((closest, candidate) =>
     candidate.distance < closest.distance ? candidate : closest,
   ).edge;
+};
+
+const getArenaEdgeDistance = (point: Point, edge: SpawnEdge): number => {
+  if (edge === 'top') {
+    return Math.abs(point.y);
+  }
+
+  if (edge === 'right') {
+    return Math.abs(ARENA_WIDTH - point.x);
+  }
+
+  if (edge === 'bottom') {
+    return Math.abs(ARENA_HEIGHT - point.y);
+  }
+
+  return Math.abs(point.x);
+};
+
+const sharesSpawnEdge = (point: Point, edge: SpawnEdge): boolean => {
+  const closestEdge = getClosestArenaEdge(point);
+
+  if (closestEdge === edge) {
+    return true;
+  }
+
+  return getArenaEdgeDistance(point, edge) - getArenaEdgeDistance(point, closestEdge) <=
+    CORNER_EDGE_SHARE_TOLERANCE;
 };
 
 const getSpawnEdgeOffset = (point: Point, edge: SpawnEdge): { lateral: number; depth: number } => {
@@ -351,7 +380,7 @@ const getSpawnEdgeClusterPenalty = (
   const spawnOffset = getSpawnEdgeOffset(spawnPoint, spawnEdge);
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
-    if (getClosestArenaEdge(obstaclePosition) !== spawnEdge) {
+    if (!sharesSpawnEdge(obstaclePosition, spawnEdge)) {
       return totalPenalty;
     }
 

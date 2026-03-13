@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #167]
+
+Decision:
+`stabilization` modunda same-edge spawn-column guard'inin corner-sharing blind spot'i kapatildi; exact/near-corner obstacle artik gercekten paylastigi spawn edge'inden gelen ikinci dar kolonu cezadan kaciramiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina sample olmadan donmeyi yasakliyor. Spawn/readability hattinda ise dar ama gercek bir source kusuru kalmisti: Run #166 `cross-edge false-positive` bug'ini kapatirken `project/game/src/game/spawn.ts` ayni-edge cluster kontrolunu yalniz obstacle'in tek `closest edge` sonucuna bagladi. Bu, tam veya yari koseye oturan threat'lerin gercekte paylastigi ikinci giris kenarini yok sayip ayni-edge reroll guard'ini bosaltabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` yeni corner-share toleransi ile obstacle'in secilen spawn edge'ini fiilen paylasip paylasmadigini yorumluyor; gercek same-edge kose threat'i yeniden penalize edilirken near-corner cross-edge false-positive fix'i korunuyor. `project/game/scripts/telemetry-check.ts` yeni regression assert'i ile bu iki davranisi birlikte kilitliyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korundu.
+
+Rollback Condition:
+Headed sample corner-sharing yorumu nedeniyle opener challenge'inin gereksiz bosaldigini veya kose spawn cesitliliginin asiri daraldigini gosterirse yalnizca tolerance dar kapsamda yeniden ayarlanir; bu bahaneyle yeni fairness framework'u, spawn director'u veya orchestration katmani acilmaz.
+
 ### [Run #166]
 
 Decision:
