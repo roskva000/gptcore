@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #157
+
+- `project/game/src/game/primaryAction.ts` pointer release sonrasi replay/resume gate'inin temizlenip temizlenmeyecegini saf helper ile yorumlayan `shouldClearPointerReleaseRequirement()` fonksiyonunu ekledi
+- `project/game/src/game/GameScene.ts` `pointerup` ve `pointerupoutside` aninda pointer hold, steer-release ve replay/resume release guard'larini hemen temizliyor; quick fresh tap retry/resume icin ekstra update tick beklenmiyor
+- `project/game/scripts/telemetry-check.ts` immediate pointer release-clear kontratini regression altina aldi
+- `project/game/src/latestRun.ts` public `Latest AI update` panelini bu stabilization deltasiyle hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #156
 
 - `project/game/src/game/GameScene.ts` completed run telemetry'sinde ham `survivalTime` yazmaya basladi; `best`, `first death`, `last run`, `recent deaths`, `avg survival` ve `<10s` early-death sayaci artik display rounding ile yumusamiyor

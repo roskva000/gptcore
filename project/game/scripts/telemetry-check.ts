@@ -24,6 +24,7 @@ import {
   isPrimaryPointerDown,
   shouldRequirePointerReleaseAfterPause,
   shouldAllowPointerPrimaryActionPress,
+  shouldClearPointerReleaseRequirement,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
 } from '../src/game/primaryAction.ts';
@@ -293,6 +294,26 @@ assert.equal(
   }),
   true,
   'Canceled pointers should not keep direct replay/start presses blocked after the browser already released the old hold.',
+);
+assert.equal(
+  shouldClearPointerReleaseRequirement({
+    isDown: false,
+    wasTouch: true,
+    primaryDown: false,
+    button: 0,
+  }),
+  true,
+  'Pointer release should clear replay/resume release gates immediately instead of waiting for another update tick.',
+);
+assert.equal(
+  shouldClearPointerReleaseRequirement({
+    isDown: true,
+    wasTouch: false,
+    button: 0,
+    event: { buttons: 1 } as PointerEvent,
+  }),
+  false,
+  'Release gates should stay armed while the primary pointer is still held down.',
 );
 
 assert.equal(balanceReport.firstSpawnAtSeconds, 0.9, 'First spawn timing regressed.');

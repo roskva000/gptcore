@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #157]
+
+Decision:
+`stabilization` modunda pointer release gate frame-lag bug'i kapatildi; game-over retry ve focus-loss pause resume artik eski hold serbest birakildiktan sonra ekstra update tick beklemiyor.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile-shell/near-miss/validation koridorlarini sample olmadan yeniden acmayi yasakliyor. Buna ragmen dar ama gercek bir replay-control kusuru vardi: `project/game/src/game/GameScene.ts` release gate'lerini sadece update icindeki `!isPrimaryPointerDown(...)` yolunda dusuruyordu. Bu da hizli `release -> fresh tap` zincirinde yeni press'in bir frame gec gelmesi veya hic sayilmamasi riskini tasiyordu; bu, oyunun `<3s` replay hedefiyle cakisiyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni `shouldClearPointerReleaseRequirement()` helper'ini ekledi. `project/game/src/game/GameScene.ts` `pointerup` ve `pointerupoutside` aninda pointer hold state'i ile replay/resume release guard'larini aninda temizliyor. Guard yalnizca primary pointer gercekten yukari kalktiysa dusuyor; held input sizintisi acilmiyor. `project/game/scripts/telemetry-check.ts` bu kontrati regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Headed sample bu degisiklikten sonra hizli tap zincirinde accidental restart/resume veya stale hold sizintisi gosterirse yalnizca pointer release-clear semantigi dar kapsamda yeniden ayarlanir; ayni bahaneyle yeni input orchestration, overlay churn'u veya mobil shell paketi acilmaz.
+
 ### [Run #156]
 
 Decision:

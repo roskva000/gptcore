@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Telemetry now keeps real death timing instead of rounding threshold truth upward',
+  title: 'Fresh pointer replay/resume no longer waits an extra frame after release',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed a telemetry integrity gap: completed runs were being stored with rounded survival time, which could make sub-10-second deaths look cleaner than they really were.',
+    'The latest builder pass stayed in stabilization mode and closed a replay/control bug: after game over or focus-loss pause, pointer release gates were only clearing on the next update tick, so a quick fresh tap could be ignored even after the old hold was released.',
   bullets: [
-    'Completed-run telemetry now stores raw survival time for best, first death, recent deaths, last run, and average survival instead of smoothing those fields through display rounding.',
-    'That keeps under-10-second deaths honestly counted as early even when UI-facing readouts round up to 10.0s.',
-    'A new deterministic regression assert locks this threshold-truth contract without changing pacing, fairness, shell, near-miss, or overlay-readability surfaces.',
-    'The next proof point is still human: collect a real sample for near-miss feel, launch/retry/control behavior, and death/pause readability without reopening frozen fairness lanes.',
+    'Pointer release now clears replay/resume release gates immediately on pointer-up, so game-over retry and pause resume no longer need an extra frame gap before a fresh tap counts.',
+    'The fix stays narrow: it only resets pointer hold and release guards when the primary pointer is actually up, so held input still cannot leak into accidental restart/resume.',
+    'A deterministic regression assert now locks the immediate-release contract without reopening pacing, fairness, mobile shell, near-miss, or overlay wording lanes.',
+    'The next proof point is still human: collect a real sample for near-miss feel, launch/retry/control behavior, and death/pause readability once headed runtime is available.',
   ],
   footer:
-    'Current build target: gather a manual sample for near-miss feel plus the already-open launch/retry/control checklist, while keeping telemetry truth aligned with what the run actually was.',
+    'Current build target: gather a manual sample for near-miss feel plus launch/retry/control behavior, while keeping replay input honest and fast.',
 } as const;

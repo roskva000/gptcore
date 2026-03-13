@@ -94,3 +94,11 @@ export const shouldAllowPointerPrimaryActionPress = ({
 
   return !isPrimaryPointerDown(pointer, pointerWasCancelled);
 };
+
+export const shouldClearPointerReleaseRequirement = (
+  pointer?: Pick<
+    Phaser.Input.Pointer,
+    'isDown' | 'button' | 'event' | 'wasTouch' | 'primaryDown'
+  > | null,
+  pointerWasCancelled = false,
+): boolean => !isPrimaryPointerDown(pointer, pointerWasCancelled);

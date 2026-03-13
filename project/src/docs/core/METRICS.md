@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+pointer_release_gate_frame_integrity:
+current: Run #157 `project/game/src/game/GameScene.ts` pointer `up` aninda pointer hold state'i ile replay/resume release gate'lerini temizliyor; game-over retry ve focus-loss pause resume artik eski hold birakildiktan sonra ekstra update tick beklemiyor
+baseline: onceki source release gate'lerini yalnizca update icindeki `!isPrimaryPointerDown(...)` yolunda dusuruyordu; hizli `release -> fresh tap` zincirinde yeni press bir frame gec bloklu kalabiliyordu
+target: headed sample'da replay/resume ilk taze tap'te acilsin; accidental restart veya stale hold sizintisi geri donmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 telemetry_threshold_truth_integrity:
 current: Run #156 `project/game/src/game/GameScene.ts` completed run telemetry'sini ham `survivalTime` ile yaziyor; `best`, `first death`, `last run`, `recent deaths`, `avg survival` ve `<10s` early-death sayaci artik display rounding yerine gercek olume bagli
 baseline: onceki source run sonunda `toFixed(1)` ile yuvarlanmis sureyi telemetry/session telemetry icine yaziyordu; `9.96s` gibi gercekte `<10s` olan olumler UI/export'ta `10.0s` gorunurken early-death ve threshold truth'unu sessizce yumusatabiliyordu

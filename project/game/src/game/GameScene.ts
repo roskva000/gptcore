@@ -60,6 +60,7 @@ import {
 import {
   isPrimaryPointerDown,
   shouldAllowPointerPrimaryActionPress,
+  shouldClearPointerReleaseRequirement,
   shouldHandlePrimaryActionKey,
   shouldRequirePointerReleaseAfterPause,
 } from './primaryAction.ts';
@@ -162,8 +163,17 @@ export class GameScene extends Phaser.Scene {
       this.player.setVelocity(0, 0);
     }
   };
-  private readonly handlePointerRelease = (): void => {
+  private readonly handlePointerRelease = (pointer: Phaser.Input.Pointer): void => {
     this.pointerCancellationActive = false;
+
+    if (!shouldClearPointerReleaseRequirement(pointer)) {
+      return;
+    }
+
+    this.pointerHoldActionStartedAt = null;
+    this.pointerSteeringNeedsRelease = false;
+    this.pauseResumeNeedsPointerRelease = false;
+    this.gameOverRetryNeedsPointerRelease = false;
   };
   private resetKeyboardState(): void {
     this.input.keyboard?.resetKeys();
