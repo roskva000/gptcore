@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #173
+
+- `project/game/scripts/telemetry-reports.ts` deterministic survival snapshot controller anlatimina Run #172 near-player same-edge reroll guard'ini ekledi
+- `project/game/scripts/telemetry-check.ts` controller regex guard'ini yeni runtime kontratini arayacak sekilde guncelledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #172
 
 - `project/game/src/game/spawn.ts` opening window icin dar bir same-edge near-player acceptance guard'i ekledi; gorunur ayni-edge threat oyuncuya yakin kaldiysa marjinal ayni-edge aday artik otomatik kabul edilmeyip bir kez daha reroll ariyor

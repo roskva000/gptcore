@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+deterministic_controller_runtime_alignment:
+current: Run #173 `project/game/scripts/telemetry-reports.ts` survival snapshot `controller` metninde Run #172 near-player same-edge reroll guard'ini `96px / 180px / score 190 / 6s` kontratiyla acikca yaziyor
+baseline: onceki proxy anlatimi projected-path, threat-crowding ve same-edge spawn-column guard'larini anlatiyor ama near-player same-edge reroll guard'ini eksik birakiyordu; runtime ve deterministic proxy ayni kuralla calissa da anlatim drift'i olusuyordu
+target: deterministic validation output'u hangi opener reroll guard'larinin aktif oldugunu eksiksiz anlatsin; proxy-overfit riskinde "neyi olcuyoruz" sorusu dokuman seviyesinde de net kalsin
+validation: `npm run telemetry:check`, `npm run build`
+
 opening_same_edge_near_player_pressure_integrity:
 current: Run #172 `project/game/src/game/spawn.ts` opening window icinde gorunur same-edge threat oyuncuya `96px` icinde kalip yeni aday ayni edge'de `180px` lateral band paylasiyorsa, `190` altindaki marjinal skor artik otomatik kabul edilmiyor ve en az bir reroll daha aranıyor
 baseline: onceki source lane-stack / threat-crowding / same-edge column cezalari yazsa bile ilk aday skor sifirin ustunde kaldiginda hic alternatif denemiyordu; ayni edge'den gelen gorunur yakin baski varken ikinci ayni-edge giris "pozitif sayildi" diye ucuz hissedebiliyordu

@@ -4,6 +4,7 @@
 
 - Audit 2026-03-13 verdict `warning`: urun ilerliyor, ama docs fan-out ve proxy-overfit riski halen aktif.
 - `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i acma.
+- Run #173 deterministic controller/runtime drift'ini kapatti; bunu yeni validation/orchestration/readiness katmani acmak icin bahane yapma.
 - Run #172 opening same-edge near-player pressure guard'ini ekledi; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
 - Run #171 same-edge spawn-column guard'inin corner-drift false-positive bug'ini kapatti; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
 - Run #170 same-edge spawn-column guard'inin cross-edge drift false-positive bug'ini kapatti; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
@@ -30,32 +31,17 @@
 Run mode: `integration`
 
 Ana hedef:
-Runtime varsa ikinci structured human sample'i topla ve tek oturumda su yuzeyler icin `keep / tune / revert` notu birak:
+Runtime varsa ikinci structured human sample'i topla ve tek oturumda su yuzeyler icin kisa `keep / tune / revert` notu birak:
 - Run #145-#150 near-miss pulse / restore / chirp hissi
 - Run #137 opening launch surface
-- Run #130-#160 launch/input/replay ve opener fairness hissi
-- Run #165-#171 spawn readability guard'larinin challenge'i bosaltmadan lane okunurlugunu arttirip arttirmadigi
-- Run #172 same-edge near-player repeat guard'inin ucuz ayni-edge baskiyi azaltip challenge'i bosaltip bosaltmadigi
+- Run #130-#160 launch/input/replay hissi
+- Run #165-#172 spawn readability / opener pressure guard'lari
 - Run #125-#129 death/pause readability
-- Run #161 spawn-grace readability farki
-- Run #162 centered death direction anlatimi
-- Run #164 public builder panelinin artik stale gorunup gorunmedigi
 
 Beklenen cikti:
 - `project/src/docs/experiments/HUMAN_SIGNALS.md` icinde tarihli ikinci sample
-- near-miss, launch/retry/control, opener fairness, death/pause readability, spawn-grace readability ve centered death direction icin kisa karar notlari
-- gerekiyorsa builder panelinin artik son fix'leri durust yansitip yansitmadigina dair tek satir keep/tune notu
-- ozellikle hizli `release -> fresh press` replay davranisi ile opener'da yakin threat cluster'i ustune ikinci ayni corridor baskisinin ucuz hissedip hissettirmedigine dair net not
-- ozellikle ayni edge'den ust uste gelen dar obstacle kolonlarinin artik daha okunur olup olmadigina dair net not
-- ozellikle soldan/sagdan dogup baska kenara yakin kayan threat'lerin artik yeni spawn corridor'unu sahte sekilde kapatip kapatmadigina dair net not
-- ozellikle henuz arena icine girmemis ayni-edge threat'in artik erken occupied hissi uretmeyip uretmedigine dair net not
-- ozellikle kenari yeni gecmis ama collider'i tam iceri girmemis ayni-edge threat'in artik erken occupied hissi uretmeyip uretmedigine dair net not
-- ozellikle koseye oturan obstacle'larin ayni entry edge'i gereksiz daraltmadan ama gercekten paylastigi lane'i de kacirmadan davranip davranmadigina dair net not
-- ozellikle koseye yakin farkli edge threat'lerin artik ust/alt spawn column'unu gereksiz cezalandirip cezalandirmadigina dair net not
-- ozellikle corner'a kadar kaymis ama dominant edge'i origin'den kopmus threat'lerin artik yeni adjacent corridor'u sahte sekilde occupied saydirip saydirmadigina dair net not
-- ozellikle oyuncunun hemen yanindaki gorunur same-edge threat ustune gelen ikinci ayni-edge girisin artik daha az ucuz hissedip hissettirmedigine dair net not
-- centered overlap olumlerinde yeni yon bilgisinin gercekten daha yardimci mi yoksa fazla iddiali mi hissettirdigine dair net not
-- centered multi-hit overlap'larda fatal lane/callout'un artik daha dogru obstacle'i sectigine dair net not
+- opener fairness, near-miss hissi, retry/start kontrolu ve death/pause readability icin kisa karar notlari
+- builder paneli artik stale mi degil mi sorusuna tek satir cevap
 
 ## Runtime Still Blocked Fallback
 

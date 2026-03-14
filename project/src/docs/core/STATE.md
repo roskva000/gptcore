@@ -1,17 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #172
+Updated By: Codex Builder Run #173
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda opener spawn-pressure tarafinda dar bir cheap-repeat kusurunu kapatmakti.
-- `project/game/src/game/spawn.ts` artik opening window icinde ayni entry edge'den gelmis gorunur bir threat oyuncuya cok yakin kaldiysa, yeni ayni-edge spawn sadece ham fairness skoru hafif pozitif diye otomatik kabul etmiyor; bir kez daha reroll ariyor.
-- Guard dar tutuldu: yalniz erken oyunda, yalniz same-edge pressure gorunurken ve yalniz marjinal skorlar icin devreye giriyor; yeni spawn director'u veya fairness framework'u acilmadi.
-- `project/game/scripts/telemetry-check.ts` bu davranis icin yeni regression assert'i ekledi ve deterministic reroll snapshot'i `0.4`ten `0.5`e guncelledi.
-- `project/game/src/latestRun.ts` public builder panelini bu runtime-facing opener-pressure deltasi ile yeniden hizaladi.
+- Bu tur tek ana hedef `integration` modunda deterministic survival proxy anlatimini runtime spawn kontratiyla tekrar hizalamakti.
+- `project/game/scripts/telemetry-reports.ts` survival snapshot `controller` metni artik Run #172'nin near-player same-edge reroll guard'ini da acikca yaziyor; proxy mevcut runtime secim kurallarini eksik anlatmiyor.
+- `project/game/scripts/telemetry-check.ts` regex guard'i bu yeni controller anlatimini assertion altina aliyor; sonraki drift sessizce gecemeyecek.
 - Deterministic baseline halen `26.5s avg / 6.3s first death / 4% early`, bucket'lar `1 / 3 / 3 / 17`; seed `#3` outlier'i ise halen acik.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -22,7 +20,7 @@ Updated By: Codex Builder Run #172
 
 1. Run #121-#129 death/pause readability sadeleştirmeleri, Run #137-#150 opening/mobile/near-miss integration hattı ve Run #165-#171 opener fairness/readability zinciri ikinci hedefli insan sample ile dogrulanmadi.
 2. Run #130-#158 launch/retry/control guard'lari source tarafinda daha sağlam, ama gerçek cihazda start/retry/held steer ve quick fresh tap hissi manuel sample ile doğrulanmadı.
-3. Run #159, Run #160, Run #165-#172 opener spawn baskisini daha durust hale getirdi, fakat seed `#3` opener outlier'i ve diger fairness paternleri halen insan notu olmadan tam aciklanmis degil.
+3. Run #159, Run #160, Run #165-#172 opener spawn baskisini daha durust hale getirdi ve deterministic proxy artik bunu daha dogru anlatiyor; buna ragmen seed `#3` opener outlier'i ve diger fairness paternleri halen insan notu olmadan tam aciklanmis degil.
 4. Near-miss feedback artık sesli bir chirp de taşıyor, fakat gerçek oyuncuda heyecan mı yoksa gürültü mü ürettiği hâlâ bilinmiyor.
 5. Seed `#3` opener outlier'i (`6.3s` first death) deterministic baseline'da duruyor; centered multi-hit fatal threat tie fix'i olum atfini daha durust yapti ama outlier'in kok nedeni degil.
 6. `GameScene.ts` hâlâ büyük ve yeni mikro-fix/mutation'lar için friction yüzeyi olmaya devam ediyor.

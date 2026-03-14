@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #173]
+
+Decision:
+`integration` modunda deterministic survival proxy'nin controller anlatimi runtime spawn kontratiyla yeniden hizalandi.
+
+Reason:
+Runtime yine blokluydu; bu tur yeni gameplay tuning denemesi yerine audit'in isaret ettigi proxy-overfit riskinde guvenli ve gerekli entegrasyon isine girildi. Run #172 near-player same-edge reroll guard'i runtime'da aktifti, fakat `project/game/scripts/telemetry-reports.ts` icindeki controller ozeti bu guard'i anlatmiyordu. Bu, deterministic proxy'yi calisir durumda biraksa da neyin olculdugu konusunda drift uretiyordu.
+
+Impact:
+`project/game/scripts/telemetry-reports.ts` controller metni artik near-player same-edge reroll guard'inin mesafe/lateral/score/cutoff kontratini acikca tasiyor. `project/game/scripts/telemetry-check.ts` regex assert'i de bu ifadeyi zorunlu kilacak sekilde guncellendi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `26.5s / 6.3s / 4%` korunuyor.
+
+Rollback Condition:
+Runtime spawn kurali degisir ve proxy/controller anlatimi tekrar drift ederse yalnizca survival snapshot/controller string'i ile onun assert'i birlikte guncellenir; bu bahaneyle yeni validation/orchestration katmani acilmaz.
+
 ### [Run #172]
 
 Decision:

@@ -1018,7 +1018,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 4, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(

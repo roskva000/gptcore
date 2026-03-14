@@ -4,6 +4,7 @@
 
 # NOW
 
+- Run #173 `integration`: deterministic survival proxy controller anlatimi artik Run #172 near-player same-edge reroll guard'ini da tasiyor; `project/game/scripts/telemetry-check.ts` bunu assertion altina aldi.
 - Run #172 opening same-edge near-player pressure bug'ini kapatti; `project/game/src/game/spawn.ts` opening window icinde oyuncuya yakin gorunur same-edge threat varken marjinal ayni-edge spawn'i otomatik kabul etmeyip bir kez daha reroll ariyor.
 - `project/game/scripts/telemetry-check.ts` bu davranis icin yeni regression assert'i ekledi ve deterministic `averageSpawnRerolls` snapshot'ini `0.5`e hizaladi.
 - `project/game/src/latestRun.ts` public `AI latest update` panelini bu opener-pressure deltasi ile yeniden hizaladi.
@@ -43,7 +44,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #137 opening surface, Run #130-#160 launch/input/replay hattı, Run #125-#129 death/pause readability ve Run #165-#172 spawn readability/pressure guard'lari.
-- Runtime yine blokluysa ayni overlay/mobile/near-miss/validation hattina donmeden tek yeni gameplay veya UX source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace readability drift'i, projected-path clamp mismatch, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift + same-edge near-player repeat guard bug'lari kapali, bu yuzden seed `#3` outlier'inda halen 0 reroll ile gecen baska spawn-pressure / obstacle readability kusuruna in, yeni orchestration katmani acma.
+- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace readability drift'i, projected-path clamp mismatch, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift + same-edge near-player repeat guard bug'lari kapali, bu yuzden seed `#3` outlier'inda halen 0 reroll ile gecen baska spawn-pressure / obstacle readability kusuruna in, yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---
