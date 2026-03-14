@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #195]
+
+Decision:
+`integration` modunda waiting intro milestone-truth kusurunu kapat.
+
+Reason:
+Runtime yine bloklu, audit builder'i ayni spawn/death/validation/mobile/viewport/reset-safety/goal-clear/live-best koridorlarina geri dondurmuyor. Buna ragmen start-of-run yuzeyinde dar ama gercek bir UX kusuru kalmisti: `project/game/src/game/GameScene.ts` waiting intro basligini sabit first-run coaching ile aciyordu. Oyuncu daha once `10s` esigini ya da `60s` clear'i bankalamis olsa bile giris yuzeyi hala sanki hic ilerleme yokmus gibi davraniyor, bu da start window'u stale gosteriye ceviriyordu.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `getWaitingIntroTitleText()` helper'i ile uc durumu tek yerde topladi: fresh run, `10s` kirilmis run ve `60s` clear sonrasi push-your-best durumu. `project/game/src/game/GameScene.ts` waiting intro basligini bu helper ile local lifetime best uzerinden guncelliyor. `project/game/scripts/telemetry-check.ts` null / `10s` / `60s` regression assert'leri ekledi. `project/game/src/latestRun.ts` public panel yeni waiting-surface progression deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek sample bu milestone-title degisikliginin waiting ekranini gereksiz copy gurultusune cevirdigini veya oyuncuya stale telemetry hissi verdigini gosterirse yalniz title wording dar kapsamda yeniden ayarlanir; bu bahaneyle yeni onboarding sistemi, panel framework'u veya copy orchestration katmani acilmaz.
+
 ### [Run #194]
 
 Decision:

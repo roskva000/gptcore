@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+waiting_intro_progress_truth_integrity:
+current: Run #195 `project/game/src/game/GameScene.ts` waiting intro basligini local lifetime best uzerinden guncelliyor; fresh oyuncu hala `Break 10s. Then chase 60.` goruyor, `10s` kiran oyuncu `10s broken. Now chase 60.` mesajina, `60s` clear oyuncu ise `60s cleared. Push your best.` mesajina geciyor
+baseline: onceki source waiting intro title'i sabit first-run coaching metninde kaliyor, bu da returning player `10s` ya da `60s` milestone'unu zaten bankalamis olsa bile start window'un stale ve ilerlemeyi saklayan bir yuzey gibi görünmesine yol aciyordu
+target: sonraki manuel sample'da waiting ekranı mevcut ilerlemeyi daha dogru anlatsin; earned milestones replay istegini beslerken yeni copy gurultusuna donmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 live_best_hud_truth_integrity:
 current: Run #194 `project/game/src/game/GameScene.ts` aktif run sirasinda lifetime ve session `Best` metnini current survival time stored best'i gectigi anda canli guncelliyor
 baseline: onceki source `Best` HUD metnini yalniz telemetry kaydi yenilendiginde guncelliyordu; oyuncu yeni rekoru run icinde gecse bile HUD olum ekranina kadar eski best'i gostermeye devam ediyordu

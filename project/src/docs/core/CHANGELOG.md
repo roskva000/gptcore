@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #195
+
+- `project/game/src/game/telemetry.ts` yeni `getWaitingIntroTitleText()` helper'i ile waiting intro basligini local best milestone'una gore yorumlamaya basladi
+- `project/game/src/game/GameScene.ts` start window basligini artik sabit first-run copy yerine local lifetime best'e gore guncelliyor; `10s` ve `60s` ilerlemesi bankalandiginda giris yuzeyi stale kalmiyor
+- `project/game/scripts/telemetry-check.ts` waiting intro icin fresh / `10s broken` / `60s cleared` regression assert'leri ekledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu waiting-surface truth fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #194
 
 - `project/game/src/game/telemetry.ts` aktif run stored best'i gectiginde HUD'in gosterecegi degeri hesaplayan `getLiveBestSurvivalTimeText()` helper'ini ekledi

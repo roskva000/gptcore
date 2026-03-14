@@ -47,6 +47,7 @@ import {
   createEmptyTelemetry,
   getCompletedRunCount,
   getLiveBestSurvivalTimeText,
+  getWaitingIntroTitleText,
   hasCompletedRunSample,
   getRetryDelayMs,
   isValidationReportCurrent,
@@ -224,6 +225,21 @@ assert.equal(
   }),
   '24.2s',
   'Active HUD best text should keep the stored best when the current run has not surpassed it yet.',
+);
+assert.equal(
+  getWaitingIntroTitleText(null),
+  'Break 10s. Then chase 60.',
+  'Fresh waiting copy should keep the first-run coaching when no best is stored yet.',
+);
+assert.equal(
+  getWaitingIntroTitleText(10),
+  '10s broken. Now chase 60.',
+  'Waiting copy should acknowledge when the player has already cleared the first-death target.',
+);
+assert.equal(
+  getWaitingIntroTitleText(60),
+  '60s cleared. Push your best.',
+  'Waiting copy should acknowledge when the namesake goal is already banked.',
 );
 assert.equal(
   shouldHandlePrimaryActionKey(),

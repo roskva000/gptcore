@@ -38,6 +38,7 @@ import {
   getBestSurvivalTime,
   getBestSurvivalTimeText,
   getLiveBestSurvivalTimeText,
+  getWaitingIntroTitleText,
   formatValidationReportSummaryText,
   getAverageRetryDelaySeconds,
   getAverageRetryDelayText,
@@ -365,7 +366,7 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.waitingIntroTitle = this.add
-      .text(ARENA_WIDTH / 2, 126, 'Break 10s. Then chase 60.', {
+      .text(ARENA_WIDTH / 2, 126, '', {
         align: 'center',
         color: '#f5f7ff',
         fontFamily: 'Trebuchet MS',
@@ -2289,6 +2290,7 @@ export class GameScene extends Phaser.Scene {
 
   private updateTelemetryText(): void {
     this.updateBestText();
+    this.waitingIntroTitle.setText(getWaitingIntroTitleText(getBestSurvivalTime(this.telemetry)));
     this.telemetryText.setText(this.getTelemetryLinesForCurrentPhase().join('\n'));
     this.telemetryText.setVisible(this.phase !== 'paused' && this.phase !== 'gameOver');
     this.telemetryText.setAlpha(this.phase === 'playing' ? 0.9 : 1);

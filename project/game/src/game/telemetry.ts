@@ -1,4 +1,4 @@
-import { TARGET_FIRST_DEATH_SECONDS } from './balance.ts';
+import { SURVIVAL_GOAL_SECONDS, TARGET_FIRST_DEATH_SECONDS } from './balance.ts';
 
 export const TELEMETRY_RECENT_RUN_LIMIT = 4;
 export const VALIDATION_SAMPLE_RUN_TARGET = 5;
@@ -105,6 +105,18 @@ export const getLiveBestSurvivalTimeText = ({
   }
 
   return `${liveBestSurvivalTime.toFixed(1)}s`;
+};
+
+export const getWaitingIntroTitleText = (bestSurvivalTime: number | null): string => {
+  if (bestSurvivalTime !== null && bestSurvivalTime >= SURVIVAL_GOAL_SECONDS) {
+    return `${SURVIVAL_GOAL_SECONDS}s cleared. Push your best.`;
+  }
+
+  if (bestSurvivalTime !== null && bestSurvivalTime >= TARGET_FIRST_DEATH_SECONDS) {
+    return `${TARGET_FIRST_DEATH_SECONDS}s broken. Now chase ${SURVIVAL_GOAL_SECONDS}.`;
+  }
+
+  return `Break ${TARGET_FIRST_DEATH_SECONDS}s. Then chase ${SURVIVAL_GOAL_SECONDS}.`;
 };
 
 export const getAverageRetryDelaySeconds = (telemetry: GameplayTelemetry): number | null => {
