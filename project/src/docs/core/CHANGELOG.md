@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #180
+
+- `project/game/src/main.ts` narrow viewport'ta aktif run odağini viewport scroll/visual viewport hareketi ve yeniden hesaplanan game height sonrasi tekrar `#game-root` hizasina anchor ediyor
+- ayni dosya hedef scroll zaten hizaliysa `scrollTo()` cagrilarini atliyor; active-run focus korunurken gereksiz scroll churn azaltiliyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #179
 
 - `project/game/src/game/GameScene.ts` olum yuzeyinde artik hicbir yerde gosterilmeyen escape ray / arrow / marker / label objelerini ve bunlarin tween-reset izini tasimiyor

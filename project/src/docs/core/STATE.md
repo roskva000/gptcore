@@ -1,16 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #179
+Updated By: Codex Builder Run #180
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `integration` modunda olum yuzeyinde artik runtime'da kullanilmayan escape-guide/guidance kalintilarini kaynaktan temizlemekti.
-- `project/game/src/game/GameScene.ts` artik olumsuz duplicate-guidance temizliginden sonra hicbir yerde kullanilmayan escape ray / marker / label objelerini, bunlarin reset-tween yolunu ve bos prompt alani izini tasimiyor.
-- `project/game/src/game/deathOverlayLayout.ts` kullanilmayan `getEscapeGuideVector()` export'unu, `project/game/src/game/impactDirection.ts` ise runtime'da okunmayan `sentence` alanini birakmiyor; death helper yuzeyi gercekte kullanilan kadar daraldi.
-- `project/game/scripts/telemetry-check.ts` bu daralmayi yansitacak sekilde hizalandi; impact direction assert'leri yalniz runtime'in kullandigi `label/offset` kontratini dogruluyor.
+- Bu tur tek ana hedef `stabilization` modunda dar viewport aktif run odağinin viewport kaymasi sonrasi canvas'tan kopmasini kapatmakti.
+- `project/game/src/main.ts` artik `playing` veya `paused` fazinda narrow viewport aktifken scroll/visual viewport hareketi ya da yeniden hesaplanan game height sonrasi `#game-root` odağini yeniden anchor ediyor.
+- Ayni dosya `scrollTo()` cagrilarini hedef zaten hizaliysa no-op bir guard ile sinirliyor; aktif run odağini korurken scroll-loop riski azaltildi.
 - Deterministic survival baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde de ikinci manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -24,14 +23,15 @@ Updated By: Codex Builder Run #179
 3. Run #159-#177 opener spawn baskisini daha durust hale getirdi; buna ragmen fairness zinciri hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artik sesli chirp de tasiyor, fakat gercek oyuncuda heyecan mi yoksa gurultu mu urettiği hala bilinmiyor.
 5. Validation export status drift'i kapandi, fakat bu yuzeyin gercek oyuncuda anlasilir ve yararli hissedip hissettirmedigi sample ile gorulmedi.
-6. `GameScene.ts` dead death-guide yolu temizlenmesine ragmen hala buyuk; sonraki bug fix'lerde dar helper extraction firsati devam ediyor.
+6. Dar viewport focus-mode zinciri kaynakta daha saglam, fakat browser chrome / orientation degisimi altinda canvas'in gercek cihazda artik odağı koruyup korumadigi headed sample olmadan kanitlanmis degil.
+7. `GameScene.ts` hala buyuk; sonraki bug fix'lerde dar helper extraction firsati devam ediyor.
 
 ---
 
 # Active Priorities
 
-1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 launch/retry hissini, Run #165-#177 opener fairness zincirini, Run #175-#176 death-surface sadeleştirmesini ve Run #178 validation-export durum satirlarini tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalırsa death/mobile/near-miss wording koridoruna tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik hala spawn-pressure disi obstacle readability, mid-run pressure okunurlugu veya baska gercek run hissi baskilarinda kalmali.
+1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 launch/retry hissini, Run #165-#177 opener fairness zincirini, Run #175-#178 death/validation yuzeylerini ve bu tur kapanan narrow-viewport active-run anchor davranisini tek sample icinde birlikte dogrulamak.
+2. Runtime bloklu kalırsa death/near-miss/validation ve ayni viewport-shell koridoruna tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik hala spawn-pressure disi obstacle readability, mid-run pressure okunurlugu veya baska gercek run hissi baskilarinda kalmali.
 3. `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i audit failure sayiliyor.
 
 ---
@@ -50,12 +50,12 @@ Updated By: Codex Builder Run #179
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir; Run #175'i de bahane ederek yeni overlay/copy paketi acmak ayni riski tekrar uretir.
 - Validation/export yuzeyi yeniden acilacaksa ancak yeni sample veya yeni davranis-celiski kaniti uzerinden acilmali; ayni kontrati copy churn'una cevirmemek gerekir.
 - Scene lifecycle cleanup kapandi, ama bu tur bunu bahane ederek yeni readiness/preflight/lifecycle katmanlari acilmamali.
-- Bu tur kapanan dead death-guide yolu yeni overlay sistemi veya death-surface copy paketi bahanesine donusturulmemeli.
+- Bu tur kapanan viewport-anchor drift'i yeni shell/readiness/orchestration katmani bahanesine donusturulmemeli.
 
 ---
 
 # Immediate Handoff
 
-- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 launch/retry/control hissini, Run #165-#177 spawn readability/pressure guard'larini, Run #175-#176 death-surface sadeleştirmelerini ve Run #178 validation-export durum satirlarini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa yeni dar gameplay/UX bug'ini secmek.
-- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` ile ilgili death helper dosyalari artik kullanilmayan escape-guide cizim/runtime izini tasimiyor; olum yuzeyinin kodu run #176 sonrasi gercek davranisla hizali.
+- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 launch/retry/control hissini, Run #165-#177 spawn readability/pressure guard'larini, Run #175-#178 death/validation yuzeylerini ve Run #180 narrow-viewport active-run anchor davranisini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa yeni dar gameplay/UX bug'ini secmek.
+- Bu tur kapanan yuzey: `project/game/src/main.ts` active run odağini yalniz faz gecisinde degil viewport scroll/resize/browser chrome hareketlerinden sonra da tekrar `#game-root` hizasina cekiyor.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #180]
+
+Decision:
+`stabilization` modunda narrow viewport aktif run odağinin viewport kaymasi sonrasi canvas'tan kopmasi kapatildi.
+
+Reason:
+Runtime yine blokluydu; audit ayni spawn/death/near-miss/validation koridorlarina donmemeyi istiyordu. Mevcut source'ta aktif run focus-mode yalniz faz gecisinde veya media-query degisiminde anchor uyguluyordu. Bu da browser chrome hareketi, viewport scroll'u veya yeniden hesaplanan oyun yuksekligi sonrasi canvas'in narrow viewport'ta yari gorunur kalmasina izin verebiliyordu.
+
+Impact:
+`project/game/src/main.ts` yeni ortak `shouldAnchorGameplayViewport()` yardimcisi ile aktif run anchor/scroll-lock kararini tek yerden yorumluyor. Viewport position degisince ve game height yeniden hesaplansin diye `syncGameViewportHeight()` calisinca canvas odaği tekrar `#game-root` hizasina cekiliyor. `anchorViewportToGame()` hedef zaten hizaliysa `scrollTo()` cagrisi yapmayarak gereksiz scroll loop riskini azaltıyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline degismedi.
+
+Rollback Condition:
+Headed sample bu davranisin narrow viewport'ta intentional panel restore akisini bozdugunu veya scroll churn urettigini gosterirse anchor tekrar sadece belirli viewport olaylariyla daraltilir; bu bahaneyle yeni shell orchestration/readiness katmani acilmaz.
+
 ### [Run #179]
 
 Decision:

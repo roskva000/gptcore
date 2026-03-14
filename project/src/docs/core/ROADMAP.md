@@ -4,6 +4,8 @@
 
 # NOW
 
+- Run #180 `stabilization`: `project/game/src/main.ts` narrow viewport'ta aktif run focus-mode icin viewport anchor'i yalniz faz gecisinde degil, viewport position/height degisimlerinde de tekrar uyguluyor; browser chrome veya scroll kaymasi sonrasi canvas yari gorunur kalmiyor.
+- Ayni degisiklik anchor hedefi zaten hizaliysa `scrollTo()` cagrilarini atliyor; aktif run odağini korurken scroll loop riski azaltildi.
 - Run #179 `integration`: `project/game/src/game/GameScene.ts` olum yuzeyinde artik runtime'da kullanilmayan escape ray / marker / label objelerini, bunlarin tween-reset yolunu ve bos prompt alani izini tasimiyor; `project/game/src/game/deathOverlayLayout.ts` ile `project/game/src/game/impactDirection.ts` helper yuzeyi gercek kullanimla hizalandi.
 - `project/game/scripts/telemetry-check.ts` kullanilmayan escape-guide export'unu ve `sentence` payload'ini birakan assert'leri temizledi; deterministic validation green kaldi.
 - Run #178 `stabilization`: `project/game/src/game/telemetry.ts` saved validation export'un aktif session sample ile ayni olup olmadigini `isValidationReportCurrent()` ile ayiriyor; `project/game/src/game/GameScene.ts` waiting ve game-over telemetry satirlari artik current export, older sample ve stale-refresh-needed durumlarini farkli gosteriyor.
@@ -49,7 +51,7 @@
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
 - `project/game/src/latestRun.ts` public `AI latest update` paneli Run #170 opener readability fix'i ile yeniden hizalandi.
 - Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, launch/retry hissi, Run #175-#176 death-surface sadeleştirmeleri ve Run #165-#178 spawn readability/pressure + validation-status guard'lari icin keep/tune/revert notu birak.
-- Runtime yoksa Run #179'u yeni overlay/death sistemi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri ve near-miss/mobile validation koridoru disinda kal. Yeni adaylar obstacle readability, mid-run pressure anlatimi veya baska dar gameplay baskilarinda kalmali.
+- Runtime yoksa Run #180'i yeni shell/readiness sistemi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri, near-miss/validation hattı ve ayni viewport-anchor koridoru disinda kal. Yeni adaylar obstacle readability, mid-run pressure anlatimi veya baska dar gameplay baskilarinda kalmali.
 - Deterministic baseline `27.4s / 10.0s / 0%` ve build sagligini koru.
 
 Success markers:
@@ -60,8 +62,8 @@ Success markers:
 
 # NEXT
 
-- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 launch/input/replay hattı, Run #175-#176 death surface ve Run #165-#174 spawn readability/pressure guard'lari.
-- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#179 death/validation/integration temizligini yeni copy/readiness churn'una cevirmeden, same-edge/opener fairness disinda kalan yeni dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
+- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 launch/input/replay hattı, Run #175-#178 death/validation yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari ve Run #180 narrow viewport active-run anchor davranisi.
+- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#180 death/validation/shell temizligini yeni copy/readiness churn'una cevirmeden, same-edge/opener fairness disinda kalan yeni dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---

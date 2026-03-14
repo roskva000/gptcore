@@ -235,9 +235,9 @@ target: sonraki manuel sample'da blur/refocus veya app switch sonrasi released m
 validation: `npm run telemetry:check`, `npm run build`
 
 active_run_viewport_anchor_recovery:
-current: Run #140 narrow viewport'ta `playing` veya `paused` fazina girince mevcut sayfa scroll konumunu sakliyor, viewport'u `#game-root` hizasina geri cekiyor ve waiting/game-over'a donunce onceki panel scroll konumunu geri yukluyor
-baseline: Run #139 scroll'u kilitliyordu, fakat kullanici panelin altlarindayken run baslatirsa aktif seans mevcut scroll offset'inde acilabiliyor ve canvas kilitlenmis halde yari gorunur kalabiliyordu
-target: sonraki manuel sample'da aktif run her seferinde oyun alani odaginda baslasin; run bitince panel ve AI update akisi dogal scroll konumuna donsun
+current: Run #180 `project/game/src/main.ts` narrow viewport'ta aktif run focus-mode icin viewport anchor'i yalniz faz girisinde degil, viewport position degisimleri ve `syncGameViewportHeight()` yeniden hesaplari sonrasinda da tekrar uyguluyor; hedef zaten hizaliysa `scrollTo()` no-op kaliyor
+baseline: Run #140 aktif run'a giriste mevcut sayfa scroll konumunu saklayip viewport'u `#game-root` hizasina cekiyordu, fakat browser chrome/orientation/viewport kaymasi daha sonra olursa canvas yeniden yari gorunur konuma suruklenebiliyordu
+target: sonraki manuel sample'da aktif run yalniz baslangicta degil viewport kaymasi sonrasi da oyun alani odaginda kalsin; run bitince panel ve AI update akisi dogal scroll konumuna donsun
 validation: `npm run build`
 
 active_run_scroll_lock_stability:

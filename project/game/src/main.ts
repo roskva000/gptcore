@@ -126,8 +126,16 @@ const scheduleViewportAnchor = (callback: () => void): void => {
   });
 };
 
+const shouldAnchorGameplayViewport = (): boolean =>
+  narrowViewportQuery.matches &&
+  (currentGamePhase === 'playing' || currentGamePhase === 'paused');
+
 const handleViewportPositionChange = (): void => {
   scheduleGameScaleRefresh();
+
+  if (shouldAnchorGameplayViewport()) {
+    scheduleViewportAnchor(anchorViewportToGame);
+  }
 };
 
 const getScrollTop = (): number =>
@@ -136,10 +144,15 @@ const getScrollTop = (): number =>
 const anchorViewportToGame = (): void => {
   const shellStyles = window.getComputedStyle(shellElement);
   const shellPaddingTop = readPxValue(shellStyles.paddingTop);
+  const currentScrollTop = getScrollTop();
   const targetScrollTop = Math.max(
     0,
-    Math.round(getScrollTop() + gameRootElement.getBoundingClientRect().top - shellPaddingTop),
+    Math.round(currentScrollTop + gameRootElement.getBoundingClientRect().top - shellPaddingTop),
   );
+
+  if (Math.abs(targetScrollTop - currentScrollTop) <= 1) {
+    return;
+  }
 
   window.scrollTo({ top: targetScrollTop, behavior: 'auto' });
 };
@@ -155,9 +168,7 @@ const restorePanelScrollPosition = (): void => {
 };
 
 const syncActiveRunScrollLock = (): void => {
-  const shouldLockScroll =
-    narrowViewportQuery.matches &&
-    (currentGamePhase === 'playing' || currentGamePhase === 'paused');
+  const shouldLockScroll = shouldAnchorGameplayViewport();
   document.documentElement.classList.toggle('app-scroll-locked', shouldLockScroll);
 };
 
@@ -210,6 +221,10 @@ const syncGameViewportHeight = (): void => {
 
   document.documentElement.style.setProperty('--game-max-height', `${maxGameHeight}px`);
   scheduleGameScaleRefresh();
+
+  if (shouldAnchorGameplayViewport()) {
+    scheduleViewportAnchor(anchorViewportToGame);
+  }
 };
 
 if (panelDetailsElements.length > 0) {

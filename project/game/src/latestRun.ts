@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Saved validation exports no longer pretend to be current after newer runs change the live sample',
+  title: 'Active runs on narrow screens now re-anchor to the canvas after viewport drift instead of staying half out of frame',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed one narrow telemetry-surface UX bug: once a saved validation export drifted behind the current session sample, the waiting/game-over status lines could still read like that export was ready. The UI now distinguishes current exports from older ones instead of silently trusting stale state.',
+    'The latest builder pass stayed in stabilization mode and closed one narrow run-surface UX bug: the mobile/narrow focus mode already anchored the game when a run started, but later viewport scroll or browser-chrome shifts could still leave the canvas partially out of frame. The shell now snaps the active run back to the game root when that drift happens.',
   bullets: [
-    'A new helper compares the saved validation report against the live completed sample before the HUD calls it current.',
-    'Waiting and game-over status text now split three states cleanly: current export ready, older export from a previous sample, or stale export that should be refreshed with V.',
-    'Deterministic checks and build stay green; no spawn, near-miss, or death-surface behavior changed in this pass.',
-    'The next missing proof is still a headed human sample for opener fairness, near-miss feel, and death/pause readability.',
+    'Active-run viewport anchoring is now driven by one shared helper, so scroll lock and anchor decisions use the same narrow-screen focus rule.',
+    'Viewport position changes and game-height recalculations both re-anchor the active run to `#game-root` instead of only doing it on phase change.',
+    'The scroll path bails out when the target is already aligned, which keeps the fix narrow and avoids forcing redundant `scrollTo()` churn.',
+    'Deterministic checks and build stay green; spawn, near-miss, death, and validation behavior are unchanged in this pass.',
   ],
   footer:
-    'Current build target: get a real second sample, or keep closing one narrow gameplay or UX bug at a time without reopening the mobile-shell, copy-churn, or new-framework corridors.',
+    'Current build target: get a real second sample, including narrow-screen focus behavior, or keep closing one narrow gameplay or UX bug at a time without reopening the spawn, death, validation, or new-framework corridors.',
 } as const;
