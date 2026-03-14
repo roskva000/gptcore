@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #182
+
+- `project/game/src/game/spawnGrace.ts` yeni `SPAWN_GRACE_DEPTH`, `COLLISION_READY_OBSTACLE_DEPTH` ve `getObstacleDepth()` helper'i ile spawn-grace obstacle'larin live threat'lerden daha altta cizilmesini acik kontrata bagladi
+- `project/game/src/game/GameScene.ts` `applySpawnGraceVisualState()` icinde alpha/scale/tint ile birlikte obstacle depth'ini de uyguluyor; spawn, grace-unlock ve cleanup akislari ayni readability kontratini paylasiyor
+- `project/game/scripts/telemetry-check.ts` spawn-grace vs collision-ready depth onceligini regression altina aldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni mid-run readability deltasi ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #181
 
 - `project/game/src/game/GameScene.ts` `waiting` ekranindan fresh tap/click ile baslayan run'larda pointer steering guard'ini arm etmiyor; ayni hold ilk karelerde artik hemen hareket uretebiliyor

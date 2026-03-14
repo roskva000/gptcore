@@ -69,7 +69,9 @@ import {
   shouldRequirePointerReleaseAfterPause,
 } from './primaryAction.ts';
 import {
+  COLLISION_READY_OBSTACLE_DEPTH,
   getSpawnGraceVisualState,
+  getObstacleDepth,
   SPAWN_GRACE_INITIAL_ALPHA,
   SPAWN_GRACE_INITIAL_SCALE,
 } from './spawnGrace.ts';
@@ -87,7 +89,7 @@ const NEAR_MISS_EXTRA_DISTANCE_PX = 22;
 const NEAR_MISS_CHAIN_WINDOW_MS = 1800;
 const NEAR_MISS_HINT_DURATION_MS = 900;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
-const OBSTACLE_DEPTH = 2;
+const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
 const FATAL_OBSTACLE_DEPTH = 3;
 const IMPACT_LABEL_HALF_HEIGHT_PX = 12;
 const IMPACT_LABEL_GAP_PX = 22;
@@ -1109,7 +1111,10 @@ export class GameScene extends Phaser.Scene {
     collisionReady: boolean,
   ): void {
     const visualState = getSpawnGraceVisualState(collisionReady);
-    obstacle.setAlpha(visualState.alpha).setScale(visualState.scale);
+    obstacle
+      .setAlpha(visualState.alpha)
+      .setScale(visualState.scale)
+      .setDepth(getObstacleDepth(collisionReady));
 
     if (visualState.tint === null) {
       obstacle.clearTint();

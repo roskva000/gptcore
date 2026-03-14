@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #182]
+
+Decision:
+`stabilization` modunda spawn-grace obstacle'larin live threat lane'ini ustten maskelemesini kapatmak icin depth kontrati ayrildi.
+
+Reason:
+Runtime yine blokluydu; audit ayni spawn same-edge, death, validation, shell ve launch-control koridorlarina geri donmemeyi istiyordu. Kaynakta dar ama gercek bir readability kusuru vardi: collision grace aktif yeni obstacle'lar fiziksel olarak zararsiz olsalar da collision-ready threat'lerle ayni depth'te ciziliyordu. Bu, ozellikle mid-run'da harmless arrival'in canli danger lane'inin ustune cikip oyuncunun asil tehdidi daha gec okumasina yol acabiliyordu.
+
+Impact:
+`project/game/src/game/spawnGrace.ts` artik `getObstacleDepth()` helper'i ile grace-state ve collision-ready obstacle derinligini ayni kontratta topluyor. `project/game/src/game/GameScene.ts` bu kontrati spawn, grace-unlock ve cleanup akışlarında `applySpawnGraceVisualState()` icinden uyguluyor. `project/game/scripts/telemetry-check.ts` yeni depth onceligi assert'leri ekledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Headed sample grace obstacle'lari altta tutmanin yeni spawn'i gereksiz gorunmez kildigini veya challenge okunurlugunu dusurdugunu gosterirse yalniz depth bandi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni obstacle layering sistemi, shell orchestration'i veya baska bir readability framework'u acilmaz.
+
 ### [Run #181]
 
 Decision:

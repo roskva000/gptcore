@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+spawn_grace_depth_readability:
+current: Run #182 `project/game/src/game/spawnGrace.ts` spawn-grace obstacle'lari `1.5`, collision-ready obstacle'lari `2` depth kontratina bagladi; `project/game/src/game/GameScene.ts` bunu spawn, grace-unlock ve cleanup akışlarında ayni helper uzerinden uyguluyor, bu sayede harmless arrivals artik live threat lane'inin ustune cikmiyor
+baseline: onceki source collision grace aktif obstacle'lari soluk/tintli cizse de ayni `OBSTACLE_DEPTH`te tutuyordu; yeni ama zararsiz bir spawn collision-ready threat'in ustune gelip mid-run lane okunurlugunu sessizce bulandirabiliyordu
+target: sonraki manuel sample'da yeni spawn'lar hala okunur kalsin ama canli danger lane'ini maskelemesin; close-dodge ve mid-run pressure anlari daha durust gorunsun
+validation: `npm run telemetry:check`, `npm run build`
+
 waiting_pointer_launch_response_integrity:
 current: Run #181 `project/game/src/game/GameScene.ts` `waiting` fazindan fresh pointer press ile acilan run'larda pointer steering guard'ini arm etmiyor; oyuncu ayni touch/click hold ile ilk karelerden itibaren yonelebiliyor
 baseline: onceki source `pointer-press` launch'i `gameOver` / `paused` retry semantigiyle ayni sayiyor ve `armPointerSteeringGuardAfterActivation()` nedeniyle ilk `180ms` boyunca steer'i bosuna bloke ediyordu

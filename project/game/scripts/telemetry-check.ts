@@ -13,7 +13,12 @@ import {
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
-import { getSpawnGraceVisualState } from '../src/game/spawnGrace.ts';
+import {
+  COLLISION_READY_OBSTACLE_DEPTH,
+  getObstacleDepth,
+  getSpawnGraceVisualState,
+  SPAWN_GRACE_DEPTH,
+} from '../src/game/spawnGrace.ts';
 import {
   createNearMissState,
   evaluateNearMiss,
@@ -215,6 +220,16 @@ assert.deepEqual(
     tint: null,
   },
   'Collision-ready obstacles should return to their full-strength visual state immediately.',
+);
+assert.equal(
+  getObstacleDepth(false),
+  SPAWN_GRACE_DEPTH,
+  'Spawn-grace obstacles should render beneath collision-ready threats so harmless arrivals do not mask live danger lanes.',
+);
+assert.equal(
+  getObstacleDepth(true),
+  COLLISION_READY_OBSTACLE_DEPTH,
+  'Collision-ready obstacles should keep the main live-threat depth once their grace window ends.',
 );
 assert.equal(
   shouldHandlePrimaryActionPointer({

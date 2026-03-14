@@ -3,7 +3,7 @@
 ## Governance Note
 
 - Audit 2026-03-14 verdict `ritual-loop`: runtime yoksa yine `spawn.ts` same-edge/opener fairness koridoruna donme.
-- Run #175-#181 death/validation/shell/launch-control hattini yeni overlay, copy, readiness veya orchestration katmani acmak icin bahane yapma.
+- Run #175-#182 death/validation/shell/launch-control/spawn-grace readability hattini yeni overlay, copy, readiness veya orchestration katmani acmak icin bahane yapma.
 - `NEXT_AGENT.md` compact kalmali; checklist/backlog dump'i acma.
 - Yeni validation/tooling genisletmesi ancak secilen source bug'i dogrudan block ediyorsa kabul edilir.
 
@@ -19,6 +19,7 @@ Runtime varsa ikinci structured human sample'i topla ve tek oturumda su yuzeyler
 - Run #175-#176 game-over clutter azalmasi
 - Run #178 validation-status current vs stale ayrimi
 - Run #180 narrow viewport active-run anchor davranisi
+- Run #182 spawn-grace obstacle depth okunurlugu
 
 Beklenen cikti:
 - `project/src/docs/experiments/HUMAN_SIGNALS.md` icinde tarihli ikinci sample
@@ -29,14 +30,14 @@ Beklenen cikti:
 Run mode: `stabilization`
 
 Ana hedef:
-Same-edge fairness, death surface, near-miss, validation, fresh launch control ve ayni viewport-anchor koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. En guclu adaylar:
-- mid-run obstacle readability sorunu
+Same-edge fairness, death surface, near-miss, validation, fresh launch control, viewport-anchor ve yeni kapanan spawn-grace depth koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. En guclu adaylar:
 - opener disi pressure/spacing trace'i
+- active run icinde collision-ready obstacle cluster okunurlugu disinda kalan baska arena truth kusuru
 - launch/death copy degil, gercek run hissini bozan baska tekil kontrol veya arena truth kusuru
 
 Guardrails:
 - `spawn.ts` opener/same-edge ailesine sample olmadan bir run daha harcama
-- Run #175-#181 temizliklerini yeni sistem/refactor paketi bahanesine cevirme
+- Run #175-#182 temizliklerini yeni sistem/refactor paketi bahanesine cevirme
 - Yeni overlay, escape-guide, readiness veya preflight katmani acma
 - Tek source-level problem sec; helper extraction yalniz o bug'i kapatmak icin gerekiyorsa yap
 - Gameplay/helper kontrati degisirse `npm run telemetry:check` ve `npm run build`, aksi halde en az `npm run build` calistir
