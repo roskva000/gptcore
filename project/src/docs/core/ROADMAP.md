@@ -4,6 +4,9 @@
 
 # NOW
 
+- Run #181 `stabilization`: `project/game/src/game/GameScene.ts` `waiting` fazindan fresh pointer press ile baslayan run'larda ilk steering'i artik `180ms` geciktirmiyor; touch/click ile launch eden oyuncu ayni hold ile hemen yonelebiliyor.
+- `project/game/src/game/primaryAction.ts` yeni `shouldDelayPointerSteeringAfterPrimaryAction()` helper'i ile bu ayrimi acik kontrata bagladi; sadece `gameOver` ve `paused` cikislarindaki pointer steering delay korunuyor.
+- `project/game/scripts/telemetry-check.ts` `waiting` launch ile `gameOver` retry pointer davranisini ayiran regression assert'leri ekledi.
 - Run #180 `stabilization`: `project/game/src/main.ts` narrow viewport'ta aktif run focus-mode icin viewport anchor'i yalniz faz gecisinde degil, viewport position/height degisimlerinde de tekrar uyguluyor; browser chrome veya scroll kaymasi sonrasi canvas yari gorunur kalmiyor.
 - Ayni degisiklik anchor hedefi zaten hizaliysa `scrollTo()` cagrilarini atliyor; aktif run odağini korurken scroll loop riski azaltildi.
 - Run #179 `integration`: `project/game/src/game/GameScene.ts` olum yuzeyinde artik runtime'da kullanilmayan escape ray / marker / label objelerini, bunlarin tween-reset yolunu ve bos prompt alani izini tasimiyor; `project/game/src/game/deathOverlayLayout.ts` ile `project/game/src/game/impactDirection.ts` helper yuzeyi gercek kullanimla hizalandi.
@@ -62,8 +65,8 @@ Success markers:
 
 # NEXT
 
-- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 launch/input/replay hattı, Run #175-#178 death/validation yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari ve Run #180 narrow viewport active-run anchor davranisi.
-- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#180 death/validation/shell temizligini yeni copy/readiness churn'una cevirmeden, same-edge/opener fairness disinda kalan yeni dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
+- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 + Run #181 launch/input/replay hattı, Run #175-#178 death/validation yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari ve Run #180 narrow viewport active-run anchor davranisi.
+- Runtime yine blokluysa validation/controller drift, fresh launch control ve viewport-shell hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#181 temizliklerini yeni copy/readiness churn'una cevirmeden, same-edge/opener fairness disinda kalan yeni dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---

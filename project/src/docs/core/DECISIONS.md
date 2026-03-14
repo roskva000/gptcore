@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #181]
+
+Decision:
+`stabilization` modunda `waiting` fazindan fresh pointer launch sonrasi ilk steer'i bloke eden `180ms` delay kaldirildi; `gameOver` ve `paused` cikislarindaki pointer guard korundu.
+
+Reason:
+Runtime yine blokluydu; audit ayni spawn/death/validation/viewport koridorlarina donmemeyi istiyordu. Insan sinyali mobil hissi zayif buluyor ve source'ta dar ama gercek bir kontrol kusuru vardi: `pointer-press` ile waiting ekranindan run baslatildiginda `armPointerSteeringGuardAfterActivation()` ayni hold'u `retry/resume` ile ayni semantikde yorumlayip ilk `180ms` steer'i bosuna yutuyordu. Bu, keyboard ile aninda hareket eden launch akisiyla da tutarsizdi.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni `shouldDelayPointerSteeringAfterPrimaryAction()` helper'i ile pointer steering delay kararini explicit hale getirdi. `project/game/src/game/GameScene.ts` `waiting -> playing` gecisinde fresh pointer press icin guard arm etmiyor; `paused` ve `gameOver` cikislarinda eski delay korunuyor. `project/game/scripts/telemetry-check.ts` bu ayrimi regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Headed sample fresh launch'ta immediate pointer steering'in istemsiz jerk veya accidental opener movement urettigini gosterirse yalniz `waiting` launch semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input orchestration, readiness veya preflight katmani acilmaz.
+
 ### [Run #180]
 
 Decision:

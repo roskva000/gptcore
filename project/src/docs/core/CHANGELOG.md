@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #181
+
+- `project/game/src/game/GameScene.ts` `waiting` ekranindan fresh tap/click ile baslayan run'larda pointer steering guard'ini arm etmiyor; ayni hold ilk karelerde artik hemen hareket uretebiliyor
+- `project/game/src/game/primaryAction.ts` yeni `shouldDelayPointerSteeringAfterPrimaryAction()` helper'i ile `waiting` launch ve `gameOver` / `paused` cikisi arasindaki pointer delay kontratini ayirdi
+- `project/game/scripts/telemetry-check.ts` bu yeni launch-vs-retry ayrimi icin regression assert'leri ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #180
 
 - `project/game/src/main.ts` narrow viewport'ta aktif run odağini viewport scroll/visual viewport hareketi ve yeniden hesaplanan game height sonrasi tekrar `#game-root` hizasina anchor ediyor

@@ -61,6 +61,7 @@ import {
 import {
   hasFreshMovementInput,
   isPrimaryPointerDown,
+  shouldDelayPointerSteeringAfterPrimaryAction,
   shouldAllowPointerPrimaryActionPress,
   shouldClearMovementReleaseRequirement,
   shouldClearPointerReleaseRequirement,
@@ -796,7 +797,7 @@ export class GameScene extends Phaser.Scene {
     this.unlockFeedbackAudio();
 
     if (this.phase === 'waiting') {
-      this.startRun(source);
+      this.startRun(source, 'waiting');
       return;
     }
 
@@ -806,7 +807,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (this.phase === 'gameOver') {
-      this.startRun(source);
+      this.startRun(source, 'gameOver');
     }
   }
 
@@ -883,7 +884,7 @@ export class GameScene extends Phaser.Scene {
       });
   }
 
-  private startRun(source: PrimaryActionSource): void {
+  private startRun(source: PrimaryActionSource, phaseBeforeActivation: 'waiting' | 'gameOver'): void {
     if (this.phase === 'playing') {
       return;
     }
@@ -914,7 +915,7 @@ export class GameScene extends Phaser.Scene {
     this.supportText.setText(this.getBaseSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
     this.recordRunStart();
-    this.armPointerSteeringGuardAfterActivation(source);
+    this.armPointerSteeringGuardAfterActivation(source, phaseBeforeActivation);
 
     this.scheduleNextSpawn(FIRST_SPAWN_DELAY_MS);
   }
@@ -1013,7 +1014,7 @@ export class GameScene extends Phaser.Scene {
     this.restoreNearMissHintAfterPause();
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.movementInputWasActive = this.hasMovementInput();
-    this.armPointerSteeringGuardAfterActivation(source);
+    this.armPointerSteeringGuardAfterActivation(source, 'paused');
     this.updateHudChromeVisibility();
     this.updateTelemetryText();
   }
@@ -1277,10 +1278,16 @@ export class GameScene extends Phaser.Scene {
     return time - this.pointerHoldActionStartedAt >= HELD_MOVEMENT_ACTION_DELAY_MS;
   }
 
-  private armPointerSteeringGuardAfterActivation(source: PrimaryActionSource): void {
+  private armPointerSteeringGuardAfterActivation(
+    source: PrimaryActionSource,
+    phaseBeforeActivation: 'waiting' | 'paused' | 'gameOver',
+  ): void {
     if (
-      !isPrimaryPointerDown(this.input.activePointer, this.pointerCancellationActive) ||
-      source === 'pointer-held'
+      !shouldDelayPointerSteeringAfterPrimaryAction({
+        source,
+        phaseBeforeActivation,
+      }) ||
+      !isPrimaryPointerDown(this.input.activePointer, this.pointerCancellationActive)
     ) {
       return;
     }

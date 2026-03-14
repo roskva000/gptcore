@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+waiting_pointer_launch_response_integrity:
+current: Run #181 `project/game/src/game/GameScene.ts` `waiting` fazindan fresh pointer press ile acilan run'larda pointer steering guard'ini arm etmiyor; oyuncu ayni touch/click hold ile ilk karelerden itibaren yonelebiliyor
+baseline: onceki source `pointer-press` launch'i `gameOver` / `paused` retry semantigiyle ayni sayiyor ve `armPointerSteeringGuardAfterActivation()` nedeniyle ilk `180ms` boyunca steer'i bosuna bloke ediyordu
+target: fresh touch/click launch keyboard kadar dogrudan hissetsin; retry/resume release guard'lari korunurken mobil açılış hissi dead-zone'a donmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 death_surface_runtime_path_integrity:
 current: Run #179 `project/game/src/game/GameScene.ts` olum yuzeyinde artik hicbir yerde gosterilmeyen escape ray / marker / label objelerini ve bunlarin tween-reset yolunu tasimiyor; `project/game/src/game/deathOverlayLayout.ts` ile `project/game/src/game/impactDirection.ts` helper yuzeyi yalniz runtime'da kullanilan death-callout kontratina indi
 baseline: Run #176 duplicate directional guidance'i kapatmisti, fakat source hala sahnede hic kullanilmayan escape-guide draw path'ini, `getEscapeGuideVector()` export'unu ve `ImpactDirection.sentence` payload'ini tasiyordu

@@ -23,6 +23,7 @@ import {
 import {
   hasFreshMovementInput,
   isPrimaryPointerDown,
+  shouldDelayPointerSteeringAfterPrimaryAction,
   shouldRequirePointerReleaseAfterPause,
   shouldAllowPointerPrimaryActionPress,
   shouldClearMovementReleaseRequirement,
@@ -222,6 +223,30 @@ assert.equal(
   }),
   false,
   'Secondary-click native events should not trigger start/retry/resume even if the cached pointer button looks primary.',
+);
+assert.equal(
+  shouldDelayPointerSteeringAfterPrimaryAction({
+    source: 'pointer-press',
+    phaseBeforeActivation: 'waiting',
+  }),
+  false,
+  'A fresh tap/click used to launch from waiting should steer immediately instead of burning the first 180ms of mobile control.',
+);
+assert.equal(
+  shouldDelayPointerSteeringAfterPrimaryAction({
+    source: 'pointer-press',
+    phaseBeforeActivation: 'gameOver',
+  }),
+  true,
+  'Retry taps should still arm the short pointer-steering delay so restart release guards do not regress.',
+);
+assert.equal(
+  shouldDelayPointerSteeringAfterPrimaryAction({
+    source: 'pointer-held',
+    phaseBeforeActivation: 'paused',
+  }),
+  false,
+  'Held pointer activation paths should not re-arm a redundant steering delay.',
 );
 assert.equal(
   isPrimaryPointerDown({

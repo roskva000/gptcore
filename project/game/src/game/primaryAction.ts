@@ -111,3 +111,11 @@ export const shouldClearPointerReleaseRequirement = (
   > | null,
   pointerWasCancelled = false,
 ): boolean => !isPrimaryPointerDown(pointer, pointerWasCancelled);
+
+export const shouldDelayPointerSteeringAfterPrimaryAction = ({
+  source,
+  phaseBeforeActivation,
+}: {
+  source: 'primary-key' | 'movement-fresh' | 'movement-held' | 'pointer-press' | 'pointer-held';
+  phaseBeforeActivation: 'waiting' | 'paused' | 'gameOver';
+}): boolean => source === 'pointer-press' && phaseBeforeActivation !== 'waiting';
