@@ -4,6 +4,7 @@
 
 - Audit 2026-03-13 verdict `warning`: urun ilerliyor, ama docs fan-out ve proxy-overfit riski halen aktif.
 - `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i acma.
+- Run #174 deep same-side repeat-sweep kusurunu kapatti; seed `#3` outlier'i artik kapali. Bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
 - Run #173 deterministic controller/runtime drift'ini kapatti; bunu yeni validation/orchestration/readiness katmani acmak icin bahane yapma.
 - Run #172 opening same-edge near-player pressure guard'ini ekledi; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
 - Run #171 same-edge spawn-column guard'inin corner-drift false-positive bug'ini kapatti; bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
@@ -35,7 +36,7 @@ Runtime varsa ikinci structured human sample'i topla ve tek oturumda su yuzeyler
 - Run #145-#150 near-miss pulse / restore / chirp hissi
 - Run #137 opening launch surface
 - Run #130-#160 launch/input/replay hissi
-- Run #165-#172 spawn readability / opener pressure guard'lari
+- Run #165-#174 spawn readability / opener pressure guard'lari
 - Run #125-#129 death/pause readability
 
 Beklenen cikti:
@@ -48,7 +49,7 @@ Beklenen cikti:
 Run mode: `stabilization`
 
 Ana hedef:
-Ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec ve kapat.
+Ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec ve kapat. Seed `#3` artik kapali; yeni fallback adayi seed `#7` veya benzeri `10.0s` floor'u ureten dar spawn-pressure / readability kusuru olmali.
 
 Guardrails:
 - Run #121-#129 death/pause readability zincirine donme.
@@ -58,13 +59,14 @@ Guardrails:
 - Run #170 drift-origin same-edge fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #171 corner-drift same-edge fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #172 same-edge near-player repeat guard'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
+- Run #174 deep same-side repeat-sweep fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #168 offscreen same-edge pre-entry fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #167 corner-sharing same-edge fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #166 cross-edge corner false-positive fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Run #165 same-edge spawn-column fix'ini yeni spawn director'u, fairness framework'u veya telemetry/orchestration paketine cevirmeme.
 - Input/telemetry tarafinda yeni refactor/orchestration acma; varsa tek helper seviyesinde dar bug kapat.
 - Tek source-level problem sec; yeni sistem katmani ekleme.
-- Iyi aday: spawn-pressure veya obstacle readability tarafinda dar, gercek bir source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace drift'i, projected-path reachability mismatch'i, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift + near-player repeat varyantlari artik kapali, pointer/movement release hattina geri donme. Seed `#3` outlier'inda halen `0` reroll ile gecen baska spawn-pressure kusuru iyi fallback adayidir.
+- Iyi aday: spawn-pressure veya obstacle readability tarafinda dar, gercek bir source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace drift'i, projected-path reachability mismatch'i, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift + near-player/deep-same-side repeat varyantlari artik kapali, pointer/movement release hattina geri donme. Seed `#7` veya baska `10.0s` floor trace'i iyi fallback adayidir.
 - Gameplay/helper kontrati degisirse `npm run telemetry:check` ve `npm run build`, aksi halde en az `npm run build` calistir.
 
 ## Success Criteria

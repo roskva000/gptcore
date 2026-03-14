@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #174]
+
+Decision:
+`stabilization` modunda seed `#3` opener outlier'ini ureten deep same-side repeat-sweep kusuru kapatildi.
+
+Reason:
+Runtime yine blokluydu ve audit ayni overlay/mobile/near-miss/validation koridorlarina donmeyi yasakliyor. Seed `#3` izi ise halen `6.3s` erken olum uretiyordu: derin same-edge threat oyuncuya kadar indikten sonra dominant edge'i drift etse bile orijinal entry baskisi devam ediyor, fakat near-player guard bu origin'i tamamen unutup ayni taraftan gelen follow-up sweep'i sifir reroll ile kabul ediyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` near-player same-edge pressure kararinda original `spawnEdge` bilgisini yalniz derin, ayni-taraf ve oyuncu artik duvara pinlenmemis follow-up sweep varyantinda koruyor. `project/game/scripts/telemetry-check.ts` yeni regression case'i bunu kilitliyor; `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/src/latestRun.ts` yeni deterministic sonucu tasiyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `27.4s / 10.0s / 0%`, bucket'lar `0 / 3 / 3 / 18`, average spawn reroll `0.5`, seed `#3` ise `30.0s` cap oldu.
+
+Rollback Condition:
+Headed sample bu dar origin-aware sweep guard'inin opener challenge'ini gereksiz bosalttigini gosterirse yalnizca deep same-side mesafe/depth kosullari dar kapsamda geri ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #173]
 
 Decision:

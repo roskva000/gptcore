@@ -751,6 +751,25 @@ assert.deepEqual(
   'Opening spawn selection should reroll a merely-positive same-edge candidate when a visible same-edge threat is already sitting near the player.',
 );
 
+const pressuredSameSideSweepSelection = selectSpawnPoint({
+  survivalTimeSeconds: 4,
+  playerPosition: { x: 304, y: 327 },
+  playerVelocity: { x: -99, y: -190 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 390, y: 337, spawnEdge: 'top' },
+  ],
+  randomInt: createQueuedRandom([0, 636, 1, 300]),
+});
+assert.deepEqual(
+  pressuredSameSideSweepSelection,
+  {
+    point: { x: 856, y: 300 },
+    rerollsUsed: 1,
+  },
+  'Opening spawn selection should reroll a same-edge follow-up sweep that stays on the same side of a near-player threat even when the raw lateral gap is wider than the base near-player band.',
+);
+
 assert.equal(
   isPointInsideArena({ x: 10, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),
   false,
@@ -1012,33 +1031,33 @@ assert.equal(
   'Fatal threat selection should break fully centered overlap ties toward the obstacle with the stronger relative sweep instead of callback order.',
 );
 
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.5, 'Average survival snapshot regressed.');
-assert.equal(survivalReport.firstDeathTimeSeconds, 6.3, 'First death snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 27.4, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.firstDeathTimeSeconds, 10, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap changed unexpectedly.');
-assert.equal(survivalReport.earlyDeathRatePercent, 4, 'Early death rate snapshot regressed.');
+assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(
   survivalReport.survivalBuckets,
   {
-    under10Seconds: 1,
+    under10Seconds: 0,
     between10And20Seconds: 3,
     between20And30Seconds: 3,
-    reached30SecondsCap: 17,
+    reached30SecondsCap: 18,
   },
   'Survival bucket distribution regressed.',
 );
-assert.equal(survivalReport.averageSpawnCount, 28, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 29, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.5, 'Spawn reroll snapshot changed unexpectedly.');
-assert.equal(seed3TrajectoryReport.deathTimeSeconds, 6.3, 'Seed #3 trajectory baseline drifted.');
-assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 6, 'Seed #3 spawn count changed unexpectedly.');
+assert.equal(seed3TrajectoryReport.deathTimeSeconds, 30, 'Seed #3 trajectory baseline drifted.');
+assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 32, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(
   seed3TrajectoryReport.spawnRerollsBeforeDeath,
-  0,
-  'Seed #3 should still reach the 6.3s outlier without spawn rerolls.',
+  1,
+  'Seed #3 should now spend one reroll escaping the old 6.3s opener outlier.',
 );
 assert.deepEqual(
   seed3TrajectoryReport.spawnEvents.map((event) => ({
@@ -1073,35 +1092,35 @@ assert.deepEqual(
     {
       spawnIndex: 4,
       timeSeconds: 4,
-      spawnPoint: { x: 636, y: -56 },
+      spawnPoint: { x: 856, y: 509 },
       visibleObstacleCount: 3,
       nearestVisibleObstacleDistancePx: 86.3,
     },
     {
       spawnIndex: 5,
       timeSeconds: 5,
-      spawnPoint: { x: 856, y: 150 },
+      spawnPoint: { x: 856, y: 294 },
       visibleObstacleCount: 4,
-      nearestVisibleObstacleDistancePx: 80.9,
+      nearestVisibleObstacleDistancePx: 98.9,
     },
     {
       spawnIndex: 6,
       timeSeconds: 6,
-      spawnPoint: { x: -56, y: 242 },
+      spawnPoint: { x: 589, y: -56 },
       visibleObstacleCount: 4,
-      nearestVisibleObstacleDistancePx: 81.4,
+      nearestVisibleObstacleDistancePx: 83,
     },
   ],
   'Seed #3 outlier trace changed unexpectedly.',
 );
 assert.equal(
   validationReport.validationSummary,
-  '5 runs | first death 6.3s | early 20% | 5/5 runs, review early deaths',
+  '5 runs | first death 24.2s | early 0% | 5/5 runs, target met',
   'Validation export summary regressed.',
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=28.8s | first_death=24.2s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=30.0s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 27.4s avg / 10.0s first death / 0% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(
@@ -1116,7 +1135,7 @@ assert.equal(
     totalSpawnRerolls: 3,
     lastSurvivalTime: 30,
   }),
-  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 27.4s avg / 10.0s first death / 0% early',
   'Validation export should report only completed runs even if a fresh start increased totalRuns beyond totalDeaths.',
 );
 assert.equal(
@@ -1130,7 +1149,7 @@ assert.equal(
     earlyDeathsUnderTarget: 1,
     lastSurvivalTime: 9.96,
   }),
-  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/32/76 | deterministic survival 26.5s avg / 6.3s first death / 4% early',
+  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/32/76 | deterministic survival 27.4s avg / 10.0s first death / 0% early',
   'Telemetry exports should keep under-10s deaths flagged even when UI-facing times round up to 10.0s.',
 );
 assert.equal(

@@ -25,6 +25,7 @@ export const EARLY_PRESSURED_SPAWN_REROLL_CUTOFF_SECONDS = 6;
 export const EARLY_PRESSURED_SPAWN_ACCEPT_SCORE = 190;
 export const EARLY_PRESSURED_SAME_EDGE_PLAYER_DISTANCE = 96;
 export const EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE = 180;
+export const EARLY_PRESSURED_SAME_SIDE_LATERAL_DISTANCE = 340;
 
 export type Point = {
   x: number;
@@ -456,13 +457,18 @@ const hasPressuredSameEdgeNearPlayer = (
 
   const spawnEdge = getSpawnEdge(spawnPoint);
   const spawnOffset = getSpawnEdgeOffset(spawnPoint, spawnEdge);
+  const playerOffset = getSpawnEdgeOffset(playerPosition, spawnEdge);
+  const candidatePlayerLateralDelta = spawnOffset.lateral - playerOffset.lateral;
 
   return activeObstaclePositions.some((obstaclePosition) => {
-    if (!doesObstacleOccupySpawnEdge(obstaclePosition, spawnEdge)) {
+    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
       return false;
     }
 
-    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+    const occupiesSpawnEdge = doesObstacleOccupySpawnEdge(obstaclePosition, spawnEdge);
+    const matchesSpawnOrigin = obstaclePosition.spawnEdge === spawnEdge;
+
+    if (!occupiesSpawnEdge && !matchesSpawnOrigin) {
       return false;
     }
 
@@ -476,10 +482,34 @@ const hasPressuredSameEdgeNearPlayer = (
     }
 
     const obstacleOffset = getSpawnEdgeOffset(obstaclePosition, spawnEdge);
+    const obstaclePlayerLateralDelta = obstacleOffset.lateral - playerOffset.lateral;
+    const lateralDistance = Math.abs(obstacleOffset.lateral - spawnOffset.lateral);
+
+    if (occupiesSpawnEdge && lateralDistance <= EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE) {
+      return true;
+    }
+
+    if (
+      occupiesSpawnEdge ||
+      !matchesSpawnOrigin ||
+      playerOffset.depth <= EARLY_SPAWN_EDGE_CLUSTER_DEPTH ||
+      obstacleOffset.depth < playerOffset.depth
+    ) {
+      return false;
+    }
+
+    const sharesPlayerSide =
+      Math.sign(obstaclePlayerLateralDelta) === Math.sign(candidatePlayerLateralDelta) &&
+      obstaclePlayerLateralDelta !== 0 &&
+      candidatePlayerLateralDelta !== 0;
+
+    if (!sharesPlayerSide) {
+      return false;
+    }
 
     return (
-      Math.abs(obstacleOffset.lateral - spawnOffset.lateral) <=
-      EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE
+      Math.abs(candidatePlayerLateralDelta) >= Math.abs(obstaclePlayerLateralDelta) &&
+      Math.abs(candidatePlayerLateralDelta) <= EARLY_PRESSURED_SAME_SIDE_LATERAL_DISTANCE
     );
   });
 };

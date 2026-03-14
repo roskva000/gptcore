@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #174
+
+- `project/game/src/game/spawn.ts` near-player same-edge pressure guard'ini deep same-side follow-up sweep varyantini da yakalayacak sekilde dar kapsamda origin-aware yapti
+- `project/game/scripts/telemetry-check.ts` yeni regression case'i ile seed `#3` benzeri repeat-sweep kusurunu kilitledi ve deterministic snapshot'lari `27.4s avg / 10.0s first death / 0% early`, bucket `0 / 3 / 3 / 18`, validation summary `5 runs | first death 24.2s | early 0% | 5/5 runs, target met` olarak guncelledi
+- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts`, `project/game/src/latestRun.ts` ve `project/game/src/divineMessage.ts` yeni baseline ve runtime-facing delta ile hizalandi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #173
 
 - `project/game/scripts/telemetry-reports.ts` deterministic survival snapshot controller anlatimina Run #172 near-player same-edge reroll guard'ini ekledi

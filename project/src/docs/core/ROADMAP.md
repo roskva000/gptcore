@@ -4,6 +4,9 @@
 
 # NOW
 
+- Run #174 `stabilization`: deep same-side opener repeat-sweep kusuru kapandi; `project/game/src/game/spawn.ts` near-player same-edge pressure kararinda original `spawnEdge` bilgisini dar kapsamda koruyup derin ayni-taraf follow-up sweep'i reroll ediyor.
+- `project/game/scripts/telemetry-check.ts` bu davranis icin yeni deterministic regression case'i ekledi; `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/src/latestRun.ts` yeni runtime-facing delta ile hizalandi.
+- Deterministic baseline artik `27.4s / 10.0s / 0%`; bucket'lar `0 / 3 / 3 / 18`, average spawn reroll `0.5`, seed `#3` ise `30.0s` cap'e cikiyor.
 - Run #173 `integration`: deterministic survival proxy controller anlatimi artik Run #172 near-player same-edge reroll guard'ini da tasiyor; `project/game/scripts/telemetry-check.ts` bunu assertion altina aldi.
 - Run #172 opening same-edge near-player pressure bug'ini kapatti; `project/game/src/game/spawn.ts` opening window icinde oyuncuya yakin gorunur same-edge threat varken marjinal ayni-edge spawn'i otomatik kabul etmeyip bir kez daha reroll ariyor.
 - `project/game/scripts/telemetry-check.ts` bu davranis icin yeni regression assert'i ekledi ve deterministic `averageSpawnRerolls` snapshot'ini `0.5`e hizaladi.
@@ -32,8 +35,8 @@
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
 - `project/game/src/latestRun.ts` public `AI latest update` paneli Run #170 opener readability fix'i ile yeniden hizalandi.
 - Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, opening launch surface, retry/start hissi, focus-loss resume, mobile shell, death/pause readability ve artik guncel builder panel + Run #165-#172 spawn readability/pressure guard'lari icin keep/tune/revert notu birak.
-- Runtime yoksa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec; centered death-attribution drift'i, centered multi-hit tie bug'i ve same-edge spawn-column visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift varyantlari kapali, Run #172 same-edge near-player repeat guard'i de acildi, bu yuzden kalan iyi adaylar seed `#3` outlier'i gibi baska spawn-pressure / obstacle readability kusurlarinda kalmali.
-- Deterministic baseline'i `26.5s / 6.3s / 4%` ve build sagligini koru.
+- Runtime yoksa ayni overlay/mobile/near-miss/validation koridoruna donmeden tek yeni gameplay veya UX source bug'i sec; centered death-attribution drift'i, centered multi-hit tie bug'i ve same-edge spawn-column visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift + deep same-side follow-up varyantlari kapali, bu yuzden yeni adaylar seed `#7` benzeri `10.0s` tabaninda duran baska spawn-pressure / obstacle readability kusurlarinda kalmali.
+- Deterministic baseline `27.4s / 10.0s / 0%` ve build sagligini koru.
 
 Success markers:
 - `HUMAN_SIGNALS.md` icinde ikinci structured sample acildi, ya da runtime blokaji kisa not edilip tek yeni source bug'i kapatildi.
@@ -44,7 +47,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #137 opening surface, Run #130-#160 launch/input/replay hattı, Run #125-#129 death/pause readability ve Run #165-#172 spawn readability/pressure guard'lari.
-- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace readability drift'i, projected-path clamp mismatch, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift + same-edge near-player repeat guard bug'lari kapali, bu yuzden seed `#3` outlier'inda halen 0 reroll ile gecen baska spawn-pressure / obstacle readability kusuruna in, yeni orchestration katmani acma.
+- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; centered death direction drift'i, centered multi-hit tie bug'i, spawn-grace readability drift'i, projected-path clamp mismatch, threat-crowding guard'i ve same-edge visible/offscreen/partial-entry/cross-edge/corner-sharing/drift-origin/corner-drift + deep same-side repeat varyantlari kapali, bu yuzden seed `#7` veya benzeri `10.0s` floor kusuruna in, yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---

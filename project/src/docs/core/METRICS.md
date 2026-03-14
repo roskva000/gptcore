@@ -6,6 +6,24 @@
 
 ## Gameplay
 
+opening_deep_same_side_repeat_sweep_integrity:
+current: Run #174 `project/game/src/game/spawn.ts` near-player same-edge pressure kararinda original `spawnEdge` bilgisini dar kapsamda koruyor; derin same-side follow-up sweep oyuncuya kadar inmis eski same-edge threat ustune tekrar geliyorsa yeni spawn bir kez daha reroll ariyor
+baseline: Run #172 gorunur same-edge threat ile `96px / 180px / score 190 / 6s` bandinda marjinal tekrar lane'leri zorluyordu, ama obstacle dominant edge'i drift edince near-player guard origin'i tamamen unutuyor ve seed `#3` gibi deep same-side repeat sweep `0` reroll ile geciyordu
+target: derin same-side opener repeat sweep kusuru kapanmis kalsin; challenge yeni framework acmadan korunurken seed `#3` benzeri ucuz tekrarlar deterministic olarak geri donmesin
+validation: `npm run telemetry:check`, `npm run build`
+
+deterministic_survival_baseline:
+current: Run #174 deterministic survival snapshot `27.4s avg / 10.0s first death / 0% early`, bucket `0 / 3 / 3 / 18`, average spawn reroll `0.5`
+baseline: Run #173 snapshot `26.5s avg / 6.3s first death / 4% early`, bucket `1 / 3 / 3 / 17`, average spawn reroll `0.5`
+target: headed sample gelene kadar `<10s` deterministic death'i `0`da tut ve yeni spawn-pressure fix'leri bu floor'u yeniden `10.0s` altina dusurmesin
+validation: `npm run telemetry:check`, `npm run build`
+
+seed3_outlier_trace_resolution:
+current: Run #174 seed `#3` deterministic trace'i artik `30.0s`, `32 spawn / 1 reroll`; opener pivot `spawn#4` `{856,509}` olarak degisti ve eski `6.3s` outlier kalkti
+baseline: onceki trace `6 spawn / 0 reroll` ile `6.3s`de oluyordu; `spawn#4` `{636,-56}` ve `spawn#6` `{-56,242}` altinda gorunur yakin baski vardi
+target: seed `#3` artik outlier olmasin; sonraki fallback bug avinda yeni taban seed `#7` veya baska gercek `10.0s` pressure paternleri hedeflensin
+validation: `npm run telemetry:check`
+
 deterministic_controller_runtime_alignment:
 current: Run #173 `project/game/scripts/telemetry-reports.ts` survival snapshot `controller` metninde Run #172 near-player same-edge reroll guard'ini `96px / 180px / score 190 / 6s` kontratiyla acikca yaziyor
 baseline: onceki proxy anlatimi projected-path, threat-crowding ve same-edge spawn-column guard'larini anlatiyor ama near-player same-edge reroll guard'ini eksik birakiyordu; runtime ve deterministic proxy ayni kuralla calissa da anlatim drift'i olusuyordu
@@ -13,9 +31,9 @@ target: deterministic validation output'u hangi opener reroll guard'larinin akti
 validation: `npm run telemetry:check`, `npm run build`
 
 opening_same_edge_near_player_pressure_integrity:
-current: Run #172 `project/game/src/game/spawn.ts` opening window icinde gorunur same-edge threat oyuncuya `96px` icinde kalip yeni aday ayni edge'de `180px` lateral band paylasiyorsa, `190` altindaki marjinal skor artik otomatik kabul edilmiyor ve en az bir reroll daha aranıyor
+current: Run #174 `project/game/src/game/spawn.ts` opening window icinde gorunur same-edge threat oyuncuya `96px` icinde kalip yeni aday ayni edge'de `180px` lateral band paylasiyorsa, `190` altindaki marjinal skor artik otomatik kabul edilmiyor; derin ayni-taraf repeat sweep varyanti da dar kapsamda origin-aware reroll ariyor
 baseline: onceki source lane-stack / threat-crowding / same-edge column cezalari yazsa bile ilk aday skor sifirin ustunde kaldiginda hic alternatif denemiyordu; ayni edge'den gelen gorunur yakin baski varken ikinci ayni-edge giris "pozitif sayildi" diye ucuz hissedebiliyordu
-target: opening'te oyuncunun hemen yanindaki gorunur same-edge threat ustune ikinci ayni-edge giris daha zor kabul edilsin; build ve survival baseline korunurken deterministic reroll snapshot'i bu ekstra caution'u gostersin
+target: opening'te oyuncunun hemen yanindaki gorunur same-edge threat ustune ikinci ayni-edge giris daha zor kabul edilsin; build ve yeni survival baseline korunurken deterministic reroll snapshot'i bu ekstra caution'u gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 opening_corner_drift_origin_integrity:
