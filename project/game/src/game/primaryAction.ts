@@ -1,5 +1,28 @@
 import type Phaser from 'phaser';
 
+const isPrimaryTouchPointer = (
+  pointer?:
+    | Pick<Phaser.Input.Pointer, 'event' | 'wasTouch'>
+    | Pick<Phaser.Input.Pointer, 'event' | 'primaryDown' | 'wasTouch'>
+    | null,
+): boolean => {
+  if (!pointer?.wasTouch) {
+    return false;
+  }
+
+  const nativeEvent = pointer.event;
+
+  if (
+    nativeEvent &&
+    'isPrimary' in nativeEvent &&
+    typeof nativeEvent.isPrimary === 'boolean'
+  ) {
+    return nativeEvent.isPrimary;
+  }
+
+  return !('primaryDown' in pointer) || pointer.primaryDown !== false;
+};
+
 export const shouldHandlePrimaryActionKey = (
   event?: Pick<KeyboardEvent, 'repeat'> | null,
 ): boolean => !event?.repeat;
@@ -23,15 +46,7 @@ export const shouldHandlePrimaryActionPointer = (
   const nativeEvent = pointer.event;
 
   if (pointer.wasTouch) {
-    if (
-      nativeEvent &&
-      'isPrimary' in nativeEvent &&
-      typeof nativeEvent.isPrimary === 'boolean'
-    ) {
-      return nativeEvent.isPrimary;
-    }
-
-    return true;
+    return isPrimaryTouchPointer(pointer);
   }
 
   if (
@@ -61,7 +76,7 @@ export const isPrimaryPointerDown = (
   }
 
   if (pointer.wasTouch) {
-    return pointer.primaryDown !== false;
+    return isPrimaryTouchPointer(pointer);
   }
 
   const nativeEvent = pointer.event;

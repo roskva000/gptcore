@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #188]
+
+Decision:
+`stabilization` modunda active-run touch ownership yorumu launch/retry ile ayni primary-touch kontratina baglandi.
+
+Reason:
+Runtime yine bloklu ve audit genel olarak mobile multi-touch koridoruna geri donmemeyi istiyordu. Ancak source incelemesi Run #183'un yalniz start/retry/resume aktivasyonunu kapattigini gosterdi; aktif run steering ve pointer-release gate'leri hala non-primary touch'tan etkilenebiliyordu. Bu yuzey gercek kontrol hissini bozdugu icin, yeni sistem acmadan eksik kalan ayni kontratin dar devam parcasini kapatmak daha dogruydu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni ortak touch-primary yardimcisi ile `shouldHandlePrimaryActionPointer()` ve `isPrimaryPointerDown()` yollarini hizaladi. `project/game/src/game/GameScene.ts` pointer release temizliginde artik event pointer yerine mevcut `activePointer`'i okuyor. `project/game/scripts/telemetry-check.ts` non-primary touch steering, native-primary steering ve release-clear vakalarini regression altina aldi. `project/game/src/latestRun.ts` public panel bu runtime-facing delta ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `27.4s / 10.0s / 0%` korundu.
+
+Rollback Condition:
+Headed sample bu dar primary-ownership yorumunun belirli mobil browser'larda gecerli tek-touch steering'i yuttugunu gosterirse yalniz native-primary fallback semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input orchestration, gesture router veya readiness katmani acilmaz.
+
 ### [Run #187]
 
 Decision:

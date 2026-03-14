@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+touch_primary_ownership_integrity:
+current: Run #188 `project/game/src/game/primaryAction.ts` native `isPrimary` sinyalini hem live steering hem replay/resume release gate yorumunda kullaniyor; `project/game/src/game/GameScene.ts` pointer release clear kararini artik event pointer yerine mevcut `activePointer` uzerinden veriyor
+baseline: Run #183 launch/retry/resume aktivasyonunda non-primary touch'u kapatmisti ama active-run steering ve release clear yollari hala secondary touch'un gesture sahipligini dolayli olarak tasiyabiliyordu
+target: gercek mobil sample'da yalniz primary finger aktif steering ve release ownership'i tutsun; ikinci parmak run state'ini calmadan tek-touch kontrol hissi regress etmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 mid_run_projected_stack_integrity:
 current: Run #187 `project/game/src/game/spawn.ts` yalniz `10s-13s` bandinda, oyuncuya `75px` icinde gorunur bir threat zaten ayni projected lane uzerindeyken yeni follow-up spawn'i ek bir reroll ile baska lane aramaya zorluyor
 baseline: onceki source opening guard'lari bittikten sonra bu tur akut same-lane stack baskisini yalniz pozitif fairness skoruna bakip kabul edebiliyordu; mid-run'da oyuncunun zaten dolu olan kacis hattina yeni spawn yeniden binebiliyordu

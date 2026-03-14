@@ -181,10 +181,10 @@ export class GameScene extends Phaser.Scene {
       this.player.setVelocity(0, 0);
     }
   };
-  private readonly handlePointerRelease = (pointer: Phaser.Input.Pointer): void => {
+  private readonly handlePointerRelease = (_pointer: Phaser.Input.Pointer): void => {
     this.pointerCancellationActive = false;
 
-    if (!shouldClearPointerReleaseRequirement(pointer)) {
+    if (!shouldClearPointerReleaseRequirement(this.input.activePointer)) {
       return;
     }
 

@@ -303,6 +303,28 @@ assert.equal(
   'Held touch input should keep steering/retry eligibility even if cached mouse-button state looks secondary.',
 );
 assert.equal(
+  isPrimaryPointerDown({
+    isDown: true,
+    wasTouch: true,
+    primaryDown: true,
+    button: 0,
+    event: { isPrimary: false } as PointerEvent,
+  }),
+  false,
+  'Non-primary touch pointers should not keep live steering or held-input guards active once another finger owns the touch gesture.',
+);
+assert.equal(
+  isPrimaryPointerDown({
+    isDown: true,
+    wasTouch: true,
+    primaryDown: false,
+    button: 0,
+    event: { isPrimary: true } as PointerEvent,
+  }),
+  true,
+  'Primary-touch steering should follow the native isPrimary signal when browsers expose it.',
+);
+assert.equal(
   isPrimaryPointerDown(
     {
       isDown: true,
@@ -381,15 +403,16 @@ assert.equal(
 assert.equal(
   shouldAllowPointerPrimaryActionPress({
     pointer: {
-      isDown: false,
+      isDown: true,
       wasTouch: true,
-      primaryDown: false,
+      primaryDown: true,
       button: 0,
+      event: { isPrimary: true } as PointerEvent,
     },
-    releaseRequired: true,
+    releaseRequired: false,
   }),
   true,
-  'A fresh pointer press should be allowed again once the held-input release gate is cleared.',
+  'A fresh primary touch press should be allowed again once the held-input release gate is cleared.',
 );
 assert.equal(
   shouldAllowPointerPrimaryActionPress({
@@ -414,6 +437,17 @@ assert.equal(
   }),
   true,
   'Pointer release should clear replay/resume release gates immediately instead of waiting for another update tick.',
+);
+assert.equal(
+  shouldClearPointerReleaseRequirement({
+    isDown: true,
+    wasTouch: true,
+    primaryDown: true,
+    button: 0,
+    event: { isPrimary: false } as PointerEvent,
+  }),
+  true,
+  'A released or non-primary touch should clear replay/resume release gates instead of keeping stale touch ownership alive.',
 );
 assert.equal(
   shouldClearPointerReleaseRequirement({

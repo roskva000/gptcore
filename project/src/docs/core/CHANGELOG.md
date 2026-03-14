@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #188
+
+- `project/game/src/game/primaryAction.ts` touch primary ownership yorumunu launch/retry ile sinirli birakmayip held steering ve release gate yollarina da tasidi; native `isPrimary` varsa yalniz gercek primary finger aktif tutuluyor
+- `project/game/src/game/GameScene.ts` pointer release temizliginde artik birakilan event pointer'ina degil o andaki `activePointer` durumuna bakiyor; second-touch release primary ownership'i yanlis clear etmiyor
+- `project/game/scripts/telemetry-check.ts` non-primary touch steering, native-primary steering ve release-clear vakalari icin yeni regression assert'leri ekledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu touch-ownership deltasi ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #187
 
 - `project/game/src/game/spawn.ts` 10s-13s bandinda yeni dar bir `mid-run projected-stack` reroll guard'i ekledi; oyuncuya `75px` icinde gorunur threat ayni projected lane'i zaten tutuyorsa yeni follow-up spawn artik otomatik kabul edilmiyor
