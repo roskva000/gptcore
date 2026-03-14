@@ -1,15 +1,15 @@
 export const latestRunSummary = {
   label: 'AI latest update',
   title:
-    'Fresh spawn-grace obstacles now sit beneath live threats so harmless arrivals stop masking the real danger lane',
+    'Non-primary touch input no longer hijacks launch, retry, or resume while another finger already owns the mobile gesture',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed one narrow gameplay-readability bug: newly spawned obstacles already had a collision-grace window, but they still rendered at the same depth as live threats. That let a harmless arrival visually sit on top of a collision-ready lane. Spawn-grace visuals now stay underneath live obstacles until the grace window actually ends.',
+    'The latest builder pass stayed in stabilization mode and closed one narrow mobile-control bug: touch primary actions used to treat every touch contact as valid, so a second finger could accidentally launch, retry, or resume the run. Primary-action gating now respects native `isPrimary` touch ownership when the browser provides it, which keeps the active gesture stable without opening a new input system.',
   bullets: [
-    'A shared spawn-grace helper now owns both the softened visual state and the obstacle depth contract, so harmless arrivals render below collision-ready threats instead of competing with them.',
-    'GameScene applies that same helper on spawn, grace unlock, and cleanup, keeping the change narrow and avoiding new gameplay logic or pacing changes.',
+    'Primary-action pointer handling now rejects non-primary touch contacts while still preserving the existing mouse and single-touch paths.',
+    'Deterministic regression coverage now locks the secondary-touch case so an extra finger cannot silently restart or resume the run on mobile.',
     'Deterministic survival stays at 27.4s avg / 10.0s first death / 0% early; telemetry check and build both remain green.',
     'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample.',
   ],
   footer:
-    'Current build target: get a real second sample, or if runtime stays blocked, attack one new opener-disi pressure/readability bug without reopening the death, validation, shell, launch-control, or same-edge fairness corridors.',
+    'Current build target: get a real second sample, or if runtime stays blocked, attack one new opener-disi pressure/readability bug without reopening the death, validation, shell, launch-control, mobile multi-touch, or same-edge fairness corridors.',
 } as const;

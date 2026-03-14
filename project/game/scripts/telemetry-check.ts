@@ -196,7 +196,36 @@ assert.equal(
 assert.equal(
   shouldHandlePrimaryActionPointer({ wasTouch: true }),
   true,
-  'Touch pointers should always count as primary actions instead of depending on mouse-button semantics.',
+  'Primary touch pointers should still trigger start/retry/resume without depending on mouse-button semantics.',
+);
+assert.equal(
+  shouldHandlePrimaryActionPointer({
+    wasTouch: true,
+    event: { isPrimary: false } as PointerEvent,
+  }),
+  false,
+  'Non-primary touch pointers should not trigger start/retry/resume on mobile while another finger already owns the gesture.',
+);
+assert.equal(
+  shouldHandlePrimaryActionPointer({
+    wasTouch: true,
+    event: { isPrimary: true } as PointerEvent,
+  }),
+  true,
+  'Primary touch pointers should still trigger start/retry/resume when the native event marks them as the active touch.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+      event: { isPrimary: false } as PointerEvent,
+    },
+  }),
+  false,
+  'A secondary touch should not restart or resume the run while a different finger owns the primary gesture.',
 );
 assert.equal(
   shouldHandlePrimaryActionPointer({ button: 1 }),

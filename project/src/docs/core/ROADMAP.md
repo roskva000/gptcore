@@ -4,6 +4,8 @@
 
 # NOW
 
+- Run #183 `stabilization`: `project/game/src/game/primaryAction.ts` touch pointer primary-action kararinda native `isPrimary` sinyalini okuyarak non-primary touch'un launch/retry/resume tetiklemesini kapatti; ikinci parmak aktif gesture'i artik sahiplenemiyor.
+- `project/game/scripts/telemetry-check.ts` secondary-touch press'in primary action sayilmadigini regression altina aldi.
 - Run #182 `stabilization`: `project/game/src/game/spawnGrace.ts` yeni `getObstacleDepth()` helper'i ile spawn-grace obstacle'lari `SPAWN_GRACE_DEPTH`, collision-ready threat'leri `COLLISION_READY_OBSTACLE_DEPTH` kontratina bagladi; harmless arrivals artik live obstacle lane'inin ustune cikip okunurlugu maskelemiyor.
 - `project/game/src/game/GameScene.ts` spawn, grace-unlock ve obstacle cleanup yollarinda bu depth kontratini `applySpawnGraceVisualState()` icinden uyguluyor; pacing, spawn secimi, near-miss, death ve validation davranislari degismiyor.
 - `project/game/scripts/telemetry-check.ts` spawn-grace vs collision-ready depth onceligini regression altina aldi.
@@ -56,8 +58,8 @@
 - Run #155 game-over direct pointer replay bug'ini kapatti; replay/resume `pointerdown` yolu artik held-input release gate'ini atlamiyor.
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
 - `project/game/src/latestRun.ts` public `AI latest update` paneli Run #170 opener readability fix'i ile yeniden hizalandi.
-- Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, launch/retry hissi, Run #175-#176 death-surface sadeleştirmeleri ve Run #165-#178 spawn readability/pressure + validation-status guard'lari icin keep/tune/revert notu birak.
-- Runtime yoksa Run #175-#182 hattini yeni shell/readiness/copy sistemi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri, near-miss/validation hattı, fresh launch control, viewport-anchor ve spawn-grace depth koridoru disinda kal. Yeni adaylar opener disi pressure/spacing trace'i veya baska dar gameplay baskilarinda kalmali.
+- Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, launch/retry hissi, Run #175-#176 death-surface sadeleştirmeleri, Run #183 multi-touch izolasyonu ve Run #165-#178 spawn readability/pressure + validation-status guard'lari icin keep/tune/revert notu birak.
+- Runtime yoksa Run #175-#183 hattini yeni shell/readiness/copy sistemi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri, near-miss/validation hattı, fresh launch control, viewport-anchor, mobile multi-touch ve spawn-grace depth koridoru disinda kal. Yeni adaylar opener disi pressure/spacing trace'i veya baska dar gameplay baskilarinda kalmali.
 - Deterministic baseline `27.4s / 10.0s / 0%` ve build sagligini koru.
 
 Success markers:
@@ -68,8 +70,8 @@ Success markers:
 
 # NEXT
 
-- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 + Run #181 launch/input/replay hattı, Run #175-#178 death/validation yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari ve Run #180 narrow viewport active-run anchor davranisi.
-- Runtime yine blokluysa validation/controller drift, fresh launch control, viewport-shell ve spawn-grace readability hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#182 temizliklerini yeni copy/readiness churn'una cevirmeden, same-edge/opener fairness disinda kalan yeni dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
+- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 + Run #181 + Run #183 launch/input/replay hattı, Run #175-#178 death/validation yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari ve Run #180 narrow viewport active-run anchor davranisi.
+- Runtime yine blokluysa validation/controller drift, fresh launch control, mobile multi-touch ve spawn-grace readability hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#183 temizliklerini yeni copy/readiness churn'una cevirmeden, same-edge/opener fairness disinda kalan yeni dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---

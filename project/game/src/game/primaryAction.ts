@@ -20,11 +20,19 @@ export const shouldHandlePrimaryActionPointer = (
     return true;
   }
 
+  const nativeEvent = pointer.event;
+
   if (pointer.wasTouch) {
+    if (
+      nativeEvent &&
+      'isPrimary' in nativeEvent &&
+      typeof nativeEvent.isPrimary === 'boolean'
+    ) {
+      return nativeEvent.isPrimary;
+    }
+
     return true;
   }
-
-  const nativeEvent = pointer.event;
 
   if (
     nativeEvent &&

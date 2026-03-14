@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #183
+
+- `project/game/src/game/primaryAction.ts` touch pointer primary-action kararinda native `isPrimary` sinyalini kullanmaya basladi; non-primary touch artik launch/retry/resume tetiklemiyor
+- `project/game/scripts/telemetry-check.ts` ikinci parmak/non-primary touch'un primary action sayilmadigini regression altina aldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu mobile-control deltasi ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #182
 
 - `project/game/src/game/spawnGrace.ts` yeni `SPAWN_GRACE_DEPTH`, `COLLISION_READY_OBSTACLE_DEPTH` ve `getObstacleDepth()` helper'i ile spawn-grace obstacle'larin live threat'lerden daha altta cizilmesini acik kontrata bagladi

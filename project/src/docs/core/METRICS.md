@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+mobile_primary_touch_action_integrity:
+current: Run #183 `project/game/src/game/primaryAction.ts` touch primary-action kararinda native `event.isPrimary` sinyali varsa onu okuyup yalniz aktif primary touch'u launch/retry/resume icin kabul ediyor
+baseline: onceki source `wasTouch` olan her pointer'i primary action sayiyordu; bu da ikinci parmagin veya non-primary touch'un aktif mobile gesture'i bolup waiting, pause ya da game-over ekraninda istemsiz start/retry/resume tetikleyebilmesine izin verebiliyordu
+target: gercek touch sample'da ikinci parmak run state'ini calmadan mevcut primary gesture stabil kalsin; tek-touch launch/retry hissi regress etmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 spawn_grace_depth_readability:
 current: Run #182 `project/game/src/game/spawnGrace.ts` spawn-grace obstacle'lari `1.5`, collision-ready obstacle'lari `2` depth kontratina bagladi; `project/game/src/game/GameScene.ts` bunu spawn, grace-unlock ve cleanup akışlarında ayni helper uzerinden uyguluyor, bu sayede harmless arrivals artik live threat lane'inin ustune cikmiyor
 baseline: onceki source collision grace aktif obstacle'lari soluk/tintli cizse de ayni `OBSTACLE_DEPTH`te tutuyordu; yeni ama zararsiz bir spawn collision-ready threat'in ustune gelip mid-run lane okunurlugunu sessizce bulandirabiliyordu

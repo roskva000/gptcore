@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #183]
+
+Decision:
+`stabilization` modunda non-primary touch'un launch/retry/resume akisini istemsiz tetiklemesi kapatildi.
+
+Reason:
+Runtime yine blokluydu; audit ayni spawn/death/validation/viewport koridorlarina geri donmemeyi istiyordu. Buna ragmen mobil kontrol hissisinde dar ama gercek bir source kusuru kalmisti: `project/game/src/game/primaryAction.ts` touch pointer primary-action kararinda her dokunusu gecerli sayiyor, bu da ikinci parmagin veya non-primary touch'un aktif mobile gesture'i bozup waiting, pause ya da game-over ekraninda start/retry/resume tetikleyebilmesine izin veriyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` artik touch pointer icin native `event.isPrimary` sinyali varsa onu okuyup yalniz aktif primary touch'u primary action sayiyor; browser bu bilgiyi vermiyorsa mevcut tek-touch davranisi korunuyor. `project/game/scripts/telemetry-check.ts` secondary-touch press'in primary action sayilmadigini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Headed sample primary-touch filtresinin belirli mobil browser'larda valid tek-touch launch'i haksiz yere yuttugunu gosterirse yalniz touch primary-detection semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input orchestration, gesture router veya readiness katmani acilmaz.
+
 ### [Run #182]
 
 Decision:
