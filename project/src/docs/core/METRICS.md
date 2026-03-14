@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+validation_export_freshness_integrity:
+current: Run #178 `project/game/src/game/telemetry.ts` saved validation report'un aktif completed sample ile birebir ayni olup olmadigini `isValidationReportCurrent()` ile ayiriyor; `project/game/src/game/GameScene.ts` waiting ve game-over telemetry satirlari artik current export, older sample ve stale-refresh-needed durumlarini farkli gosteriyor
+baseline: onceki source `lastValidationReport` varligini tek basina "export ready" sinyali gibi kullaniyordu; yeni run'lar session sample'i degistirse bile eski export waiting/game-over yuzeyinde guncelmis gibi okunabiliyordu
+target: validation export durumu sessiz drift uretmesin; kaydedilmis rapor ancak aktif sample ile eslesiyorsa current saysin, aksi halde refresh veya older-sample olarak acikca ayirilsin
+validation: `npm run telemetry:check`, `npm run build`
+
 retreat_pinch_floor_integrity:
 current: Run #177 `project/game/src/game/spawn.ts` oyuncunun onunde `60px` icinde cok yakin threat varken arka kacis koridorunu `200px` bandinda kapatan yeni spawn'i `10s` hedef-first-death penceresinde bir kez daha reroll ediyor; fixed-step drift olsa bile `10.000000000000076s` frame'i bu pencerenin icinde sayiliyor
 baseline: seed `#7` eskiden `10 spawn / 0 reroll` ile soldan gelen rear-lane seal'i bedelsiz kabul ediyor, yeni spawn secimi tam `10s` esiginde calistiginda guard penceresi bir frame erken kapanmis gibi davranabiliyordu

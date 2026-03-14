@@ -38,6 +38,7 @@ import {
   getCompletedRunCount,
   hasCompletedRunSample,
   getRetryDelayMs,
+  isValidationReportCurrent,
 } from '../src/game/telemetry.ts';
 import {
   createBalanceSnapshotReport,
@@ -1251,6 +1252,83 @@ assert.equal(
   }),
   3_500,
   'Same-session retry delay should still be tracked.',
+);
+assert.equal(
+  isValidationReportCurrent(
+    buildValidationReport({
+      ...createEmptyTelemetry(),
+      totalRuns: 5,
+      totalDeaths: 5,
+      totalSurvivalTime: 144,
+      bestSurvivalTime: 30,
+      firstDeathTime: 24.2,
+      totalSpawnRerolls: 4,
+      lastSurvivalTime: 30,
+    }),
+    {
+      ...createEmptyTelemetry(),
+      totalRuns: 5,
+      totalDeaths: 5,
+      totalSurvivalTime: 144,
+      bestSurvivalTime: 30,
+      firstDeathTime: 24.2,
+      totalSpawnRerolls: 4,
+      lastSurvivalTime: 30,
+    },
+  ),
+  true,
+  'Saved validation exports should stay marked current when they still match the active completed sample.',
+);
+assert.equal(
+  isValidationReportCurrent(
+    buildValidationReport({
+      ...createEmptyTelemetry(),
+      totalRuns: 5,
+      totalDeaths: 5,
+      totalSurvivalTime: 144,
+      bestSurvivalTime: 30,
+      firstDeathTime: 24.2,
+      totalSpawnRerolls: 4,
+      lastSurvivalTime: 30,
+    }),
+    {
+      ...createEmptyTelemetry(),
+      totalRuns: 6,
+      totalDeaths: 6,
+      totalSurvivalTime: 170,
+      bestSurvivalTime: 30,
+      firstDeathTime: 24.2,
+      totalSpawnRerolls: 5,
+      lastSurvivalTime: 26,
+    },
+  ),
+  false,
+  'Saved validation exports should turn stale as soon as a newer completed sample changes the current session snapshot.',
+);
+assert.equal(
+  isValidationReportCurrent(
+    buildValidationReport({
+      ...createEmptyTelemetry(),
+      totalRuns: 5,
+      totalDeaths: 5,
+      totalSurvivalTime: 144,
+      bestSurvivalTime: 30,
+      firstDeathTime: 24.2,
+      totalSpawnRerolls: 4,
+      lastSurvivalTime: 30,
+    }),
+    {
+      ...createEmptyTelemetry(),
+      totalRuns: 3,
+      totalDeaths: 3,
+      totalSurvivalTime: 48,
+      bestSurvivalTime: 20,
+      firstDeathTime: 12.4,
+      lastSurvivalTime: 20,
+    },
+  ),
+  false,
+  'Saved validation exports should not read as current while the new session sample is still incomplete.',
 );
 
 console.log(

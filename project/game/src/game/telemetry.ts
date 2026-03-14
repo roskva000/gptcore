@@ -264,3 +264,14 @@ export const formatValidationReportSummaryText = (report: string | null): string
 
   return `${summary.runs} runs | first death ${summary.firstDeath} | early ${summary.earlyDeathRate} | ${summary.validation}`;
 };
+
+export const isValidationReportCurrent = (
+  report: string | null,
+  telemetry: GameplayTelemetry,
+): boolean => {
+  if (!report || !hasCompletedRunSample(telemetry)) {
+    return false;
+  }
+
+  return report === buildValidationReport(telemetry);
+};

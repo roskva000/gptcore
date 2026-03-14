@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #178
+
+- `project/game/src/game/telemetry.ts` yeni `isValidationReportCurrent()` helper'ini ekledi; kaydedilmis validation export'un aktif completed sample ile birebir ayni olup olmadigi artik ayri okunuyor
+- `project/game/src/game/GameScene.ts` waiting ve game-over telemetry satirlarini `Last export`, `Saved export older sample` ve `Press V to refresh` durumlarina gore ayirdi; stale export yeni sample uzerine "ready" gibi binmiyor
+- `project/game/scripts/telemetry-check.ts` validation export freshness kontratini current, stale ve incomplete sample varyantlariyla regression altina aldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu validation-status UX deltasi ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #177
 
 - `project/game/src/game/spawn.ts` yeni bir retreat-pinch guard ekledi; oyuncunun onunde cok yakin threat varken arka kacis koridorunu kapatan spawn artik `10s` hedef-first-death penceresinde bir kez daha reroll ariyor

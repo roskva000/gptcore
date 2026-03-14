@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #178]
+
+Decision:
+`stabilization` modunda stale validation export status drift'i kapatildi.
+
+Reason:
+Runtime yine blokluydu; audit ayni fairness/spawn koridoruna bir run daha harcamamayi ve yeni orchestration/readiness katmani acmamayi istiyordu. Source tarafinda dar ama gercek bir UX bug kalmisti: kaydedilmis validation export yeni run'larla session sample degistiginde bile waiting/game-over satirlarinda hala "hazir" gibi okunabiliyordu. Bu da validation yuzeyinde sessiz state drift'i uretiyordu.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `isValidationReportCurrent()` helper'i ile saved export'un aktif completed sample ile birebir ayni olup olmadigini ayiriyor. `project/game/src/game/GameScene.ts` waiting ve game-over telemetry satirlarinda artik `Last export`, `Saved export older sample` ve `Press V to refresh` durumlarini ayri gosteriyor. `project/game/scripts/telemetry-check.ts` current, stale ve incomplete-sample varyantlarini deterministic olarak kilitledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Gercek sample bu yeni durum satirlarinin oyuncuya veya validator kullanicisina daha fazla kafa karisikligi urettigini gosterirse yalnizca freshness wording'i dar kapsamda yeniden ayarlanir; bu bahaneyle yeni validation framework'u, readiness katmani veya orchestration sistemi acilmaz.
+
 ### [Run #177]
 
 Decision:

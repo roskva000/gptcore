@@ -4,6 +4,10 @@
 
 # NOW
 
+- Run #178 `stabilization`: `project/game/src/game/telemetry.ts` saved validation export'un aktif session sample ile ayni olup olmadigini `isValidationReportCurrent()` ile ayiriyor; `project/game/src/game/GameScene.ts` waiting ve game-over telemetry satirlari artik current export, older sample ve stale-refresh-needed durumlarini farkli gosteriyor.
+- `project/game/scripts/telemetry-check.ts` bu freshness kontratini current, stale ve incomplete-sample varyantlariyla regression altina aldi.
+- `project/game/src/latestRun.ts` public `AI latest update` paneli bu validation-status UX deltasi ile hizalandi.
+- Deterministic survival baseline korunuyor: `27.4s / 10.0s / 0%`, bucket `0 / 3 / 3 / 18`.
 - Run #177 `stabilization`: `project/game/src/game/spawn.ts` seed `#7`nin `10.0s` floor'unu ureten rear-lane retreat pinch kusurunu kapatti; oyuncunun onunde `60px` icinde cok yakin threat varken yeni spawn arka kacis koridorunu `200px` bandinda kapatiyorsa `10s` hedef-first-death penceresi icinde bir reroll daha ariyor.
 - Ayni guard fixed-step drift'i tolere ediyor; spawn secimi `10.000000000000076s` frame'ine denk gelse bile `10s` safety window sessizce kapanmiyor.
 - `project/game/scripts/telemetry-check.ts` yeni deterministic regression case'i ve seed `#7` trace assert'i ekledi; `project/game/scripts/telemetry-reports.ts` controller anlatimi ve `project/game/src/latestRun.ts` public paneli bu yeni spawn-pressure deltasi ile hizalandi.
@@ -43,7 +47,7 @@
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
 - `project/game/src/latestRun.ts` public `AI latest update` paneli Run #170 opener readability fix'i ile yeniden hizalandi.
 - Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, launch/retry hissi, Run #175-#176 death-surface sadeleştirmeleri ve Run #165-#174 spawn readability/pressure guard'lari icin keep/tune/revert notu birak.
-- Runtime yoksa Run #175'i yeni overlay/copy paketi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri ve near-miss/mobile validation koridoru disinda kal. Seed `#7` kapandi; yeni adaylar baska `10.0s` tabaninda duran spawn-pressure / obstacle readability kusurlarinda veya benzeri dar gameplay baskilarinda kalmali.
+- Runtime yoksa Run #178'i yeni validation/readiness sistemi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri ve near-miss/mobile validation koridoru disinda kal. Yeni adaylar spawn-pressure / obstacle readability veya benzeri dar gameplay baskilarinda kalmali.
 - Deterministic baseline `27.4s / 10.0s / 0%` ve build sagligini koru.
 
 Success markers:
@@ -55,7 +59,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 launch/input/replay hattı, Run #175-#176 death surface ve Run #165-#174 spawn readability/pressure guard'lari.
-- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#176 death-surface compacting fix'lerini yeniden copy churn'una cevirmeden, seed `#7` sonrasi kalan yeni `10.0s` floor kusuruna veya benzeri dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
+- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#176 death-surface compacting fix'lerini veya Run #178 validation-status fix'ini yeniden copy/readiness churn'una cevirmeden, seed `#7` sonrasi kalan yeni dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---

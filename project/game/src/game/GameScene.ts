@@ -48,6 +48,7 @@ import {
   getRecentDeathTimesText,
   getRetryDelayMs,
   getValidationProgressText,
+  isValidationReportCurrent,
   type GameplayTelemetry,
   type TelemetrySummary,
 } from './telemetry.ts';
@@ -2614,8 +2615,22 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getValidationExportLine(): string {
-    if (this.lastValidationReport) {
+    const validationProgress = getValidationProgressText(this.sessionTelemetry);
+    const validationReportCurrent = isValidationReportCurrent(
+      this.lastValidationReport,
+      this.sessionTelemetry,
+    );
+
+    if (this.lastValidationReport && validationReportCurrent) {
       return `Last export ${this.getLastValidationReportSummaryText()}`;
+    }
+
+    if (this.lastValidationReport) {
+      if (hasCompletedRunSample(this.sessionTelemetry)) {
+        return `Saved export stale | Validation ${validationProgress} | Press V to refresh`;
+      }
+
+      return `Saved export older sample | Validation ${validationProgress}`;
     }
 
     return `No saved export yet | Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
@@ -2627,16 +2642,24 @@ export class GameScene extends Phaser.Scene {
 
   private getGameOverValidationSummaryLine(): string {
     const validationProgress = getValidationProgressText(this.sessionTelemetry);
+    const validationReportCurrent = isValidationReportCurrent(
+      this.lastValidationReport,
+      this.sessionTelemetry,
+    );
 
     if (!hasCompletedRunSample(this.sessionTelemetry)) {
+      if (this.lastValidationReport) {
+        return `Validation ${validationProgress} | Saved export older sample`;
+      }
+
       return `Validation ${validationProgress} | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`;
     }
 
-    if (this.lastValidationReport) {
+    if (validationReportCurrent) {
       return `Validation ${validationProgress} | Export ready`;
     }
 
-    return `Validation ${validationProgress} | Press V`;
+    return `Validation ${validationProgress} | Press V to refresh`;
   }
 
   private getGameOverSupportText(): string {
