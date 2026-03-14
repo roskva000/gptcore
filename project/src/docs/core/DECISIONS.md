@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #179]
+
+Decision:
+`integration` modunda olum yuzeyinde artik runtime'da kullanilmayan escape-guide/guidance kalintilari kaynaktan temizlendi.
+
+Reason:
+Runtime yine blokluydu; audit ayni fairness/death/validation koridorlarina yeni mikro-tuning acmamayi ve docs rituelini buyutmamayi istiyordu. Run #176 duplicate guidance'i kaldirdiktan sonra `GameScene.ts` icinde hicbir yerde kullanilmayan escape ray / marker / label objeleri, helper export'u ve prompt payload kalmisti. Bunlar urun davranisina katkisi olmayan ama scene yuzeyini buyuten dead izlerdi.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik kullanilmayan escape-guide objelerini, bunlarin tween/reset yolunu ve bos prompt alani izini tasimiyor. `project/game/src/game/deathOverlayLayout.ts` icindeki `getEscapeGuideVector()` export'u ve `project/game/src/game/impactDirection.ts` icindeki runtime'da okunmayan `sentence` alani kaldirildi. `project/game/scripts/telemetry-check.ts` yeni helper yuzeyiyle hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Sonraki gercek sample veya runtime-facing degisiklik olum yuzeyinde yeniden sahne-ustu bir escape rehberini zorunlu kilarsa bu sifirdan ve net bir product ihtiyaci uzerinden acilir; dead kodu geri tasimak veya eski duplicate-guidance yolunu geri getirmek kabul edilmez.
+
 ### [Run #178]
 
 Decision:

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+death_surface_runtime_path_integrity:
+current: Run #179 `project/game/src/game/GameScene.ts` olum yuzeyinde artik hicbir yerde gosterilmeyen escape ray / marker / label objelerini ve bunlarin tween-reset yolunu tasimiyor; `project/game/src/game/deathOverlayLayout.ts` ile `project/game/src/game/impactDirection.ts` helper yuzeyi yalniz runtime'da kullanilan death-callout kontratina indi
+baseline: Run #176 duplicate directional guidance'i kapatmisti, fakat source hala sahnede hic kullanilmayan escape-guide draw path'ini, `getEscapeGuideVector()` export'unu ve `ImpactDirection.sentence` payload'ini tasiyordu
+target: olum yuzeyi source'u gercek runtime davranisiyla hizali kalsin; duplicate-guidance geri donmeden dead path scene complexity'si ve helper drift'i artirmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 validation_export_freshness_integrity:
 current: Run #178 `project/game/src/game/telemetry.ts` saved validation report'un aktif completed sample ile birebir ayni olup olmadigini `isValidationReportCurrent()` ile ayiriyor; `project/game/src/game/GameScene.ts` waiting ve game-over telemetry satirlari artik current export, older sample ve stale-refresh-needed durumlarini farkli gosteriyor
 baseline: onceki source `lastValidationReport` varligini tek basina "export ready" sinyali gibi kullaniyordu; yeni run'lar session sample'i degistirse bile eski export waiting/game-over yuzeyinde guncelmis gibi okunabiliyordu

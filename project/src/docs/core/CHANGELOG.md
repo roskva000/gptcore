@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #179
+
+- `project/game/src/game/GameScene.ts` olum yuzeyinde artik hicbir yerde gosterilmeyen escape ray / arrow / marker / label objelerini ve bunlarin tween-reset izini tasimiyor
+- `project/game/src/game/deathOverlayLayout.ts` kullanilmayan `getEscapeGuideVector()` export'unu, `project/game/src/game/impactDirection.ts` ise runtime'da okunmayan `sentence` alanini kaldirdi
+- `project/game/scripts/telemetry-check.ts` death helper yuzeyini bu daralmayla hizaladi; impact direction assert'leri yalniz runtime'in kullandigi kontrati dogruluyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #178
 
 - `project/game/src/game/telemetry.ts` yeni `isValidationReportCurrent()` helper'ini ekledi; kaydedilmis validation export'un aktif completed sample ile birebir ayni olup olmadigi artik ayri okunuyor

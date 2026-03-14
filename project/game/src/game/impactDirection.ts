@@ -1,6 +1,5 @@
 export type ImpactDirection = {
   label: string;
-  sentence: string;
   offsetX: number;
   offsetY: number;
 };
@@ -59,7 +58,6 @@ export const getImpactDirection = (
       if (horizontal && vertical) {
         return {
           label: `${vertical}-${horizontal}`,
-          sentence: `the obstacle cut through from the ${vertical}-${horizontal}`,
           offsetX: centeredOffsetX,
           offsetY: centeredOffsetY,
         };
@@ -68,7 +66,6 @@ export const getImpactDirection = (
       if (horizontal) {
         return {
           label: horizontal,
-          sentence: `the obstacle cut through from the ${horizontal}`,
           offsetX: centeredOffsetX,
           offsetY: 0,
         };
@@ -76,7 +73,6 @@ export const getImpactDirection = (
 
       return {
         label: vertical,
-        sentence: `the obstacle cut through from the ${vertical}`,
         offsetX: 0,
         offsetY: centeredOffsetY,
       };
@@ -84,7 +80,6 @@ export const getImpactDirection = (
 
     return {
       label: 'center',
-      sentence: 'the impact overlapped your center line',
       offsetX: 0,
       offsetY: 0,
     };
@@ -98,7 +93,6 @@ export const getImpactDirection = (
   if (horizontal && vertical) {
     return {
       label: `${vertical}-${horizontal}`,
-      sentence: `the obstacle closed in from the ${vertical}-${horizontal}`,
       offsetX,
       offsetY,
     };
@@ -107,7 +101,6 @@ export const getImpactDirection = (
   if (horizontal) {
     return {
       label: horizontal,
-      sentence: `the obstacle closed in from the ${horizontal}`,
       offsetX,
       offsetY: 0,
     };
@@ -116,14 +109,12 @@ export const getImpactDirection = (
   if (vertical) {
     return {
       label: vertical,
-      sentence: `the obstacle closed in from the ${vertical}`,
       offsetX: 0,
       offsetY,
     };
   }
   return {
     label: 'center',
-    sentence: 'the impact overlapped your center line',
     offsetX: 0,
     offsetY: 0,
   };

@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import {
-  getEscapeGuideVector,
   getHorizontalCalloutCenterX,
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
@@ -928,25 +927,6 @@ assert.equal(
 );
 
 assert.deepEqual(
-  getEscapeGuideVector(0, 0),
-  {
-    guideOffsetX: 0,
-    guideOffsetY: 0,
-    isCentered: true,
-  },
-  'Centered overlaps should keep the escape guide neutral instead of drawing a fake upward lane.',
-);
-assert.deepEqual(
-  getEscapeGuideVector(1, -1),
-  {
-    guideOffsetX: -1,
-    guideOffsetY: 1,
-    isCentered: false,
-  },
-  'Directional overlaps should still point the escape guide away from the fatal lane.',
-);
-
-assert.deepEqual(
   getImpactDirection(
     { x: 400, y: 300 },
     { x: 424, y: 300 },
@@ -954,7 +934,6 @@ assert.deepEqual(
   ),
   {
     label: 'right',
-    sentence: 'the obstacle closed in from the right',
     offsetX: 1,
     offsetY: 0,
   },
@@ -970,7 +949,6 @@ assert.deepEqual(
   ),
   {
     label: 'top',
-    sentence: 'the obstacle cut through from the top',
     offsetX: 0,
     offsetY: -1,
   },
@@ -985,7 +963,6 @@ assert.deepEqual(
   ),
   {
     label: 'center',
-    sentence: 'the impact overlapped your center line',
     offsetX: 0,
     offsetY: 0,
   },

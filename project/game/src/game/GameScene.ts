@@ -23,7 +23,6 @@ import {
 } from './spawn';
 import { selectFatalThreatIndex, type FatalThreatCandidate } from './deathAttribution';
 import {
-  getEscapeGuideVector,
   getHorizontalCalloutCenterX,
   getVerticalCalloutPlacement,
 } from './deathOverlayLayout';
@@ -101,8 +100,6 @@ const FATAL_LABEL_MIN_Y_PX = 40;
 const FATAL_LABEL_MAX_Y_PX = ARENA_HEIGHT - 40;
 const FATAL_LABEL_MIN_X_PX = 20;
 const FATAL_LABEL_MAX_X_PX = ARENA_WIDTH - 20;
-const ESCAPE_LABEL_MIN_X_PX = 20;
-const ESCAPE_LABEL_MAX_X_PX = ARENA_WIDTH - 20;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
 const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
@@ -139,7 +136,6 @@ type MovementKeys = {
 type FeedbackAudioContext = AudioContext | null;
 type EscapePrompt = {
   title: string;
-  sentence: string;
 };
 
 type PrimaryActionSource =
@@ -234,10 +230,6 @@ export class GameScene extends Phaser.Scene {
   private fatalSpotlight!: Phaser.GameObjects.Arc;
   private fatalSpotlightConnector!: Phaser.GameObjects.Line;
   private fatalSpotlightLabel!: Phaser.GameObjects.Text;
-  private escapeRay!: Phaser.GameObjects.Line;
-  private escapeArrowHead!: Phaser.GameObjects.Triangle;
-  private escapeMarker!: Phaser.GameObjects.Arc;
-  private escapeMarkerLabel!: Phaser.GameObjects.Text;
   private overlay!: Phaser.GameObjects.Rectangle;
   private fatalCallout!: Phaser.GameObjects.Text;
   private overlayBadge!: Phaser.GameObjects.Text;
@@ -503,39 +495,6 @@ export class GameScene extends Phaser.Scene {
         },
       })
       .setDepth(11)
-      .setOrigin(0.5)
-      .setVisible(false);
-
-    this.escapeRay = this.add
-      .line(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 0, 0, 0, 84, 0x88ffe4, 0.92)
-      .setDepth(9)
-      .setLineWidth(5, 5)
-      .setOrigin(0, 0)
-      .setAlpha(0)
-      .setVisible(false);
-
-    this.escapeArrowHead = this.add
-      .triangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 0, -15, 26, 0, 0, 15, 0x88ffe4, 0.98)
-      .setDepth(9)
-      .setAlpha(0)
-      .setVisible(false);
-
-    this.escapeMarker = this.add
-      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 30)
-      .setDepth(9)
-      .setStrokeStyle(4, 0x88ffe4, 0.95)
-      .setFillStyle(0x0a1f1a, 0.35)
-      .setVisible(false);
-
-    this.escapeMarkerLabel = this.add
-      .text(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, '', {
-        align: 'center',
-        color: '#d8fff4',
-        fontFamily: 'Trebuchet MS',
-        fontSize: '16px',
-        fontStyle: 'bold',
-      })
-      .setDepth(9)
       .setOrigin(0.5)
       .setVisible(false);
 
@@ -1081,10 +1040,6 @@ export class GameScene extends Phaser.Scene {
       this.fatalSpotlight,
       this.fatalSpotlightConnector,
       this.fatalSpotlightLabel,
-      this.escapeRay,
-      this.escapeArrowHead,
-      this.escapeMarker,
-      this.escapeMarkerLabel,
     ]);
     this.player
       .setPosition(ARENA_WIDTH / 2, ARENA_HEIGHT / 2)
@@ -1100,10 +1055,6 @@ export class GameScene extends Phaser.Scene {
     this.fatalSpotlight.setAlpha(0).setScale(0.72).setVisible(false);
     this.fatalSpotlightConnector.setAlpha(0).setVisible(false);
     this.fatalSpotlightLabel.setAlpha(0).setVisible(false).setText('');
-    this.escapeRay.setAlpha(0).setVisible(false);
-    this.escapeArrowHead.setAlpha(0).setScale(0.76).setVisible(false);
-    this.escapeMarker.setAlpha(0).setScale(0.78).setVisible(false);
-    this.escapeMarkerLabel.setAlpha(0).setVisible(false).setText('');
     this.overlay.setVisible(false);
     this.fatalCallout.setVisible(false).setText('');
     this.overlayBadge.setVisible(false).setText('');
@@ -1531,10 +1482,6 @@ export class GameScene extends Phaser.Scene {
       this.fatalSpotlight,
       this.fatalSpotlightConnector,
       this.fatalSpotlightLabel,
-      this.escapeRay,
-      this.escapeArrowHead,
-      this.escapeMarker,
-      this.escapeMarkerLabel,
     ]);
     this.player.setVelocity(0, 0);
     this.player.setTint(0xffd6cf);
@@ -1579,10 +1526,6 @@ export class GameScene extends Phaser.Scene {
     });
     this.showImpactMarker(hitDirection);
     this.showFatalSpotlight(fatalObstacle, hitDirection);
-    this.escapeRay.setAlpha(0).setVisible(false);
-    this.escapeArrowHead.setAlpha(0).setVisible(false);
-    this.escapeMarker.setAlpha(0).setVisible(false);
-    this.escapeMarkerLabel.setAlpha(0).setVisible(false).setText('');
 
     this.overlay.setVisible(true);
     const hasGoalClearSummary = goalClearSummary !== null;
@@ -1918,116 +1861,6 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  private showEscapeGuide(hitDirection: ImpactDirection, promptTitle: string): void {
-    const { guideOffsetX, guideOffsetY, isCentered } = getEscapeGuideVector(
-      hitDirection.offsetX,
-      hitDirection.offsetY,
-    );
-
-    if (isCentered) {
-      this.escapeRay.setAlpha(0).setVisible(false);
-      this.escapeArrowHead.setAlpha(0).setVisible(false);
-      this.escapeMarker
-        .setPosition(this.player.x, this.player.y)
-        .setScale(0.78)
-        .setAlpha(0.92)
-        .setVisible(true);
-      this.escapeMarkerLabel
-        .setText(promptTitle.replace(' ', '\n'))
-        .setPosition(
-          getHorizontalCalloutCenterX({
-            preferredCenterX: this.player.x,
-            labelHalfWidth: this.escapeMarkerLabel.displayWidth / 2,
-            minX: ESCAPE_LABEL_MIN_X_PX,
-            maxX: ESCAPE_LABEL_MAX_X_PX,
-          }),
-          this.player.y,
-        )
-        .setAlpha(1)
-        .setVisible(true);
-
-      this.tweens.add({
-        targets: this.escapeMarker,
-        scale: 1,
-        alpha: 0.72,
-        duration: 180,
-        ease: 'Quad.Out',
-      });
-      this.tweens.add({
-        targets: this.escapeMarkerLabel,
-        alpha: 0.86,
-        duration: 180,
-        ease: 'Quad.Out',
-      });
-      return;
-    }
-
-    const guideStartOffset = 28;
-    const guideLength = 122;
-    const guideStartX = this.player.x + guideOffsetX * guideStartOffset;
-    const guideStartY = this.player.y + guideOffsetY * guideStartOffset;
-    const guideEndX = this.player.x + guideOffsetX * guideLength;
-    const guideEndY = this.player.y + guideOffsetY * guideLength;
-    const markerX = Phaser.Math.Clamp(this.player.x + guideOffsetX * 70, 56, ARENA_WIDTH - 56);
-    const markerY = Phaser.Math.Clamp(this.player.y + guideOffsetY * 70, 56, ARENA_HEIGHT - 56);
-
-    this.escapeRay
-      .setTo(guideStartX, guideStartY, guideEndX, guideEndY)
-      .setAlpha(0.96)
-      .setVisible(true);
-    this.escapeArrowHead
-      .setPosition(guideEndX, guideEndY)
-      .setRotation(this.getDirectionRotation(guideOffsetX, guideOffsetY))
-      .setScale(0.76)
-      .setAlpha(0.98)
-      .setVisible(true);
-    this.escapeMarker
-      .setPosition(markerX, markerY)
-      .setScale(0.78)
-      .setAlpha(0.92)
-      .setVisible(true);
-    this.escapeMarkerLabel
-      .setText(promptTitle.replace(' ', '\n'))
-      .setPosition(
-        getHorizontalCalloutCenterX({
-          preferredCenterX: markerX,
-          labelHalfWidth: this.escapeMarkerLabel.displayWidth / 2,
-          minX: ESCAPE_LABEL_MIN_X_PX,
-          maxX: ESCAPE_LABEL_MAX_X_PX,
-        }),
-        markerY,
-      )
-      .setAlpha(1)
-      .setVisible(true);
-
-    this.tweens.add({
-      targets: this.escapeRay,
-      alpha: 0.34,
-      duration: 210,
-      ease: 'Quad.Out',
-    });
-    this.tweens.add({
-      targets: this.escapeArrowHead,
-      scale: 1,
-      alpha: 0.34,
-      duration: 210,
-      ease: 'Quad.Out',
-    });
-    this.tweens.add({
-      targets: this.escapeMarker,
-      scale: 1,
-      alpha: 0.72,
-      duration: 180,
-      ease: 'Quad.Out',
-    });
-    this.tweens.add({
-      targets: this.escapeMarkerLabel,
-      alpha: 0.86,
-      duration: 180,
-      ease: 'Quad.Out',
-    });
-  }
-
   private resolveFatalObstacle(
     callbackObstacle: Phaser.Physics.Arcade.Image,
   ): Phaser.Physics.Arcade.Image {
@@ -2114,13 +1947,11 @@ export class GameScene extends Phaser.Scene {
     if (direction) {
       return {
         title: `BREAK ${direction.toUpperCase()}`,
-        sentence: `On the retry, clear space toward the ${direction} lane first.`,
       };
     }
 
     return {
       title: 'RESET CENTER',
-      sentence: 'On the retry, move off the center line before the next rush closes in.',
     };
   }
 

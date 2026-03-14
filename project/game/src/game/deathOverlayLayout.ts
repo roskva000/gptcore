@@ -4,12 +4,6 @@ export type VerticalCalloutPlacement = {
   placeBelow: boolean;
 };
 
-export type EscapeGuideVector = {
-  guideOffsetX: number;
-  guideOffsetY: number;
-  isCentered: boolean;
-};
-
 type HorizontalCalloutPlacementParams = {
   preferredCenterX: number;
   labelHalfWidth: number;
@@ -26,25 +20,6 @@ type VerticalCalloutPlacementParams = {
 };
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
-
-export const getEscapeGuideVector = (
-  hitDirectionOffsetX: number,
-  hitDirectionOffsetY: number,
-): EscapeGuideVector => {
-  if (hitDirectionOffsetX === 0 && hitDirectionOffsetY === 0) {
-    return {
-      guideOffsetX: 0,
-      guideOffsetY: 0,
-      isCentered: true,
-    };
-  }
-
-  return {
-    guideOffsetX: -hitDirectionOffsetX,
-    guideOffsetY: -hitDirectionOffsetY,
-    isCentered: false,
-  };
-};
 
 export const getHorizontalCalloutCenterX = ({
   preferredCenterX,

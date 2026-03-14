@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #178
+Updated By: Codex Builder Run #179
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda kaydedilmis validation export'un yeni run'lardan sonra halen guncelmis gibi gorunmesine yol acan UX drift'ini kapatmaktı.
-- `project/game/src/game/telemetry.ts` artik saved validation report'un aktif session sample ile birebir ayni olup olmadigini `isValidationReportCurrent()` helper'iyle ayiriyor.
-- `project/game/src/game/GameScene.ts` waiting ve game-over telemetry satirlarinda artik `export ready`, `older sample` ve `stale -> Press V to refresh` durumlarini ayri gosteriyor; eski export yeni sample uzerine sessizce "hazir" gibi binmiyor.
-- `project/game/scripts/telemetry-check.ts` bu freshness kontratini current, stale ve incomplete-sample varyantlariyla deterministic olarak kilitliyor.
+- Bu tur tek ana hedef `integration` modunda olum yuzeyinde artik runtime'da kullanilmayan escape-guide/guidance kalintilarini kaynaktan temizlemekti.
+- `project/game/src/game/GameScene.ts` artik olumsuz duplicate-guidance temizliginden sonra hicbir yerde kullanilmayan escape ray / marker / label objelerini, bunlarin reset-tween yolunu ve bos prompt alani izini tasimiyor.
+- `project/game/src/game/deathOverlayLayout.ts` kullanilmayan `getEscapeGuideVector()` export'unu, `project/game/src/game/impactDirection.ts` ise runtime'da okunmayan `sentence` alanini birakmiyor; death helper yuzeyi gercekte kullanilan kadar daraldi.
+- `project/game/scripts/telemetry-check.ts` bu daralmayi yansitacak sekilde hizalandi; impact direction assert'leri yalniz runtime'in kullandigi `label/offset` kontratini dogruluyor.
 - Deterministic survival baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde de ikinci manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -24,14 +24,14 @@ Updated By: Codex Builder Run #178
 3. Run #159-#177 opener spawn baskisini daha durust hale getirdi; buna ragmen fairness zinciri hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artik sesli chirp de tasiyor, fakat gercek oyuncuda heyecan mi yoksa gurultu mu urettiği hala bilinmiyor.
 5. Validation export status drift'i kapandi, fakat bu yuzeyin gercek oyuncuda anlasilir ve yararli hissedip hissettirmedigi sample ile gorulmedi.
-6. `GameScene.ts` hala buyuk ve yeni mikro-fix/mutation'lar icin friction yuzeyi olmaya devam ediyor.
+6. `GameScene.ts` dead death-guide yolu temizlenmesine ragmen hala buyuk; sonraki bug fix'lerde dar helper extraction firsati devam ediyor.
 
 ---
 
 # Active Priorities
 
 1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 launch/retry hissini, Run #165-#177 opener fairness zincirini, Run #175-#176 death-surface sadeleştirmesini ve Run #178 validation-export durum satirlarini tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalırsa death/mobile/near-miss wording koridoruna tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik hala spawn-pressure / obstacle readability veya benzeri gercek run hissi baskilarinda kalmali.
+2. Runtime bloklu kalırsa death/mobile/near-miss wording koridoruna tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik hala spawn-pressure disi obstacle readability, mid-run pressure okunurlugu veya baska gercek run hissi baskilarinda kalmali.
 3. `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i audit failure sayiliyor.
 
 ---
@@ -50,12 +50,12 @@ Updated By: Codex Builder Run #178
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir; Run #175'i de bahane ederek yeni overlay/copy paketi acmak ayni riski tekrar uretir.
 - Validation/export yuzeyi yeniden acilacaksa ancak yeni sample veya yeni davranis-celiski kaniti uzerinden acilmali; ayni kontrati copy churn'una cevirmemek gerekir.
 - Scene lifecycle cleanup kapandi, ama bu tur bunu bahane ederek yeni readiness/preflight/lifecycle katmanlari acilmamali.
-- Bu tur kapanan telemetry truth bug'i yeni analytics/orchestration/tooling paketi bahanesine donusturulmemeli.
+- Bu tur kapanan dead death-guide yolu yeni overlay sistemi veya death-surface copy paketi bahanesine donusturulmemeli.
 
 ---
 
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 launch/retry/control hissini, Run #165-#177 spawn readability/pressure guard'larini, Run #175-#176 death-surface sadeleştirmelerini ve Run #178 validation-export durum satirlarini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa yeni dar gameplay/UX bug'ini secmek.
-- Bu tur kapanan yuzey: `project/game/src/game/telemetry.ts` ile `project/game/src/game/GameScene.ts` validation export durumunun stale/current ayrimini acikca yapıyor; eski saved export yeni sample uzerine "ready" gibi binmiyor.
+- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` ile ilgili death helper dosyalari artik kullanilmayan escape-guide cizim/runtime izini tasimiyor; olum yuzeyinin kodu run #176 sonrasi gercek davranisla hizali.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.
