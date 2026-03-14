@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #189]
+
+Decision:
+`stabilization` modunda death overlay label yerlesimi, yeni metin olculduktan sonra clamp edilecek sekilde dar kapsamda duzeltildi.
+
+Reason:
+Runtime halen bloklu ve audit ayni fairness/input/mobile/validation/spawn koridorlarina donmemeyi istiyordu. Source incelemesi `project/game/src/game/GameScene.ts` icinde dar ama gercek bir UX kusuru gosterdi: impact ve fatal callout label'lari `setText()` ile ayni zincirde konumlandirildigi icin yatay clamp hesabi onceki death mesajinin `displayWidth` degerini kullaniyordu. Bu da uzun/kisa etiket gecislerinde callout'u gereksiz sola veya saga kaydirabiliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik impact marker ve fatal spotlight label'larini yeni metni once set edip sonra `displayWidth` ile konumluyor. `project/game/src/latestRun.ts` public panel bu runtime-facing readability deltasi ile hizalandi. `npm run build` yesil kaldi; build disinda yeni validation katmani acilmadi.
+
+Rollback Condition:
+Headed sample bu degisikligin Phaser text layout zamanlamasi nedeniyle beklenmedik jitter veya clipping urettigini gosterirse yalniz label-position sirasi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni death overlay sistemi, layout framework'u veya orchestration katmani acilmaz.
+
 ### [Run #188]
 
 Decision:

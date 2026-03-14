@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+death_callout_label_alignment_integrity:
+current: Run #189 `project/game/src/game/GameScene.ts` impact marker ve fatal spotlight label'larini artik yeni metni once set edip sonra `displayWidth` ile clamp ediyor; onceki death mesajinin genisligi sonraki callout'un yatay merkezini kaydirmiyor
+baseline: onceki source `setText()` ile `setPosition()` ayni zincirde calistigi icin clamp hesabi eski label genisligini okuyabiliyor, bu da `CENTER`, yon etiketi veya `KILLER` callout'unun bir onceki olumdaki daha genis/dar metne gore yana kaymasina yol acabiliyordu
+target: headed sample'da death callout label'lari her olusumda kendi metin genisliklerine gore dogru clamp edilsin; overlay readability eski mesaj uzunluguna bagli drift uretmesin
+validation: `npm run build`
+
 touch_primary_ownership_integrity:
 current: Run #188 `project/game/src/game/primaryAction.ts` native `isPrimary` sinyalini hem live steering hem replay/resume release gate yorumunda kullaniyor; `project/game/src/game/GameScene.ts` pointer release clear kararini artik event pointer yerine mevcut `activePointer` uzerinden veriyor
 baseline: Run #183 launch/retry/resume aktivasyonunda non-primary touch'u kapatmisti ama active-run steering ve release clear yollari hala secondary touch'un gesture sahipligini dolayli olarak tasiyabiliyordu

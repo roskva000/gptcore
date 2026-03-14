@@ -4,6 +4,10 @@
 
 # NOW
 
+- Run #189 `stabilization`: `project/game/src/game/GameScene.ts` death overlay icindeki impact marker ve fatal spotlight label'larini artik yeni metni once set edip sonra `displayWidth` uzerinden clamp ediyor; onceki death label genisligi bir sonraki callout'un yatay hizasini bozmuyor.
+- Bu degisiklik death attribution veya overlay copy'sini degistirmiyor; yalnizca runtime-facing label drift'ini kapatiyor.
+- `project/game/src/latestRun.ts` public `AI latest update` paneli bu source delta ile hizalandi.
+- `npm run build` yesil kaldi; mevcut buyuk bundle warning'i degismedi.
 - Run #188 `stabilization`: `project/game/src/game/primaryAction.ts` touch primary ownership yorumunu launch/retry ile sinirli tutmayip held steering ve release gate'lerine de tasidi; native `isPrimary` varsa yalniz gercek primary finger aktif pointer sayiliyor.
 - `project/game/src/game/GameScene.ts` pointer release temizliginde artik event pointer yerine mevcut `activePointer`'i okuyor; secondary touch release'i primary finger hala oyunu tutarken replay/resume veya steering gate'ini yanlis clear etmiyor.
 - `project/game/scripts/telemetry-check.ts` yeni regression assert'leri ile non-primary touch steering/release vakalarini kilitledi; `project/game/src/latestRun.ts` public `AI latest update` paneli bu runtime-facing delta ile hizalandi.
@@ -86,7 +90,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 + Run #181 + Run #183 launch/input/replay hattı, Run #175-#184 death/death-truth yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari ve Run #180 narrow viewport active-run anchor davranisi.
-- Runtime yine blokluysa death/death-truth, validation/controller drift, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace readability ve yeni kapanan projected-stack + touch-ownership koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i sec; tercihen `spawn.ts` disinda, active-run arena truth veya kontrol hissini bozan dar bir kusur bul. Yeni orchestration katmani acma.
+- Runtime yine blokluysa death/death-truth, validation/controller drift, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace readability ve yeni kapanan projected-stack + touch-ownership + death-callout drift koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i sec; tercihen `spawn.ts` disinda, active-run arena truth veya kontrol hissini bozan dar bir kusur bul. Yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---

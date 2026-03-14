@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #189
+
+- `project/game/src/game/GameScene.ts` death overlay icindeki impact marker ve fatal spotlight label yerlesimini duzeltti; label clamp hesabi artik yeni metnin gercek genisligini kullaniyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu readability bug fix'i ile hizaladi
+- `npm run build` basarili calisti
+
 ## Run #188
 
 - `project/game/src/game/primaryAction.ts` touch primary ownership yorumunu launch/retry ile sinirli birakmayip held steering ve release gate yollarina da tasidi; native `isPrimary` varsa yalniz gercek primary finger aktif tutuluyor

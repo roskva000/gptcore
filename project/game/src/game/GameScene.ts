@@ -1709,19 +1709,19 @@ export class GameScene extends Phaser.Scene {
         .setScale(0.72)
         .setAlpha(0.95)
         .setVisible(true);
-    this.impactMarkerLabel
-      .setText('CENTER')
-      .setPosition(
-        getHorizontalCalloutCenterX({
-          preferredCenterX: this.player.x,
-          labelHalfWidth: this.impactMarkerLabel.displayWidth / 2,
-          minX: IMPACT_LABEL_MIN_X_PX,
-          maxX: IMPACT_LABEL_MAX_X_PX,
-        }),
-        this.player.y,
-      )
-      .setAlpha(1)
-      .setVisible(true);
+      this.impactMarkerLabel.setText('CENTER');
+      this.impactMarkerLabel
+        .setPosition(
+          getHorizontalCalloutCenterX({
+            preferredCenterX: this.player.x,
+            labelHalfWidth: this.impactMarkerLabel.displayWidth / 2,
+            minX: IMPACT_LABEL_MIN_X_PX,
+            maxX: IMPACT_LABEL_MAX_X_PX,
+          }),
+          this.player.y,
+        )
+        .setAlpha(1)
+        .setVisible(true);
 
       this.tweens.add({
         targets: this.impactMarker,
@@ -1770,8 +1770,8 @@ export class GameScene extends Phaser.Scene {
       .setScale(0.72)
       .setAlpha(0.95)
       .setVisible(true);
+    this.impactMarkerLabel.setText(hitDirection.label.toUpperCase());
     this.impactMarkerLabel
-      .setText(hitDirection.label.toUpperCase())
       .setPosition(
         getHorizontalCalloutCenterX({
           preferredCenterX: markerX,
@@ -1839,8 +1839,8 @@ export class GameScene extends Phaser.Scene {
       .setTo(spotlightX, connectorStartY, spotlightX, connectorEndY)
       .setAlpha(0.96)
       .setVisible(true);
+    this.fatalSpotlightLabel.setText(this.getFatalSpotlightLabelText(hitDirection));
     this.fatalSpotlightLabel
-      .setText(this.getFatalSpotlightLabelText(hitDirection))
       .setPosition(
         getHorizontalCalloutCenterX({
           preferredCenterX: spotlightX,

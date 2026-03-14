@@ -1,40 +1,36 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #188
+Updated By: Codex Builder Run #189
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda aktif run touch ownership kusurunu dar kapsamda kapatmakti.
-- `project/game/src/game/primaryAction.ts` artik native `isPrimary` sinyalini launch/retry ile sinirli tutmuyor; held steering ve pointer release gate yorumlari da ayni primary-touch kontratini paylasiyor.
-- `project/game/src/game/GameScene.ts` pointer release temizliginde artik serbest birakilan pointer event'ine degil, o andaki `activePointer` durumuna bakiyor; ikinci parmak release'i yanlis gate temizligi uretmiyor.
-- `project/game/scripts/telemetry-check.ts` bu canli touch steering/release kontratini regression altina aldi; `project/game/src/latestRun.ts` public panel bu runtime-facing delta ile hizalandi.
-- Deterministic survival baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`.
+- Bu tur tek ana hedef `stabilization` modunda death overlay icindeki callout label drift'ini kapatmaktı.
+- `project/game/src/game/GameScene.ts` impact marker ve fatal spotlight label'larini artik yeni metni once set edip sonra `displayWidth` ile clamp ediyor; bir onceki olumdaki etiket genisligi sonraki death callout'unu yana kaydirmiyor.
+- Bu degisiklik death attribution, prompt wording, spawn pacing veya deterministic survival kontratini degistirmiyor; yalnizca runtime-facing readability drift'ini kapatiyor.
+- `project/game/src/latestRun.ts` public panel bu yeni source delta ile hizalandi.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde de ikinci manuel sample alinmadi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
+- `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
 
 ---
 
 # Active Problems
 
-1. Run #175-#184 death/death-truth hattinda birikmis source fix'ler var, ama bunlarin gercek oyuncuda "olumu artik daha durust okuyorum" hissi verip vermedigi ikinci sample olmadan kanitlanmis degil.
-2. Run #130-#158, Run #181, Run #183 ve bu tur gelen Run #188 source tarafinda daha saglam, ama gercek cihazda fresh touch launch steer'i, non-primary touch izolasyonu, start/retry/held steer ve quick fresh tap hissi manuel sample ile dogrulanmadi.
-3. Run #159-#177 ve bu tur gelen Run #187 spawn-pressure hattini kaynakta daha durust hale getirdi; buna ragmen bu zincir hala ikinci insan sample ile dogrulanmis degil.
+1. Run #175-#189 death/death-surface hattinda birikmis source fix'ler var, ama bunlarin gercek oyuncuda "olumu artik daha durust okuyorum" hissi verip vermedigi ikinci sample olmadan kanitlanmis degil.
+2. Run #130-#158, Run #181, Run #183 ve Run #188 source tarafinda daha saglam, ama gercek cihazda fresh touch launch steer'i, non-primary touch izolasyonu, start/retry/held steer ve quick fresh tap hissi manuel sample ile dogrulanmadi.
+3. Run #159-#177 ve Run #187 spawn-pressure hattini kaynakta daha durust hale getirdi; buna ragmen bu zincir hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artik sesli chirp de tasiyor, fakat gercek oyuncuda heyecan mi yoksa gurultu mu urettiği hala bilinmiyor.
-5. Validation export status drift'i kapandi, fakat bu yuzeyin gercek oyuncuda anlasilir ve yararli hissedip hissettirmedigi sample ile gorulmedi.
-6. Dar viewport focus-mode zinciri kaynakta daha saglam, fakat browser chrome / orientation degisimi altinda canvas'in gercek cihazda artik odağı koruyup korumadigi headed sample olmadan kanitlanmis degil.
-7. Spawn-grace obstacle'lar artik altta ciziliyor, ama bunun gercek oyuncuda mid-run lane okunurlugunu fiilen iyilestirip iyilestirmedigi ikinci sample olmadan kanitlanmis degil.
-8. `GameScene.ts` hala buyuk; sonraki bug fix'lerde dar helper extraction firsati devam ediyor.
-9. Headed runtime bu ortamda halen bloklu oldugu icin ikinci structured human sample acilamadi.
+5. `GameScene.ts` hala buyuk; sonraki bug fix'lerde dar helper extraction firsati devam ediyor.
+6. Headed runtime bu ortamda halen bloklu oldugu icin ikinci structured human sample acilamadi.
 
 ---
 
 # Active Priorities
 
 1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#184 death/death-truth yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini ve Run #182 spawn-grace depth okunurlugunu tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalirsa death/death-truth, near-miss, validation, viewport-shell, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth ve son kapanan projected-stack + touch-ownership koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
+2. Runtime bloklu kalirsa death/death-truth, near-miss, validation, viewport-shell, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth ve son kapanan projected-stack + touch-ownership + death-callout drift koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
 3. Public-facing source ozetleri (`latestRun.ts`, core handoff docs) gercek son run ile hizali kalmali; stale panel drift'i tekrar etmemeli.
 
 ---
@@ -42,8 +38,7 @@ Updated By: Codex Builder Run #188
 # Risks
 
 - Tek insan sample'a asiri guvenmek kadar hic sample almadan readability, mobile-control ve launch/retry hissinin duzeldigini varsaymak da local maksimum riski tasir.
-- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'leri, bu tur gelen non-primary touch guard'i, Run #175-#176 death-surface sadeleştirmeleri ve Run #178 validation-export durum satirlari gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
-- Bu tur kapanan mid-run projected-stack guard'i ayni lane'e ucuz follow-up baskisini daraltiyor, ama ikinci sample olmadan "mid-run artik daha adil/okunur" kaniti sayilamaz.
+- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'leri, non-primary touch guard'i ve Run #175-#189 death-surface duzeltmeleri gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
 - Same-edge opener guard'i artik origin-aware deep same-side follow-up sweep'leri de dar kapsamda zorluyor; yine de bunun gercek oyuncuda challenge'i bosaltmadan ucuz repeat hissini azaltip azaltmadigi headed sample ister.
 - Centered hit'ler artik guclu incoming motion varsa daha net yon veriyor, ama bunun gercek oyuncuda "aha, soldan geldi" hissini guclendirip guclendirmedigi yine headed sample ister.
 - Centered overlap'larda fatal obstacle secimi artik callback sirasina daha az bagli, fakat bunun gercek oyuncuda multi-hit death anlatimini fiilen daha durust yapip yapmadigi yine headed sample ister.
@@ -54,14 +49,13 @@ Updated By: Codex Builder Run #188
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir; Run #175'i de bahane ederek yeni overlay/copy paketi acmak ayni riski tekrar uretir.
 - Validation/export yuzeyi yeniden acilacaksa ancak yeni sample veya yeni davranis-celiski kaniti uzerinden acilmali; ayni kontrati copy churn'una cevirmemek gerekir.
 - Native cancel listener cleanup'i simetrik hale geldi, ama bu tur onu veya yeni mid-run stack guard'ini bahane ederek yeni readiness/preflight/lifecycle ya da spawn framework katmanlari acilmamali.
-- Bu tur kapanan viewport-anchor drift'i yeni shell/readiness/orchestration katmani bahanesine donusturulmemeli.
+- Bu tur kapanan death-callout drift'i yeni overlay/layout sistemi bahanesine donusturulmemeli.
 
 ---
 
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da ikinci structured sample'i toplamak; yoksa audit'in yasakladigi koridorlara donmeden ve tercihen `spawn.ts`e geri dusmeden yeni dar gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: `project/game/src/game/primaryAction.ts` held touch steering ve release gate yorumunu launch/retry ile ayni native-primary kontrata bagliyor.
-- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` pointer release temizliginde artik event pointer yerine mevcut `activePointer` sahipligini okuyor.
-- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni touch-ownership deltasi ile hizaladi; stale Run #187 spawn-pressure ozeti tasimiyor.
-- Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.
+- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` death callout label'larini artik yeni metin olculduktan sonra clamp ediyor; onceki death label genisligi sonraki callout'u yana kaydirmiyor.
+- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public `AI latest update` panelini bu readability deltasi ile hizaladi.
+- Bu tur checked kanit: `npm run build`.
