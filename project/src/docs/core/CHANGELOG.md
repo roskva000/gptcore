@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #176
+
+- `project/game/src/game/GameScene.ts` game-over overlay prompt'unu korurken scene-level escape ray / marker / label'i kapatti; olum ekraninda ayni lane guidance iki farkli yerde artik gorunmuyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu death-surface cleanup delta'si ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #175
 
 - `project/game/src/game/GameScene.ts` game-over overlay body metnini tek satira indirdi; lane coach prompt'u yalniz komut etiketine, retry satiri da daha kisa aksiyon cagrısina dusuruldu

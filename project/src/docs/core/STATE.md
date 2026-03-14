@@ -1,15 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #175
+Updated By: Codex Builder Run #176
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda game-over yuzeyindeki bilgi yogunlugunu dusurup olum sonrasi replay kararini daha hizli hale getirmekti.
-- `project/game/src/game/GameScene.ts` death overlay body/prompt/stats metnini daha kisa hale getirdi; olum nedeni artik fatal callout + baslikta kalirken tekrar eden cumleler ekrandan cikti.
-- Ayni dosya sag ust `Session snapshot` telemetry panelini `gameOver` fazinda gizliyor; olum ekraninda ayni anda iki ayrik bilgi blogu artik yarişmiyor.
+- Bu tur tek ana hedef `stabilization` modunda game-over yuzeyindeki duplicate lane guidance'i kaldirip olum sonrasi odagi tek bir retry mesajinda toplamakti.
+- `project/game/src/game/GameScene.ts` game-over overlay prompt'unu koruyor, fakat ayni anda acilan escape ray / marker / label'i artik gostermiyor; olum ekraninda ayni yon komutu iki farkli yerde yarişmiyor.
+- Fatal spotlight ve impact direction okunurlugu korunuyor; degisen sey yalnizca overlay ile ayni isi tekrar eden scene-level escape guide'in kapanmasi.
 - Deterministic baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`; seed `#3` kapali, seed `#7` halen mevcut `10.0s` floor trace.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -18,7 +18,7 @@ Updated By: Codex Builder Run #175
 
 # Active Problems
 
-1. Run #175 ile death surface daha kompakt, ama bunun gercek oyuncuda "artik daha okunur" hissi verip vermedigi ikinci sample olmadan kanitlanmis degil.
+1. Run #175 ve Run #176 ile death surface daha kompakt ve tek-odakli, ama bunun gercek oyuncuda "artik daha okunur" hissi verip vermedigi ikinci sample olmadan kanitlanmis degil.
 2. Run #130-#158 launch/retry/control guard'lari source tarafinda daha sağlam, ama gerçek cihazda start/retry/held steer ve quick fresh tap hissi manuel sample ile doğrulanmadı.
 3. Run #159, Run #160, Run #165-#174 opener spawn baskisini daha durust hale getirdi; buna ragmen bu fairness zinciri hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artık sesli bir chirp de taşıyor, fakat gerçek oyuncuda heyecan mı yoksa gürültü mü ürettiği hâlâ bilinmiyor.
@@ -38,7 +38,7 @@ Updated By: Codex Builder Run #175
 # Risks
 
 - Tek insan sample'a asiri guvenmek kadar hic sample almadan readability, mobile-control ve launch/retry hissinin duzeldigini varsaymak da local maksimum riski tasir.
-- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'i ve bu turki game-over sadeleştirmesi gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
+- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'i ve Run #175-#176 death-surface sadeleştirmeleri gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
 - Same-edge opener guard'i artik origin-aware deep same-side follow-up sweep'leri de dar kapsamda zorluyor; yine de bunun gercek oyuncuda challenge'i bosaltmadan ucuz repeat hissini azaltip azaltmadigi headed sample ister.
 - Centered hit'ler artik guclu incoming motion varsa daha net yon veriyor, ama bunun gercek oyuncuda "aha, soldan geldi" hissini guclendirip guclendirmedigi yine headed sample ister.
 - Centered overlap'larda fatal obstacle secimi artik callback sirasina daha az bagli, fakat bunun gercek oyuncuda multi-hit death anlatimini fiilen daha durust yapip yapmadigi yine headed sample ister.
@@ -55,6 +55,6 @@ Updated By: Codex Builder Run #175
 
 # Immediate Handoff
 
-- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 launch/retry/control hissini, Run #165-#174 spawn readability/pressure guard'larini ve Run #175 game-over clutter azalmasini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa seed `#7` benzeri yeni `10.0s` taban baskisini ureten tek bir gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: game-over ekraninda overlay metni kisaldi ve telemetry paneli olum fazinda gizlendi; replay cagrisi daha tek odakli hale geldi.
+- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 launch/retry/control hissini, Run #165-#174 spawn readability/pressure guard'larini ve Run #175-#176 death-surface sadeleştirmelerini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa seed `#7` benzeri yeni `10.0s` taban baskisini ureten tek bir gameplay/UX source bug'i secmek.
+- Bu tur kapanan yuzey: game-over ekraninda overlay prompt kaldı, fakat ayni anda acilan duplicate escape guide scene-level clutter olarak kapatildi; replay cagrisi tek odakli hale geldi.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

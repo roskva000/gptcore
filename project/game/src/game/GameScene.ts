@@ -1578,7 +1578,10 @@ export class GameScene extends Phaser.Scene {
     });
     this.showImpactMarker(hitDirection);
     this.showFatalSpotlight(fatalObstacle, hitDirection);
-    this.showEscapeGuide(hitDirection, escapePrompt.title);
+    this.escapeRay.setAlpha(0).setVisible(false);
+    this.escapeArrowHead.setAlpha(0).setVisible(false);
+    this.escapeMarker.setAlpha(0).setVisible(false);
+    this.escapeMarkerLabel.setAlpha(0).setVisible(false).setText('');
 
     this.overlay.setVisible(true);
     const hasGoalClearSummary = goalClearSummary !== null;

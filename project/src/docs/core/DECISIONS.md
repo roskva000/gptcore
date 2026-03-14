@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #176]
+
+Decision:
+`stabilization` modunda game-over yuzeyindeki duplicate directional guidance kapatildi.
+
+Reason:
+Runtime yine blokluydu; audit ayni spawn/fairness koridoruna donmeyi istemiyor ve insan sinyali olum ekranini hala kalabalik buluyordu. Run #175 overlay copy'yi daraltmisti, fakat source'ta ayni anda acilan scene-level escape ray / marker / label halen overlay prompt ile ayni lane komutunu ikinci kez gosteriyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` fatal spotlight ve impact direction okunurlugunu korurken game-over sirasinda `showEscapeGuide()` cagrısını kapatti; overlay prompt tek lane instruction olarak kaldi. `project/game/src/latestRun.ts` yeni runtime-facing UX delta ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `27.4s / 10.0s / 0%` korundu.
+
+Rollback Condition:
+Ikinci insan sample scene-level guide'in tamamen kaldirilmasinin retry yonunu zayiflattigini gosterirse yalniz death surface icinde dar kapsamli bir rehber geri getirilebilir; bu bahaneyle yeni overlay sistemi, copy framework'u veya orchestration katmani acilmaz.
+
 ### [Run #175]
 
 Decision:

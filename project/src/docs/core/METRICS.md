@@ -7,10 +7,10 @@
 ## Gameplay
 
 game_over_surface_signal_density:
-current: Run #175 `project/game/src/game/GameScene.ts` death overlay body satirini tek cumleye indiriyor, prompt'u yalniz lane komutuna dusuruyor, retry satirini kisaltiyor ve sag ust `Session snapshot` telemetry panelini `gameOver` fazinda gizliyor
-baseline: Run #174 olum ekraninda fatal callout + baslik + iki satir body + iki satir prompt + retry satiri + sag ust uc satir telemetry ayni anda gorunuyordu; insan sinyalindeki "olum ekraninda fazla veri/yazi var" notu bu cift odagi destekliyordu
-target: game-over yuzeyi olum nedenini ve retry aksiyonunu tek odakta tutsun; ikinci sample'da bilgi eksiltmeden daha sakin ve daha hizli okunur hissedip hissettirmedigi dogrulansin
-validation: `npm run build`
+current: Run #176 `project/game/src/game/GameScene.ts` death overlay body/prompt sadelesmesini koruyor ve overlay prompt ile ayni anda acilan escape ray / marker / label'i kapatiyor; game-over lane guidance artik tek bir yuzeyde kaliyor
+baseline: Run #175 telemetry panelini gizleyip copy yogunlugunu azaltmisti, fakat overlay prompt ile scene-level escape guide ayni lane komutunu iki farkli yerde tekrarliyordu
+target: game-over yuzeyi olum nedenini ve retry aksiyonunu tek odakta tutsun; ikinci sample'da duplicate guidance olmadan daha sakin ve daha hizli okunur hissedip hissettirmedigi dogrulansin
+validation: `npm run telemetry:check`, `npm run build`
 
 opening_deep_same_side_repeat_sweep_integrity:
 current: Run #174 `project/game/src/game/spawn.ts` near-player same-edge pressure kararinda original `spawnEdge` bilgisini dar kapsamda koruyor; derin same-side follow-up sweep oyuncuya kadar inmis eski same-edge threat ustune tekrar geliyorsa yeni spawn bir kez daha reroll ariyor

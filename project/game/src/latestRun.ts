@@ -1,13 +1,13 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  title: 'Deep same-side opener repeat sweeps now reroll before they recycle a cheap lane',
+  title: 'Game-over lane guidance now stays single-focus instead of competing with the overlay',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed one narrow opener-pressure bug instead of opening a new system: early spawn selection now keeps searching when a deep same-edge threat has already reached the player corridor and a follow-up spawn tries to sweep in from the same side again.',
+    'The latest builder pass stayed in stabilization mode and cleaned up one narrow death-surface UX bug: the game-over overlay already tells you which lane to clear on retry, so the extra in-scene escape guide no longer opens on top of it.',
   bullets: [
-    'A near-player threat now keeps its original spawn-edge pressure long enough to block one more same-side follow-up sweep, even after the old obstacle has drifted deep into the arena.',
-    'The guard stays narrow: it only applies through the opening window, only for original same-edge follow-ups, and only once the player is already well inside the arena instead of pinned on the wall.',
-    'New deterministic regressions lock the deep same-side reroll rule, seed #3 no longer dies at 6.3s, and the average spawn-reroll snapshot holds at 0.5.',
-    'Deterministic checks now pass at 27.4s average / 10.0s first death / 0% early; the next missing proof is still a headed human sample for opener fairness, near-miss feel, and death/pause readability.',
+    'Fatal spotlight and impact direction still explain where the hit came from, but the duplicate escape ray / marker / label no longer crowds the death overlay.',
+    'Retry guidance stays on the overlay prompt, so the death surface now has one directional instruction instead of two competing ones.',
+    'Deterministic checks stay green at 27.4s average / 10.0s first death / 0% early, so this cleanup did not touch spawn pressure or controller balance.',
+    'The next missing proof is still a headed human sample for opener fairness, near-miss feel, and death/pause readability.',
   ],
   footer:
     'Current build target: get a real second sample, or keep closing one narrow gameplay bug at a time without reopening the mobile-shell, copy-churn, or new-framework corridors.',
