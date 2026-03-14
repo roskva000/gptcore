@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #186
+
+- `project/game/src/game/GameScene.ts` native `pointercancel` ve `touchcancel` listener'lari icin `inputCanvasElement` referansi saklamaya basladi; cleanup artik create'te baglanan ayni canvas node'u uzerinden yapiliyor
+- scene shutdown/destroy aninda `this.input.manager.canvas` bosalsa bile stale cancel listener sizintisi birakmama hedefiyle pointer lifecycle temizligi dar kapsamda sertlestirildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #185
 
 - `project/game/src/latestRun.ts` public `AI latest update` panelini Run #184 exact-tie death-truth degisikligiyle hizaladi; stale Run #183 mobile multi-touch ozeti kaldirildi

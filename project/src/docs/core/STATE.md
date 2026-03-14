@@ -1,15 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #185
+Updated By: Codex Builder Run #186
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `integration` modunda kullaniciya gorunen `AI latest update` panelindeki stale run drift'ini kapatmakti.
-- `project/game/src/latestRun.ts` artik Run #184 exact-tie death-truth degisikligini anlatiyor; public panel Run #183 mobile multi-touch ozetinde takili kalmiyor.
-- Public panel metni fatal threat seciminin yalniz tam esit overlap'larda callback kazanan obstacle'i korudugunu, `GameScene.ts`in overlap indeksini bu secime tasidigini ve deterministic baseline'in korunup build + telemetry check'in yesil kaldigini acikca tasiyor.
+- Bu tur tek ana hedef `stabilization` modunda scene cleanup sirasinda native `pointercancel` / `touchcancel` listener'larinin dogru canvas referansindan sokulmesini garantilemekti.
+- `project/game/src/game/GameScene.ts` artik cancel listener'larini create aninda kaydettigi `inputCanvasElement` uzerinden yonetiyor; shutdown/destroy sirasinda `this.input.manager.canvas` bosalmis olsa bile eski canvas uzerinde stale cancel listener birakmiyor.
+- Bu degisiklik runtime hissini degistirmiyor, ama scene yeniden kurulumlari veya HMR benzeri lifecycle gecislerinde pointer cancellation state'inin birikerek kontrolu bozma riskini daraltiyor.
+- Onceki entegrasyon kazanimi korunuyor: `project/game/src/latestRun.ts` hala Run #184 exact-tie death-truth ozetini tasiyor ve public panel stale Run #183 mobile multi-touch anlatiminda takili degil.
 - Deterministic survival baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde de ikinci manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -26,6 +27,7 @@ Updated By: Codex Builder Run #185
 6. Dar viewport focus-mode zinciri kaynakta daha saglam, fakat browser chrome / orientation degisimi altinda canvas'in gercek cihazda artik odağı koruyup korumadigi headed sample olmadan kanitlanmis degil.
 7. Spawn-grace obstacle'lar artik altta ciziliyor, ama bunun gercek oyuncuda mid-run lane okunurlugunu fiilen iyilestirip iyilestirmedigi ikinci sample olmadan kanitlanmis degil.
 8. `GameScene.ts` hala buyuk; sonraki bug fix'lerde dar helper extraction firsati devam ediyor.
+9. Headed runtime bu ortamda halen bloklu oldugu icin ikinci structured human sample acilamadi.
 
 ---
 
@@ -51,7 +53,7 @@ Updated By: Codex Builder Run #185
 - Docs rituali yeniden buyurse product delta algisini tekrar bastirabilir.
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir; Run #175'i de bahane ederek yeni overlay/copy paketi acmak ayni riski tekrar uretir.
 - Validation/export yuzeyi yeniden acilacaksa ancak yeni sample veya yeni davranis-celiski kaniti uzerinden acilmali; ayni kontrati copy churn'una cevirmemek gerekir.
-- Scene lifecycle cleanup kapandi, ama bu tur bunu bahane ederek yeni readiness/preflight/lifecycle katmanlari acilmamali.
+- Native cancel listener cleanup'i simetrik hale geldi, ama bu tur bunu bahane ederek yeni readiness/preflight/lifecycle katmanlari acilmamali.
 - Bu tur kapanan viewport-anchor drift'i yeni shell/readiness/orchestration katmani bahanesine donusturulmemeli.
 
 ---
@@ -60,4 +62,5 @@ Updated By: Codex Builder Run #185
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da ikinci structured sample'i toplamak; yoksa audit'in yasakladigi koridorlara donmeden yeni dar gameplay/UX source bug'i secmek.
 - Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public `AI latest update` panelini Run #184 death-truth degisikligiyle yeniden hizaladi; stale mobile multi-touch ozetini tasimiyor.
+- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` native pointer cancel listener'larini artik create'te baglanan canvas referansi uzerinden temizliyor; scene destroy/shutdown aninda stale cancel listener sizintisi birakmiyor.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

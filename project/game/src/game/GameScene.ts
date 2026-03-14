@@ -254,6 +254,7 @@ export class GameScene extends Phaser.Scene {
   private feedbackAudioContext: FeedbackAudioContext = null;
   private waitingPulseCoreTween?: Phaser.Tweens.Tween;
   private waitingPulseRingTween?: Phaser.Tweens.Tween;
+  private inputCanvasElement: HTMLCanvasElement | null = null;
 
   constructor() {
     super('GameScene');
@@ -621,8 +622,9 @@ export class GameScene extends Phaser.Scene {
     this.input.on('pointerupoutside', this.handlePointerRelease, this);
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
     window.addEventListener('blur', this.handleWindowBlur);
-    this.input.manager.canvas?.addEventListener('pointercancel', this.handleNativePointerCancel);
-    this.input.manager.canvas?.addEventListener('touchcancel', this.handleNativePointerCancel);
+    this.inputCanvasElement = this.input.manager.canvas;
+    this.inputCanvasElement?.addEventListener('pointercancel', this.handleNativePointerCancel);
+    this.inputCanvasElement?.addEventListener('touchcancel', this.handleNativePointerCancel);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupFocusListeners, this);
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanupFocusListeners, this);
     this.waitingPulseCoreTween = this.tweens.add({
@@ -2578,7 +2580,8 @@ export class GameScene extends Phaser.Scene {
     this.input.off('pointerupoutside', this.handlePointerRelease, this);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     window.removeEventListener('blur', this.handleWindowBlur);
-    this.input.manager.canvas?.removeEventListener('pointercancel', this.handleNativePointerCancel);
-    this.input.manager.canvas?.removeEventListener('touchcancel', this.handleNativePointerCancel);
+    this.inputCanvasElement?.removeEventListener('pointercancel', this.handleNativePointerCancel);
+    this.inputCanvasElement?.removeEventListener('touchcancel', this.handleNativePointerCancel);
+    this.inputCanvasElement = null;
   }
 }

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+scene_cancel_listener_cleanup_integrity:
+current: Run #186 `project/game/src/game/GameScene.ts` native `pointercancel` / `touchcancel` listener'larini create aninda tutulan `inputCanvasElement` uzerinden hem bagliyor hem sokuyor; scene destroy/shutdown sirasinda Phaser canvas referansi bosalsa bile stale cancel listener sizintisi riski daraliyor
+baseline: onceki source cleanup sirasinda tekrar `this.input.manager.canvas` uzerine bakiyordu; eger Phaser scene kapanirken bu referans bosalir veya degisirse listener eski canvas'ta kalip sonraki kurulumlarda pointer cancellation state'ini tekrar tetikleyebilirdi
+target: scene yeniden kurulumlari pointer cancellation tarafinda cift tetik veya yapiskan release bozulumu uretmesin; lifecycle temizligi yeni orchestration katmani acmadan stabil kalsin
+validation: `npm run telemetry:check`, `npm run build`
+
 latest_run_panel_truth_alignment:
 current: Run #185 `project/game/src/latestRun.ts` public `AI latest update` panelini Run #184 exact-tie death-truth degisikligiyle hizaladi; kullaniciya gorunen ozet artik stale Run #183 mobile multi-touch metnine takili degil
 baseline: onceki source public panelde gercek son run yerine Run #183 mobile multi-touch ozetini gostermeye devam ediyor, insan sinyalindeki "builder duyuru panosu guncellenmiyor gibi" hissini besliyordu

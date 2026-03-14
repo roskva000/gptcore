@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #186]
+
+Decision:
+`stabilization` modunda scene cleanup sirasinda native pointer cancel listener'larinin baglandigi canvas referansi sabitlendi.
+
+Reason:
+Runtime halen bloklu ve audit ayni spawn/death/validation/mobile koridorlarina geri donmemeyi istiyor. Buna ragmen `project/game/src/game/GameScene.ts` icinde dar ama gercek bir lifecycle kusuru vardi: native `pointercancel` / `touchcancel` listener'lari create aninda `this.input.manager.canvas` uzerinden ekleniyor, cleanup'te de ayni alana bakiliyordu. Phaser destroy/shutdown sirasinda bu referans bosalir veya degisirse eski canvas uzerinde stale cancel listener kalabilir, bu da yeniden kurulumlarda pointer cancellation state'ini gereksiz yere tekrar tetikleyip kontrolu bozabilir.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik canvas referansini `inputCanvasElement` alaninda tutuyor ve native cancel listener'larini ayni node uzerinden remove ediyor. Bu degisiklik oyun davranisini ve deterministic baseline'i degistirmeden scene lifecycle temizligini daha guvenli hale getirdi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Eger bu referans saklama yolu Phaser canvas lifecycle'i ile cakisirse cleanup tekrar dar kapsamda scene event zamanlamasina gore ayarlanir; bu bahaneyle yeni input orchestration, readiness ya da lifecycle framework'u acilmaz.
+
 ### [Run #185]
 
 Decision:
