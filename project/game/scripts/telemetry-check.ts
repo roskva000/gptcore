@@ -46,6 +46,7 @@ import {
   buildTelemetrySummary,
   createEmptyTelemetry,
   getCompletedRunCount,
+  getLiveBestSurvivalTimeText,
   hasCompletedRunSample,
   getRetryDelayMs,
   isValidationReportCurrent,
@@ -193,6 +194,36 @@ assert.equal(
   canResetTelemetrySample('gameOver'),
   false,
   'Game-over should not allow telemetry reset directly because players may press R expecting a retry and accidentally wipe the current sample.',
+);
+assert.equal(
+  getLiveBestSurvivalTimeText({
+    telemetry: createEmptyTelemetry(),
+    currentSurvivalTime: 12.6,
+  }),
+  '12.6s',
+  'Active HUD best text should surface the current run immediately when there is no stored best yet.',
+);
+assert.equal(
+  getLiveBestSurvivalTimeText({
+    telemetry: {
+      ...createEmptyTelemetry(),
+      bestSurvivalTime: 18.4,
+    },
+    currentSurvivalTime: 24.2,
+  }),
+  '24.2s',
+  'Active HUD best text should promote a live run once it beats the stored best instead of waiting for death.',
+);
+assert.equal(
+  getLiveBestSurvivalTimeText({
+    telemetry: {
+      ...createEmptyTelemetry(),
+      bestSurvivalTime: 24.2,
+    },
+    currentSurvivalTime: 18.4,
+  }),
+  '24.2s',
+  'Active HUD best text should keep the stored best when the current run has not surpassed it yet.',
 );
 assert.equal(
   shouldHandlePrimaryActionKey(),

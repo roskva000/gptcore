@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #194
+
+- `project/game/src/game/telemetry.ts` aktif run stored best'i gectiginde HUD'in gosterecegi degeri hesaplayan `getLiveBestSurvivalTimeText()` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` aktif run sirasinda `Best` metnini her frame current survival time ile canli guncelliyor; yeni record ilerleyisi artik death screen'e kadar gizli kalmiyor
+- `project/game/scripts/telemetry-check.ts` live best HUD kontrati icin bos sample, best-ustu ve best-alti regression assert'leri ekledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu active-run progression fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #193
 
 - `project/game/src/game/GameScene.ts` aktif run sirasinda namesake hedef icin kalici `60s CLEAR` HUD rozeti ekledi; goal clear artik yalniz kisa bir kutlama metniyle kaybolmuyor

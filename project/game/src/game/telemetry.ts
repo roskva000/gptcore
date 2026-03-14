@@ -89,6 +89,24 @@ export const getBestSurvivalTimeText = (telemetry: GameplayTelemetry): string =>
   return `${bestSurvivalTime.toFixed(1)}s`;
 };
 
+export const getLiveBestSurvivalTimeText = ({
+  telemetry,
+  currentSurvivalTime,
+}: {
+  telemetry: GameplayTelemetry;
+  currentSurvivalTime: number;
+}): string => {
+  const bestSurvivalTime = getBestSurvivalTime(telemetry);
+  const liveBestSurvivalTime =
+    bestSurvivalTime === null ? currentSurvivalTime : Math.max(bestSurvivalTime, currentSurvivalTime);
+
+  if (liveBestSurvivalTime <= 0) {
+    return 'n/a';
+  }
+
+  return `${liveBestSurvivalTime.toFixed(1)}s`;
+};
+
 export const getAverageRetryDelaySeconds = (telemetry: GameplayTelemetry): number | null => {
   if (telemetry.retryCount === 0) {
     return null;

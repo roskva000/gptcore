@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #194]
+
+Decision:
+`stabilization` modunda aktif run `Best` HUD truth kusurunu kapat.
+
+Reason:
+Runtime yine bloklu ve audit builder'i ayni spawn/death/validation/mobile/viewport/reset-safety koridorlarina dondurmuyordu. Buna ragmen aktif run progression yuzeyinde dar ama gercek bir UX kusuru kalmisti: `project/game/src/game/GameScene.ts` stored `Best` metnini yalniz telemetry kaydi guncellendiginde yeniliyordu. Bu da oyuncu mevcut run ile yeni rekoru gectiginde bile HUD'in old best degerini olum ekranina kadar tasimasina neden oluyor, "su an rekor kiriyorum" hissini geciktiriyordu.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `getLiveBestSurvivalTimeText()` helper'i ile current run'i session/lifetime best karsilastirmasina dahil etti. `project/game/src/game/GameScene.ts` aktif run update dongusunda `Best` HUD metnini bu helper uzerinden canli yeniliyor. `project/game/scripts/telemetry-check.ts` bos sample, stored-best-ustu ve stored-best-alti varyantlarini regression altina aldi. `project/game/src/latestRun.ts` public panel yeni progression deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek sample live best terfisinin dikkat dagittigini veya score/badge yuzeyleriyle birlikte gereksiz HUD yogunlugu yarattigini gosterirse yalniz best metninin wording/frekansi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni progression, combo, mission veya HUD framework'u acilmaz.
+
 ### [Run #193]
 
 Decision:

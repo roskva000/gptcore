@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+live_best_hud_truth_integrity:
+current: Run #194 `project/game/src/game/GameScene.ts` aktif run sirasinda lifetime ve session `Best` metnini current survival time stored best'i gectigi anda canli guncelliyor
+baseline: onceki source `Best` HUD metnini yalniz telemetry kaydi yenilendiginde guncelliyordu; oyuncu yeni rekoru run icinde gecse bile HUD olum ekranina kadar eski best'i gostermeye devam ediyordu
+target: sonraki manuel sample'da oyuncu aktif run icinde rekor gectigini aninda okuyabilsin; live best truth yeni HUD gurultusu veya dikkat dagitici flicker uretmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 survival_goal_visibility_integrity:
 current: Run #193 `project/game/src/game/GameScene.ts` aktif run sirasinda kalici `60s CLEAR` HUD rozeti gosteriyor; proje adindaki namesake hedef goal clear anindan birkac saniye sonra plain timer'a geri dusup kaybolmuyor
 baseline: onceki source `60s` clear'i yalniz kisa bir hint/support kutlamasi ile veriyor, bu metinler kaybolduktan sonra ongoing run milestone bilgisini tasimiyordu

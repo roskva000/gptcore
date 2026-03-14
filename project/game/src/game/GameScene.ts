@@ -37,6 +37,7 @@ import {
   hasCompletedRunSample,
   getBestSurvivalTime,
   getBestSurvivalTimeText,
+  getLiveBestSurvivalTimeText,
   formatValidationReportSummaryText,
   getAverageRetryDelaySeconds,
   getAverageRetryDelayText,
@@ -719,6 +720,7 @@ export class GameScene extends Phaser.Scene {
     const activeRunElapsedMs = this.getActiveRunElapsedMs(time);
     this.survivalTime = activeRunElapsedMs / 1000;
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
+    this.updateBestText();
     this.updateNearMissTracking(activeRunElapsedMs);
 
     if (
@@ -2264,10 +2266,29 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  private updateTelemetryText(): void {
+  private updateBestText(): void {
+    const lifetimeBestText =
+      this.phase === 'playing'
+        ? getLiveBestSurvivalTimeText({
+          telemetry: this.telemetry,
+          currentSurvivalTime: this.survivalTime,
+        })
+        : getBestSurvivalTimeText(this.telemetry);
+    const sessionBestText =
+      this.phase === 'playing'
+        ? getLiveBestSurvivalTimeText({
+          telemetry: this.sessionTelemetry,
+          currentSurvivalTime: this.survivalTime,
+        })
+        : getBestSurvivalTimeText(this.sessionTelemetry);
+
     this.bestText.setText(
-      `Best ${getBestSurvivalTimeText(this.telemetry)} | Session ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
+      `Best ${lifetimeBestText} | Session ${sessionBestText}`,
     );
+  }
+
+  private updateTelemetryText(): void {
+    this.updateBestText();
     this.telemetryText.setText(this.getTelemetryLinesForCurrentPhase().join('\n'));
     this.telemetryText.setVisible(this.phase !== 'paused' && this.phase !== 'gameOver');
     this.telemetryText.setAlpha(this.phase === 'playing' ? 0.9 : 1);
