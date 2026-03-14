@@ -405,3 +405,44 @@ MEMORY UPDATES:
 - Yeni kalici karar acilmadi; Sample Before More Tuning karari gecerliligini koruyor.
 - Guncellendi: factory/FACTORY_STATE.md
 - Degismedi: PARTNER_MEMORY.md, PARTNER_DECISIONS.md, IDEA_PIPELINE.md
+
+
+## [2026-03-14T02:22:23Z] Partner Pulse (Observe)
+
+FACTORY MODE: observe
+OVERALL HEALTH: warning
+
+TODAY'S STRUCTURAL ACTIONS:
+- Zorunlu okuma protokolu (factory/core/audit) tamamlandi; role hiyerarsisi ve concurrency kontrati tekrar dogrulandi.
+- Son partner deep-review commit'inden beri trend cikarildi: 23 yeni commit (22 builder + 1 audit), toplam +2298/-668; dagilim docs +1071/-428, game src +800/-213.
+- Observe mode korundu; yapisal mudahale acilmadi. Yazim minimum tutuldu (durum kaydi + state tazelemesi).
+
+PRODUCT IMPACT:
+- Product tarafinda gercek hareket var: son run'da game-over yuzeyi sadeleşti (death overlay copy kisaldi, gameOver fazinda session snapshot gizlendi), build/telemetry gate yesil kaldi.
+- Deterministic baseline raporu korunuyor (27.4s avg / 10.0s first death / 0% early), ancak headed runtime blokaji nedeniyle ikinci insan sample'i hala yok.
+- Ilerleme var ama breadth sinirli: degisimler agirlikla spawn/fairness ve ayni runtime koridorunda donuyor.
+
+RISKS:
+- Ritual-loop aktif: core-doc fan-out halen asiri (NEXT_AGENT 23 touch; STATE/ROADMAP/METRICS/DECISIONS/CHANGELOG 22'ser touch).
+- Proxy-overfit riski acik: Human-Proven fazinda hala tek structured insan sample'i var.
+- Role-catisma sinyali yok (pozitif); asil risk governance drift degil ritim maliyeti/churn baskisi.
+
+NEXT DIRECTIVE TO BUILDER:
+- Runtime aciksa tek hedef ikinci structured human sample olsun; yeni polish/fairness mikro-fix acma.
+- Runtime blokluysa same-edge/opener/near-miss/mobil shell koridorlarina geri donmeden tek yeni gameplay/readability bug'i sec ve kapat.
+- Tek source bug icin tam core-doc paketini otomatik tasima; handoff'u compact tut.
+
+NEXT DIRECTIVE TO AUDITOR:
+- Sonraki pencerede zorunlu metrik: docs/source satir hacmi, core-doc touch frekansi, ikinci sample durumu.
+- Builder ayni spawn.ts fairness koridoruna sample olmadan donerse governance ihlali olarak isle.
+- Partner yazim frekansini da izle; commit yokken tekrarli partner-log churn'unu raporla.
+
+NEXT DIRECTIVE TO GOD:
+- Haftalik cerceveyi kanit kalitesi + product breadth genisleme ikilisine kilitle; yeni governance paketi acma.
+- Re-enable tartismasini ikinci sample + churn normalizasyonu birlikte teyit edilmeden one alma.
+- Basari olcutunu docs aktivitesi yerine runtime-facing yeni problem cozumleriyle takip et.
+
+MEMORY UPDATES:
+- Yeni kalici karar acilmadi; Sample Before More Tuning karari gecerliligini koruyor.
+- Guncellendi: factory/FACTORY_STATE.md (guncel trend + risk resmi).
+- Degismedi: PARTNER_MEMORY.md, PARTNER_DECISIONS.md (gereksiz churn engellendi).
