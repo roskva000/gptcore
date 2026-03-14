@@ -770,6 +770,29 @@ assert.deepEqual(
   'Opening spawn selection should reroll a same-edge follow-up sweep that stays on the same side of a near-player threat even when the raw lateral gap is wider than the base near-player band.',
 );
 
+const retreatPinchSelection = selectSpawnPoint({
+  survivalTimeSeconds: 10.000000000000076,
+  playerPosition: { x: 347.7, y: 311.3 },
+  playerVelocity: { x: 214, y: -0.9 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 378, y: 299.3, spawnEdge: 'right' },
+    { x: 250.9, y: 307, spawnEdge: 'left' },
+    { x: 605.1, y: 347.2, spawnEdge: 'left' },
+    { x: 114, y: 164.6, spawnEdge: 'left' },
+    { x: 89.7, y: 123.6, spawnEdge: 'bottom' },
+  ],
+  randomInt: createQueuedRandom([3, 501, 2, 450]),
+});
+assert.deepEqual(
+  retreatPinchSelection,
+  {
+    point: { x: 450, y: 656 },
+    rerollsUsed: 1,
+  },
+  'Spawn selection should treat a right-in-front threat plus a rear-lane seal as a retreat pinch through the 10s target-first-death window, even when the fixed-step clock lands a hair above 10.0s.',
+);
+
 assert.equal(
   isPointInsideArena({ x: 10, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),
   false,
@@ -1037,7 +1060,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(
@@ -1058,6 +1081,28 @@ assert.equal(
   seed3TrajectoryReport.spawnRerollsBeforeDeath,
   1,
   'Seed #3 should now spend one reroll escaping the old 6.3s opener outlier.',
+);
+const seed7TrajectoryReport = createSeedTrajectoryReport(7, 12);
+assert.equal(seed7TrajectoryReport.deathTimeSeconds, 10, 'Seed #7 target-first-death trace drifted.');
+assert.equal(seed7TrajectoryReport.spawnsBeforeDeath, 10, 'Seed #7 spawn count changed unexpectedly.');
+assert.equal(
+  seed7TrajectoryReport.spawnRerollsBeforeDeath,
+  1,
+  'Seed #7 should now spend one reroll escaping the retreat-pinch floor at the 10s window.',
+);
+assert.deepEqual(
+  seed7TrajectoryReport.spawnEvents.at(-1),
+  {
+    spawnIndex: 10,
+    timeSeconds: 10,
+    spawnPoint: { x: 450, y: 656 },
+    rerollsUsed: 1,
+    playerPosition: { x: 347.7, y: 311.3 },
+    playerVelocity: { x: 214, y: -0.9 },
+    visibleObstacleCount: 5,
+    nearestVisibleObstacleDistancePx: 32.6,
+  },
+  'Seed #7 should reroll the rear-lane seal once the near-front retreat pinch is detected at the 10s floor.',
 );
 assert.deepEqual(
   seed3TrajectoryReport.spawnEvents.map((event) => ({

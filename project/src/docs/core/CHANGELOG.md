@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #177
+
+- `project/game/src/game/spawn.ts` yeni bir retreat-pinch guard ekledi; oyuncunun onunde cok yakin threat varken arka kacis koridorunu kapatan spawn artik `10s` hedef-first-death penceresinde bir kez daha reroll ariyor
+- ayni guard fixed-step drift'i tolere ediyor; `10.000000000000076s` frame'inde calisan spawn secimi `10s` safety window'u bir frame erken kacirmiyor
+- `project/game/scripts/telemetry-check.ts` yeni deterministic regression case'i ve seed `#7` trace assert'i ekledi; `project/game/scripts/telemetry-reports.ts` ile `project/game/src/latestRun.ts` yeni spawn-pressure deltasiyle hizalandi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #176
 
 - `project/game/src/game/GameScene.ts` game-over overlay prompt'unu korurken scene-level escape ray / marker / label'i kapatti; olum ekraninda ayni lane guidance iki farkli yerde artik gorunmuyor

@@ -26,6 +26,10 @@ export const EARLY_PRESSURED_SPAWN_ACCEPT_SCORE = 190;
 export const EARLY_PRESSURED_SAME_EDGE_PLAYER_DISTANCE = 96;
 export const EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE = 180;
 export const EARLY_PRESSURED_SAME_SIDE_LATERAL_DISTANCE = 340;
+export const EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS = 10;
+export const EARLY_RETREAT_PINCH_PLAYER_DISTANCE = 60;
+export const EARLY_RETREAT_PINCH_ALIGNMENT_THRESHOLD = 0.35;
+export const EARLY_RETREAT_PINCH_RETREAT_LATERAL_DISTANCE = 200;
 
 export type Point = {
   x: number;
@@ -58,6 +62,7 @@ export type ActiveObstaclePosition = Point & {
 };
 
 const CORNER_EDGE_SHARE_TOLERANCE = 8;
+const TIME_CUTOFF_EPSILON_SECONDS = 1e-6;
 
 export const clampPointToArena = (
   point: Point,
@@ -133,6 +138,11 @@ const normalize = (point: Point): Point => {
     y: point.y / magnitude,
   };
 };
+
+const dot = (left: Point, right: Point): number => left.x * right.x + left.y * right.y;
+
+const isWithinTimeCutoff = (survivalTimeSeconds: number, cutoffSeconds: number): boolean =>
+  survivalTimeSeconds <= cutoffSeconds + TIME_CUTOFF_EPSILON_SECONDS;
 
 export const getSpawnEdge = (spawnPoint: Point): SpawnEdge => {
   if (spawnPoint.y < 0) {
@@ -577,6 +587,68 @@ const shouldKeepRerollingForOpeningPressure = (
   hasPressuredSameEdgeNearPlayer(playerPosition, activeObstaclePositions, spawnPoint) &&
   spawnScore.score < EARLY_PRESSURED_SPAWN_ACCEPT_SCORE;
 
+const hasRetreatPinchThreat = (
+  playerPosition: Point,
+  playerVelocity: Point | undefined,
+  activeObstaclePositions: ActiveObstaclePosition[] | undefined,
+  spawnPoint: Point,
+): boolean => {
+  if (
+    !playerVelocity ||
+    (playerVelocity.x === 0 && playerVelocity.y === 0) ||
+    !activeObstaclePositions?.length
+  ) {
+    return false;
+  }
+
+  const movementDirection = normalize(playerVelocity);
+  const spawnRetreatVector = {
+    x: spawnPoint.x - playerPosition.x,
+    y: spawnPoint.y - playerPosition.y,
+  };
+  const retreatDistance = Math.hypot(spawnRetreatVector.x, spawnRetreatVector.y);
+
+  if (retreatDistance === 0) {
+    return false;
+  }
+
+  const normalizedRetreatVector = normalize(spawnRetreatVector);
+  const retreatAlignment = dot(normalizedRetreatVector, movementDirection);
+
+  if (retreatAlignment > -EARLY_RETREAT_PINCH_ALIGNMENT_THRESHOLD) {
+    return false;
+  }
+
+  const retreatForwardDistance = Math.abs(dot(spawnRetreatVector, movementDirection));
+  const retreatLateralDistance = Math.sqrt(
+    Math.max(0, retreatDistance * retreatDistance - retreatForwardDistance * retreatForwardDistance),
+  );
+
+  if (retreatLateralDistance > EARLY_RETREAT_PINCH_RETREAT_LATERAL_DISTANCE) {
+    return false;
+  }
+
+  return activeObstaclePositions.some((obstaclePosition) => {
+    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+      return false;
+    }
+
+    const threatVector = {
+      x: obstaclePosition.x - playerPosition.x,
+      y: obstaclePosition.y - playerPosition.y,
+    };
+    const threatDistance = Math.hypot(threatVector.x, threatVector.y);
+
+    if (threatDistance === 0 || threatDistance > EARLY_RETREAT_PINCH_PLAYER_DISTANCE) {
+      return false;
+    }
+
+    const threatAlignment = dot(normalize(threatVector), movementDirection);
+
+    return threatAlignment >= EARLY_RETREAT_PINCH_ALIGNMENT_THRESHOLD;
+  });
+};
+
 export const rollSpawnPoint = (randomInt: (min: number, max: number) => number): Point => {
   const edge = randomInt(0, 3);
 
@@ -640,6 +712,15 @@ export const selectSpawnPoint = ({
 
   if (
     bestSpawnScore.score >= 0 &&
+    !(
+      isWithinTimeCutoff(survivalTimeSeconds, EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS) &&
+      hasRetreatPinchThreat(
+        playerPosition,
+        reachableVelocity,
+        activeObstaclePositions,
+        selectedSpawnPoint,
+      )
+    ) &&
     !shouldKeepRerollingForOpeningPressure(
       survivalTimeSeconds,
       playerPosition,
@@ -673,6 +754,15 @@ export const selectSpawnPoint = ({
 
     if (
       candidateSpawnScore.score >= 0 &&
+      !(
+        isWithinTimeCutoff(survivalTimeSeconds, EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS) &&
+        hasRetreatPinchThreat(
+          playerPosition,
+          reachableVelocity,
+          activeObstaclePositions,
+          candidate,
+        )
+      ) &&
       !shouldKeepRerollingForOpeningPressure(
         survivalTimeSeconds,
         playerPosition,

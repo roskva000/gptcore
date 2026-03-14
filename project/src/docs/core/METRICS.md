@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+retreat_pinch_floor_integrity:
+current: Run #177 `project/game/src/game/spawn.ts` oyuncunun onunde `60px` icinde cok yakin threat varken arka kacis koridorunu `200px` bandinda kapatan yeni spawn'i `10s` hedef-first-death penceresinde bir kez daha reroll ediyor; fixed-step drift olsa bile `10.000000000000076s` frame'i bu pencerenin icinde sayiliyor
+baseline: seed `#7` eskiden `10 spawn / 0 reroll` ile soldan gelen rear-lane seal'i bedelsiz kabul ediyor, yeni spawn secimi tam `10s` esiginde calistiginda guard penceresi bir frame erken kapanmis gibi davranabiliyordu
+target: seed `#7` benzeri retreat pinch paternleri bedelsiz kabul edilmesin; deterministic taban `27.4s / 10.0s / 0%` korunurken seed `#7` trace'i `10 spawn / 1 reroll` olarak sabit kalsin
+validation: `npm run telemetry:check`, `npm run build`
+
 game_over_surface_signal_density:
 current: Run #176 `project/game/src/game/GameScene.ts` death overlay body/prompt sadelesmesini koruyor ve overlay prompt ile ayni anda acilan escape ray / marker / label'i kapatiyor; game-over lane guidance artik tek bir yuzeyde kaliyor
 baseline: Run #175 telemetry panelini gizleyip copy yogunlugunu azaltmisti, fakat overlay prompt ile scene-level escape guide ayni lane komutunu iki farkli yerde tekrarliyordu
@@ -31,8 +37,8 @@ target: seed `#3` artik outlier olmasin; sonraki fallback bug avinda yeni taban 
 validation: `npm run telemetry:check`
 
 deterministic_controller_runtime_alignment:
-current: Run #173 `project/game/scripts/telemetry-reports.ts` survival snapshot `controller` metninde Run #172 near-player same-edge reroll guard'ini `96px / 180px / score 190 / 6s` kontratiyla acikca yaziyor
-baseline: onceki proxy anlatimi projected-path, threat-crowding ve same-edge spawn-column guard'larini anlatiyor ama near-player same-edge reroll guard'ini eksik birakiyordu; runtime ve deterministic proxy ayni kuralla calissa da anlatim drift'i olusuyordu
+current: Run #177 `project/game/scripts/telemetry-reports.ts` survival snapshot `controller` metninde hem Run #172 near-player same-edge guard'ini hem de yeni retreat-pinch reroll kontratini (`60px`, `0.35`, `200px`, `10s`) acikca yaziyor
+baseline: Run #173 proxy anlatimi projected-path, threat-crowding ve same-edge guard'larini tasiyordu, fakat retreat-pinch reroll guard'i henuz yoktu; runtime ve deterministic proxy ayni kurali tasimazsa neyin olculdugu tekrar bulanirdi
 target: deterministic validation output'u hangi opener reroll guard'larinin aktif oldugunu eksiksiz anlatsin; proxy-overfit riskinde "neyi olcuyoruz" sorusu dokuman seviyesinde de net kalsin
 validation: `npm run telemetry:check`, `npm run build`
 

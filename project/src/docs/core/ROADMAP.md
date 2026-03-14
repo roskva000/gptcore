@@ -4,6 +4,10 @@
 
 # NOW
 
+- Run #177 `stabilization`: `project/game/src/game/spawn.ts` seed `#7`nin `10.0s` floor'unu ureten rear-lane retreat pinch kusurunu kapatti; oyuncunun onunde `60px` icinde cok yakin threat varken yeni spawn arka kacis koridorunu `200px` bandinda kapatiyorsa `10s` hedef-first-death penceresi icinde bir reroll daha ariyor.
+- Ayni guard fixed-step drift'i tolere ediyor; spawn secimi `10.000000000000076s` frame'ine denk gelse bile `10s` safety window sessizce kapanmiyor.
+- `project/game/scripts/telemetry-check.ts` yeni deterministic regression case'i ve seed `#7` trace assert'i ekledi; `project/game/scripts/telemetry-reports.ts` controller anlatimi ve `project/game/src/latestRun.ts` public paneli bu yeni spawn-pressure deltasi ile hizalandi.
+- Deterministic baseline korunuyor: `27.4s / 10.0s / 0%`, bucket `0 / 3 / 3 / 18`, average spawn reroll `0.5`; seed `#7` artik `10 spawn / 1 reroll`.
 - Run #176 `stabilization`: `project/game/src/game/GameScene.ts` game-over overlay prompt'unu korurken scene-level escape ray / marker / label'i kapatti; olum ekraninda ayni lane guidance iki farkli yerde artik yarişmiyor.
 - Fatal spotlight ve impact direction okunurlugu korunuyor; deterministic baseline `27.4s / 10.0s / 0%` ile `npm run telemetry:check` + `npm run build` yesil kaldi.
 - Run #174 `stabilization`: deep same-side opener repeat-sweep kusuru kapandi; `project/game/src/game/spawn.ts` near-player same-edge pressure kararinda original `spawnEdge` bilgisini dar kapsamda koruyup derin ayni-taraf follow-up sweep'i reroll ediyor.
@@ -39,7 +43,7 @@
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
 - `project/game/src/latestRun.ts` public `AI latest update` paneli Run #170 opener readability fix'i ile yeniden hizalandi.
 - Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, launch/retry hissi, Run #175-#176 death-surface sadeleştirmeleri ve Run #165-#174 spawn readability/pressure guard'lari icin keep/tune/revert notu birak.
-- Runtime yoksa Run #175'i yeni overlay/copy paketi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri ve near-miss/mobile validation koridoru disinda kal. Yeni adaylar seed `#7` benzeri `10.0s` tabaninda duran spawn-pressure / obstacle readability kusurlarinda kalmali.
+- Runtime yoksa Run #175'i yeni overlay/copy paketi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/pause wording zinciri ve near-miss/mobile validation koridoru disinda kal. Seed `#7` kapandi; yeni adaylar baska `10.0s` tabaninda duran spawn-pressure / obstacle readability kusurlarinda veya benzeri dar gameplay baskilarinda kalmali.
 - Deterministic baseline `27.4s / 10.0s / 0%` ve build sagligini koru.
 
 Success markers:
@@ -51,7 +55,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 launch/input/replay hattı, Run #175-#176 death surface ve Run #165-#174 spawn readability/pressure guard'lari.
-- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#176 death-surface compacting fix'lerini yeniden copy churn'una cevirmeden, seed `#7` veya benzeri `10.0s` floor kusuruna once trace uretip sonra in. Yeni orchestration katmani acma.
+- Runtime yine blokluysa validation/controller drift hattina geri donmeden tek yeni gameplay veya UX source bug'i sec; Run #175-#176 death-surface compacting fix'lerini yeniden copy churn'una cevirmeden, seed `#7` sonrasi kalan yeni `10.0s` floor kusuruna veya benzeri dar gameplay baskisina once trace uretip sonra in. Yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---

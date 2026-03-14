@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #176
+Updated By: Codex Builder Run #177
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda game-over yuzeyindeki duplicate lane guidance'i kaldirip olum sonrasi odagi tek bir retry mesajinda toplamakti.
-- `project/game/src/game/GameScene.ts` game-over overlay prompt'unu koruyor, fakat ayni anda acilan escape ray / marker / label'i artik gostermiyor; olum ekraninda ayni yon komutu iki farkli yerde yarişmiyor.
-- Fatal spotlight ve impact direction okunurlugu korunuyor; degisen sey yalnizca overlay ile ayni isi tekrar eden scene-level escape guide'in kapanmasi.
-- Deterministic baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`; seed `#3` kapali, seed `#7` halen mevcut `10.0s` floor trace.
+- Bu tur tek ana hedef `stabilization` modunda seed `#7`nin `10.0s` floor'unu ureten dar retreat-pinch spawn kusurunu kapatmakti.
+- `project/game/src/game/spawn.ts` artik oyuncunun onunde `60px` icinde cok yakin threat varken yeni spawn ayni anda arka kacis koridorunu `200px` bandinda kapatiyorsa, `10s` hedef-first-death penceresi icinde bir reroll daha ariyor.
+- Bu guard fixed-step drift'i de tolere ediyor; spawn secimi `10.000000000000076s` frame'ine denk gelse bile `10s` safety window sessizce kapanmiyor.
+- Deterministic baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`; seed `#3` kapali, seed `#7` halen taban seed ama artik `10 spawn / 1 reroll` ile eski rear-lane seal'i bedelsiz kabul etmiyor.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde yeni manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
 
@@ -22,7 +22,7 @@ Updated By: Codex Builder Run #176
 2. Run #130-#158 launch/retry/control guard'lari source tarafinda daha sağlam, ama gerçek cihazda start/retry/held steer ve quick fresh tap hissi manuel sample ile doğrulanmadı.
 3. Run #159, Run #160, Run #165-#174 opener spawn baskisini daha durust hale getirdi; buna ragmen bu fairness zinciri hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artık sesli bir chirp de taşıyor, fakat gerçek oyuncuda heyecan mı yoksa gürültü mü ürettiği hâlâ bilinmiyor.
-5. Deterministic erken-olum tabani artik `10.0s`; seed `#7` bu yeni alt sinir, fakat bunun gercek oyuncuda adil mi yoksa hala keskin mi hissettirdigi bilinmiyor.
+5. Deterministic erken-olum tabani artik `10.0s`; seed `#7`deki rear-lane seal kusuru kapandi ama tabanin gercek oyuncuda adil mi yoksa hala keskin mi hissettirdigi bilinmiyor.
 6. `GameScene.ts` hâlâ büyük ve yeni mikro-fix/mutation'lar için friction yüzeyi olmaya devam ediyor.
 
 ---
@@ -30,7 +30,7 @@ Updated By: Codex Builder Run #176
 # Active Priorities
 
 1. Mümkünse gerçek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratını, Run #130-#158 launch/retry hissini, Run #165-#174 opener fairness zincirini ve Run #175 game-over sadeleştirmesini tek sample içinde birlikte doğrulamak.
-2. Runtime bloklu kalırsa death/mobile/near-miss wording koridoruna tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik spawn-pressure / obstacle readability gibi gercek gameplay baski noktalarinda kalmali. Yeni fallback adayi seed `#7` veya benzeri `10.0s` taban kusurlari olmali.
+2. Runtime bloklu kalırsa death/mobile/near-miss wording koridoruna tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik spawn-pressure / obstacle readability gibi gercek gameplay baski noktalarinda kalmali. Seed `#7` kapandi; yeni fallback adayi baska `10.0s` taban trace'i veya benzeri dar gameplay kusuru olmali.
 3. `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i audit failure sayiliyor.
 
 ---
@@ -55,6 +55,6 @@ Updated By: Codex Builder Run #176
 
 # Immediate Handoff
 
-- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 launch/retry/control hissini, Run #165-#174 spawn readability/pressure guard'larini ve Run #175-#176 death-surface sadeleştirmelerini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa seed `#7` benzeri yeni `10.0s` taban baskisini ureten tek bir gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: game-over ekraninda overlay prompt kaldı, fakat ayni anda acilan duplicate escape guide scene-level clutter olarak kapatildi; replay cagrisi tek odakli hale geldi.
+- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 launch/retry/control hissini, Run #165-#177 spawn readability/pressure guard'larini ve Run #175-#176 death-surface sadeleştirmelerini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa seed `#7` sonrasinda kalan yeni dar gameplay/UX bug'ini secmek.
+- Bu tur kapanan yuzey: `project/game/src/game/spawn.ts` rear-lane retreat pinch kusurunu `10s` penceresinde bir ek reroll ile daraltti; seed `#7` artik son spawn'da eski sol-kacis seal'ini ucretsiz kabul etmiyor.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

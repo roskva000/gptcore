@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #177]
+
+Decision:
+`stabilization` modunda seed `#7`nin `10.0s` floor'unu ureten rear-lane retreat pinch kusuru kapatildi.
+
+Reason:
+Runtime yine blokluydu; audit ayni same-edge/opener fairness koridoruna bir run daha harcamayi istemiyordu ve aktif fallback olarak yeni bir `10.0s` taban kusuru secilmeliydi. Seed `#7` trace'i, oyuncunun onunde cok yakin bir threat varken yeni spawn'in arka kacis koridorunu kapattigini gosterdi. Ustelik bu spawn secimi fixed-step birikimi yuzunden `10.000000000000076s` frame'inde calisiyor, yani `10s` safety window bir frame erken kapanmis gibi davranabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` yeni retreat-pinch guard'i ile ondeki `60px` yakin threat + arkayi `200px` bandinda kapatan yeni spawn kombinasyonunu `10s` penceresinde bir kez daha reroll ediyor. Zaman cutoff'u bu guard icin epsilon-tolerant hale geldi. `project/game/scripts/telemetry-check.ts` yeni regression case'i ve seed `#7` trace assert'i ekledi; `project/game/scripts/telemetry-reports.ts` controller anlatimi ve `project/game/src/latestRun.ts` yeni runtime-facing delta ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `27.4s / 10.0s / 0%` korundu, seed `#7` artik `10 spawn / 1 reroll`.
+
+Rollback Condition:
+Headed sample veya sonraki deterministic trace bu guard'in challenge'i bosaltip oyuncunun arkasini gereksiz sterilize ettigini gosterirse yalniz retreat-pinch mesafe/alignment bandi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #176]
 
 Decision:
