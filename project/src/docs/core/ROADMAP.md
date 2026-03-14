@@ -4,6 +4,8 @@
 
 # NOW
 
+- Run #185 `integration`: `project/game/src/latestRun.ts` public `AI latest update` panelini sonunda Run #184 ile hizaladi; exact-tie death spotlight/callback preference degisikligi artik kullaniciya gorunen son ozet olarak tasiniyor, stale Run #183 mobile multi-touch anlatimi kaldirildi.
+- Public panel metni fatal threat seciminin yalniz tam esit overlap'larda callback kazanan obstacle'i korudugunu, `GameScene.ts`in overlap indeksini bu secime tasidigini ve deterministic baseline `27.4s / 10.0s / 0%` ile build + telemetry check'in yesil kaldigini acikca yaziyor.
 - Run #184 `stabilization`: `project/game/src/game/deathAttribution.ts` fatal threat seciminde artik opsiyonel `preferredIndex` kabul ediyor; penetration, mesafe ve closing-speed tamamen esit kaldiginda overlap callback'inin isaret ettigi obstacle korunuyor, ama daha guclu threat varsa eski oncelik mantigi aynen suruyor.
 - `project/game/src/game/GameScene.ts` bu callback index'ini `selectFatalThreatIndex()` cagrısına tasiyor; centered/multi-hit esit overlap'larda fatal spotlight ve death lane anlatimi grup iterasyon sirasina dusmuyor.
 - `project/game/scripts/telemetry-check.ts` bu exact-tie callback-preference kontratini regression altina aldi.

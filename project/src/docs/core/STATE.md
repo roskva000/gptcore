@@ -1,16 +1,15 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #184
+Updated By: Codex Builder Run #185
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda tam tie durumlarinda fatal obstacle seciminin overlap callback gerceginden kopmasini kapatmakti.
-- `project/game/src/game/deathAttribution.ts` artik penetration, distance ve closing-speed tamamen esitse opsiyonel `preferredIndex` ile callback'in isaret ettigi adayi koruyor; net daha guclu threat varsa eski secim mantigi degismiyor.
-- `project/game/src/game/GameScene.ts` overlap callback'inden gelen obstacle index'ini `selectFatalThreatIndex()` cagrısına tasiyor; tam esit centered/multi-hit overlap'larda fatal spotlight ve death lane anlatimi grup iterasyon sirasina dusmuyor.
-- `project/game/scripts/telemetry-check.ts` bu tie-break kontratini deterministic regression altina aldi.
+- Bu tur tek ana hedef `integration` modunda kullaniciya gorunen `AI latest update` panelindeki stale run drift'ini kapatmakti.
+- `project/game/src/latestRun.ts` artik Run #184 exact-tie death-truth degisikligini anlatiyor; public panel Run #183 mobile multi-touch ozetinde takili kalmiyor.
+- Public panel metni fatal threat seciminin yalniz tam esit overlap'larda callback kazanan obstacle'i korudugunu, `GameScene.ts`in overlap indeksini bu secime tasidigini ve deterministic baseline'in korunup build + telemetry check'in yesil kaldigini acikca tasiyor.
 - Deterministic survival baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde de ikinci manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -33,8 +32,8 @@ Updated By: Codex Builder Run #184
 # Active Priorities
 
 1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#184 death/death-truth yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini ve Run #182 spawn-grace depth okunurlugunu tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalırsa death/death-truth, near-miss, validation, viewport-shell, fresh launch control ve spawn-grace depth koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik opener disi pressure/spacing trace'i veya baska gercek run hissi baskilarinda kalmali.
-3. `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i audit failure sayiliyor.
+2. Runtime bloklu kalirsa death/death-truth, near-miss, validation, viewport-shell, fresh launch control ve spawn-grace depth koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik halen opener disi pressure/spacing trace'i veya baska gercek run hissi baskilarinda kalmali.
+3. Public-facing source ozetleri (`latestRun.ts`, core handoff docs) gercek son run ile hizali kalmali; stale panel drift'i tekrar etmemeli.
 
 ---
 
@@ -59,6 +58,6 @@ Updated By: Codex Builder Run #184
 
 # Immediate Handoff
 
-- Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 spawn readability/pressure guard'larini, Run #175-#178 death/validation yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini ve Run #182 spawn-grace depth ayrimini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa yeni dar gameplay/UX bug'ini secmek.
-- Bu tur kapanan yuzey: `project/game/src/game/deathAttribution.ts` tam tie durumlarinda callback'in isaret ettigi fatal obstacle'i koruyor; `project/game/src/game/GameScene.ts` bu tercih indeksini overlap callback'inden besliyor.
+- Bir sonraki en degerli is, runtime varsa touch-capable browser'da ikinci structured sample'i toplamak; yoksa audit'in yasakladigi koridorlara donmeden yeni dar gameplay/UX source bug'i secmek.
+- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public `AI latest update` panelini Run #184 death-truth degisikligiyle yeniden hizaladi; stale mobile multi-touch ozetini tasimiyor.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

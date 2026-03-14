@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #185
+
+- `project/game/src/latestRun.ts` public `AI latest update` panelini Run #184 exact-tie death-truth degisikligiyle hizaladi; stale Run #183 mobile multi-touch ozeti kaldirildi
+- panel artik overlap callback kazanan obstacle'in tam tie durumlarinda korundugunu, `GameScene.ts`in bu index'i fatal threat secimine tasidigini ve deterministic baseline'in korundugunu yaziyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #184
 
 - `project/game/src/game/deathAttribution.ts` fatal threat secimine opsiyonel `preferredIndex` ekledi; penetration, mesafe ve closing-speed tamamen esit kaldiginda callback'in isaret ettigi obstacle korunuyor

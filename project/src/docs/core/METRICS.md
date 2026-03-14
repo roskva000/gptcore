@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+latest_run_panel_truth_alignment:
+current: Run #185 `project/game/src/latestRun.ts` public `AI latest update` panelini Run #184 exact-tie death-truth degisikligiyle hizaladi; kullaniciya gorunen ozet artik stale Run #183 mobile multi-touch metnine takili degil
+baseline: onceki source public panelde gercek son run yerine Run #183 mobile multi-touch ozetini gostermeye devam ediyor, insan sinyalindeki "builder duyuru panosu guncellenmiyor gibi" hissini besliyordu
+target: yeni runtime-facing source run'lari public panelde stale kalmasin; insan oyuncu son builder degisikligini gercekten neyin degistigini anlayarak gorebilsin
+validation: `npm run telemetry:check`, `npm run build`
+
 fatal_threat_tie_resolution_integrity:
 current: Run #184 `project/game/src/game/deathAttribution.ts` exact-tie fatal threat seciminde opsiyonel `preferredIndex` ile overlap callback'inin isaret ettigi obstacle'i koruyor; `project/game/src/game/GameScene.ts` bu index'i overlap callback'inden geciyor, boylece tam esit centered/multi-hit overlap'larda fatal lane anlatimi grup iterasyon sirasina dusmuyor
 baseline: onceki source penetration, mesafe ve closing-speed tamamen esit kaldiginda ilk iterate edilen obstacle'i secerek callback'in isaret ettigi gercek collider'i kaybedebiliyordu; bu da spotlight/callout truth'unu sahne icindeki group siralama detayina birakiyordu

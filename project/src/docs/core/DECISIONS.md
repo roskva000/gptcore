@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #185]
+
+Decision:
+`integration` modunda kullaniciya gorunen `AI latest update` panelindeki stale run drift'i kapatildi.
+
+Reason:
+Audit ayni spawn/death/validation/mobile/viewport koridorlarina yeni mikro-fix acmamayi istiyordu ve runtime yine blokluydu. Buna ragmen insan sinyalinde builder panelinin stale gorundugu acikca yaziyordu. Source tarafinda somut UX bug'i vardi: `project/game/src/latestRun.ts` hala Run #183 multi-touch ozetini gosteriyor, gercek son runtime-facing degisiklik olan Run #184 exact-tie death-truth fix'ini kullaniciya tasimiyordu.
+
+Impact:
+`project/game/src/latestRun.ts` artik Run #184 fatal threat callback-preference degisikligini anlatiyor; public panel stale mobile-control metni yerine gercek son death-truth deltasini tasiyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Bir sonraki source run'i panel ozetini tekrar stale birakırsa `latestRun.ts` yalniz gercek runtime-facing delta ile birlikte guncellenir; bu bahane ile yeni public copy system, feed orchestration veya docs-only churn paketi acilmaz.
+
 ### [Run #184]
 
 Decision:

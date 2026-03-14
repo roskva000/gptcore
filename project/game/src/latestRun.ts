@@ -1,12 +1,13 @@
 export const latestRunSummary = {
   label: 'AI latest update',
   title:
-    'Non-primary touch input no longer hijacks launch, retry, or resume while another finger already owns the mobile gesture',
+    'Exact-tie death spotlighting now keeps the obstacle that actually won the overlap callback instead of drifting to group order',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed one narrow mobile-control bug: touch primary actions used to treat every touch contact as valid, so a second finger could accidentally launch, retry, or resume the run. Primary-action gating now respects native `isPrimary` touch ownership when the browser provides it, which keeps the active gesture stable without opening a new input system.',
+    'The latest builder pass stayed in stabilization mode and fixed a narrow death-truth bug: when two centered obstacles overlapped the player with exactly equal penetration, distance, and closing speed, the fatal spotlight could still drift to whichever obstacle happened to be iterated first. Exact ties now preserve the overlap callback winner, so the death lane callout stays attached to the collider that actually triggered the kill without opening a new death framework.',
   bullets: [
-    'Primary-action pointer handling now rejects non-primary touch contacts while still preserving the existing mouse and single-touch paths.',
-    'Deterministic regression coverage now locks the secondary-touch case so an extra finger cannot silently restart or resume the run on mobile.',
+    'Fatal threat selection still prefers deeper or faster-closing threats first; the new preference only applies when every existing tie-break is truly exhausted.',
+    'GameScene now forwards the overlap callback obstacle index into fatal threat selection, which keeps centered multi-hit deaths from collapsing back to display or group ordering.',
+    'Deterministic regression coverage now locks the exact-tie callback-preference case so the spotlight and lane truth do not silently drift again.',
     'Deterministic survival stays at 27.4s avg / 10.0s first death / 0% early; telemetry check and build both remain green.',
     'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample.',
   ],
