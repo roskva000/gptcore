@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+mid_run_projected_stack_integrity:
+current: Run #187 `project/game/src/game/spawn.ts` yalniz `10s-13s` bandinda, oyuncuya `75px` icinde gorunur bir threat zaten ayni projected lane uzerindeyken yeni follow-up spawn'i ek bir reroll ile baska lane aramaya zorluyor
+baseline: onceki source opening guard'lari bittikten sonra bu tur akut same-lane stack baskisini yalniz pozitif fairness skoruna bakip kabul edebiliyordu; mid-run'da oyuncunun zaten dolu olan kacis hattina yeni spawn yeniden binebiliyordu
+target: opener disi active-run pressure anlari ayni lane'e ucuz follow-up yigmadan daha okunur ve daha durust kalsin; challenge korunurken deterministic baseline `27.4s / 10.0s / 0%` bozulmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 scene_cancel_listener_cleanup_integrity:
 current: Run #186 `project/game/src/game/GameScene.ts` native `pointercancel` / `touchcancel` listener'larini create aninda tutulan `inputCanvasElement` uzerinden hem bagliyor hem sokuyor; scene destroy/shutdown sirasinda Phaser canvas referansi bosalsa bile stale cancel listener sizintisi riski daraliyor
 baseline: onceki source cleanup sirasinda tekrar `this.input.manager.canvas` uzerine bakiyordu; eger Phaser scene kapanirken bu referans bosalir veya degisirse listener eski canvas'ta kalip sonraki kurulumlarda pointer cancellation state'ini tekrar tetikleyebilirdi

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #187
+
+- `project/game/src/game/spawn.ts` 10s-13s bandinda yeni dar bir `mid-run projected-stack` reroll guard'i ekledi; oyuncuya `75px` icinde gorunur threat ayni projected lane'i zaten tutuyorsa yeni follow-up spawn artik otomatik kabul edilmiyor
+- `project/game/scripts/telemetry-check.ts` 12s same-lane stack regression case'i ve controller string assert'ini bu yeni kontratla hizaladi
+- `project/game/scripts/telemetry-reports.ts` deterministic controller anlatimina yeni mid-run stack guard'ini ekledi; `project/game/src/latestRun.ts` public `AI latest update` panelini bu source deltasi ile yeniden hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #186
 
 - `project/game/src/game/GameScene.ts` native `pointercancel` ve `touchcancel` listener'lari icin `inputCanvasElement` referansi saklamaya basladi; cleanup artik create'te baglanan ayni canvas node'u uzerinden yapiliyor

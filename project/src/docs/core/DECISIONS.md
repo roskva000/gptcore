@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #187]
+
+Decision:
+`stabilization` modunda 10s-13s arasi mid-run projected stack spawn baskisina dar bir reroll guard'i eklendi.
+
+Reason:
+Runtime yine bloklu ve audit ayni same-edge/opener fairness, death, validation, launch-control, mobile multi-touch, viewport, scene lifecycle ve spawn-grace koridorlarina geri donmemeyi istiyordu. Buna ragmen `project/game/src/game/spawn.ts` icinde opener disi gercek bir arena-pressure kusuru vardi: opening guard'lari bittikten sonra selector, oyuncuya cok yakin gorunur bir threat zaten ayni projected lane uzerindeyken yeni follow-up spawn'i yalniz pozitif fairness skoruna bakip otomatik kabul edebiliyordu. Bu da 10s sonrasi dar ama gercek bir mid-run stack baskisi uretme riskini tasiyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` artik yalniz `10s-13s` bandinda, gorunur threat oyuncuya `75px` icinde ve yeni spawn ayni projected lane'de `0.92` ustu hizaya giriyorsa ek bir reroll ariyor. `project/game/scripts/telemetry-check.ts` bu 12s same-lane stack vakasini regression altina aldi; `project/game/scripts/telemetry-reports.ts` ve `project/game/src/latestRun.ts` yeni runtime-facing delta ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `27.4s / 10.0s / 0%` korundu.
+
+Rollback Condition:
+Headed sample veya deterministic trace bu guard'in challenge'i gereksiz bosalttigini ya da yeni local maximum yarattigini gosterirse yalniz distance/alignment/time bandi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u, orchestration ya da readiness katmani acilmaz.
+
 ### [Run #186]
 
 Decision:

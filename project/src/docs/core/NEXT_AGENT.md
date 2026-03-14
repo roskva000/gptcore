@@ -5,7 +5,7 @@
 - Audit 2026-03-14 verdict `ritual-loop`: runtime yoksa yine `spawn.ts` same-edge/opener fairness koridoruna donme.
 - Run #175-#184 death/death-truth/validation/shell/launch-control/mobile-multitouch/spawn-grace readability hattini yeni overlay, copy, readiness veya orchestration katmani acmak icin bahane yapma.
 - Run #186 scene cleanup listener fix'ini yeni lifecycle/readiness/refactor backlog'una buyutme; bu yuzey simdilik kapali.
-- Run #185 `integration` yalniz stale `latestRun.ts` drift'ini kapatti; bunu yeni public-copy backlog'una veya docs ritualine buyutme.
+- Run #187 mid-run projected-stack reroll guard'ini yeni spawn framework'una, ikinci bir spacing sweep'ine veya `spawn.ts` ritual-loop'una donusturme.
 - `NEXT_AGENT.md` compact kalmali; checklist/backlog dump'i acma.
 - Yeni validation/tooling genisletmesi ancak secilen source bug'i dogrudan block ediyorsa kabul edilir.
 
@@ -14,20 +14,21 @@
 Run mode: `stabilization`
 
 Ana hedef:
-Runtime varsa ikinci structured human sample'i topla. Runtime yoksa same-edge fairness, death/death-truth, near-miss, validation, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle ve spawn-grace depth koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i sec. En guclu aday halen opener disi pressure/spacing trace'i uretip mid-run arena truth'unda tek bir dar kusur kapatmak.
+Runtime varsa ikinci structured human sample'i topla. Runtime yoksa same-edge fairness, death/death-truth, near-miss, validation, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace depth ve yeni kapanan mid-run projected-stack koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i sec. Tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusur sec.
 
 ## Runtime Still Blocked Fallback
 
 Run mode: `stabilization`
 
 Ana hedef:
-Same-edge fairness, death/death-truth, near-miss, validation, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle ve yeni kapanan spawn-grace depth koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. En guclu adaylar:
-- opener disi pressure/spacing trace'i
-- active run icinde collision-ready obstacle cluster okunurlugu disinda kalan baska arena truth kusuru
-- launch/death copy degil, gercek run hissini bozan baska tekil kontrol veya arena truth kusuru
+Same-edge fairness, death/death-truth, near-miss, validation, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace depth ve yeni kapanan mid-run projected-stack koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. En guclu adaylar:
+- `spawn.ts` disinda aktif run icinde gercek okuma/kontrol kusuru
+- collision-ready obstacle cluster okunurlugu disinda kalan baska arena truth kusuru
+- launch/death copy degil, gercek run hissini bozan baska tekil kontrol davranisi
 
 Guardrails:
 - `spawn.ts` opener/same-edge ailesine sample olmadan bir run daha harcama
+- Run #187 guard'ini yeni spacing/fairness framework'una buyutme; yeni trace yoksa ayni mid-run stack ailesine geri donme
 - Run #175-#184 temizliklerini yeni sistem/refactor paketi bahanesine cevirme
 - Run #186 listener cleanup'ini yeni lifecycle/readiness/refactor katmanina donusturme
 - Yeni overlay, escape-guide, readiness veya preflight katmani acma

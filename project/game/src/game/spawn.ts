@@ -30,6 +30,10 @@ export const EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS = 10;
 export const EARLY_RETREAT_PINCH_PLAYER_DISTANCE = 60;
 export const EARLY_RETREAT_PINCH_ALIGNMENT_THRESHOLD = 0.35;
 export const EARLY_RETREAT_PINCH_RETREAT_LATERAL_DISTANCE = 200;
+export const MID_RUN_PROJECTED_STACK_REROLL_START_SECONDS = 10;
+export const MID_RUN_PROJECTED_STACK_REROLL_CUTOFF_SECONDS = 13;
+export const MID_RUN_PROJECTED_STACK_PLAYER_DISTANCE = 75;
+export const MID_RUN_PROJECTED_STACK_ALIGNMENT_THRESHOLD = 0.92;
 
 export type Point = {
   x: number;
@@ -587,6 +591,86 @@ const shouldKeepRerollingForOpeningPressure = (
   hasPressuredSameEdgeNearPlayer(playerPosition, activeObstaclePositions, spawnPoint) &&
   spawnScore.score < EARLY_PRESSURED_SPAWN_ACCEPT_SCORE;
 
+const hasMidRunProjectedStackThreat = (
+  playerPosition: Point,
+  playerVelocity: Point | undefined,
+  playerReachabilityMargin: number | undefined,
+  activeObstaclePositions: ActiveObstaclePosition[] | undefined,
+  spawnPoint: Point,
+): boolean => {
+  if (
+    !playerVelocity ||
+    (playerVelocity.x === 0 && playerVelocity.y === 0) ||
+    !activeObstaclePositions?.length
+  ) {
+    return false;
+  }
+
+  const threatReference = getProjectedPathReference(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
+  const spawnVector = {
+    x: spawnPoint.x - threatReference.x,
+    y: spawnPoint.y - threatReference.y,
+  };
+  const spawnDistance = Math.hypot(spawnVector.x, spawnVector.y);
+
+  if (spawnDistance === 0) {
+    return false;
+  }
+
+  const spawnDirection = normalize(spawnVector);
+
+  return activeObstaclePositions.some((obstaclePosition) => {
+    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+      return false;
+    }
+
+    const playerDistance = Math.hypot(
+      obstaclePosition.x - playerPosition.x,
+      obstaclePosition.y - playerPosition.y,
+    );
+
+    if (playerDistance > MID_RUN_PROJECTED_STACK_PLAYER_DISTANCE) {
+      return false;
+    }
+
+    const obstacleVector = {
+      x: obstaclePosition.x - threatReference.x,
+      y: obstaclePosition.y - threatReference.y,
+    };
+    const obstacleDistance = Math.hypot(obstacleVector.x, obstacleVector.y);
+
+    if (obstacleDistance === 0) {
+      return false;
+    }
+
+    return (
+      dot(normalize(obstacleVector), spawnDirection) >= MID_RUN_PROJECTED_STACK_ALIGNMENT_THRESHOLD
+    );
+  });
+};
+
+const shouldKeepRerollingForMidRunProjectedStack = (
+  survivalTimeSeconds: number,
+  playerPosition: Point,
+  playerVelocity: Point | undefined,
+  playerReachabilityMargin: number | undefined,
+  activeObstaclePositions: ActiveObstaclePosition[] | undefined,
+  spawnPoint: Point,
+): boolean =>
+  survivalTimeSeconds > MID_RUN_PROJECTED_STACK_REROLL_START_SECONDS &&
+  survivalTimeSeconds <= MID_RUN_PROJECTED_STACK_REROLL_CUTOFF_SECONDS &&
+  hasMidRunProjectedStackThreat(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+    activeObstaclePositions,
+    spawnPoint,
+  );
+
 const hasRetreatPinchThreat = (
   playerPosition: Point,
   playerVelocity: Point | undefined,
@@ -727,6 +811,14 @@ export const selectSpawnPoint = ({
       activeObstaclePositions,
       selectedSpawnPoint,
       bestSpawnScore,
+    ) &&
+    !shouldKeepRerollingForMidRunProjectedStack(
+      survivalTimeSeconds,
+      playerPosition,
+      reachableVelocity,
+      playerReachabilityMargin,
+      activeObstaclePositions,
+      selectedSpawnPoint,
     )
   ) {
     return { point: selectedSpawnPoint, rerollsUsed: 0 };
@@ -769,6 +861,14 @@ export const selectSpawnPoint = ({
         activeObstaclePositions,
         candidate,
         candidateSpawnScore,
+      ) &&
+      !shouldKeepRerollingForMidRunProjectedStack(
+        survivalTimeSeconds,
+        playerPosition,
+        reachableVelocity,
+        playerReachabilityMargin,
+        activeObstaclePositions,
+        candidate,
       )
     ) {
       return { point: candidate, rerollsUsed };
