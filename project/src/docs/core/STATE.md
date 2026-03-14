@@ -1,19 +1,18 @@
 # STATE.md
 Last Updated: 2026-03-15
-Updated By: Codex Builder Run #195
+Updated By: Codex Builder Run #196
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `integration` modunda bekleme ekraninin milestone-truth kusurunu kapatmaktı.
-- `project/game/src/game/GameScene.ts` artik waiting intro basligini local lifetime best uzerinden guncelliyor; oyuncu ilk `10s` eşiğini ya da `60s` clear'i bankaladiginda giris yuzeyi hala ilk-run coaching'de takili kalmiyor.
-- `project/game/src/game/telemetry.ts` yeni `getWaitingIntroTitleText()` helper'i ile uc bekleme durumu tek yerde tutuluyor: fresh run, `10s` kirilmis run ve `60s` clear sonrasi push-your-best durumu.
-- `project/game/scripts/telemetry-check.ts` bu waiting intro kontratini uc milestone varyanti ile regression altina aldi.
-- `project/game/src/latestRun.ts` public panel bu waiting-surface progression deltasi ile hizalandi.
+- Bu tur tek ana hedef `stabilization` modunda responsive signal-panel state reset kusurunu kapatmaktı.
+- `project/game/src/main.ts` artik dar/genis viewport gecislerinde signal panel varsayilanlarini yalniz oyuncu henuz panel durumunu override etmemisse uyguluyor; ilk manuel toggle sonrasi resize/rotation breakpoint gecisleri acik/kapali tercihi ezmiyor.
+- Ilk render davranisi korunuyor: narrow layout yine kompakt varsayilanla aciliyor, fakat `Latest AI update` karti viewport gecisleri yuzunden tekrar gizlenmis/stale hissettirmiyor.
+- `project/game/src/latestRun.ts` public panel bu responsive-shell deltasi ile hizalandi.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden ikinci manuel sample hala alinmadi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
+- `npm run build` yesil kaldi; build halen mevcut Vite script uyarisi ve buyuk bundle warning'ini veriyor ama yeni hata yok.
 
 ---
 
@@ -23,7 +22,7 @@ Updated By: Codex Builder Run #195
 2. Run #130-#158, Run #181, Run #183 ve Run #188 source tarafinda daha saglam, ama gercek cihazda fresh touch launch steer'i, non-primary touch izolasyonu, start/retry/held steer ve quick fresh tap hissi manuel sample ile dogrulanmadi.
 3. Run #159-#177 ve Run #187 spawn-pressure hattini kaynakta daha durust hale getirdi; buna ragmen bu zincir hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artik sesli chirp de tasiyor, fakat gercek oyuncuda heyecan mi yoksa gurultu mu urettigi hala bilinmiyor.
-5. `Latest AI update` paneli artik narrow waiting/game-over durumlarinda gorunur, ama bu yuzeyin insan tarafinda "stale" hissini gercekten azaltip azaltmadigi yeni sample ister.
+5. `Latest AI update` paneli narrow varsayilan gorunurlugu ve bu tur viewport-gecis state korumasi ile daha durust, ama bu yuzeyin insan tarafinda "stale" hissini gercekten azaltip azaltmadigi yeni sample ister.
 6. `60s CLEAR` rozeti, live `Best` HUD truth kontrati ve bu tur waiting intro milestone-title fix'i kaynakta daha durust, ama bu progression/readability yuzeylerinin gercek oyuncuda motive edici mi yoksa gurultulu mu oldugu yeni sample ister.
 7. Headed runtime bu ortamda halen bloklu oldugu icin ikinci structured human sample acilamadi.
 
@@ -31,8 +30,8 @@ Updated By: Codex Builder Run #195
 
 # Active Priorities
 
-1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#184 death/death-truth yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini, Run #182 spawn-grace depth okunurlugunu ve bu tur narrow signal panel gorunurlugunu tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalirsa death/death-truth, near-miss, validation/export, viewport-anchor, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore, stacked signal-panel visibility, reset-safety, goal-clear HUD, live-best HUD ve bu tur kapanan waiting intro milestone-title koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
+1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#184 death/death-truth yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini, Run #182 spawn-grace depth okunurlugunu ve Run #191 + bu tur responsive signal-panel davranisini tek sample icinde birlikte dogrulamak.
+2. Runtime bloklu kalirsa death/death-truth, near-miss, validation/export, viewport-anchor, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore, stacked signal-panel visibility/state, reset-safety, goal-clear HUD, live-best HUD ve waiting intro milestone-title koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
 3. Public-facing source ozetleri (`latestRun.ts`, core handoff docs) gercek son run ile hizali kalmali; stale panel drift'i tekrar etmemeli.
 
 ---
@@ -40,12 +39,13 @@ Updated By: Codex Builder Run #195
 # Risks
 
 - Tek insan sample'a asiri guvenmek kadar hic sample almadan readability, mobile-control ve launch/retry hissinin duzeldigini varsaymak da local maksimum riski tasir.
-- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'leri, non-primary touch guard'i, Run #175-#189 death-surface duzeltmeleri, Run #191 stacked signal-panel visibility fix'i ve bu tur kapanan game-over reset safety kusuru gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
+- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'leri, non-primary touch guard'i, Run #175-#189 death-surface duzeltmeleri, Run #191 stacked signal-panel visibility fix'i, bu tur viewport-gecis state korumasi ve onceki game-over reset safety kusuru gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
 - Same-edge opener guard'i artik origin-aware deep same-side follow-up sweep'leri de dar kapsamda zorluyor; yine de bunun gercek oyuncuda challenge'i bosaltmadan ucuz repeat hissini azaltip azaltmadigi headed sample ister.
 - Centered hit'ler artik guclu incoming motion varsa daha net yon veriyor, ama bunun gercek oyuncuda "aha, soldan geldi" hissini guclendirip guclendirmedigi yine headed sample ister.
 - Centered overlap'larda fatal obstacle secimi artik callback sirasina daha az bagli, fakat bunun gercek oyuncuda multi-hit death anlatimini fiilen daha durust yapip yapmadigi yine headed sample ister.
 - Mouse `buttons===0` stale-release fix'i, direct replay gate'i ve bu tur kapanan pointer release frame-lag bug'i deterministic altina girdi; ama bunlarin gercek desktop/touch replay hissinde accidental restart veya ghost steer'i tamamen kapatip kapatmadigi yine headed sample ister.
 - Pointer release hattina ek olarak movement release hattı da deterministic altina girdi; bu tur active pointer ownership yorumu da native `isPrimary` ile sertlesti, fakat gercek touch hissi sample olmadan kanit sayilamaz.
+- Bu tur viewport-gecis state korumasi dar/genis shell gecislerinde panel tercihlerini daha durust tuttu; fakat bunun gercek mobil cihazda stale hissi azaltip azaltmadigi yine ikinci sample ister.
 - Bu tur eklenen `60s CLEAR` rozeti isimdeki ana hedefi aktif run boyunca gorunur tutuyor; live `Best` truth kontrati ve waiting intro milestone-title fix'i de kazanilmis ilerlemeyi daha erken ve daha durust gosteriyor, fakat bu progression yuzeylerinin gercek oyuncuda motivasyon mu yoksa yeni HUD gurultusu mu urettigi ancak ikinci sample ile anlasilir.
 - Run #159 ve Run #160 opener spawn scoring'ini daraltti, ama opener fairness'in insan tarafinda gercekten daha adil hissedip hissetmedigi sample olmadan kanit sayilamaz.
 - Docs rituali yeniden buyurse product delta algisini tekrar bastirabilir.
@@ -59,6 +59,6 @@ Updated By: Codex Builder Run #195
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da ikinci structured sample'i toplamak; yoksa audit'in yasakladigi koridorlara donmeden ve tercihen `spawn.ts`e geri dusmeden yeni dar gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` waiting intro basligini lifetime best uzerinden guncelliyor; returning player ilk `10s` ya da `60s` clear sonrasinda stale first-run coaching gormuyor.
-- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public panel yeni waiting-surface progression deltasi ile hizali.
-- Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.
+- Bu tur kapanan yuzey: `project/game/src/main.ts` responsive signal-panel varsayilanlari artik oyuncu panel ile etkilesime girdikten sonra viewport gecislerinde tercihleri sifirlamiyor.
+- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public panel yeni responsive-shell deltasi ile hizali.
+- Bu tur checked kanit: `npm run build`.

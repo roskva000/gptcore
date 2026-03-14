@@ -95,6 +95,8 @@ let pendingScaleRefreshFrame: number | null = null;
 let pendingViewportAnchorFrame: number | null = null;
 let currentGamePhase: GamePhase = 'waiting';
 let savedPanelScrollY: number | null = null;
+let hasPanelVisibilityOverride = false;
+let suppressPanelToggleTracking = false;
 
 const readPxValue = (value: string): number => {
   const parsedValue = Number.parseFloat(value);
@@ -232,10 +234,19 @@ const syncGameViewportHeight = (): void => {
 };
 
 if (panelDetailsElements.length > 0) {
+  const handlePanelToggle = (): void => {
+    if (!suppressPanelToggleTracking) {
+      hasPanelVisibilityOverride = true;
+    }
+
+    syncGameViewportHeight();
+  };
   const syncRunPanelVisibility = (matches: boolean): void => {
+    suppressPanelToggleTracking = true;
     panelDetailsElements.forEach((detailsElement, index) => {
       detailsElement.open = !matches || index < DEFAULT_STACKED_OPEN_PANEL_COUNT;
     });
+    suppressPanelToggleTracking = false;
 
     syncGameViewportHeight();
   };
@@ -243,20 +254,24 @@ if (panelDetailsElements.length > 0) {
   syncRunPanelVisibility(narrowViewportQuery.matches);
 
   const handleViewportQueryChange = (event: MediaQueryListEvent): void => {
-    syncRunPanelVisibility(event.matches);
+    if (!hasPanelVisibilityOverride) {
+      syncRunPanelVisibility(event.matches);
+    } else {
+      syncGameViewportHeight();
+    }
     syncGameplayFocusMode(currentGamePhase);
   };
 
   narrowViewportQuery.addEventListener('change', handleViewportQueryChange);
   panelDetailsElements.forEach((detailsElement) => {
-    detailsElement.addEventListener('toggle', syncGameViewportHeight);
+    detailsElement.addEventListener('toggle', handlePanelToggle);
   });
 
   if (import.meta.hot) {
     import.meta.hot.dispose(() => {
       narrowViewportQuery.removeEventListener('change', handleViewportQueryChange);
       panelDetailsElements.forEach((detailsElement) => {
-        detailsElement.removeEventListener('toggle', syncGameViewportHeight);
+        detailsElement.removeEventListener('toggle', handlePanelToggle);
       });
     });
   }

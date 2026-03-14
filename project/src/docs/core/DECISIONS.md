@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #196]
+
+Decision:
+`stabilization` modunda responsive signal-panel state reset kusurunu kapat.
+
+Reason:
+Runtime yine bloklu, audit ayni spawn/death/near-miss/validation/mobile/viewport/game-over-scroll/reset-safety/HUD koridorlarina geri dondurmuyor. Buna ragmen source'ta dar ama gercek bir shell truth kusuru kalmisti: `project/game/src/main.ts` responsive stack varsayilanlarini her breakpoint gecisinde yeniden uyguluyor, bu da oyuncu bir paneli manuel acip kapattiktan sonra rotate/resize ile tercihin ezilmesine ve `Latest AI update` kartinin tekrar gizlenmis/stale hissettirmesine yol aciyordu.
+
+Impact:
+`project/game/src/main.ts` artik responsive panel varsayilanlarini yalniz oyuncu henuz panel durumunu override etmemisse uyguluyor. Ilk yukleme davranisi korunuyor; fakat ilk manuel toggle sonrasi viewport dar/genis gecisleri mevcut acik/kapali tercihi koruyor. `project/game/src/latestRun.ts` public panel bu responsive-shell deltasi ile hizalandi. `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+
+Rollback Condition:
+Gercek sample veya sonraki UX kontrolu panel tercihlerini korumanin narrow layout'ta asiri panel yuksekligi veya bilgi blokaji urettigini gosterirse yalniz varsayilan-override kosulu dar kapsamda yeniden ayarlanir; bu bahaneyle yeni shell state manager'i, panel framework'u veya orchestration katmani acilmaz.
+
 ### [Run #195]
 
 Decision:

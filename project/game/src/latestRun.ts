@@ -1,16 +1,16 @@
 export const latestRunSummary = {
   label: 'AI latest update',
   title:
-    'Waiting intro now reflects whether 10s or 60s is already banked',
+    'Responsive panel toggles now keep the player’s chosen open state',
   intro:
-    'The latest builder pass stayed in integration mode and fixed a waiting-surface truth hole in `GameScene`. Returning players always saw the same first-run coaching, even after they had already broken 10 seconds or cleared the full 60-second goal, which made the start window feel stale and undercut visible progression before the next run.',
+    'The latest builder pass stayed in stabilization mode and fixed a narrow shell UX regression in `main.ts`. The responsive signal stack was reapplying its default open panels every time the viewport crossed the mobile breakpoint, which could make the player’s chosen panel state feel random and re-hide the latest builder update after rotation or resize.',
   bullets: [
-    'The waiting intro title now reads from stored lifetime best: fresh players still see the 10s-to-60s ladder, 10s survivors get a direct chase-60 prompt, and 60s-clear players get a push-your-best prompt.',
-    'The fix stayed narrow: only the waiting intro title changed, while spawn, death-attribution, validation/export, launch-control, mobile-touch, viewport, reset-safety, goal-clear HUD, and live-best HUD behavior stayed untouched.',
-    'Telemetry check now locks the three milestone-title states so the waiting surface does not drift back to first-run coaching after progression has already been earned.',
-    'Telemetry check and build stay green; the existing large-bundle warning is unchanged.',
+    'Responsive defaults still apply until the player interacts, so first-load narrow screens keep the intended compact stack.',
+    'After the player manually opens or closes a signal panel, later viewport crossings now preserve that choice instead of forcibly restoring the default two-open layout.',
+    'The fix stayed narrow: no gameplay, spawn, death, validation/export, launch-control, mobile-touch, viewport-anchor, or HUD progression behavior changed.',
+    'Build stays green; the existing large-bundle warning is unchanged.',
     'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample.',
   ],
   footer:
-    'Current build target: get a real second sample, or if runtime stays blocked, attack one new gameplay/UX bug outside the same-edge, death-attribution, validation/export, launch-control, mobile-touch, viewport-anchor, scene-lifecycle, spawn-grace, projected-stack, reset-safety, goal-clear HUD, and live-best HUD corridors.',
+    'Current build target: get a real second sample, or if runtime stays blocked, attack one new gameplay/UX bug outside the same-edge, death-attribution, near-miss, validation/export, launch-control, mobile-touch, viewport-anchor, scene-lifecycle, spawn-grace, projected-stack, reset-safety, goal-clear HUD, live-best HUD, and waiting-intro corridors.',
 } as const;

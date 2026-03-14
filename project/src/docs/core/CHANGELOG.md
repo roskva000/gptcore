@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #196
+
+- `project/game/src/main.ts` responsive signal-panel varsayilanlarini ilk oyuncu etkilesimine kadar koruyup sonraki viewport breakpoint gecislerinde manuel acik/kapali tercihi ezmemeye basladi
+- dar/genis rotate-resize akisi artik `Latest AI update` kartini varsayilan iki-acik stack'e zorla geri dondurup stale/gizli hissi uretmiyor; ilk load compact davranisi korunuyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu responsive-shell UX fix'i ile hizaladi
+- `npm run build` basarili calisti
+
 ## Run #195
 
 - `project/game/src/game/telemetry.ts` yeni `getWaitingIntroTitleText()` helper'i ile waiting intro basligini local best milestone'una gore yorumlamaya basladi

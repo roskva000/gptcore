@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+responsive_signal_panel_state_persistence:
+current: Run #196 `project/game/src/main.ts` responsive signal-panel varsayilanlarini yalniz ilk load / pre-interaction aninda uyguluyor; oyuncu bir paneli manuel acip kapattiktan sonra narrow/wide viewport gecisleri ayni acik/kapali durumunu koruyor
+baseline: onceki source her media-query gecisinde default panel durumunu yeniden yaziyordu; rotate/resize sonrasi `Latest AI update` karti tekrar kapanabiliyor ve kullanicinin manuel secimi kendiliginden silindigi icin stale/gizli hissi uretebiliyordu
+target: sonraki manuel narrow/mobile sample'da signal panel oyuncunun sectigi durumda kalsin; ilk-load compact varsayilani korunurken viewport gecisleri son builder guncellemesini rastgele tekrar gizlemesin
+validation: `npm run build`
+
 waiting_intro_progress_truth_integrity:
 current: Run #195 `project/game/src/game/GameScene.ts` waiting intro basligini local lifetime best uzerinden guncelliyor; fresh oyuncu hala `Break 10s. Then chase 60.` goruyor, `10s` kiran oyuncu `10s broken. Now chase 60.` mesajina, `60s` clear oyuncu ise `60s cleared. Push your best.` mesajina geciyor
 baseline: onceki source waiting intro title'i sabit first-run coaching metninde kaliyor, bu da returning player `10s` ya da `60s` milestone'unu zaten bankalamis olsa bile start window'un stale ve ilerlemeyi saklayan bir yuzey gibi görünmesine yol aciyordu
