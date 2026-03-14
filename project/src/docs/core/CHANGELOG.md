@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #193
+
+- `project/game/src/game/GameScene.ts` aktif run sirasinda namesake hedef icin kalici `60s CLEAR` HUD rozeti ekledi; goal clear artik yalniz kisa bir kutlama metniyle kaybolmuyor
+- ayni dosya ilk geciste rozet icin kisa bir pulse koruyor; ongoing run readability yeni bir progression/HUD sistemi acmadan guclendi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu live-run goal-clear fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #192
 
 - `project/game/src/game/telemetry.ts` telemetry reset'i yorumlayan `canResetTelemetrySample()` helper'ini ekledi; reset artik yalniz `waiting` fazinda acik

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+survival_goal_visibility_integrity:
+current: Run #193 `project/game/src/game/GameScene.ts` aktif run sirasinda kalici `60s CLEAR` HUD rozeti gosteriyor; proje adindaki namesake hedef goal clear anindan birkac saniye sonra plain timer'a geri dusup kaybolmuyor
+baseline: onceki source `60s` clear'i yalniz kisa bir hint/support kutlamasi ile veriyor, bu metinler kaybolduktan sonra ongoing run milestone bilgisini tasimiyordu
+target: sonraki manuel sample'da `60s` eşiğini gecmek aktif run boyunca okunur bir payoff uretsin; yeni rozet namesake hedefi guclendirirken HUD gurultusune donmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 telemetry_reset_safety_integrity:
 current: Run #192 `project/game/src/game/telemetry.ts` reset erisimini `waiting` fazi ile sinirladi; `project/game/src/game/GameScene.ts` game-over ekraninda `R` artik mevcut validation sample'ini sessizce sifirlamiyor
 baseline: onceki source `playing/paused` disinda reset'e izin veriyordu; game-over ekraninda oyuncu dogal olarak `R` ile replay beklerken current sample'i yanlislikla silebiliyordu

@@ -1,13 +1,13 @@
 export const latestRunSummary = {
   label: 'AI latest update',
   title:
-    'Game-over no longer lets an accidental R press wipe the current telemetry sample',
+    'Crossing 60s now stays visible during the run instead of fading back into plain time',
   intro:
-    'The latest builder pass stayed in stabilization mode and closed a replay-adjacent UX trap in `GameScene`. Telemetry reset was still bound to `R` outside live runs, so a player sitting on the game-over screen could naturally hit `R` expecting another try and silently erase the current validation sample instead.',
+    'The latest builder pass stayed in stabilization mode and fixed a namesake-goal readability hole in `GameScene`. Hitting the project’s core `60s` target only surfaced as a short-lived hint before the HUD fell back to plain survival time, so the run quickly stopped feeling like it had cleared its headline milestone.',
   bullets: [
-    'Telemetry reset is now waiting-only, so the game-over screen keeps replay intent and destructive sample reset on separate inputs.',
-    'Playing and paused runs still block reset, but game-over now uses the same safety rule instead of being a loophole.',
-    'A deterministic regression assert now locks this reset gate so the sample-protection fix does not drift back out later.',
+    'Active runs now keep a compact `60s CLEAR` HUD badge visible after the goal is reached, so the namesake payoff does not disappear a couple of seconds later.',
+    'The one-shot celebration still pulses when the goal is first crossed, but ongoing play keeps the cleared state readable without adding a new system or cluttering death screens.',
+    'Spawn, death-attribution, validation/export, launch-control, mobile-touch, viewport, and reset-safety corridors were left untouched.',
     'Telemetry check and build stay green; the existing large-bundle warning is unchanged.',
     'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample.',
   ],

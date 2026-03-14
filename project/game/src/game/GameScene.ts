@@ -215,6 +215,7 @@ export class GameScene extends Phaser.Scene {
   private movementKeys!: MovementKeys;
   private scoreText!: Phaser.GameObjects.Text;
   private bestText!: Phaser.GameObjects.Text;
+  private goalStatusText!: Phaser.GameObjects.Text;
   private waitingIntroPanel!: Phaser.GameObjects.Rectangle;
   private waitingIntroAccent!: Phaser.GameObjects.Rectangle;
   private waitingIntroEyebrow!: Phaser.GameObjects.Text;
@@ -327,6 +328,20 @@ export class GameScene extends Phaser.Scene {
       fontSize: '16px',
       fontStyle: 'bold',
     });
+
+    this.goalStatusText = this.add.text(24, 82, `${SURVIVAL_GOAL_SECONDS}s CLEAR`, {
+      color: '#d8fff4',
+      fontFamily: 'Trebuchet MS',
+      fontSize: '15px',
+      fontStyle: 'bold',
+      backgroundColor: '#123f36',
+      padding: {
+        x: 10,
+        y: 5,
+      },
+    })
+      .setDepth(4)
+      .setVisible(false);
 
     this.waitingIntroPanel = this.add
       .rectangle(ARENA_WIDTH / 2, 146, 560, 150, 0x08131d, 0.82)
@@ -2262,6 +2277,7 @@ export class GameScene extends Phaser.Scene {
     const hudVisible = this.phase === 'waiting' || this.phase === 'playing';
     this.scoreText.setVisible(hudVisible);
     this.bestText.setVisible(hudVisible);
+    this.goalStatusText.setVisible(this.phase === 'playing' && this.survivalGoalReachedThisRun);
     if (this.phase !== 'playing') {
       this.nearMissText.setVisible(false);
     }
@@ -2379,11 +2395,24 @@ export class GameScene extends Phaser.Scene {
 
   private celebrateSurvivalGoal(activeRunElapsedMs: number): void {
     this.survivalGoalReachedThisRun = true;
+    this.goalStatusText
+      .setText(`${SURVIVAL_GOAL_SECONDS}s CLEAR`)
+      .setAlpha(1)
+      .setScale(0.92)
+      .setVisible(true);
     this.hintText
       .setText(this.getSurvivalGoalHintText())
       .setVisible(true);
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + SURVIVAL_GOAL_HINT_DURATION_MS;
+    this.tweens.killTweensOf(this.goalStatusText);
+    this.tweens.add({
+      targets: this.goalStatusText,
+      scale: 1,
+      alpha: 0.9,
+      duration: 180,
+      ease: 'Quad.Out',
+    });
   }
 
   private getActiveRunElapsedMs(time: number): number {

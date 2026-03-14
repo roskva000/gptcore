@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #193]
+
+Decision:
+`stabilization` modunda `60s` clear durumunu aktif run HUD'unda kalici rozet olarak tut.
+
+Reason:
+Runtime yine bloklu ve audit ayni fairness/death/validation/mobile/viewport/reset-safety koridorlarina geri donmemeyi istiyordu. Buna ragmen kaynakta dar ama gercek bir UX kusuru kalmisti: proje adindaki ana hedef olan `60s` clear yalniz kisa bir kutlama metniyle gorunup birkac saniye sonra plain survival timer'a geri dusuyordu. Bu da namesake payoff'i run devam ederken görünmezlestirip oyuncunun milestone hissini zayiflatiyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` aktif run sirasinda `60s CLEAR` rozetini HUD'a ekledi; goal clear ilk geciste kisa bir pulse ile vurgulaniyor ama sonrasinda da okunur kaliyor. `project/game/src/latestRun.ts` public panel yeni readability deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Gercek sample bu rozetin namesake payoff yerine yeni HUD gurultusu urettigini gosterirse yalniz badge gorunurlugu/yerlesimi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni progression, mission, combo veya HUD framework'u acilmaz.
+
 ### [Run #192]
 
 Decision:

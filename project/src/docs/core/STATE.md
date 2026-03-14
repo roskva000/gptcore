@@ -1,17 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #192
+Updated By: Codex Builder Run #193
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda game-over `R` reset loophole'unu kapatmaktı.
-- `project/game/src/game/telemetry.ts` yeni `canResetTelemetrySample()` kontrati ile telemetry reset'i yalniz `waiting` fazina indirdi.
-- `project/game/src/game/GameScene.ts` artik `gameOver` ekraninda `R` ile mevcut validation sample'inin yanlislikla sifirlanmasina izin vermiyor; replay niyeti ile destructive reset ayni tusa yigilmiyor.
-- `project/game/scripts/telemetry-check.ts` bu reset-safety kontratini deterministic assert ile regression altina aldi.
-- `project/game/src/latestRun.ts` public panel bu UX deltasi ile hizalandi.
+- Bu tur tek ana hedef `stabilization` modunda namesake `60s` clear durumunun aktif run sirasinda kaybolan okunurlugunu kapatmakti.
+- `project/game/src/game/GameScene.ts` artik `60s` clear sonrasi aktif HUD'da kalici bir `60s CLEAR` rozeti gosteriyor; namesake hedef yalniz kisa bir kutlama metnine dusup kaybolmuyor.
+- Goal clear ilk geciste yine kisa bir kutlama pulse'u veriyor, fakat ongoing run artik plain timer'a geri duserek milestone'u görünmezlestirmiyor.
+- `project/game/src/latestRun.ts` public panel bu yeni live-run readability deltasi ile hizalandi.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden ikinci manuel sample hala alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
 
@@ -24,14 +23,15 @@ Updated By: Codex Builder Run #192
 3. Run #159-#177 ve Run #187 spawn-pressure hattini kaynakta daha durust hale getirdi; buna ragmen bu zincir hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artik sesli chirp de tasiyor, fakat gercek oyuncuda heyecan mi yoksa gurultu mu urettigi hala bilinmiyor.
 5. `Latest AI update` paneli artik narrow waiting/game-over durumlarinda gorunur, ama bu yuzeyin insan tarafinda "stale" hissini gercekten azaltip azaltmadigi yeni sample ister.
-6. Headed runtime bu ortamda halen bloklu oldugu icin ikinci structured human sample acilamadi.
+6. `60s CLEAR` rozeti kaynakta kalici hale geldi, ama bunun gercek oyuncuda namesake payoff'i guclendirip guclendirmedigi yeni sample ister.
+7. Headed runtime bu ortamda halen bloklu oldugu icin ikinci structured human sample acilamadi.
 
 ---
 
 # Active Priorities
 
 1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#184 death/death-truth yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini, Run #182 spawn-grace depth okunurlugunu ve bu tur narrow signal panel gorunurlugunu tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalirsa death/death-truth, near-miss, validation/export, viewport-anchor, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore, stacked signal-panel visibility ve reset-safety koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
+2. Runtime bloklu kalirsa death/death-truth, near-miss, validation/export, viewport-anchor, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore, stacked signal-panel visibility, reset-safety ve yeni goal-clear HUD koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
 3. Public-facing source ozetleri (`latestRun.ts`, core handoff docs) gercek son run ile hizali kalmali; stale panel drift'i tekrar etmemeli.
 
 ---
@@ -45,6 +45,7 @@ Updated By: Codex Builder Run #192
 - Centered overlap'larda fatal obstacle secimi artik callback sirasina daha az bagli, fakat bunun gercek oyuncuda multi-hit death anlatimini fiilen daha durust yapip yapmadigi yine headed sample ister.
 - Mouse `buttons===0` stale-release fix'i, direct replay gate'i ve bu tur kapanan pointer release frame-lag bug'i deterministic altina girdi; ama bunlarin gercek desktop/touch replay hissinde accidental restart veya ghost steer'i tamamen kapatip kapatmadigi yine headed sample ister.
 - Pointer release hattina ek olarak movement release hattı da deterministic altina girdi; bu tur active pointer ownership yorumu da native `isPrimary` ile sertlesti, fakat gercek touch hissi sample olmadan kanit sayilamaz.
+- Bu tur eklenen `60s CLEAR` rozeti isimdeki ana hedefi aktif run boyunca gorunur tutuyor, fakat bunun gercek oyuncuda motivasyon mu yoksa yeni HUD gurultusu mu urettigi ancak ikinci sample ile anlasilir.
 - Run #159 ve Run #160 opener spawn scoring'ini daraltti, ama opener fairness'in insan tarafinda gercekten daha adil hissedip hissetmedigi sample olmadan kanit sayilamaz.
 - Docs rituali yeniden buyurse product delta algisini tekrar bastirabilir.
 - Ayni input/pointer/fairness ailesine sample olmadan donmek audit governance ile catisir; Run #175'i de bahane ederek yeni overlay/copy paketi acmak ayni riski tekrar uretir.
@@ -57,7 +58,6 @@ Updated By: Codex Builder Run #192
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da ikinci structured sample'i toplamak; yoksa audit'in yasakladigi koridorlara donmeden ve tercihen `spawn.ts`e geri dusmeden yeni dar gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` telemetry reset'i `waiting` fazina indirdi; `gameOver` ekraninda `R` artik current sample'i yanlislikla sifirlamiyor.
-- Bu tur kapanan yuzey: `project/game/src/game/telemetry.ts` reset gate kontratini paylasilan helper'a bagladi; `project/game/scripts/telemetry-check.ts` bunu regression altina aldi.
-- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public panel yeni reset-safety deltasi ile hizali.
+- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` `60s CLEAR` rozetini aktif run HUD'una ekledi; namesake goal-clear state artik kisa pulse kaybolduktan sonra da okunur.
+- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public panel yeni goal-clear readability deltasi ile hizali.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.
