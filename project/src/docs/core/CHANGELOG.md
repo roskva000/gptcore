@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #192
+
+- `project/game/src/game/telemetry.ts` telemetry reset'i yorumlayan `canResetTelemetrySample()` helper'ini ekledi; reset artik yalniz `waiting` fazinda acik
+- `project/game/src/game/GameScene.ts` game-over ekraninda `R` ile validation sample'inin yanlislikla sifirlanmasini engelledi ve bu faz icin ayri safety mesajı gosteriyor
+- `project/game/scripts/telemetry-check.ts` reset-safety kontrati icin yeni regression assert'leri ekledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu source deltasi ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #191
 
 - `project/game/src/main.ts` narrow viewport icin stacked signal panel default'unu iki kart acik gelecek sekilde guncelledi; `Latest AI update` artik waiting/game-over durumlarinda gizli gelmiyor

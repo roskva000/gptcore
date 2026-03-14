@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+telemetry_reset_safety_integrity:
+current: Run #192 `project/game/src/game/telemetry.ts` reset erisimini `waiting` fazi ile sinirladi; `project/game/src/game/GameScene.ts` game-over ekraninda `R` artik mevcut validation sample'ini sessizce sifirlamiyor
+baseline: onceki source `playing/paused` disinda reset'e izin veriyordu; game-over ekraninda oyuncu dogal olarak `R` ile replay beklerken current sample'i yanlislikla silebiliyordu
+target: replay niyeti ile destructive telemetry reset ayni input yuzeyinde carpismazsin; reset yalniz bekleme ekraninda ve bilincli bir karar olarak kalsin
+validation: `npm run telemetry:check`, `npm run build`
+
 latest_update_panel_visibility_integrity:
 current: Run #191 `project/game/src/main.ts` narrow viewport'ta stacked signal panel default'unu iki kart acik gelecek sekilde ayarladi; `Latest AI update` artik `Weekly direction` arkasinda kapali baslamiyor
 baseline: onceki source dar ekranda yalniz ilk signal kartini acik birakiyordu; builder update paneli kullanici elle acmadan gizli kaldigi icin insan sinyalindeki "builder duyuru panosu guncellenmiyor gibi" hissini besleyebiliyordu

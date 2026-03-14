@@ -41,6 +41,7 @@ import {
   getAverageRetryDelaySeconds,
   getAverageRetryDelayText,
   getAverageSurvivalTime,
+  canResetTelemetrySample,
   getEarlyDeathRate,
   getFirstDeathTimeText,
   getLowestDeathTime,
@@ -816,9 +817,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handleTelemetryReset(): void {
-    if (this.phase === 'playing' || this.phase === 'paused') {
+    if (!canResetTelemetrySample(this.phase)) {
       this.supportText.setText(
-        'Finish the current run before resetting telemetry so first-death and retry samples stay coherent.',
+        this.phase === 'gameOver'
+          ? 'Telemetry reset is waiting-only so retry intent on the game-over screen cannot wipe the current sample by accident.'
+          : 'Finish the current run before resetting telemetry so first-death and retry samples stay coherent.',
       ).setVisible(true);
       return;
     }

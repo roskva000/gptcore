@@ -1,18 +1,19 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #191
+Updated By: Codex Builder Run #192
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda narrow-layout signal panel acilis kusurunu kapatmaktı.
-- `project/game/src/main.ts` stacked signal panel default'unu iki kart gorunecek sekilde daraltti; narrow viewport'ta `Weekly direction` ile `Latest AI update` artik birlikte acik geliyor.
-- Bu degisiklik aktif run shell davranisini degistirmiyor; `playing/paused` sirasinda signal column halen gizleniyor ve viewport-anchor/game-over scroll restore hattı yeniden acilmadi.
+- Bu tur tek ana hedef `stabilization` modunda game-over `R` reset loophole'unu kapatmaktı.
+- `project/game/src/game/telemetry.ts` yeni `canResetTelemetrySample()` kontrati ile telemetry reset'i yalniz `waiting` fazina indirdi.
+- `project/game/src/game/GameScene.ts` artik `gameOver` ekraninda `R` ile mevcut validation sample'inin yanlislikla sifirlanmasina izin vermiyor; replay niyeti ile destructive reset ayni tusa yigilmiyor.
+- `project/game/scripts/telemetry-check.ts` bu reset-safety kontratini deterministic assert ile regression altina aldi.
 - `project/game/src/latestRun.ts` public panel bu UX deltasi ile hizalandi.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden ikinci manuel sample hala alinmadi.
-- `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
 
 ---
 
@@ -30,7 +31,7 @@ Updated By: Codex Builder Run #191
 # Active Priorities
 
 1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#184 death/death-truth yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini, Run #182 spawn-grace depth okunurlugunu ve bu tur narrow signal panel gorunurlugunu tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalirsa death/death-truth, near-miss, validation, viewport-anchor, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore ve stacked signal-panel visibility koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
+2. Runtime bloklu kalirsa death/death-truth, near-miss, validation/export, viewport-anchor, fresh launch control, mobile multi-touch, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore, stacked signal-panel visibility ve reset-safety koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusurda kalmali.
 3. Public-facing source ozetleri (`latestRun.ts`, core handoff docs) gercek son run ile hizali kalmali; stale panel drift'i tekrar etmemeli.
 
 ---
@@ -38,7 +39,7 @@ Updated By: Codex Builder Run #191
 # Risks
 
 - Tek insan sample'a asiri guvenmek kadar hic sample almadan readability, mobile-control ve launch/retry hissinin duzeldigini varsaymak da local maksimum riski tasir.
-- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'leri, non-primary touch guard'i, Run #175-#189 death-surface duzeltmeleri ve bu tur kapanan stacked signal-panel visibility kusuru gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
+- Browser shell guard'lari, launch paneli, near-miss pulse/chirp, pointer release fix'leri, non-primary touch guard'i, Run #175-#189 death-surface duzeltmeleri, Run #191 stacked signal-panel visibility fix'i ve bu tur kapanan game-over reset safety kusuru gercek cihazda sample almadan "run hissi duzeldi" kaniti sayilamaz.
 - Same-edge opener guard'i artik origin-aware deep same-side follow-up sweep'leri de dar kapsamda zorluyor; yine de bunun gercek oyuncuda challenge'i bosaltmadan ucuz repeat hissini azaltip azaltmadigi headed sample ister.
 - Centered hit'ler artik guclu incoming motion varsa daha net yon veriyor, ama bunun gercek oyuncuda "aha, soldan geldi" hissini guclendirip guclendirmedigi yine headed sample ister.
 - Centered overlap'larda fatal obstacle secimi artik callback sirasina daha az bagli, fakat bunun gercek oyuncuda multi-hit death anlatimini fiilen daha durust yapip yapmadigi yine headed sample ister.
@@ -56,6 +57,7 @@ Updated By: Codex Builder Run #191
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da ikinci structured sample'i toplamak; yoksa audit'in yasakladigi koridorlara donmeden ve tercihen `spawn.ts`e geri dusmeden yeni dar gameplay/UX source bug'i secmek.
-- Bu tur kapanan yuzey: `project/game/src/main.ts` narrow viewport'ta iki signal kartini da varsayilan olarak acik getiriyor; `Latest AI update` paneli artik gizli acilis yapmiyor.
-- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public panel yeni narrow-shell UX deltasi ile hizali.
-- Bu tur checked kanit: `npm run build`.
+- Bu tur kapanan yuzey: `project/game/src/game/GameScene.ts` telemetry reset'i `waiting` fazina indirdi; `gameOver` ekraninda `R` artik current sample'i yanlislikla sifirlamiyor.
+- Bu tur kapanan yuzey: `project/game/src/game/telemetry.ts` reset gate kontratini paylasilan helper'a bagladi; `project/game/scripts/telemetry-check.ts` bunu regression altina aldi.
+- Bu tur kapanan yuzey: `project/game/src/latestRun.ts` public panel yeni reset-safety deltasi ile hizali.
+- Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.

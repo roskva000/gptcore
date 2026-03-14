@@ -275,3 +275,7 @@ export const isValidationReportCurrent = (
 
   return report === buildValidationReport(telemetry);
 };
+
+export const canResetTelemetrySample = (
+  phase: 'waiting' | 'playing' | 'paused' | 'gameOver',
+): boolean => phase === 'waiting';

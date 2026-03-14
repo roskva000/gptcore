@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #192]
+
+Decision:
+`stabilization` modunda telemetry reset'i waiting-only yapildi; game-over ekranindaki `R` loophole'u kapatildi.
+
+Reason:
+Runtime yine bloklu ve audit ayni fairness/death/validation/export/mobile/viewport koridorlarina geri donmemeyi istiyordu. Buna ragmen kaynakta dar ama gercek bir replay-adjacent UX kusuru kalmisti: `project/game/src/game/GameScene.ts` telemetry reset'i `playing/paused` disinda serbest birakiyordu. Bu da game-over ekraninda oyuncunun dogal olarak `R` tusuna basip yeni deneme beklerken mevcut validation sample'ini sessizce sifirlayabilmesine izin veriyordu.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `canResetTelemetrySample()` helper'i ile reset kapisini `waiting` fazina indirdi. `project/game/src/game/GameScene.ts` game-over icin ayri blokaj metni vererek destructive reset'i retry niyetinden ayirdi. `project/game/scripts/telemetry-check.ts` bu kontrati regression altina aldi; `project/game/src/latestRun.ts` public panel yeni UX deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Gercek sample waiting-only reset'in bekleme ekraninda gereksiz surtunme yarattigini gosterirse yalniz reset erisim kosulu dar kapsamda yeniden ayarlanir; bu bahaneyle yeni hotkey/orchestration/telemetry management sistemi acilmaz.
+
 ### [Run #191]
 
 Decision:

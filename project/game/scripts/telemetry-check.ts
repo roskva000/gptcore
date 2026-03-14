@@ -42,6 +42,7 @@ import {
 } from '../src/shell/focusMode.ts';
 import {
   buildValidationReport,
+  canResetTelemetrySample,
   buildTelemetrySummary,
   createEmptyTelemetry,
   getCompletedRunCount,
@@ -182,6 +183,16 @@ assert.equal(
   }),
   true,
   'Waiting can restore the pre-run panel scroll because the instant-retry loop is no longer in focus.',
+);
+assert.equal(
+  canResetTelemetrySample('waiting'),
+  true,
+  'Telemetry reset should stay available from the waiting screen where no live retry intent can be confused with a destructive command.',
+);
+assert.equal(
+  canResetTelemetrySample('gameOver'),
+  false,
+  'Game-over should not allow telemetry reset directly because players may press R expecting a retry and accidentally wipe the current sample.',
 );
 assert.equal(
   shouldHandlePrimaryActionKey(),
