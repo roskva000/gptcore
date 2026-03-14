@@ -1918,6 +1918,7 @@ export class GameScene extends Phaser.Scene {
       },
       playerCollisionRadius: PLAYER_COLLISION_RADIUS,
       candidates: fatalThreatCandidates,
+      preferredIndex: overlappingObstacles.indexOf(callbackObstacle),
     });
 
     return overlappingObstacles[fatalThreatIndex] ?? callbackObstacle;

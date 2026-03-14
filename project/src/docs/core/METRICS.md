@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+fatal_threat_tie_resolution_integrity:
+current: Run #184 `project/game/src/game/deathAttribution.ts` exact-tie fatal threat seciminde opsiyonel `preferredIndex` ile overlap callback'inin isaret ettigi obstacle'i koruyor; `project/game/src/game/GameScene.ts` bu index'i overlap callback'inden geciyor, boylece tam esit centered/multi-hit overlap'larda fatal lane anlatimi grup iterasyon sirasina dusmuyor
+baseline: onceki source penetration, mesafe ve closing-speed tamamen esit kaldiginda ilk iterate edilen obstacle'i secerek callback'in isaret ettigi gercek collider'i kaybedebiliyordu; bu da spotlight/callout truth'unu sahne icindeki group siralama detayina birakiyordu
+target: sonraki headed sample'da centered veya cift-hit death anlari callback gercegiyle hizali kalsin; daha guclu threat varken bu tie-break yanlis yonlendirme uretmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 mobile_primary_touch_action_integrity:
 current: Run #183 `project/game/src/game/primaryAction.ts` touch primary-action kararinda native `event.isPrimary` sinyali varsa onu okuyup yalniz aktif primary touch'u launch/retry/resume icin kabul ediyor
 baseline: onceki source `wasTouch` olan her pointer'i primary action sayiyordu; bu da ikinci parmagin veya non-primary touch'un aktif mobile gesture'i bolup waiting, pause ya da game-over ekraninda istemsiz start/retry/resume tetikleyebilmesine izin verebiliyordu

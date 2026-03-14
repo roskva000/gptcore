@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #184]
+
+Decision:
+`stabilization` modunda exact-tie fatal threat seciminde overlap callback gercegini koruyan dar bir tercih kuralı eklendi.
+
+Reason:
+Runtime yine blokluydu; audit ayni spawn/input/validation/viewport koridorlarina donmemeyi istiyordu. Source tarafinda dar ama gercek bir truth kusuru kalmisti: `selectFatalThreatIndex()` penetration, mesafe ve closing-speed tam esit kaldiginda ilk iterate edilen obstacle'i seciyor, overlap callback'inin isaret ettigi gercek collider'i korumuyordu. Bu da centered veya cift-hit death anlarinda fatal spotlight/callout secimini grup sirasina birakabiliyordu.
+
+Impact:
+`project/game/src/game/deathAttribution.ts` yeni opsiyonel `preferredIndex` ile yalniz tam tie anlarinda callback adayini tercih ediyor. `project/game/src/game/GameScene.ts` overlap callback obstacle index'ini bu helper'a veriyor. `project/game/scripts/telemetry-check.ts` exact-tie callback-preference assert'i eklendi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Headed sample callback-tercihinin gercekten daha baskin threat varken yanlis fatal lane anlatisi urettigini gosterirse yalniz tie-break semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni death framework'u, collision orchestrator'u veya overlay sistemi acilmaz.
+
 ### [Run #183]
 
 Decision:

@@ -1100,6 +1100,28 @@ assert.equal(
   1,
   'Fatal threat selection should break fully centered overlap ties toward the obstacle with the stronger relative sweep instead of callback order.',
 );
+assert.equal(
+  selectFatalThreatIndex({
+    playerPosition: { x: 400, y: 300 },
+    playerVelocity: { x: 0, y: 0 },
+    playerCollisionRadius: 16,
+    preferredIndex: 1,
+    candidates: [
+      {
+        position: { x: 400, y: 300 },
+        velocity: { x: 140, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+      {
+        position: { x: 400, y: 300 },
+        velocity: { x: 140, y: 0 },
+        collisionRadius: OBSTACLE_COLLISION_RADIUS,
+      },
+    ],
+  }),
+  1,
+  'Fatal threat selection should keep the overlap callback winner when penetration, distance, and closing speed are identical instead of falling back to group iteration order.',
+);
 
 assert.equal(survivalReport.averageSurvivalTimeSeconds, 27.4, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 10, 'First death snapshot regressed.');

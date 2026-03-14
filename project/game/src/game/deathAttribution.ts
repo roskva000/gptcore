@@ -37,6 +37,7 @@ type FatalThreatSelectionConfig = {
   playerVelocity: Vector2Like;
   playerCollisionRadius: number;
   candidates: FatalThreatCandidate[];
+  preferredIndex?: number;
 };
 
 export const selectFatalThreatIndex = ({
@@ -44,6 +45,7 @@ export const selectFatalThreatIndex = ({
   playerVelocity,
   playerCollisionRadius,
   candidates,
+  preferredIndex = -1,
 }: FatalThreatSelectionConfig): number => {
   let bestIndex = 0;
   let bestPenetration = Number.NEGATIVE_INFINITY;
@@ -58,13 +60,19 @@ export const selectFatalThreatIndex = ({
     const combinedRadius = playerCollisionRadius + candidate.collisionRadius;
     const penetration = combinedRadius - distance;
     const closingSpeed = getThreatClosingScore(playerPosition, playerVelocity, candidate);
+    const tiesCurrentBest =
+      Math.abs(penetration - bestPenetration) <= 0.0001 &&
+      Math.abs(distanceSq - bestDistanceSq) <= 0.0001 &&
+      Math.abs(closingSpeed - bestClosingSpeed) <= 0.0001;
+    const shouldPreferCandidateForTie =
+      tiesCurrentBest && index === preferredIndex && bestIndex !== preferredIndex;
 
     const isBetterCandidate =
       penetration > bestPenetration + 0.0001 ||
       (Math.abs(penetration - bestPenetration) <= 0.0001 &&
         (distanceSq < bestDistanceSq - 0.0001 ||
           (Math.abs(distanceSq - bestDistanceSq) <= 0.0001 &&
-            closingSpeed > bestClosingSpeed + 0.0001)));
+            (closingSpeed > bestClosingSpeed + 0.0001 || shouldPreferCandidateForTie))));
 
     if (isBetterCandidate) {
       bestIndex = index;

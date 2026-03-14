@@ -3,41 +3,30 @@
 ## Governance Note
 
 - Audit 2026-03-14 verdict `ritual-loop`: runtime yoksa yine `spawn.ts` same-edge/opener fairness koridoruna donme.
-- Run #175-#183 death/validation/shell/launch-control/mobile-multitouch/spawn-grace readability hattini yeni overlay, copy, readiness veya orchestration katmani acmak icin bahane yapma.
+- Run #175-#184 death/death-truth/validation/shell/launch-control/mobile-multitouch/spawn-grace readability hattini yeni overlay, copy, readiness veya orchestration katmani acmak icin bahane yapma.
 - `NEXT_AGENT.md` compact kalmali; checklist/backlog dump'i acma.
 - Yeni validation/tooling genisletmesi ancak secilen source bug'i dogrudan block ediyorsa kabul edilir.
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `stabilization`
 
 Ana hedef:
-Runtime varsa ikinci structured human sample'i topla ve tek oturumda su yuzeyler icin `keep / tune / revert` notu birak:
-- Run #145-#150 near-miss pulse / chirp hissi
-- Run #130-#158 + Run #181 + Run #183 launch / input / replay hissi
-- Run #165-#177 spawn readability / opener pressure guard'lari
-- Run #175-#176 game-over clutter azalmasi
-- Run #178 validation-status current vs stale ayrimi
-- Run #180 narrow viewport active-run anchor davranisi
-- Run #182 spawn-grace obstacle depth okunurlugu
-
-Beklenen cikti:
-- `project/src/docs/experiments/HUMAN_SIGNALS.md` icinde tarihli ikinci sample
-- okunurluk, retry istegi, fairness, validation-status anlasilirligi, non-primary touch izolasyonu ve active-run odağinin gercek cihazda korunup korunmadigi icin kisa karar notlari
+Runtime yoksa same-edge fairness, death/death-truth, near-miss, validation, fresh launch control, mobile multi-touch, viewport-anchor ve spawn-grace depth koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i sec. En guclu aday: opener disi pressure/spacing trace'i uretip mid-run arena truth'unda tek bir dar kusur kapatmak.
 
 ## Runtime Still Blocked Fallback
 
 Run mode: `stabilization`
 
 Ana hedef:
-Same-edge fairness, death surface, near-miss, validation, fresh launch control, mobile multi-touch, viewport-anchor ve yeni kapanan spawn-grace depth koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. En guclu adaylar:
+Same-edge fairness, death/death-truth, near-miss, validation, fresh launch control, mobile multi-touch, viewport-anchor ve yeni kapanan spawn-grace depth koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. En guclu adaylar:
 - opener disi pressure/spacing trace'i
 - active run icinde collision-ready obstacle cluster okunurlugu disinda kalan baska arena truth kusuru
 - launch/death copy degil, gercek run hissini bozan baska tekil kontrol veya arena truth kusuru
 
 Guardrails:
 - `spawn.ts` opener/same-edge ailesine sample olmadan bir run daha harcama
-- Run #175-#183 temizliklerini yeni sistem/refactor paketi bahanesine cevirme
+- Run #175-#184 temizliklerini yeni sistem/refactor paketi bahanesine cevirme
 - Yeni overlay, escape-guide, readiness veya preflight katmani acma
 - Tek source-level problem sec; helper extraction yalniz o bug'i kapatmak icin gerekiyorsa yap
 - Gameplay/helper kontrati degisirse `npm run telemetry:check` ve `npm run build`, aksi halde en az `npm run build` calistir

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #184
+
+- `project/game/src/game/deathAttribution.ts` fatal threat secimine opsiyonel `preferredIndex` ekledi; penetration, mesafe ve closing-speed tamamen esit kaldiginda callback'in isaret ettigi obstacle korunuyor
+- `project/game/src/game/GameScene.ts` overlap callback obstacle index'ini `selectFatalThreatIndex()` cagrısına tasiyor; centered/multi-hit esit overlap'larda fatal spotlight ve death lane anlatimi iterasyon sirasina dusmuyor
+- `project/game/scripts/telemetry-check.ts` exact-tie fatal threat preference kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #183
 
 - `project/game/src/game/primaryAction.ts` touch pointer primary-action kararinda native `isPrimary` sinyalini kullanmaya basladi; non-primary touch artik launch/retry/resume tetiklemiyor

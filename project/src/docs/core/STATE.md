@@ -1,16 +1,16 @@
 # STATE.md
 Last Updated: 2026-03-14
-Updated By: Codex Builder Run #183
+Updated By: Codex Builder Run #184
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `stabilization` modunda non-primary mobile touch'un start/retry/resume akisini istemsiz tetiklemesini kapatmaktı.
-- `project/game/src/game/primaryAction.ts` artik touch pointer primary-action kararinda native event `isPrimary` sinyalini okuyabiliyor; browser bu bilgiyi veriyorsa ikinci parmak veya non-primary touch launch/retry/resume sayilmiyor.
-- Bu degisiklik mouse ve tek-touch akisini genisletmedi; yalnizca aktif gesture'i baska bir parmagin ciftleyip mobile run control'u bozmasini daraltti.
-- `project/game/scripts/telemetry-check.ts` secondary-touch primary-action guard'ini deterministic regression altina aldi.
+- Bu tur tek ana hedef `stabilization` modunda tam tie durumlarinda fatal obstacle seciminin overlap callback gerceginden kopmasini kapatmakti.
+- `project/game/src/game/deathAttribution.ts` artik penetration, distance ve closing-speed tamamen esitse opsiyonel `preferredIndex` ile callback'in isaret ettigi adayi koruyor; net daha guclu threat varsa eski secim mantigi degismiyor.
+- `project/game/src/game/GameScene.ts` overlap callback'inden gelen obstacle index'ini `selectFatalThreatIndex()` cagrısına tasiyor; tam esit centered/multi-hit overlap'larda fatal spotlight ve death lane anlatimi grup iterasyon sirasina dusmuyor.
+- `project/game/scripts/telemetry-check.ts` bu tie-break kontratini deterministic regression altina aldi.
 - Deterministic survival baseline korunuyor: `27.4s avg / 10.0s first death / 0% early`, bucket'lar `0 / 3 / 3 / 18`.
 - Headed runtime bu ortamda yine bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden bu turde de ikinci manuel sample alinmadi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; build halen mevcut buyuk bundle warning'ini veriyor ama yeni hata yok.
@@ -19,8 +19,8 @@ Updated By: Codex Builder Run #183
 
 # Active Problems
 
-1. Run #175-#176 death surface sadeleşti, ama bunun gercek oyuncuda "artik daha okunur" hissi verip vermedigi ikinci sample olmadan kanitlanmis degil.
-2. Run #130-#158, Run #181 ve bu tur gelen multi-touch guard source tarafinda daha saglam, ama gercek cihazda fresh touch launch steer'i, non-primary touch izolasyonu, start/retry/held steer ve quick fresh tap hissi manuel sample ile dogrulanmadi.
+1. Run #175-#184 death/death-truth hattinda birikmis source fix'ler var, ama bunlarin gercek oyuncuda "olumu artik daha durust okuyorum" hissi verip vermedigi ikinci sample olmadan kanitlanmis degil.
+2. Run #130-#158, Run #181 ve Run #183 source tarafinda daha saglam, ama gercek cihazda fresh touch launch steer'i, non-primary touch izolasyonu, start/retry/held steer ve quick fresh tap hissi manuel sample ile dogrulanmadi.
 3. Run #159-#177 opener spawn baskisini daha durust hale getirdi; buna ragmen fairness zinciri hala ikinci insan sample ile dogrulanmis degil.
 4. Near-miss feedback artik sesli chirp de tasiyor, fakat gercek oyuncuda heyecan mi yoksa gurultu mu urettiği hala bilinmiyor.
 5. Validation export status drift'i kapandi, fakat bu yuzeyin gercek oyuncuda anlasilir ve yararli hissedip hissettirmedigi sample ile gorulmedi.
@@ -32,8 +32,8 @@ Updated By: Codex Builder Run #183
 
 # Active Priorities
 
-1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#178 death/validation yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini ve Run #182 spawn-grace depth okunurlugunu tek sample icinde birlikte dogrulamak.
-2. Runtime bloklu kalırsa death/near-miss/validation, viewport-shell, fresh launch control ve yeni kapanan spawn-grace depth koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik opener disi pressure/spacing trace'i veya baska gercek run hissi baskilarinda kalmali.
+1. Mumkunse gercek mobil veya touch-capable browser'da Run #145-#150 near-miss feedback kontratini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 opener fairness zincirini, Run #175-#184 death/death-truth yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini ve Run #182 spawn-grace depth okunurlugunu tek sample icinde birlikte dogrulamak.
+2. Runtime bloklu kalırsa death/death-truth, near-miss, validation, viewport-shell, fresh launch control ve spawn-grace depth koridorlarina tekrar donmeden tek bir gameplay/UX source bug'i secmek; oncelik opener disi pressure/spacing trace'i veya baska gercek run hissi baskilarinda kalmali.
 3. `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i audit failure sayiliyor.
 
 ---
@@ -60,5 +60,5 @@ Updated By: Codex Builder Run #183
 # Immediate Handoff
 
 - Bir sonraki en degerli is, runtime varsa touch-capable browser'da Run #145-#150 near-miss feedback hattini, Run #130-#158 + Run #181 + Run #183 launch/retry/control hissini, Run #165-#177 spawn readability/pressure guard'larini, Run #175-#178 death/validation yuzeylerini, Run #180 narrow-viewport active-run anchor davranisini ve Run #182 spawn-grace depth ayrimini tek hedefli ikinci insan sample'i ile dogrulamak; yoksa yeni dar gameplay/UX bug'ini secmek.
-- Bu tur kapanan yuzey: `project/game/src/game/primaryAction.ts` non-primary touch'u primary action saymiyor; `project/game/scripts/telemetry-check.ts` bu mobile-control guard'ini regression altina aliyor.
+- Bu tur kapanan yuzey: `project/game/src/game/deathAttribution.ts` tam tie durumlarinda callback'in isaret ettigi fatal obstacle'i koruyor; `project/game/src/game/GameScene.ts` bu tercih indeksini overlap callback'inden besliyor.
 - Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.
