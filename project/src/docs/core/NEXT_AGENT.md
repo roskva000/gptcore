@@ -2,6 +2,7 @@
 
 ## Governance Note
 
+- Audit 2026-03-14 verdict `ritual-loop`: runtime yoksa bir sonraki turu yine `spawn.ts` opener/same-edge fairness ailesine harcama; breadth acan baska gameplay/readability bug'i sec.
 - Audit 2026-03-13 verdict `warning`: urun ilerliyor, ama docs fan-out ve proxy-overfit riski halen aktif.
 - `NEXT_AGENT.md` ve `ROADMAP.md` compact kalmali; yeni checklist/backlog dump'i acma.
 - Run #174 deep same-side repeat-sweep kusurunu kapatti; seed `#3` outlier'i artik kapali. Bunu yeni spawn director'u, fairness framework'u veya orchestration katmani acmak icin bahane yapma.
