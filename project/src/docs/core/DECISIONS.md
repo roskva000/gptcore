@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #190]
+
+Decision:
+`stabilization` modunda narrow-layout game-over scroll restore kusuru kapatildi; run biter bitmez sayfanin stacked side panel konumuna geri ziplamasi engellendi.
+
+Reason:
+Runtime halen bloklu ve audit ayni death/fairness/validation/mobile/viewport koridorlarina geri donmemeyi istiyordu. Buna ragmen `project/game/src/main.ts` icinde dar ama gercek bir replay-friction kusuru vardi: aktif run mobil benzeri layout'ta oyuna anchor olurken, faz `gameOver`a dondugu an eski panel scroll'u otomatik restore ediliyordu. Bu da death overlay ve retry aksiyonunu tam kritik anda ekran disina itip instant replay hedefiyle cakisiyordu.
+
+Impact:
+`project/game/src/shell/focusMode.ts` yeni helper'i `playing/paused` anchor kontratini `waiting` odakli panel-restore kararindan ayirdi. `project/game/src/main.ts` artik `gameOver`ta otomatik scroll restore yapmiyor; death overlay ve retry gorunurde kaliyor. `project/game/scripts/telemetry-check.ts` bu shell-policy kontratini regression altina aldi, `project/game/src/latestRun.ts` public panel yeni delta ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival baseline `27.4s / 10.0s / 0%` degismedi.
+
+Rollback Condition:
+Gercek mobil sample game-over sonrasi panellere geri donmemenin oyuncuyu asiri sikistirdigini veya sonraki waiting/state donuslerinde kayip yarattigini gosterirse yalniz panel-scroll restore kosulu dar kapsamda yeniden ayarlanir; bu bahaneyle yeni viewport orchestration, shell framework'u veya readiness katmani acilmaz.
+
 ### [Run #189]
 
 Decision:

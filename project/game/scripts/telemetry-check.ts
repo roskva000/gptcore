@@ -37,6 +37,10 @@ import {
   shouldHandlePrimaryActionPointer,
 } from '../src/game/primaryAction.ts';
 import {
+  isGameplayViewportAnchorPhase,
+  shouldRestorePanelScroll,
+} from '../src/shell/focusMode.ts';
+import {
   buildValidationReport,
   buildTelemetrySummary,
   createEmptyTelemetry,
@@ -152,6 +156,32 @@ assert.equal(
   }),
   400,
   'Overwide callouts should fall back to the arena midpoint instead of producing an inverted clamp range.',
+);
+assert.equal(
+  isGameplayViewportAnchorPhase('playing'),
+  true,
+  'Narrow-layout focus mode should keep the game anchored while a run is active.',
+);
+assert.equal(
+  isGameplayViewportAnchorPhase('gameOver'),
+  false,
+  'Game-over should release the active-run anchor without pretending the run is still live.',
+);
+assert.equal(
+  shouldRestorePanelScroll({
+    phase: 'gameOver',
+    savedPanelScrollY: 320,
+  }),
+  false,
+  'Game-over should keep the death overlay in view instead of auto-jumping back to the panels before the player can retry.',
+);
+assert.equal(
+  shouldRestorePanelScroll({
+    phase: 'waiting',
+    savedPanelScrollY: 320,
+  }),
+  true,
+  'Waiting can restore the pre-run panel scroll because the instant-retry loop is no longer in focus.',
 );
 assert.equal(
   shouldHandlePrimaryActionKey(),

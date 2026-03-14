@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+game_over_retry_viewport_integrity:
+current: Run #190 `project/game/src/main.ts` narrow layout shell focus mantiginda `gameOver`u otomatik panel-scroll restore tetigi olmaktan cikardi; olum aninda canvas gorunur yerde kaliyor ve replay denemesi stacked panel altina kacmiyor
+baseline: onceki source aktif run sirasinda dogru sekilde game'i anchor etse de faz `gameOver`a gecince kaydedilen panel scroll konumuna otomatik donuyordu; bu da dar layout'ta death overlay ve retry prompt'unu tam replay aninda ekrandan uzaklastirabiliyordu
+target: sonraki manuel mobile/narrow sample'da olumden sonra overlay yerinde kalsin, retry niyeti scroll restore yuzunden kirilmasin; kullanici isterse panellere manuel kayabilsin ama bunu sistem zorla yapmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 death_callout_label_alignment_integrity:
 current: Run #189 `project/game/src/game/GameScene.ts` impact marker ve fatal spotlight label'larini artik yeni metni once set edip sonra `displayWidth` ile clamp ediyor; onceki death mesajinin genisligi sonraki callout'un yatay merkezini kaydirmiyor
 baseline: onceki source `setText()` ile `setPosition()` ayni zincirde calistigi icin clamp hesabi eski label genisligini okuyabiliyor, bu da `CENTER`, yon etiketi veya `KILLER` callout'unun bir onceki olumdaki daha genis/dar metne gore yana kaymasina yol acabiliyordu

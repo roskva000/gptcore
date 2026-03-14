@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #190
+
+- `project/game/src/shell/focusMode.ts` yeni helper'i ile narrow-layout viewport anchor ve panel-scroll-restore kararlarini ayrik kontratlara ayirdi
+- `project/game/src/main.ts` game-over fazinda artik saved panel scroll'una otomatik geri donmuyor; death overlay ve retry yolu ekran ustunde kaliyor
+- `project/game/scripts/telemetry-check.ts` game-over replay-scroll kontrati icin yeni regression assert'leri ekledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu replay-friction fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #189
 
 - `project/game/src/game/GameScene.ts` death overlay icindeki impact marker ve fatal spotlight label yerlesimini duzeltti; label clamp hesabi artik yeni metnin gercek genisligini kullaniyor

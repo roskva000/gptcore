@@ -2,6 +2,11 @@ import Phaser from 'phaser';
 import { divineMessage } from './divineMessage';
 import { GameScene } from './game/GameScene';
 import { latestRunSummary } from './latestRun';
+import {
+  isGameplayViewportAnchorPhase,
+  type GamePhase,
+  shouldRestorePanelScroll,
+} from './shell/focusMode';
 import './style.css';
 
 declare global {
@@ -10,7 +15,7 @@ declare global {
   }
 
   interface WindowEventMap {
-    'survive60:phasechange': CustomEvent<{ phase: 'waiting' | 'playing' | 'paused' | 'gameOver' }>;
+    'survive60:phasechange': CustomEvent<{ phase: GamePhase }>;
   }
 }
 
@@ -87,7 +92,7 @@ const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.mes
 const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
 let pendingScaleRefreshFrame: number | null = null;
 let pendingViewportAnchorFrame: number | null = null;
-let currentGamePhase: 'waiting' | 'playing' | 'paused' | 'gameOver' = 'waiting';
+let currentGamePhase: GamePhase = 'waiting';
 let savedPanelScrollY: number | null = null;
 
 const readPxValue = (value: string): number => {
@@ -127,8 +132,7 @@ const scheduleViewportAnchor = (callback: () => void): void => {
 };
 
 const shouldAnchorGameplayViewport = (): boolean =>
-  narrowViewportQuery.matches &&
-  (currentGamePhase === 'playing' || currentGamePhase === 'paused');
+  narrowViewportQuery.matches && isGameplayViewportAnchorPhase(currentGamePhase);
 
 const handleViewportPositionChange = (): void => {
   scheduleGameScaleRefresh();
@@ -172,13 +176,14 @@ const syncActiveRunScrollLock = (): void => {
   document.documentElement.classList.toggle('app-scroll-locked', shouldLockScroll);
 };
 
-const syncGameplayFocusMode = (
-  phase: 'waiting' | 'playing' | 'paused' | 'gameOver',
-): void => {
+const syncGameplayFocusMode = (phase: GamePhase): void => {
   currentGamePhase = phase;
-  const gameActive = phase === 'playing' || phase === 'paused';
+  const gameActive = isGameplayViewportAnchorPhase(phase);
   const shouldAnchorViewport = narrowViewportQuery.matches && gameActive;
-  const shouldRestorePanelScroll = !gameActive && savedPanelScrollY !== null;
+  const shouldRestoreSavedPanelScroll = shouldRestorePanelScroll({
+    phase,
+    savedPanelScrollY,
+  });
 
   if (shouldAnchorViewport && savedPanelScrollY === null) {
     savedPanelScrollY = getScrollTop();
@@ -195,13 +200,11 @@ const syncGameplayFocusMode = (
 
   cancelPendingViewportAnchor();
 
-  if (shouldRestorePanelScroll) {
+  if (shouldRestoreSavedPanelScroll) {
     scheduleViewportAnchor(restorePanelScrollPosition);
   }
 };
-const handleGamePhaseChange = (
-  event: CustomEvent<{ phase: 'waiting' | 'playing' | 'paused' | 'gameOver' }>,
-): void => {
+const handleGamePhaseChange = (event: CustomEvent<{ phase: GamePhase }>): void => {
   syncGameplayFocusMode(event.detail.phase);
 };
 
