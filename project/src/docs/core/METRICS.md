@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+game_over_surface_signal_density:
+current: Run #175 `project/game/src/game/GameScene.ts` death overlay body satirini tek cumleye indiriyor, prompt'u yalniz lane komutuna dusuruyor, retry satirini kisaltiyor ve sag ust `Session snapshot` telemetry panelini `gameOver` fazinda gizliyor
+baseline: Run #174 olum ekraninda fatal callout + baslik + iki satir body + iki satir prompt + retry satiri + sag ust uc satir telemetry ayni anda gorunuyordu; insan sinyalindeki "olum ekraninda fazla veri/yazi var" notu bu cift odagi destekliyordu
+target: game-over yuzeyi olum nedenini ve retry aksiyonunu tek odakta tutsun; ikinci sample'da bilgi eksiltmeden daha sakin ve daha hizli okunur hissedip hissettirmedigi dogrulansin
+validation: `npm run build`
+
 opening_deep_same_side_repeat_sweep_integrity:
 current: Run #174 `project/game/src/game/spawn.ts` near-player same-edge pressure kararinda original `spawnEdge` bilgisini dar kapsamda koruyor; derin same-side follow-up sweep oyuncuya kadar inmis eski same-edge threat ustune tekrar geliyorsa yeni spawn bir kez daha reroll ariyor
 baseline: Run #172 gorunur same-edge threat ile `96px / 180px / score 190 / 6s` bandinda marjinal tekrar lane'leri zorluyordu, ama obstacle dominant edge'i drift edince near-player guard origin'i tamamen unutuyor ve seed `#3` gibi deep same-side repeat sweep `0` reroll ile geciyordu

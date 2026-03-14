@@ -1591,20 +1591,13 @@ export class GameScene extends Phaser.Scene {
       .setVisible(hasGoalClearSummary);
     this.overlayTitle.setText(this.getDeathOverlayTitle(hitDirection)).setVisible(true);
     this.overlayBody
-      .setText(
-        [
-          `You survived ${roundedSurvivalTime.toFixed(1)} seconds. ${bestSurvivalSummary}`,
-          `Cause: ${hitDirection.sentence}.`,
-        ]
-          .filter(Boolean)
-          .join('\n'),
-      )
+      .setText(`Survived ${roundedSurvivalTime.toFixed(1)}s. ${bestSurvivalSummary}`)
       .setVisible(true);
     this.overlayPrompt
-      .setText(`${escapePrompt.title}\n${escapePrompt.sentence}`)
+      .setText(escapePrompt.title)
       .setVisible(true);
     this.overlayStats
-      .setText(`Retry: ${this.getRetryActionText()}.`)
+      .setText(`Retry: ${this.getRetryActionPromptText()}.`)
       .setVisible(true);
     this.hintText.setVisible(false);
     this.nearMissText.setVisible(false).setText('');
@@ -2407,10 +2400,9 @@ export class GameScene extends Phaser.Scene {
     this.bestText.setText(
       `Best ${getBestSurvivalTimeText(this.telemetry)} | Session ${getBestSurvivalTimeText(this.sessionTelemetry)}`,
     );
-    this.telemetryText
-      .setText(this.getTelemetryLinesForCurrentPhase().join('\n'))
-      .setVisible(this.phase !== 'paused')
-      .setAlpha(this.phase === 'playing' ? 0.9 : 1);
+    this.telemetryText.setText(this.getTelemetryLinesForCurrentPhase().join('\n'));
+    this.telemetryText.setVisible(this.phase !== 'paused' && this.phase !== 'gameOver');
+    this.telemetryText.setAlpha(this.phase === 'playing' ? 0.9 : 1);
   }
 
   private updateHudChromeVisibility(): void {
@@ -2493,6 +2485,10 @@ export class GameScene extends Phaser.Scene {
 
   private getRetryActionText(): string {
     return 'Space, Enter, tap/click, or press/hold your move input';
+  }
+
+  private getRetryActionPromptText(): string {
+    return 'Space, Enter, tap/click, or move';
   }
 
   private getResumeActionText(): string {

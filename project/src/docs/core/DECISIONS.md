@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #175]
+
+Decision:
+`stabilization` modunda game-over ekranindaki tekrarli telemetry/copy yogunlugu daraltildi.
+
+Reason:
+Runtime yine blokluydu; audit spawn ayni-koridor ritualine geri donmeyi istemiyor, insan sinyali ise olum ekraninin fazla kalabalik oldugunu acikca soyluyordu. Yeni overlay sistemi acmadan cozulabilecek en dar UX bug, death overlay ile sag ust `Session snapshot` panelinin ayni anda oyuncunun dikkatini yariştirmasiydi.
+
+Impact:
+`project/game/src/game/GameScene.ts` death overlay body metnini tek satira indirdi, coach prompt'u yalniz lane komutuna dusurdu ve retry satirini kisaltti. Ayni dosya `gameOver` fazinda sag ust telemetry panelini gizliyor; olum sonrasi ekran artik tek odakli. Gameplay/helper kontrati degismedi; `npm run telemetry:check` ve `npm run build` yesil kaldi, deterministic baseline `27.4s / 10.0s / 0%` korundu.
+
+Rollback Condition:
+Ikinci insan sample bu sadeleştirmenin olum nedenini anlamayi zorlastirdigini veya retry kararini zayiflattigini gosterirse yalnizca game-over copy yogunlugu dar kapsamda yeniden ayarlanir; bu bahaneyle yeni death overlay sistemi, copy framework'u veya orchestration katmani acilmaz.
+
 ### [Run #174]
 
 Decision:

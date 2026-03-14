@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #175
+
+- `project/game/src/game/GameScene.ts` game-over overlay body metnini tek satira indirdi; lane coach prompt'u yalniz komut etiketine, retry satiri da daha kisa aksiyon cagrısina dusuruldu
+- ayni dosya sag ust `Session snapshot` telemetry panelini `gameOver` fazinda gizliyor; olum ekraninda ayni anda iki bilgi blogu artik gorunmuyor
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #174
 
 - `project/game/src/game/spawn.ts` near-player same-edge pressure guard'ini deep same-side follow-up sweep varyantini da yakalayacak sekilde dar kapsamda origin-aware yapti
