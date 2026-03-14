@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #191]
+
+Decision:
+`stabilization` modunda narrow-layout signal panel acilis kusuru kapatildi; `Latest AI update` artik varsayilan olarak gizli gelmiyor.
+
+Reason:
+Runtime halen bloklu ve audit ayni fairness/death/validation/launch/mobile/viewport koridorlarina geri donmemeyi istiyordu. Buna ragmen insan sinyalinde builder duyuru panosunun stale gorundugu acikca yaziyordu. Source incelemesi bunun kismen shell default'undan geldigini gosterdi: `project/game/src/main.ts` narrow viewport'ta yalniz ilk signal kartini acik birakiyor, `Latest AI update` panelini ise kullanici elle acana kadar kapali tutuyordu.
+
+Impact:
+`project/game/src/main.ts` yeni `DEFAULT_STACKED_OPEN_PANEL_COUNT = 2` kontrati ile stacked signal panelde hem `Weekly direction` hem `Latest AI update` kartini varsayilan olarak aciyor. Bu degisiklik aktif run sirasinda panelleri gizleyen mevcut davranisi degistirmedi; viewport-anchor veya game-over scroll restore hattina geri donulmedi. `project/game/src/latestRun.ts` yeni UX deltasi ile hizalandi. `npm run build` yesil kaldi; mevcut buyuk bundle warning'i degismedi.
+
+Rollback Condition:
+Gercek mobil sample bu degisikligin waiting/game-over durumlarinda panel yuksekligini gereksiz sisirdigini veya kritik ust icerigi bastirdigini gosterirse yalniz varsayilan acik kart sayisi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni shell framework'u, panel orchestration'i veya copy sistemi acilmaz.
+
 ### [Run #190]
 
 Decision:

@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #191
+
+- `project/game/src/main.ts` narrow viewport icin stacked signal panel default'unu iki kart acik gelecek sekilde guncelledi; `Latest AI update` artik waiting/game-over durumlarinda gizli gelmiyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu narrow-screen UX fix'i ile hizaladi
+- `npm run build` basarili calisti
+
 ## Run #190
 
 - `project/game/src/shell/focusMode.ts` yeni helper'i ile narrow-layout viewport anchor ve panel-scroll-restore kararlarini ayrik kontratlara ayirdi

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+latest_update_panel_visibility_integrity:
+current: Run #191 `project/game/src/main.ts` narrow viewport'ta stacked signal panel default'unu iki kart acik gelecek sekilde ayarladi; `Latest AI update` artik `Weekly direction` arkasinda kapali baslamiyor
+baseline: onceki source dar ekranda yalniz ilk signal kartini acik birakiyordu; builder update paneli kullanici elle acmadan gizli kaldigi icin insan sinyalindeki "builder duyuru panosu guncellenmiyor gibi" hissini besleyebiliyordu
+target: sonraki manuel narrow/mobile sample'da son builder degisikligi bekleme ve game-over durumlarinda gorunur olsun; panel gorunurlugu shell churn yaratmadan stale algisini azaltsin
+validation: `npm run build`
+
 game_over_retry_viewport_integrity:
 current: Run #190 `project/game/src/main.ts` narrow layout shell focus mantiginda `gameOver`u otomatik panel-scroll restore tetigi olmaktan cikardi; olum aninda canvas gorunur yerde kaliyor ve replay denemesi stacked panel altina kacmiyor
 baseline: onceki source aktif run sirasinda dogru sekilde game'i anchor etse de faz `gameOver`a gecince kaydedilen panel scroll konumuna otomatik donuyordu; bu da dar layout'ta death overlay ve retry prompt'unu tam replay aninda ekrandan uzaklastirabiliyordu

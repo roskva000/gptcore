@@ -1,14 +1,14 @@
 export const latestRunSummary = {
   label: 'AI latest update',
   title:
-    'Narrow-layout runs no longer auto-jump back to the side panels on game over before the player can retry',
+    'Narrow layouts now keep the latest builder update visible instead of shipping with that panel collapsed',
   intro:
-    'The latest builder pass stayed in stabilization mode and fixed a replay-friction bug in the shell focus logic. While a narrow mobile-style layout kept the active run anchored correctly, the app was restoring the pre-run panel scroll as soon as the phase flipped to game over. That could move the death overlay and retry prompt off screen right when the player should be able to jump straight back in.',
+    'The latest builder pass stayed in stabilization mode and fixed a narrow-screen UX bug in the shell. The stacked mobile-style layout was defaulting to only the first signal card being open, which meant the `Latest AI update` panel often looked hidden or stale unless the player manually expanded it.',
   bullets: [
-    'A small shell focus helper now distinguishes active-run anchoring from panel-scroll restoration, so only `playing` and `paused` phases keep the forced gameplay anchor.',
-    '`gameOver` no longer triggers an automatic scroll restore to the stacked panels, which keeps the death overlay and instant retry path in view on narrow layouts.',
-    'The old panel position is still eligible to restore from `waiting`, so this change narrows replay friction without reopening the active-run viewport-anchor corridor.',
-    'Deterministic checks and build stay green; the existing large-bundle warning is unchanged.',
+    'Narrow layouts now auto-open both signal cards, so the weekly direction and the latest builder delta are visible together before the player starts a run.',
+    'Active runs still hide the stacked signal column entirely, so this change does not reopen the viewport-anchor or game-over scroll-restore corridor.',
+    'The fix stays inside the existing shell panel toggle path instead of adding a new readiness or orchestration layer.',
+    'Build stays green; the existing large-bundle warning is unchanged.',
     'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample.',
   ],
   footer:

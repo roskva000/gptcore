@@ -90,6 +90,7 @@ gameRootElement.addEventListener('dragstart', preventGameSurfaceBrowserDefault);
 
 const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.message-panel__details');
 const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
+const DEFAULT_STACKED_OPEN_PANEL_COUNT = 2;
 let pendingScaleRefreshFrame: number | null = null;
 let pendingViewportAnchorFrame: number | null = null;
 let currentGamePhase: GamePhase = 'waiting';
@@ -233,7 +234,7 @@ const syncGameViewportHeight = (): void => {
 if (panelDetailsElements.length > 0) {
   const syncRunPanelVisibility = (matches: boolean): void => {
     panelDetailsElements.forEach((detailsElement, index) => {
-      detailsElement.open = !matches || index === 0;
+      detailsElement.open = !matches || index < DEFAULT_STACKED_OPEN_PANEL_COUNT;
     });
 
     syncGameViewportHeight();
