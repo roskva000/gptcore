@@ -142,3 +142,12 @@ export const shouldDelayPointerSteeringAfterPrimaryAction = ({
   source: 'primary-key' | 'movement-fresh' | 'movement-held' | 'pointer-press' | 'pointer-held';
   phaseBeforeActivation: 'waiting' | 'paused' | 'gameOver';
 }): boolean => source === 'pointer-press' && phaseBeforeActivation !== 'waiting';
+
+export const getLaunchActionPromptText = (): string =>
+  'Space, Enter, tap/click, or press/hold a move input';
+
+export const getRetryActionPromptText = (): string =>
+  'Space, Enter, tap/click, or move';
+
+export const getResumeActionPromptText = (): string =>
+  'Space, Enter, tap/click again, or press/hold your move input again';

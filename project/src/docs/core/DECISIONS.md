@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #200]
+
+Decision:
+`stabilization` modunda start/retry prompt'larini gercek primary-action kontratiyla hizala.
+
+Reason:
+Runtime yine bloklu ve audit builder'i ayni fairness/death/near-miss/validation/mobile/viewport/pause/signal-panel ve yeni `10s` milestone koridorlarina geri dondurmuyor. Buna ragmen start yuzeyinde dar ama gercek bir UX kusuru kalmisti: oyun taze move input ile de launch/retry kabul ediyor, fakat waiting pulse ve ilgili prompt'lar bunu acikca soylemiyordu. Bu da kontrol hissini gereksiz daraltip gecerli bir giris yolunu gizli affordance'a ceviriyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` launch, retry ve resume prompt metinlerini ortak helper'larda topladi. `project/game/src/game/GameScene.ts` waiting pulse ve ilgili prompt satirlarini bu helper'lar uzerinden kullaniyor; move input ile baslatma yolu artik yuzeyde de acik. `project/game/scripts/telemetry-check.ts` yeni regression assert'leri ekledi. `project/game/src/latestRun.ts` public panel yeni kontrol-readability deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek sample daha acik prompt'un waiting yuzeyini gereksiz copy kalabaligina cevirdigini gosterirse yalniz prompt wording'i dar kapsamda tekrar sadeleştirilir; bu bahaneyle yeni input framework'u, onboarding sistemi veya orchestration katmani acilmaz.
+
 ### [Run #199]
 
 Decision:

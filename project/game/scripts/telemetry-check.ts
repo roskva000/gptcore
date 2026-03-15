@@ -31,6 +31,9 @@ import {
 } from '../src/game/nearMiss.ts';
 import {
   hasFreshMovementInput,
+  getLaunchActionPromptText,
+  getResumeActionPromptText,
+  getRetryActionPromptText,
   isPrimaryPointerDown,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldRequirePointerReleaseAfterPause,
@@ -244,6 +247,21 @@ assert.equal(
   getWaitingIntroTitleText(60),
   '60s cleared. Push your best.',
   'Waiting copy should acknowledge when the namesake goal is already banked.',
+);
+assert.equal(
+  getLaunchActionPromptText(),
+  'Space, Enter, tap/click, or press/hold a move input',
+  'Launch prompt copy should advertise the move-input path instead of hiding a valid start action.',
+);
+assert.equal(
+  getRetryActionPromptText(),
+  'Space, Enter, tap/click, or move',
+  'Retry prompt copy should stay compact while matching the valid primary-action routes.',
+);
+assert.equal(
+  getResumeActionPromptText(),
+  'Space, Enter, tap/click again, or press/hold your move input again',
+  'Resume prompt copy should keep the release-then-act contract explicit after focus loss.',
 );
 assert.equal(
   shouldHandlePrimaryActionKey(),

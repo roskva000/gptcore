@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #200
+
+- `project/game/src/game/primaryAction.ts` launch, retry ve resume prompt metinlerini ortak helper'lara tasidi; valid primary-action yollarinin kopyasi artik tek yerde tutuluyor
+- `project/game/src/game/GameScene.ts` waiting pulse ve ilgili prompt satirlarini bu helper'larla kullaniyor; fresh move input ile baslatma yolu yuzeyde acikca gorunuyor
+- `project/game/scripts/telemetry-check.ts` yeni assert'lerle launch/retry/resume prompt kontratini regression altina aldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar kontrol-readability fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #199
 
 - `project/game/src/game/balance.ts` aktif run icin yeni `hasReachedFirstDeathTarget()` helper'ini ekledi; `10s` esigi artik `60s` goal kontratindan ayrik ve explicit

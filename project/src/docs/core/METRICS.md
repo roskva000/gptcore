@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+launch_prompt_action_truth_integrity:
+current: Run #200 `project/game/src/game/primaryAction.ts` launch, retry ve resume prompt metinlerini ortak helper'larda tutuyor; `project/game/src/game/GameScene.ts` waiting pulse dahil ilgili yuzeylerde move input ile baslatma yolunu artik acikca yaziyor
+baseline: onceki source move input ile launch/retry kabul etse de waiting pulse ve ilgili prompt'lar bunu acikca soylemuyor, bu da gecerli bir kontrol yolunu gizli affordance'a cevirip control readability'yi gereksiz daraltiyordu
+target: sonraki headed sample'da start/retry yuzeyi gercek input yollarini eksiltmeden anlatsin; daha acik prompt yeni copy gurultusu uretmeden launch hissini netlestirsin
+validation: `npm run telemetry:check`, `npm run build`
+
 first_target_milestone_feedback_integrity:
 current: Run #199 `project/game/src/game/GameScene.ts` aktif run `10s` esigini ilk kez gercekten gecince hint/support copy'yi `10s broken, now chase 60` cizgisine tasiyor; kisa bir ton ve score pulse'u ile ilk anlamli milestone sessiz telemetry artisi olmaktan cikiyor
 baseline: onceki source `10s` hedefini waiting copy ve validation metinlerinde anlatiyor ama aktif run icinde bu esik gecildiginde oyuncuya anlik bir payoff vermiyordu; ilk anlamli kazanim neredeyse yalniz olum sonrasi veya `60s` clear sonrasinda hissedilebiliyordu

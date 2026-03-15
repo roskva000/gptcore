@@ -63,6 +63,9 @@ import {
   isNearMissHintActive,
 } from './nearMiss.ts';
 import {
+  getLaunchActionPromptText as getPrimaryLaunchActionPromptText,
+  getResumeActionPromptText as getPrimaryResumeActionPromptText,
+  getRetryActionPromptText as getPrimaryRetryActionPromptText,
   hasFreshMovementInput,
   isPrimaryPointerDown,
   shouldDelayPointerSteeringAfterPrimaryAction,
@@ -394,7 +397,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(false);
 
     this.waitingPulseLabel = this.add
-      .text(ARENA_WIDTH / 2, ARENA_HEIGHT / 2 + 72, 'Tap, click, or press to launch', {
+      .text(ARENA_WIDTH / 2, ARENA_HEIGHT / 2 + 72, getPrimaryLaunchActionPromptText(), {
         align: 'center',
         color: '#d8fff4',
         fontFamily: 'Trebuchet MS',
@@ -2438,15 +2441,15 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getRetryActionText(): string {
-    return 'Space, Enter, tap/click, or press/hold your move input';
+    return getPrimaryLaunchActionPromptText();
   }
 
   private getRetryActionPromptText(): string {
-    return 'Space, Enter, tap/click, or move';
+    return getPrimaryRetryActionPromptText();
   }
 
   private getResumeActionText(): string {
-    return 'Space, Enter, tap/click again, or press/hold your move input again';
+    return getPrimaryResumeActionPromptText();
   }
 
   private getPlayingHintText(): string {
