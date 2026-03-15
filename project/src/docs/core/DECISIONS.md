@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #211]
+
+Decision:
+`mutation` modunda gec run'a ikinci bir obstacle beat'i olarak `echo` variant'ini ekle.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/replay-intent/near-miss/surge/spawn-fairness mikro-koridorlarina geri dondurmuyor. Buna ragmen hem audit hem insan sinyali oyunun dar ayni ritimde dondugunu, yeni product breadth ihtiyacini ve "birkac el sonra ayni hissetme" riskini acikca isaret ediyor. Mevcut variant sistemi zaten surge kontratini tasidigi icin en dar savunulabilir mutation, yeni framework acmadan gec run'a ikinci bir davranis beat'i eklemekti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `echo` variant'ini acti: `24s` sonrasinda her `6.` spawn ayri tint ile geliyor ve hedefe `0.22s` target lag ile bakiyor. `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` ayni helper'i kullandigi icin runtime ve deterministic proxy ayni echo trajectory kontratini paylasiyor. Deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korundu; dagilim `0 / 3 / 11 / 10` olarak gec-run cap tarafina hafif kaydi. `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample echo beat'inin okunmaz, gurultulu veya gereksiz hissettigini gosterirse yalniz bu variant'in cadence/lag kontrati dar kapsamda tune/revert edilir; bu bahaneyle yeni enemy framework'u, pattern director'u veya orchestration katmani acilmaz.
+
 ### [Run #210]
 
 Decision:

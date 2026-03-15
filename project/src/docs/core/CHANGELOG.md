@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #211
+
+- `project/game/src/game/balance.ts` gec run icin yeni `echo` obstacle variant'ini ekledi; `24s` sonrasinda her `6.` spawn ayri tint ile `0.22s` target lag kullaniyor
+- `project/game/src/game/GameScene.ts` echo obstacle'larin runtime trajectory'sini ayni helper uzerinden kuruyor; mevcut variant sistemi genisledi ama yeni framework acilmadi
+- `project/game/scripts/telemetry-reports.ts` deterministic proxy ve balance snapshot'i echo unlock/cadence/lag truth'u ile hizaladi
+- deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korundu; survival dagilimi `0 / 3 / 11 / 10` oldu
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni late-run mutation ile hizaladi
+- `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #210
 
 - `project/game/src/game/GameScene.ts` spawn bookkeeping sirasini duzeltti; `runSpawnCount` ve `runSpawnRerolls` artik obstacle pool gercekten canli body verdikten sonra ilerliyor

@@ -4,7 +4,9 @@ import {
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
 import {
+  ECHO_OBSTACLE_TARGET_LAG_SECONDS,
   SURGE_OBSTACLE_SPEED_MULTIPLIER,
+  getObstacleTargetLagSeconds,
   getSpawnCollisionGraceMs,
   getObstacleSpeedMultiplier,
   getObstacleTint,
@@ -129,6 +131,22 @@ assert.equal(
   'Every fifth spawn after the unlock point should become a surge obstacle so the new pressure beat stays readable without turning into a constant spike.',
 );
 assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: 24,
+    runSpawnCount: 6,
+  }),
+  'echo',
+  'Every sixth spawn after 24s should become an echo obstacle so later runs gain a new beat instead of repeating the same direct-chase rhythm forever.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: 30,
+    runSpawnCount: 30,
+  }),
+  'echo',
+  'Echo cadence should take priority when a late-run spawn lands on both mutation cadences so the second beat stays visible.',
+);
+assert.equal(
   getObstacleSpeedMultiplier('standard'),
   1,
   'Standard obstacles should keep the base speed curve unchanged.',
@@ -142,6 +160,27 @@ assert.equal(
   getObstacleTint('surge'),
   0xffd38a,
   'Surge obstacles should expose a dedicated tint so the faster threat stays visually readable.',
+);
+assert.equal(
+  getObstacleTint('echo'),
+  0x8ad9ff,
+  'Echo obstacles should expose their own tint so the late-run mutation reads as a distinct threat family.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: 24,
+    variant: 'echo',
+  }),
+  ECHO_OBSTACLE_TARGET_LAG_SECONDS,
+  'Echo obstacles should trail the player with a dedicated target lag once the late-run mutation unlocks.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: 5,
+    variant: 'standard',
+  }),
+  0.18,
+  'Standard obstacles should keep the original early target lag contract.',
 );
 assert.deepEqual(
   getSpawnTargetPoint({
@@ -183,6 +222,21 @@ assert.equal(
   balanceReport.surgeObstacleSpeedMultiplier,
   SURGE_OBSTACLE_SPEED_MULTIPLIER,
   'Balance snapshot should publish the surge speed multiplier so runtime and proxy stay aligned.',
+);
+assert.equal(
+  balanceReport.echoObstacleUnlockSeconds,
+  24,
+  'Balance snapshot should publish the echo unlock second so deterministic reports expose when the late-run mutation begins.',
+);
+assert.equal(
+  balanceReport.echoObstacleCadence,
+  6,
+  'Balance snapshot should publish the echo cadence so runtime and proxy stay aligned on the late-run beat.',
+);
+assert.equal(
+  balanceReport.echoObstacleTargetLagSeconds,
+  ECHO_OBSTACLE_TARGET_LAG_SECONDS,
+  'Balance snapshot should publish the echo target lag so deterministic and runtime trajectories stay aligned.',
 );
 
 assert.deepEqual(
@@ -1453,7 +1507,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, surge obstacles every 5th spawn from 15s with 1\.14x speed, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, surge obstacles every 5th spawn from 15s with 1\.14x speed, echo obstacles every 6th spawn from 24s with 0\.22s target lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(
@@ -1461,8 +1515,8 @@ assert.deepEqual(
   {
     under10Seconds: 0,
     between10And20Seconds: 3,
-    between20And30Seconds: 12,
-    reached30SecondsCap: 9,
+    between20And30Seconds: 11,
+    reached30SecondsCap: 10,
   },
   'Survival bucket distribution regressed.',
 );

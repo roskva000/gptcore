@@ -14,8 +14,12 @@ export const SURGE_OBSTACLE_UNLOCK_SECONDS = 15;
 export const SURGE_OBSTACLE_CADENCE = 5;
 export const SURGE_OBSTACLE_SPEED_MULTIPLIER = 1.14;
 export const SURGE_OBSTACLE_TINT = 0xffd38a;
+export const ECHO_OBSTACLE_UNLOCK_SECONDS = 24;
+export const ECHO_OBSTACLE_CADENCE = 6;
+export const ECHO_OBSTACLE_TARGET_LAG_SECONDS = 0.22;
+export const ECHO_OBSTACLE_TINT = 0x8ad9ff;
 
-export type ObstacleVariant = 'standard' | 'surge';
+export type ObstacleVariant = 'standard' | 'surge' | 'echo';
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -44,17 +48,21 @@ export const getObstacleVariant = ({
   survivalTimeSeconds: number;
   runSpawnCount: number;
 }): ObstacleVariant =>
-  survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
-  runSpawnCount % SURGE_OBSTACLE_CADENCE === 0
-    ? 'surge'
-    : 'standard';
+  runSpawnCount % ECHO_OBSTACLE_CADENCE === 0
+    ? 'echo'
+    : survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
+        runSpawnCount > 0 &&
+        runSpawnCount % SURGE_OBSTACLE_CADENCE === 0
+      ? 'surge'
+      : 'standard';
 
 export const getObstacleSpeedMultiplier = (variant: ObstacleVariant): number =>
   variant === 'surge' ? SURGE_OBSTACLE_SPEED_MULTIPLIER : 1;
 
 export const getObstacleTint = (variant: ObstacleVariant): number | null =>
-  variant === 'surge' ? SURGE_OBSTACLE_TINT : null;
+  variant === 'surge' ? SURGE_OBSTACLE_TINT : variant === 'echo' ? ECHO_OBSTACLE_TINT : null;
 
 export const getRequiredSpawnDistance = (survivalTimeSeconds: number): number =>
   clamp(
@@ -71,6 +79,17 @@ export const getSpawnTargetLagSeconds = (survivalTimeSeconds: number): number =>
   survivalTimeSeconds <= EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS
     ? EARLY_SPAWN_TARGET_LAG_SECONDS
     : 0;
+
+export const getObstacleTargetLagSeconds = ({
+  survivalTimeSeconds,
+  variant,
+}: {
+  survivalTimeSeconds: number;
+  variant: ObstacleVariant;
+}): number =>
+  variant === 'echo'
+    ? Math.max(getSpawnTargetLagSeconds(survivalTimeSeconds), ECHO_OBSTACLE_TARGET_LAG_SECONDS)
+    : getSpawnTargetLagSeconds(survivalTimeSeconds);
 
 export const getSpawnCollisionGraceMs = (survivalTimeSeconds: number): number =>
   survivalTimeSeconds <= EARLY_SPAWN_COLLISION_GRACE_FADE_START_SECONDS

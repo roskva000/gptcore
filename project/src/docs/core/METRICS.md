@@ -6,6 +6,18 @@
 
 ## Gameplay
 
+echo_obstacle_late_run_variety:
+current: Run #211 `project/game/src/game/balance.ts` `24s` sonrasinda her `6.` spawn icin yeni `echo` variant'ini aciyor; `project/game/src/game/GameScene.ts` bu varyanti `0.22s` target lag ile ayri tintta sahneye tasiyor ve deterministic proxy ayni trajectory kontratini paylasiyor
+baseline: onceki source gec run'da yalniz surge cadence'i ile ayni direct-chase ritmini cesitlendiriyordu; insan sinyali ve audit oyunun bazi ellerden sonra ayni hissettigini ve yeni product breadth ihtiyacini isaret ediyordu
+target: ikinci human sample echo beat'inin okunur bir trailing threat ve replay motivasyonu ureten ikinci bir ritim olarak hissedildigini gostersin; runtime blokluysa bu yeni beat'e tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
+
+deterministic_echo_proxy_integrity:
+current: Run #211 `project/game/scripts/telemetry-reports.ts` echo obstacle unlock/cadence/lag truth'unu deterministic proxy'ye tasiyor; survival snapshot `26.0s` average survival, `10.0s` first death ve `%0` early death ile runtime kontratini ayni controller anlatiminda raporluyor
+baseline: onceki proxy yalniz surge beat'ini anlatiyor ve gec run'daki ikinci rhythm denemesini hic tasimiyordu; builder yeni mutation acarsa proxy drift riski yeniden dogabilirdi
+target: late-run mutation'lar runtime ile deterministic proxy arasinda ayrismasin; keep/tune/revert kararlari stale controller anlatimi yerine aktif truth uzerinden verilsin
+validation: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
+
 spawn_bookkeeping_integrity:
 current: Run #210 `project/game/src/game/GameScene.ts` `runSpawnCount` ve `runSpawnRerolls` sayaçlarini obstacle pool gercekten bir body dondurduktan sonra arttiriyor; surge cadence ve spawn-save telemetrisi artik yalniz sahneye gercekten threat girdiginde ilerliyor
 baseline: onceki source spawn secimini hesapladigi anda sayaçlari arttiriyordu; pool hic obstacle veremezse oyun gorunmeyen bir spawn denemesini cadence'e, zorluk bookkeeping'ine ve reroll telemetrisi'ne sessizce yazabiliyordu

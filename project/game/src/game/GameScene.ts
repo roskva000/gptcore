@@ -6,6 +6,7 @@ import {
   SURVIVAL_GOAL_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleTint,
+  getObstacleTargetLagSeconds,
   getObstacleSpeed,
   getObstacleSpeedMultiplier,
   getObstacleVariant,
@@ -1241,7 +1242,10 @@ export class GameScene extends Phaser.Scene {
       .setVelocity(0, 0);
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
-    const spawnTargetLagSeconds = getSpawnTargetLagSeconds(currentSurvivalTimeSeconds);
+    const spawnTargetLagSeconds = getObstacleTargetLagSeconds({
+      survivalTimeSeconds: currentSurvivalTimeSeconds,
+      variant: obstacleVariant,
+    });
     const targetPoint = getSpawnTargetPoint({
       playerPosition: { x: this.player.x, y: this.player.y },
       playerVelocity: {
