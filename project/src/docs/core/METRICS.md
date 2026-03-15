@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #219:
+Current deterministic survival headline after Run #220:
 - `30.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+mobile_canvas_gesture_lock_integrity:
+current: Run #220 `project/game/src/style.css` `.game-root` ve `canvas` icin `touch-action: none` ile `overscroll-behavior: contain` kontratini waiting, playing, paused ve game-over boyunca koruyor
+baseline: onceki source bu gesture lock'u yalniz `.app-shell--game-active` altinda aciyordu; waiting, paused ve game-over fazlarinda canvas browser pan/zoom gesture yorumuna daha acik kaliyordu
+target: mobile cihazda start, retry ve touch steering girdileri canvas uzerinde browser gesture rekabeti olmadan hissedilsin; ikinci human sample mobile hissin somut olarak iyilestigini ya da hala zayif kaldigini soylesin
+validation: `npm run build`
 
 spawn_grace_collision_ready_timing_integrity:
 current: Run #219 `project/game/src/game/GameScene.ts` spawn-grace tween'i tamamlandigi anda obstacle'i hemen `collisionReady` durumuna alip `collisionUnlockElapsedMs` state'ini temizliyor; visual fade ve lethal truth ayni finalize yolunu paylasiyor

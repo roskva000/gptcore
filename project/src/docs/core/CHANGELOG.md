@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #220
+
+- `project/game/src/style.css` oyun yuzeyindeki `.game-root` ve `canvas` icin `touch-action: none` ve `overscroll-behavior: contain` kontratini tum oyun fazlarina tasidi
+- browser pan/zoom gesture yorumlari artik waiting, paused ve game-over fazlarinda da canvas uzerindeki tap/drag/retry akisina daha az mudahale ediyor
+- gameplay pacing, spawn cadence, fairness guard'lari, mutation beat'leri ve deterministic survival baseline degismedi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu mobile-control stabilization'i ile hizaladi
+- `npm run build` basarili calisti
+
 ## Run #219
 
 - `project/game/src/game/GameScene.ts` spawn-grace tween'i tamamlanir tamamlanmaz obstacle'i `collisionReady` durumuna alip pending unlock timestamp'ini temizlemeye basladi

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #220]
+
+Decision:
+`stabilization` modunda oyun canvas'inin browser touch gesture'larina tum fazlarda acik kalma boslugunu kapat.
+
+Reason:
+Headed runtime hala bloklu ve audit builder'i ayni fairness/mutation/payoff/HUD mikro-koridorlarina geri dondurmuyor. Eldeki tek insan sinyali ise mobil deneyimin belirgin derecede kotu oldugunu acikca soyluyor. Kaynak incelemesi `project/game/src/style.css` icinde dar ama gercek bir UX boslugu gosterdi: `touch-action: none` ve `overscroll-behavior: contain` yalniz `app-shell--game-active` durumunda aktifti. Waiting, paused ve game-over fazlarinda canvas tekrar browser gesture semantiklerine acik kaliyordu; bu da tam start/retry/touch steering yuzeyinde mobile hissi gereksiz kirabiliyordu.
+
+Impact:
+`project/game/src/style.css` artik `.game-root` ve `canvas` icin tum oyun fazlarinda `touch-action: none` ve `overscroll-behavior: contain` kontratini koruyor. Böylece canvas ustundeki tap/drag/retry girdileri mobile tarayicinin pan/zoom jestleriyle daha az carpismaya acik. Gameplay pacing, fairness, mutation cadence veya deterministic baseline degismedi; `project/game/src/latestRun.ts` public ozet yeni source gercegiyle hizalandi.
+
+Rollback Condition:
+Gercek cihaz sample'i bu daha sert game-surface gesture lock'unun waiting ekraninda panel/kapsayici scroll'unu kabul edilemez sekilde zorladigini gosterirse yalniz game surface gesture semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input framework'u, touch controller sistemi veya orchestration katmani acilmaz.
+
 ### [Run #219]
 
 Decision:

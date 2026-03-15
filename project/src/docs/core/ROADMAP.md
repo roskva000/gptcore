@@ -4,24 +4,24 @@
 
 # NOW
 
-- Run #219 `stabilization`: `project/game/src/game/GameScene.ts` spawn-grace tween'i bittigi anda obstacle'i hemen `collisionReady` durumuna alip pending unlock state'ini temizliyor.
-- Grace tween completion ile polling fallback ayni finalize yolunu paylasiyor; fully-faded obstacle artik baska bir runtime kontrolu gelene kadar harmless kalmiyor.
+- Run #220 `stabilization`: `project/game/src/style.css` oyun yuzeyinde browser touch gesture mudahalesini tum fazlarda kapatiyor.
+- `.game-root` ve `canvas` artik waiting / playing / paused / game-over boyunca `touch-action: none` ve `overscroll-behavior: contain` cizgisinde kaliyor; mobile tap/drag/retry girdileri active-play shell state'ine bagli degil.
 - Deterministic headline `30.7s / 10.0s / 0%` ve `40s` simulation cap korundu.
 - Bu pass lead/surge/echo/drift, death surface, replay flow, near-miss, payoff, opener cutoff veya spawn reroll scoring knob'larini retune etmedi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- spawn-grace fade'i tamamlandigi anda runtime lethal truth'u da ayni karede finalize oluyor.
-- pending `collisionUnlockElapsedMs` state'i grace bitince temizleniyor; visual ve collision truth ayrismiyor.
+- mobile tarayicida canvas uzerindeki touch hareketleri browser pan/zoom gesture yorumuna birakilmiyor.
+- game surface touch-action kontrati artik yalniz active-play shell state'inde degil tum oyun fazlarinda sabit.
 - deterministic survival baseline `30.7s / 10.0s / 0%` olarak yesil kaliyor.
-- `telemetry:check` ve build yesil kaliyor.
+- build yesil kaliyor.
 
 ---
 
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, yeni `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, `10s` milestone payoff'i ve `60s` clear payoff'i icin keep/tune/revert notu ekle.
-- Runtime yoksa lead, validation/export, opener cutoff, near-miss, `10s` milestone, `60s` clear payoff, surge, echo, drift, duvar-baski spawn-target, retreat-pinch reachability, projected-stack threshold, spawn-fallback, replay-intent, spawn-bookkeeping veya spawn-grace truth/finalization koridorlarina tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa lead, validation/export, opener cutoff, near-miss, `10s` milestone, `60s` clear payoff, surge, echo, drift, duvar-baski spawn-target, retreat-pinch reachability, projected-stack threshold, spawn-fallback, replay-intent, spawn-bookkeeping, spawn-grace truth/finalization veya bu yeni touch-gesture koridoruna tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -39,6 +39,7 @@ Success markers:
 - sample olmadan yeni `lead` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn-grace threat filter fix'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn-grace collision-ready timing fix'ine tekrar mikro-tuning yapmak
+- sample olmadan bu yeni touch-gesture lock fix'ine tekrar mikro-tuning yapmak
 - sample olmadan Run #216 opener cutoff koridoruna geri donmek
 - sample olmadan validation/export affordance'ini yeniden acmak
 - sample olmadan ayni fairness/death/pause/panel/replay-HUD, `10s` milestone veya `60s` clear payoff koridorlarina geri donmek
