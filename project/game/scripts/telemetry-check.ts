@@ -1137,6 +1137,22 @@ assert.deepEqual(
   },
   'Projected-path spawn scoring should clamp wall-edge escape references inside the arena before judging nearby left-lane pressure.',
 );
+const exactCutoffWallEdgeProjectedSelection = selectSpawnPoint({
+  survivalTimeSeconds: 6.000000000000076,
+  playerPosition: { x: 18, y: 300 },
+  playerVelocity: { x: -260, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 96, y: 300 }],
+  randomInt: createQueuedRandom([3, 300, 1, 300]),
+});
+assert.deepEqual(
+  exactCutoffWallEdgeProjectedSelection,
+  {
+    point: { x: 856, y: 300 },
+    rerollsUsed: 1,
+  },
+  'Opening projected-path protection should still hold on a fixed-step frame that lands a hair above 6.0s instead of reopening the blocked wall lane for one frame.',
+);
 
 const wallPinnedForwardSelection = selectSpawnPoint({
   survivalTimeSeconds: 2,
@@ -1193,6 +1209,24 @@ assert.deepEqual(
     rerollsUsed: 1,
   },
   'Opening spawn selection should reroll a merely-positive same-edge candidate when a visible same-edge threat is already sitting near the player.',
+);
+const exactCutoffPressuredOpeningSelection = selectSpawnPoint({
+  survivalTimeSeconds: 6.000000000000076,
+  playerPosition: { x: 690, y: 220 },
+  playerVelocity: { x: -120, y: 80 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 640, y: 250, spawnEdge: 'right' },
+  ],
+  randomInt: createQueuedRandom([1, 210, 0, 400]),
+});
+assert.deepEqual(
+  exactCutoffPressuredOpeningSelection,
+  {
+    point: { x: 400, y: -56 },
+    rerollsUsed: 1,
+  },
+  'Opening same-edge pressure protection should survive the 6.0s cutoff fuzz so fixed-step drift cannot reopen a cheap near-player lane for one frame.',
 );
 
 const pressuredSameSideSweepSelection = selectSpawnPoint({

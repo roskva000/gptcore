@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #216]
+
+Decision:
+`stabilization` modunda opener fairness guard'larinin `6.0s` fixed-step cutoff sacaginda bir frame erken dusmesini kapat.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel, replay, near-miss, payoff ve son mutation knob'larina geri dondurmuyor. Kaynak incelemesi `project/game/src/game/spawn.ts` icinde gercek bir opener fairness bug'i gosterdi: bazi early-run guard'lar raw `<= 6` / `> 6` karsilastirmalari kullaniyordu. Fixed-step survival time `6.000000000000076s` gibi bir frame'e dusunce bu guard'lar korunmasi gereken son spawn'i bir frame erken birakabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` opening forward-pressure, lane-stack, threat-crowding, same-edge pressure ve ilgili ust cutoff yorumlarini ortak epsilon-aware zaman penceresine tasidi. `project/game/scripts/telemetry-check.ts` blocked wall-lane pressure ile near-player same-edge pressure icin yeni `6.000000000000076s` regression assert'leri ekledi. Deterministic headline `29.6s avg / 10.0s first death / 0% early` ve build sagligi korundu; `project/game/src/latestRun.ts` public panel bu source deltasi ile hizalandi.
+
+Rollback Condition:
+Sonraki insan sample veya deterministic bulgu bu epsilon-aware opener pencerenin challenge'i gereksiz yumusattigini gosterirse yalniz ilgili cutoff semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn framework'u, readiness/preflight katmani veya ikinci fairness sistemi acilmaz.
+
 ### [Run #215]
 
 Decision:

@@ -290,7 +290,7 @@ const getForwardSpawnPenalty = (
   spawnPoint: Point,
 ): number => {
   if (
-    survivalTimeSeconds > EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS ||
+    !isWithinTimeCutoff(survivalTimeSeconds, EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS) ||
     !playerVelocity ||
     (playerVelocity.x === 0 && playerVelocity.y === 0)
   ) {
@@ -324,7 +324,10 @@ const getLaneStackPenalty = (
   activeObstaclePositions: Point[] | undefined,
   spawnPoint: Point,
 ): number => {
-  if (survivalTimeSeconds > EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS || !activeObstaclePositions?.length) {
+  if (
+    !isWithinTimeCutoff(survivalTimeSeconds, EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS) ||
+    !activeObstaclePositions?.length
+  ) {
     return 0;
   }
 
@@ -380,7 +383,7 @@ const getThreatCrowdingPenalty = (
   spawnPoint: Point,
 ): number => {
   if (
-    survivalTimeSeconds > EARLY_THREAT_CROWDING_REROLL_CUTOFF_SECONDS ||
+    !isWithinTimeCutoff(survivalTimeSeconds, EARLY_THREAT_CROWDING_REROLL_CUTOFF_SECONDS) ||
     !activeObstaclePositions?.length
   ) {
     return 0;
@@ -456,7 +459,7 @@ const getSpawnEdgeClusterPenalty = (
   spawnPoint: Point,
 ): number => {
   if (
-    survivalTimeSeconds > EARLY_SPAWN_EDGE_CLUSTER_REROLL_CUTOFF_SECONDS ||
+    !isWithinTimeCutoff(survivalTimeSeconds, EARLY_SPAWN_EDGE_CLUSTER_REROLL_CUTOFF_SECONDS) ||
     !activeObstaclePositions?.length
   ) {
     return 0;
@@ -624,7 +627,7 @@ const shouldKeepRerollingForOpeningPressure = (
   spawnPoint: Point,
   spawnScore: SpawnScore,
 ): boolean =>
-  survivalTimeSeconds <= EARLY_PRESSURED_SPAWN_REROLL_CUTOFF_SECONDS &&
+  isWithinTimeCutoff(survivalTimeSeconds, EARLY_PRESSURED_SPAWN_REROLL_CUTOFF_SECONDS) &&
   hasPressuredSameEdgeNearPlayer(playerPosition, activeObstaclePositions, spawnPoint) &&
   spawnScore.score < EARLY_PRESSURED_SPAWN_ACCEPT_SCORE;
 
@@ -699,7 +702,7 @@ const shouldKeepRerollingForMidRunProjectedStack = (
   spawnPoint: Point,
 ): boolean =>
   survivalTimeSeconds + TIME_CUTOFF_EPSILON_SECONDS >= MID_RUN_PROJECTED_STACK_REROLL_START_SECONDS &&
-  survivalTimeSeconds <= MID_RUN_PROJECTED_STACK_REROLL_CUTOFF_SECONDS &&
+  isWithinTimeCutoff(survivalTimeSeconds, MID_RUN_PROJECTED_STACK_REROLL_CUTOFF_SECONDS) &&
   hasMidRunProjectedStackThreat(
     playerPosition,
     playerVelocity,

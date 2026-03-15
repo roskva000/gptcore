@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #216
+
+- `project/game/src/game/spawn.ts` opening forward-pressure, lane-stack, threat-crowding, same-edge pressure ve ilgili ust-cutoff kararlarini ortak epsilon-aware zaman penceresiyle hizaladi; `6.000000000000076s` gibi fixed-step fringe frame'lerinde opener fairness guard'lari bir frame erken dusmuyor
+- `project/game/scripts/telemetry-check.ts` blocked wall-lane pressure ile near-player same-edge pressure icin yeni `6.000000000000076s` regression assert'leri ekledi
+- deterministic survival baseline `29.6s avg / 10.0s first death / 0% early` ve `40s` cap korundu
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu opener fairness stabilization'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #215
 
 - `project/game/scripts/telemetry-reports.ts` deterministic survival snapshot cap'ini `40s`'ye cikardi; yeni `drift` mutation'i artik proxy tarafinda gercekten exercise ediliyor

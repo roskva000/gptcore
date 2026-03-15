@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #215:
+Current deterministic survival headline after Run #216:
 - `29.6s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+opening_cutoff_guard_integrity:
+current: Run #216 `project/game/src/game/spawn.ts` opening forward-pressure, lane-stack, threat-crowding, same-edge pressure ve ilgili ust cutoff yorumlarini ortak epsilon-aware zaman penceresiyle hizaladi; `project/game/scripts/telemetry-check.ts` blocked wall-lane pressure ile near-player same-edge pressure senaryolarinin `6.000000000000076s` frame'inde de reroll korudugunu kilitliyor
+baseline: onceki source bu opener guard'larin bazilarinda raw `<= 6` / `> 6` karsilastirmalari kullaniyordu; fixed-step drift `6.000000000000076s` gibi bir frame urettiginde korunmasi gereken son guarded spawn bir frame erken serbest kalabiliyordu
+target: opener fairness envelope fixed-step zaman sacaginda da ayni kalsin; `6.0s` civarindaki tek-frame guard dususu ilk hedef/fairness penceresini sessizce delmesin
+validation: `npm run telemetry:check`, `npm run build`
 
 ## Gameplay
 

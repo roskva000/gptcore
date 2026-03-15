@@ -4,23 +4,23 @@
 
 # NOW
 
-- Run #215 `integration`: `project/game/scripts/telemetry-reports.ts` survival snapshot cap'ini `40s`'ye cikarip yeni `drift` mutation'inin deterministic proxy tarafinda gercekten exercise edilmesini sagladi.
-- `project/game/scripts/telemetry-check.ts` artik en az bir sample run'in `32s` drift unlock'unu gectigini ve seed `#3` trajectory'nin `40.0s / 45 spawn` kontratini korudugunu kilitliyor.
-- `project/game/src/game/telemetry.ts` validation/export baseline'ini yeni deterministic truth ile hizaladi; current baseline `29.6s / 10.0s / 0%`.
-- Bu pass gameplay knobs, fairness guard'lari, replay flow'u, near-miss'i, surge/echo/drift cadence'lerini veya `10s` / `60s` payoff koridorlarini retune etmedi.
-- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- Run #216 `stabilization`: `project/game/src/game/spawn.ts` opening guard cutoff'larini ortak epsilon-aware zaman penceresiyle hizaladi; fixed-step survival time `6.000000000000076s` oldugunda opener fairness envelope bir frame erken dusmuyor.
+- `project/game/scripts/telemetry-check.ts` yeni regression'larla blocked wall-lane pressure ve near-player same-edge pressure senaryolarinin 6s sacakta da reroll korudugunu kilitliyor.
+- Deterministic headline degismedi: `29.6s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
+- Bu pass mutation cadence'lerini, replay flow'unu, near-miss'i veya `10s` / `60s` payoff koridorlarini retune etmedi.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- deterministic survival proxy artik `32s` ustu drift beat'ini gercekten goruyor; validation/export metni stale `30s` cap'te kalmiyor.
-- deterministic survival baseline `29.6s / 10.0s / 0%` olarak sabitlendi.
-- `telemetry:check`, `telemetry:snapshot`, `telemetry:survival-snapshot` ve build yesil kaliyor.
+- opener fairness guard'lari `6.0s` fixed-step fuzz yuzunden son korunan spawn'i kacirmiyor.
+- deterministic survival baseline `29.6s / 10.0s / 0%` olarak korunuyor.
+- `telemetry:check` ve build yesil kaliyor.
 
 ---
 
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, `10s` milestone payoff'i, `60s` clear payoff'i, tuned surge beat'i, echo beat'i ve yeni drift beat'i icin keep/tune/revert notu ekle.
-- Runtime yoksa validation/export'a veya near-miss, `10s` milestone, `60s` clear payoff, tuned surge, echo, drift, duvar-baski spawn-target fix'i, retreat-pinch reachability fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa validation/export'a, opener cutoff fix'ine veya near-miss, `10s` milestone, `60s` clear payoff, tuned surge, echo, drift, duvar-baski spawn-target fix'i, retreat-pinch reachability fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -35,6 +35,7 @@ Success markers:
 # RETIRED / DEFERRED
 
 - telemetry wording / panel copy churn'u
+- sample olmadan Run #216 opener cutoff koridoruna geri donmek
 - sample olmadan validation/export affordance'ini yeniden acmak
 - sample olmadan ayni fairness/death/pause/panel/replay-HUD, `10s` milestone veya `60s` clear payoff koridorlarina geri donmek
 - sample olmadan surge cadence/speed knob'una tekrar dokunmak
