@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #213
+
+- `project/game/src/game/GameScene.ts` `60s` clear anina ayrik bir celebratory tone ekledi
+- ayni clear aninda `goalStatusText`, score ve player icin daha belirgin pulse/tint feedback'i eklendi; mevcut hedef artik daha hissedilir bir payoff veriyor
+- pacing, fairness, spawn, near-miss, replay veya `10s` milestone kontratlari degismedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #212
 
 - `project/game/src/game/spawn.ts` retreat-pinch guard'ini `getReachableVelocity()` ile hizaladi; duvara dogru ulasilamaz input artik sahte "forward pressure" diye legal rear-lane spawn'i reroll ettirmiyor

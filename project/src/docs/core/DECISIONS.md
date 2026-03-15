@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #213]
+
+Decision:
+`integration` modunda mevcut `60s` clear hedefinin payoff'ini gorunur ve duyulur hale getir.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause, near-miss, surge, echo, spawn-fairness ve replay mikro-koridorlarina geri dondurmuyor. Buna ragmen insan sinyali oyunun "hicbir ekstra yok" hissini ve mevcut hedeflerin run icinde yeterince odullendirici hissettirmedigini acikca soyluyor. Yasakli source koridorlarina dokunmadan en dar savunulabilir product move, zaten var olan `60s` clear hedefini yeni framework acmadan daha hissedilir bir payoff'a cevirmekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik `60s` clear aninda ayrik bir celebratory tone caliyor; `goalStatusText`, score ve player ayni anda pulse/tint feedback'i veriyor. Bu pass spawn cadence, fairness guard'lari, near-miss, `10s` milestone veya replay kontrol semantiklerine dokunmadi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Ikinci insan sample bu yeni `60s` clear payoff'inin gereksiz gurultu, dikkat dagitimi veya yorucu feedback urettigini gosterirse yalniz clear feedback intensity/tone dar kapsamda tune/revert edilir; bu bahaneyle yeni reward sistemi, progression katmani veya orchestration framework'u acilmaz.
+
 ### [Run #212]
 
 Decision:

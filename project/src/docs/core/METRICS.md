@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+survival_goal_clear_payoff_signal:
+current: Run #213 `project/game/src/game/GameScene.ts` `60s` clear aninda ayrik bir celebratory tone caldiriyor; `goalStatusText`, score ve player ayni anda pulse/tint feedback'i vererek clear hedefini daha hissedilir hale getiriyor
+baseline: onceki source `60s` clear icin yalniz text badge ve hint degisikligi veriyordu; run'in namesake hedefi gecildiginde payoff hissi `10s` milestone ve near-miss'e gore daha zayif kaliyordu
+target: ikinci human sample `60s` clear aninin sessiz bir telemetry esigi degil gercek bir mini-zafer gibi hissettigini gostersin; runtime blokluysa bu yeni payoff'a tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
+
 retreat_pinch_wall_reachability_integrity:
 current: Run #212 `project/game/src/game/spawn.ts` retreat-pinch guard'ini `getReachableVelocity()` uzerinden yorumluyor; oyuncu duvara yaslanip disari bastiginda ulasilamaz outward input artik gercek ileri baski gibi legal rear-lane spawn'lari reroll etmiyor
 baseline: Run #177 retreat-pinch guard'i ham `playerVelocity`'yi normalize ediyordu; duvar kenarinda fiziksel olarak gidilemeyen yon bile kacis yonu sanilabildigi icin yeni spawn secimi sahte pressure altinda kalabiliyordu

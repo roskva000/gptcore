@@ -2216,6 +2216,39 @@ export class GameScene extends Phaser.Scene {
     oscillator.stop(now + 0.13);
   }
 
+  private playSurvivalGoalFeedbackTone(): void {
+    const audioContext = this.feedbackAudioContext;
+
+    if (!audioContext || audioContext.state !== 'running') {
+      return;
+    }
+
+    const now = audioContext.currentTime;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(520, now);
+    oscillator.frequency.exponentialRampToValueAtTime(780, now + 0.08);
+    oscillator.frequency.exponentialRampToValueAtTime(980, now + 0.18);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(980, now);
+    filter.Q.setValueAtTime(1.7, now);
+
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.02, now + 0.012);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.22);
+  }
+
   private loadTelemetry(
     storageKey: string,
     storage: Pick<Storage, 'getItem'>,
@@ -2561,13 +2594,47 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + SURVIVAL_GOAL_HINT_DURATION_MS;
+    this.playSurvivalGoalFeedbackTone();
     this.tweens.killTweensOf(this.goalStatusText);
+    this.tweens.killTweensOf(this.scoreText);
+    this.tweens.killTweensOf(this.player);
+    this.scoreText.setTint(0xfff0c7);
+    this.player.clearTint();
+    this.player.setTint(0xfff0c7);
     this.tweens.add({
       targets: this.goalStatusText,
-      scale: 1,
-      alpha: 0.9,
-      duration: 180,
+      scale: 1.08,
+      alpha: 0.96,
+      duration: 200,
+      yoyo: true,
       ease: 'Quad.Out',
+      onComplete: () => {
+        this.goalStatusText.setScale(1).setAlpha(1);
+      },
+    });
+    this.tweens.add({
+      targets: this.scoreText,
+      scaleX: 1.1,
+      scaleY: 1.1,
+      duration: 180,
+      yoyo: true,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        this.scoreText.clearTint();
+        this.scoreText.setScale(1);
+      },
+    });
+    this.tweens.add({
+      targets: this.player,
+      scaleX: 1.14,
+      scaleY: 1.14,
+      duration: 180,
+      yoyo: true,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        this.player.clearTint();
+        this.player.setScale(1);
+      },
     });
   }
 
