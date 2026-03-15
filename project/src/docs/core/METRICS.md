@@ -4,6 +4,12 @@
 
 # Key Metrics
 
+Current deterministic survival headline after Run #215:
+- `29.6s` average survival
+- `10.0s` first death
+- `%0` early death
+- `40s` simulation cap with live post-`32s` drift coverage
+
 ## Gameplay
 
 drift_obstacle_late_run_variety:
@@ -13,9 +19,9 @@ target: ikinci human sample drift beat'inin okunur bir lateral sweep ve replay i
 validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run build`
 
 deterministic_drift_proxy_integrity:
-current: Run #214 `project/game/src/game/balance.ts` icindeki `getObstacleTravelDirection()` helper'i drift obstacle trajectory'sini ortaklastiriyor; `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` ayni drift rotation kontratini kullaniyor
-baseline: onceki source gec run mutation'lari yalniz unlock/cadence/lag uzerinden tasiyordu; yeni bir lateral beat acilirsa runtime ile deterministic proxy arasinda trajectory drift riski dogabilirdi
-target: drift beat'i runtime ve deterministic proxy tarafinda ayni saga/sola alternating travel line'i kullansin; keep/tune/revert karari stale ya da duplicate trajectory mantigina degil aktif source truth'una dayansin
+current: Run #215 `project/game/scripts/telemetry-reports.ts` survival snapshot cap'ini `40s`'ye tasiyor; deterministic sample artik `32s` drift unlock'unu gercekten goruyor ve `project/game/scripts/telemetry-check.ts` en az bir sample run'in drift beat'ine ulastigini regression altina aliyor
+baseline: Run #214 proxy drift trajectory helper'ini dogru tasisa da survival snapshot `30s`'de kesildigi icin yeni mutation'i hic exercise etmeden "proxy aligned" anlatisi kuruyordu
+target: drift beat'i runtime ve deterministic proxy tarafinda ayni saga/sola alternating travel line'i kullansin ve validation bunu stale `30s` cap ya da duplicate trajectory mantigi yerine gercek post-unlock coverage ile kanitlasin
 validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run build`
 
 survival_goal_clear_payoff_signal:
@@ -37,7 +43,7 @@ target: ikinci human sample echo beat'inin okunur bir trailing threat ve replay 
 validation: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
 
 deterministic_echo_proxy_integrity:
-current: Run #211 `project/game/scripts/telemetry-reports.ts` echo obstacle unlock/cadence/lag truth'unu deterministic proxy'ye tasiyor; survival snapshot `26.0s` average survival, `10.0s` first death ve `%0` early death ile runtime kontratini ayni controller anlatiminda raporluyor
+current: Run #215 state'inde deterministic proxy echo obstacle unlock/cadence/lag truth'unu tasimaya devam ediyor; survival snapshot artik `29.6s` average survival, `10.0s` first death ve `%0` early death ile echo + drift'i ayni controller anlatiminda raporluyor
 baseline: onceki proxy yalniz surge beat'ini anlatiyor ve gec run'daki ikinci rhythm denemesini hic tasimiyordu; builder yeni mutation acarsa proxy drift riski yeniden dogabilirdi
 target: late-run mutation'lar runtime ile deterministic proxy arasinda ayrismasin; keep/tune/revert kararlari stale controller anlatimi yerine aktif truth uzerinden verilsin
 validation: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
@@ -85,7 +91,7 @@ target: ikinci human sample tuned cadence'in ucuz gurultu yerine daha okunur tem
 validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
 
 deterministic_surge_proxy_integrity:
-current: Run #204 source ve deterministic proxy ayni tuned surge cadence'ini ve `1.14x` hiz carpanini paylasiyor; survival snapshot `26.0s` average survival, `10.0s` first death ve `%0` early death raporluyor
+current: Run #215 state'inde source ve deterministic proxy ayni tuned surge cadence'ini ve `1.14x` hiz carpanini paylasiyor; survival snapshot `29.6s` average survival, `10.0s` first death ve `%0` early death raporluyor
 baseline: onceki proxy Run #202 live mutation'ini hic modellemiyor ve stale `27.4s avg / 10.0s first death / 0% early` sayilarini koruyordu; bu da surge beat'i icin keep/tune/revert kararini eski runtime'a bagliyordu
 target: deterministic proxy aktif gameplay kontratini tasimaya devam etsin; insan sample gelene kadar surge beat'i icin stale baseline yerine live truth uzerinden karar verilsin
 validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`

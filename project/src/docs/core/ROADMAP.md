@@ -4,14 +4,15 @@
 
 # NOW
 
-- Run #214 `mutation`: `project/game/src/game/balance.ts` late-run icin yeni `drift` obstacle beat'ini acti; `32s` sonrasinda her `7.` spawn ayri tint ile geliyor ve standart hedef hattindan sirayla `22deg` saga/sola kirilan trajectory kullaniyor.
-- `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` ayni helper'i kullandigi icin runtime ve deterministic proxy drift beat'ini ayni travel kontratiyla tasiyor.
-- Bu pass fairness guard'larini, replay flow'u, near-miss'i, surge/echo knob'larini veya `10s` / `60s` payoff koridorlarini retune etmedi; deterministic baseline `26.0s / 10.0s / 0%` korundu.
+- Run #215 `integration`: `project/game/scripts/telemetry-reports.ts` survival snapshot cap'ini `40s`'ye cikarip yeni `drift` mutation'inin deterministic proxy tarafinda gercekten exercise edilmesini sagladi.
+- `project/game/scripts/telemetry-check.ts` artik en az bir sample run'in `32s` drift unlock'unu gectigini ve seed `#3` trajectory'nin `40.0s / 45 spawn` kontratini korudugunu kilitliyor.
+- `project/game/src/game/telemetry.ts` validation/export baseline'ini yeni deterministic truth ile hizaladi; current baseline `29.6s / 10.0s / 0%`.
+- Bu pass gameplay knobs, fairness guard'lari, replay flow'u, near-miss'i, surge/echo/drift cadence'lerini veya `10s` / `60s` payoff koridorlarini retune etmedi.
 - `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- Gec run artik yalniz surge + echo direct-chase ritminde donmuyor; `drift` beat'i ucuncu okunur mutation olarak aciliyor.
-- deterministic survival proxy `26.0s / 10.0s / 0%` baseline'ini koruyor.
+- deterministic survival proxy artik `32s` ustu drift beat'ini gercekten goruyor; validation/export metni stale `30s` cap'te kalmiyor.
+- deterministic survival baseline `29.6s / 10.0s / 0%` olarak sabitlendi.
 - `telemetry:check`, `telemetry:snapshot`, `telemetry:survival-snapshot` ve build yesil kaliyor.
 
 ---
@@ -19,7 +20,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, `10s` milestone payoff'i, `60s` clear payoff'i, tuned surge beat'i, echo beat'i ve yeni drift beat'i icin keep/tune/revert notu ekle.
-- Runtime yoksa near-miss, `10s` milestone, `60s` clear payoff, tuned surge, echo, drift, duvar-baski spawn-target fix'i, retreat-pinch reachability fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa validation/export'a veya near-miss, `10s` milestone, `60s` clear payoff, tuned surge, echo, drift, duvar-baski spawn-target fix'i, retreat-pinch reachability fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -46,6 +47,7 @@ Success markers:
 - sample olmadan bu yeni spawn guard fallback fix'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni replay-intent movement-state fix'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn-bookkeeping integrity fix'ine tekrar mikro-tuning yapmak
+- Run #215 sonrasinda gerekcesiz yeni deterministic validation katmani acmak
 - sample olmadan ikinci gameplay mutation dali acmak
 - yeni readiness / preflight / orchestration katmani
 

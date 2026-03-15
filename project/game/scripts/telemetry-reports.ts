@@ -73,7 +73,7 @@ const SPAWN_COUNT_LIMITS_SECONDS = [10, 30, 60];
 const PLAYER_SPEED = 260;
 const EFFECTIVE_PLAYER_SPEED = 214;
 const PLAYER_RADIUS = 16;
-const MAX_SIMULATION_SECONDS = 30;
+const MAX_SIMULATION_SECONDS = 40;
 const SESSION_COUNT = 24;
 const FIXED_TIME_STEP_SECONDS = 1 / 60;
 const DECISION_INTERVAL_SECONDS = 0.18;
@@ -160,7 +160,7 @@ export type SurvivalSnapshotReport = {
     under10Seconds: number;
     between10And20Seconds: number;
     between20And30Seconds: number;
-    reached30SecondsCap: number;
+    reachedSimulationCap: number;
   };
   averageSpawnCount: number;
   averageSpawnRerolls: number;
@@ -486,7 +486,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
         (result) =>
           result.survivalTimeSeconds >= 20 && result.survivalTimeSeconds < MAX_SIMULATION_SECONDS,
       ).length,
-      reached30SecondsCap: results.filter(
+      reachedSimulationCap: results.filter(
         (result) => result.survivalTimeSeconds >= MAX_SIMULATION_SECONDS,
       ).length,
     },

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #215]
+
+Decision:
+`integration` modunda deterministic survival proxy'nin `drift` mutation'ini gercekten exercise ettigi truth gap'ini kapat.
+
+Reason:
+Run #214 yeni `drift` beat'ini `32s`'de acti, ancak mevcut `project/game/scripts/telemetry-reports.ts` survival snapshot'i `30s`'de kesiliyordu. Bu durumda deterministic controller metni drift'i anlatsa da snapshot bu mutation'i hic gormuyordu. Audit validation/tooling genislemesini ancak dogrudan blocker ise kabul ediyordu; burada blocker gercekti cunku aktif mutation icin kanit yuzeyi eksik ve yanilticiydi.
+
+Impact:
+`project/game/scripts/telemetry-reports.ts` survival proxy cap'ini `40s`'ye cikardi ve bucket semantigini `reachedSimulationCap` olarak duzeltti. `project/game/scripts/telemetry-check.ts` yeni `40s` cap, post-`32s` sample coverage ve seed `#3` `40.0s / 45 spawn` trajectory kontratini regression altina aldi. `project/game/src/game/telemetry.ts` validation baseline metnini `29.6s avg / 10.0s first death / 0% early` truth'u ile hizaladi; `project/game/src/latestRun.ts` public panel de bu fix'i tasidi. `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Eger sonraki source degisikligi deterministic cap'i tekrar stale hale getirir veya validation maliyetini gereksiz buyutur ise cap yalniz aktif en gec unlock edilen mutation'i kapsayacak kadar dar tutulur; bu bahaneyle yeni validation framework'u, readiness/preflight katmani veya ikinci export sistemi acilmaz.
+
 ### [Run #214]
 
 Decision:

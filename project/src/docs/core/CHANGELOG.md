@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #215
+
+- `project/game/scripts/telemetry-reports.ts` deterministic survival snapshot cap'ini `40s`'ye cikardi; yeni `drift` mutation'i artik proxy tarafinda gercekten exercise ediliyor
+- survival bucket semantigi `reachedSimulationCap` olarak duzeltildi; eski `30s` hard-cap anlatisi yeni validation truth'una tasinmiyor
+- `project/game/scripts/telemetry-check.ts` `40s` cap, post-`32s` drift coverage ve seed `#3` `40.0s / 45 spawn` trajectory kontratini regression altina aldi
+- `project/game/src/game/telemetry.ts` validation baseline metnini `29.6s avg / 10.0s first death / 0% early` deterministic truth'u ile hizaladi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu validation-truth integration run'i ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #214
 
 - `project/game/src/game/balance.ts` late-run icin yeni `drift` obstacle variant'ini ekledi; `32s` sonrasinda her `7.` spawn ayri tint ile geliyor ve standart hedef hattindan sirayla `22deg` saga/sola kiriliyor
