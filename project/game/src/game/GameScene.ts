@@ -163,7 +163,7 @@ type PrimaryActionSource =
 
 export class GameScene extends Phaser.Scene {
   private phase: GamePhase = 'waiting';
-  private movementInputWasActive = false;
+  private previousMovementInputState = 0;
   private movementHoldActionStartedAt: number | null = null;
   private pointerHoldActionStartedAt: number | null = null;
   private pointerCancellationActive = false;
@@ -208,14 +208,15 @@ export class GameScene extends Phaser.Scene {
     this.gameOverRetryNeedsPointerRelease = false;
   };
   private readonly handleMovementRelease = (): void => {
-    const movementInputActive = this.hasMovementInput();
+    const movementInputState = this.getMovementInputState();
+    const movementInputActive = movementInputState !== 0;
 
     if (!shouldClearMovementReleaseRequirement(movementInputActive)) {
       return;
     }
 
     this.movementHoldActionStartedAt = null;
-    this.movementInputWasActive = false;
+    this.previousMovementInputState = 0;
     this.pauseResumeNeedsMovementRelease = false;
     this.gameOverRetryNeedsMovementRelease = false;
   };
@@ -681,10 +682,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time: number): void {
-    const movementInputActive = this.hasMovementInput();
+    const movementInputState = this.getMovementInputState();
+    const movementInputActive = movementInputState !== 0;
     const movementJustStarted = hasFreshMovementInput(
-      movementInputActive,
-      this.movementInputWasActive,
+      movementInputState,
+      this.previousMovementInputState,
     );
     const hasConfirmedHeldMovementInput = this.hasConfirmedHeldMovementInput(
       time,
@@ -722,7 +724,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.updatePlayerVelocity();
-    this.movementInputWasActive = movementInputActive;
+    this.previousMovementInputState = movementInputState;
 
     if (this.phase !== 'playing') {
       return;
@@ -981,7 +983,8 @@ export class GameScene extends Phaser.Scene {
       currentSurvivalTime: pausedAtSeconds,
     });
     this.setPhase('paused');
-    const movementInputActive = this.hasMovementInput();
+    const movementInputState = this.getMovementInputState();
+    const movementInputActive = movementInputState !== 0;
     const pointerInputActive = shouldRequirePointerReleaseAfterPause(
       this.input.activePointer,
       this.pointerCancellationActive,
@@ -999,7 +1002,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseActiveObstacleSpawnGraceTweens();
     this.player.setVelocity(0, 0);
     this.pointerSteeringNeedsRelease = false;
-    this.movementInputWasActive = movementInputActive;
+    this.previousMovementInputState = movementInputState;
     this.overlay.setVisible(true);
     this.fatalCallout.setVisible(false).setText('');
     this.overlayBadge.setVisible(false).setText('');
@@ -1067,7 +1070,7 @@ export class GameScene extends Phaser.Scene {
     this.restorePlayingHintAfterPause();
     this.restoreNearMissHintAfterPause();
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
-    this.movementInputWasActive = this.hasMovementInput();
+    this.previousMovementInputState = this.getMovementInputState();
     this.armPointerSteeringGuardAfterActivation(source, 'paused');
     this.updateHudChromeVisibility();
     this.updateTelemetryText();
@@ -1125,7 +1128,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
     this.nearMissText.setVisible(false).setText('');
-    this.movementInputWasActive = this.hasMovementInput();
+    this.previousMovementInputState = this.getMovementInputState();
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsPointerRelease = false;
     this.gameOverRetryNeedsMovementRelease = false;
@@ -1291,17 +1294,30 @@ export class GameScene extends Phaser.Scene {
 
   }
 
+  private getMovementInputState(): number {
+    let movementInputState = 0;
+
+    if (this.cursors.left.isDown || this.movementKeys.left.isDown) {
+      movementInputState |= 1;
+    }
+
+    if (this.cursors.right.isDown || this.movementKeys.right.isDown) {
+      movementInputState |= 1 << 1;
+    }
+
+    if (this.cursors.up.isDown || this.movementKeys.up.isDown) {
+      movementInputState |= 1 << 2;
+    }
+
+    if (this.cursors.down.isDown || this.movementKeys.down.isDown) {
+      movementInputState |= 1 << 3;
+    }
+
+    return movementInputState;
+  }
+
   private hasMovementInput(): boolean {
-    return (
-      this.cursors.left.isDown ||
-      this.cursors.right.isDown ||
-      this.cursors.up.isDown ||
-      this.cursors.down.isDown ||
-      this.movementKeys.left.isDown ||
-      this.movementKeys.right.isDown ||
-      this.movementKeys.up.isDown ||
-      this.movementKeys.down.isDown
-    );
+    return this.getMovementInputState() !== 0;
   }
 
   private hasConfirmedHeldMovementInput(time: number, movementInputActive: boolean): boolean {

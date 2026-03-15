@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+replay_intent_freshness_integrity:
+current: Run #209 `project/game/src/game/primaryAction.ts` fresh movement niyetini movement-state bitmask degisiminden okuyor; `project/game/src/game/GameScene.ts` onceki state'i waiting/pause/game-over/reset akislarinda saklayarak yeni yonu retry/resume icin fresh kabul ediyor, degismeyen held input'u ise tekrar tekrar aktivasyon saymiyor
+baseline: onceki source fresh movement'i yalniz `any movement` boolean'i ile okuyordu; oyuncu olum veya focus-loss sonrasi bir yonu basili tutarken ikinci bir yon eklediginde bu gercek yeni retry/resume niyeti held input ile ayni sayiliyor ve instant replay loop'unda gereksiz surtunme yaratiyordu
+target: gercek sample'da yeni yonla gelen retry/resume niyeti daha akici hissedilsin; ayni hold ise istemsiz replay spam'i uretmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 spawn_guard_compliant_fallback_integrity:
 current: Run #208 `project/game/src/game/spawn.ts` reroll butcesi bitince best raw-score adayindan ayri best guard-compliant adayi da takip ediyor; tum denemeler zayif kalsa bile spawn secici gorulmus legal lane'i same-edge pressure ihlaline feda etmiyor
 baseline: onceki source reroll loop'u sonunda yalniz en yuksek ham skoru sakliyordu; bu da mevcut guard'lari gecen bir reroll gorulmus olsa bile secicinin biraz daha yuksek skorlu cheap-pressure ihlaline geri donmesine izin verebiliyordu

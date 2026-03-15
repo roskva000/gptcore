@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #209]
+
+Decision:
+`stabilization` modunda replay/resume movement intent'ini yon-kombinasyonu degisimine gore yorumla.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/near-miss/surge/spawn-fairness koridorlarina geri dondurmuyor. Buna ragmen core loop'ta dar ama gercek bir replay friction kalmisti: input sistemi taze hareket niyetini yalniz `any movement` boolean'i ile okuyordu. Oyuncu olum veya focus-loss sonrasi bir hareket tusunu hala basili tutarken yeni bir yon eklediginde bu gercek retry/resume niyeti fresh sayilmiyor, ayni hold ile ayni muamele goruyordu. Bu da `<3s` replay hedefinde gereksiz surtunme uretiyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` fresh movement helper'ini bitmask-state degisimine tasidi. `project/game/src/game/GameScene.ts` waiting, pause, game-over ve reset akislarinda onceki movement state'ini saklayip yeni yon eklenince retry/resume'u hemen kabul ediyor; degismeyen held input ise tekrar tekrar aktivasyon uretmiyor. `project/game/scripts/telemetry-check.ts` yeni yon-positive ve degismeyen diagonal-hold negative kontratlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Gercek sample bu movement-state yorumunun istemsiz replay, beklenmeyen pause-resume veya kontrol hissi regressiyonu urettigini gosterirse yalniz fresh-intent heuristigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input framework'u, command bus'u veya orchestration katmani acilmaz.
+
 ### [Run #208]
 
 Decision:

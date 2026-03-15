@@ -4,21 +4,23 @@
 
 # NOW
 
-- Run #208 `stabilization`: spawn secici reroll butcesi bittiginde gorulmus en iyi guard-compliant lane'i koruyor; biraz daha yuksek ham skorlu cheap-pressure ihlaline geri dusmuyor.
-- `project/game/src/game/spawn.ts` best-raw-score ile best-guard-compliant fallback'i ayirdi; `project/game/scripts/telemetry-check.ts` opening-pressure fallback kontratini kilitledi.
-- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- Run #209 `stabilization`: replay/resume hareket niyeti artik yon kombinasyonundaki degisimi okuyarak tespit ediliyor; olum veya pause sonrasi ayni hold spam olmuyor, ama yeni yon hemen retry/resume sayiliyor.
+- `project/game/src/game/primaryAction.ts` fresh movement kararini movement-state bitmask'ine tasidi; `project/game/src/game/GameScene.ts` bu state'i waiting/pause/game-over/reset akislari boyunca koruyor.
+- `project/game/scripts/telemetry-check.ts` yeni direction-change retry/resume kontratini regression altina aldi.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- spawn secici tum reroll'ler zayif kalsa bile gorulmus legal lane'i cheap-pressure ihlaline feda etmez.
+- olum veya focus-loss sonrasi yeni yon tusu fresh intent sayilir.
+- degismeyen held movement replay/resume spam'i uretmez.
 - deterministic survival proxy `26.0s / 10.0s / 0%` baseline'ini korur.
-- `telemetry:check`, `telemetry:survival-snapshot` ve build yesil kalir.
+- `telemetry:check` ve build yesil kalir.
 
 ---
 
 # NEXT
 
-- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine tuned surge beat'i, `10s` milestone payoff'i ve replay istegi icin keep/tune/revert notu ekle.
-- Runtime yoksa near-miss, tuned surge, duvar-baski spawn-target fix'i, projected-stack threshold fix'i veya bu yeni spawn-fallback guard fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, tuned surge beat'i ve `10s` milestone payoff'i icin keep/tune/revert notu ekle.
+- Runtime yoksa near-miss, tuned surge, duvar-baski spawn-target fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i veya bu yeni replay-intent fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -40,6 +42,7 @@ Success markers:
 - sample olmadan yeni wall-target lag / reachability micro-tuning'i acmak
 - sample olmadan bu `10.0s` projected-stack threshold fix'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn guard fallback fix'ine tekrar mikro-tuning yapmak
+- sample olmadan bu yeni replay-intent movement-state fix'ine tekrar mikro-tuning yapmak
 - sample olmadan ikinci gameplay mutation dali acmak
 - yeni readiness / preflight / orchestration katmani
 

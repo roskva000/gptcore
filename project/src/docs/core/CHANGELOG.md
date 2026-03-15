@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #209
+
+- `project/game/src/game/primaryAction.ts` fresh movement kararini movement-state bitmask degisimine tasidi; input yolu artik yalniz `any movement` boolean'ine bakmiyor
+- `project/game/src/game/GameScene.ts` waiting, pause, game-over ve reset akislarinda onceki movement state'ini koruyor; ayni held movement replay/resume spam'i uretmezken yeni yon eklemek fresh intent olarak kabul ediliyor
+- `project/game/scripts/telemetry-check.ts` yeni direction-change retry/resume positive case'ini ve degismeyen diagonal hold negative case'ini regression altina aldi
+- deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` korundu; bu pass pacing retune degil replay-friction stabilization'i olarak kaldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar replay-intent deltasi ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #208
 
 - `project/game/src/game/spawn.ts` reroll butcesi biterken best raw-score adayi ile best guard-compliant adayi ayri tutmaya basladi; secici gorulmus daha durust bir lane varken same-edge pressure ihlaline geri dusmuyor

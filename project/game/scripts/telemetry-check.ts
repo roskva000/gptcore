@@ -347,14 +347,24 @@ assert.equal(
   'Primary action keys should still work for fresh Space/Enter presses.',
 );
 assert.equal(
-  hasFreshMovementInput(true, false),
+  hasFreshMovementInput(1, 0),
   true,
   'A fresh movement press should be recognized immediately after all movement keys were released.',
 );
 assert.equal(
-  hasFreshMovementInput(true, true),
+  hasFreshMovementInput(1, 1),
   false,
   'Held movement should not be misread as a fresh press every frame.',
+);
+assert.equal(
+  hasFreshMovementInput(1 | 4, 1),
+  true,
+  'Adding a new movement direction should count as fresh retry/resume intent instead of inheriting the held key from the previous run state.',
+);
+assert.equal(
+  hasFreshMovementInput(1 | 4, 1 | 4),
+  false,
+  'An unchanged diagonal hold should not retrigger replay/resume every frame after the new direction is already active.',
 );
 assert.equal(
   shouldClearMovementReleaseRequirement(false),

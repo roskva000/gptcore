@@ -28,9 +28,9 @@ export const shouldHandlePrimaryActionKey = (
 ): boolean => !event?.repeat;
 
 export const hasFreshMovementInput = (
-  movementInputActive: boolean,
-  movementInputWasActive: boolean,
-): boolean => movementInputActive && !movementInputWasActive;
+  movementInputState: number,
+  previousMovementInputState: number,
+): boolean => movementInputState !== 0 && movementInputState !== previousMovementInputState;
 
 export const shouldClearMovementReleaseRequirement = (
   movementInputActive: boolean,
