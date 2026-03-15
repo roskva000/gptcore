@@ -4,7 +4,11 @@ import {
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
 import {
+  SURGE_OBSTACLE_SPEED_MULTIPLIER,
   getSpawnCollisionGraceMs,
+  getObstacleSpeedMultiplier,
+  getObstacleTint,
+  getObstacleVariant,
   hasReachedFirstDeathTarget,
   hasReachedSurvivalGoal,
 } from '../src/game/balance.ts';
@@ -106,6 +110,38 @@ const createQueuedRandom = (values: number[]): ((min: number, max: number) => nu
     return value;
   };
 };
+
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: 14.9,
+    runSpawnCount: 4,
+  }),
+  'standard',
+  'Surge obstacles should stay locked until the run has moved past the flat opener and into mid-run play.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: 15,
+    runSpawnCount: 4,
+  }),
+  'surge',
+  'Every fourth spawn after the unlock point should become a surge obstacle so the new pressure beat stays readable.',
+);
+assert.equal(
+  getObstacleSpeedMultiplier('standard'),
+  1,
+  'Standard obstacles should keep the base speed curve unchanged.',
+);
+assert.equal(
+  getObstacleSpeedMultiplier('surge'),
+  SURGE_OBSTACLE_SPEED_MULTIPLIER,
+  'Surge obstacles should apply the tuned speed multiplier instead of inventing a second balance curve.',
+);
+assert.equal(
+  getObstacleTint('surge'),
+  0xffd38a,
+  'Surge obstacles should expose a dedicated tint so the faster threat stays visually readable.',
+);
 
 assert.deepEqual(
   getVerticalCalloutPlacement({

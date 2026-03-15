@@ -10,6 +10,12 @@ export const EARLY_SPAWN_COLLISION_GRACE_FADE_START_SECONDS = 10;
 export const EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS = 11;
 export const OPENING_REQUIRED_SPAWN_DISTANCE_BONUS = 160;
 export const OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS = 6;
+export const SURGE_OBSTACLE_UNLOCK_SECONDS = 15;
+export const SURGE_OBSTACLE_CADENCE = 4;
+export const SURGE_OBSTACLE_SPEED_MULTIPLIER = 1.14;
+export const SURGE_OBSTACLE_TINT = 0xffd38a;
+
+export type ObstacleVariant = 'standard' | 'surge';
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -30,6 +36,25 @@ export const getObstacleSpeed = (survivalTimeSeconds: number): number =>
     145,
     320,
   );
+
+export const getObstacleVariant = ({
+  survivalTimeSeconds,
+  runSpawnCount,
+}: {
+  survivalTimeSeconds: number;
+  runSpawnCount: number;
+}): ObstacleVariant =>
+  survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
+  runSpawnCount > 0 &&
+  runSpawnCount % SURGE_OBSTACLE_CADENCE === 0
+    ? 'surge'
+    : 'standard';
+
+export const getObstacleSpeedMultiplier = (variant: ObstacleVariant): number =>
+  variant === 'surge' ? SURGE_OBSTACLE_SPEED_MULTIPLIER : 1;
+
+export const getObstacleTint = (variant: ObstacleVariant): number | null =>
+  variant === 'surge' ? SURGE_OBSTACLE_TINT : null;
 
 export const getRequiredSpawnDistance = (survivalTimeSeconds: number): number =>
   clamp(

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #202
+
+- `project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i acan deterministik `surge obstacle` cadence'ini, hiz carpanini ve ayirt edici tint kontratini ekledi
+- `project/game/src/game/GameScene.ts` surge obstacle'lari mevcut spawn secimini degistirmeden daha hizli ve altin tonlu threat olarak sahneye tasimaya basladi; spawn grace sonrasinda varyant okunur kaliyor
+- `project/game/scripts/telemetry-check.ts` surge cadence, hiz carpani ve tint helper'lari icin yeni deterministic assert'ler ekledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar mid-run mutation ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #201
 
 - `project/game/src/game/GameScene.ts` death ve yeni run reset'i sirasinda `scoreText`, `goalStatusText` ve `nearMissText` uzerindeki aktif tween'leri sonlandirip bu HUD elemanlarini temiz alpha/scale/tint durumuna geri dondurmeye basladi

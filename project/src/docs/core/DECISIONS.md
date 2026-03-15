@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #202]
+
+Decision:
+`mutation` modunda mid-run challenge'i ayni HUD/panel/pause koridoruna donmeden dar bir `surge obstacle` beat'i ile genislet.
+
+Reason:
+Runtime yine bloklu ve audit builder'i ayni fairness/death/near-miss/panel/pause/replay-HUD/`10s` milestone koridorlarina geri dondurmuyor. Buna ragmen insan sinyali oyunun hizli sekilde duzlestigini ve "gercek bir oyunun %5'i" gibi hissettirdigini acikca soyluyor. Bu nedenle yeni sistem acmadan, opener adaletini bozmadan ve deterministic validation'i koruyarak aktif run'a yeni bir ritim eklemek en yuksek etkili dar mutation oldu.
+
+Impact:
+`project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i `surge obstacle` yapan deterministik cadence, hiz carpani ve ayirt edici tint ekledi. `project/game/src/game/GameScene.ts` spawn secimini degistirmeden bu varyanti hizli/okunur bir threat olarak sahneye tasiyor; spawn grace bittiginde altin tonlu ayrim korunuyor. `project/game/scripts/telemetry-check.ts` yeni helper kontratlarini kilitledi. `project/game/src/latestRun.ts` public panel yeni mutation ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample veya sonraki dar integration passi surge obstacle beat'inin unfair spike, okunurluk kaybi veya ucuz gorsel gurultu urettigini gosterirse yalniz cadence / unlock second / speed multiplier dar kapsamda tune veya revert edilir; bu bahaneyle yeni enemy framework'u, pattern director'u veya progression sistemi acilmaz.
+
 ### [Run #201]
 
 Decision:

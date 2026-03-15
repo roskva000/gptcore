@@ -5,7 +5,10 @@ import {
   FIRST_SPAWN_DELAY_MS,
   SURVIVAL_GOAL_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
+  getObstacleTint,
   getObstacleSpeed,
+  getObstacleSpeedMultiplier,
+  getObstacleVariant,
   hasReachedFirstDeathTarget,
   hasReachedSurvivalGoal,
   getSpawnDelayMs,
@@ -259,6 +262,7 @@ export class GameScene extends Phaser.Scene {
   private nearMissChainExpiresAtElapsedMs = 0;
   private nearMissHintHideAtElapsedMs: number | null = null;
   private runSpawnRerolls = 0;
+  private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
   private lastValidationReport: string | null = null;
@@ -949,6 +953,7 @@ export class GameScene extends Phaser.Scene {
     this.nearMissChainExpiresAtElapsedMs = 0;
     this.nearMissHintHideAtElapsedMs = null;
     this.runSpawnRerolls = 0;
+    this.runSpawnCount = 0;
     this.updateHudChromeVisibility();
     this.scoreText.setText('0.0s');
     this.hintText.setText(this.getPlayingHintText()).setVisible(true);
@@ -1081,6 +1086,7 @@ export class GameScene extends Phaser.Scene {
     this.pointerSteeringNeedsRelease = false;
     this.survivalGoalReachedThisRun = false;
     this.firstDeathTargetReachedThisRun = false;
+    this.runSpawnCount = 0;
     this.tweens.killTweensOf([
       this.player,
       this.scoreText,
@@ -1163,23 +1169,29 @@ export class GameScene extends Phaser.Scene {
     collisionReady: boolean,
   ): void {
     const visualState = getSpawnGraceVisualState(collisionReady);
+    const readyTint = getObstacleTint(
+      (obstacle.getData('variant') as ReturnType<typeof getObstacleVariant> | undefined) ?? 'standard',
+    );
     obstacle
       .setAlpha(visualState.alpha)
       .setScale(visualState.scale)
       .setDepth(getObstacleDepth(collisionReady));
 
-    if (visualState.tint === null) {
+    const tint = collisionReady ? readyTint : visualState.tint;
+
+    if (tint === null) {
       obstacle.clearTint();
       return;
     }
 
-    obstacle.setTint(visualState.tint);
+    obstacle.setTint(tint);
   }
 
   private spawnObstacle(): void {
     // Timer callbacks can fire before the next update tick; reclaim stale offscreen entries first.
     this.cullObstacles();
     const currentSurvivalTimeSeconds = this.getCurrentSurvivalTimeSeconds();
+    this.runSpawnCount += 1;
     const { point: spawnPoint, rerollsUsed } = selectSpawnPoint({
       survivalTimeSeconds: currentSurvivalTimeSeconds,
       playerPosition: { x: this.player.x, y: this.player.y },
@@ -1202,6 +1214,10 @@ export class GameScene extends Phaser.Scene {
       randomInt: Phaser.Math.Between,
     });
     this.runSpawnRerolls += rerollsUsed;
+    const obstacleVariant = getObstacleVariant({
+      survivalTimeSeconds: currentSurvivalTimeSeconds,
+      runSpawnCount: this.runSpawnCount,
+    });
     const obstacle = this.obstacles.get(spawnPoint.x, spawnPoint.y, 'obstacle') as
       | Phaser.Physics.Arcade.Image
       | null;
@@ -1233,13 +1249,17 @@ export class GameScene extends Phaser.Scene {
     const velocity = target
       .subtract(spawnPoint)
       .normalize()
-      .scale(getObstacleSpeed(currentSurvivalTimeSeconds));
+      .scale(
+        getObstacleSpeed(currentSurvivalTimeSeconds) *
+          getObstacleSpeedMultiplier(obstacleVariant),
+      );
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     const collisionGraceMs = getSpawnCollisionGraceMs(currentSurvivalTimeSeconds);
     const collisionUnlockElapsedMs =
       collisionGraceMs > 0 ? this.getActiveRunElapsedMs(this.time.now) + collisionGraceMs : null;
 
     obstacleBody.enable = true;
+    obstacle.setData('variant', obstacleVariant);
     obstacle.setData('spawnEdge', getSpawnEdge(spawnPoint));
     obstacle.setData('collisionReady', collisionGraceMs === 0);
     obstacle.setData('collisionUnlockElapsedMs', collisionUnlockElapsedMs);

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+surge_obstacle_mid_run_variety:
+current: Run #202 `project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i deterministik `surge obstacle` olarak isaretliyor; `project/game/src/game/GameScene.ts` bu varyanta dar bir hiz carpani ve altin tonlu ayirt edici tint uyguluyor
+baseline: onceki source opener sonrasinda da ayni obstacle ritmini koruyor, bu da run'in `10s` sonrasi hizla duzlesmesine ve yeni tehdit beat'i acilmamasina yol aciyordu
+target: ikinci human sample'da surge obstacle beat'i ucuz gurultu veya unfair spike yerine okunur bir tempo artisi ve replay istegi uretsin
+validation: `npm run telemetry:check`, `npm run build`
+
 replay_hud_feedback_reset_integrity:
 current: Run #201 `project/game/src/game/GameScene.ts` death ve yeni run reset'i sirasinda `scoreText`, `goalStatusText` ve `nearMissText` uzerindeki aktif tween/pulse state'ini oldurup temiz alpha/scale/tint durumuna donduruyor; yeni replay eski denemenin near-miss veya milestone iziyle acilmiyor
 baseline: onceki source near-miss, `10s` milestone veya `60s clear` feedback'i olum ya da instant retry ile yarida kesildiginde HUD elemanlarini ara tint/scale durumunda birakabiliyor; sonraki deneme gorsel olarak eski run'in pulse state'ini tasiyabiliyordu
