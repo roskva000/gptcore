@@ -6,6 +6,18 @@
 
 ## Gameplay
 
+drift_obstacle_late_run_variety:
+current: Run #214 `project/game/src/game/balance.ts` `32s` sonrasinda her `7.` spawn icin yeni `drift` variant'ini aciyor; `project/game/src/game/GameScene.ts` bu varyanti ayri tint ve standart hedef hattindan sirayla `22deg` saga/sola kirilan trajectory ile sahneye tasiyor
+baseline: onceki source gec run'da yalniz tuned surge + echo beat'leriyle direct-chase ailesini cesitlendiriyordu; partner ve audit urun breadth'inin hala dar kaldigini isaret ediyordu
+target: ikinci human sample drift beat'inin okunur bir lateral sweep ve replay istegi ureten ucuncu rhythm olarak hissedildigini gostersin; runtime blokluysa bu yeni beat'e tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run build`
+
+deterministic_drift_proxy_integrity:
+current: Run #214 `project/game/src/game/balance.ts` icindeki `getObstacleTravelDirection()` helper'i drift obstacle trajectory'sini ortaklastiriyor; `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` ayni drift rotation kontratini kullaniyor
+baseline: onceki source gec run mutation'lari yalniz unlock/cadence/lag uzerinden tasiyordu; yeni bir lateral beat acilirsa runtime ile deterministic proxy arasinda trajectory drift riski dogabilirdi
+target: drift beat'i runtime ve deterministic proxy tarafinda ayni saga/sola alternating travel line'i kullansin; keep/tune/revert karari stale ya da duplicate trajectory mantigina degil aktif source truth'una dayansin
+validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run build`
+
 survival_goal_clear_payoff_signal:
 current: Run #213 `project/game/src/game/GameScene.ts` `60s` clear aninda ayrik bir celebratory tone caldiriyor; `goalStatusText`, score ve player ayni anda pulse/tint feedback'i vererek clear hedefini daha hissedilir hale getiriyor
 baseline: onceki source `60s` clear icin yalniz text badge ve hint degisikligi veriyordu; run'in namesake hedefi gecildiginde payoff hissi `10s` milestone ve near-miss'e gore daha zayif kaliyordu

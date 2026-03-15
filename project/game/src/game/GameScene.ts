@@ -10,6 +10,7 @@ import {
   getObstacleSpeed,
   getObstacleSpeedMultiplier,
   getObstacleVariant,
+  getObstacleTravelDirection,
   hasReachedFirstDeathTarget,
   hasReachedSurvivalGoal,
   getSpawnDelayMs,
@@ -1255,14 +1256,16 @@ export class GameScene extends Phaser.Scene {
       playerReachabilityMargin: PLAYER_COLLISION_RADIUS,
       targetLagSeconds: spawnTargetLagSeconds,
     });
-    const target = new Phaser.Math.Vector2(targetPoint.x, targetPoint.y);
-    const velocity = target
-      .subtract(spawnPoint)
-      .normalize()
-      .scale(
-        getObstacleSpeed(currentSurvivalTimeSeconds) *
-          getObstacleSpeedMultiplier(obstacleVariant),
-      );
+    const travelDirection = getObstacleTravelDirection({
+      spawnPoint,
+      targetPoint,
+      variant: obstacleVariant,
+      runSpawnCount: this.runSpawnCount,
+    });
+    const velocity = new Phaser.Math.Vector2(travelDirection.x, travelDirection.y).scale(
+      getObstacleSpeed(currentSurvivalTimeSeconds) *
+        getObstacleSpeedMultiplier(obstacleVariant),
+    );
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     const collisionGraceMs = getSpawnCollisionGraceMs(currentSurvivalTimeSeconds);
     const collisionUnlockElapsedMs =

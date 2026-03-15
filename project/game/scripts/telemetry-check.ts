@@ -4,8 +4,12 @@ import {
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
 import {
+  DRIFT_OBSTACLE_CADENCE,
+  DRIFT_OBSTACLE_ROTATION_DEGREES,
+  DRIFT_OBSTACLE_UNLOCK_SECONDS,
   ECHO_OBSTACLE_TARGET_LAG_SECONDS,
   SURGE_OBSTACLE_SPEED_MULTIPLIER,
+  getObstacleTravelDirection,
   getObstacleTargetLagSeconds,
   getSpawnCollisionGraceMs,
   getObstacleSpeedMultiplier,
@@ -140,6 +144,22 @@ assert.equal(
 );
 assert.equal(
   getObstacleVariant({
+    survivalTimeSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
+    runSpawnCount: DRIFT_OBSTACLE_CADENCE,
+  }),
+  'drift',
+  'Every seventh spawn after 32s should become a drift obstacle so late runs gain a fresh lateral beat instead of only more direct-chase pressure.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: 42,
+    runSpawnCount: 42,
+  }),
+  'drift',
+  'Drift cadence should take priority when a late-run spawn lands on every mutation cadence so the newest beat stays visible.',
+);
+assert.equal(
+  getObstacleVariant({
     survivalTimeSeconds: 30,
     runSpawnCount: 30,
   }),
@@ -165,6 +185,45 @@ assert.equal(
   getObstacleTint('echo'),
   0x8ad9ff,
   'Echo obstacles should expose their own tint so the late-run mutation reads as a distinct threat family.',
+);
+assert.equal(
+  getObstacleTint('drift'),
+  0xc8ff9a,
+  'Drift obstacles should expose their own tint so the lateral late-run beat stays readable.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        variant: 'drift',
+        runSpawnCount: DRIFT_OBSTACLE_CADENCE,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.927,
+    y: 0.375,
+  },
+  'The first drift beat should rotate its travel line off the direct chase vector instead of feeling identical to a standard obstacle.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        variant: 'drift',
+        runSpawnCount: DRIFT_OBSTACLE_CADENCE * 2,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.927,
+    y: -0.375,
+  },
+  'Alternating drift beats should sweep to the opposite side so the new mutation does not lock into a single repeated lane.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -222,6 +281,21 @@ assert.equal(
   balanceReport.surgeObstacleSpeedMultiplier,
   SURGE_OBSTACLE_SPEED_MULTIPLIER,
   'Balance snapshot should publish the surge speed multiplier so runtime and proxy stay aligned.',
+);
+assert.equal(
+  balanceReport.driftObstacleUnlockSeconds,
+  DRIFT_OBSTACLE_UNLOCK_SECONDS,
+  'Balance snapshot should publish the drift unlock second so deterministic reports expose when the third beat begins.',
+);
+assert.equal(
+  balanceReport.driftObstacleCadence,
+  DRIFT_OBSTACLE_CADENCE,
+  'Balance snapshot should publish the drift cadence so runtime and proxy stay aligned on the new late-run beat.',
+);
+assert.equal(
+  balanceReport.driftObstacleRotationDegrees,
+  DRIFT_OBSTACLE_ROTATION_DEGREES,
+  'Balance snapshot should publish the drift travel rotation so deterministic reports describe the actual late-run trajectory.',
 );
 assert.equal(
   balanceReport.echoObstacleUnlockSeconds,

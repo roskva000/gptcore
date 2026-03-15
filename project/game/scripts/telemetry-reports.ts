@@ -1,4 +1,7 @@
 import {
+  DRIFT_OBSTACLE_CADENCE,
+  DRIFT_OBSTACLE_ROTATION_DEGREES,
+  DRIFT_OBSTACLE_UNLOCK_SECONDS,
   EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS,
   EARLY_SPAWN_TARGET_LAG_SECONDS,
   EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS,
@@ -16,6 +19,7 @@ import {
   getObstacleSpeed,
   getObstacleSpeedMultiplier,
   getObstacleTargetLagSeconds,
+  getObstacleTravelDirection,
   getObstacleVariant,
   getRequiredSpawnDistance,
   getSpawnDelayMs,
@@ -121,6 +125,9 @@ export type BalanceSnapshotReport = {
   surgeObstacleUnlockSeconds: number;
   surgeObstacleCadence: number;
   surgeObstacleSpeedMultiplier: number;
+  driftObstacleUnlockSeconds: number;
+  driftObstacleCadence: number;
+  driftObstacleRotationDegrees: number;
   echoObstacleUnlockSeconds: number;
   echoObstacleCadence: number;
   echoObstacleTargetLagSeconds: number;
@@ -316,9 +323,11 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
         playerReachabilityMargin: PLAYER_RADIUS,
         targetLagSeconds: spawnTargetLagSeconds,
       });
-      const direction = normalize({
-        x: targetPoint.x - selection.point.x,
-        y: targetPoint.y - selection.point.y,
+      const direction = getObstacleTravelDirection({
+        spawnPoint: selection.point,
+        targetPoint,
+        variant: obstacleVariant,
+        runSpawnCount: spawns + 1,
       });
 
       obstacles.push({
@@ -426,6 +435,9 @@ export const createBalanceSnapshotReport = (): BalanceSnapshotReport => {
     surgeObstacleUnlockSeconds: SURGE_OBSTACLE_UNLOCK_SECONDS,
     surgeObstacleCadence: SURGE_OBSTACLE_CADENCE,
     surgeObstacleSpeedMultiplier: SURGE_OBSTACLE_SPEED_MULTIPLIER,
+    driftObstacleUnlockSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
+    driftObstacleCadence: DRIFT_OBSTACLE_CADENCE,
+    driftObstacleRotationDegrees: DRIFT_OBSTACLE_ROTATION_DEGREES,
     echoObstacleUnlockSeconds: ECHO_OBSTACLE_UNLOCK_SECONDS,
     echoObstacleCadence: ECHO_OBSTACLE_CADENCE,
     echoObstacleTargetLagSeconds: ECHO_OBSTACLE_TARGET_LAG_SECONDS,
@@ -457,7 +469,7 @@ export const createSurvivalSnapshotReport = (): SurvivalSnapshotReport => {
   return {
     sessionCount: SESSION_COUNT,
     maxSimulationSeconds: MAX_SIMULATION_SECONDS,
-    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, projected-path forward-alignment rerolls above ${EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS}s (${EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY}px-equivalent penalty), projected-path lane-stack rerolls within ${EARLY_LANE_STACK_DISTANCE}px above ${EARLY_LANE_STACK_ALIGNMENT_THRESHOLD.toFixed(2)} dot through ${EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS}s (${EARLY_LANE_STACK_PENALTY}px-equivalent penalty), projected-path threat-crowding rerolls within ${EARLY_THREAT_CROWDING_DISTANCE}px above ${EARLY_THREAT_CROWDING_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_THREAT_CROWDING_REROLL_CUTOFF_SECONDS}s (${EARLY_THREAT_CROWDING_PENALTY}px-equivalent penalty), same-edge spawn-column rerolls within ${EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE}px lateral / ${EARLY_SPAWN_EDGE_CLUSTER_DEPTH}px depth through ${EARLY_SPAWN_EDGE_CLUSTER_REROLL_CUTOFF_SECONDS}s (${EARLY_SPAWN_EDGE_CLUSTER_PENALTY}px-equivalent penalty), near-player same-edge rerolls within ${EARLY_PRESSURED_SAME_EDGE_PLAYER_DISTANCE}px and ${EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE}px lateral below score ${EARLY_PRESSURED_SPAWN_ACCEPT_SCORE} through ${EARLY_PRESSURED_SPAWN_REROLL_CUTOFF_SECONDS}s, deep same-side follow-up sweeps stay reroll-eligible out to ${EARLY_PRESSURED_SAME_SIDE_LATERAL_DISTANCE}px, retreat-pinch rerolls within ${EARLY_RETREAT_PINCH_PLAYER_DISTANCE}px above ${EARLY_RETREAT_PINCH_ALIGNMENT_THRESHOLD.toFixed(2)} forward alignment when the new spawn seals the rear lane within ${EARLY_RETREAT_PINCH_RETREAT_LATERAL_DISTANCE}px through ${EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS}s, mid-run projected-stack rerolls within ${MID_RUN_PROJECTED_STACK_PLAYER_DISTANCE}px above ${MID_RUN_PROJECTED_STACK_ALIGNMENT_THRESHOLD.toFixed(2)} alignment from ${MID_RUN_PROJECTED_STACK_REROLL_START_SECONDS}s to ${MID_RUN_PROJECTED_STACK_REROLL_CUTOFF_SECONDS}s, surge obstacles every ${SURGE_OBSTACLE_CADENCE}th spawn from ${SURGE_OBSTACLE_UNLOCK_SECONDS}s with ${SURGE_OBSTACLE_SPEED_MULTIPLIER.toFixed(2)}x speed, echo obstacles every ${ECHO_OBSTACLE_CADENCE}th spawn from ${ECHO_OBSTACLE_UNLOCK_SECONDS}s with ${ECHO_OBSTACLE_TARGET_LAG_SECONDS.toFixed(2)}s target lag, ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s, ${OBSTACLE_COLLISION_RADIUS}px visible-arena hit margin, and ${OFFSCREEN_CULL_MARGIN}px offscreen cull margin`,
+    controller: `center-seeking avoidance heuristic with 180ms reaction interval, +${OPENING_REQUIRED_SPAWN_DISTANCE_BONUS}px opening spawn distance through ${OPENING_REQUIRED_SPAWN_DISTANCE_CUTOFF_SECONDS}s, projected-path forward-alignment rerolls above ${EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS}s (${EARLY_FORWARD_SPAWN_ALIGNMENT_PENALTY}px-equivalent penalty), projected-path lane-stack rerolls within ${EARLY_LANE_STACK_DISTANCE}px above ${EARLY_LANE_STACK_ALIGNMENT_THRESHOLD.toFixed(2)} dot through ${EARLY_LANE_STACK_REROLL_CUTOFF_SECONDS}s (${EARLY_LANE_STACK_PENALTY}px-equivalent penalty), projected-path threat-crowding rerolls within ${EARLY_THREAT_CROWDING_DISTANCE}px above ${EARLY_THREAT_CROWDING_ALIGNMENT_THRESHOLD.toFixed(1)} dot through ${EARLY_THREAT_CROWDING_REROLL_CUTOFF_SECONDS}s (${EARLY_THREAT_CROWDING_PENALTY}px-equivalent penalty), same-edge spawn-column rerolls within ${EARLY_SPAWN_EDGE_CLUSTER_LATERAL_DISTANCE}px lateral / ${EARLY_SPAWN_EDGE_CLUSTER_DEPTH}px depth through ${EARLY_SPAWN_EDGE_CLUSTER_REROLL_CUTOFF_SECONDS}s (${EARLY_SPAWN_EDGE_CLUSTER_PENALTY}px-equivalent penalty), near-player same-edge rerolls within ${EARLY_PRESSURED_SAME_EDGE_PLAYER_DISTANCE}px and ${EARLY_PRESSURED_SAME_EDGE_LATERAL_DISTANCE}px lateral below score ${EARLY_PRESSURED_SPAWN_ACCEPT_SCORE} through ${EARLY_PRESSURED_SPAWN_REROLL_CUTOFF_SECONDS}s, deep same-side follow-up sweeps stay reroll-eligible out to ${EARLY_PRESSURED_SAME_SIDE_LATERAL_DISTANCE}px, retreat-pinch rerolls within ${EARLY_RETREAT_PINCH_PLAYER_DISTANCE}px above ${EARLY_RETREAT_PINCH_ALIGNMENT_THRESHOLD.toFixed(2)} forward alignment when the new spawn seals the rear lane within ${EARLY_RETREAT_PINCH_RETREAT_LATERAL_DISTANCE}px through ${EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS}s, mid-run projected-stack rerolls within ${MID_RUN_PROJECTED_STACK_PLAYER_DISTANCE}px above ${MID_RUN_PROJECTED_STACK_ALIGNMENT_THRESHOLD.toFixed(2)} alignment from ${MID_RUN_PROJECTED_STACK_REROLL_START_SECONDS}s to ${MID_RUN_PROJECTED_STACK_REROLL_CUTOFF_SECONDS}s, surge obstacles every ${SURGE_OBSTACLE_CADENCE}th spawn from ${SURGE_OBSTACLE_UNLOCK_SECONDS}s with ${SURGE_OBSTACLE_SPEED_MULTIPLIER.toFixed(2)}x speed, echo obstacles every ${ECHO_OBSTACLE_CADENCE}th spawn from ${ECHO_OBSTACLE_UNLOCK_SECONDS}s with ${ECHO_OBSTACLE_TARGET_LAG_SECONDS.toFixed(2)}s target lag, drift obstacles every ${DRIFT_OBSTACLE_CADENCE}th spawn from ${DRIFT_OBSTACLE_UNLOCK_SECONDS}s with alternating ${DRIFT_OBSTACLE_ROTATION_DEGREES}deg travel rotation, ${EARLY_SPAWN_TARGET_LAG_SECONDS.toFixed(2)}s early spawn target lag through ${EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS}s, ${EARLY_SPAWN_COLLISION_GRACE_MS}ms collision grace through ${EARLY_SPAWN_COLLISION_GRACE_CUTOFF_SECONDS}s, ${OBSTACLE_COLLISION_RADIUS}px visible-arena hit margin, and ${OFFSCREEN_CULL_MARGIN}px offscreen cull margin`,
     effectivePlayerSpeed: EFFECTIVE_PLAYER_SPEED,
     nativePlayerSpeed: PLAYER_SPEED,
     averageSurvivalTimeSeconds: round(averageSurvivalTime),

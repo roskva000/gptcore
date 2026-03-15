@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #214]
+
+Decision:
+`mutation` modunda late-run'a ucuncu okunur rhythm olarak `drift` obstacle beat'ini ekle.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause, near-miss, `10s` milestone, `60s` payoff, surge/echo knob'lari ve spawn-fairness mikro-koridorlarina geri dondurmuyor. Buna ragmen partner ve audit product breadth'in dar kaldigini acikca soyluyor. Yeni framework acmadan en dar savunulabilir urun hareketi, mevcut variant sistemini kullanip gec run'da yalniz direct chase ritmini kiran yeni bir beat acmakti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `drift` variant'ini acti: `32s` sonrasinda her `7.` spawn ayri tint ile geliyor ve standart hedef hattindan sirayla `22deg` saga/sola kirilan trajectory kullaniyor. `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` ayni `getObstacleTravelDirection()` helper'i uzerinden calistigi icin runtime ve deterministic proxy yeni beat'i ayni kontratla tasiyor. `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Ikinci insan sample drift beat'inin okunmaz, cheap veya gereksiz gurultu urettigini gosterirse yalniz drift cadence/rotation kontrati dar kapsamda tune/revert edilir; bu bahaneyle yeni enemy framework'u, pattern director'u veya orchestration katmani acilmaz.
+
 ### [Run #213]
 
 Decision:

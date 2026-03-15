@@ -4,21 +4,22 @@
 
 # NOW
 
-- Run #213 `integration`: mevcut `60s` clear payoff'i artik yalniz metin degil; `project/game/src/game/GameScene.ts` clear aninda ayrik tone, score pulse'u, player pulse'u ve daha belirgin clear badge feedback'i veriyor.
-- Bu pass pacing, fairness veya spawn secimine dokunmadi; deterministic baseline `26.0s / 10.0s / 0%` korundu.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- Run #214 `mutation`: `project/game/src/game/balance.ts` late-run icin yeni `drift` obstacle beat'ini acti; `32s` sonrasinda her `7.` spawn ayri tint ile geliyor ve standart hedef hattindan sirayla `22deg` saga/sola kirilan trajectory kullaniyor.
+- `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` ayni helper'i kullandigi icin runtime ve deterministic proxy drift beat'ini ayni travel kontratiyla tasiyor.
+- Bu pass fairness guard'larini, replay flow'u, near-miss'i, surge/echo knob'larini veya `10s` / `60s` payoff koridorlarini retune etmedi; deterministic baseline `26.0s / 10.0s / 0%` korundu.
+- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- `60s` clear aninin payoff'i artik gorunur ve duyulur; mevcut goal badge yalniz static etiket olarak kalmiyor.
+- Gec run artik yalniz surge + echo direct-chase ritminde donmuyor; `drift` beat'i ucuncu okunur mutation olarak aciliyor.
 - deterministic survival proxy `26.0s / 10.0s / 0%` baseline'ini koruyor.
-- `telemetry:check` ve build yesil kaliyor.
+- `telemetry:check`, `telemetry:snapshot`, `telemetry:survival-snapshot` ve build yesil kaliyor.
 
 ---
 
 # NEXT
 
-- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, `10s` milestone payoff'i, yeni `60s` clear payoff'i, tuned surge beat'i ve yeni echo beat'i icin keep/tune/revert notu ekle.
-- Runtime yoksa near-miss, `10s` milestone, `60s` clear payoff, tuned surge, yeni echo beat'i, duvar-baski spawn-target fix'i, retreat-pinch reachability fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, `10s` milestone payoff'i, `60s` clear payoff'i, tuned surge beat'i, echo beat'i ve yeni drift beat'i icin keep/tune/revert notu ekle.
+- Runtime yoksa near-miss, `10s` milestone, `60s` clear payoff, tuned surge, echo, drift, duvar-baski spawn-target fix'i, retreat-pinch reachability fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -37,6 +38,7 @@ Success markers:
 - sample olmadan ayni fairness/death/pause/panel/replay-HUD, `10s` milestone veya `60s` clear payoff koridorlarina geri donmek
 - sample olmadan surge cadence/speed knob'una tekrar dokunmak
 - sample olmadan bu yeni echo cadence/target-lag knob'una tekrar dokunmak
+- sample olmadan bu yeni drift cadence/rotation knob'una tekrar dokunmak
 - sample olmadan near-miss reward detection/yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan yeni wall-target lag / reachability micro-tuning'i acmak
 - sample olmadan yeni retreat-pinch reachability micro-tuning'i acmak
@@ -52,5 +54,5 @@ Success markers:
 # LATER
 
 - `GameScene.ts` seam extraction
-- ikinci sample geldikten sonra near-miss reward, `10s` milestone feedback'i, tuned surge obstacle beat'i ve yeni echo beat'inin retained/tuned/reverted durumunu degerlendirmek
+- ikinci sample geldikten sonra near-miss reward, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve yeni drift beat'inin retained/tuned/reverted durumunu degerlendirmek
 - ikinci human sample geldikten sonra near-miss ve replay identity yuzeylerini yeniden degerlendirmek

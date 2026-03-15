@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #214
+
+- `project/game/src/game/balance.ts` late-run icin yeni `drift` obstacle variant'ini ekledi; `32s` sonrasinda her `7.` spawn ayri tint ile geliyor ve standart hedef hattindan sirayla `22deg` saga/sola kiriliyor
+- `project/game/src/game/GameScene.ts` drift obstacle'larin runtime trajectory'sini yeni ortak helper ile kuruyor; `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni kontratla hizaliyor
+- deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` ve dagilim `0 / 3 / 11 / 10` korundu
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni late-run mutation ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #213
 
 - `project/game/src/game/GameScene.ts` `60s` clear anina ayrik bir celebratory tone ekledi

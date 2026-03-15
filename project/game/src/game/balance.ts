@@ -18,8 +18,17 @@ export const ECHO_OBSTACLE_UNLOCK_SECONDS = 24;
 export const ECHO_OBSTACLE_CADENCE = 6;
 export const ECHO_OBSTACLE_TARGET_LAG_SECONDS = 0.22;
 export const ECHO_OBSTACLE_TINT = 0x8ad9ff;
+export const DRIFT_OBSTACLE_UNLOCK_SECONDS = 32;
+export const DRIFT_OBSTACLE_CADENCE = 7;
+export const DRIFT_OBSTACLE_ROTATION_DEGREES = 22;
+export const DRIFT_OBSTACLE_TINT = 0xc8ff9a;
 
-export type ObstacleVariant = 'standard' | 'surge' | 'echo';
+type Point = {
+  x: number;
+  y: number;
+};
+
+export type ObstacleVariant = 'standard' | 'surge' | 'echo' | 'drift';
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -48,7 +57,11 @@ export const getObstacleVariant = ({
   survivalTimeSeconds: number;
   runSpawnCount: number;
 }): ObstacleVariant =>
-  survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds >= DRIFT_OBSTACLE_UNLOCK_SECONDS &&
+  runSpawnCount > 0 &&
+  runSpawnCount % DRIFT_OBSTACLE_CADENCE === 0
+    ? 'drift'
+    : survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
   runSpawnCount % ECHO_OBSTACLE_CADENCE === 0
     ? 'echo'
@@ -62,7 +75,65 @@ export const getObstacleSpeedMultiplier = (variant: ObstacleVariant): number =>
   variant === 'surge' ? SURGE_OBSTACLE_SPEED_MULTIPLIER : 1;
 
 export const getObstacleTint = (variant: ObstacleVariant): number | null =>
-  variant === 'surge' ? SURGE_OBSTACLE_TINT : variant === 'echo' ? ECHO_OBSTACLE_TINT : null;
+  variant === 'surge'
+    ? SURGE_OBSTACLE_TINT
+    : variant === 'echo'
+      ? ECHO_OBSTACLE_TINT
+      : variant === 'drift'
+        ? DRIFT_OBSTACLE_TINT
+        : null;
+
+const normalize = (point: Point): Point => {
+  const magnitude = Math.hypot(point.x, point.y);
+
+  if (magnitude === 0) {
+    return { x: 0, y: 0 };
+  }
+
+  return {
+    x: point.x / magnitude,
+    y: point.y / magnitude,
+  };
+};
+
+const rotate = (point: Point, degrees: number): Point => {
+  const radians = (degrees * Math.PI) / 180;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+
+  return {
+    x: point.x * cos - point.y * sin,
+    y: point.x * sin + point.y * cos,
+  };
+};
+
+export const getObstacleTravelDirection = ({
+  spawnPoint,
+  targetPoint,
+  variant,
+  runSpawnCount,
+}: {
+  spawnPoint: Point;
+  targetPoint: Point;
+  variant: ObstacleVariant;
+  runSpawnCount: number;
+}): Point => {
+  const baseDirection = normalize({
+    x: targetPoint.x - spawnPoint.x,
+    y: targetPoint.y - spawnPoint.y,
+  });
+
+  if (variant !== 'drift') {
+    return baseDirection;
+  }
+
+  const rotationDegrees =
+    Math.floor(runSpawnCount / DRIFT_OBSTACLE_CADENCE) % 2 === 0
+      ? DRIFT_OBSTACLE_ROTATION_DEGREES
+      : -DRIFT_OBSTACLE_ROTATION_DEGREES;
+
+  return normalize(rotate(baseDirection, rotationDegrees));
+};
 
 export const getRequiredSpawnDistance = (survivalTimeSeconds: number): number =>
   clamp(
