@@ -725,6 +725,7 @@ const isSpawnCandidateGuardCompliant = ({
     hasRetreatPinchThreat(
       playerPosition,
       playerVelocity,
+      playerReachabilityMargin,
       activeObstaclePositions,
       spawnPoint,
     )
@@ -748,18 +749,21 @@ const isSpawnCandidateGuardCompliant = ({
 const hasRetreatPinchThreat = (
   playerPosition: Point,
   playerVelocity: Point | undefined,
+  playerReachabilityMargin: number | undefined,
   activeObstaclePositions: ActiveObstaclePosition[] | undefined,
   spawnPoint: Point,
 ): boolean => {
-  if (
-    !playerVelocity ||
-    (playerVelocity.x === 0 && playerVelocity.y === 0) ||
-    !activeObstaclePositions?.length
-  ) {
+  const reachableVelocity = getReachableVelocity(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
+
+  if (!reachableVelocity || !activeObstaclePositions?.length) {
     return false;
   }
 
-  const movementDirection = normalize(playerVelocity);
+  const movementDirection = normalize(reachableVelocity);
   const spawnRetreatVector = {
     x: spawnPoint.x - playerPosition.x,
     y: spawnPoint.y - playerPosition.y,

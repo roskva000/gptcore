@@ -1182,6 +1182,23 @@ assert.deepEqual(
   'Spawn selection should treat a right-in-front threat plus a rear-lane seal as a retreat pinch through the 10s target-first-death window, even when the fixed-step clock lands a hair above 10.0s.',
 );
 
+const wallPressRetreatSelection = selectSpawnPoint({
+  survivalTimeSeconds: 10,
+  playerPosition: { x: 784, y: 300 },
+  playerVelocity: { x: 214, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 740, y: 300, spawnEdge: 'right' }],
+  randomInt: createQueuedRandom([3, 300]),
+});
+assert.deepEqual(
+  wallPressRetreatSelection,
+  {
+    point: { x: -56, y: 300 },
+    rerollsUsed: 0,
+  },
+  'Retreat-pinch guard should ignore outward wall-press velocity so a player already pinned against the wall does not lose a legal rear-lane spawn to an unreachable forward direction.',
+);
+
 const midRunProjectedStackSelection = selectSpawnPoint({
   survivalTimeSeconds: 12,
   playerPosition: { x: 400, y: 300 },

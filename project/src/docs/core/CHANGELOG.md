@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #212
+
+- `project/game/src/game/spawn.ts` retreat-pinch guard'ini `getReachableVelocity()` ile hizaladi; duvara dogru ulasilamaz input artik sahte "forward pressure" diye legal rear-lane spawn'i reroll ettirmiyor
+- `project/game/scripts/telemetry-check.ts` sag-duvarda outward press + yakin on threat icin yeni false-positive regression case'i ekledi; mevcut seed `#7` retreat-pinch floor kontrati korunuyor
+- deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` ve dagilim `0 / 3 / 11 / 10` korundu
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar wall-aware retreat-pinch stabilization'i ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #211
 
 - `project/game/src/game/balance.ts` gec run icin yeni `echo` obstacle variant'ini ekledi; `24s` sonrasinda her `6.` spawn ayri tint ile `0.22s` target lag kullaniyor

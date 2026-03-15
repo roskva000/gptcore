@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #212]
+
+Decision:
+`stabilization` modunda retreat-pinch spawn guard'ini duvar-baskisinda reachability-aware hale getir.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/near-miss/surge/echo veya onceki spawn helper mikro-koridorlarina geri dondurmuyor. Kaynak incelemesi `project/game/src/game/spawn.ts` icinde yeni ama dar bir fairness kusuru gosterdi: `hasRetreatPinchThreat()` diger duvar-aware helper'lardan farkli olarak ham `playerVelocity`'yi normalize ediyordu. Oyuncu sag veya sol duvara yaslanip disari bastiginda fiziksel olarak ulasilamaz yon yine de "forward pressure" sayiliyor, bu da legal rear-lane spawn'larin sahte retreat-pinch ihlali diye reroll yemesine neden olabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` retreat-pinch guard'ini `getReachableVelocity()` uzerinden yorumlamaya basladi; ulasilamaz wall-press input artik kacis yonu gibi davranmiyor. `project/game/scripts/telemetry-check.ts` sag-duvarda outward press + yakin on threat senaryosunu `0 reroll` ile regression altina aldi; mevcut seed `#7` retreat-pinch floor case'i ayni kaldi. `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Gercek runtime bulgusu bu reachability clamp'inin duvar oyunu sirasinda oyuncuya gereksiz steril rear-lane kacislari verdigini gosterirse yalniz retreat-pinch guard'inin reachability semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, fairness framework'u veya orchestration katmani acilmaz.
+
 ### [Run #211]
 
 Decision:

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+retreat_pinch_wall_reachability_integrity:
+current: Run #212 `project/game/src/game/spawn.ts` retreat-pinch guard'ini `getReachableVelocity()` uzerinden yorumluyor; oyuncu duvara yaslanip disari bastiginda ulasilamaz outward input artik gercek ileri baski gibi legal rear-lane spawn'lari reroll etmiyor
+baseline: Run #177 retreat-pinch guard'i ham `playerVelocity`'yi normalize ediyordu; duvar kenarinda fiziksel olarak gidilemeyen yon bile kacis yonu sanilabildigi icin yeni spawn secimi sahte pressure altinda kalabiliyordu
+target: wall-edge oyunu sirasinda retreat-pinch guard'i yalniz gercekten ulasilabilir ileri baski varken calissin; sag-duvar false-positive case'i `0 reroll`, seed `#7` retreat-pinch floor case'i ise `1 reroll` olarak sabit kalsin
+validation: `npm run telemetry:check`, `npm run telemetry:survival-snapshot`, `npm run build`
+
 echo_obstacle_late_run_variety:
 current: Run #211 `project/game/src/game/balance.ts` `24s` sonrasinda her `6.` spawn icin yeni `echo` variant'ini aciyor; `project/game/src/game/GameScene.ts` bu varyanti `0.22s` target lag ile ayri tintta sahneye tasiyor ve deterministic proxy ayni trajectory kontratini paylasiyor
 baseline: onceki source gec run'da yalniz surge cadence'i ile ayni direct-chase ritmini cesitlendiriyordu; insan sinyali ve audit oyunun bazi ellerden sonra ayni hissettigini ve yeni product breadth ihtiyacini isaret ediyordu
