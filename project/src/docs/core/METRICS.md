@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+paused_live_best_truth_integrity:
+current: Run #197 `project/game/src/game/GameScene.ts` focus-loss pause overlay ve paused telemetry satirlarinda best degerini current survival time ile birlikte yorumluyor; oyuncu active run sirasinda stored best'i gecmisken browser blur/visibility change ile `paused` fazina dusunce truth eski record'a geri donmuyor
+baseline: onceki source `paused` fazina girince overlay ve telemetry summary satirlarinda yalniz kaydedilmis best'i okuyordu; oyuncu yeni bir rekoru aktif run icinde gecmis olsa bile tab blur sonrasi pause snapshot daha dusuk bir best gosterip run gercegini stale hissettirebiliyordu
+target: sonraki headed sample'da focus-loss pause ekranı current run ile kazanilmis best ilerleyisini dogru tasisin; pause/resume akisi yeni truth'u korurken yeni HUD/pause churn'u uretmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 responsive_signal_panel_state_persistence:
 current: Run #196 `project/game/src/main.ts` responsive signal-panel varsayilanlarini yalniz ilk load / pre-interaction aninda uyguluyor; oyuncu bir paneli manuel acip kapattiktan sonra narrow/wide viewport gecisleri ayni acik/kapali durumunu koruyor
 baseline: onceki source her media-query gecisinde default panel durumunu yeniden yaziyordu; rotate/resize sonrasi `Latest AI update` karti tekrar kapanabiliyor ve kullanicinin manuel secimi kendiliginden silindigi icin stale/gizli hissi uretebiliyordu

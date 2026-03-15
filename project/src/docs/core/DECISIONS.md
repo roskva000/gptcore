@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #197]
+
+Decision:
+`stabilization` modunda focus-loss pause snapshot live-best truth kusurunu kapat.
+
+Reason:
+Runtime yine bloklu ve audit builder'i ayni spawn/death/near-miss/validation/mobile/viewport/signal-panel koridorlarina geri dondurmuyor. Buna ragmen aktif run truth tarafinda dar ama gercek bir UX kusuru kalmisti: oyuncu current run ile stored best'i gectikten sonra browser blur/visibility change ile `paused` fazina dusunce `GameScene.ts` overlay ve paused telemetry satirlari tekrar eski recorded best'i gosteriyordu. Bu, run henuz devam ederken oyuncunun gercek ilerleyisini geri aliyor ve pause snapshot'ini stale hissettiriyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` pause overlay icindeki session best satirini ve paused telemetry summary icindeki best satirini current survival time ile yorumlamaya basladi. Focus-loss pause artik active run yeni rekoru tasiyorsa bu ilerlemeyi koruyor; source yine dar kaldi ve spawn/death/input/shell davranislarina dokunmadi. `project/game/src/latestRun.ts` public panel bu active-run truth deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `27.4s / 10.0s / 0%` korundu.
+
+Rollback Condition:
+Gercek sample pause snapshot'ta live best gostermenin oyuncuyu yanlis yonlendirdigini veya pause overlay'i gereksiz yogunlastirdigini gosterirse yalniz paused summary metni dar kapsamda yeniden ayarlanir; bu bahaneyle yeni pause framework'u, focus manager'i veya progression sistemi acilmaz.
+
 ### [Run #196]
 
 Decision:

@@ -4,6 +4,10 @@
 
 # NOW
 
+- Run #197 `stabilization`: `project/game/src/game/GameScene.ts` focus-loss pause snapshot'inda live best truth'unu koruyor; oyuncu aktif run sirasinda stored best'i gecmisken browser blur/visibility change ile `paused` fazina dusunce overlay ve paused telemetry satirlari eski record'a geri donmuyor.
+- Pause overlay artik session best'i current survival time ile birlikte yorumluyor; paused telemetry satiri da ayni live-best helper'i kullaniyor. Bu degisiklik spawn, death, launch-control, mobile-touch, viewport-anchor veya signal-panel davranisini acmiyor.
+- `project/game/src/latestRun.ts` public panel bu active-run truth deltasi ile hizalandi.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic baseline `27.4s / 10.0s / 0%` korundu, mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 - Run #196 `stabilization`: `project/game/src/main.ts` responsive signal-panel varsayilanlarini oyuncu etkilesimi yokken uygulayip ilk manuel toggle'dan sonra viewport breakpoint gecislerinde acik/kapali tercihi koruyor; narrow/mobile rotate-resize akisi artik `Latest AI update` kartini kendiliginden tekrar gizlenmis/stale hissettirmiyor.
 - Bu degisiklik ilk render compact stack varsayilanini koruyor; yeni panel framework'u, shell orchestration'i veya copy rework'u acmiyor.
 - `project/game/src/latestRun.ts` public panel bu responsive-shell deltasi ile hizalandi.
@@ -102,8 +106,8 @@
 - Run #155 game-over direct pointer replay bug'ini kapatti; replay/resume `pointerdown` yolu artik held-input release gate'ini atlamiyor.
 - Run #154 stale mouse pointer hold-state bug'ini kapatti; native `buttons===0` artik cached primary-button fallback'iyle steer/retry/resume eligibility tasimiyor.
 - `project/game/src/latestRun.ts` public `AI latest update` paneli Run #170 opener readability fix'i ile yeniden hizalandi.
-- Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, launch/retry hissi, Run #175-#184 death/death-truth yuzeyi, Run #183 multi-touch izolasyonu ve Run #165-#178 spawn readability/pressure + validation-status guard'lari icin keep/tune/revert notu birak.
-- Runtime yoksa Run #175-#184 hattini yeni shell/readiness/copy sistemi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/death-truth zinciri, near-miss/validation hattı, fresh launch control, viewport-anchor, mobile multi-touch, stacked signal-panel visibility/state ve spawn-grace depth koridoru disinda kal. Yeni adaylar opener disi pressure/spacing trace'i veya baska dar gameplay baskilarinda kalmali.
+- Runtime varsa tek hedef ikinci structured human sample olsun: near-miss pulse/chirp, launch/retry hissi, Run #175-#184 death/death-truth yuzeyi, Run #183 multi-touch izolasyonu, Run #191 + Run #196 signal-panel davranisi ve bu tur pause snapshot truth'u icin keep/tune/revert notu birak.
+- Runtime yoksa Run #175-#184 hattini yeni shell/readiness/copy sistemi icin bahane yapmadan tek yeni gameplay veya UX source bug'i sec; same-edge fairness zinciri, death/death-truth zinciri, near-miss/validation hattı, fresh launch control, viewport-anchor, mobile multi-touch, stacked signal-panel visibility/state, spawn-grace depth ve pause snapshot truth koridoru disinda kal. Yeni adaylar opener disi pressure/spacing trace'i veya baska dar gameplay baskilarinda kalmali.
 - Deterministic baseline `27.4s / 10.0s / 0%` ve build sagligini koru.
 
 Success markers:
@@ -114,8 +118,8 @@ Success markers:
 
 # NEXT
 
-- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 + Run #181 + Run #183 launch/input/replay hattı, Run #175-#184 death/death-truth yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari, Run #180 narrow viewport active-run anchor davranisi ve Run #191 narrow signal-panel gorunurlugu.
-- Runtime yine blokluysa death/death-truth, validation/controller drift, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace readability ve yeni kapanan projected-stack + touch-ownership + death-callout drift + game-over scroll restore + stacked signal-panel visibility/state + reset-safety + goal-clear HUD + live-best HUD + waiting intro milestone-title koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i sec; tercihen `spawn.ts` disinda, active-run arena truth veya kontrol hissini bozan dar bir kusur bul. Yeni orchestration katmani acma.
+- Runtime varsa ikinci structured sample'i topla ve `HUMAN_SIGNALS.md` icine su yuzeyler icin keep/tune/revert notu ekle: Run #145-#150 near-miss hattı, Run #130-#158 + Run #181 + Run #183 launch/input/replay hattı, Run #175-#184 death/death-truth yuzeyleri, Run #165-#177 spawn readability/pressure guard'lari, Run #180 narrow viewport active-run anchor davranisi, Run #191 + Run #196 signal-panel davranisi ve Run #197 pause snapshot truth.
+- Runtime yine blokluysa death/death-truth, validation/controller drift, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace readability ve yeni kapanan projected-stack + touch-ownership + death-callout drift + game-over scroll restore + stacked signal-panel visibility/state + reset-safety + goal-clear HUD + live-best HUD + waiting intro milestone-title + pause snapshot truth koridorlarina geri donmeden tek yeni gameplay veya UX source bug'i sec; tercihen `spawn.ts` disinda, active-run arena truth veya kontrol hissini bozan dar bir kusur bul. Yeni orchestration katmani acma.
 - Public panel yeniden stale kalmasin; yeni runtime-facing run oldugunda `latestRun.ts` yalniz gercek source deltasiyle birlikte guncellensin.
 
 ---
@@ -139,6 +143,7 @@ Success markers:
 - sample olmadan Run #150 near-miss chirp'ini yeni audio system, soundtrack veya combo-celebration katmanlariyla buyutmek
 - sample olmadan Run #195 waiting intro milestone-truth fix'ini yeni onboarding/copy/panel sistemi bahanesine buyutmek
 - sample olmadan Run #196 responsive signal-panel state fix'ini yeni shell state manager'i, panel framework'u veya layout orchestration katmanina buyutmek
+- sample olmadan Run #197 pause snapshot truth fix'ini yeni pause framework'u, focus manager'i veya progression sistemi bahanesine buyutmek
 
 ---
 

@@ -951,6 +951,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     const pausedAtSeconds = this.getCurrentSurvivalTimeSeconds();
+    const lifetimeBestText = getLiveBestSurvivalTimeText({
+      telemetry: this.telemetry,
+      currentSurvivalTime: pausedAtSeconds,
+    });
+    const sessionBestText = getLiveBestSurvivalTimeText({
+      telemetry: this.sessionTelemetry,
+      currentSurvivalTime: pausedAtSeconds,
+    });
     this.setPhase('paused');
     const movementInputActive = this.hasMovementInput();
     const pointerInputActive = shouldRequirePointerReleaseAfterPause(
@@ -992,7 +1000,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayStats
       .setText(
         [
-          `Session best ${getBestSurvivalTimeText(this.sessionTelemetry)} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
+          `Session best ${sessionBestText} | Avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
           `Validation ${getValidationProgressText(this.sessionTelemetry)} | First death ${getFirstDeathTimeText(this.sessionTelemetry)}`,
         ].join('\n'),
       )
@@ -2357,7 +2365,10 @@ export class GameScene extends Phaser.Scene {
         'Local telemetry',
         `Run paused at ${this.survivalTime.toFixed(1)}s | Session avg ${getAverageSurvivalTime(this.sessionTelemetry).toFixed(1)}s`,
         `Session first death: ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s: ${getEarlyDeathRate(this.sessionTelemetry)}%`,
-        `Validation: ${getValidationProgressText(this.sessionTelemetry)} | Best ${getBestSurvivalTimeText(this.telemetry)}`,
+        `Validation: ${getValidationProgressText(this.sessionTelemetry)} | Best ${getLiveBestSurvivalTimeText({
+          telemetry: this.telemetry,
+          currentSurvivalTime: this.survivalTime,
+        })}`,
         `Refocus, then press ${this.getResumeActionText()} to resume.`,
       ];
     }

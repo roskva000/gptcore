@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #197
+
+- `project/game/src/game/GameScene.ts` focus-loss pause overlay'inde session best satirini active run survival time ile birlikte yorumlamaya basladi; oyuncu yeni rekoru gecmisken browser blur sonrasi pause snapshot artik eski best'e geri dusmuyor
+- ayni dosya paused telemetry summary icindeki `Best` metnini de live current run ile hizaladi; aktif run truth'u pause aninda stale kayda donmuyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu pause-snapshot truth fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #196
 
 - `project/game/src/main.ts` responsive signal-panel varsayilanlarini ilk oyuncu etkilesimine kadar koruyup sonraki viewport breakpoint gecislerinde manuel acik/kapali tercihi ezmemeye basladi
