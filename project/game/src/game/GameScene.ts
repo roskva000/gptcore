@@ -1194,7 +1194,6 @@ export class GameScene extends Phaser.Scene {
     // Timer callbacks can fire before the next update tick; reclaim stale offscreen entries first.
     this.cullObstacles();
     const currentSurvivalTimeSeconds = this.getCurrentSurvivalTimeSeconds();
-    this.runSpawnCount += 1;
     const { point: spawnPoint, rerollsUsed } = selectSpawnPoint({
       survivalTimeSeconds: currentSurvivalTimeSeconds,
       playerPosition: { x: this.player.x, y: this.player.y },
@@ -1216,11 +1215,6 @@ export class GameScene extends Phaser.Scene {
         })),
       randomInt: Phaser.Math.Between,
     });
-    this.runSpawnRerolls += rerollsUsed;
-    const obstacleVariant = getObstacleVariant({
-      survivalTimeSeconds: currentSurvivalTimeSeconds,
-      runSpawnCount: this.runSpawnCount,
-    });
     const obstacle = this.obstacles.get(spawnPoint.x, spawnPoint.y, 'obstacle') as
       | Phaser.Physics.Arcade.Image
       | null;
@@ -1228,6 +1222,13 @@ export class GameScene extends Phaser.Scene {
     if (!obstacle) {
       return;
     }
+
+    this.runSpawnCount += 1;
+    this.runSpawnRerolls += rerollsUsed;
+    const obstacleVariant = getObstacleVariant({
+      survivalTimeSeconds: currentSurvivalTimeSeconds,
+      runSpawnCount: this.runSpawnCount,
+    });
 
     this.tweens.killTweensOf(obstacle);
     obstacle

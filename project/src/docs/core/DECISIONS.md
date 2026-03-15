@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #210]
+
+Decision:
+`stabilization` modunda spawn bookkeeping'i yalniz gercek obstacle allocation sonrasi ilerlet.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/replay-intent/near-miss/surge/spawn-fairness mikro-koridorlarina geri dondurmuyor. Kaynak incelemesi `project/game/src/game/GameScene.ts` icinde dar ama gercek bir gameplay integrity kusuru gosterdi: `spawnObstacle()` `runSpawnCount` ile `runSpawnRerolls` sayaçlarini obstacle pool gercekten bir body dondurmeden once arttiriyordu. Pool hic obstacle veremezse gorunmeyen bir spawn denemesi sessizce surge cadence'ini, zorluk bookkeeping'ini ve spawn-save telemetry'sini ilerletmis oluyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik spawn secimini once hesaplayip pool'dan obstacle aldiktan sonra `runSpawnCount` ve `runSpawnRerolls` sayaçlarini arttiriyor; variant secimi de bu gercek allocation sonrasina baglandi. Boylece sahneye hic threat cikmayan bir durumda cadence ve telemetry drift etmiyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Gercek runtime bulgusu bu gecikmis bookkeeping'in spawn cadence'ini veya obstacle pooling davranisini beklenmedik sekilde bozdugunu gosterirse yalniz bu sayac-ordering degisikligi dar kapsamda geri alinip tekrar ayarlanir; bu bahaneyle yeni spawn manager'i, pool framework'u veya orchestration katmani acilmaz.
+
 ### [Run #209]
 
 Decision:

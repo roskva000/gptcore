@@ -4,14 +4,13 @@
 
 # NOW
 
-- Run #209 `stabilization`: replay/resume hareket niyeti artik yon kombinasyonundaki degisimi okuyarak tespit ediliyor; olum veya pause sonrasi ayni hold spam olmuyor, ama yeni yon hemen retry/resume sayiliyor.
-- `project/game/src/game/primaryAction.ts` fresh movement kararini movement-state bitmask'ine tasidi; `project/game/src/game/GameScene.ts` bu state'i waiting/pause/game-over/reset akislari boyunca koruyor.
-- `project/game/scripts/telemetry-check.ts` yeni direction-change retry/resume kontratini regression altina aldi.
+- Run #210 `stabilization`: spawn bookkeeping artik yalniz gercek obstacle allocation oldugunda ilerliyor; pool bos donerse surge cadence, spawn count ve reroll telemetrisi hayali bir spawn ile kaymiyor.
+- `project/game/src/game/GameScene.ts` `runSpawnCount` ve `runSpawnRerolls` sayaçlarini `this.obstacles.get(...)` basarili olduktan sonra arttiriyor.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- olum veya focus-loss sonrasi yeni yon tusu fresh intent sayilir.
-- degismeyen held movement replay/resume spam'i uretmez.
+- obstacle pool canli body vermezse oyun gorunmeyen spawn denemesini cadence veya telemetry'ye yazmaz.
+- surge cadence ve spawn-save sayaci yalniz sahneye gercekten threat girdiğinde ilerler.
 - deterministic survival proxy `26.0s / 10.0s / 0%` baseline'ini korur.
 - `telemetry:check` ve build yesil kalir.
 
@@ -20,7 +19,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, tuned surge beat'i ve `10s` milestone payoff'i icin keep/tune/revert notu ekle.
-- Runtime yoksa near-miss, tuned surge, duvar-baski spawn-target fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i veya bu yeni replay-intent fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa near-miss, tuned surge, duvar-baski spawn-target fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya bu yeni spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -43,6 +42,7 @@ Success markers:
 - sample olmadan bu `10.0s` projected-stack threshold fix'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn guard fallback fix'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni replay-intent movement-state fix'ine tekrar mikro-tuning yapmak
+- sample olmadan bu yeni spawn-bookkeeping integrity fix'ine tekrar mikro-tuning yapmak
 - sample olmadan ikinci gameplay mutation dali acmak
 - yeni readiness / preflight / orchestration katmani
 

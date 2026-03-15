@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #210
+
+- `project/game/src/game/GameScene.ts` spawn bookkeeping sirasini duzeltti; `runSpawnCount` ve `runSpawnRerolls` artik obstacle pool gercekten canli body verdikten sonra ilerliyor
+- obstacle pool bos donerse oyun gorunmeyen spawn denemesini surge cadence'ine, zorluk bookkeeping'ine veya spawn-save telemetry'sine yazmiyor
+- deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` korundu; bu pass pacing retune degil spawn-integrity stabilization'i olarak kaldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar spawn-bookkeeping fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #209
 
 - `project/game/src/game/primaryAction.ts` fresh movement kararini movement-state bitmask degisimine tasidi; input yolu artik yalniz `any movement` boolean'ine bakmiyor

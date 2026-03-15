@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+spawn_bookkeeping_integrity:
+current: Run #210 `project/game/src/game/GameScene.ts` `runSpawnCount` ve `runSpawnRerolls` sayaçlarini obstacle pool gercekten bir body dondurduktan sonra arttiriyor; surge cadence ve spawn-save telemetrisi artik yalniz sahneye gercekten threat girdiginde ilerliyor
+baseline: onceki source spawn secimini hesapladigi anda sayaçlari arttiriyordu; pool hic obstacle veremezse oyun gorunmeyen bir spawn denemesini cadence'e, zorluk bookkeeping'ine ve reroll telemetrisi'ne sessizce yazabiliyordu
+target: obstacle allocation basarisiz kalirsa gorunmeyen spawn attempt'i oyun ritmini veya telemetrisi'ni kaydirmasin; gercek runtime'da cadence yalniz sahneye cikan obstacle'lar uzerinden aksin
+validation: `npm run telemetry:check`, `npm run build`
+
 replay_intent_freshness_integrity:
 current: Run #209 `project/game/src/game/primaryAction.ts` fresh movement niyetini movement-state bitmask degisiminden okuyor; `project/game/src/game/GameScene.ts` onceki state'i waiting/pause/game-over/reset akislarinda saklayarak yeni yonu retry/resume icin fresh kabul ediyor, degismeyen held input'u ise tekrar tekrar aktivasyon saymiyor
 baseline: onceki source fresh movement'i yalniz `any movement` boolean'i ile okuyordu; oyuncu olum veya focus-loss sonrasi bir yonu basili tutarken ikinci bir yon eklediginde bu gercek yeni retry/resume niyeti held input ile ayni sayiliyor ve instant replay loop'unda gereksiz surtunme yaratiyordu
