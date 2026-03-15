@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #219]
+
+Decision:
+`stabilization` modunda spawn-grace tween'i bittigi anda obstacle'in collision-ready truth'unu da ayni callback icinde finalize et.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni mutation/payoff/HUD koridorlarina geri dondurmuyor. Kod incelemesi dar ama gercek bir gameplay-truth boslugu gosterdi: spawn-grace obstacle fade'i tamamlandiginda goruntu fully-ready oluyordu, fakat `collisionReady` state'i ancak daha sonra bir polling yolu (`isObstacleCollisionReady`) dokunursa kalici olarak aciliyordu. Bu da fully-visible obstacle ile lethal truth arasina order-dependent kisa bir bosluk birakiyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` yeni ortak finalize yoluyla spawn-grace completion aninda `collisionReady=true`, `collisionUnlockElapsedMs=null` ve ready visual state'i birlikte uyguluyor. Ayni finalize yolu runtime polling fallback'inde de kullaniliyor; visual/combat truth ayrismasi kapandi. Deterministic headline `30.7s avg / 10.0s first death / 0% early` ve build sagligi korundu.
+
+Rollback Condition:
+Headed runtime sample veya yeni deterministic bulgu bu anlik finalize'nin collision grace algisini bozdugunu gosterirse yalniz spawn-grace completion semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni readiness/preflight katmani, ikinci spawn system'i veya baska orchestration katmani acilmaz.
+
 ### [Run #218]
 
 Decision:

@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #218:
+Current deterministic survival headline after Run #219:
 - `30.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+spawn_grace_collision_ready_timing_integrity:
+current: Run #219 `project/game/src/game/GameScene.ts` spawn-grace tween'i tamamlandigi anda obstacle'i hemen `collisionReady` durumuna alip `collisionUnlockElapsedMs` state'ini temizliyor; visual fade ve lethal truth ayni finalize yolunu paylasiyor
+baseline: onceki source obstacle'i fully-faded gosterse bile `collisionReady` state'i ancak sonradan `isObstacleCollisionReady()` polling yolu degince kalici hale geliyordu; bu da visual/combat truth arasina order-dependent dar bir bosluk birakiyordu
+target: spawn-grace fade'i bittigi anda obstacle ayni karede lethal/readable ready state'e gecsin; runtime collision truth'u sonraki poll'e bagli kalmasin
+validation: `npm run telemetry:check`, `npm run build`
 
 spawn_grace_threat_filter_integrity:
 current: Run #218 `project/game/src/game/spawn.ts` spawn reroll guard'larinda `collisionReady !== false` olmayan obstacle'lari aktif tehdit sayiyor; `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` runtime ve deterministic proxy'ye ayni truth'u tasiyor

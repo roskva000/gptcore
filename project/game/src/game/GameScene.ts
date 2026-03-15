@@ -1192,6 +1192,13 @@ export class GameScene extends Phaser.Scene {
     obstacle.setTint(tint);
   }
 
+  private finalizeObstacleCollisionReady(obstacle: Phaser.Physics.Arcade.Image): void {
+    obstacle.setData('collisionReady', true);
+    obstacle.setData('collisionUnlockElapsedMs', null);
+    obstacle.setData('spawnGraceTween', null);
+    this.applySpawnGraceVisualState(obstacle, true);
+  }
+
   private spawnObstacle(): void {
     // Timer callbacks can fire before the next update tick; reclaim stale offscreen entries first.
     this.cullObstacles();
@@ -1295,8 +1302,7 @@ export class GameScene extends Phaser.Scene {
       duration: collisionGraceMs,
       ease: 'Quad.Out',
       onComplete: () => {
-        obstacle.setData('spawnGraceTween', null);
-        this.applySpawnGraceVisualState(obstacle, true);
+        this.finalizeObstacleCollisionReady(obstacle);
       },
     });
     obstacle.setData('spawnGraceTween', spawnGraceTween);
@@ -1425,11 +1431,9 @@ export class GameScene extends Phaser.Scene {
       return false;
     }
 
-    obstacle.setData('collisionReady', true);
     const spawnGraceTween = obstacle.getData('spawnGraceTween') as Phaser.Tweens.Tween | null;
     spawnGraceTween?.stop();
-    obstacle.setData('spawnGraceTween', null);
-    this.applySpawnGraceVisualState(obstacle, true);
+    this.finalizeObstacleCollisionReady(obstacle);
     return true;
   }
 

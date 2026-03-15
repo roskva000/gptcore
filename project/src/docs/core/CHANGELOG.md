@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #219
+
+- `project/game/src/game/GameScene.ts` spawn-grace tween'i tamamlanir tamamlanmaz obstacle'i `collisionReady` durumuna alip pending unlock timestamp'ini temizlemeye basladi
+- grace completion callback'i ile runtime polling fallback'i artik ayni finalize yolunu kullaniyor; fully-faded obstacle baska bir kontrol gelene kadar harmless kalmiyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu collision-readiness integrity fix'i ile hizaladi
+- deterministic survival baseline `30.7s avg / 10.0s first death / 0% early` korundu
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #218
 
 - `project/game/src/game/spawn.ts` spawn reroll guard'larinin collision grace'i henuz bitmemis obstacle'lari canli tehdit gibi saymasini kapatti
