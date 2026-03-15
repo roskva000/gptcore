@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #208]
+
+Decision:
+`stabilization` modunda spawn secicinin reroll-budget fallback'inde guard-uyumlu lane'i koru.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/replay-HUD/near-miss/surge koridorlarina geri dondurmuyor. Kaynak incelemesi spawn tarafinda yeni ama dar bir fairness bug'i gosterdi: `project/game/src/game/spawn.ts` reroll denemeleri bitince yalniz ham skoru en yuksek adayi sakliyordu. Bu da mevcut guard'lari gecen daha durust bir reroll gorulmus olsa bile secicinin biraz daha yuksek skorlu same-edge pressure ihlaline geri dusmesine izin verebiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` yeni guard-compliance kontrolunu ortaklastirip `bestGuardCompliantCandidate` fallback'ini ekledi; secici artik pozitif bir cozum bulamasa bile gorulmus en iyi legal lane'i ham skor liderinden ayri tutuyor. `project/game/scripts/telemetry-check.ts` opening-pressure regression'i ile bu boslugu kilitledi. `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Gercek sample veya yeni deterministic bulgu bu fallback'in challenge'i gereksiz bosalttigini gosterirse yalniz guard-compliant fallback tercihi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, guard framework'u veya orchestration katmani acilmaz.
+
 ### [Run #207]
 
 Decision:

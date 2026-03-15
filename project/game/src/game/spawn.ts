@@ -50,6 +50,11 @@ type SpawnScore = {
   score: number;
 };
 
+type SpawnCandidate = {
+  point: Point;
+  score: SpawnScore;
+};
+
 type SpawnSelectionParams = {
   survivalTimeSeconds: number;
   playerPosition: Point;
@@ -703,6 +708,43 @@ const shouldKeepRerollingForMidRunProjectedStack = (
     spawnPoint,
   );
 
+const isSpawnCandidateGuardCompliant = ({
+  survivalTimeSeconds,
+  playerPosition,
+  playerVelocity,
+  playerReachabilityMargin,
+  activeObstaclePositions,
+  spawnPoint,
+  spawnScore,
+}: Omit<SpawnSelectionParams, 'randomInt'> & {
+  spawnPoint: Point;
+  spawnScore: SpawnScore;
+}): boolean =>
+  !(
+    isWithinTimeCutoff(survivalTimeSeconds, EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS) &&
+    hasRetreatPinchThreat(
+      playerPosition,
+      playerVelocity,
+      activeObstaclePositions,
+      spawnPoint,
+    )
+  ) &&
+  !shouldKeepRerollingForOpeningPressure(
+    survivalTimeSeconds,
+    playerPosition,
+    activeObstaclePositions,
+    spawnPoint,
+    spawnScore,
+  ) &&
+  !shouldKeepRerollingForMidRunProjectedStack(
+    survivalTimeSeconds,
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+    activeObstaclePositions,
+    spawnPoint,
+  );
+
 const hasRetreatPinchThreat = (
   playerPosition: Point,
   playerVelocity: Point | undefined,
@@ -825,34 +867,22 @@ export const selectSpawnPoint = ({
     activeObstaclePositions,
     spawnPoint: selectedSpawnPoint,
   });
+  let bestGuardCompliantCandidate: SpawnCandidate | null = isSpawnCandidateGuardCompliant({
+    survivalTimeSeconds,
+    playerPosition,
+    playerVelocity: reachableVelocity,
+    playerReachabilityMargin,
+    activeObstaclePositions,
+    spawnPoint: selectedSpawnPoint,
+    spawnScore: bestSpawnScore,
+  })
+    ? {
+        point: selectedSpawnPoint,
+        score: bestSpawnScore,
+      }
+    : null;
 
-  if (
-    bestSpawnScore.score >= 0 &&
-    !(
-      isWithinTimeCutoff(survivalTimeSeconds, EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS) &&
-      hasRetreatPinchThreat(
-        playerPosition,
-        reachableVelocity,
-        activeObstaclePositions,
-        selectedSpawnPoint,
-      )
-    ) &&
-    !shouldKeepRerollingForOpeningPressure(
-      survivalTimeSeconds,
-      playerPosition,
-      activeObstaclePositions,
-      selectedSpawnPoint,
-      bestSpawnScore,
-    ) &&
-    !shouldKeepRerollingForMidRunProjectedStack(
-      survivalTimeSeconds,
-      playerPosition,
-      reachableVelocity,
-      playerReachabilityMargin,
-      activeObstaclePositions,
-      selectedSpawnPoint,
-    )
-  ) {
+  if (bestSpawnScore.score >= 0 && bestGuardCompliantCandidate) {
     return { point: selectedSpawnPoint, rerollsUsed: 0 };
   }
 
@@ -876,35 +906,37 @@ export const selectSpawnPoint = ({
       bestSpawnScore = candidateSpawnScore;
     }
 
+    const candidateGuardCompliant = isSpawnCandidateGuardCompliant({
+      survivalTimeSeconds,
+      playerPosition,
+      playerVelocity: reachableVelocity,
+      playerReachabilityMargin,
+      activeObstaclePositions,
+      spawnPoint: candidate,
+      spawnScore: candidateSpawnScore,
+    });
+
     if (
-      candidateSpawnScore.score >= 0 &&
-      !(
-        isWithinTimeCutoff(survivalTimeSeconds, EARLY_RETREAT_PINCH_REROLL_CUTOFF_SECONDS) &&
-        hasRetreatPinchThreat(
-          playerPosition,
-          reachableVelocity,
-          activeObstaclePositions,
-          candidate,
-        )
-      ) &&
-      !shouldKeepRerollingForOpeningPressure(
-        survivalTimeSeconds,
-        playerPosition,
-        activeObstaclePositions,
-        candidate,
-        candidateSpawnScore,
-      ) &&
-      !shouldKeepRerollingForMidRunProjectedStack(
-        survivalTimeSeconds,
-        playerPosition,
-        reachableVelocity,
-        playerReachabilityMargin,
-        activeObstaclePositions,
-        candidate,
-      )
+      candidateGuardCompliant &&
+      (!bestGuardCompliantCandidate ||
+        candidateSpawnScore.score > bestGuardCompliantCandidate.score.score)
     ) {
+      bestGuardCompliantCandidate = {
+        point: candidate,
+        score: candidateSpawnScore,
+      };
+    }
+
+    if (candidateSpawnScore.score >= 0 && candidateGuardCompliant) {
       return { point: candidate, rerollsUsed };
     }
+  }
+
+  if (bestGuardCompliantCandidate) {
+    return {
+      point: bestGuardCompliantCandidate.point,
+      rerollsUsed,
+    };
   }
 
   return { point: selectedSpawnPoint, rerollsUsed };

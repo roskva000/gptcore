@@ -1076,6 +1076,25 @@ assert.deepEqual(
   'Opening spawn selection should reroll a same-edge follow-up sweep that stays on the same side of a near-player threat even when the raw lateral gap is wider than the base near-player band.',
 );
 
+const guardCompliantFallbackSelection = selectSpawnPoint({
+  survivalTimeSeconds: 5,
+  playerPosition: { x: 120, y: 80 },
+  playerVelocity: { x: 0, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    { x: 40, y: 80, spawnEdge: 'left' },
+  ],
+  randomInt: createQueuedRandom([3, 200, 0, 40, 0, 40, 0, 40, 0, 40, 0, 40, 0, 40]),
+});
+assert.deepEqual(
+  guardCompliantFallbackSelection,
+  {
+    point: { x: 40, y: -56 },
+    rerollsUsed: 6,
+  },
+  'Spawn selection should keep the best guard-compliant reroll when every option stays rough, instead of falling back to a slightly higher-scoring same-edge pressure violation after the reroll budget runs out.',
+);
+
 const retreatPinchSelection = selectSpawnPoint({
   survivalTimeSeconds: 10.000000000000076,
   playerPosition: { x: 347.7, y: 311.3 },

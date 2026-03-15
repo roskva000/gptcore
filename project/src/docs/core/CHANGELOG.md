@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #208
+
+- `project/game/src/game/spawn.ts` reroll butcesi biterken best raw-score adayi ile best guard-compliant adayi ayri tutmaya basladi; secici gorulmus daha durust bir lane varken same-edge pressure ihlaline geri dusmuyor
+- `project/game/scripts/telemetry-check.ts` tum reroll'ler zayif kaldiginda bile guard-compliant top-lane fallback'inin korunmasini regression altina aldi
+- deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` korundu; bu pass pacing retune degil spawn-selection integrity fix'i olarak kaldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar spawn-fallback stabilization karari ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #207
 
 - `project/game/src/game/spawn.ts` `10.0s` mid-run projected-stack baslangicini inclusive hale getirdi; ilk threshold spawn'i ayni projected lane follow-up guard'inin disina sizmiyor

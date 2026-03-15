@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+spawn_guard_compliant_fallback_integrity:
+current: Run #208 `project/game/src/game/spawn.ts` reroll butcesi bitince best raw-score adayindan ayri best guard-compliant adayi da takip ediyor; tum denemeler zayif kalsa bile spawn secici gorulmus legal lane'i same-edge pressure ihlaline feda etmiyor
+baseline: onceki source reroll loop'u sonunda yalniz en yuksek ham skoru sakliyordu; bu da mevcut guard'lari gecen bir reroll gorulmus olsa bile secicinin biraz daha yuksek skorlu cheap-pressure ihlaline geri donmesine izin verebiliyordu
+target: spawn guard'lari yalniz erken-return aninda degil fallback kararinda da gecerliligini korusun; runtime blokluysa bu yeni fix'e tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run telemetry:survival-snapshot`, `npm run build`
+
 mid_run_projected_stack_threshold_integrity:
 current: Run #207 `project/game/src/game/spawn.ts` `10.0s` projected-stack guard baslangicini epsilon-tolerant inclusive yorumluyor; ilk post-target same-lane follow-up spawn tam esik frame'inde de reroll korumasina giriyor
 baseline: onceki source `10s-13s` anlatimina ragmen `> 10` kullaniyor, bu da tam `10.0s` spawn'inin ayni projected lane guard'ini sessizce atlamasina izin veriyordu
