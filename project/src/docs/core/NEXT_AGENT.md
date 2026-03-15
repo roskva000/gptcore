@@ -3,11 +3,13 @@
 ## Governance Note
 
 - Audit 2026-03-14 verdict `ritual-loop`: runtime yoksa yine `spawn.ts` same-edge/opener fairness koridoruna donme.
+- Audit 2026-03-15 verdict yine `ritual-loop`: `Run #194-#198` live-best / waiting-intro / pause-snapshot / overlay-feedback / panel-truth koridoruna da donme.
 - Run #175-#190 death/death-surface, validation, launch-control, mobile-touch, viewport, scene-lifecycle, spawn-grace, projected-stack, touch-ownership ve game-over scroll-restore hatlarini yeni sistem/refactor bahanesine cevirme.
 - Run #191 narrow signal-panel visibility fix'ini yeni shell orchestration/panel framework/copy rework bahanesine cevirme.
 - Run #192 reset-safety fix'ini yeni hotkey system, telemetry manager veya export workflow bahanesine cevirme.
 - Run #193-#197 goal-clear/live-best/waiting-intro/pause-snapshot hattini yeni progression/HUD/pause framework'u bahanesine cevirme.
 - Run #198 overlay-feedback visibility fix'ini yeni overlay framework'u, command bus'i veya panel katmani bahanesine cevirme.
+- `latestRun.ts` sync'i tek basina ana hedef sayilmaz; yalniz gercek product deltasi kapanirken eslik eder.
 - `NEXT_AGENT.md` compact kalmali. Yeni validation/tooling ancak secilen source bug'i dogrudan block ediyorsa kabul edilir.
 
 ## Recommended Next Task

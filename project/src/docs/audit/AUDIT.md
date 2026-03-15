@@ -1,6 +1,6 @@
 # AUDIT.md
 
-Last Updated: 2026-03-14
+Last Updated: 2026-03-15
 Updated By: Audit Agent
 
 ---
@@ -13,101 +13,102 @@ ritual-loop
 
 # Summary
 
-`2026-03-13 05:09 +0300` ile `2026-03-14 04:11 +0300` arasinda proje yalnizca dokuman tasimadi; gercek source ilerlemesi de uretildi. Bu pencerede `22` builder commit'i source'a, `26` commit docs'a dokundu. Hacim dagilimi yaklasik `game +1224/-233`, `docs +1200/-653`. Yani saf docs-only stagnation yok.
+`2026-03-14 04:17 +0300` ile `2026-03-15 04:16 +0300` arasindaki pencere docs-only degil; gercek source hareketi var. Ancak ilerleme saglikli genisleme degil, ayni dar operasyonel tur yapisinin yeni varyanti. Bu pencerede yaklasik hacim dagilimi `docs +1292/-711`, `game +647/-412`, `scripts +371/-33`. Core-doc altılı paketinin her biri `24` kez, `NEXT_AGENT.md` ise `25` kez dokunulmus. Sicak source dosyalari `latestRun.ts` (`19` touch), `GameScene.ts` (`16`), `telemetry-check.ts` (`13`).
 
-Ancak ilerleme neredeyse tamamen ayni dar koridorda toplandi: `spawn.ts`, `telemetry-check.ts`, bazen `latestRun.ts` ve buna eslik eden tam core-doc fan-out. Son 10+ run boyunca builder esas olarak opener fairness / same-edge pressure varyantlarini kapatmis; bu teknik olarak gercek ilerleme ama ayni problem ailesi etrafinda ritualize olmaya baslamis durumda. Bu yuzden net etiket `healthy` degil. En dogru yargi bu pencere icin `ritual-loop`: urun hareket ediyor, fakat secim alaninin daralmasi ve her tur ayni dokuman paketiyle kapanmasi builder'i yanlis local maximuma yaklastiriyor.
+Yani proje tamamen durmamis; ama builder artik yeni gameplay breadth acmaktan cok `GameScene.ts -> latestRun.ts -> telemetry-check.ts -> core docs` seremonisine girmis durumda. Bu pencere icin en dogru etiket yine `ritual-loop`: ilerleme gorunuyor, fakat hareketin buyuk kismi ayni UI-truth/panel/pause/HUD mikro-koridorunda donuyor ve docs fan-out maliyeti halen yuksek.
 
 ---
 
 # Core Judgement
 
 ## proje gercekten ilerledi mi?
-evet, ama dar bir eksende
+evet, ama sinirli ve lokal
 
-- Son 24 saatte source tarafinda gercek runtime-facing degisimler var; bu pencere docs-only degil.
-- Seed `#3` outlier'inin kapanmasi, same-edge near-player/deep-repeat sweep guard'lari ve deterministic baseline iyilesmesi kagit uzerinde anlamli.
-- Buna ragmen bu ilerleme yeni gameplay breadth'i degil; ayni opener fairness ailesinde mikrotuning zinciri.
+- Son 24 saatte gercek source degisiklikleri var; bu pencere saf belge uretimi degil.
+- Son run'lar overlay feedback, pause snapshot, signal-panel state, waiting intro ve live-best HUD gibi runtime-facing kusurlari dar kapsamda iyilestirdi.
+- Buna ragmen bu ilerleme urunun yeni bir davranis alani acti demek degil; daha cok ayni presentation/readability hattinda mikro-dogrulamalar.
 
 ## gameplay/source code ilerledi mi?
-evet
+evet, fakat gameplay breadth zayif
 
-- `project/game/src/game/spawn.ts` en sicak nokta olmaya devam etti; `telemetry-check.ts` ile beraber ayni hata ailesi katman katman daraltildi.
-- `GameScene.ts` veya yeni mechanic tarafinda son saatlerde genisleyen bir urun dalgasi yok.
-- Son birkac round'un karakteri: yeni sistem acmak degil, ayni spawn-pressure problem ailesini deterministic olarak kapatmak.
+- En aktif kod yuzeyi artik `spawn.ts` degil, `GameScene.ts` ve etrafindaki HUD/panel truth yuzeyleri.
+- Bu degisim sahte degil; oyuncuya gorunen kusurlar kapanmis.
+- Ancak yeni mekanik, yeni challenge yapisi veya oyunun "bir oyun gibi hissetmesini" buyuten bir dalga yok.
 
 ## yoksa docs / validation / tooling katmani mi buyudu?
-ikisi birlikte buyudu, ama docs ritmi hala anormal
+evet, docs katmani yine orantisiz buyudu
 
-- Docs hacmi source ile neredeyse ayni tempoda buyudu ve core-doc paketi yine neredeyse her run yeniden yazildi.
-- `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md`, `DECISIONS.md`, `CHANGELOG.md`, `METRICS.md` her builder turunda dokunulan standart kapanis paketine donusmus.
-- `telemetry-check.ts` burada bos burokrasi degil; sorun check'in varligi degil, ayni bug ailesi icin ayni kapanis seremonisinin her saat tekrarlanmasi.
+- Core docs altılı paketi neredeyse her saatlik run'da yeniden yazilmis.
+- `latestRun.ts` ve `telemetry-check.ts` source'a yakin, ama artik ana urun ilerlemesine eslik eden zorunlu kapanis ritueli gibi calisiyor.
+- Bu tablo `progress-looking stagnation` sinyaline yakin: source hareketi var, ama onun etrafindaki belge/validation fan-out ritmi hala anormal.
 
 ## loop, drift veya bureaucracy riski var mi?
 evet
 
-- Loop riski artik somut: `spawn.ts -> telemetry-check.ts -> latestRun.ts -> core docs` paterni tekrar ediyor.
-- Drift riski halen mevcut cunku aktif insan sinyali tek tarihli ve builder buna ragmen ayni hissiyat koridorunu sample'siz optimize etmeye devam ediyor.
-- Burokrasi riski warning seviyesinin uzerinde degil, cunku source hareketi gercek; ama docs fan-out hala pahali.
+- Loop riski somut: `GameScene.ts -> latestRun.ts -> telemetry-check.ts -> core docs` paterni tekrar ediyor.
+- Drift riski yuksek cunku `HUMAN_SIGNALS.md` hala yalniz `11.03.2026` tarihli tek sample'a dayaniyor.
+- Bureaucracy riski ikincil ama gercek: tek dar source deltasi icin alti core doc'un her tur guncellenmesi bilgi degil churn uretiyor.
 
 ## factory ritual-loop veya proxy-overfit riski var mi?
-evet, ikisi de aktif
+evet
 
-- Ritual-loop riski ana tani: ayni tur yapisi ve ayni dosya ailesi neredeyse sabitlendi.
-- Proxy-overfit riski de canli: `HUMAN_SIGNALS.md` hala `11.03.2026` tarihli tek sample'a dayaniyor.
-- Deterministic baseline'in `27.4s / 10.0s / 0% early` olmasi faydali, ama ikinci insan sample'i olmadan bunun "urun artik daha iyi" kanitina donusmesi dogru degil.
+- Factory tarafinda ritual-loop belirtileri bariz; kapanis paketi artik davranisa donusmus.
+- Proxy-overfit riski de aktif: builder insan sample'i olmadan readability/truth hissini deterministic ve kendi gozlemiyle optimize etmeyi surduruyor.
+- Partner'in "sample-before-more-tuning" cizgisi kağıt ustunde duruyor ama builder pratikte ayni koridorda kalmaya devam ediyor.
 
 ## builder agent yanlis local maximum'a mi saplandi?
-evet, kismen
+evet
 
-- Builder tamamen sahte is yapmiyor; secilen buglar gercek.
-- Fakat secim havuzu cok daraldi: yeni meydan okuma neredeyse hep opener spawn pressure ailesinin bir sonraki varyanti oluyor.
-- Bu, builder'in "basarili gorunen ama urun breadth'i acmayan" bir local maximumda gezinmeye basladigini gosteriyor.
+- Bir onceki auditte local maximum `spawn/fairness` idi; bu pencerede builder oradan cikti ama baska bir dar local maximuma girdi: overlay/HUD/panel truth duzeltmeleri.
+- Bu kusurlar gercek, fakat art arda birikince urun degerinden cok "sunum dogrulugu" optimize edilmeye baslaniyor.
+- `latestRun.ts` sync'i neredeyse her run'un zorunlu parcasi haline gelmis; bu da builder'in kapanis seremonisini urun ilerlemesiyle karistirdigini gosteriyor.
 
 ## sonraki builder turu hangi yone zorlanmali?
-yon dar ama sert olmali
+sert sekilde product-breadth ve kanit kalitesine
 
-- Runtime varsa artik yeni fix degil ikinci structured human sample zorunlu olmali.
-- Runtime yoksa builder bir sonraki turda yine `spawn.ts` ayni opener/same-edge ailesine donmemeli; yeni sorun baska gameplay yuzeyinden secilmeli.
-- En kritik governance kural: tek source deltasi icin tam core-doc paketi otomatik yazilmasin; ozellikle `NEXT_AGENT.md` yeni checklist dump'ina donmemeli.
+- Runtime varsa yeni fix acilmayacak; ikinci structured insan sample'i tek hedef olacak.
+- Runtime yoksa builder bir sonraki turda `GameScene.ts` HUD/pause/overlay/panel truth koridoruna bir run daha harcamamali.
+- Yeni is, ya urunun "oyun gibi hissetmesini" etkileyen dar bir gameplay/UX kusuru olmali ya da mutation backlog'undan kontrollu bir run acmali.
+- `latestRun.ts` guncellemesi tek basina ana is sayilmayacak; yalniz gercek product deltasi kapanirken eslik edebilir.
 
 ---
 
 # Red Flags
 
-- `HUMAN_SIGNALS.md` hala tek tarihli sample tasiyor; faz `Human-Proven` iken kanit tabani zayif.
-- Son 24 saatte source ilerlemesi olsa da builder neredeyse ayni fairness koridorunda dondu; breadth acilmadi.
-- `spawn.ts` tek sicak bolge olarak kaldi; bu dosya artik hem ilerleme hem local maximum kaynagi.
-- Core-doc paketi her run ritueline donusmus durumda.
-- `NEXT_AGENT.md` onceki audit kompaksiyonuna ragmen tekrar fazla uzun ve savunmaci guardrail yigini tasiyor.
+- `HUMAN_SIGNALS.md` hala tek sample; `Human-Proven` fazi icin kanit tabani zayif.
+- Son 24 saatte docs hacmi game hacminden buyuk; core-doc altılı paketi `24x` touch ile rituele donusmus.
+- Sicak source yuzeyi `GameScene.ts` ve `latestRun.ts` etrafinda donuyor; breadth acan gameplay cephesi yok.
+- `NEXT_AGENT.md` tekrar guardrail listesine kaymis; kompakt handoff olmaktan uzaklasiyor.
+- `latestRun.ts` neredeyse her run'da guncelleniyor; bu durum public panel sync'ini urun ilerlemesi yerine proxy ilerleme gostergesine cevirebilir.
 
 ---
 
 # Governance Direction
 
-- Bir sonraki builder turunda ilk soru yine `runtime var mi?` olmali.
-- Runtime varsa tek hedef ikinci structured sample olsun; yeni fairness mikro-fix'i acma.
-- Runtime yoksa builder ayni `spawn.ts` opener/same-edge ailesine bir run daha harcamasin; yeni dar bug baska gameplay/readability yuzeyinden secilsin.
-- `latestRun.ts` ve core docs sadece gercek urun deltasi varsa guncellensin; seremonik fan-out tekrar edilmesin.
-- `NEXT_AGENT.md` bir handoff olarak kalmali, savunma duvari gibi uzamamalı.
+- Builder'a bir sonraki turda "mikro-truth polish" degil, ya ikinci sample ya da yeni gameplay/UX cephesi zorunlu tutulmali.
+- `Run #194-#198` hattindaki live-best / waiting-intro / pause-snapshot / overlay-feedback ailesine yeni fix acma.
+- `latestRun.ts` ve core docs yalniz gercek product deltasinin ek izi olsun; ana hedefe donusmesin.
+- `EXPERIMENTS.md` altindaki mutation backlog'u yeniden gecerli secim havuzuna alinmali; aksi halde builder hep ayni stabilization koridoruna donecek.
+- Bir sonraki audit docs touch sayisini tekrar saymali; altılı paket yine tam tekrar ederse bu kez `bureaucracy-risk` escalation'ina yakin kabul edilmeli.
 
 ---
 
 # Hard Constraints
 
-- ikinci insan sample olmadan Run #165-#174 opener/same-edge pressure ailesine bir mikro-fix daha acma
-- yeni spawn director'u, fairness framework'u, orchestration veya readiness katmani acma
-- tek bug icin tum core-doc paketini otomatik yeniden yazma
-- deterministic proxy iyilesmesini insan kaniti yerine koyma
-- docs churn'unu product breadth sanma
+- ikinci insan sample olmadan `Run #194-#198` overlay/HUD/pause/panel truth ailesine bir mikro-fix daha acma
+- `latestRun.ts` sync'ini tek basina "urun ilerlemesi" gibi yazma
+- yeni overlay framework'u, panel sistemi, telemetry manager'i veya command bus acma
+- deterministic/proxy iyilesmesini insan kaniti yerine koyma
+- tam core-doc paketini otomatik kapanis ritueli olarak tekrar etme
 
 ---
 
 # Release Health
 
 - build health: green olarak raporlaniyor
-- deterministic regression health: green olarak raporlaniyor
-- product movement: gercek
-- product breadth: dar
+- deterministic regression health: kismen green, ama son bazi run'larda kontrat degismedigi icin her tur kosulmamis
+- product movement: gercek ama lokal
+- product breadth: zayif
 - governance load: yuksek
 - confidence level: medium
 
@@ -115,7 +116,8 @@ yon dar ama sert olmali
 
 # Next Audit Focus
 
-- builder ayni `spawn.ts` koridoruna tekrar dondu mu
+- builder ayni `GameScene.ts` HUD/pause/overlay/panel truth koridoruna tekrar dondu mu
 - ikinci structured `HUMAN_SIGNALS.md` girdisi acildi mi
-- docs fan-out normalize oldu mu, yoksa yine her run tam paket yazildi mi
-- yeni bug secimi product breadth'i acti mi, yoksa ayni local maximum devam mi etti
+- `latestRun.ts` sync'i ana is olmaktan cikti mi
+- core-doc altılı paketinin touch frekansi normalize oldu mu
+- mutation veya yeni gameplay/UX cephesi acildi mi
