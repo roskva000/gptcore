@@ -122,10 +122,10 @@ assert.equal(
 assert.equal(
   getObstacleVariant({
     survivalTimeSeconds: 15,
-    runSpawnCount: 4,
+    runSpawnCount: 5,
   }),
   'surge',
-  'Every fourth spawn after the unlock point should become a surge obstacle so the new pressure beat stays readable.',
+  'Every fifth spawn after the unlock point should become a surge obstacle so the new pressure beat stays readable without turning into a constant spike.',
 );
 assert.equal(
   getObstacleSpeedMultiplier('standard'),
@@ -149,7 +149,7 @@ assert.equal(
 );
 assert.equal(
   balanceReport.surgeObstacleCadence,
-  4,
+  5,
   'Balance snapshot should publish the surge cadence so deterministic reports expose how often the faster threat appears.',
 );
 assert.equal(
@@ -1356,23 +1356,23 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 30, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, surge obstacles every 4th spawn from 15s with 1\.14x speed, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, surge obstacles every 5th spawn from 15s with 1\.14x speed, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(
   survivalReport.survivalBuckets,
   {
     under10Seconds: 0,
-    between10And20Seconds: 4,
-    between20And30Seconds: 8,
-    reached30SecondsCap: 12,
+    between10And20Seconds: 3,
+    between20And30Seconds: 12,
+    reached30SecondsCap: 9,
   },
   'Survival bucket distribution regressed.',
 );
 assert.equal(survivalReport.averageSpawnCount, 27.3, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.5, 'Spawn reroll snapshot changed unexpectedly.');
-assert.equal(seed3TrajectoryReport.deathTimeSeconds, 24.5, 'Seed #3 trajectory baseline drifted.');
-assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 25, 'Seed #3 spawn count changed unexpectedly.');
+assert.equal(seed3TrajectoryReport.deathTimeSeconds, 30, 'Seed #3 trajectory baseline drifted.');
+assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 32, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(
   seed3TrajectoryReport.spawnRerollsBeforeDeath,
   1,
@@ -1456,12 +1456,12 @@ assert.deepEqual(
 );
 assert.equal(
   validationReport.validationSummary,
-  '5 runs | first death 21.1s | early 0% | 5/5 runs, target met',
+  '5 runs | first death 25.5s | early 0% | 5/5 runs, target met',
   'Validation export summary regressed.',
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=27.1s | first_death=21.1s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=30.0s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 26.0s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=28.5s | first_death=25.5s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=25.5s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 26.0s avg / 10.0s first death / 0% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(

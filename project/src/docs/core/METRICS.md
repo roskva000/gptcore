@@ -6,16 +6,22 @@
 
 ## Gameplay
 
+surge_obstacle_cadence_stabilization:
+current: Run #204 `project/game/src/game/balance.ts` surge obstacle beat'ini `15s` sonrasinda her besinci spawn'a cekiyor; `1.14x` hiz carpani korunurken deterministic survival baseline `26.0s` average survival, `10.0s` first death ve `%0` early death olarak kaliyor
+baseline: Run #203 tune-oncesi surge beat'i her dorduncu spawn'da geliyordu; ayni `26.0s / 10.0s / 0%` headline baseline korunurken dagilim daha sert `0 / 4 / 8 / 12` idi ve sample-free tuning karari hala acikti
+target: ikinci human sample tuned cadence'in ucuz gurultu yerine daha okunur tempo artisi ve replay istegi urettigini gostersin; runtime blokluysa ayni knob'a tekrar dokunmak yerine yeni gameplay/UX source problemi secilsin
+validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
+
 deterministic_surge_proxy_integrity:
-current: Run #203 `project/game/scripts/telemetry-reports.ts` artik runtime ile ayni surge cadence'ini ve `1.14x` hiz carpanini simule ediyor; deterministic survival snapshot `26.0s` average survival, `10.0s` first death ve `%0` early death raporluyor
+current: Run #204 source ve deterministic proxy ayni tuned surge cadence'ini ve `1.14x` hiz carpanini paylasiyor; survival snapshot `26.0s` average survival, `10.0s` first death ve `%0` early death raporluyor
 baseline: onceki proxy Run #202 live mutation'ini hic modellemiyor ve stale `27.4s avg / 10.0s first death / 0% early` sayilarini koruyordu; bu da surge beat'i icin keep/tune/revert kararini eski runtime'a bagliyordu
 target: deterministic proxy aktif gameplay kontratini tasimaya devam etsin; insan sample gelene kadar surge beat'i icin stale baseline yerine live truth uzerinden karar verilsin
 validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
 
 surge_obstacle_mid_run_variety:
-current: Run #202 `project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i deterministik `surge obstacle` olarak isaretliyor; Run #203 proxy entegrasyonu bunun deterministic etkisini `26.0s` average survival ve korunmus `10.0s` first-death floor ile raporluyor
-baseline: onceki source opener sonrasinda da ayni obstacle ritmini koruyor, bu da run'in `10s` sonrasi hizla duzlesmesine ve yeni tehdit beat'i acilmamasina yol aciyordu; onceki deterministic proxy ise bu mutasyonu hic gostermeyip stale `27.4s` average survival degerini koruyordu
-target: ikinci human sample'da surge obstacle beat'i ucuz gurultu veya unfair spike yerine okunur bir tempo artisi ve replay istegi uretsin; runtime blokluysa dar retain/tune/revert karari yeni surge-aware proxy ile verilsin
+current: Run #204 tuned source `15s` sonrasinda her besinci spawn'i deterministik `surge obstacle` olarak isaretliyor; beat frequency yumusarken `1.14x` hiz carpani, `26.0s` average survival ve korunmus `10.0s` first-death floor korunuyor
+baseline: onceki source opener sonrasinda da ayni obstacle ritmini koruyor, bu da run'in `10s` sonrasi hizla duzlesmesine ve yeni tehdit beat'i acilmamasina yol aciyordu; Run #203 tune-oncesi cadence ise her dorduncu spawn ile daha sert bir dagilim uretip sample-free keep/tune/revert kararini acik birakiyordu
+target: ikinci human sample'da tuned surge beat'i ucuz gurultu veya unfair spike yerine okunur bir tempo artisi ve replay istegi uretsin; runtime blokluysa ayni surge knob'una tekrar donmeden baska gameplay/UX source problemi secilsin
 validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
 
 replay_hud_feedback_reset_integrity:

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #204
+
+- `project/game/src/game/balance.ts` surge obstacle cadence'ini `15s` sonrasinda her dorduncu yerine her besinci spawn olacak sekilde yumusatti; `1.14x` hiz carpani ve altin tint ayrimi korundu
+- deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` olarak kalirken survival dagilimi `0 / 3 / 12 / 9`e kaydi ve validation snapshot sample'i `25.5s` first death / `28.5s` average survival verdi
+- `project/game/scripts/telemetry-check.ts` yeni `5th spawn` kontrati, seed #3 trajectory beklentisi ve validation snapshot degerleriyle hizalandi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar stabilization karari ile hizaladi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #203
 
 - `project/game/scripts/telemetry-reports.ts` surge obstacle cadence'ini ve `1.14x` hiz carpanini deterministic survival proxy'ye tasidi; seed trace ve survival snapshot artik Run #202 live mutation'ini simule ediyor

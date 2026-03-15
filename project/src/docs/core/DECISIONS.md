@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #204]
+
+Decision:
+`stabilization` modunda Run #202 surge obstacle beat'ini kaldirmadan cadence'i `4`ten `5`e cek.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause koridoruna donmekten ve yeni mutation acmaktan men ediyor. Run #203 proxy entegrasyonu sayesinde surge beat'inin deterministic etkisi okunur hale geldikten sonra en dar savunulabilir urun karari, hiz carpanini koruyup tehdit frekansini biraz seyrelterek beat'i daha az ardisik spike uretecek sekilde yumusatmakti.
+
+Impact:
+`project/game/src/game/balance.ts` surge obstacle'i `15s` sonrasinda her dorduncu degil her besinci spawn'da aciyor; `1.14x` hiz carpani ve tint ayrimi korunuyor. Deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` olarak sabit kalirken survival dagilimi `0 / 3 / 12 / 9`e kaydi ve validation snapshot sample'i `25.5s` first death / `28.5s` average survival noktasina geldi. `project/game/scripts/telemetry-check.ts`, validation snapshot beklentileri ve `project/game/src/latestRun.ts` tuned cadence truth'u ile hizalandi. `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample tuned cadence'in hala gurultulu veya unfair hissettirdigini gosterirse yalniz surge beat'i revert edilir ya da tek dar parametreyle yeniden ayarlanir; bu bahaneyle yeni enemy framework'u, ikinci mutation dali, yeni telemetry manager'i veya orchestration katmani acilmaz.
+
 ### [Run #203]
 
 Decision:

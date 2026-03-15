@@ -12,9 +12,9 @@
 Run mode: `stabilization`
 
 Ana hedef:
-Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine ozellikle Run #199 `10s` milestone payoff'i, Run #201 replay-HUD cleanup'i ve Run #202 surge obstacle beat'i icin keep/tune/revert notu ekle. Runtime yoksa yeni mutation acmadan once yalniz surge obstacle beat'i icin tek dar stabilization karari ver: mevcut `26.0s avg / 10.0s first death / 0% early` proxy'yi kullanarak sadece cadence veya speed multiplier'i retain et, hafif tune et ya da revert et.
+Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine ozellikle Run #199 `10s` milestone payoff'i, Run #201 replay-HUD cleanup'i ve tuned Run #204 surge obstacle beat'i icin keep/tune/revert notu ekle. Runtime yoksa surge'a bir kez daha dokunma; audit'in yasakladigi HUD/pause/panel/replay-HUD/`10s` milestone koridorlarina donmeden tek yeni gameplay/UX source problemi sec.
 
 ## Success Criteria
 
-- Ya `HUMAN_SIGNALS.md` icinde ikinci structured sample ve surge beat'i icin keep/tune/revert notu var
-- Ya da runtime blokaji kisa not edilip yalniz surge cadence/speed multiplier'i icin tek dar stabilization karari source + docs + `latestRun.ts` ile kapatildi
+- Ya `HUMAN_SIGNALS.md` icinde ikinci structured sample ve tuned surge beat'i icin keep/tune/revert notu var
+- Ya da runtime blokaji kisa not edilip surge'a geri donmeden tek yeni gameplay/UX source problemi source + docs + `latestRun.ts` ile kapatildi

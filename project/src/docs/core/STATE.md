@@ -1,19 +1,19 @@
 # STATE.md
 Last Updated: 2026-03-15
-Updated By: Codex Builder Run #203
+Updated By: Codex Builder Run #204
 
 ---
 
 # Current Truth
 
 - Aktif faz halen `Human-Proven Survival Core`.
-- Bu tur tek ana hedef `integration` modunda Run #202 surge obstacle mutation'ini deterministic truth katmanina sindirmekti.
-- `project/game/scripts/telemetry-reports.ts` artik runtime ile ayni kontrati simule ediyor: `15s` sonrasinda her dorduncu spawn `surge obstacle` oluyor ve proxy hiz hesabina `1.14x` carpan giriyor.
-- Deterministic survival baseline artik stale pre-mutation deger yerine live surge beat'ini yansitiyor: `26.0s` average survival, `10.0s` first death, `%0` early death.
-- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/latestRun.ts` yeni surge-aware baseline ile hizalandi.
-- Runtime gameplay davranisi, spawn secimi, death attribution, panel/pause/overlay akisi ve yeni orchestration katmani degismedi.
+- Bu tur tek ana hedef `stabilization` modunda Run #202 surge obstacle beat'i icin tek dar tuning karari vermekti.
+- `project/game/src/game/balance.ts` artik `15s` sonrasinda surge obstacle'i her dorduncu degil her besinci spawn'da aciyor; `1.14x` hiz carpani ve gorunur tint korunuyor.
+- Deterministic survival proxy tuned cadence altinda `26.0s` average survival, `10.0s` first death ve `%0` early death raporluyor.
+- `project/game/scripts/telemetry-check.ts`, validation snapshot beklentileri ve `project/game/src/latestRun.ts` yeni cadence truth'u ile hizalandi.
+- Runtime gameplay davranisinda yeni branch, yeni mutation dali, yeni validation/tooling katmani veya yeni orchestration katmani acilmadi.
 - Headed runtime bu ortamda hala bloklu (`DISPLAY` / `WAYLAND_DISPLAY` bos), bu yuzden ikinci structured human sample acilamadi.
-- Bu tur `npm run telemetry:check` ve `npm run build` yesil kaldi. Build halen mevcut Vite script uyarisi ve buyuk bundle warning'ini veriyor.
+- Bu tur `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check` ve `npm run build` yesil kaldi. Build halen mevcut Vite script uyarisi ve buyuk bundle warning'ini veriyor.
 
 ---
 
@@ -23,16 +23,16 @@ Updated By: Codex Builder Run #203
 2. Run #175-#189 death/death-surface hattindaki iyilesmeler gercek oyuncuda dogrulanmadi.
 3. Run #130-#158, Run #181, Run #183 ve Run #188 control/input hattinin gercek cihaz hissi ikinci sample olmadan belirsiz.
 4. Run #159-#177 ve Run #187 spawn-pressure hattinin oyuncu tarafinda gercekten daha adil hissedip hissettirmedigi hala sample istiyor.
-5. Run #199 `10s` milestone feedback'i, Run #201 replay-HUD cleanup'i ve Run #202 surge obstacle beat'i gercek oyuncuda replay istegini guclendiriyor mu, yoksa gurultu / unfair spike mi uretiyor, henuz sample ile dogrulanmadi.
-6. Yeni surge-aware deterministic proxy average survival'i `27.4s`ten `26.0s`ye cekti; bu retain sinyali first-death floor'u koruyor ama insan sample'i olmadan tune/revert karari tamamlanmis sayilamaz.
+5. Run #199 `10s` milestone feedback'i, Run #201 replay-HUD cleanup'i ve tuned Run #204 surge obstacle beat'i gercek oyuncuda replay istegini guclendiriyor mu, yoksa gurultu / unfair spike mi uretiyor, henuz sample ile dogrulanmadi.
+6. Cadence tuning'i deterministic dagilimi yumusatti ama insan sample'i olmadan final retain karari tamamlanmis sayilamaz.
 
 ---
 
 # Active Priorities
 
 1. Mumkunse touch-capable gercek browser'da ikinci structured human sample'i topla ve fairness/readability/control/retry hissi icin keep-tune-revert notu birak.
-2. Runtime bloklu kalirsa yeni bir mutation acmadan once surge obstacle cadence'inin keep/tune/revert kararini verecek tek dar urun adimini sec; audit'in yasakladigi fairness/death/near-miss/panel/pause/replay-HUD koridorlarina donme.
-3. Runtime bloklu kalirsa yeni proxy sayilarini kullanarak surge obstacle beat'i icin yalniz tek dar retain/tune/revert karari ver; validation'i tekrar buyuten yeni tooling katmani acma.
+2. Runtime bloklu kalirsa ayni surge knob'una bir kez daha dokunmak yerine audit'in yasaklamadigi yeni tek dar gameplay/UX source sorununu sec.
+3. Validation'i tekrar buyuten yeni tooling ya da orchestration katmani acma.
 4. Public-facing source ozetleri gercek son run ile hizali kalsin; stale panel drift'i tekrar etmesin.
 
 ---
@@ -48,7 +48,7 @@ Updated By: Codex Builder Run #203
 
 # Immediate Handoff
 
-- Bir sonraki en degerli is runtime varsa ikinci structured sample'i toplayip surge obstacle beat'i icin keep/tune/revert notu birakmak; runtime yoksa yeni mutation acmadan once yalniz surge multiplier/cadence'i icin tek dar karar vermek.
-- Bu tur kapanan yuzey: `project/game/scripts/telemetry-reports.ts` live surge cadence ve hiz carpani ile ayni deterministic survival proxy'yi uretmeye basladi.
-- Bu tur kapanan yuzey: `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/latestRun.ts` yeni `26.0s / 10.0s / 0%` baseline ile hizalandi.
+- Bir sonraki en degerli is runtime varsa ikinci structured sample'i toplayip tuned surge beat'i icin keep/tune/revert notu birakmak; runtime yoksa surge'a geri donmeden yeni dar gameplay/UX source cephesi acmak.
+- Bu tur kapanan yuzey: `project/game/src/game/balance.ts` surge obstacle cadence'ini `4`ten `5`e cekti.
+- Bu tur kapanan yuzey: `project/game/scripts/telemetry-check.ts`, validation snapshot beklentileri ve `project/game/src/latestRun.ts` yeni `26.0s / 10.0s / 0%` tuned cadence truth'u ile hizalandi.
 - Bu tur checked kanit: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`.
