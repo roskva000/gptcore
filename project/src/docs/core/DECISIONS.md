@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #201]
+
+Decision:
+`stabilization` modunda replay baslangicina sizan stale HUD feedback state'ini temizle.
+
+Reason:
+Runtime yine bloklu ve audit builder'i ayni spawn/death/near-miss/validation/mobile/viewport/panel/pause ve `10s` milestone koridorlarina geri dondurmuyor. Buna ragmen `project/game/src/game/GameScene.ts` icinde dar ama gercek bir replay-integrity kusuru kalmisti: near-miss, `10s` milestone ya da `60s clear` pulse'lari olum veya instant retry ile yarida kesilince score, goal badge ve near-miss HUD elemanlari yeni denemeye eski run'in tint/scale/pulse izini tasiyabiliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik death ve reset sinirlarinda `scoreText`, `goalStatusText` ve `nearMissText` uzerindeki aktif tween'leri oldurup bu elemanlari temiz alpha/scale/tint durumuna geri getiriyor. Boylece replay loop'u yeni run'a stale HUD state tasimiyor. `project/game/src/latestRun.ts` public panel yeni replay-integrity deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek sample bu temizligin olum anindaki payoff hissini gereksiz kestigini gosterirse yalniz reset/death sinirindaki HUD cleanup sirasi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni HUD framework'u, animation manager'i veya replay orchestration katmani acilmaz.
+
 ### [Run #200]
 
 Decision:

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #201
+
+- `project/game/src/game/GameScene.ts` death ve yeni run reset'i sirasinda `scoreText`, `goalStatusText` ve `nearMissText` uzerindeki aktif tween'leri sonlandirip bu HUD elemanlarini temiz alpha/scale/tint durumuna geri dondurmeye basladi
+- ayni dosya artik stale near-miss veya milestone pulse state'inin instant replay'e sizmasini engelliyor; yeni deneme temiz bir HUD baseline ile aciliyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar replay-integrity fix'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #200
 
 - `project/game/src/game/primaryAction.ts` launch, retry ve resume prompt metinlerini ortak helper'lara tasidi; valid primary-action yollarinin kopyasi artik tek yerde tutuluyor

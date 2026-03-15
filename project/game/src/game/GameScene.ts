@@ -1083,6 +1083,9 @@ export class GameScene extends Phaser.Scene {
     this.firstDeathTargetReachedThisRun = false;
     this.tweens.killTweensOf([
       this.player,
+      this.scoreText,
+      this.goalStatusText,
+      this.nearMissText,
       this.hitFlash,
       this.impactRay,
       this.impactArrowHead,
@@ -1098,6 +1101,7 @@ export class GameScene extends Phaser.Scene {
       .clearTint()
       .setAlpha(1)
       .setScale(1);
+    this.resetTransientHudFeedbackState();
     this.hitFlash.setAlpha(0).setVisible(false);
     this.impactRay.setAlpha(0).setVisible(false);
     this.impactArrowHead.setAlpha(0).setScale(0.72).setVisible(false);
@@ -1534,6 +1538,9 @@ export class GameScene extends Phaser.Scene {
     this.physics.world.pause();
     this.tweens.killTweensOf([
       this.player,
+      this.scoreText,
+      this.goalStatusText,
+      this.nearMissText,
       this.hitFlash,
       this.impactRay,
       this.impactArrowHead,
@@ -1565,6 +1572,7 @@ export class GameScene extends Phaser.Scene {
 
     this.cameras.main.shake(90, 0.0035);
     this.playDeathFeedbackTone();
+    this.resetTransientHudFeedbackState();
     this.hitFlash.setAlpha(0.55).setVisible(true);
     this.tweens.add({
       targets: this.hitFlash,
@@ -1628,6 +1636,12 @@ export class GameScene extends Phaser.Scene {
     obstacle.setData('spawnGraceTween', null);
     obstacle.clearTint().setAlpha(1).setScale(1).setDepth(OBSTACLE_DEPTH).setVelocity(0, 0);
     obstacle.disableBody(true, true);
+  }
+
+  private resetTransientHudFeedbackState(): void {
+    this.scoreText.clearTint().setAlpha(1).setScale(1);
+    this.goalStatusText.setAlpha(1).setScale(1);
+    this.nearMissText.setAlpha(1).setScale(1).setVisible(false).setText('');
   }
 
   private updateNearMissTracking(activeRunElapsedMs: number): void {

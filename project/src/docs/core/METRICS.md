@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+replay_hud_feedback_reset_integrity:
+current: Run #201 `project/game/src/game/GameScene.ts` death ve yeni run reset'i sirasinda `scoreText`, `goalStatusText` ve `nearMissText` uzerindeki aktif tween/pulse state'ini oldurup temiz alpha/scale/tint durumuna donduruyor; yeni replay eski denemenin near-miss veya milestone iziyle acilmiyor
+baseline: onceki source near-miss, `10s` milestone veya `60s clear` feedback'i olum ya da instant retry ile yarida kesildiginde HUD elemanlarini ara tint/scale durumunda birakabiliyor; sonraki deneme gorsel olarak eski run'in pulse state'ini tasiyabiliyordu
+target: sonraki headed sample'da replay yeni run'a temiz HUD baseline ile girsin; eski run pulse state'i gorsel truth'u veya instant replay hissini bulandirmasin
+validation: `npm run telemetry:check`, `npm run build`
+
 launch_prompt_action_truth_integrity:
 current: Run #200 `project/game/src/game/primaryAction.ts` launch, retry ve resume prompt metinlerini ortak helper'larda tutuyor; `project/game/src/game/GameScene.ts` waiting pulse dahil ilgili yuzeylerde move input ile baslatma yolunu artik acikca yaziyor
 baseline: onceki source move input ile launch/retry kabul etse de waiting pulse ve ilgili prompt'lar bunu acikca soylemuyor, bu da gecerli bir kontrol yolunu gizli affordance'a cevirip control readability'yi gereksiz daraltiyordu
