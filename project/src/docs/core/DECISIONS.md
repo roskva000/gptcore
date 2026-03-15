@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #206]
+
+Decision:
+`stabilization` modunda duvar baskisinda spawn-target lag ile fairness scoring arasindaki drift'i kapat.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/replay-HUD/near-miss/surge koridorlarina geri dondurmuyor. Kaynak incelemesi yeni ama dar bir gameplay/fairness kusuru gosterdi: `project/game/src/game/spawn.ts` spawn seciminde `reachableVelocity` ile duvara dogru artik ulasilamayan hareketi sifirliyordu, fakat `project/game/src/game/GameScene.ts` ile deterministic proxy obstacle hedef noktasini hala ham `player.velocity` ile kuruyordu. Bu da oyuncu kenara baski yaparken spawn scoring'in "ulasilamaz" dedigi yone runtime obstacle aim'inin sessizce kaymasina yol aciyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` yeni `getSpawnTargetPoint()` helper'i ile reachability clamp ve target-lag aim hesaplarini tek yerde topladi. `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` bu helper'a gecerek runtime ile deterministic proxy'yi ayni wall-aware trajectory truth'unda birlestirdi. `project/game/scripts/telemetry-check.ts` sag duvar kismi blokaj ve tam kose blokaj vakalarini regression altina aldi. `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Gercek sample veya yeni source bulgusu wall-aware target lag'in kenar oyununu gereksiz bosalttigini gosterirse yalniz bu helper'in clamping semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, physics katmani veya orchestration sistemi acilmaz.
+
 ### [Run #205]
 
 Decision:

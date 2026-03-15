@@ -80,7 +80,7 @@ export const clampPointToArena = (
   };
 };
 
-const getReachableVelocity = (
+export const getReachableVelocity = (
   playerPosition: Point,
   playerVelocity: Point | undefined,
   playerReachabilityMargin = 0,
@@ -112,6 +112,36 @@ const getReachableVelocity = (
   return clampedVelocity;
 };
 
+export const getSpawnTargetPoint = ({
+  playerPosition,
+  playerVelocity,
+  playerReachabilityMargin = 0,
+  targetLagSeconds,
+}: {
+  playerPosition: Point;
+  playerVelocity: Point | undefined;
+  playerReachabilityMargin?: number;
+  targetLagSeconds: number;
+}): Point => {
+  const reachableVelocity = getReachableVelocity(
+    playerPosition,
+    playerVelocity,
+    playerReachabilityMargin,
+  );
+
+  if (!reachableVelocity) {
+    return clampPointToArena(playerPosition, { margin: playerReachabilityMargin });
+  }
+
+  return clampPointToArena(
+    {
+      x: playerPosition.x - reachableVelocity.x * targetLagSeconds,
+      y: playerPosition.y - reachableVelocity.y * targetLagSeconds,
+    },
+    { margin: playerReachabilityMargin },
+  );
+};
+
 const getProjectedPathReference = (
   playerPosition: Point,
   playerVelocity: Point | undefined,
@@ -121,13 +151,15 @@ const getProjectedPathReference = (
     return clampPointToArena(playerPosition, { margin: playerReachabilityMargin });
   }
 
-  return clampPointToArena(
-    {
-      x: playerPosition.x + playerVelocity.x * EARLY_SPAWN_TARGET_LAG_SECONDS,
-      y: playerPosition.y + playerVelocity.y * EARLY_SPAWN_TARGET_LAG_SECONDS,
+  return getSpawnTargetPoint({
+    playerPosition,
+    playerVelocity: {
+      x: -playerVelocity.x,
+      y: -playerVelocity.y,
     },
-    { margin: playerReachabilityMargin },
-  );
+    playerReachabilityMargin,
+    targetLagSeconds: EARLY_SPAWN_TARGET_LAG_SECONDS,
+  });
 };
 
 const normalize = (point: Point): Point => {

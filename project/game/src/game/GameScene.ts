@@ -19,8 +19,8 @@ import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
   OBSTACLE_COLLISION_RADIUS,
-  clampPointToArena,
   getSpawnEdge,
+  getSpawnTargetPoint,
   isPointInsideArena,
   isPointOutsideCullBounds,
   selectSpawnPoint,
@@ -1238,13 +1238,15 @@ export class GameScene extends Phaser.Scene {
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
     const spawnTargetLagSeconds = getSpawnTargetLagSeconds(currentSurvivalTimeSeconds);
-    const targetPoint = clampPointToArena(
-      {
-        x: this.player.x - playerBody.velocity.x * spawnTargetLagSeconds,
-        y: this.player.y - playerBody.velocity.y * spawnTargetLagSeconds,
+    const targetPoint = getSpawnTargetPoint({
+      playerPosition: { x: this.player.x, y: this.player.y },
+      playerVelocity: {
+        x: playerBody.velocity.x,
+        y: playerBody.velocity.y,
       },
-      { margin: PLAYER_COLLISION_RADIUS },
-    );
+      playerReachabilityMargin: PLAYER_COLLISION_RADIUS,
+      targetLagSeconds: spawnTargetLagSeconds,
+    });
     const target = new Phaser.Math.Vector2(targetPoint.x, targetPoint.y);
     const velocity = target
       .subtract(spawnPoint)

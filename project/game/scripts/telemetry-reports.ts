@@ -51,7 +51,7 @@ import {
   EARLY_FORWARD_SPAWN_ALIGNMENT_THRESHOLD,
   EARLY_FORWARD_SPAWN_REROLL_CUTOFF_SECONDS,
   OBSTACLE_COLLISION_RADIUS,
-  clampPointToArena,
+  getSpawnTargetPoint,
   isPointInsideArena,
   isPointOutsideCullBounds,
   OFFSCREEN_CULL_MARGIN,
@@ -300,13 +300,12 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
         getObstacleSpeed(survivalTimeSeconds) * getObstacleSpeedMultiplier(obstacleVariant);
       const spawnTargetLagSeconds = getSpawnTargetLagSeconds(survivalTimeSeconds);
       const collisionGraceMs = getSpawnCollisionGraceMs(survivalTimeSeconds);
-      const targetPoint = clampPointToArena(
-        {
-          x: player.x - playerVelocity.x * spawnTargetLagSeconds,
-          y: player.y - playerVelocity.y * spawnTargetLagSeconds,
-        },
-        { margin: PLAYER_RADIUS },
-      );
+      const targetPoint = getSpawnTargetPoint({
+        playerPosition: player,
+        playerVelocity,
+        playerReachabilityMargin: PLAYER_RADIUS,
+        targetLagSeconds: spawnTargetLagSeconds,
+      });
       const direction = normalize({
         x: targetPoint.x - selection.point.x,
         y: targetPoint.y - selection.point.y,

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #206
+
+- `project/game/src/game/spawn.ts` yeni `getSpawnTargetPoint()` helper'i ile reachability clamp ve spawn-target lag hesaplarini ortaklastirdi; duvara dogru bloklu hareket artik obstacle aim'ine hayali bir hedef yazmiyor
+- `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` obstacle trajectory hedefini bu helper uzerinden kurmaya basladi; runtime ve deterministic proxy ayni wall-aware truth'u paylasiyor
+- `project/game/scripts/telemetry-check.ts` duvar-baski spawn-target lag icin yeni right-wall partial block ve full-corner block regression assert'leri ekledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu spawn-fairness integrity fix'i ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #205
 
 - `project/game/src/game/nearMiss.ts` en yakin yaklasimin gorunur arenada yasandigini `closestDistanceWasVisible` state'i ile tasimaya basladi; obstacle shave sonrasi hemen arena disina ciksa bile near-miss reward artik dusmuyor

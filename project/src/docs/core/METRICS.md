@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+spawn_target_wall_truth_integrity:
+current: Run #206 `project/game/src/game/spawn.ts` wall-aware `getSpawnTargetPoint()` helper'i ile spawn-target lag'i reachability clamp ile ayni truth'a bagliyor; `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` duvara dogru bloklu hareketi artik obstacle aim'ine tasimiyor
+baseline: onceki source spawn seciminde duvara dogru artik ulasilamayan hareketi sifirlasa da runtime ve deterministic proxy target noktayi ham `playerVelocity` ile kuruyordu; oyuncu kenara baski yaparken fairness scoring ile gercek obstacle trajectory farkli yone bakabiliyordu
+target: sonraki human sample kenar oyunu sirasinda spawn baskisinin daha durust ve daha okunur hissettigini gostersin; runtime blokluysa bu helper'a tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run telemetry:survival-snapshot`, `npm run build`
+
 near_miss_edge_visibility_integrity:
 current: Run #205 `project/game/src/game/nearMiss.ts` en yakin yaklasimin gorunur arenada yasandigini `closestDistanceWasVisible` state'i ile koruyor; obstacle shave sonrasi hemen arena disina ciktiginda bile near-miss reward kaybolmuyor
 baseline: onceki source near-miss'i yalniz tetikleme aninda obstacle hala gorunur arenadaysa veriyordu; gorunur bir close shave edge-exit release karesinde sessizce dusup insan sinyalindeki tek guclu pozitif ani eksik odullendirebiliyordu

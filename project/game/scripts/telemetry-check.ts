@@ -15,6 +15,7 @@ import {
 import {
   OBSTACLE_COLLISION_RADIUS,
   clampPointToArena,
+  getSpawnTargetPoint,
   isPointInsideArena,
   selectSpawnPoint,
 } from '../src/game/spawn.ts';
@@ -141,6 +142,32 @@ assert.equal(
   getObstacleTint('surge'),
   0xffd38a,
   'Surge obstacles should expose a dedicated tint so the faster threat stays visually readable.',
+);
+assert.deepEqual(
+  getSpawnTargetPoint({
+    playerPosition: { x: 784, y: 300 },
+    playerVelocity: { x: 214, y: -120 },
+    playerReachabilityMargin: 16,
+    targetLagSeconds: 0.18,
+  }),
+  {
+    x: 784,
+    y: 321.6,
+  },
+  'Spawn target lag should ignore the blocked rightward wall push while still honoring the reachable vertical drift.',
+);
+assert.deepEqual(
+  getSpawnTargetPoint({
+    playerPosition: { x: 16, y: 16 },
+    playerVelocity: { x: -214, y: -120 },
+    playerReachabilityMargin: 16,
+    targetLagSeconds: 0.18,
+  }),
+  {
+    x: 16,
+    y: 16,
+  },
+  'Spawn target lag should collapse to the clamped player position when both movement axes are blocked by arena walls.',
 );
 assert.equal(
   balanceReport.surgeObstacleUnlockSeconds,

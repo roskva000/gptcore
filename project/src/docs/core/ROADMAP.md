@@ -4,12 +4,12 @@
 
 # NOW
 
-- Run #205 `stabilization`: `project/game/src/game/nearMiss.ts` en yakin gorunur shave bilgisi arena disina cikis karesine de tasindi; edge-exit close shave'ler artik odulsuz dusmuyor.
-- `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-check.ts` yeni `closestDistanceWasVisible` kontrati ile hizalandi.
+- Run #206 `stabilization`: duvar baskisinda spawn-target lag artik `reachableVelocity` truth'una gore hesaplanıyor; obstacle trajectory duvar icine dogru hayali hareketi takip etmiyor.
+- `project/game/src/game/spawn.ts`, `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` ortak `getSpawnTargetPoint()` helper'i ile hizalandi.
 - `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- edge'e tasan gorunur near-miss shave'ler artik feedback kaybetmez.
+- duvar baskisinda runtime obstacle aim'i spawn fairness scoring ile ayni reachability truth'unu kullanir.
 - deterministic survival proxy `26.0s / 10.0s / 0%` baseline'ini korur.
 - `telemetry:check`, `telemetry:survival-snapshot` ve build yesil kalir.
 
@@ -18,7 +18,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine tuned surge beat'i, `10s` milestone payoff'i ve replay istegi icin keep/tune/revert notu ekle.
-- Runtime yoksa near-miss veya tuned surge'a tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa near-miss, tuned surge veya duvar-baski spawn-target fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -37,6 +37,7 @@ Success markers:
 - sample olmadan ayni fairness/death/pause/panel/replay-HUD veya `10s` milestone koridorlarina geri donmek
 - sample olmadan surge cadence/speed knob'una tekrar dokunmak
 - sample olmadan near-miss reward detection/yuzeyine tekrar mikro-tuning yapmak
+- sample olmadan yeni wall-target lag / reachability micro-tuning'i acmak
 - sample olmadan ikinci gameplay mutation dali acmak
 - yeni readiness / preflight / orchestration katmani
 
