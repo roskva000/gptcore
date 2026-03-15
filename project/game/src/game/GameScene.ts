@@ -94,6 +94,8 @@ const NEAR_MISS_HINT_DURATION_MS = 900;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
 const FATAL_OBSTACLE_DEPTH = 3;
+const SUPPORT_TEXT_DEPTH = 3;
+const OVERLAY_SUPPORT_TEXT_DEPTH = 12;
 const IMPACT_LABEL_HALF_HEIGHT_PX = 12;
 const IMPACT_LABEL_GAP_PX = 22;
 const IMPACT_LABEL_MIN_Y_PX = 28;
@@ -446,7 +448,7 @@ export class GameScene extends Phaser.Scene {
           lineSpacing: 4,
         },
       )
-      .setDepth(3)
+      .setDepth(SUPPORT_TEXT_DEPTH)
       .setOrigin(0.5, 1);
 
     this.hitFlash = this.add
@@ -2309,6 +2311,11 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setVisible(hudVisible);
     this.bestText.setVisible(hudVisible);
     this.goalStatusText.setVisible(this.phase === 'playing' && this.survivalGoalReachedThisRun);
+    this.supportText.setDepth(
+      this.phase === 'paused' || this.phase === 'gameOver'
+        ? OVERLAY_SUPPORT_TEXT_DEPTH
+        : SUPPORT_TEXT_DEPTH,
+    );
     if (this.phase !== 'playing') {
       this.nearMissText.setVisible(false);
     }

@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## Run #198
+
+- `project/game/src/game/GameScene.ts` `supportText` derinligini `paused` ve `gameOver` fazlarinda overlay'in ustune tasidi; `C`, `R`, `V` gibi komutlardan gelen geri bildirim artik modalin arkasinda kaybolmuyor
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar overlay-feedback UX fix'i ile hizaladi
+- `npm run build` basarili calisti
+
 ## Run #197
 
 - `project/game/src/game/GameScene.ts` focus-loss pause overlay'inde session best satirini active run survival time ile birlikte yorumlamaya basladi; oyuncu yeni rekoru gecmisken browser blur sonrasi pause snapshot artik eski best'e geri dusmuyor

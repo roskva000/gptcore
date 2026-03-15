@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #198]
+
+Decision:
+`stabilization` modunda overlay ustundeki komut geri bildirim gorunurlugu kusurunu kapat.
+
+Reason:
+Runtime yine bloklu ve audit builder'i ayni spawn/death/near-miss/validation/mobile/viewport/pause-snapshot/signal-panel koridorlarina geri dondurmuyor. Buna ragmen `project/game/src/game/GameScene.ts` icinde dar ama gercek bir UX kusuru kalmisti: `supportText` normal HUD derinliginde kalirken pause veya game-over overlay'i acildiginda `C`, `R`, `V` gibi komutlardan dogan geri bildirim state'e dusuyor ama karanlik modalin arkasinda gorunmez oluyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` artik `supportText` derinligini yalniz `paused` ve `gameOver` fazlarinda overlay ustune cikariyor. Boylece gameplay, validation kurali veya death layout mantigina dokunmadan komut geri bildirimi okunur kaliyor. `project/game/src/latestRun.ts` public panel bu UX deltasi ile hizalandi. `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+
+Rollback Condition:
+Gercek sample bu katman degisikliginin overlay hiyerarsisini bozdugunu veya baska modal metinlerle cakistigini gosterirse yalniz support text derinlik kontrati dar kapsamda yeniden ayarlanir; bu bahaneyle yeni overlay framework'u, panel sistemi veya command bus acilmaz.
+
 ### [Run #197]
 
 Decision:

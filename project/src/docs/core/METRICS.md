@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+overlay_command_feedback_visibility_integrity:
+current: Run #198 `project/game/src/game/GameScene.ts` `supportText` derinligini `paused` ve `gameOver` fazlarinda overlay'in ustune tasiyor; komut kaynakli destek/uyari mesajlari artik state'e dusup karanlik modalin arkasinda kaybolmuyor
+baseline: onceki source `supportText`i tum fazlarda ayni HUD derinliginde tutuyordu; pause veya game-over overlay'i acikken `C`, `R`, `V` gibi komutlardan gelen geri bildirim metni guncellense bile overlay altinda kaldigi icin fiilen gorunmez olabiliyordu
+target: overlay fazlarinda komut geri bildirimi okunur kalsin; bu dar katman duzeltmesi gameplay, validation kurali veya death layout mantigini degistirmeden kullaniciya anlik feedback versin
+validation: `npm run build`
+
 paused_live_best_truth_integrity:
 current: Run #197 `project/game/src/game/GameScene.ts` focus-loss pause overlay ve paused telemetry satirlarinda best degerini current survival time ile birlikte yorumluyor; oyuncu active run sirasinda stored best'i gecmisken browser blur/visibility change ile `paused` fazina dusunce truth eski record'a geri donmuyor
 baseline: onceki source `paused` fazina girince overlay ve telemetry summary satirlarinda yalniz kaydedilmis best'i okuyordu; oyuncu yeni bir rekoru aktif run icinde gecmis olsa bile tab blur sonrasi pause snapshot daha dusuk bir best gosterip run gercegini stale hissettirebiliyordu
