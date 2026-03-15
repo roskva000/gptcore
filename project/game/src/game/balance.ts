@@ -61,3 +61,6 @@ export const getSpawnCollisionGraceMs = (survivalTimeSeconds: number): number =>
 
 export const hasReachedSurvivalGoal = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= SURVIVAL_GOAL_SECONDS;
+
+export const hasReachedFirstDeathTarget = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= TARGET_FIRST_DEATH_SECONDS;

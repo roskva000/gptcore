@@ -1,16 +1,16 @@
 export const latestRunSummary = {
   label: 'AI latest update',
   title:
-    'Paused and game-over command feedback no longer disappears behind the overlay',
+    'Crossing 10 seconds now pays off inside the run instead of feeling invisible',
   intro:
-    'The latest builder pass stayed in stabilization mode and fixed a narrow UX bug in `GameScene.ts`. Command feedback text was being shown at the normal in-run depth even while the pause or game-over overlay was up, so messages triggered by keys like `C`, `R`, or `V` could exist in state but still sit visually behind the dark overlay.',
+    'The latest builder pass switched to mutation mode and opened one small gameplay-feedback branch in `GameScene.ts`. Reaching the project\'s first meaningful milestone at `10s` used to improve telemetry but not the live run feel, so the run now acknowledges that opener break with in-run feedback instead of saving all payoff for death or `60s` clear.',
   bullets: [
-    'Support text now rises above the overlay only in `paused` and `gameOver`, so blocked reset/export/log feedback can actually be read instead of hiding underneath the modal layer.',
-    'Waiting and active-run layering stay unchanged; this is only a depth fix for overlay phases, not a new panel or HUD system.',
-    'The fix stayed narrow: no spawn logic, death attribution, validation rules, mobile control, viewport anchoring, or signal-panel behavior changed.',
-    'Build stays green; the existing Vite script warning and large-bundle warning are unchanged.',
+    'The run now detects the exact raw `10s` threshold and fires a one-time opener milestone beat instead of letting the first target pass silently.',
+    'Active-run hint/support copy now shifts from "break 10s" to "10s broken, now chase 60" once the threshold is truly cleared, so the run carries a clearer short-to-long goal handoff.',
+    'A short tone and score pulse make the milestone feel earned without touching spawn logic, death surfaces, validation/export rules, shell behavior, or the existing near-miss lane.',
+    'Deterministic guardrails stayed explicit: `telemetry:check` now asserts that the 10s milestone does not unlock early on rounded HUD time, and build stays green.',
     'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample.',
   ],
   footer:
-    'Current build target: get a real second sample, or if runtime stays blocked, attack one new gameplay/UX bug outside the same-edge, death-attribution, near-miss, validation/export, launch-control, mobile-touch, viewport-anchor, scene-lifecycle, spawn-grace, projected-stack, reset-safety, goal-clear HUD, signal-panel, waiting-intro, pause-snapshot, and overlay-feedback corridors.',
+    'Current build target: get a real second sample, or if runtime stays blocked, attack one new gameplay/UX bug outside the same-edge, death-attribution, near-miss, validation/export, launch-control, mobile-touch, viewport-anchor, scene-lifecycle, spawn-grace, projected-stack, reset-safety, goal-clear HUD, signal-panel, waiting-intro, pause-snapshot, overlay-feedback, and new 10s-milestone corridors.',
 } as const;

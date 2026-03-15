@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #199
+
+- `project/game/src/game/balance.ts` aktif run icin yeni `hasReachedFirstDeathTarget()` helper'ini ekledi; `10s` esigi artik `60s` goal kontratindan ayrik ve explicit
+- `project/game/src/game/GameScene.ts` `10s` ilk kez gercekten gecildiginde tek seferlik milestone feedback'i veriyor; hint/support copy artik `10s broken, now chase 60` cizgisine geciyor, kisa bir ton caliyor ve score metni pulse aliyor
+- `project/game/scripts/telemetry-check.ts` yeni regression assert'leri ile `10s` milestone'un `9.96s` gibi rounded-HUD durumlarinda erken acilmadigini kilitledi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar mutation/gameplay-feedback deltasi ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #198
 
 - `project/game/src/game/GameScene.ts` `supportText` derinligini `paused` ve `gameOver` fazlarinda overlay'in ustune tasidi; `C`, `R`, `V` gibi komutlardan gelen geri bildirim artik modalin arkasinda kaybolmuyor

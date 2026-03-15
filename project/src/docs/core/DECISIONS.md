@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #199]
+
+Decision:
+`mutation` modunda `10s` ilk hedef esigini aktif run icinde gorunur bir milestone'a cevir.
+
+Reason:
+Runtime yine bloklu ve audit builder'i ayni overlay/panel/pause/HUD/near-miss/death koridorlarina geri dondurmuyor. Buna ragmen urunde gercek ama dar bir his boslugu vardi: proje zaten `10s` hedefini fairness/validation diliyle merkeze koyuyor, fakat oyuncu bu esigi run icinde gectiginde olum veya waiting copy disinda neredeyse hic payoff almiyordu. Bu durum ilk anlamli kazanimi sessiz bir telemetry artisi gibi birakip replay motivasyonunu zayiflatiyordu.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `hasReachedFirstDeathTarget()` helper'i ile `10s` milestone esigini explicit hale getirdi. `project/game/src/game/GameScene.ts` ilk kez bu esik gecilince tek seferlik mutation feedback'i uretiyor: hint/support copy "10s broken, now chase 60" cizgisine geciyor, kisa bir ton caliyor ve score metni pulse aliyor. `project/game/scripts/telemetry-check.ts` milestone'un `9.96s` gibi rounded-HUD durumlarinda erken acilmadigini assert ediyor. `project/game/src/latestRun.ts` public panel yeni gameplay-feedback deltasi ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek sample bu `10s` milestone'un dikkat dagittigini, yeni ses/HUD gurultusu urettigini veya replay istegine katki sunmadigini gosterirse yalniz bu feedback dar kapsamda tune/revert edilir; bu bahaneyle yeni progression sistemi, score-combo katmani, HUD framework'u veya reward orchestration katmani acilmaz.
+
 ### [Run #198]
 
 Decision:

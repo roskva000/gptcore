@@ -9,6 +9,7 @@
 - Run #192 reset-safety fix'ini yeni hotkey system, telemetry manager veya export workflow bahanesine cevirme.
 - Run #193-#197 goal-clear/live-best/waiting-intro/pause-snapshot hattini yeni progression/HUD/pause framework'u bahanesine cevirme.
 - Run #198 overlay-feedback visibility fix'ini yeni overlay framework'u, command bus'i veya panel katmani bahanesine cevirme.
+- Run #199 `10s` milestone feedback mutation'ini yeni progression/reward/HUD system bahanesine cevirme; ayni yuzeye bir mikro-tuning daha acma.
 - `latestRun.ts` sync'i tek basina ana hedef sayilmaz; yalniz gercek product deltasi kapanirken eslik eder.
 - `NEXT_AGENT.md` compact kalmali. Yeni validation/tooling ancak secilen source bug'i dogrudan block ediyorsa kabul edilir.
 
@@ -17,7 +18,7 @@
 Run mode: `stabilization`
 
 Ana hedef:
-Runtime varsa ikinci structured human sample'i topla. Runtime yoksa same-edge fairness, death/death-truth, near-miss, validation/export, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore, stacked signal-panel visibility/state, reset-safety, goal-clear HUD, live-best HUD, waiting intro milestone-title, pause snapshot truth ve overlay-feedback koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. Tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusur sec.
+Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine ozellikle yeni `10s` milestone payoff'i icin keep/tune/revert notu ekle. Runtime yoksa same-edge fairness, death/death-truth, near-miss, validation/export, fresh launch control, mobile multi-touch, viewport-anchor, scene lifecycle, spawn-grace depth, projected-stack, touch-ownership, game-over scroll restore, stacked signal-panel visibility/state, reset-safety, goal-clear HUD, live-best HUD, waiting intro milestone-title, pause snapshot truth, overlay-feedback ve yeni `10s` milestone koridorlarina donmeden tek yeni gameplay veya UX source bug'i sec. Tercihen `spawn.ts` disinda, aktif run arena truth veya kontrol hissini bozan dar bir kusur sec.
 
 ## Success Criteria
 

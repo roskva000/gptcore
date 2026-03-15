@@ -6,6 +6,7 @@ import {
   SURVIVAL_GOAL_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleSpeed,
+  hasReachedFirstDeathTarget,
   hasReachedSurvivalGoal,
   getSpawnDelayMs,
   getSpawnCollisionGraceMs,
@@ -87,6 +88,7 @@ const POINTER_DEAD_ZONE_PX = 10;
 const POINTER_FULL_SPEED_DISTANCE_PX = 120;
 const RETRY_GAP_TRACK_WINDOW_MS = 15000;
 const IN_RUN_HINT_DURATION_MS = 1400;
+const FIRST_TARGET_HINT_DURATION_MS = 1800;
 const SURVIVAL_GOAL_HINT_DURATION_MS = 2200;
 const NEAR_MISS_EXTRA_DISTANCE_PX = 22;
 const NEAR_MISS_CHAIN_WINDOW_MS = 1800;
@@ -165,6 +167,7 @@ export class GameScene extends Phaser.Scene {
   private gameOverRetryNeedsMovementRelease = false;
   private gameOverRetryNeedsPointerRelease = false;
   private playingHintHideAtElapsedMs: number | null = null;
+  private firstDeathTargetReachedThisRun = false;
   private pausedRunElapsedMs = 0;
   private pauseStartedAt: number | null = null;
   private readonly handleVisibilityChange = (): void => {
@@ -739,6 +742,13 @@ export class GameScene extends Phaser.Scene {
       this.nearMissHintHideAtElapsedMs = null;
     }
 
+    if (
+      !this.firstDeathTargetReachedThisRun &&
+      hasReachedFirstDeathTarget(this.survivalTime)
+    ) {
+      this.celebrateFirstDeathTarget(activeRunElapsedMs);
+    }
+
     if (!this.survivalGoalReachedThisRun && hasReachedSurvivalGoal(this.survivalTime)) {
       this.celebrateSurvivalGoal(activeRunElapsedMs);
     }
@@ -930,6 +940,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseStartedAt = null;
     this.runStartedAt = this.time.now;
     this.survivalTime = 0;
+    this.firstDeathTargetReachedThisRun = false;
     this.survivalGoalReachedThisRun = false;
     this.nearMissChainCount = 0;
     this.nearMissChainExpiresAtElapsedMs = 0;
@@ -1066,6 +1077,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseStartedAt = null;
     this.pointerSteeringNeedsRelease = false;
     this.survivalGoalReachedThisRun = false;
+    this.firstDeathTargetReachedThisRun = false;
     this.tweens.killTweensOf([
       this.player,
       this.hitFlash,
@@ -2111,6 +2123,38 @@ export class GameScene extends Phaser.Scene {
     oscillator.stop(now + 0.1);
   }
 
+  private playFirstTargetFeedbackTone(): void {
+    const audioContext = this.feedbackAudioContext;
+
+    if (!audioContext || audioContext.state !== 'running') {
+      return;
+    }
+
+    const now = audioContext.currentTime;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(420, now);
+    oscillator.frequency.exponentialRampToValueAtTime(560, now + 0.08);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(720, now);
+    filter.Q.setValueAtTime(2, now);
+
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.015, now + 0.012);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.13);
+  }
+
   private loadTelemetry(
     storageKey: string,
     storage: Pick<Storage, 'getItem'>,
@@ -2409,6 +2453,10 @@ export class GameScene extends Phaser.Scene {
     return `Stay moving and break into open space.\nTarget: survive past ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s.`;
   }
 
+  private getFirstDeathTargetHintText(): string {
+    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nThe opener held. Now chase ${SURVIVAL_GOAL_SECONDS}s.`;
+  }
+
   private getSurvivalGoalHintText(): string {
     return `${SURVIVAL_GOAL_SECONDS}s clear!\nYou beat the namesake goal. Keep the lane open and push your best.`;
   }
@@ -2416,12 +2464,18 @@ export class GameScene extends Phaser.Scene {
   private getCurrentPlayingHintText(): string {
     return this.survivalGoalReachedThisRun
       ? this.getSurvivalGoalHintText()
-      : this.getPlayingHintText();
+      : this.firstDeathTargetReachedThisRun
+        ? this.getFirstDeathTargetHintText()
+        : this.getPlayingHintText();
   }
 
   private getCurrentPlayingSupportText(): string {
     if (this.survivalGoalReachedThisRun) {
       return `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`;
+    }
+
+    if (this.firstDeathTargetReachedThisRun) {
+      return `${TARGET_FIRST_DEATH_SECONDS}s broken. The opener target is clear; keep the lane open and push toward ${SURVIVAL_GOAL_SECONDS}s.`;
     }
 
     return this.getBaseSupportText();
@@ -2453,6 +2507,30 @@ export class GameScene extends Phaser.Scene {
       alpha: 0.9,
       duration: 180,
       ease: 'Quad.Out',
+    });
+  }
+
+  private celebrateFirstDeathTarget(activeRunElapsedMs: number): void {
+    this.firstDeathTargetReachedThisRun = true;
+    this.hintText
+      .setText(this.getFirstDeathTargetHintText())
+      .setVisible(true);
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
+    this.playFirstTargetFeedbackTone();
+    this.tweens.killTweensOf(this.scoreText);
+    this.scoreText.setTint(0xd8fff4);
+    this.tweens.add({
+      targets: this.scoreText,
+      scaleX: 1.05,
+      scaleY: 1.05,
+      duration: 120,
+      yoyo: true,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        this.scoreText.clearTint();
+        this.scoreText.setScale(1);
+      },
     });
   }
 

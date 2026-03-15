@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+first_target_milestone_feedback_integrity:
+current: Run #199 `project/game/src/game/GameScene.ts` aktif run `10s` esigini ilk kez gercekten gecince hint/support copy'yi `10s broken, now chase 60` cizgisine tasiyor; kisa bir ton ve score pulse'u ile ilk anlamli milestone sessiz telemetry artisi olmaktan cikiyor
+baseline: onceki source `10s` hedefini waiting copy ve validation metinlerinde anlatiyor ama aktif run icinde bu esik gecildiginde oyuncuya anlik bir payoff vermiyordu; ilk anlamli kazanim neredeyse yalniz olum sonrasi veya `60s` clear sonrasinda hissedilebiliyordu
+target: sonraki headed sample'da `10s` kirilmasi replay motivasyonunu destekleyen okunur bir ara-odul gibi hissedilsin; yeni tone/pulse/hint feedback'i ucuz bir HUD/ses gurultusune donmesin
+validation: `npm run telemetry:check`, `npm run build`
+
 overlay_command_feedback_visibility_integrity:
 current: Run #198 `project/game/src/game/GameScene.ts` `supportText` derinligini `paused` ve `gameOver` fazlarinda overlay'in ustune tasiyor; komut kaynakli destek/uyari mesajlari artik state'e dusup karanlik modalin arkasinda kaybolmuyor
 baseline: onceki source `supportText`i tum fazlarda ayni HUD derinliginde tutuyordu; pause veya game-over overlay'i acikken `C`, `R`, `V` gibi komutlardan gelen geri bildirim metni guncellense bile overlay altinda kaldigi icin fiilen gorunmez olabiliyordu

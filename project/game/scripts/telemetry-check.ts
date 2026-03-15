@@ -3,7 +3,11 @@ import {
   getHorizontalCalloutCenterX,
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
-import { getSpawnCollisionGraceMs, hasReachedSurvivalGoal } from '../src/game/balance.ts';
+import {
+  getSpawnCollisionGraceMs,
+  hasReachedFirstDeathTarget,
+  hasReachedSurvivalGoal,
+} from '../src/game/balance.ts';
 import {
   OBSTACLE_COLLISION_RADIUS,
   clampPointToArena,
@@ -581,6 +585,21 @@ assert.equal(
   getSpawnCollisionGraceMs(11),
   0,
   '11s spawn collision grace should complete its fade-out and reach zero.',
+);
+assert.equal(
+  hasReachedFirstDeathTarget(9.9),
+  false,
+  'The 10s first-death target should not unlock early.',
+);
+assert.equal(
+  hasReachedFirstDeathTarget(9.96),
+  false,
+  'The 10s first-death target should stay locked until the raw run clock clears the threshold, even if the HUD rounds up.',
+);
+assert.equal(
+  hasReachedFirstDeathTarget(10),
+  true,
+  'The 10s first-death target should trigger as soon as the run clears the opener milestone.',
 );
 assert.equal(
   hasReachedSurvivalGoal(59.9),
