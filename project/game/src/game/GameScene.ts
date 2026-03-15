@@ -1704,6 +1704,7 @@ export class GameScene extends Phaser.Scene {
 
       obstacle.setData('nearMissState', {
         closestDistanceSq: nextState.closestDistanceSq,
+        closestDistanceWasVisible: nextState.closestDistanceWasVisible,
         hadClosingApproach: nextState.hadClosingApproach,
       });
 

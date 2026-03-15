@@ -1154,6 +1154,7 @@ assert.deepEqual(
   {
     currentDistanceSq: 1225,
     closestDistanceSq: 1225,
+    closestDistanceWasVisible: true,
     hadClosingApproach: true,
     triggered: false,
   },
@@ -1173,12 +1174,14 @@ assert.deepEqual(
     },
     {
       closestDistanceSq: 1225,
+      closestDistanceWasVisible: true,
       hadClosingApproach: true,
     },
   ),
   {
     currentDistanceSq: 2704,
     closestDistanceSq: 1225,
+    closestDistanceWasVisible: true,
     hadClosingApproach: true,
     triggered: true,
   },
@@ -1215,11 +1218,33 @@ assert.equal(
     },
     {
       closestDistanceSq: 1225,
+      closestDistanceWasVisible: true,
+      hadClosingApproach: true,
+    },
+  ).triggered,
+  true,
+  'Near-miss tracking should still fire when the closest visible shave has already happened and the obstacle exits the arena on the release frame.',
+);
+assert.equal(
+  evaluateNearMiss(
+    {
+      playerPosition: { x: 400, y: 300 },
+      playerVelocity: { x: 0, y: 0 },
+      playerCollisionRadius: 16,
+      obstaclePosition: { x: 790, y: 300 },
+      obstacleVelocity: { x: 120, y: 0 },
+      obstacleCollisionRadius: OBSTACLE_COLLISION_RADIUS,
+      obstacleInsideVisibleArena: false,
+      extraNearMissDistance: 22,
+    },
+    {
+      closestDistanceSq: 1225,
+      closestDistanceWasVisible: false,
       hadClosingApproach: true,
     },
   ).triggered,
   false,
-  'Near-miss tracking should not fire once the obstacle has already left the visible arena.',
+  'Near-miss tracking should stay silent when the closest approach happened offscreen and never became a visible shave.',
 );
 
 assert.deepEqual(

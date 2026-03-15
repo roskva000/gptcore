@@ -1,6 +1,7 @@
 export type NearMissState = {
   closestDistanceSq: number;
   hadClosingApproach: boolean;
+  closestDistanceWasVisible: boolean;
 };
 
 export type NearMissSnapshot = {
@@ -36,6 +37,7 @@ const EPSILON = 0.0001;
 export const createNearMissState = (): NearMissState => ({
   closestDistanceSq: Number.POSITIVE_INFINITY,
   hadClosingApproach: false,
+  closestDistanceWasVisible: false,
 });
 
 export const getNearMissLabel = (chainCount: number): string =>
@@ -61,11 +63,17 @@ export const evaluateNearMiss = (
   const collisionDistanceSq = collisionDistance * collisionDistance;
   const nearMissDistanceSq = nearMissDistance * nearMissDistance;
   const isClosing = deltaX * relativeVelocityX + deltaY * relativeVelocityY < -EPSILON;
-  const closestDistanceSq = Math.min(previousState.closestDistanceSq, currentDistanceSq);
+  const foundCloserDistance = currentDistanceSq <= previousState.closestDistanceSq + EPSILON;
+  const closestDistanceSq = foundCloserDistance
+    ? currentDistanceSq
+    : previousState.closestDistanceSq;
+  const closestDistanceWasVisible = foundCloserDistance
+    ? snapshot.obstacleInsideVisibleArena
+    : previousState.closestDistanceWasVisible;
   const hadClosingApproach = previousState.hadClosingApproach || isClosing;
   const triggered =
     hadClosingApproach &&
-    snapshot.obstacleInsideVisibleArena &&
+    closestDistanceWasVisible &&
     !isClosing &&
     closestDistanceSq > collisionDistanceSq + EPSILON &&
     closestDistanceSq <= nearMissDistanceSq;
@@ -73,6 +81,7 @@ export const evaluateNearMiss = (
   return {
     currentDistanceSq,
     closestDistanceSq,
+    closestDistanceWasVisible,
     hadClosingApproach,
     triggered,
   };

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #205
+
+- `project/game/src/game/nearMiss.ts` en yakin yaklasimin gorunur arenada yasandigini `closestDistanceWasVisible` state'i ile tasimaya basladi; obstacle shave sonrasi hemen arena disina ciksa bile near-miss reward artik dusmuyor
+- `project/game/src/game/GameScene.ts` runtime near-miss state'ini bu yeni truth ile sakliyor; mevcut mutation'a yeni branch eklenmedi
+- `project/game/scripts/telemetry-check.ts` edge-exit visible shave positive case'ini ve tamamen offscreen kalan yaklasimlarin sessiz kalmasini regression altina aldi
+- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #204
 
 - `project/game/src/game/balance.ts` surge obstacle cadence'ini `15s` sonrasinda her dorduncu yerine her besinci spawn olacak sekilde yumusatti; `1.14x` hiz carpani ve altin tint ayrimi korundu

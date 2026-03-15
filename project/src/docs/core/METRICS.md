@@ -6,23 +6,29 @@
 
 ## Gameplay
 
+near_miss_edge_visibility_integrity:
+current: Run #205 `project/game/src/game/nearMiss.ts` en yakin yaklasimin gorunur arenada yasandigini `closestDistanceWasVisible` state'i ile koruyor; obstacle shave sonrasi hemen arena disina ciktiginda bile near-miss reward kaybolmuyor
+baseline: onceki source near-miss'i yalniz tetikleme aninda obstacle hala gorunur arenadaysa veriyordu; gorunur bir close shave edge-exit release karesinde sessizce dusup insan sinyalindeki tek guclu pozitif ani eksik odullendirebiliyordu
+target: ikinci human sample near-miss reward'in daha durust ve daha heyecanli hissettigini gostersin; runtime blokluysa ayni near-miss yuzeyine tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run telemetry:survival-snapshot`, `npm run build`
+
 surge_obstacle_cadence_stabilization:
 current: Run #204 `project/game/src/game/balance.ts` surge obstacle beat'ini `15s` sonrasinda her besinci spawn'a cekiyor; `1.14x` hiz carpani korunurken deterministic survival baseline `26.0s` average survival, `10.0s` first death ve `%0` early death olarak kaliyor
 baseline: Run #203 tune-oncesi surge beat'i her dorduncu spawn'da geliyordu; ayni `26.0s / 10.0s / 0%` headline baseline korunurken dagilim daha sert `0 / 4 / 8 / 12` idi ve sample-free tuning karari hala acikti
 target: ikinci human sample tuned cadence'in ucuz gurultu yerine daha okunur tempo artisi ve replay istegi urettigini gostersin; runtime blokluysa ayni knob'a tekrar dokunmak yerine yeni gameplay/UX source problemi secilsin
-validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
+validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
 
 deterministic_surge_proxy_integrity:
 current: Run #204 source ve deterministic proxy ayni tuned surge cadence'ini ve `1.14x` hiz carpanini paylasiyor; survival snapshot `26.0s` average survival, `10.0s` first death ve `%0` early death raporluyor
 baseline: onceki proxy Run #202 live mutation'ini hic modellemiyor ve stale `27.4s avg / 10.0s first death / 0% early` sayilarini koruyordu; bu da surge beat'i icin keep/tune/revert kararini eski runtime'a bagliyordu
 target: deterministic proxy aktif gameplay kontratini tasimaya devam etsin; insan sample gelene kadar surge beat'i icin stale baseline yerine live truth uzerinden karar verilsin
-validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
+validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
 
 surge_obstacle_mid_run_variety:
 current: Run #204 tuned source `15s` sonrasinda her besinci spawn'i deterministik `surge obstacle` olarak isaretliyor; beat frequency yumusarken `1.14x` hiz carpani, `26.0s` average survival ve korunmus `10.0s` first-death floor korunuyor
 baseline: onceki source opener sonrasinda da ayni obstacle ritmini koruyor, bu da run'in `10s` sonrasi hizla duzlesmesine ve yeni tehdit beat'i acilmamasina yol aciyordu; Run #203 tune-oncesi cadence ise her dorduncu spawn ile daha sert bir dagilim uretip sample-free keep/tune/revert kararini acik birakiyordu
 target: ikinci human sample'da tuned surge beat'i ucuz gurultu veya unfair spike yerine okunur bir tempo artisi ve replay istegi uretsin; runtime blokluysa ayni surge knob'una tekrar donmeden baska gameplay/UX source problemi secilsin
-validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
+validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
 
 replay_hud_feedback_reset_integrity:
 current: Run #201 `project/game/src/game/GameScene.ts` death ve yeni run reset'i sirasinda `scoreText`, `goalStatusText` ve `nearMissText` uzerindeki aktif tween/pulse state'ini oldurup temiz alpha/scale/tint durumuna donduruyor; yeni replay eski denemenin near-miss veya milestone iziyle acilmiyor

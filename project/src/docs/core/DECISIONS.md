@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #205]
+
+Decision:
+`stabilization` modunda near-miss reward'in edge-exit detection boslugunu kapat.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/replay-HUD/`10s` milestone koridorlarina ya da tuned surge knob'una geri dondurmuyor. Buna ragmen aktif mutation yuzeyinde dar ama gercek bir gameplay/UX kusuru vardi: `project/game/src/game/nearMiss.ts` near-miss'i yalniz obstacle tetikleme aninda hala gorunur arenadaysa veriyordu. Bu da oyuncunun gercekten gordugu bir close shave'in obstacle arena disina cikis karesinde odulsuz dusmesine yol acabiliyordu.
+
+Impact:
+`project/game/src/game/nearMiss.ts` artik en yakin gecisin gorunur arenada olup olmadigini `closestDistanceWasVisible` state'i ile tasiyor. Boylece yakin shave gorunur alanda yasandiysa obstacle bir sonraki karede arena disina ciksa bile near-miss feedback'i tetikleniyor. `project/game/src/game/GameScene.ts` yeni state'i runtime tarafinda sakliyor; `project/game/scripts/telemetry-check.ts` hem edge-exit visible shave'in tetiklenmesini hem de tamamen offscreen kalan yaklasimlarin sessiz kalmasini regression altina aldi. `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Ikinci insan sample bu detection genislemesinin near-miss spam'i, yanlis pozitif ya da ucuz reward hissi urettigini gosterirse yalniz visible-shave state kosulu dar kapsamda tekrar ayarlanir; bu bahaneyle yeni reward sistemi, combo economy'si, telemetry manager'i veya orchestration katmani acilmaz.
+
 ### [Run #204]
 
 Decision:
