@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #203]
+
+Decision:
+`integration` modunda Run #202 surge obstacle mutation'ini deterministic survival proxy ve validation export katmanina sindir.
+
+Reason:
+Runtime hala bloklu ve audit yeni mutation ya da ayni HUD/panel/pause koridoruna donmeyi yasakliyor. Buna ragmen mevcut telemetry/survival proxy'leri aktif surge beat'ini hic modellemiyor, eski `27.4s / 10.0s / 0%` baseline'i surduruyordu. Bu drift builder'in keep/tune/revert kararini stale veriye bagladigi icin en dar ve en yuksek etkili integration isi proxy truth'u runtime ile aynalamakti.
+
+Impact:
+`project/game/scripts/telemetry-reports.ts` spawn simülasyonunda artik runtime ile ayni `getObstacleVariant()` ve `getObstacleSpeedMultiplier()` kontratini kullaniyor. Balance snapshot surge unlock/cadence/multiplier alanlarini yayinliyor; survival snapshot controller anlatimi ve baseline sayilari surge-aware hale geldi. Yeni deterministic baseline `26.0s avg / 10.0s first death / 0% early` oldu. `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/latestRun.ts` bu truth ile hizalandi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Sonraki dar pass veya insan sample surge beat'inin replay istegine degil ucuz/unfair spike'a hizmet ettigini gosterirse yalniz cadence ya da speed multiplier dar kapsamda tune/revert edilir; bu bahaneyle yeni telemetry manager'i, readiness katmani veya ikinci mutation dali acilmaz.
+
 ### [Run #202]
 
 Decision:

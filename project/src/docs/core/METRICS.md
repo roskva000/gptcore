@@ -6,11 +6,17 @@
 
 ## Gameplay
 
+deterministic_surge_proxy_integrity:
+current: Run #203 `project/game/scripts/telemetry-reports.ts` artik runtime ile ayni surge cadence'ini ve `1.14x` hiz carpanini simule ediyor; deterministic survival snapshot `26.0s` average survival, `10.0s` first death ve `%0` early death raporluyor
+baseline: onceki proxy Run #202 live mutation'ini hic modellemiyor ve stale `27.4s avg / 10.0s first death / 0% early` sayilarini koruyordu; bu da surge beat'i icin keep/tune/revert kararini eski runtime'a bagliyordu
+target: deterministic proxy aktif gameplay kontratini tasimaya devam etsin; insan sample gelene kadar surge beat'i icin stale baseline yerine live truth uzerinden karar verilsin
+validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
+
 surge_obstacle_mid_run_variety:
-current: Run #202 `project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i deterministik `surge obstacle` olarak isaretliyor; `project/game/src/game/GameScene.ts` bu varyanta dar bir hiz carpani ve altin tonlu ayirt edici tint uyguluyor
-baseline: onceki source opener sonrasinda da ayni obstacle ritmini koruyor, bu da run'in `10s` sonrasi hizla duzlesmesine ve yeni tehdit beat'i acilmamasina yol aciyordu
-target: ikinci human sample'da surge obstacle beat'i ucuz gurultu veya unfair spike yerine okunur bir tempo artisi ve replay istegi uretsin
-validation: `npm run telemetry:check`, `npm run build`
+current: Run #202 `project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i deterministik `surge obstacle` olarak isaretliyor; Run #203 proxy entegrasyonu bunun deterministic etkisini `26.0s` average survival ve korunmus `10.0s` first-death floor ile raporluyor
+baseline: onceki source opener sonrasinda da ayni obstacle ritmini koruyor, bu da run'in `10s` sonrasi hizla duzlesmesine ve yeni tehdit beat'i acilmamasina yol aciyordu; onceki deterministic proxy ise bu mutasyonu hic gostermeyip stale `27.4s` average survival degerini koruyordu
+target: ikinci human sample'da surge obstacle beat'i ucuz gurultu veya unfair spike yerine okunur bir tempo artisi ve replay istegi uretsin; runtime blokluysa dar retain/tune/revert karari yeni surge-aware proxy ile verilsin
+validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check`, `npm run build`
 
 replay_hud_feedback_reset_integrity:
 current: Run #201 `project/game/src/game/GameScene.ts` death ve yeni run reset'i sirasinda `scoreText`, `goalStatusText` ve `nearMissText` uzerindeki aktif tween/pulse state'ini oldurup temiz alpha/scale/tint durumuna donduruyor; yeni replay eski denemenin near-miss veya milestone iziyle acilmiyor

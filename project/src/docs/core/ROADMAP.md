@@ -4,13 +4,13 @@
 
 # NOW
 
-- Run #202 `mutation`: `project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i deterministik `surge obstacle` olarak aciyor.
-- `project/game/src/game/GameScene.ts` surge obstacle'a dar bir hiz carpani ve okunur altin tint uyguluyor; opener fairness ve spawn secimi degismeden mid-run tempo yeni bir beat kazaniyor.
-- `project/game/src/latestRun.ts` public `AI latest update` paneli bu dar gameplay mutation'i ile hizalandi.
+- Run #203 `integration`: `project/game/scripts/telemetry-reports.ts` artik Run #202 surge obstacle mutation'ini deterministic survival proxy'ye tasiyor; her dorduncu mid-run spawn ve `1.14x` hiz carpani simule ediliyor.
+- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/latestRun.ts` live surge-aware baseline ile hizalandi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- `15s` sonrasi run'larda okunur bir surge obstacle ritmi vardir.
+- deterministic proxy surge beat'i stale pre-mutation baseline yerine live runtime kontratini raporlar.
+- first-death floor `10s`te kalirken average survival surge-aware proxy'de gorunur.
 - `telemetry:check` ve build yesil kalir.
 
 ---
@@ -18,7 +18,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine surge obstacle beat'i, `10s` milestone payoff'i ve replay istegi icin keep/tune/revert notu ekle.
-- Runtime yoksa yeni mutation acmadan once yalniz surge obstacle cadence'i icin retain/tune/revert karari verecek tek dar integration passi sec.
+- Runtime yoksa yeni mutation acmadan once yalniz surge obstacle cadence'i veya speed multiplier'i icin retain/tune/revert karari verecek tek dar pass sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---

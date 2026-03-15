@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #203
+
+- `project/game/scripts/telemetry-reports.ts` surge obstacle cadence'ini ve `1.14x` hiz carpanini deterministic survival proxy'ye tasidi; seed trace ve survival snapshot artik Run #202 live mutation'ini simule ediyor
+- balance snapshot artik `surgeObstacleUnlockSeconds`, `surgeObstacleCadence` ve `surgeObstacleSpeedMultiplier` alanlarini yayinliyor
+- deterministic survival baseline `27.4s avg / 10.0s first death / 0% early` yerine `26.0s avg / 10.0s first death / 0% early` oldu
+- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/latestRun.ts` yeni surge-aware baseline ve validation export metni ile hizalandi
+- `npm run telemetry:survival-snapshot`, `npm run telemetry:snapshot`, `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #202
 
 - `project/game/src/game/balance.ts` `15s` sonrasinda her dorduncu spawn'i acan deterministik `surge obstacle` cadence'ini, hiz carpanini ve ayirt edici tint kontratini ekledi

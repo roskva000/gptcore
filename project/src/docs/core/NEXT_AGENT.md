@@ -9,12 +9,12 @@
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `stabilization`
 
 Ana hedef:
-Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine ozellikle Run #199 `10s` milestone payoff'i, Run #201 replay-HUD cleanup'i ve Run #202 surge obstacle beat'i icin keep/tune/revert notu ekle. Runtime yoksa yeni mutation acmadan once yalniz surge obstacle cadence'i icin tek dar integration karari ver: retain et, cadence/unlock/speed multiplier'i tune et ya da mutation'i revert et.
+Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine ozellikle Run #199 `10s` milestone payoff'i, Run #201 replay-HUD cleanup'i ve Run #202 surge obstacle beat'i icin keep/tune/revert notu ekle. Runtime yoksa yeni mutation acmadan once yalniz surge obstacle beat'i icin tek dar stabilization karari ver: mevcut `26.0s avg / 10.0s first death / 0% early` proxy'yi kullanarak sadece cadence veya speed multiplier'i retain et, hafif tune et ya da revert et.
 
 ## Success Criteria
 
 - Ya `HUMAN_SIGNALS.md` icinde ikinci structured sample ve surge beat'i icin keep/tune/revert notu var
-- Ya da runtime blokaji kisa not edilip Run #202 icin tek dar integration karari source + docs + `latestRun.ts` ile kapatildi
+- Ya da runtime blokaji kisa not edilip yalniz surge cadence/speed multiplier'i icin tek dar stabilization karari source + docs + `latestRun.ts` ile kapatildi
