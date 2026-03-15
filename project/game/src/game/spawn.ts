@@ -67,6 +67,7 @@ type SpawnSelectionParams = {
 export type SpawnEdge = 'top' | 'right' | 'bottom' | 'left';
 
 export type ActiveObstaclePosition = Point & {
+  collisionReady?: boolean;
   spawnEdge?: SpawnEdge;
 };
 
@@ -184,6 +185,10 @@ const dot = (left: Point, right: Point): number => left.x * right.x + left.y * r
 
 const isWithinTimeCutoff = (survivalTimeSeconds: number, cutoffSeconds: number): boolean =>
   survivalTimeSeconds <= cutoffSeconds + TIME_CUTOFF_EPSILON_SECONDS;
+
+const isActiveThreatRelevant = (obstaclePosition: ActiveObstaclePosition): boolean =>
+  obstaclePosition.collisionReady !== false &&
+  isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS });
 
 export const getSpawnEdge = (spawnPoint: Point): SpawnEdge => {
   if (spawnPoint.y < 0) {
@@ -342,7 +347,7 @@ const getLaneStackPenalty = (
   });
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
-    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+    if (!isActiveThreatRelevant(obstaclePosition)) {
       return totalPenalty;
     }
 
@@ -400,7 +405,7 @@ const getThreatCrowdingPenalty = (
   });
 
   return activeObstaclePositions.reduce((totalPenalty, obstaclePosition) => {
-    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+    if (!isActiveThreatRelevant(obstaclePosition)) {
       return totalPenalty;
     }
 
@@ -473,7 +478,7 @@ const getSpawnEdgeClusterPenalty = (
       return totalPenalty;
     }
 
-    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+    if (!isActiveThreatRelevant(obstaclePosition)) {
       return totalPenalty;
     }
 
@@ -515,7 +520,7 @@ const hasPressuredSameEdgeNearPlayer = (
   const candidatePlayerLateralDelta = spawnOffset.lateral - playerOffset.lateral;
 
   return activeObstaclePositions.some((obstaclePosition) => {
-    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+    if (!isActiveThreatRelevant(obstaclePosition)) {
       return false;
     }
 
@@ -664,7 +669,7 @@ const hasMidRunProjectedStackThreat = (
   const spawnDirection = normalize(spawnVector);
 
   return activeObstaclePositions.some((obstaclePosition) => {
-    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+    if (!isActiveThreatRelevant(obstaclePosition)) {
       return false;
     }
 
@@ -794,7 +799,7 @@ const hasRetreatPinchThreat = (
   }
 
   return activeObstaclePositions.some((obstaclePosition) => {
-    if (!isPointInsideArena(obstaclePosition, { margin: OBSTACLE_COLLISION_RADIUS })) {
+    if (!isActiveThreatRelevant(obstaclePosition)) {
       return false;
     }
 

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #218]
+
+Decision:
+`stabilization` modunda spawn reroll guard'larinin harmless spawn-grace obstacle'lari canli tehdit gibi saymasini kapat.
+
+Reason:
+Runtime hala bloklu ve audit builder'i son mutation/payoff/HUD koridorlarina geri dondurmuyor. Kod incelemesi yeni ama dar bir fairness kusuru gosterdi: `selectSpawnPoint()` icindeki guard ailesi arena icine girmis her obstacle'i baski gibi okuyordu, collision grace'i bitmemis harmless arrivals da buna dahildi. Bu durum yeni spawn'i okunur bir lane'e koymak yerine canli bile olmayan threat'lere gore reroll etmeye zorlayabiliyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` aktif guard hesaplarina `collisionReady !== false` filtresi ekledi. `project/game/src/game/GameScene.ts` runtime obstacle listesini, `project/game/scripts/telemetry-reports.ts` de deterministic survival proxy'sini ayni `collisionReady` truth'u ile `selectSpawnPoint()`'e bagladi. `project/game/scripts/telemetry-check.ts` opening-pressure ve mid-run projected-stack icin spawn-grace obstacle'larin lane blocker sayilmadigini regression altina aldi. Deterministic headline `30.7s avg / 10.0s first death / 0% early` ve build sagligi korundu.
+
+Rollback Condition:
+Ikinci insan sample veya yeni deterministic kanit spawn-grace obstacle'lari tamamen yok saymanin okunurlugu veya fairness'i bozdugunu gosterirse yalniz ilgili guard ailesi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, readiness/preflight katmani veya ikinci fairness sistemi acilmaz.
+
 ### [Run #217]
 
 Decision:

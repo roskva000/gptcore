@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #217:
+Current deterministic survival headline after Run #218:
 - `30.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+spawn_grace_threat_filter_integrity:
+current: Run #218 `project/game/src/game/spawn.ts` spawn reroll guard'larinda `collisionReady !== false` olmayan obstacle'lari aktif tehdit sayiyor; `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` runtime ve deterministic proxy'ye ayni truth'u tasiyor
+baseline: onceki source arena icine girmis ama collision grace'i henuz bitmemis obstacle'lari da opening pressure, lane-stack, threat-crowding, same-edge cluster, retreat-pinch ve projected-stack guard'larina katabiliyordu; harmless arrivals yeni spawn'i gereksiz reroll ettirebiliyordu
+target: spawn-grace obstacle'lar lane okunurlugunu gostersin ama canli baski gibi sayilip yeni spawn secimini gereksiz saptirmasin; runtime/proxy ayni `collisionReady` kontratini kullansin
+validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run build`
 
 lead_obstacle_mid_run_variety:
 current: Run #217 `project/game/src/game/balance.ts` `18s` sonrasinda her `9.` spawn icin yeni `lead` variant'ini aciyor; `project/game/src/game/GameScene.ts` bu varyanti ayri tint ve oyuncunun mevcut kacis cizgisini `0.14s` onde kesen predictive target lead ile sahneye tasiyor

@@ -1257,6 +1257,29 @@ assert.deepEqual(
   },
   'Opening spawn selection should reroll a merely-positive same-edge candidate when a visible same-edge threat is already sitting near the player.',
 );
+const spawnGracePressuredOpeningSelection = selectSpawnPoint({
+  survivalTimeSeconds: 5,
+  playerPosition: { x: 690, y: 220 },
+  playerVelocity: { x: -120, y: 80 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    {
+      x: 560,
+      y: 160,
+      collisionReady: false,
+      spawnEdge: 'right',
+    },
+  ],
+  randomInt: createQueuedRandom([0, 480]),
+});
+assert.deepEqual(
+  spawnGracePressuredOpeningSelection,
+  {
+    point: { x: 480, y: -56 },
+    rerollsUsed: 0,
+  },
+  'Opening spawn selection should ignore same-edge pressure from a spawn-grace obstacle that is still harmless instead of rerolling away from a readable lane.',
+);
 const exactCutoffPressuredOpeningSelection = selectSpawnPoint({
   survivalTimeSeconds: 6.000000000000076,
   playerPosition: { x: 690, y: 220 },
@@ -1369,6 +1392,32 @@ assert.deepEqual(
     rerollsUsed: 1,
   },
   'Mid-run spawn selection should reroll a new approach lane when a visible threat is already sitting close to the player on the same projected stack.',
+);
+const spawnGraceProjectedStackSelection = selectSpawnPoint({
+  survivalTimeSeconds: 12,
+  playerPosition: { x: 400, y: 300 },
+  playerVelocity: { x: 0, y: -214 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [
+    {
+      x: 340,
+      y: 260,
+      collisionReady: false,
+      spawnEdge: 'top',
+    },
+  ],
+  randomInt: createQueuedRandom([
+    3,
+    80,
+  ]),
+});
+assert.deepEqual(
+  spawnGraceProjectedStackSelection,
+  {
+    point: { x: -56, y: 80 },
+    rerollsUsed: 0,
+  },
+  'Mid-run projected-stack rerolls should ignore a near-player obstacle while its collision grace is still active instead of treating a harmless arrival as a live lane blocker.',
 );
 const exactThresholdProjectedStackSelection = selectSpawnPoint({
   survivalTimeSeconds: 10,

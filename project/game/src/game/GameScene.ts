@@ -1213,6 +1213,7 @@ export class GameScene extends Phaser.Scene {
         .map((obstacle) => ({
           x: obstacle.x,
           y: obstacle.y,
+          collisionReady: this.isObstacleCollisionReady(obstacle),
           spawnEdge: obstacle.getData('spawnEdge') as ReturnType<typeof getSpawnEdge> | undefined,
         })),
       randomInt: Phaser.Math.Between,

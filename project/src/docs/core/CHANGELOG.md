@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## Run #218
+
+- `project/game/src/game/spawn.ts` spawn reroll guard'larinin collision grace'i henuz bitmemis obstacle'lari canli tehdit gibi saymasini kapatti
+- opening pressure, lane-stack, threat-crowding, same-edge cluster, retreat-pinch ve projected-stack guard'lari artik `collisionReady !== false` olmayan obstacle'lari lane blocker kabul ediyor
+- `project/game/src/game/GameScene.ts` runtime spawn secimine ve `project/game/scripts/telemetry-reports.ts` deterministic survival proxy'sine ayni `collisionReady` truth'unu tasidi
+- `project/game/scripts/telemetry-check.ts` spawn-grace opening-pressure ve projected-stack edge case'lerini regression altina aldi
+- deterministic survival baseline `30.7s avg / 10.0s first death / 0% early` ve `40s` cap korundu
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu spawn-grace fairness stabilization'i ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #217
 
 - `project/game/src/game/balance.ts` yeni `lead` obstacle variant'ini ekledi; `18s` sonrasinda her `9.` spawn ayri tint ile geliyor ve oyuncunun mevcut kacis cizgisini `0.14s` onde kesen predictive target lead kullaniyor

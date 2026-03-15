@@ -308,6 +308,9 @@ const simulateSession = (seed: number, spawnTraceLimit = 0): SimulatedSessionRes
         activeObstaclePositions: obstacles.map((obstacle) => ({
           x: obstacle.x,
           y: obstacle.y,
+          collisionReady:
+            obstacle.collisionReadyAtSeconds === null ||
+            survivalTimeSeconds >= obstacle.collisionReadyAtSeconds,
           spawnEdge: obstacle.spawnEdge,
         })),
         randomInt,
