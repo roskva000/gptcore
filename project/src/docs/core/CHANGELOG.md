@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #207
+
+- `project/game/src/game/spawn.ts` `10.0s` mid-run projected-stack baslangicini inclusive hale getirdi; ilk threshold spawn'i ayni projected lane follow-up guard'inin disina sizmiyor
+- `project/game/scripts/telemetry-check.ts` tam `10.0s` projected-stack reroll case'ini yeni regression assert'i ile kilitledi
+- deterministic survival baseline `26.0s avg / 10.0s first death / 0% early` korundu; bu pass pacing retune degil boundary fairness bug fix'i olarak kaldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu dar spawn-threshold integrity fix'i ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #206
 
 - `project/game/src/game/spawn.ts` yeni `getSpawnTargetPoint()` helper'i ile reachability clamp ve spawn-target lag hesaplarini ortaklastirdi; duvara dogru bloklu hareket artik obstacle aim'ine hayali bir hedef yazmiyor

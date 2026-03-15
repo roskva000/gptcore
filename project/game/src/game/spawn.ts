@@ -693,7 +693,7 @@ const shouldKeepRerollingForMidRunProjectedStack = (
   activeObstaclePositions: ActiveObstaclePosition[] | undefined,
   spawnPoint: Point,
 ): boolean =>
-  survivalTimeSeconds > MID_RUN_PROJECTED_STACK_REROLL_START_SECONDS &&
+  survivalTimeSeconds + TIME_CUTOFF_EPSILON_SECONDS >= MID_RUN_PROJECTED_STACK_REROLL_START_SECONDS &&
   survivalTimeSeconds <= MID_RUN_PROJECTED_STACK_REROLL_CUTOFF_SECONDS &&
   hasMidRunProjectedStackThreat(
     playerPosition,

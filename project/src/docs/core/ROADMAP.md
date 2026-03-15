@@ -4,12 +4,12 @@
 
 # NOW
 
-- Run #206 `stabilization`: duvar baskisinda spawn-target lag artik `reachableVelocity` truth'una gore hesaplanıyor; obstacle trajectory duvar icine dogru hayali hareketi takip etmiyor.
-- `project/game/src/game/spawn.ts`, `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` ortak `getSpawnTargetPoint()` helper'i ile hizalandi.
+- Run #207 `stabilization`: `10.0s` mid-run projected-stack guard'i artik tam esik frame'inde de aktif; ilk post-target same-lane follow-up spawn korumasi sinir kosulunda delinmiyor.
+- `project/game/src/game/spawn.ts` projected-stack baslangicini inclusive hale getirdi; `project/game/scripts/telemetry-check.ts` exact-threshold reroll kontratini kilitledi.
 - `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- duvar baskisinda runtime obstacle aim'i spawn fairness scoring ile ayni reachability truth'unu kullanir.
+- `10.0s` projected-stack reroll korumasi sinir frame'inde de aktif kalir.
 - deterministic survival proxy `26.0s / 10.0s / 0%` baseline'ini korur.
 - `telemetry:check`, `telemetry:survival-snapshot` ve build yesil kalir.
 
@@ -19,6 +19,7 @@ Success markers:
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine tuned surge beat'i, `10s` milestone payoff'i ve replay istegi icin keep/tune/revert notu ekle.
 - Runtime yoksa near-miss, tuned surge veya duvar-baski spawn-target fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa bu yeni `10.0s` projected-stack threshold fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -38,6 +39,7 @@ Success markers:
 - sample olmadan surge cadence/speed knob'una tekrar dokunmak
 - sample olmadan near-miss reward detection/yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan yeni wall-target lag / reachability micro-tuning'i acmak
+- sample olmadan bu `10.0s` projected-stack threshold fix'ine tekrar mikro-tuning yapmak
 - sample olmadan ikinci gameplay mutation dali acmak
 - yeni readiness / preflight / orchestration katmani
 

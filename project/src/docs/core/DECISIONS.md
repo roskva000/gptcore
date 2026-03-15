@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #207]
+
+Decision:
+`stabilization` modunda `10.0s` esiginde disari sizan mid-run projected-stack guard boundary bug'ini kapat.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause/replay-HUD/near-miss/surge koridorlarina geri dondurmuyor. Deterministic trace incelemesi seed `#7` tarafinda yeni dar ama gercek bir fairness kusuru gosterdi: `project/game/src/game/spawn.ts` icindeki `shouldKeepRerollingForMidRunProjectedStack()` yardimcisi anlatimda "10s-13s" diye gecse de kodda `> 10` kullaniyordu. Bu da tam `10.0s` frame'inde gelen ilk post-target follow-up spawn'in ayni projected lane guard'inin disina sizmasina izin veriyordu.
+
+Impact:
+`project/game/src/game/spawn.ts` projected-stack baslangicini epsilon-tolerant inclusive hale getirdi; tam `10.0s` threshold artik `12s` case'iyle ayni reroll kontratini paylasiyor. `project/game/scripts/telemetry-check.ts` bu exact-threshold case'i regression altina aldi. `npm run telemetry:check`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi; deterministic survival headline `26.0s avg / 10.0s first death / 0% early` korunuyor.
+
+Rollback Condition:
+Gercek sample veya yeni deterministic bulgu bu inclusive threshold'un mid-run challenge'i gereksiz bosalttigini gosterirse yalniz projected-stack baslangic semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni spawn director'u, cadence sistemi veya orchestration katmani acilmaz.
+
 ### [Run #206]
 
 Decision:

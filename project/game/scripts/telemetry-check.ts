@@ -1115,6 +1115,22 @@ assert.deepEqual(
   },
   'Mid-run spawn selection should reroll a new approach lane when a visible threat is already sitting close to the player on the same projected stack.',
 );
+const exactThresholdProjectedStackSelection = selectSpawnPoint({
+  survivalTimeSeconds: 10,
+  playerPosition: { x: 400, y: 300 },
+  playerVelocity: { x: 180, y: 0 },
+  playerReachabilityMargin: 16,
+  activeObstaclePositions: [{ x: 470, y: 300 }],
+  randomInt: createQueuedRandom([1, 300, 2, 100]),
+});
+assert.deepEqual(
+  exactThresholdProjectedStackSelection,
+  {
+    point: { x: 100, y: 656 },
+    rerollsUsed: 1,
+  },
+  'Mid-run projected-stack protection should already apply on the exact 10.0s threshold instead of leaving the first post-target follow-up spawn outside the guard window.',
+);
 
 assert.equal(
   isPointInsideArena({ x: 10, y: 300 }, { margin: OBSTACLE_COLLISION_RADIUS }),

@@ -6,6 +6,12 @@
 
 ## Gameplay
 
+mid_run_projected_stack_threshold_integrity:
+current: Run #207 `project/game/src/game/spawn.ts` `10.0s` projected-stack guard baslangicini epsilon-tolerant inclusive yorumluyor; ilk post-target same-lane follow-up spawn tam esik frame'inde de reroll korumasina giriyor
+baseline: onceki source `10s-13s` anlatimina ragmen `> 10` kullaniyor, bu da tam `10.0s` spawn'inin ayni projected lane guard'ini sessizce atlamasina izin veriyordu
+target: mid-run stack korumasi tam `10.0s` threshold'da da `12s` case'iyle ayni davranisi versin; runtime blokluysa bu fix'e tekrar donmek yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run telemetry:survival-snapshot`, `npm run build`
+
 spawn_target_wall_truth_integrity:
 current: Run #206 `project/game/src/game/spawn.ts` wall-aware `getSpawnTargetPoint()` helper'i ile spawn-target lag'i reachability clamp ile ayni truth'a bagliyor; `project/game/src/game/GameScene.ts` ve `project/game/scripts/telemetry-reports.ts` duvara dogru bloklu hareketi artik obstacle aim'ine tasimiyor
 baseline: onceki source spawn seciminde duvara dogru artik ulasilamayan hareketi sifirlasa da runtime ve deterministic proxy target noktayi ham `playerVelocity` ile kuruyordu; oyuncu kenara baski yaparken fairness scoring ile gercek obstacle trajectory farkli yone bakabiliyordu
