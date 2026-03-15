@@ -14,6 +14,10 @@ export const SURGE_OBSTACLE_UNLOCK_SECONDS = 15;
 export const SURGE_OBSTACLE_CADENCE = 5;
 export const SURGE_OBSTACLE_SPEED_MULTIPLIER = 1.14;
 export const SURGE_OBSTACLE_TINT = 0xffd38a;
+export const LEAD_OBSTACLE_UNLOCK_SECONDS = 18;
+export const LEAD_OBSTACLE_CADENCE = 9;
+export const LEAD_OBSTACLE_TARGET_LEAD_SECONDS = 0.14;
+export const LEAD_OBSTACLE_TINT = 0xff9eb1;
 export const ECHO_OBSTACLE_UNLOCK_SECONDS = 24;
 export const ECHO_OBSTACLE_CADENCE = 6;
 export const ECHO_OBSTACLE_TARGET_LAG_SECONDS = 0.22;
@@ -28,7 +32,7 @@ type Point = {
   y: number;
 };
 
-export type ObstacleVariant = 'standard' | 'surge' | 'echo' | 'drift';
+export type ObstacleVariant = 'standard' | 'surge' | 'lead' | 'echo' | 'drift';
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -65,6 +69,10 @@ export const getObstacleVariant = ({
   runSpawnCount > 0 &&
   runSpawnCount % ECHO_OBSTACLE_CADENCE === 0
     ? 'echo'
+    : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
+  runSpawnCount > 0 &&
+  runSpawnCount % LEAD_OBSTACLE_CADENCE === 0
+      ? 'lead'
     : survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
         runSpawnCount > 0 &&
         runSpawnCount % SURGE_OBSTACLE_CADENCE === 0
@@ -77,6 +85,8 @@ export const getObstacleSpeedMultiplier = (variant: ObstacleVariant): number =>
 export const getObstacleTint = (variant: ObstacleVariant): number | null =>
   variant === 'surge'
     ? SURGE_OBSTACLE_TINT
+    : variant === 'lead'
+      ? LEAD_OBSTACLE_TINT
     : variant === 'echo'
       ? ECHO_OBSTACLE_TINT
       : variant === 'drift'
@@ -158,7 +168,9 @@ export const getObstacleTargetLagSeconds = ({
   survivalTimeSeconds: number;
   variant: ObstacleVariant;
 }): number =>
-  variant === 'echo'
+  variant === 'lead'
+    ? -LEAD_OBSTACLE_TARGET_LEAD_SECONDS
+    : variant === 'echo'
     ? Math.max(getSpawnTargetLagSeconds(survivalTimeSeconds), ECHO_OBSTACLE_TARGET_LAG_SECONDS)
     : getSpawnTargetLagSeconds(survivalTimeSeconds);
 

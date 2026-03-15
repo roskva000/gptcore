@@ -4,11 +4,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #216:
-- `29.6s` average survival
+Current deterministic survival headline after Run #217:
+- `30.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+lead_obstacle_mid_run_variety:
+current: Run #217 `project/game/src/game/balance.ts` `18s` sonrasinda her `9.` spawn icin yeni `lead` variant'ini aciyor; `project/game/src/game/GameScene.ts` bu varyanti ayri tint ve oyuncunun mevcut kacis cizgisini `0.14s` onde kesen predictive target lead ile sahneye tasiyor
+baseline: onceki source surge ile echo arasinda yeni bir mid-run beat tasimiyordu; audit product breadth'in zayif kaldigini ve builder'in ayni truth/panel/fairness koridorlarina sikistigini isaret ediyordu
+target: ikinci human sample `lead` beat'inin cheap spike degil okunur bir intercept threat ve replay istegi ureten yeni bir rhythm olarak hissedildigini gostersin; runtime blokluysa bu yeni beat'e tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run build`
+
+deterministic_lead_proxy_integrity:
+current: Run #217 state'inde runtime ve deterministic proxy yeni `lead` obstacle cadence/tint/target-lead kontratini ayni helper'larla tasiyor; survival snapshot artik `30.7s` average survival, `10.0s` first death ve `%0` early death ile lead + surge + echo + drift ailesini ayni controller anlatiminda raporluyor
+baseline: onceki proxy Run #216 state'inde yeni bir mid-run predictive beat tasimiyordu; builder yeni mutation acarsa runtime/proxy drift riski dogabilirdi
+target: `lead` beat'i runtime ve deterministic proxy arasinda ayrismasin; keep/tune/revert kararlari stale controller anlatimi yerine aktif truth uzerinden verilsin
+validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run build`
 
 opening_cutoff_guard_integrity:
 current: Run #216 `project/game/src/game/spawn.ts` opening forward-pressure, lane-stack, threat-crowding, same-edge pressure ve ilgili ust cutoff yorumlarini ortak epsilon-aware zaman penceresiyle hizaladi; `project/game/scripts/telemetry-check.ts` blocked wall-lane pressure ile near-player same-edge pressure senaryolarinin `6.000000000000076s` frame'inde de reroll korudugunu kilitliyor
@@ -49,7 +61,7 @@ target: ikinci human sample echo beat'inin okunur bir trailing threat ve replay 
 validation: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
 
 deterministic_echo_proxy_integrity:
-current: Run #215 state'inde deterministic proxy echo obstacle unlock/cadence/lag truth'unu tasimaya devam ediyor; survival snapshot artik `29.6s` average survival, `10.0s` first death ve `%0` early death ile echo + drift'i ayni controller anlatiminda raporluyor
+current: Run #217 state'inde deterministic proxy echo obstacle unlock/cadence/lag truth'unu yeni `lead` beat'i ile birlikte tasimaya devam ediyor; survival snapshot artik `30.7s` average survival, `10.0s` first death ve `%0` early death ile echo + lead + drift'i ayni controller anlatiminda raporluyor
 baseline: onceki proxy yalniz surge beat'ini anlatiyor ve gec run'daki ikinci rhythm denemesini hic tasimiyordu; builder yeni mutation acarsa proxy drift riski yeniden dogabilirdi
 target: late-run mutation'lar runtime ile deterministic proxy arasinda ayrismasin; keep/tune/revert kararlari stale controller anlatimi yerine aktif truth uzerinden verilsin
 validation: `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
@@ -97,7 +109,7 @@ target: ikinci human sample tuned cadence'in ucuz gurultu yerine daha okunur tem
 validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`
 
 deterministic_surge_proxy_integrity:
-current: Run #215 state'inde source ve deterministic proxy ayni tuned surge cadence'ini ve `1.14x` hiz carpanini paylasiyor; survival snapshot `29.6s` average survival, `10.0s` first death ve `%0` early death raporluyor
+current: Run #217 state'inde source ve deterministic proxy ayni tuned surge cadence'ini yeni `lead` beat'i ile birlikte paylasiyor; survival snapshot `30.7s` average survival, `10.0s` first death ve `%0` early death raporluyor
 baseline: onceki proxy Run #202 live mutation'ini hic modellemiyor ve stale `27.4s avg / 10.0s first death / 0% early` sayilarini koruyordu; bu da surge beat'i icin keep/tune/revert kararini eski runtime'a bagliyordu
 target: deterministic proxy aktif gameplay kontratini tasimaya devam etsin; insan sample gelene kadar surge beat'i icin stale baseline yerine live truth uzerinden karar verilsin
 validation: `npm run telemetry:survival-snapshot`, `npm run telemetry:check`, `npm run build`

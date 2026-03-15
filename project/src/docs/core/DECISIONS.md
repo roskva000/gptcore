@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #217]
+
+Decision:
+`mutation` modunda mid-run'a yeni bir `lead` obstacle beat'i ekle.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel, death surface, replay flow, near-miss, payoff ve son fairness koridorlarina geri dondurmuyor. Buna ragmen audit product breadth'in zayif kaldigini ve mutation backlog'unun tekrar gecerli secim havuzu olmasi gerektigini acikca yaziyor. Yeni framework acmadan en dar savunulabilir urun hareketi, mevcut varyant hattini kullanip surge ile echo arasina oyuncunun mevcut kacis cizgisini onde kesen yeni bir predictive beat acmakti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `lead` variant'ini acti: `18s` sonrasinda her `9.` spawn ayri tint ile geliyor ve `0.14s` forward target lead kullaniyor. `project/game/scripts/telemetry-reports.ts` balance/survival snapshot yuzeylerine yeni cadence ve lead metriklerini ekledi; runtime ile deterministic proxy ayni kontrati tasiyor. `project/game/scripts/telemetry-check.ts`, `project/game/src/game/telemetry.ts` ve `project/game/src/latestRun.ts` yeni truth'u `30.7s avg / 10.0s first death / 0% early` deterministic headline'i ile hizaladi. `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample yeni `lead` beat'inin okunmaz, cheap veya replay istegini azaltan bir baski yarattigini gosterirse yalniz cadence veya target-lead semantigi dar kapsamda tune/revert edilir; bu bahaneyle yeni enemy framework'u, pattern director'u, readiness/preflight katmani veya ikinci proxy sistemi acilmaz.
+
 ### [Run #216]
 
 Decision:

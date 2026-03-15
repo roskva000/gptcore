@@ -4,23 +4,23 @@
 
 # NOW
 
-- Run #216 `stabilization`: `project/game/src/game/spawn.ts` opening guard cutoff'larini ortak epsilon-aware zaman penceresiyle hizaladi; fixed-step survival time `6.000000000000076s` oldugunda opener fairness envelope bir frame erken dusmuyor.
-- `project/game/scripts/telemetry-check.ts` yeni regression'larla blocked wall-lane pressure ve near-player same-edge pressure senaryolarinin 6s sacakta da reroll korudugunu kilitliyor.
-- Deterministic headline degismedi: `29.6s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
-- Bu pass mutation cadence'lerini, replay flow'unu, near-miss'i veya `10s` / `60s` payoff koridorlarini retune etmedi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- Run #217 `mutation`: `project/game/src/game/balance.ts` mevcut varyant hattina yeni `lead` obstacle beat'ini ekledi; `18s` sonrasinda her `9.` spawn `0.14s` forward target lead ile oyuncunun mevcut kacis cizgisini onde kesiyor.
+- `project/game/scripts/telemetry-reports.ts` ve runtime spawn akisi ayni cadence/tint/target-lead kontratini paylasiyor; yeni beat proxy-only degil.
+- Deterministic headline `30.7s / 10.0s / 0%` oldu ve `40s` simulation cap korundu.
+- Bu pass HUD/panel, death surface, replay flow, near-miss, opener cutoff veya mevcut surge/echo/drift knob'larini retune etmedi.
+- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- opener fairness guard'lari `6.0s` fixed-step fuzz yuzunden son korunan spawn'i kacirmiyor.
-- deterministic survival baseline `29.6s / 10.0s / 0%` olarak korunuyor.
-- `telemetry:check` ve build yesil kaliyor.
+- yeni `lead` beat'i runtime ve deterministic proxy tarafinda ayni kontratla tasiniyor.
+- deterministic survival baseline `30.7s / 10.0s / 0%` olarak yesil kaliyor.
+- `telemetry:check`, `telemetry:snapshot`, `telemetry:survival-snapshot` ve build yesil kaliyor.
 
 ---
 
 # NEXT
 
-- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, `10s` milestone payoff'i, `60s` clear payoff'i, tuned surge beat'i, echo beat'i ve yeni drift beat'i icin keep/tune/revert notu ekle.
-- Runtime yoksa validation/export'a, opener cutoff fix'ine veya near-miss, `10s` milestone, `60s` clear payoff, tuned surge, echo, drift, duvar-baski spawn-target fix'i, retreat-pinch reachability fix'i, projected-stack threshold fix'i, spawn-fallback guard fix'i, replay-intent fix'i veya spawn-bookkeeping fix'ine tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine replay hissi, yeni `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, `10s` milestone payoff'i ve `60s` clear payoff'i icin keep/tune/revert notu ekle.
+- Runtime yoksa lead, validation/export, opener cutoff, near-miss, `10s` milestone, `60s` clear payoff, surge, echo, drift, duvar-baski spawn-target, retreat-pinch reachability, projected-stack threshold, spawn-fallback, replay-intent veya spawn-bookkeeping koridorlarina tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -35,6 +35,7 @@ Success markers:
 # RETIRED / DEFERRED
 
 - telemetry wording / panel copy churn'u
+- sample olmadan yeni `lead` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan Run #216 opener cutoff koridoruna geri donmek
 - sample olmadan validation/export affordance'ini yeniden acmak
 - sample olmadan ayni fairness/death/pause/panel/replay-HUD, `10s` milestone veya `60s` clear payoff koridorlarina geri donmek
@@ -57,5 +58,5 @@ Success markers:
 # LATER
 
 - `GameScene.ts` seam extraction
-- ikinci sample geldikten sonra near-miss reward, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve yeni drift beat'inin retained/tuned/reverted durumunu degerlendirmek
+- ikinci sample geldikten sonra yeni `lead` beat'i, near-miss reward, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
 - ikinci human sample geldikten sonra near-miss ve replay identity yuzeylerini yeniden degerlendirmek

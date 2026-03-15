@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## Run #217
+
+- `project/game/src/game/balance.ts` yeni `lead` obstacle variant'ini ekledi; `18s` sonrasinda her `9.` spawn ayri tint ile geliyor ve oyuncunun mevcut kacis cizgisini `0.14s` onde kesen predictive target lead kullaniyor
+- `project/game/scripts/telemetry-reports.ts` balance snapshot'a `lead` unlock/cadence/target-lead alanlarini ekledi; runtime ve deterministic proxy ayni mutation kontratini paylasiyor
+- `project/game/scripts/telemetry-check.ts` yeni `lead` cadence/priority/tint/target-lead assert'lerini ve guncel survival snapshot beklentilerini regression altina aldi
+- `project/game/src/game/telemetry.ts` validation baseline metnini `30.7s avg / 10.0s first death / 0% early` deterministic truth'u ile hizaladi
+- deterministic survival baseline `30.7s avg / 10.0s first death / 0% early` oldu; `40s` cap, `%0` early death ve validation summary health korundu
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni mid-run mutation ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot` ve `npm run build` basarili calisti
+
 ## Run #216
 
 - `project/game/src/game/spawn.ts` opening forward-pressure, lane-stack, threat-crowding, same-edge pressure ve ilgili ust-cutoff kararlarini ortak epsilon-aware zaman penceresiyle hizaladi; `6.000000000000076s` gibi fixed-step fringe frame'lerinde opener fairness guard'lari bir frame erken dusmuyor
