@@ -69,7 +69,7 @@ import {
   isNearMissHintActive,
 } from './nearMiss.ts';
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
-import { getRunHorizonText } from './runHorizon.ts';
+import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   getLaunchActionPromptText as getPrimaryLaunchActionPromptText,
   getResumeActionPromptText as getPrimaryResumeActionPromptText,
@@ -105,6 +105,7 @@ const SURVIVAL_GOAL_HINT_DURATION_MS = 2200;
 const NEAR_MISS_EXTRA_DISTANCE_PX = 22;
 const NEAR_MISS_CHAIN_WINDOW_MS = 1800;
 const NEAR_MISS_HINT_DURATION_MS = 900;
+const RUN_BEAT_CALLOUT_DURATION_MS = 1700;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
 const FATAL_OBSTACLE_DEPTH = 3;
@@ -245,6 +246,7 @@ export class GameScene extends Phaser.Scene {
   private waitingPulseCore!: Phaser.GameObjects.Arc;
   private waitingPulseRing!: Phaser.GameObjects.Arc;
   private waitingPulseLabel!: Phaser.GameObjects.Text;
+  private beatCalloutText!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
   private nearMissText!: Phaser.GameObjects.Text;
   private supportText!: Phaser.GameObjects.Text;
@@ -270,6 +272,8 @@ export class GameScene extends Phaser.Scene {
   private nearMissChainCount = 0;
   private nearMissChainExpiresAtElapsedMs = 0;
   private nearMissHintHideAtElapsedMs: number | null = null;
+  private beatCalloutHideAtElapsedMs: number | null = null;
+  private lastAnnouncedRunBeatLabel: string | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
@@ -447,6 +451,24 @@ export class GameScene extends Phaser.Scene {
         fontStyle: 'bold',
       })
       .setDepth(3)
+      .setOrigin(0.5)
+      .setVisible(false);
+
+    this.beatCalloutText = this.add
+      .text(ARENA_WIDTH / 2, 120, '', {
+        align: 'center',
+        backgroundColor: '#123f36',
+        color: '#d8fff4',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '18px',
+        fontStyle: 'bold',
+        lineSpacing: 4,
+        padding: {
+          x: 16,
+          y: 8,
+        },
+      })
+      .setDepth(4)
       .setOrigin(0.5)
       .setVisible(false);
 
@@ -776,6 +798,7 @@ export class GameScene extends Phaser.Scene {
     this.updateBestText();
     this.updateNearMissTracking(activeRunElapsedMs);
     this.updateArenaBeatSpectacle(time);
+    this.updateRunBeatAnnouncement(activeRunElapsedMs);
 
     if (
       this.playingHintHideAtElapsedMs !== null &&
@@ -788,6 +811,14 @@ export class GameScene extends Phaser.Scene {
     if (!isNearMissHintActive(activeRunElapsedMs, this.nearMissHintHideAtElapsedMs)) {
       this.nearMissText.setVisible(false).setText('');
       this.nearMissHintHideAtElapsedMs = null;
+    }
+
+    if (
+      this.beatCalloutHideAtElapsedMs !== null &&
+      activeRunElapsedMs >= this.beatCalloutHideAtElapsedMs
+    ) {
+      this.beatCalloutText.setVisible(false).setText('');
+      this.beatCalloutHideAtElapsedMs = null;
     }
 
     if (
@@ -1037,11 +1068,14 @@ export class GameScene extends Phaser.Scene {
     this.nearMissChainCount = 0;
     this.nearMissChainExpiresAtElapsedMs = 0;
     this.nearMissHintHideAtElapsedMs = null;
+    this.beatCalloutHideAtElapsedMs = null;
+    this.lastAnnouncedRunBeatLabel = null;
     this.runSpawnRerolls = 0;
     this.runSpawnCount = 0;
     this.updateHudChromeVisibility();
     this.scoreText.setText('0.0s');
     this.hintText.setText(this.getPlayingHintText()).setVisible(true);
+    this.beatCalloutText.setVisible(false).setText('');
     this.nearMissText.setVisible(false).setText('');
     this.supportText.setText(this.getBaseSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
@@ -1113,6 +1147,7 @@ export class GameScene extends Phaser.Scene {
       )
       .setVisible(true);
     this.hintText.setVisible(false);
+    this.beatCalloutText.setVisible(false).setText('');
     this.nearMissText.setVisible(false).setText('');
     this.supportText.setVisible(false);
     this.survivalTime = pausedAtSeconds;
@@ -1149,6 +1184,7 @@ export class GameScene extends Phaser.Scene {
     this.overlayBody.setVisible(false).setText('');
     this.overlayPrompt.setVisible(false).setText('');
     this.overlayStats.setVisible(false).setText('');
+    this.restoreBeatCalloutAfterPause();
     this.nearMissText.setVisible(false).setText('');
     this.restorePlayingHintAfterPause();
     this.restoreNearMissHintAfterPause();
@@ -1167,16 +1203,19 @@ export class GameScene extends Phaser.Scene {
     this.nearMissChainCount = 0;
     this.nearMissChainExpiresAtElapsedMs = 0;
     this.nearMissHintHideAtElapsedMs = null;
+    this.beatCalloutHideAtElapsedMs = null;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
     this.pointerSteeringNeedsRelease = false;
     this.survivalGoalReachedThisRun = false;
     this.firstDeathTargetReachedThisRun = false;
+    this.lastAnnouncedRunBeatLabel = null;
     this.runSpawnCount = 0;
     this.tweens.killTweensOf([
       this.player,
       this.scoreText,
       this.goalStatusText,
+      this.beatCalloutText,
       this.nearMissText,
       this.hitFlash,
       this.impactRay,
@@ -1780,6 +1819,7 @@ export class GameScene extends Phaser.Scene {
   private resetTransientHudFeedbackState(): void {
     this.scoreText.clearTint().setAlpha(1).setScale(1);
     this.goalStatusText.setAlpha(1).setScale(1);
+    this.beatCalloutText.setAlpha(1).setScale(1).setVisible(false).setText('');
     this.nearMissText.setAlpha(1).setScale(1).setVisible(false).setText('');
   }
 
@@ -2538,6 +2578,7 @@ export class GameScene extends Phaser.Scene {
         : SUPPORT_TEXT_DEPTH,
     );
     if (this.phase !== 'playing') {
+      this.beatCalloutText.setVisible(false);
       this.nearMissText.setVisible(false);
     }
     this.updateWaitingPresentation();
@@ -2796,6 +2837,59 @@ export class GameScene extends Phaser.Scene {
     this.nearMissText
       .setText(getNearMissLabel(this.nearMissChainCount))
       .setAlpha(0.82)
+      .setScale(1)
+      .setVisible(true);
+  }
+
+  private updateRunBeatAnnouncement(activeRunElapsedMs: number): void {
+    const announcement = getRunBeatAnnouncement(this.survivalTime);
+
+    if (!announcement || announcement.label === this.lastAnnouncedRunBeatLabel) {
+      return;
+    }
+
+    this.lastAnnouncedRunBeatLabel = announcement.label;
+    this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + RUN_BEAT_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${announcement.title}\n${announcement.body}`)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.9,
+      duration: 160,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private restoreBeatCalloutAfterPause(): void {
+    if (this.beatCalloutHideAtElapsedMs === null) {
+      this.beatCalloutText.setVisible(false).setText('');
+      return;
+    }
+
+    const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
+
+    if (activeRunElapsedMs >= this.beatCalloutHideAtElapsedMs) {
+      this.beatCalloutText.setVisible(false).setText('');
+      this.beatCalloutHideAtElapsedMs = null;
+      return;
+    }
+
+    const announcement = getRunBeatAnnouncement(this.survivalTime);
+
+    if (!announcement) {
+      this.beatCalloutText.setVisible(false).setText('');
+      return;
+    }
+
+    this.beatCalloutText
+      .setText(`${announcement.title}\n${announcement.body}`)
+      .setAlpha(0.9)
       .setScale(1)
       .setVisible(true);
   }

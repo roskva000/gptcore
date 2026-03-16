@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #226
+
+- `project/game/src/game/runHorizon.ts` aktif run icin yeni beat announcement truth'unu ekledi; `strafe`, `surge`, `lead`, `echo` ve `drift` unlock'lari artik tek helper'da title/body copy'si tasiyor
+- `project/game/src/game/GameScene.ts` her yeni mutation unlock'inda ust-merkezde kisa omurlu bir beat callout gosteriyor; pause/resume kalan sureyi koruyor, waiting ve game-over fazlarinda yuzey saklaniyor
+- mevcut `10s` ve `60s` milestone kutlamalari korunuyor; bu pass yeni balance/fairness/audio retune'u acmadi
+- `project/game/scripts/telemetry-check.ts` ilk `strafe` unlock, gec `drift` unlock ve pre-`10s` sessizlik kontratlarini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass mutation knob retune'u degildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #225
 
 - `project/game/src/game/arenaBeatSpectacle.ts` yeni helper ile mevcut beat ladder'ini (`opening`, `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear`) arena background/glow/frame/band atmosferine cevirdi

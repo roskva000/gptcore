@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #226]
+
+Decision:
+`mutation` modunda aktif run icindeki mutation unlock anlarini kisa omurlu bir `beat callout` slice'i ile duyurmak.
+
+Reason:
+Stratejik faz proof-of-fun / identity surface ve audit builder'i frozen fairness/audio/mobile/horizon-copy koridorlarina geri dondurmuyor. Runtime hala bloklu oldugu icin ikinci sample toplanamadi; buna ragmen eldeki tek insan sinyali oyunun daha buyuk ve daha "gercek oyun" gibi hissettirmesi gerektigini acikca soyluyor. Mevcut ladder artik waiting, death ve spectacle yuzeylerinde okunuyor; en dar yeni product hareketi, bu ladder'i ilk kez aktif oynanis sirasinda unlock aninda duyurup run ritmini daha anlatilabilir hale getirmekti.
+
+Impact:
+`project/game/src/game/runHorizon.ts` yeni announcement truth'u ile `strafe`, `surge`, `lead`, `echo` ve `drift` unlock'lari icin title/body copy'si veriyor. `project/game/src/game/GameScene.ts` aktif run'da bu unlock'lari ust-merkezde kisa omurlu callout olarak gosteriyor; pause/resume akisi kalan sureyi koruyor ve waiting/game-over fazlarinda yuzeyi kapatiyor. `project/game/scripts/telemetry-check.ts` ilk `strafe` unlock, gec `drift` unlock ve pre-`10s` sessizlik kontratlarini regression altina aldi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample bu yeni beat callout yuzeyinin gurultulu, dikkat dagitici veya replay istegine katkisiz oldugunu gosterirse yalniz announcement copy/sure/yerlesim dar kapsamda tune edilir; bu bahaneyle yeni HUD framework'u, event bus'i, orchestration/preflight katmani veya genel UI rewrite acilmaz.
+
 ### [Run #225]
 
 Decision:

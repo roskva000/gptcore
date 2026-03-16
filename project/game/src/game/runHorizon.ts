@@ -13,6 +13,12 @@ type RunHorizonBeat = {
   seconds: number;
 };
 
+export type RunBeatAnnouncement = {
+  label: string;
+  title: string;
+  body: string;
+};
+
 const RUN_HORIZON_BEATS: RunHorizonBeat[] = [
   { seconds: TARGET_FIRST_DEATH_SECONDS, label: 'gate' },
   { seconds: STRAFE_OBSTACLE_UNLOCK_SECONDS, label: 'strafe' },
@@ -24,6 +30,34 @@ const RUN_HORIZON_BEATS: RunHorizonBeat[] = [
 ];
 
 const formatBeat = (beat: RunHorizonBeat): string => `${beat.seconds}s ${beat.label}`;
+
+const RUN_BEAT_ANNOUNCEMENTS: Record<string, RunBeatAnnouncement> = {
+  strafe: {
+    label: 'strafe',
+    title: 'STRAFE LIVE',
+    body: 'Cross-lane cuts are online. Break the sweep.',
+  },
+  surge: {
+    label: 'surge',
+    title: 'SURGE LIVE',
+    body: 'Fast pressure just woke up. Keep open space.',
+  },
+  lead: {
+    label: 'lead',
+    title: 'LEAD LIVE',
+    body: 'Predictive cuts are online. Snap out of straight lines.',
+  },
+  echo: {
+    label: 'echo',
+    title: 'ECHO LIVE',
+    body: 'Lagging copies are online. Reroute late and clean.',
+  },
+  drift: {
+    label: 'drift',
+    title: 'DRIFT LIVE',
+    body: 'Late-run drift is online. Stretch the lane.',
+  },
+};
 
 export const getRunHorizonText = (progressSeconds: number): string => {
   const unlockedBeats = RUN_HORIZON_BEATS.filter((beat) => progressSeconds >= beat.seconds);
@@ -57,4 +91,20 @@ export const getNextRunHorizonBeatText = (progressSeconds: number): string => {
   }
 
   return `Next beat: ${formatBeat(nextBeat)}`;
+};
+
+export const getRunBeatAnnouncement = (
+  progressSeconds: number,
+): RunBeatAnnouncement | null => {
+  for (let index = RUN_HORIZON_BEATS.length - 1; index >= 0; index -= 1) {
+    const beat = RUN_HORIZON_BEATS[index];
+
+    if (progressSeconds < beat.seconds) {
+      continue;
+    }
+
+    return RUN_BEAT_ANNOUNCEMENTS[beat.label] ?? null;
+  }
+
+  return null;
 };

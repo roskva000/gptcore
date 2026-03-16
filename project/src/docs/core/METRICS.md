@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #225:
+Current deterministic survival headline after Run #226:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+beat_callout_identity_surface:
+current: Run #226 `project/game/src/game/runHorizon.ts` aktif run icin `strafe`, `surge`, `lead`, `echo` ve `drift` unlock'lari icin title/body announcement truth'u sagliyor; `project/game/src/game/GameScene.ts` bu unlock'lari ust-merkezde kisa omurlu bir beat callout olarak gosteriyor ve pause/resume kalan sureyi koruyor
+baseline: onceki source mevcut ladder'i waiting horizon, death snapshot ve arena spectacle uzerinden okutuyordu ama aktif oynanis sirasinda yeni beat'in acildigi an icin dogrudan bir unlock callout'u vermiyordu; mutation ritmi daha cok sezinlenen bir sey olarak kaliyordu
+target: ikinci human sample bu yeni beat callout yuzeyinin run'i daha anlatilabilir, daha buyuk ve daha retry-tetikleyici hissettirdigini gostersin; runtime blokluysa bu yeni visual/copy yuzeye samplesiz mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
 
 arena_beat_spectacle_identity_surface:
 current: Run #225 `project/game/src/game/arenaBeatSpectacle.ts` mevcut ladder'i `opening`, `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear` beat'lerine gore arena background/glow/frame/band atmosferine ceviriyor; `project/game/src/game/GameScene.ts` waiting fazinda local best'e gore yumusak preview, aktif run'da ise artan spectacle veriyor

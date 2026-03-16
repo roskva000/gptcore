@@ -49,7 +49,11 @@ import {
 } from '../src/game/nearMiss.ts';
 import { getFeedbackAudioContextCtor } from '../src/game/feedbackAudio.ts';
 import { getArenaBeatSpectacle } from '../src/game/arenaBeatSpectacle.ts';
-import { getNextRunHorizonBeatText, getRunHorizonText } from '../src/game/runHorizon.ts';
+import {
+  getNextRunHorizonBeatText,
+  getRunBeatAnnouncement,
+  getRunHorizonText,
+} from '../src/game/runHorizon.ts';
 import {
   hasFreshMovementInput,
   getLaunchActionPromptText,
@@ -191,6 +195,29 @@ assert.equal(
   getNextRunHorizonBeatText(12.3),
   'Next beat: 15s surge',
   'Game-over horizon text should point at the next upcoming beat after the current death time.',
+);
+assert.deepEqual(
+  getRunBeatAnnouncement(12),
+  {
+    label: 'strafe',
+    title: 'STRAFE LIVE',
+    body: 'Cross-lane cuts are online. Break the sweep.',
+  },
+  'The first active-run mutation should announce its strafe identity as soon as the beat unlocks.',
+);
+assert.deepEqual(
+  getRunBeatAnnouncement(34),
+  {
+    label: 'drift',
+    title: 'DRIFT LIVE',
+    body: 'Late-run drift is online. Stretch the lane.',
+  },
+  'Late-run announcements should point at the newest live beat instead of repeating an earlier unlock.',
+);
+assert.equal(
+  getRunBeatAnnouncement(9.9),
+  null,
+  'No beat announcement should fire before the first post-gate mutation is actually live.',
 );
 const openingSpectacle = getArenaBeatSpectacle({
   phase: 'playing',

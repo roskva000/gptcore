@@ -4,16 +4,16 @@
 
 # NOW
 
-- Run #225 `mutation`: `project/game/src/game/arenaBeatSpectacle.ts` mevcut ladder'i (`opening`, `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear`) arena background/glow/frame/band atmosferine ceviren yeni tek truth oldu.
-- `project/game/src/game/GameScene.ts` backdrop'u artik faz ve progress ile senkronlayip waiting fazinda local best'e gore yumusak preview, aktif run'da ise beat unlock'lariyla artan bir spectacle veriyor.
-- `project/game/scripts/telemetry-check.ts` yeni spectacle helper'i icin opening, drift ve waiting-damping regression assert'leri ekledi.
+- Run #226 `mutation`: `project/game/src/game/runHorizon.ts` aktif run icin yeni beat announcement truth'unu ekledi; `strafe`, `surge`, `lead`, `echo` ve `drift` unlock'lari artik callout title/body olarak tek yerde tanimli.
+- `project/game/src/game/GameScene.ts` yeni beat callout yuzeyini aktif run'a bagladi; her unlock aninda ust-merkezde kisa omurlu bir announcement gorunuyor, pause/resume kalan sureyi koruyor ve waiting/game-over fazlarinda saklaniyor.
+- `project/game/scripts/telemetry-check.ts` ilk `strafe` unlock, gec `drift` unlock ve pre-`10s` sessizlik kontratlarini regression altina aldi.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
-- Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot copy'sini, fairness guard'larini, touch/mobile/audio stabilization'i veya yeni validation/tooling katmani acmayi retune etmedi.
+- Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- arena artik aktif run'da duz bir survival kutusu yerine mutation ladder'ina cevap veren bir spectacle surface tasiyor.
-- spectacle truth tek helper'da tutuluyor; waiting preview, in-run escalation ve paused/game-over dimming ayni ladder'i paylasiyor.
+- mutation ladder'i artik yalniz waiting/game-over text'inde degil aktif run icinde de unlock aninda okunur bir announcement veriyor.
+- beat callout truth tek helper'da tutuluyor; scene yalniz bu truth'u gosteriyor ve pause/resume sirasinda stale tekrar tetiklenmiyor.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build ve telemetry check seti yesil kaliyor.
 
@@ -21,8 +21,8 @@ Success markers:
 
 # NEXT
 
-- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Runtime yoksa bu yeni threat horizon, death snapshot ve arena spectacle slice'lari da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
+- Runtime yoksa bu yeni threat horizon, death snapshot, arena spectacle ve beat callout slice'lari da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -40,6 +40,7 @@ Success markers:
 - sample olmadan bu yeni threat horizon yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni death snapshot yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni arena beat spectacle yuzeyine tekrar mikro-tuning yapmak
+- sample olmadan bu yeni beat callout yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan yeni `strafe` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan yeni `lead` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn-grace threat filter fix'ine tekrar mikro-tuning yapmak
@@ -68,5 +69,5 @@ Success markers:
 # LATER
 
 - `GameScene.ts` seam extraction
-- ikinci sample geldikten sonra yeni threat horizon, arena beat spectacle ve death snapshot yuzeyleri, `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
+- ikinci sample geldikten sonra yeni threat horizon, arena beat spectacle, beat callout ve death snapshot yuzeyleri, `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
 - ikinci human sample geldikten sonra near-miss ve replay identity yuzeylerini yeniden degerlendirmek
