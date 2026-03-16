@@ -14,6 +14,10 @@ export const SURGE_OBSTACLE_UNLOCK_SECONDS = 15;
 export const SURGE_OBSTACLE_CADENCE = 5;
 export const SURGE_OBSTACLE_SPEED_MULTIPLIER = 1.14;
 export const SURGE_OBSTACLE_TINT = 0xffd38a;
+export const STRAFE_OBSTACLE_UNLOCK_SECONDS = 12;
+export const STRAFE_OBSTACLE_CADENCE = 8;
+export const STRAFE_OBSTACLE_ROTATION_DEGREES = 14;
+export const STRAFE_OBSTACLE_TINT = 0xffb88a;
 export const LEAD_OBSTACLE_UNLOCK_SECONDS = 18;
 export const LEAD_OBSTACLE_CADENCE = 9;
 export const LEAD_OBSTACLE_TARGET_LEAD_SECONDS = 0.14;
@@ -32,7 +36,13 @@ type Point = {
   y: number;
 };
 
-export type ObstacleVariant = 'standard' | 'surge' | 'lead' | 'echo' | 'drift';
+export type ObstacleVariant =
+  | 'standard'
+  | 'surge'
+  | 'strafe'
+  | 'lead'
+  | 'echo'
+  | 'drift';
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -73,6 +83,10 @@ export const getObstacleVariant = ({
   runSpawnCount > 0 &&
   runSpawnCount % LEAD_OBSTACLE_CADENCE === 0
       ? 'lead'
+    : survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
+  runSpawnCount > 0 &&
+  runSpawnCount % STRAFE_OBSTACLE_CADENCE === 0
+      ? 'strafe'
     : survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
         runSpawnCount > 0 &&
         runSpawnCount % SURGE_OBSTACLE_CADENCE === 0
@@ -85,6 +99,8 @@ export const getObstacleSpeedMultiplier = (variant: ObstacleVariant): number =>
 export const getObstacleTint = (variant: ObstacleVariant): number | null =>
   variant === 'surge'
     ? SURGE_OBSTACLE_TINT
+    : variant === 'strafe'
+      ? STRAFE_OBSTACLE_TINT
     : variant === 'lead'
       ? LEAD_OBSTACLE_TINT
     : variant === 'echo'
@@ -120,11 +136,13 @@ const rotate = (point: Point, degrees: number): Point => {
 export const getObstacleTravelDirection = ({
   spawnPoint,
   targetPoint,
+  playerVelocity,
   variant,
   runSpawnCount,
 }: {
   spawnPoint: Point;
   targetPoint: Point;
+  playerVelocity?: Point;
   variant: ObstacleVariant;
   runSpawnCount: number;
 }): Point => {
@@ -132,6 +150,27 @@ export const getObstacleTravelDirection = ({
     x: targetPoint.x - spawnPoint.x,
     y: targetPoint.y - spawnPoint.y,
   });
+
+  if (variant === 'strafe') {
+    const movementDirection =
+      playerVelocity && (playerVelocity.x !== 0 || playerVelocity.y !== 0)
+        ? normalize(playerVelocity)
+        : null;
+    const crossProduct =
+      movementDirection === null
+        ? 0
+        : baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
+    const rotationDegrees =
+      crossProduct === 0
+        ? Math.floor(runSpawnCount / STRAFE_OBSTACLE_CADENCE) % 2 === 0
+          ? STRAFE_OBSTACLE_ROTATION_DEGREES
+          : -STRAFE_OBSTACLE_ROTATION_DEGREES
+        : crossProduct > 0
+          ? -STRAFE_OBSTACLE_ROTATION_DEGREES
+          : STRAFE_OBSTACLE_ROTATION_DEGREES;
+
+    return normalize(rotate(baseDirection, rotationDegrees));
+  }
 
   if (variant !== 'drift') {
     return baseDirection;

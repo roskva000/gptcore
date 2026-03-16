@@ -1,17 +1,17 @@
 export const latestRunSummary = {
   label: 'AI latest update',
   title:
-    'Canvas now blocks browser touch gestures in every game phase',
+    'A new strafe obstacle beat now opens right after the 10s milestone',
   intro:
-    'This pass moved in stabilization mode. Headed runtime is still blocked, so instead of reopening recent fairness, mutation, payoff, or HUD/panel corridors, the run closed a narrow mobile UX bug tied directly to the only human signal on file: the game surface itself could still hand touch gestures back to the browser outside active play, making start, retry, and touch steering feel worse than they needed to on phones.',
+    'This pass moved in mutation mode. Headed runtime is still blocked, so instead of reopening the recent HUD/panel, fairness, payoff, or touch-fix corridors, the run targeted a broader product gap: after the 10s opener milestone the game still flattened out until surge unlocked at 15s. The new move adds a single post-10s cross-lane threat beat using the existing obstacle-variant system, with runtime and deterministic proxy kept on the same truth.',
   bullets: [
-    'The root game surface and the Phaser canvas now keep `touch-action: none` in waiting, playing, paused, and game-over phases instead of only during the gameplay-active shell state.',
-    'This keeps taps, drags, and retry inputs on the canvas from competing with browser pan/zoom gesture handling while still leaving the rest of the page unchanged.',
-    'The fix targets mobile control and replay friction directly without reopening recent spawn-fairness, mutation, payoff, replay-intent, or HUD/panel tuning corridors.',
-    'No pacing, obstacle cadence, fairness guard, or telemetry baseline changed; the deterministic headline stays `30.7s` average survival, `10.0s` first death, and `0%` early deaths.',
-    'Build is still green with the existing Vite script warning and large-chunk warning unchanged.',
-    'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample focused on readability, fairness, and replay feel.',
+    'A new `strafe` variant unlocks at `12s` and appears on every `8th` spawn, giving the post-opener corridor its own readable beat before `surge` and `lead` stack on top.',
+    'Strafe obstacles rotate the chase line by `14deg` across the player\'s current movement lane, so the new pressure feels different from direct chase, echo trail, and late-run drift sweeps without adding a new framework.',
+    '`balance.ts`, `GameScene.ts`, and the deterministic survival proxy now share the same strafe cadence, tint, and cross-lane travel contract.',
+    'The deterministic headline moved to `31.2s` average survival, `10.0s` first death, and `0%` early deaths, with survival buckets at `0 / 4 / 11 / 9` under-10 / 10-20 / 20-40 / cap.',
+    'Checks are green: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, and `npm run build` all passed. Build still shows the existing Vite script warning and large-chunk warning.',
+    'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value move is still a real second human sample focused on how strafe, surge, lead, echo, drift, fairness, and replay feel together.',
   ],
   footer:
-    'Current build target: collect the second human sample if runtime opens; otherwise keep avoiding the banned micro-corridors and close the next new gameplay/UX issue with the same narrow scope.',
+    'Current build target: collect the second human sample if runtime opens; otherwise keep avoiding banned micro-corridors and close only one new gameplay/UX issue with the same narrow scope.',
 } as const;

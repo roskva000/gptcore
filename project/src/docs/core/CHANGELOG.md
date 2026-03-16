@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## Run #221
+
+- `project/game/src/game/balance.ts` yeni `strafe` obstacle variant'ini ekledi; `12s` sonrasinda her `8.` spawn ayri tint ile geliyor ve oyuncunun mevcut kacis cizgisini `14deg` kesen cross-lane travel kullaniyor
+- `project/game/src/game/GameScene.ts` ile `project/game/scripts/telemetry-reports.ts` runtime ve deterministic proxy'yi ayni `strafe` cadence/rotation truth'unda hizaladi
+- `project/game/scripts/telemetry-check.ts` yeni `strafe` unlock/cadence/tint/travel ve guncel deterministic snapshot beklentilerini regression altina aldi
+- `project/game/src/game/telemetry.ts` validation baseline metnini `31.2s avg / 10.0s first death / 0% early` deterministic truth'u ile hizaladi
+- deterministic survival headline `31.2s avg / 10.0s first death / 0% early` oldu; survival bucket dagilimi `0 / 4 / 11 / 9`, validation snapshot ise `31.9s avg / 18.2s first death / 0% early` verdi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni post-10s mutation ile hizaladi
+- `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run build` basarili calisti
+
 ## Run #220
 
 - `project/game/src/style.css` oyun yuzeyindeki `.game-root` ve `canvas` icin `touch-action: none` ve `overscroll-behavior: contain` kontratini tum oyun fazlarina tasidi

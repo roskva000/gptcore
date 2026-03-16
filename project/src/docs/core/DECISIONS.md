@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #221]
+
+Decision:
+`mutation` modunda `10s` milestone sonrasi `15s` surge unlock'a kadar duzlesen koridora yeni `strafe` obstacle beat'i ekle.
+
+Reason:
+Runtime hala bloklu ve audit builder'i ayni HUD/panel/pause, payoff, near-miss, replay-intent, touch-fix ve son fairness mikro-koridorlarina geri dondurmuyor. Buna ragmen audit product breadth'in zayif kaldigini acikca soyluyor; mevcut run'lar ozellikle `10s` sonrasi `15s` surge unlock'a kadar yeniden tek ritme dusuyordu. Yeni framework acmadan en dar savunulabilir urun hareketi, mevcut obstacle variant hattini kullanip post-opener koridora ayri bir cross-lane beat acmakti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `strafe` variant'ini acti: `12s` sonrasinda her `8.` spawn ayri tint ile geliyor ve oyuncunun mevcut hareket cizgisini `14deg` kesen cross-lane travel kullaniyor. `project/game/src/game/GameScene.ts` runtime trajectory'sini, `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi ayni truth ile tasiyor. `project/game/scripts/telemetry-check.ts`, `project/game/src/game/telemetry.ts` ve `project/game/src/latestRun.ts` yeni mutation'i `31.2s avg / 10.0s first death / 0% early` deterministic headline ile hizaladi. `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample yeni `strafe` beat'inin okunmaz, cheap veya replay istegini azaltan bir baski yarattigini gosterirse yalniz cadence veya travel rotation dar kapsamda tune/revert edilir; bu bahaneyle yeni enemy framework'u, pattern director'u, readiness/preflight katmani veya ikinci proxy sistemi acilmaz.
+
 ### [Run #220]
 
 Decision:

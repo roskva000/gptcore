@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #220:
-- `30.7s` average survival
+Current deterministic survival headline after Run #221:
+- `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+strafe_obstacle_post_10s_variety:
+current: Run #221 `project/game/src/game/balance.ts` `12s` sonrasinda her `8.` spawn icin yeni `strafe` variant'ini aciyor; `project/game/src/game/GameScene.ts` bu varyanti ayri tint ve oyuncunun mevcut hareket cizgisini `14deg` kesen cross-lane travel ile sahneye tasiyor
+baseline: onceki source `10s` milestone sonrasi `15s` surge unlock'a kadar yeni bir rhythm tasimiyordu; audit product breadth'in zayif kaldigini ve post-opener koridorun yeniden duzlestigini isaret ediyordu
+target: ikinci human sample `strafe` beat'inin cheap spike degil okunur bir post-10s intercept/sweep tehdidi ve replay istegi ureten yeni bir rhythm oldugunu gostersin; runtime blokluysa bu yeni beat'e tekrar mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run telemetry:snapshot`, `npm run telemetry:survival-snapshot`, `npm run telemetry:validation-snapshot`, `npm run build`
 
 mobile_canvas_gesture_lock_integrity:
 current: Run #220 `project/game/src/style.css` `.game-root` ve `canvas` icin `touch-action: none` ile `overscroll-behavior: contain` kontratini waiting, playing, paused ve game-over boyunca koruyor

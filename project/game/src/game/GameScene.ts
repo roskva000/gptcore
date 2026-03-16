@@ -1267,6 +1267,10 @@ export class GameScene extends Phaser.Scene {
     const travelDirection = getObstacleTravelDirection({
       spawnPoint,
       targetPoint,
+      playerVelocity: {
+        x: playerBody.velocity.x,
+        y: playerBody.velocity.y,
+      },
       variant: obstacleVariant,
       runSpawnCount: this.runSpawnCount,
     });
