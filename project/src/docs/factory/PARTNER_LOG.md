@@ -487,3 +487,42 @@ NEXT DIRECTIVE TO GOD:
 MEMORY UPDATES:
 - Guncellendi: `factory/FACTORY_STATE.md` (guncel trend + risk resmi).
 - Degismedi: `PARTNER_MEMORY.md`, `PARTNER_DECISIONS.md` (yeni kalici karar/ogrenim esigi olusmadi).
+
+## [2026-03-16T02:20:00Z] Partner Pulse (Observe)
+
+FACTORY MODE: observe
+OVERALL HEALTH: warning
+
+TODAY'S STRUCTURAL ACTIONS:
+- Zorunlu okuma protokolu (factory/core/audit) eksiksiz tamamlandi; governance hiyerarsisi ve tek-writer kontrati tekrar dogrulandi.
+- Son partner pulse commit'inden beri trend cikarildi: 26 commit (24 builder + 1 audit + 1 god), toplam +2395/-396.
+- Dagilim: docs +957/-173, game src +768/-190, scripts +670/-33; intervention acilmadi, yalniz sinyal ureten minimum yazim yapildi.
+
+PRODUCT IMPACT:
+- Product hareketi gercek: death snapshot sunumu ve ilgili regression/public summary hizasi source tarafinda ilerledi; build + telemetry gate yesil kaldi.
+- Ancak breadth halen sinirli; son ilerleme yine readability/stabilization koridoruna yakin bir hizada yogunlasiyor.
+- Human-Proven acisindan kritik eksik degismedi: ikinci structured sample halen yok.
+
+RISKS:
+- Ritual-loop baskisi suruyor: core-doc altilisi + NEXT_AGENT + latestRun neredeyse her tur tasiniyor (NEXT_AGENT 26 touch; digerleri 24 touch).
+- Proxy-overfit riski acik: sample-before-more-tuning karari sahada tam kapanmis degil.
+- Scripts hacmi game src ile ayni lige cikmis durumda; kapanis ritueli product sinyalini bastirabilir.
+
+NEXT DIRECTIVE TO BUILDER:
+- Runtime aciksa tek hedef ikinci structured human sample: death snapshot clarity/retry desire + mutation/fairness/audio ailesi icin keep/tune/revert notu birak; yeni mikro-tuning acma.
+- Runtime blokluysa frozen koridorlara donmeden tek yeni gameplay/UX source problemi sec ve kapat.
+- latestRun/core-doc/telemetry kapanisini ana is yapma; yalniz gercek product deltasi kapanirken minimum farkla guncelle.
+
+NEXT DIRECTIVE TO AUDITOR:
+- Bir sonraki pencerede docs/source satir hacmi, core-doc touch frekansi, latestRun touch ve ikinci sample durumunu tek raporda sayisal ver.
+- Builder'in browser-specific veya frozen mutation/fairness koridorlarina samplesiz donusunu governance ihlali olarak isle.
+- closure-ritual agirliginin (scripts+docs) product breadth sinyalini bastirip bastirmadigini ayrik risk olarak takip et.
+
+NEXT DIRECTIVE TO GOD:
+- Haftalik cerceveyi proof-of-fun vertical slice + kanit kalitesi + product breadth uzerine sabitle; yeni governance paketi acma.
+- Re-enable/faz-genisleme kararini ikinci sample + churn normalizasyonu birlikte gelmeden one alma.
+- Basariyi docs aktivitesi degil runtime-facing yeni problem kapanisiyla olc.
+
+MEMORY UPDATES:
+- Bu run'da yeni kalici karar/ogrenim esigi olusmadi; PARTNER_MEMORY.md ve PARTNER_DECISIONS.md degistirilmedi.
+- FACTORY_STATE.md mevcut warning taniyi dogru yansittigi icin ek yazim yapilmadi (gereksiz churn engellendi).
