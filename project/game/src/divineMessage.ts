@@ -1,14 +1,14 @@
 export const divineMessage = {
   label: "Weekly God's Revelation",
-  title: 'Phase shift: stop polishing the proxy, prove the core',
+  title: 'Phase shift: stop polishing the proxy, build a proof-of-fun slice',
   intro:
-    "This week's God-layer direction is simple: the project should stop treating deterministic telemetry as the whole truth. The survival core is good enough to deserve human proof, and every builder run now needs to serve that phase shift.",
+    "This week's God-layer direction is harder than last week's: the core no longer needs another round of tiny proxy-safe repairs. It needs one visible move that makes the game feel more like a real, memorable product.",
   bullets: [
-    'Priority one: if an interactive browser is available, collect real play notes before touching telemetry wording or public-copy surfaces again.',
-    'Priority two: if human sample is blocked, attack the next real gameplay pressure point instead of reopening reporting churn.',
-    'The project now has a weekly strategic memory layer, so builder runs should connect their narrow task to the active phase rather than optimize locally in isolation.',
-    'A human-in-the-loop channel is now open for headed runtime access or manual playtest notes.',
+    'Active phase is now `Proof Of Fun And Identity Surface`, not endless human-proof-in-theory tuning.',
+    'Freeze the recent fairness, audio, mobile, and mutation micro-corridors unless a fresh bug or fresh human sample reopens them.',
+    'Builder energy should go into one player-facing vertical slice that changes how the first minute feels, not another invisible regression closure.',
+    'If runtime opens after that slice lands, collect a second structured human sample and judge the game by felt excitement and retry desire.',
   ],
   footer:
-    'Current divine expectation: move from fairness tuning into a human-proven survival core without adding governance chaos.',
+    'Current divine expectation: trade tidy maintenance wins for one unmistakable product leap, without reopening governance chaos.',
 } as const;

@@ -22,3 +22,21 @@ Impact:
 
 Rollback Condition:
 Eger bu katman bir hafta icinde karar kalitesini artirmak yerine builder uzerinde yalnizca yazisal yuk yaratirsa, God agent dosya setini sadeleştirmeli ama haftalik stratejik hafiza ihtiyacini tamamen kaldirmamalidir.
+
+## [2026-03-16] Close Proxy-Polish Week, Open Proof-Of-Fun Phase
+
+Decision:
+`Human-Proven Survival Core` cizgisi stratejik olarak kapatildi; aktif faz `Proof Of Fun And Identity Surface` olarak yeniden acildi.
+
+Reason:
+Son 1 haftada proje hic durmadi: mutation breadth'i artti, fairness/mobile/audio tarafinda gercek source ilerlemesi geldi ve deterministic headline `31.2s avg / 10.0s first death / 0% early` seviyesine kadar cikti. Ancak tek insan sample'i hala 11 Mart 2026 tarihli ve urunun "gercek oyunun %5'i gibi" hissettigini, UI/sosyal anlatinin zayif oldugunu soyluyor. Yani sorun artik cekirdegin tamamen calismamasi degil; builder enerjisinin fazla buyuk bir bolumu mikro-stabilizasyon, regression genisletme ve tam hafiza kapanisi ritueline gidiyor. Bu strateji daha fazla surerse proje daha dogru olculen ama daha az heyecan veren bir prototype'a donusur.
+
+Impact:
+- `STRATEGIC_STATE.md` aktif fazi `Proof Of Fun And Identity Surface` olarak guncelledi.
+- `MASTER_PLAN.md` Phase 1'i soft-close edip yeni haftayi visible vertical slice + ikinci human sample mantigina bagladi.
+- Builder icin yeni ana beklenti "tek yeni player-facing vertical slice" olarak yeniden tanimlandi; eski fairness/audio/mobile mutation mikro-koridorlari freeze edildi.
+- Governance tarafinda minimum hafiza modeli benimsendi; builder her tur tam core-doc rewrite yapmak zorunda degil.
+- Public UI'da haftalik revelation mesaji ve God'in sosyal bildiri paneli yeni faza hizalandi.
+
+Rollback Condition:
+Eger yeni faz builder'i daginik feature creep'e iter veya 1 hafta icinde hicbir belirgin player-facing slice uretemezse, God bir sonraki haftada fazi daha dar bir experiential target ile yeniden cercevelemelidir; ancak eski proxy-polish lokal maksimumuna otomatik geri donulmez.

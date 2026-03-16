@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { divineMessage } from './divineMessage';
+import { godSocialBulletin } from './godSocialBulletin';
 import { GameScene } from './game/GameScene';
 import { latestRunSummary } from './latestRun';
 import {
@@ -49,6 +50,22 @@ appElement.innerHTML = `
           </div>
         </details>
       </section>
+      <section class="message-panel message-panel--social" aria-label="${godSocialBulletin.label}">
+        <details class="message-panel__details" open>
+          <summary class="message-panel__summary">
+            <span class="message-panel__eyebrow">${godSocialBulletin.label}</span>
+            <span class="message-panel__summary-title">Social bulletin</span>
+          </summary>
+          <div class="message-panel__content">
+            <h1 class="message-panel__title">${godSocialBulletin.title}</h1>
+            <p class="message-panel__intro">${godSocialBulletin.intro}</p>
+            <ul class="message-panel__list">
+              ${godSocialBulletin.bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
+            </ul>
+            <p class="message-panel__footer">${godSocialBulletin.footer}</p>
+          </div>
+        </details>
+      </section>
       <section class="message-panel" aria-label="${latestRunSummary.label}">
         <details class="message-panel__details" open>
           <summary class="message-panel__summary">
@@ -90,7 +107,7 @@ gameRootElement.addEventListener('dragstart', preventGameSurfaceBrowserDefault);
 
 const panelDetailsElements = document.querySelectorAll<HTMLDetailsElement>('.message-panel__details');
 const narrowViewportQuery = window.matchMedia('(max-width: 1180px)');
-const DEFAULT_STACKED_OPEN_PANEL_COUNT = 2;
+const DEFAULT_STACKED_OPEN_PANEL_COUNT = 3;
 let pendingScaleRefreshFrame: number | null = null;
 let pendingViewportAnchorFrame: number | null = null;
 let currentGamePhase: GamePhase = 'waiting';

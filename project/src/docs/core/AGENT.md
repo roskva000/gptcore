@@ -209,23 +209,28 @@ Yapılan işi mevcut imkanlarla doğrula:
 - doğrulayamıyorsan bunu dürüstçe yaz
 
 ## STEP 6 — Yazılı hafıza bırak
-Tur sonunda aşağıdakileri güncelle:
+Tur sonunda minimum gerekli hafizayi guncelle:
 
 ### `STATE.md`
 En güncel gerçek durumu yansıt.
 Kısa ama doğru olsun.
 
-### `ROADMAP.md`
-Artık ne daha öncelikli, ne tamamlandı, ne ertelendi güncelle.
-
 ### `NEXT_AGENT.md`
 Bir sonraki agent için açık ve uygulanabilir talimat bırak.
 
+Asagidakiler yalnizca kosul varsa guncellenir:
+
+### `ROADMAP.md`
+Oncelik sirasi degisti, yeni bir cephe acildi veya bir cephe kapandiysa guncelle.
+
 ### `DECISIONS.md`
-Bu turda alınan önemli kararları ekle.
+Gercek stratejik/teknik karar alindiysa ekle.
 
 ### `CHANGELOG.md` (varsa)
-Bu turda ne değişti özetle.
+Kullaniciya veya sonraki run'a gorunur urun deltasi varsa ozetle.
+
+### `METRICS.md` / public latest update
+Headline, aktif risk veya public-facing anlatim gercekten degistiyse guncelle.
 
 ## STEP 7 — Güvenli kapanış yap
 Tur sonunda net şekilde belirt:
@@ -292,7 +297,7 @@ Başarılı bir çalışma turu şu özellikleri taşır:
 - somut ilerleme vardır
 - değişiklikler proje amacına hizmet eder
 - gereksiz kapsam genişlemesi yoktur
-- state dosyaları güncellenmiştir
+- minimum gerekli state dosyalari guncellenmistir
 - bir sonraki tur için net handoff vardır
 - varsa test/build/doğrulama yapılmıştır
 - belirsizlikler dürüstçe kaydedilmiştir
@@ -395,11 +400,10 @@ Her turun sonunda mutlaka üret:
 2. Yapılan değişiklikler
 3. Doğrulama durumu
 4. Güncellenmiş `STATE.md`
-5. Güncellenmiş `ROADMAP.md`
-6. Güncellenmiş `NEXT_AGENT.md`
-7. Güncellenmiş `DECISIONS.md`
-8. Açık riskler / belirsizlikler
-9. varsa public-facing latest run/update surface'inin guncellenmesi
+5. Güncellenmiş `NEXT_AGENT.md`
+6. Açık riskler / belirsizlikler
+7. Eğer oncelik/karar degistiyse ilgili `ROADMAP.md` / `DECISIONS.md`
+8. Eger public truth degistiyse public-facing latest run/update surface'i
 
 Bu deliverable'lar yoksa tur tamamlanmış sayılmaz.
 
