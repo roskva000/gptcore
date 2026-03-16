@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #223
+
+- `project/game/src/game/deathPresentation.ts` yeni helper ile game-over yuzeyinin callout, badge, body, prompt ve compact stats copy'sini tek truth'ta topladi
+- `project/game/src/game/GameScene.ts` olum overlay'ini `DEATH SNAPSHOT`, kosullu progress badge'i (`NEW BEST`, `10s BROKEN`, `60s CLEAR`), kisa progress line'i, escape-lane yonlendirmesi ve compact recent/validation footer'i ile daha okunur hale getirdi
+- `project/game/scripts/telemetry-check.ts` bu yeni death presentation copy'sini regression altina aldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni death-surface mutation'i ile hizaladi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass balance/fairness retune degildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #222
 
 - `project/game/src/game/feedbackAudio.ts` yeni helper ile feedback audio constructor secimini `AudioContext` ve `webkitAudioContext` fallback'inde ortaklasti

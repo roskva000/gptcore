@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #222:
+Current deterministic survival headline after Run #223:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+death_snapshot_surface_readability:
+current: Run #223 `project/game/src/game/deathPresentation.ts` game-over yuzeyinin callout, badge, body, prompt ve compact stats copy'sini tek helper'da topluyor; `project/game/src/game/GameScene.ts` olum overlay'ini `DEATH SNAPSHOT`, kosullu progress badge'i, kisa progress line'i, escape-lane yonlendirmesi ve compact recent/validation footer'i ile gosteriyor
+baseline: onceki source death screen'i ad-hoc string'lerle kuruyordu; insan sinyalinde olum sonrasi yuzey "fazla veri / yazi, karmasik ve rahatsiz edici" diye geciyordu
+target: ikinci human sample olum ekraninin daha okunur, daha az text-dump ve retry istegini daha iyi tetikleyen bir snapshot gibi hissettigini gostersin; runtime blokluysa bu yeni yuzeye samplesiz mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
 
 webkit_feedback_audio_fallback_integrity:
 current: Run #222 `project/game/src/game/feedbackAudio.ts` feedback audio constructor secimini `AudioContext` ve `webkitAudioContext` fallback'inde ortakliyor; `project/game/src/game/GameScene.ts` unlock yolunda bu helper'i kullaniyor ve `project/game/scripts/telemetry-check.ts` standart, WebKit-only ve no-audio-context yollarini regression altina aliyor

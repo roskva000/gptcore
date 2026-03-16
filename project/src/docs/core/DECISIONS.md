@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #223]
+
+Decision:
+`mutation` modunda game-over yuzeyini daha temiz ve daha dramatik bir `death snapshot` slice'ina tasimak.
+
+Reason:
+Stratejik faz artik proof-of-fun / identity surface; audit builder'i ayni fairness/audio/mobile mikro-koridorlarina geri dondurmuyor. Eldeki tek insan sinyali ise olum ekraninin fazla yazi ve veriyle karmasik hissettigini acikca soyluyor. Headed runtime bloklu oldugu icin yeni sample toplanamasa da en dar savunulabilir player-facing hareket, death overlay'i product hissini guclendirecek sekilde daha okunur bir snapshot hiyerarsisine cevirmekti.
+
+Impact:
+`project/game/src/game/deathPresentation.ts` yeni saf helper olarak game-over copy'sini topladi. `project/game/src/game/GameScene.ts` olum aninda `DEATH SNAPSHOT`, kosullu progress badge'i, kisa progress line'i, escape-lane yonlendirmesi ve compact recent/validation footer'i gosteren yeni overlay metinlerine gecti. `project/game/scripts/telemetry-check.ts` bu yeni presentation truth'unu regression altina aldi; `project/game/src/latestRun.ts` public ozet de source ile hizalandi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample bu yeni death snapshot yuzeyinin hala karmasik, fazla metinli veya retry istegini azaltan bir etkisi oldugunu gosterirse yalniz presentation copy/layout'i dar kapsamda tune edilir; bu bahaneyle yeni HUD framework'u, panel sistemi, orchestration/preflight katmani veya genel UI rewrite acilmaz.
+
 ### [Run #222]
 
 Decision:

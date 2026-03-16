@@ -33,6 +33,7 @@ import {
 } from '../src/game/spawn.ts';
 import { selectFatalThreatIndex } from '../src/game/deathAttribution.ts';
 import { getImpactDirection } from '../src/game/impactDirection.ts';
+import { getDeathPresentation } from '../src/game/deathPresentation.ts';
 import { getPointerSteeringVelocity } from '../src/game/pointerSteering.ts';
 import {
   COLLISION_READY_OBSTACLE_DEPTH,
@@ -126,6 +127,54 @@ const createQueuedRandom = (values: number[]): ((min: number, max: number) => nu
 };
 
 const FakeAudioContext = class FakeAudioContext {} as typeof AudioContext;
+const deathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
+  survivalTimeSeconds: 12.3,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 3,
+    totalRuns: 3,
+    firstDeathTime: 8.4,
+    totalRetryDelayMs: 4200,
+    retryCount: 3,
+    recentDeathTimes: [8.4, 10.2, 12.3],
+  },
+  isNewBest: true,
+  bestSurvivalTimeText: '12.3s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+});
+assert.equal(
+  deathPresentation.callout,
+  'DEATH SNAPSHOT',
+  'Death overlay should open with a stable snapshot label instead of repeating the same lane wording in multiple places.',
+);
+assert.equal(
+  deathPresentation.badge,
+  'NEW BEST',
+  'A new-best death should earn a compact badge so the game-over surface feels more like a dramatic snapshot than a wall of text.',
+);
+assert.equal(
+  deathPresentation.title,
+  'Hit from left',
+  'Death overlay title should keep the hit direction explicit for readability.',
+);
+assert.equal(
+  deathPresentation.body,
+  'Run 12.3s. New best set.\n10s gate cleared. 60s is still live.',
+  'Death overlay body should summarize both the run result and the next objective in two short lines.',
+);
+assert.equal(
+  deathPresentation.prompt,
+  'Next lane: BREAK RIGHT\nRetry: Space, Enter, tap/click, or move',
+  'Death overlay prompt should pair the escape lane hint with the retry affordance in one compact block.',
+);
+assert.equal(
+  deathPresentation.stats,
+  'Recent 8.4s, 10.2s, 12.3s\nValidation 3/5 runs | Retry 1.4s',
+  'Death overlay stats should keep recent runs and retry pace visible without reopening the full telemetry wall.',
+);
 assert.equal(
   getFeedbackAudioContextCtor({ AudioContext: FakeAudioContext }),
   FakeAudioContext,

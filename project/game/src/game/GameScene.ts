@@ -32,6 +32,7 @@ import {
   getHorizontalCalloutCenterX,
   getVerticalCalloutPlacement,
 } from './deathOverlayLayout';
+import { getDeathPresentation } from './deathPresentation.ts';
 import { getImpactDirection, type ImpactDirection } from './impactDirection';
 import {
   TELEMETRY_RECENT_RUN_LIMIT,
@@ -1566,17 +1567,20 @@ export class GameScene extends Phaser.Scene {
     );
     const hitDirection = this.getHitDirection(fatalObstacle);
     const escapePrompt = this.getEscapePrompt(hitDirection);
-    const roundedSurvivalTime = Number(this.survivalTime.toFixed(1));
     const reachedSurvivalGoal = hasReachedSurvivalGoal(this.survivalTime);
     const previousBestSurvivalTime = getBestSurvivalTime(this.telemetry);
     const isNewBest =
       previousBestSurvivalTime === null || this.survivalTime > previousBestSurvivalTime;
-    const goalClearSummary = reachedSurvivalGoal
-      ? `${SURVIVAL_GOAL_SECONDS}s clear.`
-      : null;
-    const bestSurvivalSummary = isNewBest
-      ? `New best ${roundedSurvivalTime.toFixed(1)}s.`
-      : `Best ${getBestSurvivalTimeText(this.telemetry)}.`;
+    const deathPresentation = getDeathPresentation({
+      hitDirection,
+      survivalTimeSeconds: this.survivalTime,
+      sessionTelemetry: this.sessionTelemetry,
+      isNewBest,
+      bestSurvivalTimeText: getBestSurvivalTimeText(this.telemetry),
+      reachedSurvivalGoal,
+      retryPromptText: this.getRetryActionPromptText(),
+      escapePromptTitle: escapePrompt.title,
+    });
 
     this.setPhase('gameOver');
     this.movementHoldActionStartedAt = null;
@@ -1652,23 +1656,23 @@ export class GameScene extends Phaser.Scene {
     this.showFatalSpotlight(fatalObstacle, hitDirection);
 
     this.overlay.setVisible(true);
-    const hasGoalClearSummary = goalClearSummary !== null;
-    this.setOverlayLayout(hasGoalClearSummary);
+    const hasOverlayBadge = deathPresentation.badge !== null;
+    this.setOverlayLayout(hasOverlayBadge);
     this.fatalCallout
-      .setText(this.getFatalCalloutText(hitDirection))
+      .setText(deathPresentation.callout)
       .setVisible(true);
     this.overlayBadge
-      .setText(goalClearSummary ?? '')
-      .setVisible(hasGoalClearSummary);
-    this.overlayTitle.setText(this.getDeathOverlayTitle(hitDirection)).setVisible(true);
+      .setText(deathPresentation.badge ?? '')
+      .setVisible(hasOverlayBadge);
+    this.overlayTitle.setText(deathPresentation.title).setVisible(true);
     this.overlayBody
-      .setText(`Survived ${roundedSurvivalTime.toFixed(1)}s. ${bestSurvivalSummary}`)
+      .setText(deathPresentation.body)
       .setVisible(true);
     this.overlayPrompt
-      .setText(escapePrompt.title)
+      .setText(deathPresentation.prompt)
       .setVisible(true);
     this.overlayStats
-      .setText(`Retry: ${this.getRetryActionPromptText()}.`)
+      .setText(deathPresentation.stats)
       .setVisible(true);
     this.hintText.setVisible(false);
     this.nearMissText.setVisible(false).setText('');
@@ -2085,22 +2089,6 @@ export class GameScene extends Phaser.Scene {
     return {
       title: 'RESET CENTER',
     };
-  }
-
-  private getFatalCalloutText(hitDirection: ImpactDirection): string {
-    if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
-      return 'CENTER COLLISION';
-    }
-
-    return `FATAL LANE  ${hitDirection.label.toUpperCase()}`;
-  }
-
-  private getDeathOverlayTitle(hitDirection: ImpactDirection): string {
-    if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
-      return 'Caught at center';
-    }
-
-    return `Hit from ${hitDirection.label}`;
   }
 
   private getFatalSpotlightLabelText(hitDirection: ImpactDirection): string {
