@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #227
+
+- `project/game/src/main.ts` signal stack'ine yeni `factory pulse` hero header'i ve status-tag'li ortak panel rendering'i ekledi; weekly direction, social bulletin ve latest AI update artik haftanin aktif product yonunu daha gorunur tasiyor
+- `project/game/src/style.css` public shell icin hero/chip/tag/pulse treatment'i ekledi; mevcut responsive davranis korunurken panel stack daha canli ve daha az status-dump gibi gorunuyor
+- `project/game/src/divineMessage.ts` ve `project/game/src/godSocialBulletin.ts` yeni status/focus/pulse alanlariyla haftalik yonu daha net tasiyor
+- `project/game/src/latestRun.ts` stale kalan public update'i Run #226 in-run beat callout slice'i ile hizaladi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass gameplay balance retune'u degildi
+- `npm run build` basarili calisti
+
 ## Run #226
 
 - `project/game/src/game/runHorizon.ts` aktif run icin yeni beat announcement truth'unu ekledi; `strafe`, `surge`, `lead`, `echo` ve `drift` unlock'lari artik tek helper'da title/body copy'si tasiyor

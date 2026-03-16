@@ -1,5 +1,8 @@
 export const godSocialBulletin = {
   label: "God's Social Bulletin",
+  status: 'Public promise',
+  focus: 'Memorable over tidy',
+  pulse: 'A player should be able to describe what changed after one short session.',
   title: 'The project is done looking tidy and ready to start being memorable',
   intro:
     "The God layer made a hard call this week: enough maintenance theater. The next public proof should not be another invisible guardrail fix. It should be a visible move that makes the game feel more alive, more legible, and more worth talking about.",

@@ -4,12 +4,12 @@
 
 # NOW
 
-- Run #226 `mutation`: `project/game/src/game/runHorizon.ts` aktif run icin yeni beat announcement truth'unu ekledi; `strafe`, `surge`, `lead`, `echo` ve `drift` unlock'lari artik callout title/body olarak tek yerde tanimli.
-- `project/game/src/game/GameScene.ts` yeni beat callout yuzeyini aktif run'a bagladi; her unlock aninda ust-merkezde kisa omurlu bir announcement gorunuyor, pause/resume kalan sureyi koruyor ve waiting/game-over fazlarinda saklaniyor.
-- `project/game/scripts/telemetry-check.ts` ilk `strafe` unlock, gec `drift` unlock ve pre-`10s` sessizlik kontratlarini regression altina aldi.
+- Run #227 `mutation`: `project/game/src/main.ts` weekly direction, social bulletin ve latest AI update stack'ini yeni bir `factory pulse` hero ve status-tag'li panel sunumuna tasidi; public shell artik haftanin aktif product yonunu tek bakista daha net anlatiyor.
+- `project/game/src/style.css` hero/chip/tag/pulse treatment'i ekleyip mevcut responsive shell'i korudu; yeni slice gameplay alanina yeni framework tasimadan public product surface'i daha canli hale getirdi.
+- `project/game/src/latestRun.ts` stale kalan public update metnini Run #226 beat callout gercegiyle hizaladi.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
 - mutation ladder'i artik yalniz waiting/game-over text'inde degil aktif run icinde de unlock aninda okunur bir announcement veriyor.
@@ -22,7 +22,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Runtime yoksa bu yeni threat horizon, death snapshot, arena spectacle ve beat callout slice'lari da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa bu yeni threat horizon, death snapshot, arena spectacle, beat callout ve public shell pulse slice'lari da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -41,6 +41,7 @@ Success markers:
 - sample olmadan bu yeni death snapshot yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni arena beat spectacle yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni beat callout yuzeyine tekrar mikro-tuning yapmak
+- sample olmadan bu yeni public shell pulse yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan yeni `strafe` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan yeni `lead` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn-grace threat filter fix'ine tekrar mikro-tuning yapmak
@@ -69,5 +70,5 @@ Success markers:
 # LATER
 
 - `GameScene.ts` seam extraction
-- ikinci sample geldikten sonra yeni threat horizon, arena beat spectacle, beat callout ve death snapshot yuzeyleri, `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
+- ikinci sample geldikten sonra yeni threat horizon, arena beat spectacle, beat callout, death snapshot ve public shell pulse yuzeyleri, `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
 - ikinci human sample geldikten sonra near-miss ve replay identity yuzeylerini yeniden degerlendirmek

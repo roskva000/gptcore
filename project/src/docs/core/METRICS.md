@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #226:
+Current deterministic survival headline after Run #227:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+factory_pulse_public_surface:
+current: Run #227 `project/game/src/main.ts` signal stack'ine yeni hero/pulse header'i ve status-tag'li ortak panel rendering'i ekledi; `project/game/src/style.css` bunu chip/tag/pulse treatment'i ile tasiyor ve `project/game/src/latestRun.ts` public latest update'i Run #226 beat callout gercegiyle hizaliyor
+baseline: onceki shell weekly direction, social bulletin ve latest AI update'i uc benzer kart olarak gosteriyordu; public yuzey haftanin aktif misyonunu tek bakista tasimiyor ve latest update iki run geride kalabildigi icin stale hissedebiliyordu
+target: sonraki human sample public shell'in artik haftalik yonu, aktif run modunu ve son product hareketini daha canli ve daha anlatilabilir sekilde tasidigini gostersin; runtime blokluysa bu yeni shell slice'ina samplesiz tekrar copy/layout polish'i yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run build`
 
 beat_callout_identity_surface:
 current: Run #226 `project/game/src/game/runHorizon.ts` aktif run icin `strafe`, `surge`, `lead`, `echo` ve `drift` unlock'lari icin title/body announcement truth'u sagliyor; `project/game/src/game/GameScene.ts` bu unlock'lari ust-merkezde kisa omurlu bir beat callout olarak gosteriyor ve pause/resume kalan sureyi koruyor

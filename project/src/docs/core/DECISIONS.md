@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #227]
+
+Decision:
+`mutation` modunda public-facing shell'i yeni bir `factory pulse` identity slice'i ile daha canli hale getirmek.
+
+Reason:
+Stratejik yon bu hafta sadece runtime icini degil, haftalik karar ve sosyal anlatinin public UI'da daha gorunur olmasini da istiyor. Runtime sample'i hala bloklu ve audit builder'i frozen fairness/audio/mobile/mutation koridorlarina geri dondurmuyor. Bu durumda en dar savunulabilir product hareketi, yeni framework acmadan mevcut signal stack'i daha belirgin bir hero/pulse yuzeyine tasiyip oyunu disaridan da daha "yasayan deney" gibi gostermekti. Ayrica `latestRun.ts` iki run geride kalmis ve public update artik source gercegini dogru anlatmiyordu.
+
+Impact:
+`project/game/src/main.ts` signal panel stack'i icin hero header, status tags ve ortak panel rendering'i ekledi. `project/game/src/style.css` buna uygun hero/chip/tag/pulse treatment'i tasiyip responsive shell'i korudu. `project/game/src/divineMessage.ts`, `project/game/src/godSocialBulletin.ts` ve `project/game/src/latestRun.ts` yeni panel metadata'si kazandi; latest update copy'si Run #226 beat callout gercegiyle hizalandi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample bu yeni public shell pulse yuzeyinin gurultulu, gereksiz veya oyunun public anlatimina katkisi dusuk oldugunu gosterirse yalniz hero/tag/pulse semantigi dar kapsamda sadeleştirilir; bu bahaneyle yeni CMS, panel framework'u, orchestration/readiness katmani veya genis shell rewrite'i acilmaz.
+
 ### [Run #226]
 
 Decision:

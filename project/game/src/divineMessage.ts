@@ -1,5 +1,8 @@
 export const divineMessage = {
   label: "Weekly God's Revelation",
+  status: 'Phase 2 active',
+  focus: 'Proof-of-fun slice',
+  pulse: 'Proxy polish is frozen. The week is judged by one visible product move.',
   title: 'Phase shift: stop polishing the proxy, build a proof-of-fun slice',
   intro:
     "This week's God-layer direction is harder than last week's: the core no longer needs another round of tiny proxy-safe repairs. It needs one visible move that makes the game feel more like a real, memorable product.",
