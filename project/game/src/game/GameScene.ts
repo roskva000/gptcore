@@ -68,6 +68,7 @@ import {
   getNearMissLabel,
   isNearMissHintActive,
 } from './nearMiss.ts';
+import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunHorizonText } from './runHorizon.ts';
 import {
   getLaunchActionPromptText as getPrimaryLaunchActionPromptText,
@@ -279,6 +280,13 @@ export class GameScene extends Phaser.Scene {
   private waitingPulseCoreTween?: Phaser.Tweens.Tween;
   private waitingPulseRingTween?: Phaser.Tweens.Tween;
   private inputCanvasElement: HTMLCanvasElement | null = null;
+  private backdropBase!: Phaser.GameObjects.Rectangle;
+  private backdropGlow!: Phaser.GameObjects.Arc;
+  private backdropAura!: Phaser.GameObjects.Arc;
+  private backdropTopBand!: Phaser.GameObjects.Rectangle;
+  private backdropBottomBand!: Phaser.GameObjects.Rectangle;
+  private backdropGrid!: Phaser.GameObjects.Graphics;
+  private backdropFrame!: Phaser.GameObjects.Rectangle;
 
   constructor() {
     super('GameScene');
@@ -756,6 +764,7 @@ export class GameScene extends Phaser.Scene {
     this.previousMovementInputState = movementInputState;
 
     if (this.phase !== 'playing') {
+      this.updateArenaBeatSpectacle(time);
       return;
     }
 
@@ -766,6 +775,7 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
     this.updateBestText();
     this.updateNearMissTracking(activeRunElapsedMs);
+    this.updateArenaBeatSpectacle(time);
 
     if (
       this.playingHintHideAtElapsedMs !== null &&
@@ -817,26 +827,70 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createBackdrop(): void {
-    this.add.rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0x081018);
+    this.backdropBase = this.add
+      .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH, ARENA_HEIGHT, 0x081018)
+      .setDepth(-6);
 
-    const glow = this.add.graphics();
-    glow.fillStyle(0x12304a, 0.38);
-    glow.fillCircle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 220);
+    this.backdropGlow = this.add
+      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 220, 0x12304a, 0.38)
+      .setDepth(-5);
 
-    const grid = this.add.graphics();
-    grid.lineStyle(1, 0x1f3240, 0.42);
+    this.backdropAura = this.add
+      .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 292)
+      .setDepth(-4)
+      .setStrokeStyle(4, 0x7ce8ff, 0.16)
+      .setFillStyle(0x000000, 0);
+
+    this.backdropTopBand = this.add
+      .rectangle(ARENA_WIDTH / 2, 0, ARENA_WIDTH, 120, 0x7ce8ff, 0.06)
+      .setDepth(-4)
+      .setOrigin(0.5, 0);
+
+    this.backdropBottomBand = this.add
+      .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT, ARENA_WIDTH, 136, 0x7ce8ff, 0.04)
+      .setDepth(-4)
+      .setOrigin(0.5, 1);
+
+    this.backdropGrid = this.add.graphics().setDepth(-3);
+    this.backdropGrid.lineStyle(1, 0x1f3240, 0.42);
 
     for (let x = 40; x < ARENA_WIDTH; x += 40) {
-      grid.lineBetween(x, 0, x, ARENA_HEIGHT);
+      this.backdropGrid.lineBetween(x, 0, x, ARENA_HEIGHT);
     }
 
     for (let y = 40; y < ARENA_HEIGHT; y += 40) {
-      grid.lineBetween(0, y, ARENA_WIDTH, y);
+      this.backdropGrid.lineBetween(0, y, ARENA_WIDTH, y);
     }
 
-    const frame = this.add.graphics();
-    frame.lineStyle(3, 0x7ce8ff, 0.9);
-    frame.strokeRoundedRect(12, 12, ARENA_WIDTH - 24, ARENA_HEIGHT - 24, 24);
+    this.backdropFrame = this.add
+      .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH - 24, ARENA_HEIGHT - 24)
+      .setDepth(-2)
+      .setFillStyle(0x000000, 0)
+      .setStrokeStyle(3, 0x7ce8ff, 0.9);
+  }
+
+  private updateArenaBeatSpectacle(time: number): void {
+    const progressSeconds =
+      this.phase === 'playing' || this.phase === 'paused' || this.phase === 'gameOver'
+        ? this.survivalTime
+        : getBestSurvivalTime(this.telemetry) ?? 0;
+    const spectacle = getArenaBeatSpectacle({
+      phase: this.phase,
+      progressSeconds,
+      pulseMs: time,
+    });
+
+    this.backdropBase.setFillStyle(spectacle.backgroundColor, 1);
+    this.backdropGlow
+      .setFillStyle(spectacle.glowColor, spectacle.glowAlpha)
+      .setScale(spectacle.glowScale);
+    this.backdropAura
+      .setStrokeStyle(4, spectacle.glowColor, spectacle.auraAlpha)
+      .setScale(spectacle.auraScale);
+    this.backdropTopBand.setFillStyle(spectacle.edgeColor, spectacle.edgeAlpha);
+    this.backdropBottomBand.setFillStyle(spectacle.edgeColor, spectacle.edgeAlpha * 0.88);
+    this.backdropGrid.setAlpha(spectacle.gridAlpha);
+    this.backdropFrame.setStrokeStyle(3, spectacle.frameColor, spectacle.frameAlpha);
   }
 
   private handlePrimaryAction(event?: KeyboardEvent): void {

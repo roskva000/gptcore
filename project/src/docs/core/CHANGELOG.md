@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #225
+
+- `project/game/src/game/arenaBeatSpectacle.ts` yeni helper ile mevcut beat ladder'ini (`opening`, `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear`) arena background/glow/frame/band atmosferine cevirdi
+- `project/game/src/game/GameScene.ts` backdrop'u artik faz ve progress ile senkronlayip waiting fazinda local best'e gore daha yumusak bir preview, aktif run'da ise giderek buyuyen bir spectacle veriyor
+- paused ve game-over fazlari ayni arena slice'ini sönuklestirip koruyor; yeni bir HUD framework'u veya ek overlay sistemi acilmadi
+- `project/game/scripts/telemetry-check.ts` yeni spectacle helper'i icin opening, drift ve waiting-damping regression assert'leri ekledi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass balance/fairness retune degildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #224
 
 - `project/game/src/game/runHorizon.ts` yeni helper ile run ladder truth'unu `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear` olarak tek yerde topladi

@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #224:
+Current deterministic survival headline after Run #225:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+arena_beat_spectacle_identity_surface:
+current: Run #225 `project/game/src/game/arenaBeatSpectacle.ts` mevcut ladder'i `opening`, `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear` beat'lerine gore arena background/glow/frame/band atmosferine ceviriyor; `project/game/src/game/GameScene.ts` waiting fazinda local best'e gore yumusak preview, aktif run'da ise artan spectacle veriyor
+baseline: onceki source beat ladder'ini waiting/game-over text yuzeylerinde gosteriyordu ama aktif arena oynanis sirasinda run'in buyudugunu hissettiren yeni bir atmosfer degisimi tasimiyordu; mutation ailesi daha cok copy uzerinden okunuyordu
+target: ikinci human sample arena'nin artik daha buyuk, daha "gercek oyun" gibi ve retry istegini besleyen bir escalation hissi verdigini gostersin; runtime blokluysa bu yeni visual surface'e samplesiz mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
 
 threat_horizon_identity_surface:
 current: Run #224 `project/game/src/game/runHorizon.ts` run ladder truth'unu `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear` olarak tanimliyor; `project/game/src/game/GameScene.ts` waiting ekraninda yeni `THREAT HORIZON` blokuyla acilmis beat'leri ve siradaki uc beat'i gostermeye basladi, `project/game/src/game/deathPresentation.ts` da death prompt'una `Next beat` satiri ekledi

@@ -48,6 +48,7 @@ import {
   isNearMissHintActive,
 } from '../src/game/nearMiss.ts';
 import { getFeedbackAudioContextCtor } from '../src/game/feedbackAudio.ts';
+import { getArenaBeatSpectacle } from '../src/game/arenaBeatSpectacle.ts';
 import { getNextRunHorizonBeatText, getRunHorizonText } from '../src/game/runHorizon.ts';
 import {
   hasFreshMovementInput,
@@ -190,6 +191,45 @@ assert.equal(
   getNextRunHorizonBeatText(12.3),
   'Next beat: 15s surge',
   'Game-over horizon text should point at the next upcoming beat after the current death time.',
+);
+const openingSpectacle = getArenaBeatSpectacle({
+  phase: 'playing',
+  progressSeconds: 0,
+  pulseMs: 0,
+});
+assert.equal(
+  openingSpectacle.activeBeatLabel,
+  'opening',
+  'Arena spectacle should start in the opening phase before the first visible beat is reached.',
+);
+assert.equal(
+  openingSpectacle.nextBeatLabel,
+  'gate',
+  'Opening spectacle should still preview the first gate beat instead of jumping straight to a later mutation color.',
+);
+const driftSpectacle = getArenaBeatSpectacle({
+  phase: 'playing',
+  progressSeconds: 34,
+  pulseMs: 0,
+});
+assert.equal(
+  driftSpectacle.activeBeatLabel,
+  'drift',
+  'Arena spectacle should switch to the drift phase once the late-run mutation is live.',
+);
+assert.equal(
+  driftSpectacle.nextBeatLabel,
+  'clear',
+  'Late-run spectacle should still point toward the 60s clear instead of treating drift as the final run identity.',
+);
+const waitingSpectacle = getArenaBeatSpectacle({
+  phase: 'waiting',
+  progressSeconds: 34,
+  pulseMs: 0,
+});
+assert.ok(
+  waitingSpectacle.glowAlpha < driftSpectacle.glowAlpha,
+  'Waiting spectacle should preview the unlocked beat ladder more softly than the active run version.',
 );
 assert.equal(
   getFeedbackAudioContextCtor({ AudioContext: FakeAudioContext }),

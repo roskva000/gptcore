@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #225]
+
+Decision:
+`mutation` modunda aktif run'in beat ladder'ini arena atmosferine tasiyan bir `arena beat spectacle` slice'i ship etmek.
+
+Reason:
+Stratejik faz proof-of-fun / identity surface ve audit builder'i frozen fairness/audio/mobile/horizon-copy koridorlarina geri dondurmuyor. Runtime hala bloklu oldugu icin ikinci sample toplanamadi; buna ragmen insan sinyali oyunun "gercek oyunun %5'i" gibi hissettigini ve daha buyuk bir sey olmadigini soyluyor. En dar savunulabilir yeni product hereketi, mevcut mutation ladder'ini text disinda dogrudan oyun alaninin havasina baglayarak run'i aktif oynanis sirasinda daha buyuk hissettirmekti.
+
+Impact:
+`project/game/src/game/arenaBeatSpectacle.ts` yeni saf helper olarak `opening`, `gate`, `strafe`, `surge`, `lead`, `echo`, `drift` ve `clear` beat'lerini background/glow/frame/band siddetine ceviriyor. `project/game/src/game/GameScene.ts` backdrop'u artik local best veya aktif survival progress'e gore bu helper ile guncelliyor; waiting fazinda yumusak preview, aktif run'da ise artan spectacle veriyor. `project/game/scripts/telemetry-check.ts` opening, drift ve waiting-damping kontratlarini regression altina aldi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample arena spectacle yuzeyinin gurultulu, dikkat dagitici veya replay istegine katkisiz oldugunu gosterirse yalniz bu helper'in renk/siddet semantigi dar kapsamda tune edilir; bu bahaneyle yeni VFX framework'u, shader sistemi, HUD rewrite'i veya orchestration/preflight katmani acilmaz.
+
 ### [Run #224]
 
 Decision:
