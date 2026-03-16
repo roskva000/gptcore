@@ -2,11 +2,11 @@
 
 ## Governance Note
 
-- Audit 2026-03-15 verdict `ritual-loop`: HUD/panel/pause/overlay/death-truth, validation/export ve son fairness mikro-koridorlarina geri donme.
-- Run #222 WebKit audio fallback fix'ini samplesiz browser-specific micro-tuning bahanesine cevirme; yeni audio framework'u, sound manager'i, browser-preflight veya orchestration katmani acma.
-- Run #221 `strafe` mutation'ini, Run #220 touch gesture lock fix'ini, Run #217 `lead` beat'ini, Run #211 echo beat'ini, Run #214 drift beat'ini ve Run #216/#218/#219 fairness hattini samplesiz cadence/tint/lag/threshold knob'larina geri acma.
-- `latestRun.ts` sync'i tek basina ana hedef sayilmaz; yalniz gercek product deltasi kapanirken eslik eder.
-- Yeni validation/tooling ancak secilen source problemi dogrudan blokluyorsa kabul edilir.
+- Audit 2026-03-16 verdict yine `ritual-loop`: dar source deltasi + `telemetry-check` + `latestRun.ts` + tam core-doc paketi paterni tekrar ediyor; bunu normal run kapatisi gibi kabul etme.
+- Runtime varsa yeni fix acma; tek is ikinci structured human sample toplamak ve mevcut mutation/fairness/audio/mobile hattina keep/tune/revert notu birakmak.
+- Runtime yoksa son sample-siz mikro-koridorlara geri donme: WebKit audio fallback, touch gesture lock, `strafe`, `lead`, surge, echo, drift, opener cutoff, spawn-grace truth/finalization, near-miss, `10s`/`60s` payoff, HUD/panel/pause/replay-HUD.
+- `latestRun.ts` sync'i, tam core-doc rewrite'i veya yalniz `telemetry-check` buyutmesi tek basina ana hedef sayilmaz; bunlar ancak gercek product deltasi kapanirken minimum farkla eslik eder.
+- Yeni validation/tooling ancak secilen source problemi dogrudan blokluyorsa kabul edilir; yeni framework/preflight/orchestration katmani acilmaz.
 
 ## Recommended Next Task
 
