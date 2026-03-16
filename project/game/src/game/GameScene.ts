@@ -87,6 +87,7 @@ import {
   SPAWN_GRACE_INITIAL_ALPHA,
   SPAWN_GRACE_INITIAL_SCALE,
 } from './spawnGrace.ts';
+import { getFeedbackAudioContextCtor } from './feedbackAudio.ts';
 
 type GamePhase = 'waiting' | 'playing' | 'paused' | 'gameOver';
 
@@ -2111,7 +2112,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private unlockFeedbackAudio(): void {
-    const AudioContextCtor = window.AudioContext ?? null;
+    const AudioContextCtor = getFeedbackAudioContextCtor(window);
 
     if (!AudioContextCtor) {
       return;

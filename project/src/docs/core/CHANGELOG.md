@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #222
+
+- `project/game/src/game/feedbackAudio.ts` yeni helper ile feedback audio constructor secimini `AudioContext` ve `webkitAudioContext` fallback'inde ortaklasti
+- `project/game/src/game/GameScene.ts` unlock yolunda bu helper'i kullanmaya basladi; mevcut near-miss, `10s`, `60s` ve death cue'lari WebKit-only browser'larda da erisilebilir hale geldi
+- `project/game/scripts/telemetry-check.ts` standart constructor, WebKit-only fallback ve no-audio-context graceful skip yollarini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass balance veya mutation retune degildi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu mobile/WebKit audio stabilization'i ile hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #221
 
 - `project/game/src/game/balance.ts` yeni `strafe` obstacle variant'ini ekledi; `12s` sonrasinda her `8.` spawn ayri tint ile geliyor ve oyuncunun mevcut kacis cizgisini `14deg` kesen cross-lane travel kullaniyor

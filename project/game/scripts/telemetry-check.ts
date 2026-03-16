@@ -46,6 +46,7 @@ import {
   getNearMissLabel,
   isNearMissHintActive,
 } from '../src/game/nearMiss.ts';
+import { getFeedbackAudioContextCtor } from '../src/game/feedbackAudio.ts';
 import {
   hasFreshMovementInput,
   getLaunchActionPromptText,
@@ -124,6 +125,23 @@ const createQueuedRandom = (values: number[]): ((min: number, max: number) => nu
   };
 };
 
+const FakeAudioContext = class FakeAudioContext {} as typeof AudioContext;
+assert.equal(
+  getFeedbackAudioContextCtor({ AudioContext: FakeAudioContext }),
+  FakeAudioContext,
+  'Standard AudioContext environments should keep using the primary constructor path.',
+);
+const FakeWebkitAudioContext = class FakeWebkitAudioContext {} as typeof AudioContext;
+assert.equal(
+  getFeedbackAudioContextCtor({ webkitAudioContext: FakeWebkitAudioContext }),
+  FakeWebkitAudioContext,
+  'WebKit-only environments should still expose feedback audio so mobile Safari can play the existing milestone and death cues.',
+);
+assert.equal(
+  getFeedbackAudioContextCtor({}),
+  null,
+  'Environments without any audio context constructor should skip feedback audio gracefully.',
+);
 assert.equal(
   getObstacleVariant({
     survivalTimeSeconds: 14.9,

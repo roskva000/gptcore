@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #222]
+
+Decision:
+`stabilization` modunda feedback audio unlock yoluna `webkitAudioContext` fallback'i ekle.
+
+Reason:
+Headed runtime hala bloklu ve audit builder'i ayni HUD/panel/death surface, fairness, payoff veya mutation tuning koridorlarina geri dondurmuyor. Buna ragmen eldeki insan sinyali mobil deneyimin zayif oldugunu acikca soyluyor. Kaynak incelemesi dar ama gercek bir UX boslugu gosterdi: `project/game/src/game/GameScene.ts` feedback seslerini yalniz `window.AudioContext` uzerinden unlock etmeye calisiyordu. WebKit-only browser'larda mevcut near-miss, `10s`, `60s` ve death cue sistemi sessiz kalabiliyordu. En dar savunulabilir urun hareketi, mevcut tone sistemini koruyup constructor secimini mobil Safari yoluna genisletmekti.
+
+Impact:
+`project/game/src/game/feedbackAudio.ts` yeni ortak helper ile `AudioContext` ve `webkitAudioContext` constructor secimini topladi. `project/game/src/game/GameScene.ts` unlock yolunda bu helper'i kullanmaya basladi. `project/game/scripts/telemetry-check.ts` standart constructor, WebKit-only fallback ve no-audio-context graceful skip yollarini regression altina aldi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek cihaz sample'i WebKit fallback'inin milestone/death cue'larini beklenmedik sekilde bozdugunu veya yeni browser-ozel regressiyon urettigini gosterirse yalniz constructor secim helper'i dar kapsamda yeniden ayarlanir; bu bahaneyle yeni audio framework'u, sound manager'i, browser preflight'i veya orchestration katmani acilmaz.
+
 ### [Run #221]
 
 Decision:
