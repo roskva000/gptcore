@@ -4,16 +4,17 @@
 
 # NOW
 
-- Run #223 `mutation`: `project/game/src/game/deathPresentation.ts` yeni death snapshot helper'i ile game-over yuzeyinin callout, badge, body, prompt ve compact stats bloklarini tek truth'ta topladi.
-- `project/game/src/game/GameScene.ts` olum overlay'ini bu helper'a bagladi; yuzey artik `DEATH SNAPSHOT`, kosullu progress badge'i, kisa progress line'i, escape-lane yonlendirmesi ve compact recent/validation footer'i ile geliyor.
-- `project/game/scripts/telemetry-check.ts` yeni death snapshot copy'sini regression altina aldi; `project/game/src/latestRun.ts` public panel de bu run ile hizalandi.
+- Run #224 `mutation`: `project/game/src/game/runHorizon.ts` yeni tek truth olarak run ladder'ini tanimladi: `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear`.
+- `project/game/src/game/GameScene.ts` waiting ekranina `THREAT HORIZON` bloku ekledi; oyuncu artik mevcut best'e gore acilmis beat'leri ve siradaki uc beat'i start window icinde goruyor.
+- `project/game/src/game/deathPresentation.ts` death snapshot prompt'una `Next beat` satirini ekledi; olum sonrasi yuzey artik lane hint'iyle birlikte siradaki unlock ritmini de gosteriyor.
+- `project/game/scripts/telemetry-check.ts` horizon helper'ini ve yeni death prompt copy'sini regression altina aldi; `project/game/src/latestRun.ts` public panel de bu run ile hizalandi.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, fairness guard'larini, touch/mobile/audio stabilization'i veya yeni validation/tooling katmani acmayi retune etmedi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- death screen artik daha temiz bir snapshot hiyerarsisi tasiyor; ayni overlay icinde sonucu, sonraki hedefi ve retry affordance'ini daha kompakt veriyor.
-- death presentation copy tek helper'a alinmis durumda; runtime ve regression ayni truth'u paylasiyor.
+- waiting ve game-over yuzeyleri artik run'i duz bir survival timer yerine acilan bir threat ladder olarak gosteriyor.
+- horizon truth tek helper'da tutuluyor; waiting copy, death prompt ve regression ayni ladder'i paylasiyor.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build ve telemetry check seti yesil kaliyor.
 
@@ -21,8 +22,8 @@ Success markers:
 
 # NEXT
 
-- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Runtime yoksa bu yeni death snapshot slice'i da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
+- Runtime yoksa bu yeni threat horizon ve death snapshot slice'lari da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -37,6 +38,7 @@ Success markers:
 # RETIRED / DEFERRED
 
 - telemetry wording / panel copy churn'u
+- sample olmadan bu yeni threat horizon yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni death snapshot yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan yeni `strafe` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan yeni `lead` beat'ine tekrar mikro-tuning yapmak
@@ -66,5 +68,5 @@ Success markers:
 # LATER
 
 - `GameScene.ts` seam extraction
-- ikinci sample geldikten sonra yeni death snapshot yuzeyi, `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
+- ikinci sample geldikten sonra yeni threat horizon ve death snapshot yuzeyleri, `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
 - ikinci human sample geldikten sonra near-miss ve replay identity yuzeylerini yeniden degerlendirmek

@@ -6,6 +6,7 @@ import {
   getValidationProgressText,
   type GameplayTelemetry,
 } from './telemetry.ts';
+import { getNextRunHorizonBeatText } from './runHorizon.ts';
 
 type DeathPresentationParams = {
   hitDirection: ImpactDirection;
@@ -99,10 +100,17 @@ const getBodyText = ({
 const getPromptText = ({
   escapePromptTitle,
   retryPromptText,
+  survivalTimeSeconds,
 }: {
   escapePromptTitle: string;
   retryPromptText: string;
-}): string => [`Next lane: ${escapePromptTitle}`, `Retry: ${retryPromptText}`].join('\n');
+  survivalTimeSeconds: number;
+}): string =>
+  [
+    `Next lane: ${escapePromptTitle}`,
+    getNextRunHorizonBeatText(survivalTimeSeconds),
+    `Retry: ${retryPromptText}`,
+  ].join('\n');
 
 const getStatsText = (sessionTelemetry: GameplayTelemetry): string =>
   [
@@ -135,6 +143,7 @@ export const getDeathPresentation = ({
   prompt: getPromptText({
     escapePromptTitle,
     retryPromptText,
+    survivalTimeSeconds,
   }),
   stats: getStatsText(sessionTelemetry),
   title: getTitleText(hitDirection),

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #224]
+
+Decision:
+`mutation` modunda run'in acilan beat ladder'ini waiting ve death yuzeylerinde gorunur yapan bir `threat horizon` slice'i ship etmek.
+
+Reason:
+Stratejik faz proof-of-fun / identity surface ve audit builder'i frozen fairness/audio/mobile koridorlarina geri dondurmuyor. Runtime bloklu oldugu icin yeni sample toplanamasa da insan sinyali oyunun "gercek oyunun %5'i" gibi hissettigini ve daha buyuk bir sey olmadigini soyluyor. Eldeki mutation ailesi artik mevcut; dar ama yuksek etkili hareket, bu ritmi oyuncuya gorunur kilarak run'i duz timer yerine acilan bir ladder gibi okutmakti.
+
+Impact:
+`project/game/src/game/runHorizon.ts` yeni tek truth olarak `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear` ladder'ini tanimladi. `project/game/src/game/GameScene.ts` waiting ekranina `THREAT HORIZON` bloku ekledi; mevcut best'e gore acilmis beat'leri ve siradaki uc beat'i start window icinde gosteriyor. `project/game/src/game/deathPresentation.ts` death snapshot prompt'una `Next beat` satirini ekledi. `project/game/scripts/telemetry-check.ts` helper ve yeni prompt copy'sini regression altina aldi; `project/game/src/latestRun.ts` public ozet yeni slice ile hizalandi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Ikinci insan sample threat horizon yuzeyinin gereksiz bilgi yukune donustugunu, run'i daha anlasilir yapmadigini veya retry istegine katkisi olmadigini gosterirse yalniz ladder copy / yerlesim dar kapsamda tune edilir; bu bahaneyle yeni HUD framework'u, panel sistemi, orchestration/preflight katmani veya mutation retune acilmaz.
+
 ### [Run #223]
 
 Decision:

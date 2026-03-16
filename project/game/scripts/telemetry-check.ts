@@ -48,6 +48,7 @@ import {
   isNearMissHintActive,
 } from '../src/game/nearMiss.ts';
 import { getFeedbackAudioContextCtor } from '../src/game/feedbackAudio.ts';
+import { getNextRunHorizonBeatText, getRunHorizonText } from '../src/game/runHorizon.ts';
 import {
   hasFreshMovementInput,
   getLaunchActionPromptText,
@@ -167,13 +168,28 @@ assert.equal(
 );
 assert.equal(
   deathPresentation.prompt,
-  'Next lane: BREAK RIGHT\nRetry: Space, Enter, tap/click, or move',
-  'Death overlay prompt should pair the escape lane hint with the retry affordance in one compact block.',
+  'Next lane: BREAK RIGHT\nNext beat: 15s surge\nRetry: Space, Enter, tap/click, or move',
+  'Death overlay prompt should pair the escape lane hint with the next unlock beat and the retry affordance in one compact block.',
 );
 assert.equal(
   deathPresentation.stats,
   'Recent 8.4s, 10.2s, 12.3s\nValidation 3/5 runs | Retry 1.4s',
   'Death overlay stats should keep recent runs and retry pace visible without reopening the full telemetry wall.',
+);
+assert.equal(
+  getRunHorizonText(0),
+  'Fresh run. Break 10s to open the ladder.\nNext: 10s gate -> 12s strafe -> 15s surge',
+  'Waiting horizon should preview the first visible beats so the run reads like a ladder instead of a flat survival timer.',
+);
+assert.equal(
+  getRunHorizonText(16),
+  'Unlocked: 10s gate | 12s strafe | 15s surge\nNext: 18s lead -> 24s echo -> 32s drift',
+  'Mid-run horizon should show both cleared beats and the next mutations that still sit ahead of the player.',
+);
+assert.equal(
+  getNextRunHorizonBeatText(12.3),
+  'Next beat: 15s surge',
+  'Game-over horizon text should point at the next upcoming beat after the current death time.',
 );
 assert.equal(
   getFeedbackAudioContextCtor({ AudioContext: FakeAudioContext }),

@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #223:
+Current deterministic survival headline after Run #224:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+threat_horizon_identity_surface:
+current: Run #224 `project/game/src/game/runHorizon.ts` run ladder truth'unu `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear` olarak tanimliyor; `project/game/src/game/GameScene.ts` waiting ekraninda yeni `THREAT HORIZON` blokuyla acilmis beat'leri ve siradaki uc beat'i gostermeye basladi, `project/game/src/game/deathPresentation.ts` da death prompt'una `Next beat` satiri ekledi
+baseline: onceki source oyuncuya mevcut mutation ailesinin run icinde nasil acildigini gostermiyordu; run daha cok duz bir survival timer gibi okunuyor, insan sinyalindeki "gercek oyunun %5'i" hissi icin somut bir escalation surface tasimiyordu
+target: ikinci human sample yeni horizon yuzeyinin run'i daha buyuk, daha oyun gibi ve daha retry-tetikleyici hissettirdigini gostersin; runtime blokluysa bu yeni yuzeye samplesiz mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
 
 death_snapshot_surface_readability:
 current: Run #223 `project/game/src/game/deathPresentation.ts` game-over yuzeyinin callout, badge, body, prompt ve compact stats copy'sini tek helper'da topluyor; `project/game/src/game/GameScene.ts` olum overlay'ini `DEATH SNAPSHOT`, kosullu progress badge'i, kisa progress line'i, escape-lane yonlendirmesi ve compact recent/validation footer'i ile gosteriyor

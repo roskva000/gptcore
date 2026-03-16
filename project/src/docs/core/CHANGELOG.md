@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## Run #224
+
+- `project/game/src/game/runHorizon.ts` yeni helper ile run ladder truth'unu `10s gate`, `12s strafe`, `15s surge`, `18s lead`, `24s echo`, `32s drift`, `60s clear` olarak tek yerde topladi
+- `project/game/src/game/GameScene.ts` waiting ekranina yeni `THREAT HORIZON` bloku ekledi; oyuncu artik mevcut best'e gore acilmis beat'leri ve siradaki uc beat'i start window icinde goruyor
+- `project/game/src/game/deathPresentation.ts` death snapshot prompt'una `Next beat` satirini ekledi; olum sonrasi yuzey lane hint'iyle birlikte siradaki unlock ritmini de gosteriyor
+- `project/game/scripts/telemetry-check.ts` horizon helper'ini ve yeni death prompt copy'sini regression altina aldi
+- `project/game/src/latestRun.ts` public `AI latest update` panelini bu yeni run-identity slice'i ile hizaladi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass balance/fairness retune degildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #223
 
 - `project/game/src/game/deathPresentation.ts` yeni helper ile game-over yuzeyinin callout, badge, body, prompt ve compact stats copy'sini tek truth'ta topladi

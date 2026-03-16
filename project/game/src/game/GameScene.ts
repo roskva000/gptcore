@@ -68,6 +68,7 @@ import {
   getNearMissLabel,
   isNearMissHintActive,
 } from './nearMiss.ts';
+import { getRunHorizonText } from './runHorizon.ts';
 import {
   getLaunchActionPromptText as getPrimaryLaunchActionPromptText,
   getResumeActionPromptText as getPrimaryResumeActionPromptText,
@@ -238,6 +239,8 @@ export class GameScene extends Phaser.Scene {
   private waitingIntroAccent!: Phaser.GameObjects.Rectangle;
   private waitingIntroEyebrow!: Phaser.GameObjects.Text;
   private waitingIntroTitle!: Phaser.GameObjects.Text;
+  private waitingHorizonLabel!: Phaser.GameObjects.Text;
+  private waitingHorizonText!: Phaser.GameObjects.Text;
   private waitingPulseCore!: Phaser.GameObjects.Arc;
   private waitingPulseRing!: Phaser.GameObjects.Arc;
   private waitingPulseLabel!: Phaser.GameObjects.Text;
@@ -363,16 +366,16 @@ export class GameScene extends Phaser.Scene {
       .setVisible(false);
 
     this.waitingIntroPanel = this.add
-      .rectangle(ARENA_WIDTH / 2, 146, 560, 150, 0x08131d, 0.82)
+      .rectangle(ARENA_WIDTH / 2, 158, 560, 184, 0x08131d, 0.82)
       .setDepth(2)
       .setStrokeStyle(2, 0x2e596c, 0.95);
 
     this.waitingIntroAccent = this.add
-      .rectangle(ARENA_WIDTH / 2, 93, 560, 30, 0x123f36, 0.9)
+      .rectangle(ARENA_WIDTH / 2, 80, 560, 30, 0x123f36, 0.9)
       .setDepth(2);
 
     this.waitingIntroEyebrow = this.add
-      .text(ARENA_WIDTH / 2, 93, 'START WINDOW', {
+      .text(ARENA_WIDTH / 2, 80, 'START WINDOW', {
         align: 'center',
         color: '#d8fff4',
         fontFamily: 'Trebuchet MS',
@@ -383,12 +386,34 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.waitingIntroTitle = this.add
-      .text(ARENA_WIDTH / 2, 126, '', {
+      .text(ARENA_WIDTH / 2, 116, '', {
         align: 'center',
         color: '#f5f7ff',
         fontFamily: 'Trebuchet MS',
         fontSize: '28px',
         fontStyle: 'bold',
+      })
+      .setDepth(3)
+      .setOrigin(0.5);
+
+    this.waitingHorizonLabel = this.add
+      .text(ARENA_WIDTH / 2, 154, 'THREAT HORIZON', {
+        align: 'center',
+        color: '#7ce8ff',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '14px',
+        fontStyle: 'bold',
+      })
+      .setDepth(3)
+      .setOrigin(0.5);
+
+    this.waitingHorizonText = this.add
+      .text(ARENA_WIDTH / 2, 186, '', {
+        align: 'center',
+        color: '#b8cde0',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '16px',
+        lineSpacing: 6,
       })
       .setDepth(3)
       .setOrigin(0.5);
@@ -420,7 +445,7 @@ export class GameScene extends Phaser.Scene {
     this.hintText = this.add
       .text(
         ARENA_WIDTH / 2,
-        156,
+        258,
         this.getWaitingHintText(),
         {
           align: 'center',
@@ -2440,6 +2465,9 @@ export class GameScene extends Phaser.Scene {
   private updateTelemetryText(): void {
     this.updateBestText();
     this.waitingIntroTitle.setText(getWaitingIntroTitleText(getBestSurvivalTime(this.telemetry)));
+    this.waitingHorizonText.setText(
+      getRunHorizonText(getBestSurvivalTime(this.telemetry) ?? 0),
+    );
     this.telemetryText.setText(this.getTelemetryLinesForCurrentPhase().join('\n'));
     this.telemetryText.setVisible(this.phase !== 'paused' && this.phase !== 'gameOver');
     this.telemetryText.setAlpha(this.phase === 'playing' ? 0.9 : 1);
@@ -2468,6 +2496,8 @@ export class GameScene extends Phaser.Scene {
     this.waitingIntroAccent.setVisible(waitingVisible);
     this.waitingIntroEyebrow.setVisible(waitingVisible);
     this.waitingIntroTitle.setVisible(waitingVisible);
+    this.waitingHorizonLabel.setVisible(waitingVisible);
+    this.waitingHorizonText.setVisible(waitingVisible);
     this.waitingPulseCore.setVisible(waitingVisible);
     this.waitingPulseRing.setVisible(waitingVisible);
     this.waitingPulseLabel.setVisible(waitingVisible);
