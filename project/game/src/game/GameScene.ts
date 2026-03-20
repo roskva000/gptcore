@@ -80,7 +80,9 @@ import {
   shouldAllowFreshMovementPrimaryAction,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldAllowPointerPrimaryActionPress,
+  shouldClearPrimaryActionKeyReleaseRequirement,
   shouldObserveMovementReleaseAfterReset,
+  shouldObservePrimaryActionKeyReleaseAfterReset,
   shouldClearMovementReleaseRequirement,
   shouldClearPointerReleaseRequirement,
   shouldRequirePointerReleaseAfterPause,
@@ -150,12 +152,18 @@ const MOVEMENT_KEY_UP_EVENTS = [
   'keyup-S',
   'keyup-D',
 ] as const;
+const PRIMARY_ACTION_KEY_UP_EVENTS = ['keyup-SPACE', 'keyup-ENTER'] as const;
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
   down: Phaser.Input.Keyboard.Key;
   left: Phaser.Input.Keyboard.Key;
   right: Phaser.Input.Keyboard.Key;
+};
+
+type PrimaryActionKeys = {
+  space: Phaser.Input.Keyboard.Key;
+  enter: Phaser.Input.Keyboard.Key;
 };
 
 type FeedbackAudioContext = AudioContext | null;
@@ -179,9 +187,12 @@ export class GameScene extends Phaser.Scene {
   private pointerSteeringNeedsRelease = false;
   private pauseResumeNeedsMovementRelease = false;
   private pauseResumeNeedsPointerRelease = false;
+  private pauseResumeNeedsPrimaryActionKeyRelease = false;
   private gameOverRetryNeedsMovementRelease = false;
   private gameOverRetryNeedsPointerRelease = false;
+  private gameOverRetryNeedsPrimaryActionKeyRelease = false;
   private movementReleaseObservationPendingAfterReset = false;
+  private primaryActionKeyReleaseObservationPendingAfterReset = false;
   private playingHintHideAtElapsedMs: number | null = null;
   private firstDeathTargetReachedThisRun = false;
   private pausedRunElapsedMs = 0;
@@ -246,6 +257,34 @@ export class GameScene extends Phaser.Scene {
     this.gameOverRetryNeedsMovementRelease = false;
     this.movementReleaseObservationPendingAfterReset = false;
   };
+  private readonly handlePrimaryActionKeyRelease = (): void => {
+    const primaryActionKeyActive = this.hasPrimaryActionKeyInput();
+
+    if (
+      shouldObservePrimaryActionKeyReleaseAfterReset({
+        primaryActionKeyActive,
+        postResetReleaseObservationPending:
+          this.primaryActionKeyReleaseObservationPendingAfterReset,
+      })
+    ) {
+      this.primaryActionKeyReleaseObservationPendingAfterReset = false;
+      return;
+    }
+
+    if (
+      !shouldClearPrimaryActionKeyReleaseRequirement({
+        primaryActionKeyActive,
+        postResetReleaseObservationPending:
+          this.primaryActionKeyReleaseObservationPendingAfterReset,
+      })
+    ) {
+      return;
+    }
+
+    this.pauseResumeNeedsPrimaryActionKeyRelease = false;
+    this.gameOverRetryNeedsPrimaryActionKeyRelease = false;
+    this.primaryActionKeyReleaseObservationPendingAfterReset = false;
+  };
   private resetKeyboardState(): void {
     this.input.keyboard?.resetKeys();
   }
@@ -253,6 +292,7 @@ export class GameScene extends Phaser.Scene {
   private obstacles!: Phaser.Physics.Arcade.Group;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private movementKeys!: MovementKeys;
+  private primaryActionKeys!: PrimaryActionKeys;
   private scoreText!: Phaser.GameObjects.Text;
   private bestText!: Phaser.GameObjects.Text;
   private goalStatusText!: Phaser.GameObjects.Text;
@@ -366,6 +406,10 @@ export class GameScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
     }) as MovementKeys;
+    this.primaryActionKeys = keyboard.addKeys({
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      enter: Phaser.Input.Keyboard.KeyCodes.ENTER,
+    }) as PrimaryActionKeys;
     keyboard.addCapture(CAPTURED_GAMEPLAY_KEYS);
 
     this.scoreText = this.add.text(24, 20, '0.0s', {
@@ -726,6 +770,9 @@ export class GameScene extends Phaser.Scene {
     for (const eventName of MOVEMENT_KEY_UP_EVENTS) {
       keyboard.on(eventName, this.handleMovementRelease, this);
     }
+    for (const eventName of PRIMARY_ACTION_KEY_UP_EVENTS) {
+      keyboard.on(eventName, this.handlePrimaryActionKeyRelease, this);
+    }
     this.input.on('pointerdown', this.handlePointerPrimaryAction, this);
     this.input.on('pointerup', this.handlePointerRelease, this);
     this.input.on('pointerupoutside', this.handlePointerRelease, this);
@@ -766,6 +813,7 @@ export class GameScene extends Phaser.Scene {
       movementInputState,
       this.previousMovementInputState,
     );
+    const primaryActionKeyActive = this.hasPrimaryActionKeyInput();
     const hasConfirmedHeldMovementInput = this.hasConfirmedHeldMovementInput(
       time,
       movementInputActive,
@@ -809,6 +857,16 @@ export class GameScene extends Phaser.Scene {
       } else if (hasConfirmedHeldPointerInput) {
         this.activatePrimaryAction('pointer-held');
       }
+    }
+
+    if (
+      shouldObservePrimaryActionKeyReleaseAfterReset({
+        primaryActionKeyActive,
+        postResetReleaseObservationPending:
+          this.primaryActionKeyReleaseObservationPendingAfterReset,
+      })
+    ) {
+      this.primaryActionKeyReleaseObservationPendingAfterReset = false;
     }
 
     this.updatePlayerVelocity();
@@ -957,11 +1015,15 @@ export class GameScene extends Phaser.Scene {
     const pointerReleaseRequired =
       (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
       (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease);
+    const keyReleaseRequired =
+      (this.phase === 'paused' && this.pauseResumeNeedsPrimaryActionKeyRelease) ||
+      (this.phase === 'gameOver' && this.gameOverRetryNeedsPrimaryActionKeyRelease);
 
     if (
       !shouldAllowPrimaryActionKeyPress({
         event,
         pointerReleaseRequired,
+        keyReleaseRequired,
       })
     ) {
       return;
@@ -1140,6 +1202,7 @@ export class GameScene extends Phaser.Scene {
     this.setPhase('paused');
     const movementInputState = this.getMovementInputState();
     const movementInputActive = movementInputState !== 0;
+    const primaryActionKeyActive = this.hasPrimaryActionKeyInput();
     const pointerInputActive = shouldRequirePointerReleaseAfterPause(
       this.input.activePointer,
       this.pointerCancellationActive,
@@ -1148,7 +1211,9 @@ export class GameScene extends Phaser.Scene {
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsMovementRelease = movementInputActive;
     this.pauseResumeNeedsPointerRelease = pointerInputActive;
+    this.pauseResumeNeedsPrimaryActionKeyRelease = primaryActionKeyActive;
     this.movementReleaseObservationPendingAfterReset = movementInputActive;
+    this.primaryActionKeyReleaseObservationPendingAfterReset = primaryActionKeyActive;
     this.resetKeyboardState();
     this.pauseStartedAt = this.time.now;
     this.physics.world.pause();
@@ -1210,7 +1275,9 @@ export class GameScene extends Phaser.Scene {
     this.pointerCancellationActive = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
+    this.pauseResumeNeedsPrimaryActionKeyRelease = false;
     this.movementReleaseObservationPendingAfterReset = false;
+    this.primaryActionKeyReleaseObservationPendingAfterReset = false;
     this.physics.world.resume();
     if (this.nextSpawnTimer) {
       this.nextSpawnTimer.paused = false;
@@ -1293,9 +1360,12 @@ export class GameScene extends Phaser.Scene {
     this.previousMovementInputState = this.getMovementInputState();
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsPointerRelease = false;
+    this.pauseResumeNeedsPrimaryActionKeyRelease = false;
     this.gameOverRetryNeedsMovementRelease = false;
     this.gameOverRetryNeedsPointerRelease = false;
+    this.gameOverRetryNeedsPrimaryActionKeyRelease = false;
     this.movementReleaseObservationPendingAfterReset = false;
+    this.primaryActionKeyReleaseObservationPendingAfterReset = false;
     this.updateHudChromeVisibility();
 
     this.obstacles.children.each((child) => {
@@ -1498,6 +1568,10 @@ export class GameScene extends Phaser.Scene {
 
   private hasMovementInput(): boolean {
     return this.getMovementInputState() !== 0;
+  }
+
+  private hasPrimaryActionKeyInput(): boolean {
+    return this.primaryActionKeys.space.isDown || this.primaryActionKeys.enter.isDown;
   }
 
   private hasConfirmedHeldMovementInput(time: number, movementInputActive: boolean): boolean {
@@ -1748,9 +1822,12 @@ export class GameScene extends Phaser.Scene {
     this.pointerSteeringNeedsRelease = false;
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
+    this.pauseResumeNeedsPrimaryActionKeyRelease = false;
     this.gameOverRetryNeedsMovementRelease = movementInputActive;
     this.gameOverRetryNeedsPointerRelease = pointerInputActive;
+    this.gameOverRetryNeedsPrimaryActionKeyRelease = this.hasPrimaryActionKeyInput();
     this.pauseStartedAt = null;
+    this.primaryActionKeyReleaseObservationPendingAfterReset = false;
     this.playingHintHideAtElapsedMs = null;
     this.nextSpawnTimer?.remove(false);
     this.nextSpawnTimer = undefined;
@@ -3072,6 +3149,9 @@ export class GameScene extends Phaser.Scene {
     this.input.keyboard?.off('keydown-V', this.handleValidationExport, this);
     for (const eventName of MOVEMENT_KEY_UP_EVENTS) {
       this.input.keyboard?.off(eventName, this.handleMovementRelease, this);
+    }
+    for (const eventName of PRIMARY_ACTION_KEY_UP_EVENTS) {
+      this.input.keyboard?.off(eventName, this.handlePrimaryActionKeyRelease, this);
     }
     this.input.keyboard?.removeCapture(CAPTURED_GAMEPLAY_KEYS);
     this.input.off('pointerdown', this.handlePointerPrimaryAction, this);

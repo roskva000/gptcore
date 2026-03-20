@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #231
+
+- `project/game/src/game/primaryAction.ts` stale `Space`/`Enter` hold'u icin primary-key release gate ve post-reset gozlem helper'larini ekledi; primary-key yolu artik pointer gate'in yaninda key-release requirement'ini de tasiyor
+- `project/game/src/game/GameScene.ts` `Space`/`Enter` key state'ini izleyip pause/game-over gecislerinde stale primary-key hold'u release edilene kadar resume/retry'yi blokluyor; focus-loss `resetKeys()` sonrasi key yeniden gorulup sonra birakilmadan gate dusmuyor
+- `project/game/scripts/telemetry-check.ts` stale primary-key hold, post-reset primary-key gozlemi ve release-sonrasi normal unblock kontratlarini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #230
 
 - `project/game/src/game/primaryAction.ts` movement release gate'i icin post-reset gozlem helper'larini ekledi; keyboard `resetKeys()` sonrasi sifir input stale held movement requirement'ini hemen temizlemiyor

@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #230:
+Current deterministic survival headline after Run #231:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+primary_action_key_release_gate_integrity:
+current: Run #231 `project/game/src/game/primaryAction.ts` primary-key release ve post-reset gozlem helper'lerini ekliyor; `project/game/src/game/GameScene.ts` stale `Space`/`Enter` hold'u pause/game-over ve focus-loss keyboard reset sonrasinda key yeniden gorulup sonra birakilana kadar resume/retry gate'i olarak koruyor
+baseline: onceki source `Space`/`Enter` yolunu yalniz `event.repeat` filtresiyle koruyordu; stale primary-key hold overlay gecislerinde veya focus-loss reset sonrasinda ayrik bir release requirement'i tasimiyordu
+target: sonraki headed sample `Space`/`Enter` resume/retry yolunun hybrid input altinda daha niyetli ve daha az kazara tetiklenen bir control hissi verdigini gostersin; runtime blokluysa bu akisa yeni input framework'u veya manager'i eklenmesin
+validation: `npm run telemetry:check`, `npm run build`
 
 focus_loss_movement_release_gate_integrity:
 current: Run #230 `project/game/src/game/primaryAction.ts` post-reset movement release gozlem helper'lerini ekliyor; `project/game/src/game/GameScene.ts` focus-loss pause sirasinda keyboard reset movement'i sifira cekse bile stale held movement release gate'ini ancak refocus sonrasi movement yeniden gorulup sonra birakildiginda temizliyor

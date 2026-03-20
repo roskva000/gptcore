@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #231]
+
+Decision:
+`stabilization` modunda pause/game-over ve focus-loss akislari sirasinda stale `Space`/`Enter` hold'unun resume/retry gate'ini delmesini kapat.
+
+Reason:
+Runtime hala bloklu ve audit frozen identity/fairness/audio/mobile koridorlarina samplesiz donusu yasakliyor. Run #228-230 movement ve pointer release truth'unu daraltti, ancak primary-action key yolu halen yalniz `event.repeat` filtresine dayaniyordu. Bu da stale `Space`/`Enter` hold'unun overlay gecisleri ve keyboard reset sonrasi release semantigini acikta birakiyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` primary-key release ve post-reset gozlem helper'larini ekledi. `project/game/src/game/GameScene.ts` `Space`/`Enter` state'ini izleyip pause/game-over sirasinda release gate kuruyor; focus-loss keyboard reset sonrasinda key bir kez yeniden gorulup sonra birakilmadan resume/retry acilmiyor. `project/game/scripts/telemetry-check.ts` stale primary-key hold, post-reset gozlem ve release-clear kontratlarini regression altina aldi. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek runtime sample'i bu primary-key gate'in meşru `Space`/`Enter` resume/retry niyetini gereksiz surtundurdugunu gosterirse yalniz primary-key release semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input manager'i, framework'u veya orchestration/preflight katmani acilmaz.
+
 ### [Run #230]
 
 Decision:

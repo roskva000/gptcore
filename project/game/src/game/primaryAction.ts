@@ -30,10 +30,15 @@ export const shouldHandlePrimaryActionKey = (
 export const shouldAllowPrimaryActionKeyPress = ({
   event,
   pointerReleaseRequired = false,
+  keyReleaseRequired = false,
 }: {
   event?: Pick<KeyboardEvent, 'repeat'> | null;
   pointerReleaseRequired?: boolean;
-} = {}): boolean => shouldHandlePrimaryActionKey(event) && !pointerReleaseRequired;
+  keyReleaseRequired?: boolean;
+} = {}): boolean =>
+  shouldHandlePrimaryActionKey(event) &&
+  !pointerReleaseRequired &&
+  !keyReleaseRequired;
 
 export const hasFreshMovementInput = (
   movementInputState: number,
@@ -65,6 +70,24 @@ export const shouldObserveMovementReleaseAfterReset = ({
   movementInputActive: boolean;
   postResetReleaseObservationPending?: boolean;
 }): boolean => postResetReleaseObservationPending && movementInputActive;
+
+export const shouldClearPrimaryActionKeyReleaseRequirement = (
+  {
+    primaryActionKeyActive,
+    postResetReleaseObservationPending = false,
+  }: {
+    primaryActionKeyActive: boolean;
+    postResetReleaseObservationPending?: boolean;
+  },
+): boolean => !primaryActionKeyActive && !postResetReleaseObservationPending;
+
+export const shouldObservePrimaryActionKeyReleaseAfterReset = ({
+  primaryActionKeyActive,
+  postResetReleaseObservationPending = false,
+}: {
+  primaryActionKeyActive: boolean;
+  postResetReleaseObservationPending?: boolean;
+}): boolean => postResetReleaseObservationPending && primaryActionKeyActive;
 
 export const shouldHandlePrimaryActionPointer = (
   pointer?: Pick<Phaser.Input.Pointer, 'button' | 'event' | 'wasTouch'> | null,

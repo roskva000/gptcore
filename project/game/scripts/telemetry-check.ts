@@ -65,10 +65,12 @@ import {
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldRequirePointerReleaseAfterPause,
   shouldAllowPointerPrimaryActionPress,
+  shouldClearPrimaryActionKeyReleaseRequirement,
   shouldClearMovementReleaseRequirement,
   shouldClearPointerReleaseRequirement,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
+  shouldObservePrimaryActionKeyReleaseAfterReset,
   shouldObserveMovementReleaseAfterReset,
 } from '../src/game/primaryAction.ts';
 import {
@@ -834,10 +836,57 @@ assert.equal(
 assert.equal(
   shouldAllowPrimaryActionKeyPress({
     event: { repeat: false } as KeyboardEvent,
+    keyReleaseRequired: true,
+  }),
+  false,
+  'Space/Enter should stay blocked while pause/retry still requires the stale primary-key hold to be released.',
+);
+assert.equal(
+  shouldAllowPrimaryActionKeyPress({
+    event: { repeat: false } as KeyboardEvent,
     pointerReleaseRequired: false,
+    keyReleaseRequired: false,
   }),
   true,
   'Fresh primary-key presses should resume/start immediately once the stale pointer release gate is cleared.',
+);
+assert.equal(
+  shouldClearPrimaryActionKeyReleaseRequirement({
+    primaryActionKeyActive: false,
+  }),
+  true,
+  'Primary-action key release should clear resume/retry gates immediately once Space/Enter is no longer held.',
+);
+assert.equal(
+  shouldClearPrimaryActionKeyReleaseRequirement({
+    primaryActionKeyActive: true,
+  }),
+  false,
+  'Primary-action key release gates must stay armed while Space/Enter is still held.',
+);
+assert.equal(
+  shouldClearPrimaryActionKeyReleaseRequirement({
+    primaryActionKeyActive: false,
+    postResetReleaseObservationPending: true,
+  }),
+  false,
+  'Focus-loss keyboard resets should not clear a held Space/Enter release gate until the key is observed again after refocus.',
+);
+assert.equal(
+  shouldObservePrimaryActionKeyReleaseAfterReset({
+    primaryActionKeyActive: true,
+    postResetReleaseObservationPending: true,
+  }),
+  true,
+  'The first refocused Space/Enter state after a keyboard reset should only re-arm release observation.',
+);
+assert.equal(
+  shouldObservePrimaryActionKeyReleaseAfterReset({
+    primaryActionKeyActive: false,
+    postResetReleaseObservationPending: true,
+  }),
+  false,
+  'An idle Space/Enter state after focus loss should keep waiting for an observed press before a later release clears the gate.',
 );
 assert.equal(
   shouldHandlePrimaryActionPointer({ button: 0 }),
