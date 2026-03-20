@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #236]
+
+Decision:
+`mutation` modunda aktif run'a canli bir `personal best chase` HUD slice'i ekle.
+
+Reason:
+Manual sample bu ortamda hala acilamiyor ve audit frozen identity/fairness/audio/mobile koridorlarina samplesiz donusu yasakliyor. Buna ragmen urunun tekrar oynatma motivasyonunda hala acik bir bosluk var: aktif HUD satiri `Best x | Session y` formatinda kalip oyuncuya su an neyi kovalamasi gerektigini canli olarak soylemiyordu. Yeni enemy/system/framework acmadan en dar savunulabilir urun hareketi, mevcut best telemetrisini aktif run sirasinda hedefe donusturmekti.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `getPersonalBestChaseText()` helper'i ile aktif run icin `First best live`, `PB x.xs to y.yys` ve `NEW BEST +x.xs` durumlarini uretiyor. `project/game/src/game/GameScene.ts` playing fazinda `bestText` satirini bu chase metnine ceviriyor, run baslangicinda mevcut best target'ini kilitliyor ve ilk record kirilma aninda `bestText` ile `scoreText` icin kisa bir HUD pulse'u veriyor. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek manuel sample bu yeni PB chase yuzeyinin dikkat dagittigini, gereksiz baski yarattigini veya retry istegine katkisiz kaldigini gosterirse yalniz metin/pulse siddeti dar kapsamda ayarlanir; bu bahaneyle yeni score system'i, meta-progression, HUD framework'u veya orchestration/readiness katmani acilmaz.
+
 ### [Run #235]
 
 Decision:

@@ -107,6 +107,28 @@ export const getLiveBestSurvivalTimeText = ({
   return `${liveBestSurvivalTime.toFixed(1)}s`;
 };
 
+export const getPersonalBestChaseText = ({
+  telemetry,
+  currentSurvivalTime,
+}: {
+  telemetry: GameplayTelemetry;
+  currentSurvivalTime: number;
+}): string => {
+  const bestSurvivalTime = getBestSurvivalTime(telemetry);
+
+  if (bestSurvivalTime === null || bestSurvivalTime <= 0) {
+    return 'First best live';
+  }
+
+  const remainingToBeat = bestSurvivalTime - currentSurvivalTime;
+
+  if (remainingToBeat > 0.04) {
+    return `PB ${remainingToBeat.toFixed(1)}s to ${bestSurvivalTime.toFixed(1)}s`;
+  }
+
+  return `NEW BEST +${Math.max(currentSurvivalTime - bestSurvivalTime, 0).toFixed(1)}s`;
+};
+
 export const getWaitingIntroTitleText = (bestSurvivalTime: number | null): string => {
   if (bestSurvivalTime !== null && bestSurvivalTime >= SURVIVAL_GOAL_SECONDS) {
     return `${SURVIVAL_GOAL_SECONDS}s cleared. Push your best.`;

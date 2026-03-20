@@ -45,6 +45,7 @@ import {
   getBestSurvivalTime,
   getBestSurvivalTimeText,
   getLiveBestSurvivalTimeText,
+  getPersonalBestChaseText,
   getWaitingIntroTitleText,
   formatValidationReportSummaryText,
   getAverageRetryDelaySeconds,
@@ -200,6 +201,8 @@ export class GameScene extends Phaser.Scene {
   private pointerReleaseObservationPendingAfterFocusLoss = false;
   private playingHintHideAtElapsedMs: number | null = null;
   private firstDeathTargetReachedThisRun = false;
+  private runPersonalBestTargetTime: number | null = null;
+  private personalBestCelebratedThisRun = false;
   private pausedRunElapsedMs = 0;
   private pauseStartedAt: number | null = null;
   private readonly handleVisibilityChange = (): void => {
@@ -939,6 +942,7 @@ export class GameScene extends Phaser.Scene {
     this.survivalTime = activeRunElapsedMs / 1000;
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
     this.updateBestText();
+    this.updatePersonalBestChase();
     this.updateNearMissTracking(activeRunElapsedMs);
     this.updateArenaBeatSpectacle(time);
     this.updateRunBeatAnnouncement(activeRunElapsedMs);
@@ -1233,6 +1237,8 @@ export class GameScene extends Phaser.Scene {
     this.survivalTime = 0;
     this.firstDeathTargetReachedThisRun = false;
     this.survivalGoalReachedThisRun = false;
+    this.runPersonalBestTargetTime = getBestSurvivalTime(this.telemetry);
+    this.personalBestCelebratedThisRun = false;
     this.nearMissChainCount = 0;
     this.nearMissChainExpiresAtElapsedMs = 0;
     this.nearMissHintHideAtElapsedMs = null;
@@ -1394,11 +1400,14 @@ export class GameScene extends Phaser.Scene {
     this.pointerSteeringNeedsRelease = false;
     this.survivalGoalReachedThisRun = false;
     this.firstDeathTargetReachedThisRun = false;
+    this.runPersonalBestTargetTime = null;
+    this.personalBestCelebratedThisRun = false;
     this.lastAnnouncedRunBeatLabel = null;
     this.runSpawnCount = 0;
     this.tweens.killTweensOf([
       this.player,
       this.scoreText,
+      this.bestText,
       this.goalStatusText,
       this.beatCalloutText,
       this.nearMissText,
@@ -1924,6 +1933,7 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf([
       this.player,
       this.scoreText,
+      this.bestText,
       this.goalStatusText,
       this.nearMissText,
       this.hitFlash,
@@ -2025,6 +2035,7 @@ export class GameScene extends Phaser.Scene {
 
   private resetTransientHudFeedbackState(): void {
     this.scoreText.clearTint().setAlpha(1).setScale(1);
+    this.bestText.clearTint().setAlpha(1).setScale(1);
     this.goalStatusText.setAlpha(1).setScale(1);
     this.beatCalloutText.setAlpha(1).setScale(1).setVisible(false).setText('');
     this.nearMissText.setAlpha(1).setScale(1).setVisible(false).setText('');
@@ -2743,24 +2754,63 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateBestText(): void {
-    const lifetimeBestText =
-      this.phase === 'playing'
-        ? getLiveBestSurvivalTimeText({
+    if (this.phase === 'playing') {
+      this.bestText.setText(
+        getPersonalBestChaseText({
           telemetry: this.telemetry,
           currentSurvivalTime: this.survivalTime,
-        })
-        : getBestSurvivalTimeText(this.telemetry);
-    const sessionBestText =
-      this.phase === 'playing'
-        ? getLiveBestSurvivalTimeText({
-          telemetry: this.sessionTelemetry,
-          currentSurvivalTime: this.survivalTime,
-        })
-        : getBestSurvivalTimeText(this.sessionTelemetry);
+        }),
+      );
+      return;
+    }
+
+    const lifetimeBestText = getBestSurvivalTimeText(this.telemetry);
+    const sessionBestText = getBestSurvivalTimeText(this.sessionTelemetry);
 
     this.bestText.setText(
       `Best ${lifetimeBestText} | Session ${sessionBestText}`,
     );
+  }
+
+  private updatePersonalBestChase(): void {
+    if (
+      this.phase !== 'playing' ||
+      this.personalBestCelebratedThisRun ||
+      this.runPersonalBestTargetTime === null ||
+      this.survivalTime <= this.runPersonalBestTargetTime
+    ) {
+      return;
+    }
+
+    this.personalBestCelebratedThisRun = true;
+    this.tweens.killTweensOf(this.bestText);
+    this.tweens.killTweensOf(this.scoreText);
+    this.bestText.setTint(0xfff0c7).setScale(1.02).setAlpha(1);
+    this.scoreText.setTint(0xfff0c7);
+    this.tweens.add({
+      targets: this.bestText,
+      scaleX: 1.08,
+      scaleY: 1.08,
+      duration: 180,
+      yoyo: true,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        this.bestText.clearTint();
+        this.bestText.setScale(1);
+      },
+    });
+    this.tweens.add({
+      targets: this.scoreText,
+      scaleX: 1.08,
+      scaleY: 1.08,
+      duration: 180,
+      yoyo: true,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        this.scoreText.clearTint();
+        this.scoreText.setScale(1);
+      },
+    });
   }
 
   private updateTelemetryText(): void {

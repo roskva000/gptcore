@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #235:
+Current deterministic survival headline after Run #236:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+personal_best_chase_identity_surface:
+current: Run #236 `project/game/src/game/telemetry.ts` aktif run icin `First best live`, `PB x.xs to y.yys` ve `NEW BEST +x.xs` chase metni uretiyor; `project/game/src/game/GameScene.ts` playing fazinda `bestText` satirini bu metne cevirip ilk record kirilma aninda `bestText` + `scoreText` HUD pulse'u veriyor
+baseline: onceki source aktif run sirasinda `Best {lifetime} | Session {best}` yaziyordu; oyuncu record'e ne kadar kaldigini ya da tam ne zaman yeni best actigini canli olarak gormuyordu, replay chase daha cok olum sonrasi okunuyordu
+target: ikinci human sample yeni PB chase yuzeyinin aktif run'i daha hedefli, daha "bir daha deneyeyim" hissi veren ve yeni best anini daha okunur kilan bir slice oldugunu gostersin; runtime blokluysa bu yeni yuzeye samplesiz mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
 
 focus_loss_pause_movement_release_gate_integrity:
 current: Run #235 `project/game/src/game/GameScene.ts` held-movement helper'ini `shouldClearMovementReleaseRequirement()` truth'una bagliyor; focus-loss pause sonrasi keyboard reset idle frame'leri post-reset observation pending iken stale movement release gate'ini dusurmuyor

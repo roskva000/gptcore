@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #236
+
+- `project/game/src/game/telemetry.ts` yeni `getPersonalBestChaseText()` helper'i ile aktif run icin ilk best hedefini, mevcut best'e kalan farki veya `NEW BEST +x.xs` durumunu kisa chase metnine cevirdi
+- `project/game/src/game/GameScene.ts` playing fazinda `bestText` satirini statik `Best | Session` dump'i yerine bu canli PB chase metnine gecirdi
+- ayni dosya run baslangicinda mevcut lifetime best target'ini kilitliyor ve ilk rekor kirilma aninda `bestText` ile `scoreText` icin kisa bir HUD pulse'u veriyor; replay motivasyonu daha canli bir hedefe baglaniyor
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #235
 
 - `project/game/src/game/GameScene.ts` held-movement aktivasyon helper'ini focus-loss pause sonrasi `shouldClearMovementReleaseRequirement()` truth'una bagladi; keyboard reset ile gelen idle frame'ler stale movement release gate'ini artik observation olmadan temizlemiyor

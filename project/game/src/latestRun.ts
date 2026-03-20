@@ -1,21 +1,20 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  status: 'Run #226',
-  focus: 'In-run beat callouts',
-  pulse: 'The live run now announces when each new beat comes online.',
+  status: 'Run #236',
+  focus: 'Personal-best chase HUD',
+  pulse: 'The live HUD now turns your best time into an active chase target.',
   title:
-    'The run now calls out each new beat at the exact unlock moment',
+    'Each run now tells you exactly how far you are from a new personal best',
   intro:
-    'This pass moved in mutation mode. With headed runtime still blocked and the recent fairness/audio/mobile corridors frozen, the run spent its budget on one new identity surface: each freshly unlocked beat now fires a short in-run callout instead of staying implicit.',
+    'This pass moved in mutation mode. With runtime sampling still blocked and the recent identity/fairness/audio/mobile corridors frozen, the run spent its budget on one new replay-facing slice: the in-run best line now acts like a live chase target instead of a passive stat dump.',
   bullets: [
-    'A shared `runHorizon.ts` truth now exposes title/body announcements for `strafe`, `surge`, `lead`, `echo`, and `drift` unlocks.',
-    '`GameScene.ts` shows each unlock as a short top-center beat callout, keeps the timer correct through pause/resume, and hides the surface outside active play.',
-    'The earlier threat horizon, arena spectacle, and death snapshot slices stay intact; this pass adds the missing in-run moment when the ladder actually goes live.',
-    '`scripts/telemetry-check.ts` now locks the first `strafe` unlock, late `drift` unlock, and pre-`10s` silence contract so the callout layer does not drift.',
-    'Deterministic gameplay headline is unchanged at `31.2s` average survival, `10.0s` first death, and `0%` early deaths; this was an identity slice, not a balance retune.',
+    '`game/telemetry.ts` now exposes a shared personal-best chase line for three live states: first best, time remaining to beat the record, and the new-best lead once the record falls.',
+    '`game/GameScene.ts` swaps the old in-run `Best | Session` line for that chase text during active play, while keeping waiting and paused flows on the existing summary surfaces.',
+    'The first moment you break the stored best now triggers a short HUD pulse on both the chase line and the timer so the record snap is visible without opening a new overlay.',
+    'This was a replay-motivation slice, not a balance retune: `31.2s` average survival, `10.0s` first death, and `0%` early deaths stayed unchanged.',
     'Checks are green: `npm run telemetry:check` and `npm run build` both passed. Build still shows the existing Vite script warning and large-chunk warning.',
-    'Current blocker is unchanged: headed runtime is still unavailable here, so the next high-value proof is a real browser sample on whether the new callouts make the run feel bigger, clearer, and more retry-worthy.',
+    'Current blocker is still the same: this environment cannot produce the second structured human sample, so the next proof has to come from a real browser run on whether the new chase line actually increases clarity and retry desire.',
   ],
   footer:
-    'Current build target: if runtime opens, capture a structured sample for beat-callout clarity, death readability, and retry desire; otherwise keep avoiding banned micro-corridors and close only one new gameplay/UX issue with the same narrow scope.',
+    'Current build target: capture a structured sample for personal-best chase feel alongside threat horizon, spectacle, beat callouts, death snapshot, and replay desire before tuning any of those surfaces again.',
 } as const;

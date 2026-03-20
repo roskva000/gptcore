@@ -4,25 +4,25 @@
 
 # NOW
 
-- Run #235 `stabilization`: `project/game/src/game/GameScene.ts` held-movement helper'inda `shouldClearMovementReleaseRequirement()` truth'unu kullanmaya basladi; focus-loss pause sonrasi keyboard reset ile gelen idle frame'ler stale movement release gate'ini observation olmadan dusurmuyor.
-- Sonuc olarak paused durumda stale movement release requirement'i refocus sonrasi movement yeniden gozlenip sonra birakilmadan resume'u acmiyor; post-reset release semantics runtime truth ile hizalandi.
+- Run #236 `mutation`: `project/game/src/game/telemetry.ts` yeni `getPersonalBestChaseText()` helper'i ile aktif run'da ilk best hedefini, mevcut best'e kalan farki veya `NEW BEST +x.xs` durumunu tek satirda uretiyor.
+- `project/game/src/game/GameScene.ts` playing fazinda `bestText` satirini bu chase metnine ceviriyor; run baslangicinda best target'i kilitliyor ve ilk personal-best kirilma aninda `bestText` ile `scoreText` icin kisa HUD pulse'u veriyor.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
-- Browser validation readiness bu ortamda onceki turdaki `smoke-passed` durumunu koruyor; automation hazir ama ikinci structured human sample hala manuel olarak toplanmadi.
-- Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
+- Browser validation readiness bu ortamda korunuyor; automation hazir ama ikinci structured human sample ve yeni PB chase slice'inin gercek oyuncu etkisi hala manuel olarak toplanmadi.
+- Bu pass frozen strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle/public shell copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- focus-loss pause sonrasi idle frame'ler stale movement release gate'ini observation olmadan temizlemez.
-- stale movement release gate'i ancak movement yeniden gozlenip sonra birakildiginda temizlenir.
+- aktif run HUD'i statik best dump yerine canli personal-best chase metni gosterir.
+- onceki lifetime best gecildigi ilk anda kisa ama belirgin bir HUD pulse'u gelir.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
-- build, telemetry check ve browser smoke seti yesil kaliyor.
+- build ve telemetry check yesil kaliyor.
 
 ---
 
 # NEXT
 
-- Browser smoke hazirken ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Manual sample yine acilamazsa frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec; ancak Run #235 sonrasi ayni focus-loss movement gate hattina yeniden mikro-churn yapma.
+- Browser smoke hazirken ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, beat callout hissi, death snapshot clarity, public shell hissi, personal-best chase hissi, retry desire, `strafe`/`lead`/surge/echo/drift beat'leri, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
+- Manual sample yine acilamazsa frozen koridorlara veya Run #236 PB chase slice'ina samplesiz tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
@@ -42,6 +42,7 @@ Success markers:
 - sample olmadan bu yeni arena beat spectacle yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni beat callout yuzeyine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni public shell pulse yuzeyine tekrar mikro-tuning yapmak
+- sample olmadan Run #236 personal-best chase metnine veya HUD pulse'una tekrar mikro-tuning yapmak
 - sample olmadan yeni `strafe` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan yeni `lead` beat'ine tekrar mikro-tuning yapmak
 - sample olmadan bu yeni spawn-grace threat filter fix'ine tekrar mikro-tuning yapmak
@@ -70,5 +71,5 @@ Success markers:
 # LATER
 
 - `GameScene.ts` seam extraction
-- ikinci sample geldikten sonra yeni threat horizon, arena beat spectacle, beat callout, death snapshot ve public shell pulse yuzeyleri, `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
+- ikinci sample geldikten sonra yeni threat horizon, arena beat spectacle, beat callout, death snapshot, public shell pulse ve personal-best chase yuzeyleri ile `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
 - ikinci human sample geldikten sonra near-miss ve replay identity yuzeylerini yeniden degerlendirmek
