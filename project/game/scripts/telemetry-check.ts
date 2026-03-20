@@ -55,6 +55,9 @@ import {
   getRunHorizonText,
 } from '../src/game/runHorizon.ts';
 import {
+  getRunPhaseDeathSummaryText,
+  getRunPhaseReachedBadgeText,
+  getRunPhaseRetryGoalText,
   getRunPhaseDetailText,
   getRunPhaseState,
   getRunPhaseStatusText,
@@ -175,7 +178,7 @@ assert.equal(
 assert.equal(
   deathPresentation.badge,
   'NEW BEST',
-  'A new-best death should earn a compact badge so the game-over surface feels more like a dramatic snapshot than a wall of text.',
+  'A new-best death should keep its high-priority badge even after phase-payoff copy is added to the death overlay.',
 );
 assert.equal(
   deathPresentation.title,
@@ -184,13 +187,13 @@ assert.equal(
 );
 assert.equal(
   deathPresentation.body,
-  'Run 12.3s. New best set.\n10s gate cleared. 60s is still live.',
-  'Death overlay body should summarize both the run result and the next objective in two short lines.',
+  'Run 12.3s. New best set.\nBREAKTHROUGH reached. 5.7s short of KILLBOX.',
+  'Death overlay body should summarize the run result and the coarse phase reached so the game-over screen sells structural progress instead of only timer math.',
 );
 assert.equal(
   deathPresentation.prompt,
-  'Next lane: BREAK RIGHT\nNext beat: 15s surge\nRetry: Space, Enter, tap/click, or move',
-  'Death overlay prompt should pair the escape lane hint with the next unlock beat and the retry affordance in one compact block.',
+  'Next lane: BREAK RIGHT\nReach KILLBOX in +5.7s | Next beat: 15s surge\nRetry: Space, Enter, tap/click, or move',
+  'Death overlay prompt should pair the next coarse retry target with the immediate beat and retry affordance in one compact block.',
 );
 assert.equal(
   deathPresentation.stats,
@@ -264,6 +267,31 @@ assert.equal(
   getRunPhaseDetailText(20),
   'Lead and echo punish straight lines. Reroute late and stay unpredictable. Next phase at 32s.',
   'The phase detail line should describe the active structural pressure instead of restating raw timer data.',
+);
+assert.equal(
+  getRunPhaseReachedBadgeText(0),
+  null,
+  'Opening deaths should stay badge-light instead of manufacturing fake payoff before the first gate is broken.',
+);
+assert.equal(
+  getRunPhaseReachedBadgeText(20),
+  'KILLBOX',
+  'Deaths after the lead unlock should surface the coarse phase reached as a compact fallback badge.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(7.4),
+  'Opening window snapped. Break 10s to start the ladder.',
+  'Opening deaths should convert the miss into a clear next threshold instead of dumping generic survival-goal copy.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(20),
+  'KILLBOX reached. 12.0s short of ENDGAME DRIFT.',
+  'Death summary text should tell the player which structural phase they reached and how far the next one sits ahead.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(20),
+  'Reach ENDGAME DRIFT in +12.0s',
+  'Retry goal text should turn the next phase into an immediate rematch target.',
 );
 assert.equal(
   getRunPhaseTimelineText(20),

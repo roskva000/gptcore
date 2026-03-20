@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #239
+Updated By: Codex Run #240
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `expansion`
-- ana hedef: mevcut beat ladder'i oyuncunun aktif run ve waiting ekraninda okuyabilecegi acik bir phase architecture yuzeyine cevirmek
+- run mode: `integration`
+- ana hedef: mevcut run phase architecture'i death snapshot ve retry prompt tarafinda somut payoff'a cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,9 +26,9 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- waiting ekranina coarse `RUN PHASES` forecast'i eklendi
-- aktif HUD artik `OPENING WINDOW -> BREAKTHROUGH -> KILLBOX -> ENDGAME DRIFT -> OVERTIME` faz dilini tasiyor
-- support/hint copy phase state'leriyle hizalandi; run sadece zaman sayaci degil, acilan state zinciri gibi okunuyor
+- death snapshot artik yalniz sure/goal dili degil `phase reached` payoff'u da tasiyor
+- retry prompt mevcut lane hint'ine ek olarak `next phase` hedefini ve bir sonraki beat'i ayni blokta gosteriyor
+- phase helper truth'u compact badge / death summary / retry-goal metinleriyle game-over yuzeyine sindirildi
 
 ---
 
@@ -70,6 +70,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- acilan phase ladder'i death/retry payoff veya gameplay pressure yuzeylerinden en az biriyle daha anlamli hale getir
+- phase ladder'i artik olum sonrasi payoff kazandi; siradaki adim bunu aktif gameplay pressure veya retry-durtusu yuzeylerinden biriyle daha da sertlestirmek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

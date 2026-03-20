@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #240
+
+- `project/game/src/game/runPhase.ts` death/retry payoff icin yeni `phase reached` badge, death summary ve retry-goal helper'larini ekledi
+- `project/game/src/game/deathPresentation.ts` game-over overlay body/prompt satirlarini bu yeni phase truth ile hizaladi; olum sonrasi yuzey artik sadece sure ve sonraki beat degil, hangi coarse phase'e kadar cikildigini ve sonraki structural hedefi de gosteriyor
+- `project/game/scripts/telemetry-check.ts` yeni death overlay metinlerini ve phase-payoff helper kontratlarini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #239
 
 - `project/game/src/game/runPhase.ts` yeni helper ile coarse run ladder'i `OPENING WINDOW`, `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` fazlarina cevirdi

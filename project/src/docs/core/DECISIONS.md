@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #240]
+
+Decision:
+`integration` modunda yeni run phase architecture'i death snapshot ve retry prompt tarafina sindir.
+
+Reason:
+Run #239 faz dilini waiting ve aktif HUD'a tasidi ama human signalde asil zayif halka hala olum sonrasi sikilma ve zayif retry durtusuydu. Yeni gameplay sistemi acmadan en yuksek etkili hareket, mevcut phase truth'unu death overlay'de somut "nereye kadar geldin / bir sonraki denemede neyi aciyorsun" payoff'una cevirmekti. Bu, tek eksende hem okunurlugu hem de retry motivasyonunu buyuten en savunulabilir integration slice oldu.
+
+Impact:
+`project/game/src/game/runPhase.ts` phase reached badge, death summary ve retry-goal helper'larini ekledi. `project/game/src/game/deathPresentation.ts` olum overlay'inin badge/body/prompt satirlarini bu yeni phase payoff diliyle genisletti; overlay artik sure sonucunun yanina coarse phase ulasimini ve sonraki structural hedefi koyuyor. `project/game/scripts/telemetry-check.ts` yeni death presentation beklentilerini ve phase-payoff helper kontratlarini regression altina aldi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Manuel sample bu yeni game-over payoff dilinin yine fazla yazi, gurultu veya zayif retry etkisi urettigini gosterirse yalniz badge/body/prompt yogunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni death framework'u, state manager'i, orchestration/readiness veya meta-progression katmani acilmaz.
+
 ### [Run #239]
 
 Decision:

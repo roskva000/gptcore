@@ -19,31 +19,31 @@ Ama dikkat:
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Yeni ship edilen run phase architecture'i death/retry payoff tarafina sindir.**
+**Run phase architecture'i aktif gameplay pressure tarafina bagla.**
 
 Hedef:
-Oyuncu oldugunde sadece kac saniye yasadigini degil, hangi phase'e kadar ciktigini ve bir sonraki denemede neyi acmak uzere oldugunu net hissetsin.
+Oyuncu sadece HUD ve death screen'de degil, arena davranisinda da phase degistigini hissetsin. Coarse phase ladder yeni bir pressure swap, arena state farki veya retry-durtusu yaratan canli davranisla desteklensin.
 
 Acilabilecek bagli yuzeyler:
-1. death snapshot veya retry prompt icinde phase reached / next phase chase payoff'u
-2. phase'e ozel compact badge, summary veya retry durtusu uretecek bir yuzey
-3. gerekiyorsa bu yeni truth'u telemetry-check regression'ina ekle
-4. yeni framework/manager acmadan mevcut helper ve presentation yuzeylerini genislet
+1. bir veya iki phase gecisinde obstacle davranisi / cadence / arena baskisi belirgin bicimde degissin
+2. bu yeni pressure swap'i mevcut `runPhase` truth'u ile ayni helper zincirine bagla
+3. gerekiyorsa beat callout, support text veya compact HUD feedback ile yeni pressure farkini okunur kil
+4. mutlaka deterministic regression ekle; ama validation/tooling genisletmesini ana is yapma
 
 Yapma:
 - phase helper etrafinda yeni orchestration/state-manager kurma
-- yalniz copy churn'u yapip urun ilerlemesi gibi sunma
+- yalniz death copy polish'i yapip urun ilerlemesi gibi sunma
 - ayni anda gameplay, shell, mobile ve validation'i ayri temalara dagitma
 
 ---
 
 ## Success Criteria
 
-- phase architecture death/retry tarafinda anlamli payoff kazanir
-- en az 2 ilgili yuzey birlikte hareket eder (or. death snapshot + retry prompt)
+- oyuncu en az bir phase gecisinde arena baskisinin degistigini ekranda fark eder
+- yeni pressure behavior mevcut phase architecture ile ayni dili konusur
 - build yesil kalir
 - gerekliyse telemetry/browser guard calisir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

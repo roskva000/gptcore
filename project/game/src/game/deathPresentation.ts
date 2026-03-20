@@ -7,6 +7,11 @@ import {
   type GameplayTelemetry,
 } from './telemetry.ts';
 import { getNextRunHorizonBeatText } from './runHorizon.ts';
+import {
+  getRunPhaseDeathSummaryText,
+  getRunPhaseReachedBadgeText,
+  getRunPhaseRetryGoalText,
+} from './runPhase.ts';
 
 type DeathPresentationParams = {
   hitDirection: ImpactDirection;
@@ -67,7 +72,7 @@ const getBadgeText = ({
     return `${TARGET_FIRST_DEATH_SECONDS}s BROKEN`;
   }
 
-  return null;
+  return getRunPhaseReachedBadgeText(survivalTimeSeconds);
 };
 
 const getTitleText = (hitDirection: ImpactDirection): string => {
@@ -94,7 +99,14 @@ const getBodyText = ({
     ? `Run ${roundedSurvivalTime}s. New best set.`
     : `Run ${roundedSurvivalTime}s. Best ${bestSurvivalTimeText}.`;
 
-  return [runLine, getProgressLine({ survivalTimeSeconds, reachedSurvivalGoal })].join('\n');
+  const phaseLine = getRunPhaseDeathSummaryText(survivalTimeSeconds);
+  const progressLine = getProgressLine({ survivalTimeSeconds, reachedSurvivalGoal });
+
+  if (phaseLine === progressLine) {
+    return [runLine, progressLine].join('\n');
+  }
+
+  return [runLine, phaseLine].join('\n');
 };
 
 const getPromptText = ({
@@ -108,7 +120,7 @@ const getPromptText = ({
 }): string =>
   [
     `Next lane: ${escapePromptTitle}`,
-    getNextRunHorizonBeatText(survivalTimeSeconds),
+    `${getRunPhaseRetryGoalText(survivalTimeSeconds)} | ${getNextRunHorizonBeatText(survivalTimeSeconds)}`,
     `Retry: ${retryPromptText}`,
   ].join('\n');
 

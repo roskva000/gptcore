@@ -7,16 +7,22 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #239:
+Current deterministic survival headline after Run #240:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 
+run_phase_death_retry_payoff_surface:
+current: Run #240 `project/game/src/game/runPhase.ts` coarse phase ladder'i icin `phase reached` badge, death summary ve retry-goal helper'lari sagliyor; `project/game/src/game/deathPresentation.ts` olum overlay'ini artik phase ulasimi + sonraki structural hedef + sonraki beat'i ayni compact payoff blokunda gosteriyor
+baseline: Run #239 faz dilini waiting ve aktif HUD'a tasimisti ama game-over yuzeyi hala agirlikla sure/goal ve bir sonraki beat copy'sine yaslaniyor, oyuncuya "hangi phase'e kadar ciktim ve bir sonraki run'da neyi kovaliyorum" hissini yeterince net vermiyordu
+target: sonraki manual sample bu yeni death/retry payoff yuzeyinin olum sonrasi sikilma hissini azalttigini, retry niyetini daha somut hale getirdigini ve death screen'i tekrar text-dump'a cevirmedigini gostersin; runtime blokluysa ayni copy yuzeyine mikro-churn yerine bu phase payoff'unu aktif gameplay pressure veya retry feedback tarafina baglayan source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
+
 run_phase_architecture_identity_surface:
 current: Run #239 `project/game/src/game/runPhase.ts` coarse run ladder'i `OPENING WINDOW`, `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` truth'una topluyor; `project/game/src/game/GameScene.ts` aktif HUD'da phase status/detail slice'i ve waiting intro'da `RUN PHASES` forecast'i gosteriyor
 baseline: onceki source beat announcement ve horizon slice'lari tasisa da run'in ilk 30-60 saniyesi hala oyuncuya agirlikla timer + tekil unlock kutlamalari olarak gorunuyordu; coarse structural state dili yoktu
-target: sonraki manual sample bu yeni phase architecture yuzeyinin run'i daha buyuk, daha okunur ve daha "bir seye donusuyor" hissettiren bir slice oldugunu gostersin; runtime blokluysa ayni yuzeye mikro-copy churn'u yerine bu phase'leri retry/payoff veya gameplay pressure ile daha derin baglayan source problemi secilsin
+target: sonraki manual sample bu yeni phase architecture + death payoff zincirinin run'i daha buyuk, daha okunur ve daha "bir seye donusuyor" hissettiren bir slice oldugunu gostersin; runtime blokluysa ayni yuzeye mikro-copy churn'u yerine bu phase'leri gameplay pressure veya retry feedback ile daha derin baglayan source problemi secilsin
 validation: `npm run telemetry:check`, `npm run build`
 
 survival_goal_chase_identity_surface:

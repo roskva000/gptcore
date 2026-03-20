@@ -118,6 +118,47 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
   return `${currentPhase.title}: ${currentPhase.detail} Next shift ${nextPhase.startSeconds}s.`;
 };
 
+export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | null => {
+  const { currentPhase } = getRunPhaseState(progressSeconds);
+
+  switch (currentPhase.id) {
+    case 'breakthrough':
+      return 'BREAKTHROUGH';
+    case 'killbox':
+      return 'KILLBOX';
+    case 'endgame':
+      return 'ENDGAME';
+    case 'overtime':
+      return 'OVERTIME';
+    default:
+      return null;
+  }
+};
+
+export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => {
+  const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
+
+  if (nextPhase === null || secondsUntilNextPhase === null) {
+    return `${currentPhase.title} reached. ${SURVIVAL_GOAL_SECONDS}s clear is banked.`;
+  }
+
+  if (currentPhase.id === 'opening') {
+    return `Opening window snapped. Break ${TARGET_FIRST_DEATH_SECONDS}s to start the ladder.`;
+  }
+
+  return `${currentPhase.title} reached. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
+};
+
+export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
+  const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
+
+  if (nextPhase === null || secondsUntilNextPhase === null) {
+    return `${currentPhase.title} live. Push past ${SURVIVAL_GOAL_SECONDS}s.`;
+  }
+
+  return `Reach ${nextPhase.title} in +${secondsUntilNextPhase.toFixed(1)}s`;
+};
+
 export const getRunPhaseTimelineText = (progressSeconds: number): string => {
   const { currentPhase } = getRunPhaseState(progressSeconds);
   return [
