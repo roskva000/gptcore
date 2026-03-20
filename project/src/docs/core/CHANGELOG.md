@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #237
+
+- `project/game/src/game/telemetry.ts` yeni `getSurvivalGoalChaseText()` helper'i ile aktif run icin `x.xs TO 60s CLEAR` ve temiz `60s CLEAR` durumlarini uretti
+- `project/game/src/game/GameScene.ts` `goalStatusText` satirini artik yalniz clear sonrasi degil tum playing fazinda gosteriyor; namesake hedef aktif run boyunca gorunur kaliyor
+- `project/game/scripts/telemetry-check.ts` bu yeni goal chase helper'inin pre-clear ve post-clear kontratlarini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #236
 
 - `project/game/src/game/telemetry.ts` yeni `getPersonalBestChaseText()` helper'i ile aktif run icin ilk best hedefini, mevcut best'e kalan farki veya `NEW BEST +x.xs` durumunu kisa chase metnine cevirdi

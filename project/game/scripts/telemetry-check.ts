@@ -88,6 +88,7 @@ import {
   createEmptyTelemetry,
   getCompletedRunCount,
   getLiveBestSurvivalTimeText,
+  getSurvivalGoalChaseText,
   getWaitingIntroTitleText,
   hasCompletedRunSample,
   getRetryDelayMs,
@@ -708,6 +709,20 @@ assert.equal(
   getWaitingIntroTitleText(60),
   '60s cleared. Push your best.',
   'Waiting copy should acknowledge when the namesake goal is already banked.',
+);
+assert.equal(
+  getSurvivalGoalChaseText({
+    currentSurvivalTime: 18.4,
+  }),
+  '41.6s TO 60s CLEAR',
+  'The live goal badge should keep the namesake clear target visible before the run reaches 60s.',
+);
+assert.equal(
+  getSurvivalGoalChaseText({
+    currentSurvivalTime: 60,
+  }),
+  '60s CLEAR',
+  'The live goal badge should collapse to a clean clear label once the namesake target is reached.',
 );
 assert.equal(
   getLaunchActionPromptText(),

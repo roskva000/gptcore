@@ -129,6 +129,20 @@ export const getPersonalBestChaseText = ({
   return `NEW BEST +${Math.max(currentSurvivalTime - bestSurvivalTime, 0).toFixed(1)}s`;
 };
 
+export const getSurvivalGoalChaseText = ({
+  currentSurvivalTime,
+}: {
+  currentSurvivalTime: number;
+}): string => {
+  const remainingToClear = SURVIVAL_GOAL_SECONDS - currentSurvivalTime;
+
+  if (remainingToClear > 0.04) {
+    return `${remainingToClear.toFixed(1)}s TO ${SURVIVAL_GOAL_SECONDS}s CLEAR`;
+  }
+
+  return `${SURVIVAL_GOAL_SECONDS}s CLEAR`;
+};
+
 export const getWaitingIntroTitleText = (bestSurvivalTime: number | null): string => {
   if (bestSurvivalTime !== null && bestSurvivalTime >= SURVIVAL_GOAL_SECONDS) {
     return `${SURVIVAL_GOAL_SECONDS}s cleared. Push your best.`;

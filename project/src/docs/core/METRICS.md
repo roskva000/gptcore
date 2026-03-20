@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #236:
+Current deterministic survival headline after Run #237:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+survival_goal_chase_identity_surface:
+current: Run #237 `project/game/src/game/telemetry.ts` aktif run icin `x.xs TO 60s CLEAR` ve `60s CLEAR` metni uretiyor; `project/game/src/game/GameScene.ts` `goalStatusText` satirini tum playing fazinda gorunur tutup namesake hedefi aktif chase yuzeyine ceviriyor
+baseline: onceki source `goalStatusText` satirini yalniz `60s` clear kutlamasi sonrasi gosteriyordu; oyuncu run sirasinda oyunun adindaki hedefe kalan mesafeyi canli gormuyor, namesake payoff daha cok sonradan okunan bir badge gibi kaliyor
+target: ikinci human sample bu yeni goal chase yuzeyinin run'i daha hedefli, daha okunur ve retry istegini daha iyi besleyen bir slice oldugunu gostersin; runtime blokluysa bu yeni yuzeye samplesiz mikro-tuning yapmak yerine baska gameplay/UX source problemi secilsin
+validation: `npm run telemetry:check`, `npm run build`
 
 personal_best_chase_identity_surface:
 current: Run #236 `project/game/src/game/telemetry.ts` aktif run icin `First best live`, `PB x.xs to y.yys` ve `NEW BEST +x.xs` chase metni uretiyor; `project/game/src/game/GameScene.ts` playing fazinda `bestText` satirini bu metne cevirip ilk record kirilma aninda `bestText` + `scoreText` HUD pulse'u veriyor

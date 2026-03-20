@@ -57,6 +57,7 @@ import {
   getLowestDeathTime,
   getRecentDeathTimesText,
   getRetryDelayMs,
+  getSurvivalGoalChaseText,
   getValidationProgressText,
   isValidationReportCurrent,
   type GameplayTelemetry,
@@ -2772,6 +2773,19 @@ export class GameScene extends Phaser.Scene {
     );
   }
 
+  private updateGoalStatusText(): void {
+    if (this.phase !== 'playing') {
+      this.goalStatusText.setText(`${SURVIVAL_GOAL_SECONDS}s CLEAR`);
+      return;
+    }
+
+    this.goalStatusText.setText(
+      getSurvivalGoalChaseText({
+        currentSurvivalTime: this.survivalTime,
+      }),
+    );
+  }
+
   private updatePersonalBestChase(): void {
     if (
       this.phase !== 'playing' ||
@@ -2815,6 +2829,7 @@ export class GameScene extends Phaser.Scene {
 
   private updateTelemetryText(): void {
     this.updateBestText();
+    this.updateGoalStatusText();
     this.waitingIntroTitle.setText(getWaitingIntroTitleText(getBestSurvivalTime(this.telemetry)));
     this.waitingHorizonText.setText(
       getRunHorizonText(getBestSurvivalTime(this.telemetry) ?? 0),
@@ -2828,7 +2843,7 @@ export class GameScene extends Phaser.Scene {
     const hudVisible = this.phase === 'waiting' || this.phase === 'playing';
     this.scoreText.setVisible(hudVisible);
     this.bestText.setVisible(hudVisible);
-    this.goalStatusText.setVisible(this.phase === 'playing' && this.survivalGoalReachedThisRun);
+    this.goalStatusText.setVisible(this.phase === 'playing');
     this.supportText.setDepth(
       this.phase === 'paused' || this.phase === 'gameOver'
         ? OVERLAY_SUPPORT_TEXT_DEPTH

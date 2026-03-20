@@ -4,16 +4,16 @@
 
 # NOW
 
-- Run #236 `mutation`: `project/game/src/game/telemetry.ts` yeni `getPersonalBestChaseText()` helper'i ile aktif run'da ilk best hedefini, mevcut best'e kalan farki veya `NEW BEST +x.xs` durumunu tek satirda uretiyor.
-- `project/game/src/game/GameScene.ts` playing fazinda `bestText` satirini bu chase metnine ceviriyor; run baslangicinda best target'i kilitliyor ve ilk personal-best kirilma aninda `bestText` ile `scoreText` icin kisa HUD pulse'u veriyor.
+- Run #237 `mutation`: `project/game/src/game/telemetry.ts` yeni `getSurvivalGoalChaseText()` helper'i ile aktif run'da `x.xs TO 60s CLEAR` veya `60s CLEAR` metnini uretiyor.
+- `project/game/src/game/GameScene.ts` `goalStatusText` satirini artik tum playing fazinda acik tutup bu canli goal chase metnine ceviriyor; namesake hedef run sirasinda da gorunur kaliyor.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
-- Browser validation readiness bu ortamda korunuyor; automation hazir ama ikinci structured human sample ve yeni PB chase slice'inin gercek oyuncu etkisi hala manuel olarak toplanmadi.
+- Browser validation readiness bu ortamda korunuyor; automation hazir ama ikinci structured human sample ve yeni PB chase + goal chase slice'larinin gercek oyuncu etkisi hala manuel olarak toplanmadi.
 - Bu pass frozen strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle/public shell copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- aktif run HUD'i statik best dump yerine canli personal-best chase metni gosterir.
-- onceki lifetime best gecildigi ilk anda kisa ama belirgin bir HUD pulse'u gelir.
+- aktif run HUD'i `goalStatusText` satirinda namesake hedefe kalan sureyi canli gosterir.
+- `60s` clear esigi gecilince ayni satir temiz `60s CLEAR` durumuna duser.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build ve telemetry check yesil kaliyor.
 
@@ -21,8 +21,8 @@ Success markers:
 
 # NEXT
 
-- Browser smoke hazirken ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, beat callout hissi, death snapshot clarity, public shell hissi, personal-best chase hissi, retry desire, `strafe`/`lead`/surge/echo/drift beat'leri, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Manual sample yine acilamazsa frozen koridorlara veya Run #236 PB chase slice'ina samplesiz tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec.
+- Browser smoke hazirken ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, beat callout hissi, death snapshot clarity, public shell hissi, personal-best chase hissi, live goal chase hissi, retry desire, `strafe`/`lead`/surge/echo/drift beat'leri, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
+- Manual sample yine acilamazsa frozen koridorlara veya Run #236 PB chase / Run #237 goal chase slice'larina samplesiz tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---

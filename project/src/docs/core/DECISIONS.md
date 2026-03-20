@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #237]
+
+Decision:
+`mutation` modunda aktif run HUD'ine canli bir `survival goal chase` slice'i ekle.
+
+Reason:
+Manual sample bu ortamda hala acilamiyor ve audit samplesiz frozen identity/fairness/audio/mobile koridorlarina donusu yasakliyor. Run #236 personal-best chase hedefi aktif run'i daha hedefli yapti, ancak oyunun namesake `60s` hedefi halen oynanis sirasinda ancak clear sonrasi belirginlesiyordu. Yeni enemy/system/framework acmadan en dar savunulabilir product hareketi, mevcut `goalStatusText` satirini clear kutlamasindan aktif bir chase yuzeyine cevirmekti.
+
+Impact:
+`project/game/src/game/telemetry.ts` yeni `getSurvivalGoalChaseText()` helper'i ile aktif run icin `x.xs TO 60s CLEAR` ve `60s CLEAR` durumlarini uretiyor. `project/game/src/game/GameScene.ts` `goalStatusText` satirini tum playing fazinda gorunur kilip bu chase metnine bagliyor. `project/game/scripts/telemetry-check.ts` yeni helper kontratini regression altina aldi. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek manuel sample bu yeni goal chase yuzeyinin dikkat dagittigini, gereksiz HUD gurultusu yarattigini veya retry istegine katkisiz kaldigini gosterirse yalniz metin/gorunurluk siddeti dar kapsamda ayarlanir; bu bahaneyle yeni goal framework'u, score system'i, meta-progression veya orchestration/readiness katmani acilmaz.
+
 ### [Run #236]
 
 Decision:
