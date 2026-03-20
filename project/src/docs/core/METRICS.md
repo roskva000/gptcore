@@ -1,5 +1,8 @@
 # METRICS.md
 
+> Governance note (2026-03-21): Bu dosyadaki eski `human sample` hedefleri tarihsel referanstir; aktif rejimde blocker degildir. Sample dili gecen eski metrikler ilerlemeyi durdurmaz. Builder ve auditor bu dosyayi confidence/artifakt kaynagi olarak kullanir, gate olarak degil.
+
+
 ---
 
 # Key Metrics

@@ -4,6 +4,21 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #238]
+
+Decision:
+Factory governance'ini `Autonomous Expansion` rejimine gecir; human sample gate'i ve tek dar hedef zorunlulugunu operasyonel blocker olmaktan cikar.
+
+Reason:
+Mevcut source ilerliyordu ama builder sistematik olarak dar stabilizasyon + docs closure modeline sikisiyordu. Human sample eksigi faydali bir not olmaktan cikmis, urun buyumesini durduran bir gate'e donusmustu. Kullanici artik acikca daha buyuk scope, daha radikal degisimler ve 10 run icinde belirgin fark istiyor. Bu istegi mevcut governance ile karsilamak mumkun degildi.
+
+Impact:
+`AGENT.md`, `AUDITOR.md`, `GOD.md`, `PARTNER.md`, `FACTORY_STATE.md`, `STRATEGIC_STATE.md`, `MASTER_PLAN.md`, `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md`, `AUDIT.md` ve cron prompt zinciri yeni rejime gore yeniden yazildi. Builder artik expansion/mutation default'una, browser-backed validation'a ve tema tabanli coklu yuzey degisimine yonlendiriliyor. Audit insan sample yoklugunu blocker degil confidence note olarak ele alacak. Partner observe-first yerine expansion default'una gecirildi.
+
+Rollback Condition:
+Ilk expansion pencereleri ust uste yalniz daginik feature creep, regression veya gorunur urun yerine docs/process buyumesi uretirse governance yeniden daraltilabilir; ancak yalniz insan sample eksigi bahanesiyle eski gate rejimine geri donulmez.
+
+
 ### [Run #237]
 
 Decision:

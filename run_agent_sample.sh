@@ -125,59 +125,57 @@ git fetch origin | tee -a "$OUTFILE"
 git checkout "$BRANCH" | tee -a "$OUTFILE"
 git pull --rebase origin "$BRANCH" | tee -a "$OUTFILE"
 
-PROMPT='Kolay gelsin şef, mesai başladı.
+PROMPT='Kolay gelsin şef, builder run başladı.
 
-`project/src/docs/core/AGENT.md` anayasan.
-`project/src/docs/audit/AUDIT.md` son denetim hafızan.
-`project/src/docs/core/PROJECT.md`, `project/src/docs/core/ARCHITECTURE.md` ve `project/src/docs/core/GAME_DESIGN.md` bağlamın.
-`project/src/docs/core/NEXT_AGENT.md` aktif görev tanımın.
+Yeni rejim: Autonomous Expansion.
+Sen mikro-fix botu değilsin; oyunu birkaç run içinde belirgin biçimde büyütmesi beklenen builder''sın.
 
-Önce repo durumunu ve state dosyalarını oku.
-
-Okuma sırası:
-1. `project/src/docs/strategy/STRATEGIC_STATE.md`
-2. `project/src/docs/strategy/MASTER_PLAN.md`
-3. `project/src/docs/factory/FACTORY_STATE.md`
-4. `project/src/docs/factory/PARTNER_LOG.md`
-5. `project/src/docs/core/AGENT.md`
-6. `project/src/docs/audit/AUDIT.md`
-7. `project/src/docs/core/NEXT_AGENT.md`
-8. `project/src/docs/core/STATE.md`
-9. `project/src/docs/core/ROADMAP.md`
+Zorunlu okuma sırası:
+1. `project/src/docs/factory/PARTNER.md`
+2. `project/src/docs/factory/FACTORY_STATE.md`
+3. `project/src/docs/strategy/STRATEGIC_STATE.md`
+4. `project/src/docs/strategy/MASTER_PLAN.md`
+5. `project/src/docs/audit/AUDIT.md`
+6. `project/src/docs/core/AGENT.md`
+7. `project/src/docs/core/STATE.md`
+8. `project/src/docs/core/ROADMAP.md`
+9. `project/src/docs/core/NEXT_AGENT.md`
 10. `project/src/docs/core/DECISIONS.md`
-11. `project/src/docs/core/CHANGELOG.md`
-12. `project/src/docs/core/METRICS.md`
-13. varsa `project/src/docs/experiments/HUMAN_SIGNALS.md` ve `project/src/docs/experiments/EXPERIMENTS.md`
+11. `project/src/docs/core/METRICS.md`
+12. ilgili source / script dosyalari
 
-`project/src/docs/audit/AUDIT.md` içinde governance yönlendirmeleri veya risk uyarıları varsa bunu dikkate al.
+Bu run''da:
+- varsayilan mod `expansion`; gerekirse `mutation` veya `integration`
+- `stabilization` ancak gercek kritik regression varsa secilir
+- tek dar source problemi zorunlulugu yok
+- ayni temaya bagli 1-4 yuzey birlikte degisebilir
+- gorunur urun deltasi yoksa run basarili sayilmaz
 
-Bu tur için tek bir ana hedef seç ve run modunu açıkça belirt: `stabilization` / `mutation` / `integration`.
+Tema secme kurali:
+- gameplay, pacing, arena behavior, UI, shell identity, retention veya payoff tarafindan tek bir ana tema sec
+- sonra o temayi destekleyen 1-3 ek yuzey sec
+- daginik feature creep yapma
 
-Hedef seçiminde şu öncelikleri kullan:
-1. ürün ilerlemesi (gameplay / UX / bug fix)
-2. deterministic validation
-3. test stabilitesi
-4. teknik borç azaltma
+Kanıt modeli:
+- human sample bekleme
+- browser / Chromium / smoke / validation-ready / deterministic guard kullan
+- deterministic green sonucu urun yerine koyma ama ilerlemeyi de onun yoklugunda dondurma
 
-Validation veya tooling genişletmesi sadece gerçekten gerekli ise yapılmalıdır. Factory docs ve partner notları builder için bağlamdır; bunları copy-churn bahanesiyle büyütme.
+Docs kurali:
+- minimum gerekli hafiza birak
+- `STATE.md` ve `NEXT_AGENT.md` zorunlu
+- `ROADMAP.md`, `DECISIONS.md`, `CHANGELOG.md`, `METRICS.md`, `latestRun.ts` yalniz gercekten gerekiyorsa guncelle
+- tam core-doc closure ritueli yapma
 
-Aynı problem etrafında yeni orchestration / readiness / preflight katmanı eklemekten kaçın.
+Bu run sonunda mutlaka belirt:
+- secilen tema
+- hangi yuzeylerin birlikte degistigi
+- ne dogrulandin
+- sonraki run bu temayi nasil buyutmeli
 
-Uygula.
-Doğrula.
-
-Tur sonunda mutlaka şu dosyaları güncelle:
-- `project/src/docs/core/STATE.md`
-- `project/src/docs/core/ROADMAP.md`
-- `project/src/docs/core/DECISIONS.md`
-- `project/src/docs/core/CHANGELOG.md`
-- `project/src/docs/core/METRICS.md`
-- `project/src/docs/core/NEXT_AGENT.md`
-
-`project/src/docs/core/NEXT_AGENT.md` bir sonraki agent için net ve uygulanabilir bir görev içermelidir.
-
-Gereksiz scope büyütme.
-Core gameplay ve ölçülebilir ilerleme öncelikli.'
+Hedef:
+10 run sonra bugunkunden bariz daha farkli bir oyun yaratmak.
+Cesur ol. Dagilma. Uygula.'
 
 log "[INFO] Running Codex"
 codex exec \

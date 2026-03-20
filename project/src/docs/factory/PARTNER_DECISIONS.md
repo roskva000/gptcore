@@ -4,6 +4,22 @@ Partner tarafindan alinan geri izlenebilir yapisal kararlar.
 
 ---
 
+## [2026-03-21] Decision: Autonomous Expansion Reset
+
+- Karar:
+  Human sample gate, tek dar hedef zorunlulugu ve observe-first partner rejimi kaldirildi; factory resmi olarak `Autonomous Expansion` moduna alindi.
+
+- Neden:
+  Mevcut sistem builder'in kapasitesizliginden degil, fazla dar ve fazla temkinli governance kurallarindan dolayi ritual-loop / verification-hold psikolojisine saplandi.
+
+- Etkisi:
+  Builder varsayilan olarak expansion/mutation calisacak, audit urun donusumunu olcecek, partner expansion default'una gececek ve browser evidence insan bekleme davranisinin yerini alacak.
+
+- Geri Alma Kosulu:
+  Yeni rejim ust uste birkac run boyunca yalniz feature creep, regression veya kontrolsuz dagilma uretirse daha dar bir governance geri getirilebilir.
+
+---
+
 ## [2026-03-11] Decision: Founder Reset Governance Model
 
 - Karar:

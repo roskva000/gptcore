@@ -1,6 +1,6 @@
 # MASTER_PLAN.md
-Last Updated: 2026-03-16
-Updated By: God Agent, Weekly Strategic Review
+Last Updated: 2026-03-21
+Updated By: Partner + Strategic Reset
 
 ---
 
@@ -8,91 +8,86 @@ Updated By: God Agent, Weekly Strategic Review
 
 ## Phase 1 - Survival Core Viability
 Status:
+Closed
+
+Goal:
+Kirilmayan ve olculebilir bir survival cekirdegi kurmak.
+
+Observed Result:
+- yeterli taban kuruldu
+- bu faz fazla uzun surdu ve builder'i mikro-stabilizasyona cekti
+
+## Phase 2 - Proof Of Fun And Identity Surface
+Status:
 Soft-closed
 
 Goal:
-Deterministic olarak kirik olmayan, okunur bir survival cekirdegi kurmak.
+Oyunu "gercek bir oyun gibi" hissettiren ilk buyuk yuzeyleri acmak.
 
 Observed Result:
-- cekirdek art arda mutation ve fairness fix'leriyle artik saglam bir taban verdi
-- ancak bu faz fazla uzun kaldi ve builder'i mikro-stabilizasyon lokal maksimumuna cekti
+- horizon / spectacle / callout / death snapshot / shell pulse gibi yuzeyler acildi
+- ama insan gate'i ve closure ritueli buyumeyi yavaslatti
 
-Exit Signal:
-- deterministic core artik ana darboğaz degil
-- bundan sonra ayni koridorda kalmak urun genisliginden daha az deger uretiyor
-
-## Phase 2 - Proof Of Fun And Identity Surface
+## Phase 3 - Autonomous Expansion
 Status:
 Active
 
 Goal:
-Oyunu "gercek bir oyun gibi" hissettiren ilk belirgin dikey slice'i kurmak ve bunu ikinci insan sample'i ile sinamak.
+Insan girdisini beklemeden, 5-10 run boyunca oyunu belirgin bicimde buyutmek.
 
-Candidate Themes:
-- daha temiz ama daha etkileyici death/readability surface'i
-- daha guclu run identity ve spectacle
-- oyuncuya ve seyirciye anlatilabilir sosyal/product surface
-- replay istegini sayilardan degil hissedilir payoff'tan buyuten cepheler
+Core Thesis:
+Tek bug veya tek polish yerine tema tabanli buyume.
+
+Primary Expansion Families:
+- run phase architecture
+- new hazard / arena state behavior
+- UI + shell identity overhaul
+- retention / session-depth hooks
+- browser-observed validation loops
 
 Exit Criteria:
-- en az 1 yeni belirgin player-facing vertical slice ship edilmeli
-- en az 2 structured human sample bu slice sonrasi toplanmali
-- yeni sample'larda clarity / excitement / retry desire tarafinda somut iyilesme sinyali gorulmeli
-- builder kapanis ritueli normalize olmali; docs fan-out ana is olmaktan cikmali
+- 10 run sonunda gameplay, pacing ve UI bugunkunden belirgin farkli olmali
+- oyuncu deneyimi sadece daha stabil degil, daha buyuk ve daha karakterli olmali
+- en az 2-3 expansion family aktif olarak oyuna girmis olmali
+- docs fan-out default rituel olmaktan cikmali
 
-## Phase 3 - Session Depth And Retention Hooks
+## Phase 4 - Depth And Retention Systems
 Goal:
-Proof-of-fun slice'i tutarsa oyuna tekrar oynamayi besleyen hafif sistemler eklemek.
+Tutunma sinyali veren expansion'lari daha kalici sistemlere cevirmek.
 
 Candidate Themes:
-- near-miss / combo economy
-- score pressure
-- run-to-run identity farklari
-- sticky progression without heavy meta bloat
+- route / build / archetype farklari
+- light progression
+- challenge structure
+- stronger score pressure and earned payoff
 
-## Phase 4 - Systemization And Scalability
+## Phase 5 - Systemization And Scalability
 Goal:
-Kod, governance ve factory operating system yapisini uzun sureli agent gelistirmesine daha dayanikli hale getirmek.
+Uzun sureli otonom gelistirme icin kod ve fabrika yapisini tasarlanmis hale getirmek.
 
 Candidate Themes:
-- `GameScene.ts` parcalama
-- factory-wide concurrency / maintenance model
-- automated public run feed
-- deploy / release rhythm
-- stronger human feedback ingestion
-- partner pulse / deep review cadence
+- `GameScene.ts` parcala
+- stronger validation harness
+- release/deploy rhythm
+- public evolution feed
+- cleaner memory discipline
 
 ---
 
 # Weekly Priority Stack
 
-1. Product identity over proxy polish
-2. Human evidence over deterministic comfort
-3. One visible vertical slice over many micro wins
-4. Minimum memory over ritualized doc fan-out
-5. Architectural simplification only when it unlocks phase progress
+1. Visible product delta over safe maintenance
+2. Theme-based expansion over single narrow fixes
+3. Browser evidence over waiting for humans
+4. Minimum memory over ritualized docs
+5. Refactor only when it unlocks the next big leap
 
 ---
 
-# Current Week Mission
+# Non-Goals For Current Phase
 
-Haftanin misyonu:
-Proxy-safe tuning doneminden cikip proof-of-fun vertical slice donemine girmek.
-
-Bu nedenle builder agentlar:
-
-- ayni fairness/audio/mobile micro-koridorlarina donmeyecek
-- tek bir yeni player-facing vertical slice sececek
-- slice sonrasi mumkun olan ilk noktada ikinci structured sample'i toplayacak
-- docs kapanisini minimum gerekli hafiza ile sinirlayacak
-
----
-
-# Non-Goals For This Week
-
-- buyuk content expansion
-- deploy polish
-- yeni validation katmanlari
-- sadece copy / panel wording guncellemesi
-- sample olmadan eski mutation/fairness koridorlarini tekrar tuning etmek
-- gerekcesiz refactor
+- human sample beklemek
+- ayni eski fairness/audio/mobile mikro-koridorlarinda oyalanmak
+- sadece copy/panel/telemetry wording churn'u
+- docs rewrite'i ilerleme gibi sunmak
+- gereksiz framework / manager katmanlari

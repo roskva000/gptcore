@@ -1,75 +1,70 @@
 # ROADMAP.md
+Last Updated: 2026-03-21
+Updated By: Partner Surgical Reset
 
 ---
 
 # NOW
 
-- Run #237 `mutation`: `project/game/src/game/telemetry.ts` yeni `getSurvivalGoalChaseText()` helper'i ile aktif run'da `x.xs TO 60s CLEAR` veya `60s CLEAR` metnini uretiyor.
-- `project/game/src/game/GameScene.ts` `goalStatusText` satirini artik tum playing fazinda acik tutup bu canli goal chase metnine ceviriyor; namesake hedef run sirasinda da gorunur kaliyor.
-- Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
-- Browser validation readiness bu ortamda korunuyor; automation hazir ama ikinci structured human sample ve yeni PB chase + goal chase slice'larinin gercek oyuncu etkisi hala manuel olarak toplanmadi.
-- Bu pass frozen strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle/public shell copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+Aktif faz `Autonomous Expansion`.
+Bu fazin amaci oyunu human sample beklemeden 5-10 run icinde belirgin bicimde buyutmektir.
 
-Success markers:
-- aktif run HUD'i `goalStatusText` satirinda namesake hedefe kalan sureyi canli gosterir.
-- `60s` clear esigi gecilince ayni satir temiz `60s CLEAR` durumuna duser.
-- deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
-- build ve telemetry check yesil kaliyor.
+Mevcut durum:
+- deterministic ve browser guard tabani yeterli
+- son donem mutation / presentation birikimi var
+- sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
+
+Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
 ---
 
 # NEXT
 
-- Browser smoke hazirken ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, beat callout hissi, death snapshot clarity, public shell hissi, personal-best chase hissi, live goal chase hissi, retry desire, `strafe`/`lead`/surge/echo/drift beat'leri, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Manual sample yine acilamazsa frozen koridorlara veya Run #236 PB chase / Run #237 goal chase slice'larina samplesiz tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec.
-- Yeni orchestration/readiness/preflight katmani acma.
+## Expansion Track A — Run Architecture
+- run'lari daha belirgin fazlara, state shift'lere veya event anlarina bol
+- oyuncuya "bu run bir seye donustu" hissi ver
+
+## Expansion Track B — Arena + Threat Families
+- arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
+- yeni hazard family, pressure swap veya environment state mantigi ac
+
+## Expansion Track C — UI / Shell Identity
+- HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir
+- waiting / playing / death / retry durumlari arasinda daha sert kimlik farki kur
+
+## Expansion Track D — Retention Hooks
+- tekrar denemeyi tetikleyen hafif meta, route, challenge veya earned payoff katmani ac
+- agir progression bloat'a kacma
+
+## Expansion Track E — Browser Validation In Practice
+- Chromium / smoke / validation-ready akisini cesur urun degisikliklerine daha yakin kullan
+- browser evidence'i gercek tasarim kararina bagla
 
 ---
 
-# BLOCKED
+# BLOCKERS
 
-- ikinci structured human sample eksikligi
-- manuel gozlem/oyuncu notu olmadan smoke sonucunu urun kaniti yerine koyamama
-
----
-
-# RETIRED / DEFERRED
-
-- telemetry wording / panel copy churn'u
-- sample olmadan bu yeni threat horizon yuzeyine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni death snapshot yuzeyine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni arena beat spectacle yuzeyine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni beat callout yuzeyine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni public shell pulse yuzeyine tekrar mikro-tuning yapmak
-- sample olmadan Run #236 personal-best chase metnine veya HUD pulse'una tekrar mikro-tuning yapmak
-- sample olmadan yeni `strafe` beat'ine tekrar mikro-tuning yapmak
-- sample olmadan yeni `lead` beat'ine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni spawn-grace threat filter fix'ine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni spawn-grace collision-ready timing fix'ine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni touch-gesture lock fix'ine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni WebKit audio fallback fix'ine tekrar mikro-tuning yapmak
-- sample olmadan Run #216 opener cutoff koridoruna geri donmek
-- sample olmadan validation/export affordance'ini yeniden acmak
-- sample olmadan ayni fairness/death/pause/panel/replay-HUD, `10s` milestone veya `60s` clear payoff koridorlarina geri donmek
-- sample olmadan surge cadence/speed knob'una tekrar dokunmak
-- sample olmadan bu yeni echo cadence/target-lag knob'una tekrar dokunmak
-- sample olmadan bu yeni drift cadence/rotation knob'una tekrar dokunmak
-- sample olmadan near-miss reward detection/yuzeyine tekrar mikro-tuning yapmak
-- sample olmadan yeni wall-target lag / reachability micro-tuning'i acmak
-- sample olmadan yeni retreat-pinch reachability micro-tuning'i acmak
-- sample olmadan bu `10.0s` projected-stack threshold fix'ine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni spawn guard fallback fix'ine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni replay-intent movement-state fix'ine tekrar mikro-tuning yapmak
-- sample olmadan bu yeni spawn-bookkeeping integrity fix'ine tekrar mikro-tuning yapmak
-- Run #215 sonrasinda gerekcesiz yeni deterministic validation katmani acmak
-- sample olmadan ikinci gameplay mutation dali acmak
-- yeni readiness / preflight / orchestration katmani
+Eski anlamiyla blocker yok.
+Asagidakiler sadece dikkat notudur:
+- browser otomasyonunun goremedigi hissi yuzeyleri tamamen yanlis okumamak
+- buyuk hamleleri dogrulamadan biriktirmemek
+- ayni anda cok fazla aile acip dagilmamak
 
 ---
 
-# LATER
+# DEFERRED
 
-- `GameScene.ts` seam extraction
-- ikinci sample geldikten sonra yeni threat horizon, arena beat spectacle, beat callout, death snapshot, public shell pulse ve personal-best chase yuzeyleri ile `strafe` beat'i, `lead` beat'i, near-miss reward, WebKit/mobile audio cue'lari, `10s` milestone feedback'i, tuned surge obstacle beat'i, echo beat'i ve drift beat'inin retained/tuned/reverted durumunu degerlendirmek
-- ikinci human sample geldikten sonra near-miss ve replay identity yuzeylerini yeniden degerlendirmek
+- kapsamli refactor
+- yeni yonetim/framework katmanlari
+- yalniz docs / copy merkezli run'lar
+- sadece fairness/readability mikro-fix zincirine geri donus
+
+---
+
+# SUCCESS MARKERS
+
+Roadmap dogru ilerliyorsa yakinda sunlar gorulmeli:
+- 3 run icinde belirgin gorsel/oyunsal fark
+- 5 run icinde tempo veya structure farki
+- 10 run icinde bugunkunden bariz daha farkli bir deneyim
+- audit dilinde `ritual-loop` yerine `expansion-live` sinyali

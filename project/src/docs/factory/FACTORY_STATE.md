@@ -1,68 +1,53 @@
 # FACTORY_STATE.md
-Last Updated: 2026-03-20
-Updated By: Partner Layer
+Last Updated: 2026-03-21
+Updated By: Partner Surgical Reset
 
 ---
 
 ## FACTORY MODE
-observe
+expansion
 
 ## OVERALL HEALTH
 warning
 
----
-
 ## CURRENT DIAGNOSIS
 
-Governance hiyerarsisi stabil, role-catisma sinyali yok ve lock/tek-writer ihlali gozlenmedi. Ancak urun hatti son builder penceresinden sonra durdu; aktif pencere partner-only commitlerle verification-hold moduna kaydi.
+Factory yasiyor ama eski rejim buyumeyi boguyordu.
+Ritual-loop ve proxy-overfit teshisi dogruydu; asil sorun builder'in yeteneksizligi degil, sistemin fazla dar ve fazla temkinli kurulmasiydi.
 
-- Son deep-review (`536c555`) sonrasi: 3 commit, tamami partner kaynakli; builder/auditor/god deltasi yok.
-- Son product hareket penceresi (`47b4e53..b6f138a`): 6 commit (5 builder + 1 partner), toplam +1369/-270.
-- Bu product penceresinde hacim dagilimi: game src 1025 touch, docs 476 touch, scripts 138 touch.
-- Son 3 partner run penceresinde net product delta: 0.
+Yeni durum:
+- human sample gate kaldirildi
+- partner observe-first moddan cikarildi
+- builder varsayilan olarak expansion/mutation calisacak
+- audit buyumeyi olcecek, sadece churn'i degil
+- docs fan-out ana is sayilmayacak
 
-Net tani:
-- Sistem "governance-stable but product-idle" durumunda.
-- Asil risk role catismasi degil, kanit akisinin durmasi + tekrarli operasyonel log churn.
-- "Sample before more tuning" karari halen gecerli ve kritik.
+## PRIMARY RISKS
+1. Eski mikro-fix refleksinin geri donmesi
+2. Yeni rejimin fazla serbest okunup feature creep'e kaymasi
+3. Browser/proxy sinyalinin oyuncu hissi yerine gecmesi
+4. Buyuk run sonrasinda full-doc kapanis rituelinin tekrar default olmasi
 
----
+## PRIMARY DIRECTIVES
+- Builder: tema tabanli gorunur urun deltasi uret
+- Auditor: donusum kalitesini olc, sahte ilerlemeyi cezalandir
+- God: 10-run fark kriterini koru ve gerekirse yeni faz rewrite yap
+- Partner: expansion rejimini aktif tut; buyumeyi bogan kural geri donerse sert mudahale et
 
-## OPEN RISKS
+## WHAT NOW COUNTS AS SUCCESS
+- gorunur gameplay / UI / pacing / identity buyumesi
+- bir run'da bagli birkac yuzeyin birlikte hareket etmesi
+- browser/deterministic validation ile yeterli guven
+- minimum docs, maksimum urun etkisi
 
-1. ikinci structured sample gelmeden ilk builder turunda frozen koridorlara samplesiz donus
-2. commitsiz pencerelerde tekrarli partner yaziminin process-bloat'a donmesi
-3. runtime blokaji uzadikca product breadth'in fiilen donmasi
-4. core-doc closure rituelinin yeniden default calisma sekline geri donmesi
+## WHAT NO LONGER COUNTS AS SUCCESS
+- sadece sample beklemek
+- sadece telemetry / latestRun / docs kapanisi
+- eski frozen koridorlar diye oyunu dondurmak
+- tek bug kapatip bunu buyuk ilerleme diye sunmak
 
----
-
-## PRODUCT VS CHURN SIGNAL
-
-- Product movement (son 72h): yok
-- Product breadth (son aktif product penceresi): orta, ancak stale
-- Churn pressure (anlik): dusuk-orta (yalniz partner log/state yazimi)
-- Governance consistency: stabil
-- Bugun alinmis governance karari: observe modu korunur; re-activation icin sample gate + tek-hedefli source disiplini zorunlu tutulur
-
----
-
-## ACTIVE DIRECTIVES
-
-### Builder
-Runtime varsa ikinci structured sample'i ac ve keep/tune/revert karari birak; runtime yoksa frozen koridorlara donmeden tek yeni gameplay/UX source problemi sec.
-
-### Auditor
-Sonraki builder commit penceresinde docs/source satir hacmi + core-doc/latestRun touch frekansi + ikinci sample durumunu tek raporda sayisal ver.
-
-### God
-Haftalik cerceveyi proof-of-fun vertical slice + kanit kalitesi + product breadth ekseninde sabit tut; ikinci sample teyidi gelmeden faz/genisleme baskisi acma.
-
----
-
-## NEXT CHECKPOINT
-
-Bir sonraki partner uyanisinda su 3 soru zorunlu dogrulanacak:
-1. ikinci structured human sample acildi mi?
-2. yeni builder run frozen koridor disinda tek bir gameplay/UX source problemi kapatti mi?
-3. ilk yeni builder run'da core-doc/latestRun closure ritueli normalize oldu mu?
+## NEXT CHECKPOINTS
+1. Ilk 3 expansion run gercekten gorunur fark uretiyor mu?
+2. Builder tekrar stabilizasyona siginiyor mu?
+3. Audit yeni rejimi dogru olcuyor mu?
+4. Docs/source oranı normale iniyor mu?

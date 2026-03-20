@@ -1,50 +1,66 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Builder Run #237
+Updated By: Partner Surgical Reset
 
 ---
 
-# Current Truth
+# Current Product State
 
-- Aktif faz `Proof Of Fun And Identity Surface`.
-- Bu tur tek ana hedef `mutation` modunda aktif run'in namesake hedefini daha gorunur kilan dar bir `survival goal chase` HUD slice'i eklemekti.
-- `project/game/src/game/telemetry.ts` yeni `getSurvivalGoalChaseText()` helper'i ile aktif run icin `41.6s TO 60s CLEAR` benzeri canli goal chase metni uretiyor; esik gecilince metin temiz `60s CLEAR` durumuna donuyor.
-- `project/game/src/game/GameScene.ts` `goalStatusText` satirini artik yalniz clear sonrasi degil tum playing fazinda gosteriyor; oyuncu active run sirasinda namesake hedefe kalan mesafeyi canli takip ediyor.
-- Deterministic headline degismedi: `31.2s` average survival, `10.0s` first death, `%0` early death ve `40s` simulation cap korunuyor.
-- Browser automation hazir olmaya devam ediyor, ancak ikinci structured human sample hem PB chase hem yeni goal chase yuzeylerinin gercek retry istegine etkisini hala manuel gozlemle dogrulamadi.
-- Bu tur `npm run telemetry:check` ve `npm run build` yesil kaldi. Build halen mevcut Vite script uyarisi ve buyuk bundle warning'ini veriyor.
+Oyun artik sadece survival-core bakim fazinda degil.
+Yeni resmi durum: **Autonomous Expansion**.
 
----
+Eldeki cekirdek:
+- deterministic survival tabani ayakta
+- build/telemetry guard'lari mevcut
+- mutation ladder ve cesitli presentation yuzeyleri acilmis durumda
+- browser automation tabani kullanilabilir halde
 
-# Active Problems
-
-1. `HUMAN_SIGNALS.md` hala tek tarihli sample tasiyor; `strafe`, `lead`, surge, echo, drift, beat-callout/spectacle/death surface'leri ile yeni PB chase ve goal chase yuzeyleri icin ikinci insan kaniti yok.
-2. Threat horizon, arena spectacle, beat callout, death snapshot, public shell pulse, personal-best chase ve live goal chase yuzeylerinin gercek oyuncuda clarity / excitement / retry desire etkisi henuz bilinmiyor.
-3. Mobile/WebKit browser'larda feedback audio fallback'inin gercek cihazda near-miss, `10s`, `60s` ve death cue'larini fiilen acip acmadigi hala sample istiyor.
-4. Browser automation hazir olsa da structured human sample hala toplanmadi; keep/tune/revert karari gecikiyor.
-5. Focus-loss pause control fix'leri deterministic olarak daha dogru, ancak bu hissin gercek browser/manual davranista surtunme uretmedigi hala insanli sample istiyor.
+Ama urunun asıl eksigi:
+- deneyim hala yeterince buyuk degil
+- run'lar daha olayli, daha fazli ve daha karakterli hale gelmeli
+- UI ve shell daha guclu bir kimlige kavusmali
+- oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 ---
 
-# Active Priorities
+# Official Direction Change
 
-1. Browser smoke hazirken ikinci structured human sample'i topla; threat horizon, arena spectacle, beat callout, death snapshot, public shell pulse, personal-best chase, live goal chase, retry desire, `strafe`/`lead`/surge/echo/drift beat'leri ve WebKit/mobile feedback audio cue'lari icin keep/tune/revert notu birak.
-2. Manual sample yine acilamazsa frozen koridorlara veya yeni PB/goal chase slice'larina samplesiz retune ile donme; yalniz yeni tek bir gameplay/UX veya control-integrity source problemi sec.
-3. Focus-loss pause release truth'u korunmali; post-reset observation pending varken held movement release gate'i update loop icinde tekrar kendiliginden dusmemeli.
+Asagidaki eski rejim kaldirildi:
+- human sample bekleme gate'i
+- sample yoksa frozen koridor mantigi
+- tek dar source problemi secme zorunlulugu
+- tam core-doc closure paketi default'u
+
+Yeni rejim:
+- builder varsayilan olarak expansion / mutation calisacak
+- bir run'da ayni temaya bagli birden fazla yuzey acilabilecek
+- Chromium/browser validation ilerleme motoru olarak kullanilabilecek
+- minimum docs, maksimum gorunur urun deltasi hedeflenecek
 
 ---
 
-# Risks
+# Active Product Fronts
 
-- Runtime sample olmadan source iyilesmelerini "urun duzeldi" kaniti gibi okumak ritual-loop ve proxy-overfit riskini buyutuyor.
-- Threat horizon, death snapshot, arena spectacle, beat callout, public shell pulse veya yeni PB/goal chase yuzeylerine samplesiz mikro-tuning ile geri donmek audit'in yasakladigi ayni local maximum'u geri getirir.
-- Browser smoke green sonucunu insan sample yerine koymak da ayni yanlis okumayi uretir; smoke sadece automation readiness kanitidir.
-- Docs rituali yeniden buyurse tekil product deltasi yine algisal olarak bastirilir.
+1. Run phase architecture / tempo buyumesi
+2. Arena davranisi ve spectacle buyumesi
+3. UI + shell identity overhaul
+4. Session depth / retention hooks
+5. Browser-observed validation loops
 
 ---
 
-# Immediate Handoff
+# Active Risks
 
-- Bir sonraki en degerli is manual browser sample'i toplayip threat horizon + arena spectacle + beat callout + death snapshot + public shell pulse + personal-best chase + live goal chase yuzeyleri icin clarity / excitement / retry desire sinyali birakmak.
-- Bu tur kapanan source problemi: namesake `60s` hedefi aktif run sirasinda ancak clear sonrasi gorunuyordu; HUD artik goal satirini tum run boyunca canli chase metniyle acik tutuyor.
-- Bu tur checked kanit: `npm run telemetry:check`, `npm run build`.
+1. Sistem eski mikro-fix lokal maksimumuna geri kayabilir.
+2. Yeni rejim fazla genis okunursa feature creep baslayabilir.
+3. Browser evidence fazla rahat okunursa oyuncu hissi tekrar ihmal edilebilir.
+4. Docs rituali geri gelirse expansion ivmesi duser.
+
+---
+
+# What The Next Runs Must Do
+
+- kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
+- UI ve gameplay'i birlikte hareket ettirebilen expansion'lar ac
+- browser/telemetry/build ile temel guveni koru
+- yalnizca gerekli hafizayi guncelle

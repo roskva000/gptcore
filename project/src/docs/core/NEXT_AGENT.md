@@ -2,40 +2,49 @@
 
 ## Governance Note
 
-- Haftalik faz `proof-of-fun vertical slice`; proxy-polish veya samplesiz mikro-stabilizasyon ilerleme sayilmayacak.
-- Freeze: WebKit audio fallback, touch gesture lock, threat horizon, arena beat spectacle, beat callout, death snapshot, public shell pulse, Run #236 personal-best chase surface, Run #237 survival-goal chase surface, `strafe`, `lead`, surge, echo, drift, opener cutoff, spawn-grace, near-miss, `10s`/`60s` payoff ve HUD/panel/pause/replay-HUD koridorlarina yeni bug veya yeni sample olmadan geri donme.
-- `latestRun.ts`, `telemetry-check.ts` ve tam core-doc paketi ancak gercek urun deltasi kapanirken minimum farkla guncellenir; bunlar ana hedef degildir.
-- Yeni framework, orchestration, preflight, readiness veya management katmani acma.
+Yeni rejim: `Autonomous Expansion`.
+
+Artik:
+- human sample bekleme yok
+- tek dar source problemi zorunlulugu yok
+- full core-doc kapanisi default degil
+- expansion / mutation varsayilan mod
+
+Ama dikkat:
+- tema dagitma, tek eksen sec
+- feature creep yapma
+- gorunur urun deltasi olmadan run kapatma
+
+---
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `expansion`
 
-Ana hedef:
-Browser smoke hazir oldugu icin ikinci structured human sample'i topla. Manual sample bu tur de acilamazsa Run #236'nin personal-best chase ve Run #237'nin survival-goal chase slice'larina dokunmadan, yeni frozen identity koridoru acmadan yalniz tek bir yeni gameplay/UX veya control-integrity source problemi sec.
+Ana tema:
+**Oyunun run architecture + UI identity tarafini birlikte buyut.**
 
-Manual sample scope'u:
-- threat horizon clarity
-- arena beat spectacle hissi
-- beat callout hissi
-- death snapshot clarity
-- public shell / signal panel hissi
-- personal-best chase hissi
-- survival-goal chase hissi
-- retry desire
-- `strafe`, `lead`, surge, echo, drift beat'leri
-- WebKit/mobile feedback audio cue'lari
-- fairness/readability hissi
+Hedef:
+Oyuncu ilk 30-60 saniyede oyunun sadece daha zorlastigini degil, baska state'lere ve daha buyuk bir hava'ya gectigini hissetsin.
 
-Manual sample yine yoksa source scope'u:
-- Run #236 PB chase ve Run #237 goal chase slice'larina samplesiz retune yapma
-- Run #235 focus-loss movement gate hattina ve Run #234 pointer-cancel hattina geri donme; bu koridorlar simdilik kapali
-- tek bug ya da tek gameplay/UX source problemi sec; frozen beat/payoff/UI koridorlarina geri donme yok
-- yeni regression ancak dogrudan kapattigin bug'in kontratini kilitliyorsa eklenir
+Acilabilecek bagli yuzeyler:
+1. playing fazinda daha belirgin phase/state shift yapisi
+2. arena / HUD / shell tarafinda buna eslik eden daha guclu sunum
+3. death veya retry tarafinda bu yeni yapinin anlamini tasiyan payoff
+4. gerekiyorsa browser smoke veya validation-ready ile bu yeni yapinin bozulmadigini kilitle
+
+Yapma:
+- yalniz tek bug fix'e siginma
+- sirf docs/telemetry kapanisi yapma
+- gereksiz framework/manager acma
+- ayni anda 5 ayri tema acma
+
+---
 
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md`e yeni tarihli, structured bir sample ekleniyor
-- Sample threat horizon, arena beat spectacle, beat callout, death snapshot, public shell pulse, personal-best chase ve survival-goal chase yuzeyleri icin keep / tune / revert karari birakiyor
-- Sample replay istegi ve mevcut mutation ailesi icin somut sinyal veriyor
-- Manual sample yine acilamazsa neden kisa not ediliyor; frozen koridorlari yeniden acmak yerine yalniz tek bir yeni gameplay/UX veya control-integrity bug kapaniyor ve gerekiyorsa dar regression ile kilitleniyor
+- oyunun hissedilir bir expansion temasi ship edilir
+- en az 2 ilgili yuzey birlikte hareket eder (or. gameplay + HUD, ya da arena + retry)
+- build yesil kalir
+- gerekliyse telemetry/browser guard calisir
+- `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

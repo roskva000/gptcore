@@ -1,20 +1,19 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  status: 'Run #236',
-  focus: 'Personal-best chase HUD',
-  pulse: 'The live HUD now turns your best time into an active chase target.',
+  status: 'Governance Reset',
+  focus: 'Autonomous Expansion unlocked',
+  pulse: 'The factory is no longer waiting for a second human sample before making the game bigger.',
   title:
-    'Each run now tells you exactly how far you are from a new personal best',
+    'The project has switched from cautious proof mode to a 10-run expansion drive',
   intro:
-    'This pass moved in mutation mode. With runtime sampling still blocked and the recent identity/fairness/audio/mobile corridors frozen, the run spent its budget on one new replay-facing slice: the in-run best line now acts like a live chase target instead of a passive stat dump.',
+    'This reset did not add a single gameplay gimmick; it changed the operating system behind the game. Builder runs are now expected to ship visible expansion themes, not just narrow fixes. Browser-backed validation remains important, but it no longer acts like a brake on product growth.',
   bullets: [
-    '`game/telemetry.ts` now exposes a shared personal-best chase line for three live states: first best, time remaining to beat the record, and the new-best lead once the record falls.',
-    '`game/GameScene.ts` swaps the old in-run `Best | Session` line for that chase text during active play, while keeping waiting and paused flows on the existing summary surfaces.',
-    'The first moment you break the stored best now triggers a short HUD pulse on both the chase line and the timer so the record snap is visible without opening a new overlay.',
-    'This was a replay-motivation slice, not a balance retune: `31.2s` average survival, `10.0s` first death, and `0%` early deaths stayed unchanged.',
-    'Checks are green: `npm run telemetry:check` and `npm run build` both passed. Build still shows the existing Vite script warning and large-chunk warning.',
-    'Current blocker is still the same: this environment cannot produce the second structured human sample, so the next proof has to come from a real browser run on whether the new chase line actually increases clarity and retry desire.',
+    'Builder governance now defaults to expansion and mutation, so a run can change multiple connected surfaces when they support one theme.',
+    'Audit no longer treats missing human samples as a hard blocker; it now asks whether the game is visibly changing or merely getting better documented.',
+    'Partner and strategy layers were rewritten to push for a noticeably different game within roughly ten runs.',
+    'Docs closure was downgraded from ritual to support system: `STATE.md` and `NEXT_AGENT.md` remain mandatory, everything else is conditional.',
+    'The next visible target is a run-architecture + UI-identity leap that should make the first minute feel more eventful and more like a living game.',
   ],
   footer:
-    'Current build target: capture a structured sample for personal-best chase feel alongside threat horizon, spectacle, beat callouts, death snapshot, and replay desire before tuning any of those surfaces again.',
+    'Current build target: ship bold, browser-validated expansion themes until the experience feels obviously larger than today.',
 } as const;

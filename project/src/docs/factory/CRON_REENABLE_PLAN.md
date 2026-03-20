@@ -1,75 +1,45 @@
 # CRON_REENABLE_PLAN.md
 
-Bu dosya migration tamamlandiktan sonra builder / audit / god cron'larinin nasil guvenli sekilde yeniden acilacagini tanimlar.
+Last Updated: 2026-03-21
+Status: Active under Autonomous Expansion
 
 ---
 
-# Preconditions
+Bu dosya builder / audit / god / partner cron'larinin yeni rejimde nasil calisacagini tanimlar.
+Eski observe-first yeniden acilis dili superseded kabul edilir.
 
-Cron'lar yeniden acilmadan once su kosullar saglanmis olmali:
+## Preconditions
 
 1. runner scriptleri syntax-safe olmali
 2. global lock + role lock mantigi aktif olmali
 3. maintenance marker davranisi tanimli olmali
-4. docs seti yeni partner/factory modeline hizalanmis olmali
-5. `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md` compaction sonrasinda stabil olmali
-6. partner pulse / deep review yolu en az dokuman seviyesinde netlesmis olmali
+4. aktif docs seti yeni expansion rejimiyle hizali olmali
+5. cron promptlari sample-gated veya observe-first mantik tasimamali
 
----
+## Current Operating Order
 
-# Re-enable Order
+### Builder
+- sik calisir
+- varsayilan `expansion` / `mutation`
+- visible delta uretmesi beklenir
 
-## Step 1
-Yalnizca builder cron acilir.
+### Audit
+- gunluk calisir
+- churn kadar transformation kalitesini de olcer
 
-Goal:
-- yeni lock mantigi altinda saatlik uretim hattinin stabil oldugunu gormek
+### God
+- haftalik calisir
+- gerekiyorsa rule rewrite yapar
 
-Observe:
-- skip davranisi dogru mu
-- lock contention var mi
-- anlamsiz churn var mi
+### Partner
+- gunluk pulse + periyodik deep review
+- varsayilan mode `expansion`
+- gerektiginde `intervention`
 
-## Step 2
-Audit cron yeniden acilir.
+## Rollback Rule
 
-Goal:
-- gunluk denetim yeni factory docs ve role map ile uyumlu mu
-
-Observe:
-- audit verdictleri daha semantik mi
-- docs churn'unu fark ediyor mu
-- partner / strategic katmani gercekten okuyor mu
-
-## Step 3
-God cron yeniden acilir.
-
-Goal:
-- haftalik stratejik katman yeni operating system ile uyumlu mu
-
-Observe:
-- yeni haftalik direction operasyonel kalabiliyor mu
-- builder uzerinde sadece yazi yuku mu uretiyor, yoksa net yon mu veriyor
-
----
-
-# Partner Layer Activation
-
-Partner layer ilk etapta kendi bagimsiz cron'una sahip olmak zorunda degildir.
-Ilk aktivasyon asamalari:
-
-1. docs + process layer aktif
-2. observe mode manuel / sohbet ici calisir
-3. sonra gerekirse partner pulse cron'u eklenir
-4. en son deep review cadence otomatiklestirilir
-
----
-
-# Rollback Rule
-
-Eger yeniden acilis sonrasi:
-- beklenmeyen lock yarisi
-- anlamsiz skip firtinasi
-- dirty tree / push conflict
-- ritual-loop tekrar artisi
-olursa cron'lar tekrar pause'a alinip role behavior yeniden duzeltilmelidir.
+Asagidaki durumlarda cron promptlari veya ritim yeniden daraltilir:
+- lock yarisi / dirty tree / push conflict
+- ust uste 3+ run gorunur urun deltasi uretemezse
+- expansion feature creep'e donerse
+- docs/process hacmi tekrar source etkisini bastirirsa

@@ -1,48 +1,28 @@
 # REENABLE_CHECKLIST.md
 
-Bu dosya cron'lar tekrar acilmadan once tek bakista kontrol edilecek son listedir.
+Last Updated: 2026-03-21
+
+Bu dosya tarihsel yeniden-acilis listesi olmaktan cikti; artik yeni rejimin saglik checklist'idir.
 
 ---
 
-## Preconditions
+## Expansion Health Checklist
 
-- [x] builder / audit / god runner scriptleri syntax-safe
-- [x] partner pulse / review script iskeletleri syntax-safe
-- [x] cron'lar migration boyunca pause'a alindi
-- [x] cron backup alindi
-- [x] factory-wide concurrency policy dokumante edildi
-- [x] cron re-enable plani yazildi
-- [x] partner layer docs seti eklendi
-- [x] human signal / experiments / retention docs seti eklendi
-- [x] README yeni role map ile hizalandi
-- [x] state / roadmap / next-agent compaction dalgasi uygulandi
-- [x] partner supremacy + override contract role dosyalarina hizalandi
-- [x] migration degisiklikleri repoda commitlenebilir final pakete getirildi
-- [ ] cron yeniden acilis sirasi kontrollu sekilde uygulandi
-- [ ] builder yeniden acilis sonrasi stabil davranis gozlemlendi
-- [ ] audit yeniden acilis sonrasi yeni role map ile saglikli verdict urettigi goruldu
-- [ ] god yeniden acilis sonrasi yeni operating system ile uyumlu kaldigi goruldu
-
----
-
-## Re-enable Sequence
-
-1. builder only
-2. observe
-3. audit
-4. observe
-5. god
-6. observe
-7. gerekirse partner pulse
-8. en son partner deep review
-
----
+- [x] builder / audit / god promptlari yeni rejime hizalandi
+- [x] partner varsayilan modu `expansion` olarak yeniden yazildi
+- [x] human sample gate blocker olmaktan cikarildi
+- [x] tek dar hedef zorunlulugu kaldirildi
+- [x] minimum docs modeli yeniden yazildi
+- [x] lock / maintenance / tek-writer kontrati korundu
+- [ ] ilk 3 builder expansion run gercek urun farki urettigi gozlemlendi
+- [ ] audit yeni rejimi `gorunur donusum` merkezli olcmeye basladi
+- [ ] partner pulse/deep review bu yeni rejimde gereksiz process gurultusu uretmeden calisti
 
 ## Stop Conditions
 
-Asagidakilerden biri gorulurse tekrar pause:
+Asagidakilerden biri gorulurse sert inceleme:
 - lock yarisi
-- anlamsiz skip firtinasi
 - dirty tree / push conflict
 - docs churn patlamasi
-- ritual-loop yeniden artisi
+- expansion yerine tekrar mikro-fix spiraline donus
+- dağınık feature creep

@@ -82,50 +82,50 @@ git fetch origin | tee -a "$OUTFILE"
 git checkout "$BRANCH" | tee -a "$OUTFILE"
 git pull --rebase origin "$BRANCH" | tee -a "$OUTFILE"
 
-PROMPT='Kolay gelsin şef, denetim mesaisi başladı.
+PROMPT='Kolay gelsin şef, audit mesaisi başladı.
 
-Sen builder agent değilsin.
-Görevin kod yazmak değil, son 24 saatlik gidişatı denetlemek.
+Yeni rejim: Autonomous Expansion.
+Senin görevin builder''i frenlemek değil; sahte ilerleme ile gerçek dönüşümü ayırmak.
 
 Önce şu dosyaları oku:
-1. `project/src/docs/audit/AUDITOR.md`
-2. `project/src/docs/audit/AUDIT.md`
+1. `project/src/docs/factory/PARTNER.md`
+2. `project/src/docs/factory/FACTORY_STATE.md`
 3. `project/src/docs/strategy/STRATEGIC_STATE.md`
-4. `project/src/docs/factory/FACTORY_STATE.md`
-5. `project/src/docs/factory/PARTNER_LOG.md`
-6. `project/src/docs/core/AGENT.md`
-7. `project/src/docs/core/STATE.md`
-8. `project/src/docs/core/ROADMAP.md`
-9. `project/src/docs/core/NEXT_AGENT.md`
-10. `project/src/docs/core/DECISIONS.md`
-11. `project/src/docs/core/CHANGELOG.md`
-12. `project/src/docs/core/METRICS.md`
-13. varsa `project/src/docs/experiments/HUMAN_SIGNALS.md` ve `project/src/docs/experiments/EXPERIMENTS.md`
+4. `project/src/docs/strategy/MASTER_PLAN.md`
+5. `project/src/docs/audit/AUDITOR.md`
+6. `project/src/docs/audit/AUDIT.md`
+7. `project/src/docs/core/AGENT.md`
+8. `project/src/docs/core/STATE.md`
+9. `project/src/docs/core/ROADMAP.md`
+10. `project/src/docs/core/NEXT_AGENT.md`
+11. `project/src/docs/core/DECISIONS.md`
+12. `project/src/docs/core/CHANGELOG.md`
+13. `project/src/docs/core/METRICS.md`
+14. kritik source / script dosyalari
 
-Ardından son 24 saatte veya son birkaç runda şu soruları cevapla:
-- proje gerçekten ilerledi mi?
-- gameplay/source code ilerledi mi?
-- yoksa docs / validation / tooling katmanı mı büyüdü?
-- loop, drift veya bureaucracy riski var mı?
-- factory ritual-loop veya proxy-overfit riski var mı?
-- builder agent yanlış local maximuma mı saplandı?
-- sonraki builder turu hangi yöne zorlanmalı?
+Ardından son 24 saat veya son birkaç run için şu sorulara cevap ver:
+- oyun gerçekten daha farklı ve daha güçlü mü?
+- builder tek bir tema etrafında bagli yuzeyleri birlikte hareket ettirdi mi?
+- run''lar tekrar mikro-fix lokal maksimumuna mı kaydı?
+- docs/process churn yeniden ürün etkisini bastırıyor mu?
+- expansion saglikli mi, yoksa feature creep mi basliyor?
+- audit verdict ne olmali: `healthy`, `warning`, `expansion-live`, `ritual-loop`, `proxy-overfit`, `bureaucracy-risk`, `drift-risk`?
 
 Kurallar:
-- yeni feature implement etmek zorunda değilsin
-- gereksiz kod yazma
-- asıl görevin yönetişim
-- gerekiyorsa `project/src/docs/core/NEXT_AGENT.md` içine kısa governance note ekle
-- mutlaka `project/src/docs/audit/AUDIT.md` güncelle
-- gerekiyorsa ROADMAP veya STATE içinde kısa yön düzeltmesi yap
-- net yargı ver: healthy / warning / stuck / drift-risk / bureaucracy-risk / ritual-loop / proxy-overfit
+- human sample eksigini blocker gibi kullanma
+- builder gibi feature implement etmek zorunda degilsin
+- ana görevin net yargı ve yön düzeltmesi
+- `AUDIT.md` mutlaka güncellensin
+- gerekiyorsa `NEXT_AGENT.md` ve `STATE.md` içine kısa governance notu bırak
+- ana soru hep su olsun: gorunur ürün genişledi mi?
 
 Tur sonunda mutlaka üret:
 - kısa audit özeti
+- genel yargı
 - kırmızı bayraklar
-- governance direction
-- güncellenmiş `project/src/docs/audit/AUDIT.md`
-- gerekiyorsa `project/src/docs/core/NEXT_AGENT.md` içine governance note'
+- builder için net yön
+- sonraki audit için sayaçlar
+- güncellenmiş `project/src/docs/audit/AUDIT.md`'
 
 log "[INFO] Running Codex audit"
 codex exec \

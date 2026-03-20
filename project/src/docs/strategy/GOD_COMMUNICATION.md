@@ -1,19 +1,17 @@
 # GOD_COMMUNICATION.md
-Last Updated: 2026-03-09
-Status: Open
+Last Updated: 2026-03-21
+Status: Active
 
 ---
 
 # Purpose
 
-Bu dosya human-in-the-loop ile God agent arasindaki iletisim kanalidir.
+Bu dosya human-in-the-loop ile stratejik katman arasinda sadece gercek dis bagimliliklari tasir.
 
-Buraya su tip ihtiyaclar yazilir:
-
-- ortamda eksik tool / yetki / runtime
-- urun yonu hakkinda insan tercihi gereken kararlar
-- dis dunyadan veri, deploy veya test gereksinimi
-- God katmaninin tek basina cozemeyecegi operasyonel bloklar
+Artik sunlar blocker degildir:
+- structured human sample eksigi
+- manuel his notu olmamasi
+- sample gelmeden expansion yapamama fikri
 
 ---
 
@@ -21,37 +19,45 @@ Buraya su tip ihtiyaclar yazilir:
 
 ## Request 1
 Need:
-Interactive headed browser veya gercek insan oynanisi notu.
+Gercek dis bagimlilik veya ortam eksigi olursa kisa ve net escalation.
 
 Why:
-Deterministic telemetry iyi bir guard, ama replay/start/pause hissi, pointer analog steering, offscreen collision fairness ve early spawn filtrelerinin gercek oyuncu hissini tek basina kanitlamiyor.
+Yeni rejimde strateji insan input'u beklemeden ilerler. Sadece dis dunyadan bir sey gerekiyorsa human'a cikilir.
 
 What would unblock:
-- 5-10 manuel run notu
-- mumkunse kisa serbest gozlem: "nerede ucuz oldu / nerede bos hissettirdi / replay ne kadar akici"
-- tercihen notlar `HUMAN_SIGNALS.md` formatina islenebilsin
+- deploy yetkisi
+- yeni servis / API / anahtar
+- browser/runtime environment sorunu cozulmesi gereken nokta
+- net stratejik tercih catismasi
 
 Status:
 Open
 
 ## Request 2
 Need:
-Cron'lar yeniden acilmadan once partner/factory migration'in tamamlandigi teyidi.
+Chromium / browser automation sinirlari belirginlesirse teknik ortam notu.
 
 Why:
-Yarim migration ustune builder/audit/god cron'larini tekrar calistirmak gereksiz churn, lock yarisi veya ritual-loop riskini artirabilir.
+Insan gate'i kalkti; browser evidence daha merkezi hale geldi.
 
 What would unblock:
-- role docs son hiza
-- runner/lock davranisinin tamamlanmasi
-- `CRON_REENABLE_PLAN.md` kosullarinin saglanmasi
+- headed/headless calisma farklari
+- environment fail noktasi
+- otomasyonun ulasamadigi yuzeylerin teknik listesi
 
 Status:
 Open
 
 ---
 
+# Closed Historical Requests
+
+- "Ikinci structured human sample gerekli" -> Closed
+- "Cron'lari sample gate'e bagla" -> Closed
+
+---
+
 # Usage Note
 
-God agent her haftalik run'da bu dosyayi kontrol etmeli.
-Ihtiyac kapanirsa ilgili istegin durumunu `Closed` yapip sonucu not dusmeli.
+God ve Partner bu dosyayi yalniz gercek dis bagimlilik ararken kullanir.
+Ilerleme karari icin default kaynak artik bu dosya degildir.

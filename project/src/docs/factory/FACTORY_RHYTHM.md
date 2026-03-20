@@ -1,7 +1,7 @@
 # FACTORY_RHYTHM.md
-Last Updated: 2026-03-11
+Last Updated: 2026-03-21
 
-Bu dosya fabrikanin zaman olceklerini ve yetki akisini tek modele baglar.
+Bu dosya fabrikanin zaman olceklerini ve yetki akislarini tek rejimde baglar.
 
 ---
 
@@ -9,52 +9,57 @@ Bu dosya fabrikanin zaman olceklerini ve yetki akisini tek modele baglar.
 
 ### Builder
 - cadence: hourly
-- scope: urun implementation
-- output: kod + minimum gerekli docs
+- default scope: expansion / mutation
+- output: gorunur urun deltasi + minimum docs
 
 ### Auditor
 - cadence: daily
-- scope: drift/loop/churn denetimi
-- output: audit verdict + governance direction
+- scope: fake progress / ritual-loop / transformation kalitesi denetimi
+- output: net verdict + yon duzeltmesi
 
 ### God
 - cadence: weekly
-- scope: stratejik faz/yol
-- output: kisa, uygulanabilir stratejik kararlar
+- scope: faz / tema / kural rewrite
+- output: kisa stratejik cerceve
 
-### Partner (Supreme)
+### Partner
 - cadence: gunde 1 ana uyanis
-- default mode: observe
-- mode switch: gerekirse intervention
-- output: factory mode, health, direktifler, hafiza guncellemesi
+- default mode: expansion
+- escalation mode: intervention
+- output: rejim ayari + net direktif + hafiza
 
 ---
 
 ## Rhythm Rules
 
-1. **Tek repo, tek writer** (mutlak)
-2. Partner observe modunda yazim acmaz; intervention'da kontrollu yazar
-3. Builder urun ritmidir; Partner builder'i kopyalamaz, yonlendirir
-4. Auditor ve God kendi zaman olceklerinde kalir; Partner bunlari hizalar
-5. Ritim bozulursa Partner override eder
+1. **Tek repo, tek writer**
+2. Partner bekleme refleksiyle degil genisleme refleksiyle calisir
+3. Builder'in varsayilan modu `stabilization` degil `expansion`dir
+4. Audit'in ana sorusu churn degil, urun genisligidir
+5. God gerekirse kurallari yeniden yazar
+6. Docs kapanisi urun hareketinin yerine gecemez
 
 ---
 
 ## Override Timing
 
 - Normal durumda:
-  - Partner gunluk ana capta yon verir
-  - Alt roller bir sonraki ciklusunda uygular
+  - Partner rejimi ayarlar
+  - God haftalik tema verir
+  - Auditor kaliteyi denetler
+  - Builder urunu iter
 - Acil durumda:
-  - Partner aninda intervention acabilir
-  - Gerekirse maintenance penceresi tanimlar
+  - Partner intervention acar
+  - maintenance marker kullanabilir
+  - kronik ritual-loop veya kaos halinde sert daraltma getirir
 
 ---
 
-## Anti-Ritual Guard
+## Anti-Stagnation Guard
 
-Asagidaki semptomlardan ikisi birlikte gorulurse Partner intervention tetikler:
-- ayni doc paketinin tekrarli yazimi
-- product delta'nin 2+ run dusmesi
-- ayni mikro-problem etrafinda donen fix zinciri
-- churn oraninin source etkisini bastirmasi
+Asagidaki semptomlardan ikisi birlikte gorulurse Partner kolaylastirma degil sert yon degisikligi yapar:
+- son 3+ run'da fark edilir urun deltasi olmamasi
+- builder'in tekrar kucuk guvenli ise siginmasi
+- docs/process hacminin source etkisini bastirmasi
+- ayni local maximum etrafinda dolasilmasi
+- expansion bahanesiyle dağınık feature creep baslamasi

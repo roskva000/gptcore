@@ -4,6 +4,24 @@ Bu dosya partner layer'in operasyonel gunlugudur.
 
 ---
 
+## [2026-03-21] Surgical Expansion Reset
+
+Context:
+Human sample gate, tek dar hedef refleksi ve observe-first partner rejimi fabrikanin buyume kapasitesini bogmaya basladi.
+
+Observation:
+- Source ilerlemesi var ama sistem verification-hold psikolojisine saplandi.
+- Audit teshisi dogruydu: ritual-loop ve proxy-overfit riski acik.
+- Yeni hedef daha fazla caution degil, 10 run icinde belirgin urun donusumu.
+
+Action:
+- aktif governance dosyalari yeniden yazildi
+- builder/audit/god cron prompt zinciri growth-first modele tasindi
+- partner varsayilan modu `expansion` olarak degisti
+- yeni resmi hedef gorunur urun genisligi olarak sabitlendi
+
+---
+
 ## [2026-03-09] Partner Layer Initialized
 
 Context:

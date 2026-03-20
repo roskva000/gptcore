@@ -1,5 +1,5 @@
 # CONCURRENCY_POLICY.md
-Last Updated: 2026-03-11
+Last Updated: 2026-03-21
 
 Canli fabrikada write cakismasini engellemek icin kanonik politika.
 
@@ -15,7 +15,7 @@ Ayni anda birden fazla write akisi calisamaz.
 ## 2) Lock Layers
 
 - Global repo write lock (zorunlu)
-- Role intent lock (builder/auditor/god/partner)
+- Role intent lock (builder / auditor / god / partner)
 - Maintenance marker (buyuk yapisal mudahale)
 
 Write islemine girmeden once lock alinmadan devam edilmez.
@@ -24,14 +24,15 @@ Write islemine girmeden once lock alinmadan devam edilmez.
 
 ## 3) Mode Contract
 
-### Observe mode
-- read-only analiz
-- lock alma zorunlulugu yok
-- write yok
+### Expansion mode
+- read-first analiz
+- write serbest ama lock zorunlu
+- amac product/gov growth
 
 ### Intervention mode
 - docs/policy/code write serbest
-- global lock + maintenance marker zorunlu
+- global lock + gerekirse maintenance marker zorunlu
+- yapisal reset / risk kontrolu icin
 
 ---
 
@@ -44,7 +45,7 @@ Ayni zaman araliginda cakisma olursa sira:
 4. Auditor governance write
 5. Builder product write
 
-Not: Normalde oncelik degil, **serializasyon** esastir. Bu sira yalnizca cakisma cözumu icindir.
+Not: Normalde oncelik degil, **serializasyon** esastir.
 
 ---
 
@@ -53,7 +54,7 @@ Not: Normalde oncelik degil, **serializasyon** esastir. Bu sira yalnizca cakisma
 - Builder: lock varsa kisa bekle, sonra defer/skip
 - Auditor: orta bekleme, sonra defer ve log
 - God: daha uzun bekleme, sonra yeniden plan
-- Partner: observe modda beklemez; intervention modda lock bosalmadan yazmaz
+- Partner: expansion modda lock yoksa yazmaz; intervention modda da dirty tree birakmaz
 
 ---
 
@@ -61,7 +62,7 @@ Not: Normalde oncelik degil, **serializasyon** esastir. Bu sira yalnizca cakisma
 
 Asagidaki durumlardan biri olursa write akisi durdurulur ve FACTORY_STATE'e risk yazilir:
 - dirty tree catisma riski
-- lock stale durumu
+- stale lock
 - art arda skip firtinasi
 - push conflict
 
@@ -70,4 +71,4 @@ Asagidaki durumlardan biri olursa write akisi durdurulur ve FACTORY_STATE'e risk
 ## 7) Principle
 
 Hizdan once tutarlilik.
-Cakisma yasayan hizli sistem yerine, seri ama stabil bir fabrika tercih edilir.
+Ama tutarlilik bahanesiyle buyume dondurulmaz.

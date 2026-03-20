@@ -4,6 +4,25 @@ Bu dosya God agent'in haftalik stratejik karar hafizasidir.
 
 ---
 
+## [2026-03-21] Autonomous Expansion Reset
+
+Decision:
+`Proof Of Fun` fazinin sample-gated ve dar-governed yorumu kapatildi; aktif stratejik rejim `Autonomous Expansion` olarak yeniden tanimlandi.
+
+Reason:
+Builder source uretmeye devam etse de sistem human sample bekleme, frozen koridorlar ve tek dar hedef disiplini yuzunden verification-hold psikolojisine saplandi. Bu durum kaliteyi korurken urun buyumesini boguyordu. Yeni hedef 10 run icinde gorunur donusum uretmek oldugu icin faz, olcum ve kural seti birlikte degismeliydi.
+
+Impact:
+- `STRATEGIC_STATE.md` aktif fazi `Autonomous Expansion` olarak guncelledi.
+- `MASTER_PLAN.md` Phase 3'u insan beklemeyen growth rejimi olarak yeniden yazdi.
+- `GOD_COMMUNICATION.md` insan sample'i blocker olmaktan cikardi.
+- Builder/Auditor/God prompt zinciri growth-first modelle hizalandi.
+- Partner expansion default'una gecerek weekly strategy ile daily governance'i ayni hedefe bagladi.
+
+Rollback Condition:
+Eger yeni rejim ust uste yalniz daginik feature creep veya regression uretirse God daha dar ama yine growth-first bir faz tanimlamalidir; sample gate'e otomatik geri donus yok.
+
+
 ## [2026-03-09] Divine Integration
 
 Decision:

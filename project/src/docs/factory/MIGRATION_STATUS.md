@@ -1,5 +1,5 @@
 # MIGRATION_STATUS.md
-Last Updated: 2026-03-11
+Last Updated: 2026-03-21
 Updated By: Partner Layer
 
 ---
@@ -7,39 +7,30 @@ Updated By: Partner Layer
 ## Current Status
 
 Migration State:
-founder-reset-applied
+autonomous-expansion-reset-applied
 
 Cron State:
-paused intentionally
+active
 
 Overall:
-closure-candidate (governance alignment completed, operational validation pending)
+live-governance-reset (rules rewritten, new cadence live, expansion validation pending)
 
 ---
 
-## What Was Completed In Founder Reset
+## What Was Completed In This Reset
 
-- Partner contract v3.0 ile tek kanonik governance modeli yazildi
-- Role hierarchy netlestirildi (Partner > God > Auditor > Builder)
-- Override yetkisi ve acil mudahale kurallari dokumante edildi
-- Gunluk partner run protokolu sertlestirildi
-- Memory modeli genisletildi (`PARTNER_MEMORY.md`, `PARTNER_DECISIONS.md`)
-- Concurrency policy override/timeout katinda netlestirildi
-- Role contract catismasi yaratan eski metinler archive altina yedeklendi
-
----
-
-## Remaining Before Re-enable
-
-1. `REENABLE_CHECKLIST.md` kalan maddelerin kapatilmasi
-2. builder-only re-enable ile 1-2 cycle stabilite gozlemi
-3. audit + god cycle sonrasi drift/bloat teyidi
+- Partner default mode `observe` yerine `expansion` olarak yeniden yazildi
+- Builder / Auditor / God prompt zinciri yeni rejime gore guncellendi
+- Human sample gate operasyonel blocker olmaktan cikarildi
+- Tek dar hedef zorunlulugu kaldirildi
+- Strategy / factory / core docs hizalandi
+- Cron promptlari yeni growth modeline gore yenilendi
 
 ---
 
-## Re-enable Gate
+## What Must Be Observed Next
 
-Cron yeniden acilisina gecmeden once su 3 kosul birlikte saglanmali:
-- contract consistency: yes
-- lock behavior stability: yes
-- bureaucracy-risk trend: down
+1. ilk 3 expansion run gorunur urun farki uretiyor mu
+2. audit bunu dogru etiketliyor mu
+3. partner fazla process gurultusu uretmeden rejimi koruyor mu
+4. docs/source dengesi iyilesiyor mu
