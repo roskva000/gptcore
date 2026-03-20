@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #239]
+
+Decision:
+`expansion` modunda mevcut beat ladder'i coarse bir `run phase architecture` yuzeyine cevir; bunu aktif HUD ve waiting intro'da ayni truth ile gorunur kil.
+
+Reason:
+Strategic reset ve human signal ayni seyi soyluyordu: oyun teknik olarak yasiyor ama hala "gercek oyunun %5'i" gibi, fazla duz ve fazla kucuk hissediyor. Son run'lar PB chase, goal chase, beat callout ve arena spectacle ile önemli slice'lar acti; fakat oyuncu hala ilk 30-60 saniyeyi tek parca bir timer gibi okuyordu. Yeni system/framework acmadan en yuksek etkili hareket, mevcut mutation ladder'i daha buyuk fazlara cevirip hem waiting hem aktif HUD tarafinda run'a belirgin state kimligi vermekti.
+
+Impact:
+`project/game/src/game/runPhase.ts` yeni single-truth helper olarak `OPENING WINDOW`, `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` fazlarini tanimladi. `project/game/src/game/GameScene.ts` aktif run'a yeni phase status/detail HUD slice'i ve waiting intro'ya `RUN PHASES` forecast'i ekledi; support/hint copy artik bu phase semantigiyle hizali. `project/game/scripts/telemetry-check.ts` yeni phase ladder truth'unu regression altina aldi. Deterministic survival headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Manuel sample bu yeni phase slice'inin gurultulu, faydasiz veya yalnız copy-agir hissettigini gosterirse yalniz metin yogunlugu / yerlesim / vurgu siddeti dar kapsamda ayarlanir; bu bahaneyle yeni HUD framework'u, event bus'i, orchestration/readiness veya ikinci bir state manager katmani acilmaz.
+
 ### [Run #238]
 
 Decision:

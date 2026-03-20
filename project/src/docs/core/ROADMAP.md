@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Partner Surgical Reset
+Updated By: Codex Run #239
 
 ---
 
@@ -13,6 +13,7 @@ Mevcut durum:
 - deterministic ve browser guard tabani yeterli
 - son donem mutation / presentation birikimi var
 - sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
+- Run #239 ile coarse phase ladder artik waiting + active HUD tarafinda gorunur; siradaki is bu dili retry/payoff veya gameplay pressure'a daha sert baglamak
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -21,7 +22,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 # NEXT
 
 ## Expansion Track A — Run Architecture
-- run'lari daha belirgin fazlara, state shift'lere veya event anlarina bol
+- shipped slice: waiting forecast + active HUD phase status/detail ile coarse run ladder gorunur hale geldi
+- next slice: phase ulasimini death/retry payoff veya yeni pressure behavior'ina bagla
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

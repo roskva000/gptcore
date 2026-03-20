@@ -55,6 +55,12 @@ import {
   getRunHorizonText,
 } from '../src/game/runHorizon.ts';
 import {
+  getRunPhaseDetailText,
+  getRunPhaseState,
+  getRunPhaseStatusText,
+  getRunPhaseTimelineText,
+} from '../src/game/runPhase.ts';
+import {
   hasFreshMovementInput,
   hasPrimaryActionReleaseRequirement,
   getLaunchActionPromptText,
@@ -228,6 +234,45 @@ assert.equal(
   getRunBeatAnnouncement(9.9),
   null,
   'No beat announcement should fire before the first post-gate mutation is actually live.',
+);
+assert.equal(
+  getRunPhaseState(0).currentPhase.id,
+  'opening',
+  'Fresh runs should begin in the opening window before the 10s gate is cleared.',
+);
+assert.equal(
+  getRunPhaseState(12).currentPhase.id,
+  'breakthrough',
+  'Cross-lane and surge pressure should live inside the breakthrough phase once the opener is cleared.',
+);
+assert.equal(
+  getRunPhaseState(20).currentPhase.id,
+  'killbox',
+  'Lead pressure should mark the start of the killbox phase instead of reading like a flat continuation of the opener.',
+);
+assert.equal(
+  getRunPhaseState(40).currentPhase.id,
+  'endgame',
+  'Late-run drift coverage should read as a distinct endgame phase before the 60s clear.',
+);
+assert.equal(
+  getRunPhaseStatusText(12),
+  'BREAKTHROUGH | 6.0s to KILLBOX',
+  'The phase HUD should tell the player which coarse run state is live and how far the next structural shift sits ahead.',
+);
+assert.equal(
+  getRunPhaseDetailText(20),
+  'Lead and echo punish straight lines. Reroute late and stay unpredictable. Next phase at 32s.',
+  'The phase detail line should describe the active structural pressure instead of restating raw timer data.',
+);
+assert.equal(
+  getRunPhaseTimelineText(20),
+  [
+    '0-10s OPENING WINDOW | 10-18s BREAKTHROUGH',
+    '18-32s KILLBOX | 32-60s ENDGAME DRIFT',
+    '60s+ OVERTIME | Best reached: KILLBOX',
+  ].join('\n'),
+  'Waiting presentation should forecast the coarse run ladder and mark the best phase reached so far.',
 );
 const openingSpectacle = getArenaBeatSpectacle({
   phase: 'playing',

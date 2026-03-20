@@ -3,6 +3,7 @@ import {
   EARLY_SPAWN_TARGET_LAG_CUTOFF_SECONDS,
   EARLY_SPAWN_TARGET_LAG_SECONDS,
   FIRST_SPAWN_DELAY_MS,
+  LEAD_OBSTACLE_UNLOCK_SECONDS,
   SURVIVAL_GOAL_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
   getObstacleTint,
@@ -72,6 +73,13 @@ import {
 } from './nearMiss.ts';
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
+import {
+  getRunPhaseDetailText,
+  getRunPhaseState,
+  getRunPhaseStatusText,
+  getRunPhaseSupportText,
+  getRunPhaseTimelineText,
+} from './runPhase.ts';
 import {
   getLaunchActionPromptText as getPrimaryLaunchActionPromptText,
   getResumeActionPromptText as getPrimaryResumeActionPromptText,
@@ -159,6 +167,8 @@ const MOVEMENT_KEY_UP_EVENTS = [
   'keyup-D',
 ] as const;
 const PRIMARY_ACTION_KEY_UP_EVENTS = ['keyup-SPACE', 'keyup-ENTER'] as const;
+
+const colorToCssHex = (value: number): string => `#${value.toString(16).padStart(6, '0')}`;
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -313,12 +323,16 @@ export class GameScene extends Phaser.Scene {
   private scoreText!: Phaser.GameObjects.Text;
   private bestText!: Phaser.GameObjects.Text;
   private goalStatusText!: Phaser.GameObjects.Text;
+  private phaseStatusText!: Phaser.GameObjects.Text;
+  private phaseDetailText!: Phaser.GameObjects.Text;
   private waitingIntroPanel!: Phaser.GameObjects.Rectangle;
   private waitingIntroAccent!: Phaser.GameObjects.Rectangle;
   private waitingIntroEyebrow!: Phaser.GameObjects.Text;
   private waitingIntroTitle!: Phaser.GameObjects.Text;
   private waitingHorizonLabel!: Phaser.GameObjects.Text;
   private waitingHorizonText!: Phaser.GameObjects.Text;
+  private waitingPhaseLabel!: Phaser.GameObjects.Text;
+  private waitingPhaseText!: Phaser.GameObjects.Text;
   private waitingPulseCore!: Phaser.GameObjects.Arc;
   private waitingPulseRing!: Phaser.GameObjects.Arc;
   private waitingPulseLabel!: Phaser.GameObjects.Text;
@@ -457,8 +471,29 @@ export class GameScene extends Phaser.Scene {
       .setDepth(4)
       .setVisible(false);
 
+    this.phaseStatusText = this.add.text(24, 116, '', {
+      color: '#7ce8ff',
+      fontFamily: 'Trebuchet MS',
+      fontSize: '15px',
+      fontStyle: 'bold',
+    })
+      .setDepth(4)
+      .setVisible(false);
+
+    this.phaseDetailText = this.add.text(24, 140, '', {
+      color: '#8db7cb',
+      fontFamily: 'Trebuchet MS',
+      fontSize: '13px',
+      lineSpacing: 4,
+      wordWrap: {
+        width: 320,
+      },
+    })
+      .setDepth(4)
+      .setVisible(false);
+
     this.waitingIntroPanel = this.add
-      .rectangle(ARENA_WIDTH / 2, 158, 560, 184, 0x08131d, 0.82)
+      .rectangle(ARENA_WIDTH / 2, 174, 560, 224, 0x08131d, 0.82)
       .setDepth(2)
       .setStrokeStyle(2, 0x2e596c, 0.95);
 
@@ -510,6 +545,28 @@ export class GameScene extends Phaser.Scene {
       .setDepth(3)
       .setOrigin(0.5);
 
+    this.waitingPhaseLabel = this.add
+      .text(ARENA_WIDTH / 2, 232, 'RUN PHASES', {
+        align: 'center',
+        color: '#7ce8ff',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '14px',
+        fontStyle: 'bold',
+      })
+      .setDepth(3)
+      .setOrigin(0.5);
+
+    this.waitingPhaseText = this.add
+      .text(ARENA_WIDTH / 2, 272, '', {
+        align: 'center',
+        color: '#b8cde0',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '14px',
+        lineSpacing: 5,
+      })
+      .setDepth(3)
+      .setOrigin(0.5);
+
     this.waitingPulseCore = this.add
       .circle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, 34, 0x123f36, 0.28)
       .setDepth(1)
@@ -555,7 +612,7 @@ export class GameScene extends Phaser.Scene {
     this.hintText = this.add
       .text(
         ARENA_WIDTH / 2,
-        258,
+        332,
         this.getWaitingHintText(),
         {
           align: 'center',
@@ -943,6 +1000,7 @@ export class GameScene extends Phaser.Scene {
     this.survivalTime = activeRunElapsedMs / 1000;
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
     this.updateBestText();
+    this.updateRunPhaseHud();
     this.updatePersonalBestChase();
     this.updateNearMissTracking(activeRunElapsedMs);
     this.updateArenaBeatSpectacle(time);
@@ -1252,7 +1310,8 @@ export class GameScene extends Phaser.Scene {
     this.hintText.setText(this.getPlayingHintText()).setVisible(true);
     this.beatCalloutText.setVisible(false).setText('');
     this.nearMissText.setVisible(false).setText('');
-    this.supportText.setText(this.getBaseSupportText()).setVisible(true);
+    this.updateRunPhaseHud();
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
     this.recordRunStart();
     this.armPointerSteeringGuardAfterActivation(source, phaseBeforeActivation);
@@ -2786,6 +2845,16 @@ export class GameScene extends Phaser.Scene {
     );
   }
 
+  private updateRunPhaseHud(): void {
+    const { currentPhase } = getRunPhaseState(this.survivalTime);
+    this.phaseStatusText
+      .setText(getRunPhaseStatusText(this.survivalTime))
+      .setColor(colorToCssHex(currentPhase.accentColor));
+    this.phaseDetailText
+      .setText(getRunPhaseDetailText(this.survivalTime))
+      .setColor(colorToCssHex(currentPhase.accentColor));
+  }
+
   private updatePersonalBestChase(): void {
     if (
       this.phase !== 'playing' ||
@@ -2830,9 +2899,13 @@ export class GameScene extends Phaser.Scene {
   private updateTelemetryText(): void {
     this.updateBestText();
     this.updateGoalStatusText();
+    this.updateRunPhaseHud();
     this.waitingIntroTitle.setText(getWaitingIntroTitleText(getBestSurvivalTime(this.telemetry)));
     this.waitingHorizonText.setText(
       getRunHorizonText(getBestSurvivalTime(this.telemetry) ?? 0),
+    );
+    this.waitingPhaseText.setText(
+      getRunPhaseTimelineText(getBestSurvivalTime(this.telemetry) ?? 0),
     );
     this.telemetryText.setText(this.getTelemetryLinesForCurrentPhase().join('\n'));
     this.telemetryText.setVisible(this.phase !== 'paused' && this.phase !== 'gameOver');
@@ -2844,6 +2917,8 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setVisible(hudVisible);
     this.bestText.setVisible(hudVisible);
     this.goalStatusText.setVisible(this.phase === 'playing');
+    this.phaseStatusText.setVisible(this.phase === 'playing');
+    this.phaseDetailText.setVisible(this.phase === 'playing');
     this.supportText.setDepth(
       this.phase === 'paused' || this.phase === 'gameOver'
         ? OVERLAY_SUPPORT_TEXT_DEPTH
@@ -2865,6 +2940,8 @@ export class GameScene extends Phaser.Scene {
     this.waitingIntroTitle.setVisible(waitingVisible);
     this.waitingHorizonLabel.setVisible(waitingVisible);
     this.waitingHorizonText.setVisible(waitingVisible);
+    this.waitingPhaseLabel.setVisible(waitingVisible);
+    this.waitingPhaseText.setVisible(waitingVisible);
     this.waitingPulseCore.setVisible(waitingVisible);
     this.waitingPulseRing.setVisible(waitingVisible);
     this.waitingPulseLabel.setVisible(waitingVisible);
@@ -2926,7 +3003,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getBaseSupportText(): string {
-    return `Goal: break ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s. C summary | V export | R reset between runs.`;
+    return `Opening window: break ${TARGET_FIRST_DEATH_SECONDS}s, then climb the phase ladder to ${SURVIVAL_GOAL_SECONDS}s. C summary | V export | R reset between runs.`;
   }
 
   private getRetryActionText(): string {
@@ -2942,11 +3019,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getPlayingHintText(): string {
-    return `Stay moving and break into open space.\nTarget: survive past ${TARGET_FIRST_DEATH_SECONDS}s, then clear ${SURVIVAL_GOAL_SECONDS}s.`;
+    return `OPENING WINDOW\nStay moving, protect open air, and break ${TARGET_FIRST_DEATH_SECONDS}s clean.`;
   }
 
   private getFirstDeathTargetHintText(): string {
-    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nThe opener held. Now chase ${SURVIVAL_GOAL_SECONDS}s.`;
+    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nBREAKTHROUGH is live. Strafe and surge are awake now.`;
   }
 
   private getSurvivalGoalHintText(): string {
@@ -2954,11 +3031,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getCurrentPlayingHintText(): string {
-    return this.survivalGoalReachedThisRun
-      ? this.getSurvivalGoalHintText()
-      : this.firstDeathTargetReachedThisRun
-        ? this.getFirstDeathTargetHintText()
-        : this.getPlayingHintText();
+    if (this.survivalGoalReachedThisRun) {
+      return this.getSurvivalGoalHintText();
+    }
+
+    if (this.firstDeathTargetReachedThisRun && this.survivalTime < LEAD_OBSTACLE_UNLOCK_SECONDS) {
+      return this.getFirstDeathTargetHintText();
+    }
+
+    const { currentPhase } = getRunPhaseState(this.survivalTime);
+    return `${currentPhase.title}\n${currentPhase.detail}`;
   }
 
   private getCurrentPlayingSupportText(): string {
@@ -2966,11 +3048,7 @@ export class GameScene extends Phaser.Scene {
       return `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`;
     }
 
-    if (this.firstDeathTargetReachedThisRun) {
-      return `${TARGET_FIRST_DEATH_SECONDS}s broken. The opener target is clear; keep the lane open and push toward ${SURVIVAL_GOAL_SECONDS}s.`;
-    }
-
-    return this.getBaseSupportText();
+    return getRunPhaseSupportText(this.survivalTime);
   }
 
   private getWaitingHintText(): string {

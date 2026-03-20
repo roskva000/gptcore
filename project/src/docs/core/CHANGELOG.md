@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #239
+
+- `project/game/src/game/runPhase.ts` yeni helper ile coarse run ladder'i `OPENING WINDOW`, `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` fazlarina cevirdi
+- `project/game/src/game/GameScene.ts` aktif HUD'a yeni phase status/detail slice'i ekledi; oyuncu artik yalniz timer degil hangi run state'inde oldugunu ve sonraki shift'e ne kadar kaldigini da goruyor
+- ayni dosya waiting intro'ya `RUN PHASES` forecast'i ekledi; mevcut best'in hangi faza kadar ciktigini one-shot preview olarak tasiyor
+- support ve hint copy phase architecture ile hizalandi; ilk 30-60 saniye artik acilan yapisal bolgeler gibi okunuyor
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #237
 
 - `project/game/src/game/telemetry.ts` yeni `getSurvivalGoalChaseText()` helper'i ile aktif run icin `x.xs TO 60s CLEAR` ve temiz `60s CLEAR` durumlarini uretti

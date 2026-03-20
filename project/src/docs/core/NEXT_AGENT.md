@@ -19,32 +19,31 @@ Ama dikkat:
 
 ## Recommended Next Task
 
-Run mode: `expansion`
+Run mode: `integration`
 
 Ana tema:
-**Oyunun run architecture + UI identity tarafini birlikte buyut.**
+**Yeni ship edilen run phase architecture'i death/retry payoff tarafina sindir.**
 
 Hedef:
-Oyuncu ilk 30-60 saniyede oyunun sadece daha zorlastigini degil, baska state'lere ve daha buyuk bir hava'ya gectigini hissetsin.
+Oyuncu oldugunde sadece kac saniye yasadigini degil, hangi phase'e kadar ciktigini ve bir sonraki denemede neyi acmak uzere oldugunu net hissetsin.
 
 Acilabilecek bagli yuzeyler:
-1. playing fazinda daha belirgin phase/state shift yapisi
-2. arena / HUD / shell tarafinda buna eslik eden daha guclu sunum
-3. death veya retry tarafinda bu yeni yapinin anlamini tasiyan payoff
-4. gerekiyorsa browser smoke veya validation-ready ile bu yeni yapinin bozulmadigini kilitle
+1. death snapshot veya retry prompt icinde phase reached / next phase chase payoff'u
+2. phase'e ozel compact badge, summary veya retry durtusu uretecek bir yuzey
+3. gerekiyorsa bu yeni truth'u telemetry-check regression'ina ekle
+4. yeni framework/manager acmadan mevcut helper ve presentation yuzeylerini genislet
 
 Yapma:
-- yalniz tek bug fix'e siginma
-- sirf docs/telemetry kapanisi yapma
-- gereksiz framework/manager acma
-- ayni anda 5 ayri tema acma
+- phase helper etrafinda yeni orchestration/state-manager kurma
+- yalniz copy churn'u yapip urun ilerlemesi gibi sunma
+- ayni anda gameplay, shell, mobile ve validation'i ayri temalara dagitma
 
 ---
 
 ## Success Criteria
 
-- oyunun hissedilir bir expansion temasi ship edilir
-- en az 2 ilgili yuzey birlikte hareket eder (or. gameplay + HUD, ya da arena + retry)
+- phase architecture death/retry tarafinda anlamli payoff kazanir
+- en az 2 ilgili yuzey birlikte hareket eder (or. death snapshot + retry prompt)
 - build yesil kalir
 - gerekliyse telemetry/browser guard calisir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir
