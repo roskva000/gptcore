@@ -56,12 +56,14 @@ import {
 } from '../src/game/runHorizon.ts';
 import {
   hasFreshMovementInput,
+  hasPrimaryActionReleaseRequirement,
   getLaunchActionPromptText,
   getResumeActionPromptText,
   getRetryActionPromptText,
   isPrimaryPointerDown,
   shouldAllowPrimaryActionKeyPress,
   shouldAllowFreshMovementPrimaryAction,
+  shouldAllowHeldPrimaryAction,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldRequirePointerReleaseAfterPause,
   shouldAllowPointerPrimaryActionPress,
@@ -770,6 +772,48 @@ assert.equal(
   'Movement gating should not fabricate a fresh primary action when the directional state never changed.',
 );
 assert.equal(
+  hasPrimaryActionReleaseRequirement({
+    movementReleaseRequired: true,
+  }),
+  true,
+  'Any armed movement release gate should block cross-input primary actions until the stale hold is released.',
+);
+assert.equal(
+  hasPrimaryActionReleaseRequirement({
+    pointerReleaseRequired: true,
+  }),
+  true,
+  'Any armed pointer release gate should block cross-input primary actions until the stale hold is released.',
+);
+assert.equal(
+  hasPrimaryActionReleaseRequirement({
+    keyReleaseRequired: true,
+  }),
+  true,
+  'Any armed Space/Enter release gate should block cross-input primary actions until the stale hold is released.',
+);
+assert.equal(
+  hasPrimaryActionReleaseRequirement(),
+  false,
+  'Cross-input primary actions should stay available when no release gate is armed.',
+);
+assert.equal(
+  shouldAllowHeldPrimaryAction({
+    hasHeldInput: true,
+    releaseRequired: true,
+  }),
+  false,
+  'Held movement or pointer paths should stay blocked while any stale release gate is still armed.',
+);
+assert.equal(
+  shouldAllowHeldPrimaryAction({
+    hasHeldInput: true,
+    releaseRequired: false,
+  }),
+  true,
+  'Held movement or pointer paths should reactivate once every stale release gate has cleared.',
+);
+assert.equal(
   shouldClearMovementReleaseRequirement({
     movementInputActive: false,
   }),
@@ -824,6 +868,14 @@ assert.equal(
   shouldHandlePrimaryActionKey({ repeat: true }),
   false,
   'Held Space/Enter auto-repeat should not retrigger primary actions during waiting, pause, or game-over overlays.',
+);
+assert.equal(
+  shouldAllowPrimaryActionKeyPress({
+    event: { repeat: false } as KeyboardEvent,
+    movementReleaseRequired: true,
+  }),
+  false,
+  'Space/Enter should stay blocked while pause/retry still requires a stale movement hold to be fully released.',
 );
 assert.equal(
   shouldAllowPrimaryActionKeyPress({
@@ -1099,6 +1151,38 @@ assert.equal(
   }),
   false,
   'Direct pointer presses should stay blocked while replay still requires a fresh release.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+      event: { isPrimary: true } as PointerEvent,
+    },
+    releaseRequired: hasPrimaryActionReleaseRequirement({
+      movementReleaseRequired: true,
+    }),
+  }),
+  false,
+  'A fresh tap/click should not bypass a stale movement release gate just because the release came from another input modality.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+      event: { isPrimary: true } as PointerEvent,
+    },
+    releaseRequired: hasPrimaryActionReleaseRequirement({
+      keyReleaseRequired: true,
+    }),
+  }),
+  false,
+  'A fresh tap/click should not bypass a stale Space/Enter release gate just because the release came from another input modality.',
 );
 assert.equal(
   shouldAllowPointerPrimaryActionPress({

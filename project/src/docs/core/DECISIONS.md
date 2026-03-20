@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #232]
+
+Decision:
+`stabilization` modunda pause/game-over release gate'lerinin cross-input bypass ile delinmesini kapat.
+
+Reason:
+Runtime hala bloklu ve audit frozen identity/fairness/audio/mobile koridorlarina samplesiz donusu yasakliyor. Run #228-231 movement, pointer ve primary-key release truth'unu modality bazinda sertlestirdi, ancak activation path'leri halen parcaliydi: stale movement veya `Space`/`Enter` release requirement'i armed iken pointer press/held; stale pointer release armed iken movement-held gibi baska modality yollar resume/retry acabiliyordu. Kalan somut source problemi tek bir ortak release requirement semantigi eksikligiydi.
+
+Impact:
+`project/game/src/game/primaryAction.ts` ortak `hasPrimaryActionReleaseRequirement()` ve `shouldAllowHeldPrimaryAction()` helper'larini ekledi. `project/game/src/game/GameScene.ts` pause/game-over sirasinda movement-fresh, movement-held, pointer-held, pointer-press ve primary-key press aktivasyonlarini bu ortak truth'a bagladi; stale herhangi bir modality release beklerken diger modality resume/retry acamiyor. `project/game/scripts/telemetry-check.ts` movement/key -> pointer bypass ve held-input block regresyonlarini ekledi. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek runtime sample'i bu ortak release gate'in meşru cross-input resume/retry niyetini gereksiz sertlestirdigini gosterirse yalniz ilgili activation semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input manager'i, framework'u veya orchestration/preflight katmani acilmaz.
+
 ### [Run #231]
 
 Decision:

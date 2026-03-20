@@ -75,9 +75,11 @@ import {
   getResumeActionPromptText as getPrimaryResumeActionPromptText,
   getRetryActionPromptText as getPrimaryRetryActionPromptText,
   hasFreshMovementInput,
+  hasPrimaryActionReleaseRequirement,
   isPrimaryPointerDown,
   shouldAllowPrimaryActionKeyPress,
   shouldAllowFreshMovementPrimaryAction,
+  shouldAllowHeldPrimaryAction,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldAllowPointerPrimaryActionPress,
   shouldClearPrimaryActionKeyReleaseRequirement,
@@ -822,6 +824,16 @@ export class GameScene extends Phaser.Scene {
       this.phase === 'waiting' || this.phase === 'gameOver' || this.phase === 'paused'
         ? this.hasConfirmedHeldPointerInput(time)
         : false;
+    const gameOverReleaseRequired = hasPrimaryActionReleaseRequirement({
+      movementReleaseRequired: this.gameOverRetryNeedsMovementRelease,
+      pointerReleaseRequired: this.gameOverRetryNeedsPointerRelease,
+      keyReleaseRequired: this.gameOverRetryNeedsPrimaryActionKeyRelease,
+    });
+    const pauseReleaseRequired = hasPrimaryActionReleaseRequirement({
+      movementReleaseRequired: this.pauseResumeNeedsMovementRelease,
+      pointerReleaseRequired: this.pauseResumeNeedsPointerRelease,
+      keyReleaseRequired: this.pauseResumeNeedsPrimaryActionKeyRelease,
+    });
 
     if (
       this.phase === 'waiting' || this.phase === 'gameOver'
@@ -829,13 +841,23 @@ export class GameScene extends Phaser.Scene {
       if (
         shouldAllowFreshMovementPrimaryAction({
           hasFreshMovementInput: movementJustStarted,
-          releaseRequired: this.gameOverRetryNeedsMovementRelease,
+          releaseRequired: gameOverReleaseRequired,
         })
       ) {
         this.activatePrimaryAction('movement-fresh');
-      } else if (hasConfirmedHeldMovementInput) {
+      } else if (
+        shouldAllowHeldPrimaryAction({
+          hasHeldInput: hasConfirmedHeldMovementInput,
+          releaseRequired: gameOverReleaseRequired,
+        })
+      ) {
         this.activatePrimaryAction('movement-held');
-      } else if (hasConfirmedHeldPointerInput) {
+      } else if (
+        shouldAllowHeldPrimaryAction({
+          hasHeldInput: hasConfirmedHeldPointerInput,
+          releaseRequired: gameOverReleaseRequired,
+        })
+      ) {
         this.activatePrimaryAction('pointer-held');
       }
     }
@@ -848,13 +870,23 @@ export class GameScene extends Phaser.Scene {
       if (
         shouldAllowFreshMovementPrimaryAction({
           hasFreshMovementInput: movementJustStarted,
-          releaseRequired: this.pauseResumeNeedsMovementRelease,
+          releaseRequired: pauseReleaseRequired,
         })
       ) {
         this.activatePrimaryAction('movement-fresh');
-      } else if (hasConfirmedHeldMovementInput) {
+      } else if (
+        shouldAllowHeldPrimaryAction({
+          hasHeldInput: hasConfirmedHeldMovementInput,
+          releaseRequired: pauseReleaseRequired,
+        })
+      ) {
         this.activatePrimaryAction('movement-held');
-      } else if (hasConfirmedHeldPointerInput) {
+      } else if (
+        shouldAllowHeldPrimaryAction({
+          hasHeldInput: hasConfirmedHeldPointerInput,
+          releaseRequired: pauseReleaseRequired,
+        })
+      ) {
         this.activatePrimaryAction('pointer-held');
       }
     }
@@ -1012,6 +1044,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePrimaryAction(event?: KeyboardEvent): void {
+    const movementReleaseRequired =
+      (this.phase === 'paused' && this.pauseResumeNeedsMovementRelease) ||
+      (this.phase === 'gameOver' && this.gameOverRetryNeedsMovementRelease);
     const pointerReleaseRequired =
       (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
       (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease);
@@ -1022,6 +1057,7 @@ export class GameScene extends Phaser.Scene {
     if (
       !shouldAllowPrimaryActionKeyPress({
         event,
+        movementReleaseRequired,
         pointerReleaseRequired,
         keyReleaseRequired,
       })
@@ -1033,9 +1069,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePointerPrimaryAction(pointer: Phaser.Input.Pointer): void {
-    const releaseRequired =
-      (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
-      (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease);
+    const releaseRequired = hasPrimaryActionReleaseRequirement({
+      movementReleaseRequired:
+        (this.phase === 'paused' && this.pauseResumeNeedsMovementRelease) ||
+        (this.phase === 'gameOver' && this.gameOverRetryNeedsMovementRelease),
+      pointerReleaseRequired:
+        (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
+        (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease),
+      keyReleaseRequired:
+        (this.phase === 'paused' && this.pauseResumeNeedsPrimaryActionKeyRelease) ||
+        (this.phase === 'gameOver' && this.gameOverRetryNeedsPrimaryActionKeyRelease),
+    });
 
     if (
       !shouldAllowPointerPrimaryActionPress({

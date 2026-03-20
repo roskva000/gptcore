@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #232
+
+- `project/game/src/game/primaryAction.ts` movement, pointer ve `Space`/`Enter` release requirement'lerini tek truth'ta toplayan `hasPrimaryActionReleaseRequirement()` helper'ini ve held-action gate helper'ini ekledi
+- `project/game/src/game/GameScene.ts` pause/game-over sirasinda movement-fresh, movement-held, pointer-held, pointer-press ve primary-key press yollarini ortak release requirement'e bagladi; stale bir modality varken diger modality ile istemsiz resume/retry acilmiyor
+- `project/game/scripts/telemetry-check.ts` movement/key -> pointer bypass, ortak release gate ve held-input block kontratlarini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #231
 
 - `project/game/src/game/primaryAction.ts` stale `Space`/`Enter` hold'u icin primary-key release gate ve post-reset gozlem helper'larini ekledi; primary-key yolu artik pointer gate'in yaninda key-release requirement'ini de tasiyor

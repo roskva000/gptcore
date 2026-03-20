@@ -27,18 +27,34 @@ export const shouldHandlePrimaryActionKey = (
   event?: Pick<KeyboardEvent, 'repeat'> | null,
 ): boolean => !event?.repeat;
 
+export const hasPrimaryActionReleaseRequirement = ({
+  movementReleaseRequired = false,
+  pointerReleaseRequired = false,
+  keyReleaseRequired = false,
+}: {
+  movementReleaseRequired?: boolean;
+  pointerReleaseRequired?: boolean;
+  keyReleaseRequired?: boolean;
+} = {}): boolean =>
+  movementReleaseRequired || pointerReleaseRequired || keyReleaseRequired;
+
 export const shouldAllowPrimaryActionKeyPress = ({
   event,
+  movementReleaseRequired = false,
   pointerReleaseRequired = false,
   keyReleaseRequired = false,
 }: {
   event?: Pick<KeyboardEvent, 'repeat'> | null;
+  movementReleaseRequired?: boolean;
   pointerReleaseRequired?: boolean;
   keyReleaseRequired?: boolean;
 } = {}): boolean =>
   shouldHandlePrimaryActionKey(event) &&
-  !pointerReleaseRequired &&
-  !keyReleaseRequired;
+  !hasPrimaryActionReleaseRequirement({
+    movementReleaseRequired,
+    pointerReleaseRequired,
+    keyReleaseRequired,
+  });
 
 export const hasFreshMovementInput = (
   movementInputState: number,
@@ -52,6 +68,14 @@ export const shouldAllowFreshMovementPrimaryAction = ({
   hasFreshMovementInput: boolean;
   releaseRequired?: boolean;
 }): boolean => hasFreshMovementInput && !releaseRequired;
+
+export const shouldAllowHeldPrimaryAction = ({
+  hasHeldInput,
+  releaseRequired = false,
+}: {
+  hasHeldInput: boolean;
+  releaseRequired?: boolean;
+}): boolean => hasHeldInput && !releaseRequired;
 
 export const shouldClearMovementReleaseRequirement = (
   {

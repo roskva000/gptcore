@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #231:
+Current deterministic survival headline after Run #232:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+cross_input_release_gate_integrity:
+current: Run #232 `project/game/src/game/primaryAction.ts` movement, pointer ve `Space`/`Enter` release requirement'lerini ortak `hasPrimaryActionReleaseRequirement()` truth'unda topluyor; `project/game/src/game/GameScene.ts` pause/game-over sirasinda tum primary activation yollarini bu ortak gate'e bagliyor
+baseline: onceki source movement, pointer ve primary-key release requirement'lerini modality bazinda ayri tutuyordu; stale bir modality armed iken diger modality activation yolu resume/retry acabiliyordu
+target: sonraki headed sample cross-input resume/retry'nin artik daha niyetli ve daha az kazara tetiklenen bir control hissi verdigini gostersin; runtime blokluysa bu akis etrafinda yeni input framework'u veya manager'i acilmasin
+validation: `npm run telemetry:check`, `npm run build`
 
 primary_action_key_release_gate_integrity:
 current: Run #231 `project/game/src/game/primaryAction.ts` primary-key release ve post-reset gozlem helper'lerini ekliyor; `project/game/src/game/GameScene.ts` stale `Space`/`Enter` hold'u pause/game-over ve focus-loss keyboard reset sonrasinda key yeniden gorulup sonra birakilana kadar resume/retry gate'i olarak koruyor

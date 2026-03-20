@@ -4,16 +4,16 @@
 
 # NOW
 
-- Run #231 `stabilization`: `project/game/src/game/primaryAction.ts` stale `Space`/`Enter` hold'u icin primary-key release gate ve post-reset gozlem helper'larini ekledi; non-repeat key press yolu artik key-release requirement'ini de tasiyor.
-- `project/game/src/game/GameScene.ts` `Space`/`Enter` key state'ini izleyip pause/game-over gecislerinde ve focus-loss keyboard reset sonrasinda primary-key release gate'ini ancak refocus sonrasi key yeniden gorulup sonra birakildiginda temizliyor.
-- `project/game/scripts/telemetry-check.ts` stale primary-key hold, post-reset primary-key gozlemi ve release-clear semantigini regression altina aldi.
+- Run #232 `stabilization`: `project/game/src/game/primaryAction.ts` movement, pointer ve `Space`/`Enter` release requirement'lerini tek truth'ta toplayan `hasPrimaryActionReleaseRequirement()` helper'ini ve held-action gate semantigini ekledi.
+- `project/game/src/game/GameScene.ts` pause/game-over sirasinda movement-fresh, movement-held, pointer-held, pointer-press ve primary-key press yollarini ortak release requirement'e bagladi; stale bir modality armed iken diger modality resume/retry acamiyor.
+- `project/game/scripts/telemetry-check.ts` movement/key -> pointer bypass ve held-action block kontratlarini regression altina aldi.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- stale `Space`/`Enter` hold pause/game-over resume/retry gate'ini artik delemez.
-- focus-loss keyboard reset sonrasi primary key bir kez yeniden gorulup sonra birakilmadan resume/retry acilmiyor.
+- stale movement, pointer veya `Space`/`Enter` hold pause/game-over resume/retry gate'ini baska bir input modality ile artik delemez.
+- held movement ve held pointer activation yollari da artik armed release requirement varken bloke kaliyor.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build ve telemetry check seti yesil kaliyor.
 
@@ -22,7 +22,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Runtime yoksa frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec; once mixed pointer+movement release gate'lerinin birbirini erken temizleyip temizlemedigine bak.
+- Runtime yoksa frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec; once focus-loss/pointer-cancel sonrasi kalan hybrid held-input bypass'i var mi diye bak.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
