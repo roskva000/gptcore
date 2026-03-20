@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #228]
+
+Decision:
+`stabilization` modunda pause/game-over sonrasi movement release gate bypass'ini kapat.
+
+Reason:
+Runtime hala bloklu ve audit frozen identity/fairness/audio/mobile koridorlarina samplesiz geri donmeyi yasakliyor. Bu durumda en dar ve yuksek etkili source problemi, oyuncunun onceki held movement'i birakmadan yeni yon ekleyerek pause veya game-over ekranini istemsiz resume/retry etmesine izin veren control-integrity kusuruydu. Pointer press yolunda release gate zaten explicit oldugu icin movement yolu onunla hizalanmaliydi.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni `shouldAllowFreshMovementPrimaryAction()` helper'ini ekledi. `project/game/src/game/GameScene.ts` waiting/game-over ve paused primary-action akisinda fresh movement input'u bu helper ile release gate'e bagladi; replay/resume artik onceki held input tam birakilmadan yeni yon eklenerek tetiklenmiyor. `project/game/scripts/telemetry-check.ts` bu bypass'i kilitleyen regression assert'leri ekledi. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek runtime sample'i bu gate'in replay/resume'u gereksiz sertlestirdigini veya meşru fresh movement retry niyetini blokladigini gosterirse yalniz movement release semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input framework'u, orchestration/preflight katmani veya genis control rewrite'i acilmaz.
+
 ### [Run #227]
 
 Decision:

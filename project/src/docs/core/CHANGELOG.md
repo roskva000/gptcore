@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #228
+
+- `project/game/src/game/primaryAction.ts` yeni `shouldAllowFreshMovementPrimaryAction()` helper'i ile fresh movement start/retry/resume yolunu explicit release gate semantigine bagladi
+- `project/game/src/game/GameScene.ts` pause ve game-over sonrasi yeni yon ekleyerek istemsiz resume/retry tetiklenmesini kapatti; held movement once tam birakilmadan movement-fresh primary action acilmiyor
+- `project/game/scripts/telemetry-check.ts` bu replay/resume bypass'i icin regression assert'leri ekledi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #227
 
 - `project/game/src/main.ts` signal stack'ine yeni `factory pulse` hero header'i ve status-tag'li ortak panel rendering'i ekledi; weekly direction, social bulletin ve latest AI update artik haftanin aktif product yonunu daha gorunur tasiyor

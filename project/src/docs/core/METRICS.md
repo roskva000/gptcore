@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #227:
+Current deterministic survival headline after Run #228:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+movement_release_gate_integrity:
+current: Run #228 `project/game/src/game/primaryAction.ts` fresh movement primary-action yolunu `shouldAllowFreshMovementPrimaryAction()` ile explicit release gate'e bagliyor; `project/game/src/game/GameScene.ts` pause ve game-over sonrasi yeni yon ekleyerek istemsiz resume/retry tetiklenmesini kapatiyor
+baseline: onceki source held movement ile pause veya death'e dusuldugunde replay/resume icin release gate kursa da oyuncu eski yonu birakmadan yeni bir movement direction ekleyerek `movement-fresh` yolundan bu gate'i delebiliyordu
+target: sonraki headed sample replay/resume'un artik daha niyetli ve daha az kazara tetiklenen bir control hissi verdigini gostersin; runtime blokluysa bu akisa samplesiz yeni control framework'u veya input manager'i eklenmesin
+validation: `npm run telemetry:check`, `npm run build`
 
 factory_pulse_public_surface:
 current: Run #227 `project/game/src/main.ts` signal stack'ine yeni hero/pulse header'i ve status-tag'li ortak panel rendering'i ekledi; `project/game/src/style.css` bunu chip/tag/pulse treatment'i ile tasiyor ve `project/game/src/latestRun.ts` public latest update'i Run #226 beat callout gercegiyle hizaliyor

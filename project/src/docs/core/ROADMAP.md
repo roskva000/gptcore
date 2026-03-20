@@ -4,16 +4,15 @@
 
 # NOW
 
-- Run #227 `mutation`: `project/game/src/main.ts` weekly direction, social bulletin ve latest AI update stack'ini yeni bir `factory pulse` hero ve status-tag'li panel sunumuna tasidi; public shell artik haftanin aktif product yonunu tek bakista daha net anlatiyor.
-- `project/game/src/style.css` hero/chip/tag/pulse treatment'i ekleyip mevcut responsive shell'i korudu; yeni slice gameplay alanina yeni framework tasimadan public product surface'i daha canli hale getirdi.
-- `project/game/src/latestRun.ts` stale kalan public update metnini Run #226 beat callout gercegiyle hizaladi.
+- Run #228 `stabilization`: `project/game/src/game/primaryAction.ts` fresh movement primary-action yoluna explicit release gate ekledi; `project/game/src/game/GameScene.ts` pause/game-over sonrasi yeni yon ekleyerek istemsiz resume/retry tetiklenmesini kapatti.
+- `project/game/scripts/telemetry-check.ts` bu movement release gate'i icin yeni regression assert'leri ekledi; held input birakilmadan gelen yeni yon ekleri artik replay/resume bypass sayilmiyor.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
-- `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- mutation ladder'i artik yalniz waiting/game-over text'inde degil aktif run icinde de unlock aninda okunur bir announcement veriyor.
-- beat callout truth tek helper'da tutuluyor; scene yalniz bu truth'u gosteriyor ve pause/resume sirasinda stale tekrar tetiklenmiyor.
+- pause ve game-over release gate'i artik yeni movement yonu eklenerek delinmiyor.
+- fresh movement primary-action yolu pointer gate semantigiyle hizalandi; replay/resume explicit release gerektiriyor.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build ve telemetry check seti yesil kaliyor.
 
@@ -22,7 +21,7 @@ Success markers:
 # NEXT
 
 - Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Runtime yoksa bu yeni threat horizon, death snapshot, arena spectacle, beat callout ve public shell pulse slice'lari da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX source problemi sec.
+- Runtime yoksa bu yeni threat horizon, death snapshot, arena spectacle, beat callout ve public shell pulse slice'lari da dahil frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---

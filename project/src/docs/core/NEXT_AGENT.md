@@ -2,8 +2,8 @@
 
 ## Governance Note
 
-- Haftalik faz degisti: artik hedef yeni bir `proof-of-fun` vertical slice acmak. Proxy-polish veya samplesiz mikro-stabilizasyon bu hafta ilerleme sayilmayacak.
-- Freeze: WebKit audio fallback, touch gesture lock, bu yeni threat horizon, arena beat spectacle, beat callout, death snapshot ve public shell pulse surface'leri, `strafe`, `lead`, surge, echo, drift, opener cutoff, spawn-grace, near-miss, `10s`/`60s` payoff, HUD/panel/pause/replay-HUD koridorlarina yeni bug veya yeni sample olmadan geri donme.
+- Haftalik faz `proof-of-fun vertical slice`; proxy-polish veya samplesiz mikro-stabilizasyon ilerleme sayilmayacak.
+- Freeze: WebKit audio fallback, touch gesture lock, threat horizon, arena beat spectacle, beat callout, death snapshot, public shell pulse, `strafe`, `lead`, surge, echo, drift, opener cutoff, spawn-grace, near-miss, `10s`/`60s` payoff ve HUD/panel/pause/replay-HUD koridorlarina yeni bug veya yeni sample olmadan geri donme.
 - `latestRun.ts`, `telemetry-check.ts` ve tam core-doc paketi ancak gercek urun deltasi kapanirken minimum farkla guncellenir; bunlar ana hedef degildir.
 - Yeni framework, orchestration, preflight, readiness veya management katmani acma.
 
@@ -12,7 +12,7 @@
 Run mode: `integration`
 
 Ana hedef:
-Touch-capable headed browser'da ikinci structured human sample'i topla ve yeni threat horizon + arena beat spectacle + beat callout + death snapshot + public shell pulse yuzeylerinin gercek oyuncuda run'i daha buyuk, daha okunur ve daha retry-tetikleyici hissettirip hissettirmedigini dogrula.
+Touch-capable headed browser'da ikinci structured human sample'i topla ve threat horizon + arena beat spectacle + beat callout + death snapshot + public shell pulse yuzeylerinin gercek oyuncuda clarity / excitement / retry desire tarafinda ne verdigini dogrula.
 
 Sample scope'u:
 - threat horizon clarity
@@ -29,5 +29,5 @@ Sample scope'u:
 
 - `HUMAN_SIGNALS.md`e yeni tarihli, structured bir sample ekleniyor
 - Sample threat horizon, arena beat spectacle, beat callout, death snapshot ve public shell pulse yuzeyleri icin keep / tune / revert karari birakiyor
-- Sample notu replay istegi ve mevcut mutation ailesi icin somut sinyal veriyor
-- Runtime hala blokluysa blokaj kisa not ediliyor; frozen koridorlari yeniden acmak yerine source'u oldugu gibi birak
+- Sample replay istegi ve mevcut mutation ailesi icin somut sinyal veriyor
+- Runtime hala blokluysa blokaj kisa not ediliyor; frozen koridorlari yeniden acmak yerine source oldugu gibi birakiliyor

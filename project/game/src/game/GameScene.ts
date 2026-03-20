@@ -76,6 +76,7 @@ import {
   getRetryActionPromptText as getPrimaryRetryActionPromptText,
   hasFreshMovementInput,
   isPrimaryPointerDown,
+  shouldAllowFreshMovementPrimaryAction,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldAllowPointerPrimaryActionPress,
   shouldClearMovementReleaseRequirement,
@@ -759,7 +760,12 @@ export class GameScene extends Phaser.Scene {
     if (
       this.phase === 'waiting' || this.phase === 'gameOver'
     ) {
-      if (movementJustStarted) {
+      if (
+        shouldAllowFreshMovementPrimaryAction({
+          hasFreshMovementInput: movementJustStarted,
+          releaseRequired: this.gameOverRetryNeedsMovementRelease,
+        })
+      ) {
         this.activatePrimaryAction('movement-fresh');
       } else if (hasConfirmedHeldMovementInput) {
         this.activatePrimaryAction('movement-held');
@@ -773,7 +779,12 @@ export class GameScene extends Phaser.Scene {
       !document.hidden &&
       document.hasFocus()
     ) {
-      if (movementJustStarted) {
+      if (
+        shouldAllowFreshMovementPrimaryAction({
+          hasFreshMovementInput: movementJustStarted,
+          releaseRequired: this.pauseResumeNeedsMovementRelease,
+        })
+      ) {
         this.activatePrimaryAction('movement-fresh');
       } else if (hasConfirmedHeldMovementInput) {
         this.activatePrimaryAction('movement-held');

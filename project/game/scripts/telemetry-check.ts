@@ -60,6 +60,7 @@ import {
   getResumeActionPromptText,
   getRetryActionPromptText,
   isPrimaryPointerDown,
+  shouldAllowFreshMovementPrimaryAction,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldRequirePointerReleaseAfterPause,
   shouldAllowPointerPrimaryActionPress,
@@ -739,6 +740,30 @@ assert.equal(
   hasFreshMovementInput(1 | 4, 1 | 4),
   false,
   'An unchanged diagonal hold should not retrigger replay/resume every frame after the new direction is already active.',
+);
+assert.equal(
+  shouldAllowFreshMovementPrimaryAction({
+    hasFreshMovementInput: true,
+    releaseRequired: true,
+  }),
+  false,
+  'Fresh movement directions should stay blocked while pause/retry still requires the previous held input to be fully released.',
+);
+assert.equal(
+  shouldAllowFreshMovementPrimaryAction({
+    hasFreshMovementInput: true,
+    releaseRequired: false,
+  }),
+  true,
+  'Fresh movement directions should resume/start immediately once the held-input release gate is cleared.',
+);
+assert.equal(
+  shouldAllowFreshMovementPrimaryAction({
+    hasFreshMovementInput: false,
+    releaseRequired: false,
+  }),
+  false,
+  'Movement gating should not fabricate a fresh primary action when the directional state never changed.',
 );
 assert.equal(
   shouldClearMovementReleaseRequirement(false),

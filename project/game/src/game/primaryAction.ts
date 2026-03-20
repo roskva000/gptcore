@@ -32,6 +32,14 @@ export const hasFreshMovementInput = (
   previousMovementInputState: number,
 ): boolean => movementInputState !== 0 && movementInputState !== previousMovementInputState;
 
+export const shouldAllowFreshMovementPrimaryAction = ({
+  hasFreshMovementInput,
+  releaseRequired = false,
+}: {
+  hasFreshMovementInput: boolean;
+  releaseRequired?: boolean;
+}): boolean => hasFreshMovementInput && !releaseRequired;
+
 export const shouldClearMovementReleaseRequirement = (
   movementInputActive: boolean,
 ): boolean => !movementInputActive;
