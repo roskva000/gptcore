@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #235
+
+- `project/game/src/game/GameScene.ts` held-movement aktivasyon helper'ini focus-loss pause sonrasi `shouldClearMovementReleaseRequirement()` truth'una bagladi; keyboard reset ile gelen idle frame'ler stale movement release gate'ini artik observation olmadan temizlemiyor
+- paused resume yolu ancak movement yeniden gozlenip sonra birakildiginda aciliyor; stale held movement state'i refocus sonrasi sessizce dusmuyor
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #234
 
 - `project/game/src/game/primaryAction.ts` `shouldAllowPointerPrimaryActionPress()` yolunu modality-aware hale getirdi; `pointercancel` istisnasi artik stale movement veya stale `Space`/`Enter` release gate'lerini bypass etmiyor

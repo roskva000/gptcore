@@ -4,17 +4,16 @@
 
 # NOW
 
-- Run #234 `integration`: `project/game/src/game/primaryAction.ts` pointer primary-action gate'ini modality-aware hale getirdi; canceled pointer istisnasi artik stale movement veya stale `Space`/`Enter` release gate'lerini bypass etmiyor.
-- `project/game/src/game/GameScene.ts` pointer press aktivasyonunda movement/pointer/key release requirement'lerini ayri ayri hesaplayip bu yeni truth'a bagliyor.
-- `project/game/scripts/telemetry-check.ts` canceled pointer + stale movement ve canceled pointer + stale primary-key bypass case'lerini regression altina aldi.
+- Run #235 `stabilization`: `project/game/src/game/GameScene.ts` held-movement helper'inda `shouldClearMovementReleaseRequirement()` truth'unu kullanmaya basladi; focus-loss pause sonrasi keyboard reset ile gelen idle frame'ler stale movement release gate'ini observation olmadan dusurmuyor.
+- Sonuc olarak paused durumda stale movement release requirement'i refocus sonrasi movement yeniden gozlenip sonra birakilmadan resume'u acmiyor; post-reset release semantics runtime truth ile hizalandi.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
-- Browser validation readiness artik bu ortamda `smoke-passed`; automation hazir ama ikinci structured human sample hala manuel olarak toplanmadi.
+- Browser validation readiness bu ortamda onceki turdaki `smoke-passed` durumunu koruyor; automation hazir ama ikinci structured human sample hala manuel olarak toplanmadi.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
-- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- canceled pointer sonrasi fresh tap yalniz stale pointer hold'u temizler; stale movement veya stale `Space`/`Enter` gate'i varken resume/retry acamaz.
-- pointer primary-action yolu, modality-aware release requirement truth'u ile diger hybrid activation yollariyla ayni kontratta kalir.
+- focus-loss pause sonrasi idle frame'ler stale movement release gate'ini observation olmadan temizlemez.
+- stale movement release gate'i ancak movement yeniden gozlenip sonra birakildiginda temizlenir.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build, telemetry check ve browser smoke seti yesil kaliyor.
 
@@ -23,7 +22,7 @@ Success markers:
 # NEXT
 
 - Browser smoke hazirken ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Manual sample yine acilamazsa frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec; once movement + primary-key birlikte held iken kalan son hybrid release-gate bypass'i var mi diye bak.
+- Manual sample yine acilamazsa frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec; ancak Run #235 sonrasi ayni focus-loss movement gate hattina yeniden mikro-churn yapma.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---

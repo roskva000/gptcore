@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #234:
+Current deterministic survival headline after Run #235:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+focus_loss_pause_movement_release_gate_integrity:
+current: Run #235 `project/game/src/game/GameScene.ts` held-movement helper'ini `shouldClearMovementReleaseRequirement()` truth'una bagliyor; focus-loss pause sonrasi keyboard reset idle frame'leri post-reset observation pending iken stale movement release gate'ini dusurmuyor
+baseline: onceki source `hasConfirmedHeldMovementInput()` icinde `!movementInputActive` dalina girince `pauseResumeNeedsMovementRelease` bayragini dogrudan sifirliyordu; keyboard reset sonrasi idle update frame'i stale held movement'i refocus ve yeniden gozlem olmadan temizleyebiliyordu
+target: manuel browser sample'inda focus-loss pause sonrasi resume ancak movement yeniden gozlenip sonra birakildiginda acilsin; idle refocus veya resetlenmis keyboard state'i stale hold'u sessizce temizlemesin
+validation: `npm run telemetry:check`, `npm run build`
 
 pointer_cancel_cross_input_release_gate_integrity:
 current: Run #234 `project/game/src/game/primaryAction.ts` pointer press izin mantigini movement, pointer ve primary-key release requirement'lerini ayri yorumlayacak sekilde guncelliyor; `project/game/src/game/GameScene.ts` canceled pointer sonrasindaki fresh tap'i yalniz stale pointer gate'i icin serbest birakiyor

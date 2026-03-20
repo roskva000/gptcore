@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #235]
+
+Decision:
+`stabilization` modunda focus-loss pause sonrasi keyboard reset'in stale held movement release gate'ini idle update frame'lerinde sessizce dusurmesini kapat.
+
+Reason:
+Audit ve handoff samplesiz frozen identity koridorlarina donmeyi yasaklarken runtime yoksa dar bir control-integrity problemi secmeyi istiyordu. Kod incelemesi `pauseRunForFocusLoss()` ile Run #230'un dogru niyeti kurulsa bile `hasConfirmedHeldMovementInput()` icindeki `!movementInputActive` erken dalinin `movementReleaseObservationPendingAfterReset=true` durumunda bile `pauseResumeNeedsMovementRelease` bayragini sifirladigini gosterdi. Bu da focus-loss sonrasi keyboard reset'in stale movement hold'u refocus ve gozlem olmadan temizleyebilmesi anlamina geliyordu.
+
+Impact:
+`project/game/src/game/GameScene.ts` held-movement helper'inda `shouldClearMovementReleaseRequirement()` truth'unu kullanmaya basladi; post-reset observation pending varken paused movement release gate artik update loop icinde kendi kendine dusmuyor. Resume ancak movement yeniden gozlenip sonra birakildiginda aciliyor. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek manuel browser sample'i bu daha sert post-focus-loss movement release semantiginin resume hissini gereksiz surtundurdugunu gosterirse yalniz bu gate'in observation davranisi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input framework'u, manager'i veya orchestration/preflight katmani acilmaz.
+
 ### [Run #234]
 
 Decision:

@@ -1656,8 +1656,15 @@ export class GameScene extends Phaser.Scene {
   private hasConfirmedHeldMovementInput(time: number, movementInputActive: boolean): boolean {
     if (!movementInputActive) {
       this.movementHoldActionStartedAt = null;
-      this.pauseResumeNeedsMovementRelease = false;
-      this.gameOverRetryNeedsMovementRelease = false;
+      if (
+        shouldClearMovementReleaseRequirement({
+          movementInputActive,
+          postResetReleaseObservationPending: this.movementReleaseObservationPendingAfterReset,
+        })
+      ) {
+        this.pauseResumeNeedsMovementRelease = false;
+        this.gameOverRetryNeedsMovementRelease = false;
+      }
       return false;
     }
 
