@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #230
+
+- `project/game/src/game/primaryAction.ts` movement release gate'i icin post-reset gozlem helper'larini ekledi; keyboard `resetKeys()` sonrasi sifir input stale held movement requirement'ini hemen temizlemiyor
+- `project/game/src/game/GameScene.ts` focus-loss pause sirasinda aktif movement varsa yeni `movementReleaseObservationPendingAfterReset` state'i ile resume/retry gate'ini movement yeniden gorulup sonra birakilana kadar koruyor
+- `project/game/scripts/telemetry-check.ts` keyboard reset altinda held-movement release gate'in erken temizlenmemesi ve sonraki normal release ile acilmasi icin regression assert'leri ekledi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #229
 
 - `project/game/src/game/primaryAction.ts` yeni `shouldAllowPrimaryActionKeyPress()` helper'i ile `Space`/`Enter` primary-action yolunu stale pointer release gate semantigine bagladi

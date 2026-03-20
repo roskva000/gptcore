@@ -49,8 +49,22 @@ export const shouldAllowFreshMovementPrimaryAction = ({
 }): boolean => hasFreshMovementInput && !releaseRequired;
 
 export const shouldClearMovementReleaseRequirement = (
-  movementInputActive: boolean,
-): boolean => !movementInputActive;
+  {
+    movementInputActive,
+    postResetReleaseObservationPending = false,
+  }: {
+    movementInputActive: boolean;
+    postResetReleaseObservationPending?: boolean;
+  },
+): boolean => !movementInputActive && !postResetReleaseObservationPending;
+
+export const shouldObserveMovementReleaseAfterReset = ({
+  movementInputActive,
+  postResetReleaseObservationPending = false,
+}: {
+  movementInputActive: boolean;
+  postResetReleaseObservationPending?: boolean;
+}): boolean => postResetReleaseObservationPending && movementInputActive;
 
 export const shouldHandlePrimaryActionPointer = (
   pointer?: Pick<Phaser.Input.Pointer, 'button' | 'event' | 'wasTouch'> | null,

@@ -69,6 +69,7 @@ import {
   shouldClearPointerReleaseRequirement,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
+  shouldObserveMovementReleaseAfterReset,
 } from '../src/game/primaryAction.ts';
 import {
   isGameplayViewportAnchorPhase,
@@ -767,14 +768,50 @@ assert.equal(
   'Movement gating should not fabricate a fresh primary action when the directional state never changed.',
 );
 assert.equal(
-  shouldClearMovementReleaseRequirement(false),
+  shouldClearMovementReleaseRequirement({
+    movementInputActive: false,
+  }),
   true,
   'Movement release should clear replay/resume release gates immediately when no movement key remains held.',
 );
 assert.equal(
-  shouldClearMovementReleaseRequirement(true),
+  shouldClearMovementReleaseRequirement({
+    movementInputActive: true,
+  }),
   false,
   'Movement release gates must stay armed while at least one movement key is still held.',
+);
+assert.equal(
+  shouldClearMovementReleaseRequirement({
+    movementInputActive: false,
+    postResetReleaseObservationPending: true,
+  }),
+  false,
+  'Focus-loss keyboard resets should not clear a held-movement release gate until movement is observed again after refocus.',
+);
+assert.equal(
+  shouldObserveMovementReleaseAfterReset({
+    movementInputActive: true,
+    postResetReleaseObservationPending: true,
+  }),
+  true,
+  'The first refocused movement state after a keyboard reset should only re-arm release observation, not silently unblock resume/retry.',
+);
+assert.equal(
+  shouldObserveMovementReleaseAfterReset({
+    movementInputActive: false,
+    postResetReleaseObservationPending: true,
+  }),
+  false,
+  'A still-idle keyboard after focus loss should keep waiting for observed movement before a later release can clear the gate.',
+);
+assert.equal(
+  shouldClearMovementReleaseRequirement({
+    movementInputActive: false,
+    postResetReleaseObservationPending: false,
+  }),
+  true,
+  'Once movement has been observed again after refocus, releasing it should clear the held-movement gate normally.',
 );
 assert.equal(
   shouldHandlePrimaryActionKey({ repeat: false }),

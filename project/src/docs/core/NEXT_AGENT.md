@@ -12,9 +12,9 @@
 Run mode: `integration`
 
 Ana hedef:
-Touch-capable headed browser'da ikinci structured human sample'i topla ve threat horizon + arena beat spectacle + beat callout + death snapshot + public shell pulse yuzeylerinin gercek oyuncuda clarity / excitement / retry desire tarafinda ne verdigini dogrula.
+Headed runtime varsa ikinci structured human sample'i topla; runtime hala blokluysa frozen identity koridorlarina donmeden focus-loss sonrasi stale `Space`/`Enter` ve mixed pointer+movement release semantiginde kalan son hybrid input bypass'ini ara ve tek bir source problemi olarak kapat.
 
-Sample scope'u:
+Runtime varsa sample scope'u:
 - threat horizon clarity
 - arena beat spectacle hissi
 - beat callout hissi
@@ -25,9 +25,14 @@ Sample scope'u:
 - WebKit/mobile feedback audio cue'lari
 - fairness/readability hissi
 
+Runtime yoksa source scope'u:
+- focus-loss / blur sonrasi stale `Space`/`Enter` davranisi
+- mixed pointer+movement release gate catisma noktasi
+- tek bug + dar regression; frozen beat/payoff/UI koridorlarina geri donme yok
+
 ## Success Criteria
 
-- `HUMAN_SIGNALS.md`e yeni tarihli, structured bir sample ekleniyor
+- Runtime varsa `HUMAN_SIGNALS.md`e yeni tarihli, structured bir sample ekleniyor
 - Sample threat horizon, arena beat spectacle, beat callout, death snapshot ve public shell pulse yuzeyleri icin keep / tune / revert karari birakiyor
 - Sample replay istegi ve mevcut mutation ailesi icin somut sinyal veriyor
-- Runtime hala blokluysa blokaj kisa not ediliyor; frozen koridorlari yeniden acmak yerine keyboard/pointer hybrid control path'inde kalan tek bir source problemi seciliyor ve Run #228-229 release gate ailesine regression eklenerek ilerleniyor
+- Runtime hala blokluysa blokaj kisa not ediliyor; frozen koridorlari yeniden acmak yerine hybrid control path'inde kalan tek bir stale held-input problemi kapanip regression ile kilitleniyor
