@@ -192,21 +192,35 @@ export const shouldRequirePointerReleaseObservationAfterFocusLoss = ({
 export const shouldAllowPointerPrimaryActionPress = ({
   pointer,
   pointerWasCancelled = false,
-  releaseRequired = false,
+  movementReleaseRequired = false,
+  pointerReleaseRequired = false,
+  keyReleaseRequired = false,
 }: {
   pointer?: Pick<
     Phaser.Input.Pointer,
     'isDown' | 'button' | 'event' | 'wasTouch' | 'primaryDown'
   > | null;
   pointerWasCancelled?: boolean;
-  releaseRequired?: boolean;
+  movementReleaseRequired?: boolean;
+  pointerReleaseRequired?: boolean;
+  keyReleaseRequired?: boolean;
 } = {}): boolean => {
   if (!shouldHandlePrimaryActionPointer(pointer)) {
     return false;
   }
 
-  if (!releaseRequired) {
+  if (
+    !hasPrimaryActionReleaseRequirement({
+      movementReleaseRequired,
+      pointerReleaseRequired,
+      keyReleaseRequired,
+    })
+  ) {
     return true;
+  }
+
+  if (movementReleaseRequired || keyReleaseRequired) {
+    return false;
   }
 
   return !isPrimaryPointerDown(pointer, pointerWasCancelled);

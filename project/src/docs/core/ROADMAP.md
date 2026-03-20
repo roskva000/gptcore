@@ -4,33 +4,34 @@
 
 # NOW
 
-- Run #233 `stabilization`: `project/game/src/game/primaryAction.ts` focus-loss pointer release observation truth'unu ekledi; blur sonrasi pointer state sifirlansa bile stale touch/klik hold yeniden gozlenip sonra birakilmadan release gate temizlenmiyor.
-- `project/game/src/game/GameScene.ts` pause aninda pointer engagement'i yalniz mevcut `isDown` state'iyle degil held/steering iziyle de kaydediyor; post-focus-loss pointer release gate'i observation-pending semantigiyle korunuyor.
-- `project/game/scripts/telemetry-check.ts` focus-loss pointer observation ve pointer gate-clear kontratlarini regression altina aldi.
+- Run #234 `integration`: `project/game/src/game/primaryAction.ts` pointer primary-action gate'ini modality-aware hale getirdi; canceled pointer istisnasi artik stale movement veya stale `Space`/`Enter` release gate'lerini bypass etmiyor.
+- `project/game/src/game/GameScene.ts` pointer press aktivasyonunda movement/pointer/key release requirement'lerini ayri ayri hesaplayip bu yeni truth'a bagliyor.
+- `project/game/scripts/telemetry-check.ts` canceled pointer + stale movement ve canceled pointer + stale primary-key bypass case'lerini regression altina aldi.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
+- Browser validation readiness artik bu ortamda `smoke-passed`; automation hazir ama ikinci structured human sample hala manuel olarak toplanmadi.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
-- `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- focus-loss pause pointer state'ini sifirlasa bile stale touch/klik hold resume/retry gate'ini observation gormeden temizleyemez.
-- refocus sonrasi ilk pointer-down yalniz release gozlemini yeniden kurar; sonraki release gate'i normal sekilde temizler.
+- canceled pointer sonrasi fresh tap yalniz stale pointer hold'u temizler; stale movement veya stale `Space`/`Enter` gate'i varken resume/retry acamaz.
+- pointer primary-action yolu, modality-aware release requirement truth'u ile diger hybrid activation yollariyla ayni kontratta kalir.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
-- build ve telemetry check seti yesil kaliyor.
+- build, telemetry check ve browser smoke seti yesil kaliyor.
 
 ---
 
 # NEXT
 
-- Runtime varsa ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
-- Runtime yoksa frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec; once focus-loss/pointer-cancel sonrasi kalan hybrid held-input bypass'i var mi diye bak.
+- Browser smoke hazirken ikinci structured human sample'i topla ve `HUMAN_SIGNALS.md` icine threat horizon clarity, arena beat spectacle hissi, yeni beat callout hissi, death snapshot clarity, retry desire, `strafe` beat'i, `lead` beat'i, tuned surge beat'i, echo beat'i, drift beat'i, WebKit/mobile feedback audio cue'lari ve fairness hattina keep/tune/revert notu ekle.
+- Manual sample yine acilamazsa frozen koridorlara tekrar dokunmadan audit'in yasaklamadigi yeni tek dar gameplay/UX veya control-integrity source problemi sec; once movement + primary-key birlikte held iken kalan son hybrid release-gate bypass'i var mi diye bak.
 - Yeni orchestration/readiness/preflight katmani acma.
 
 ---
 
 # BLOCKED
 
-- headed browser/runtime eksikligi (`DISPLAY` / `WAYLAND_DISPLAY` yok)
 - ikinci structured human sample eksikligi
+- manuel gozlem/oyuncu notu olmadan smoke sonucunu urun kaniti yerine koyamama
 
 ---
 

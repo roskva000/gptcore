@@ -1181,7 +1181,7 @@ assert.equal(
       primaryDown: true,
       button: 0,
     },
-    releaseRequired: true,
+    pointerReleaseRequired: true,
   }),
   false,
   'Direct pointer presses should stay blocked while replay still requires a fresh release.',
@@ -1195,9 +1195,7 @@ assert.equal(
       button: 0,
       event: { isPrimary: true } as PointerEvent,
     },
-    releaseRequired: hasPrimaryActionReleaseRequirement({
-      movementReleaseRequired: true,
-    }),
+    movementReleaseRequired: true,
   }),
   false,
   'A fresh tap/click should not bypass a stale movement release gate just because the release came from another input modality.',
@@ -1211,9 +1209,7 @@ assert.equal(
       button: 0,
       event: { isPrimary: true } as PointerEvent,
     },
-    releaseRequired: hasPrimaryActionReleaseRequirement({
-      keyReleaseRequired: true,
-    }),
+    keyReleaseRequired: true,
   }),
   false,
   'A fresh tap/click should not bypass a stale Space/Enter release gate just because the release came from another input modality.',
@@ -1227,7 +1223,7 @@ assert.equal(
       button: 0,
       event: { isPrimary: true } as PointerEvent,
     },
-    releaseRequired: false,
+    pointerReleaseRequired: false,
   }),
   true,
   'A fresh primary touch press should be allowed again once the held-input release gate is cleared.',
@@ -1241,10 +1237,40 @@ assert.equal(
       button: 0,
     },
     pointerWasCancelled: true,
-    releaseRequired: true,
+    pointerReleaseRequired: true,
   }),
   true,
   'Canceled pointers should not keep direct replay/start presses blocked after the browser already released the old hold.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+      event: { isPrimary: true } as PointerEvent,
+    },
+    pointerWasCancelled: true,
+    movementReleaseRequired: true,
+  }),
+  false,
+  'Pointer cancel should only clear stale pointer ownership; it must not let a fresh tap bypass a held movement release gate.',
+);
+assert.equal(
+  shouldAllowPointerPrimaryActionPress({
+    pointer: {
+      isDown: true,
+      wasTouch: true,
+      primaryDown: true,
+      button: 0,
+      event: { isPrimary: true } as PointerEvent,
+    },
+    pointerWasCancelled: true,
+    keyReleaseRequired: true,
+  }),
+  false,
+  'Pointer cancel should not let a fresh tap bypass a stale Space/Enter release gate either.',
 );
 assert.equal(
   shouldClearPointerReleaseRequirement({

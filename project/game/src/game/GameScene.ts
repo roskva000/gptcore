@@ -1093,23 +1093,23 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePointerPrimaryAction(pointer: Phaser.Input.Pointer): void {
-    const releaseRequired = hasPrimaryActionReleaseRequirement({
-      movementReleaseRequired:
-        (this.phase === 'paused' && this.pauseResumeNeedsMovementRelease) ||
-        (this.phase === 'gameOver' && this.gameOverRetryNeedsMovementRelease),
-      pointerReleaseRequired:
-        (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
-        (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease),
-      keyReleaseRequired:
-        (this.phase === 'paused' && this.pauseResumeNeedsPrimaryActionKeyRelease) ||
-        (this.phase === 'gameOver' && this.gameOverRetryNeedsPrimaryActionKeyRelease),
-    });
+    const movementReleaseRequired =
+      (this.phase === 'paused' && this.pauseResumeNeedsMovementRelease) ||
+      (this.phase === 'gameOver' && this.gameOverRetryNeedsMovementRelease);
+    const pointerReleaseRequired =
+      (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
+      (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease);
+    const keyReleaseRequired =
+      (this.phase === 'paused' && this.pauseResumeNeedsPrimaryActionKeyRelease) ||
+      (this.phase === 'gameOver' && this.gameOverRetryNeedsPrimaryActionKeyRelease);
 
     if (
       !shouldAllowPointerPrimaryActionPress({
         pointer,
         pointerWasCancelled: this.pointerCancellationActive,
-        releaseRequired,
+        movementReleaseRequired,
+        pointerReleaseRequired,
+        keyReleaseRequired,
       })
     ) {
       return;

@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #233:
+Current deterministic survival headline after Run #234:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+pointer_cancel_cross_input_release_gate_integrity:
+current: Run #234 `project/game/src/game/primaryAction.ts` pointer press izin mantigini movement, pointer ve primary-key release requirement'lerini ayri yorumlayacak sekilde guncelliyor; `project/game/src/game/GameScene.ts` canceled pointer sonrasindaki fresh tap'i yalniz stale pointer gate'i icin serbest birakiyor
+baseline: onceki source `shouldAllowPointerPrimaryActionPress()` icine tek `releaseRequired` bool'u tasiyordu; `pointerWasCancelled=true` oldugunda stale movement veya stale `Space`/`Enter` gate'i olsa bile fresh tap bu ortak bool'u delip resume/retry acabiliyordu
+target: manuel browser sample'inda pointer-cancel sonrasi tap/click yolu stale movement veya stale primary-key hold'u capraz-modality olarak bypass etmesin; ayni anda yalniz stale pointer gate'i varsa meşru fresh tap tekrar calissin
+validation: `npm run telemetry:check`, `npm run build`, `npm run telemetry:validation-ready -- --with-smoke`
 
 focus_loss_pointer_release_gate_integrity:
 current: Run #233 `project/game/src/game/primaryAction.ts` focus-loss pointer observation helper'larini ekliyor; `project/game/src/game/GameScene.ts` pause aninda pointer engagement'i held/steering iziyle de kaydedip stale touch/klik hold'un blur sonrasi ancak yeniden gorulup sonra birakildiginda release gate'ini temizliyor

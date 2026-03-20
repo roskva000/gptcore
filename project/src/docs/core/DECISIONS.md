@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #234]
+
+Decision:
+`integration` modunda canceled pointer istisnasinin stale movement veya stale `Space`/`Enter` release gate'lerini fresh tap ile bypass etmesini kapat.
+
+Reason:
+Audit frozen gameplay/UX koridorlarina samplesiz donusu yasakliyor ve mevcut handoff hybrid control-integrity hattinda kalan son dar bypass'i aramayi istiyordu. `shouldAllowPointerPrimaryActionPress()` yalniz tek bir `releaseRequired` bool'u aliyor, `pointerWasCancelled=true` oldugunda ise bu bool hangi modality'den gelirse gelsin fresh tap'i serbest birakiyordu. Bu da canceled pointer sonrasinda stale movement veya stale primary-key gate'i varken pointer press'in resume/retry acabilmesine yol aciyordu.
+
+Impact:
+`project/game/src/game/primaryAction.ts` pointer press izin mantigini modality-aware hale getirdi; cancel istisnasi artik yalniz pointer gate'ine uygulanıyor. `project/game/src/game/GameScene.ts` pointer activation yolunda movement/pointer/key release requirement'lerini ayri ayri hesaplayip yeni helper'a geciyor. `project/game/scripts/telemetry-check.ts` canceled pointer + stale movement ve canceled pointer + stale primary-key negative case'lerini regression altina aldi. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Gercek manuel browser sample'i canceled pointer sonrasinda meşru fresh tap resume/retry niyetinin gereksiz sertlestigini gosterirse yalniz pointer press gate semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input manager'i, framework'u veya orchestration/readiness katmani acilmaz.
+
 ### [Run #233]
 
 Decision:

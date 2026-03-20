@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #234
+
+- `project/game/src/game/primaryAction.ts` `shouldAllowPointerPrimaryActionPress()` yolunu modality-aware hale getirdi; `pointercancel` istisnasi artik stale movement veya stale `Space`/`Enter` release gate'lerini bypass etmiyor
+- `project/game/src/game/GameScene.ts` pointer press aktivasyonunda movement/pointer/key release requirement'lerini ayri hesaplayip bu yeni truth'a gecirdi
+- `project/game/scripts/telemetry-check.ts` canceled pointer altinda stale movement ve stale primary-key gate'lerinin fresh tap ile delinmemesini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #233
 
 - `project/game/src/game/primaryAction.ts` focus-loss pointer release observation truth'unu ekledi; blur sonrasi pointer state sifirlansa bile stale touch/klik hold yeniden gozlenip sonra birakilmadan release gate temizlenmiyor
