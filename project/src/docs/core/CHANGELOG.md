@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #233
+
+- `project/game/src/game/primaryAction.ts` focus-loss pointer release observation truth'unu ekledi; blur sonrasi pointer state sifirlansa bile stale touch/klik hold yeniden gozlenip sonra birakilmadan release gate temizlenmiyor
+- `project/game/src/game/GameScene.ts` pause aninda pointer engagement'i yalniz anlik `isDown` ile degil held/steering iziyle de kaydediyor; post-focus-loss pointer gate'i observation-pending semantigiyle korunuyor
+- `project/game/scripts/telemetry-check.ts` focus-loss pointer observation, idle-after-blur ve gate-clear kontratlarini regression altina aldi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #232
 
 - `project/game/src/game/primaryAction.ts` movement, pointer ve `Space`/`Enter` release requirement'lerini tek truth'ta toplayan `hasPrimaryActionReleaseRequirement()` helper'ini ve held-action gate helper'ini ekledi

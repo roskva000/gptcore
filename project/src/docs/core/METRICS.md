@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #232:
+Current deterministic survival headline after Run #233:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+focus_loss_pointer_release_gate_integrity:
+current: Run #233 `project/game/src/game/primaryAction.ts` focus-loss pointer observation helper'larini ekliyor; `project/game/src/game/GameScene.ts` pause aninda pointer engagement'i held/steering iziyle de kaydedip stale touch/klik hold'un blur sonrasi ancak yeniden gorulup sonra birakildiginda release gate'ini temizliyor
+baseline: onceki source focus-loss pause sirasinda pointer gate'ini yalniz anlik `isDown` truth'una gore kuruyordu; browser blur pointer state'ini sifirlarsa stale pointer hold release gozlemi olmadan temizlenmis sayilabiliyordu
+target: sonraki headed sample focus-loss sonrasi tap/click resume/retry'nin daha niyetli ve daha az kazara tetiklenen bir control hissi verdigini gostersin; runtime blokluysa bu akis etrafinda yeni input framework'u veya manager'i acilmasin
+validation: `npm run telemetry:check`, `npm run build`
 
 cross_input_release_gate_integrity:
 current: Run #232 `project/game/src/game/primaryAction.ts` movement, pointer ve `Space`/`Enter` release requirement'lerini ortak `hasPrimaryActionReleaseRequirement()` truth'unda topluyor; `project/game/src/game/GameScene.ts` pause/game-over sirasinda tum primary activation yollarini bu ortak gate'e bagliyor

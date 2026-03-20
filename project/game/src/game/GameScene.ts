@@ -84,10 +84,12 @@ import {
   shouldAllowPointerPrimaryActionPress,
   shouldClearPrimaryActionKeyReleaseRequirement,
   shouldObserveMovementReleaseAfterReset,
+  shouldObservePointerReleaseAfterFocusLoss,
   shouldObservePrimaryActionKeyReleaseAfterReset,
   shouldClearMovementReleaseRequirement,
   shouldClearPointerReleaseRequirement,
   shouldRequirePointerReleaseAfterPause,
+  shouldRequirePointerReleaseObservationAfterFocusLoss,
 } from './primaryAction.ts';
 import {
   COLLISION_READY_OBSTACLE_DEPTH,
@@ -195,6 +197,7 @@ export class GameScene extends Phaser.Scene {
   private gameOverRetryNeedsPrimaryActionKeyRelease = false;
   private movementReleaseObservationPendingAfterReset = false;
   private primaryActionKeyReleaseObservationPendingAfterReset = false;
+  private pointerReleaseObservationPendingAfterFocusLoss = false;
   private playingHintHideAtElapsedMs: number | null = null;
   private firstDeathTargetReachedThisRun = false;
   private pausedRunElapsedMs = 0;
@@ -211,6 +214,7 @@ export class GameScene extends Phaser.Scene {
     this.pointerCancellationActive = true;
     this.pointerHoldActionStartedAt = null;
     this.pointerSteeringNeedsRelease = false;
+    this.pointerReleaseObservationPendingAfterFocusLoss = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.gameOverRetryNeedsPointerRelease = false;
 
@@ -221,12 +225,19 @@ export class GameScene extends Phaser.Scene {
   private readonly handlePointerRelease = (_pointer: Phaser.Input.Pointer): void => {
     this.pointerCancellationActive = false;
 
-    if (!shouldClearPointerReleaseRequirement(this.input.activePointer)) {
+    if (
+      !shouldClearPointerReleaseRequirement(
+        this.input.activePointer,
+        false,
+        this.pointerReleaseObservationPendingAfterFocusLoss,
+      )
+    ) {
       return;
     }
 
     this.pointerHoldActionStartedAt = null;
     this.pointerSteeringNeedsRelease = false;
+    this.pointerReleaseObservationPendingAfterFocusLoss = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.gameOverRetryNeedsPointerRelease = false;
   };
@@ -901,6 +912,19 @@ export class GameScene extends Phaser.Scene {
       this.primaryActionKeyReleaseObservationPendingAfterReset = false;
     }
 
+    if (
+      shouldObservePointerReleaseAfterFocusLoss({
+        pointerInputActive: isPrimaryPointerDown(
+          this.input.activePointer,
+          this.pointerCancellationActive,
+        ),
+        postFocusLossReleaseObservationPending:
+          this.pointerReleaseObservationPendingAfterFocusLoss,
+      })
+    ) {
+      this.pointerReleaseObservationPendingAfterFocusLoss = false;
+    }
+
     this.updatePlayerVelocity();
     this.previousMovementInputState = movementInputState;
 
@@ -1251,13 +1275,22 @@ export class GameScene extends Phaser.Scene {
       this.input.activePointer,
       this.pointerCancellationActive,
     );
+    const pointerEngagedBeforePause =
+      pointerInputActive ||
+      this.pointerHoldActionStartedAt !== null ||
+      this.pointerSteeringNeedsRelease;
     this.movementHoldActionStartedAt = null;
     this.pointerHoldActionStartedAt = null;
     this.pauseResumeNeedsMovementRelease = movementInputActive;
-    this.pauseResumeNeedsPointerRelease = pointerInputActive;
+    this.pauseResumeNeedsPointerRelease = pointerEngagedBeforePause;
     this.pauseResumeNeedsPrimaryActionKeyRelease = primaryActionKeyActive;
     this.movementReleaseObservationPendingAfterReset = movementInputActive;
     this.primaryActionKeyReleaseObservationPendingAfterReset = primaryActionKeyActive;
+    this.pointerReleaseObservationPendingAfterFocusLoss =
+      shouldRequirePointerReleaseObservationAfterFocusLoss({
+        pointerInputActive,
+        pointerEngagedBeforePause,
+      });
     this.resetKeyboardState();
     this.pauseStartedAt = this.time.now;
     this.physics.world.pause();
@@ -1322,6 +1355,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseResumeNeedsPrimaryActionKeyRelease = false;
     this.movementReleaseObservationPendingAfterReset = false;
     this.primaryActionKeyReleaseObservationPendingAfterReset = false;
+    this.pointerReleaseObservationPendingAfterFocusLoss = false;
     this.physics.world.resume();
     if (this.nextSpawnTimer) {
       this.nextSpawnTimer.paused = false;
@@ -1410,6 +1444,7 @@ export class GameScene extends Phaser.Scene {
     this.gameOverRetryNeedsPrimaryActionKeyRelease = false;
     this.movementReleaseObservationPendingAfterReset = false;
     this.primaryActionKeyReleaseObservationPendingAfterReset = false;
+    this.pointerReleaseObservationPendingAfterFocusLoss = false;
     this.updateHudChromeVisibility();
 
     this.obstacles.children.each((child) => {
@@ -1648,7 +1683,9 @@ export class GameScene extends Phaser.Scene {
     if (!isPrimaryPointerDown(this.input.activePointer, this.pointerCancellationActive)) {
       this.pointerHoldActionStartedAt = null;
       this.pointerSteeringNeedsRelease = false;
-      this.pauseResumeNeedsPointerRelease = false;
+      if (!this.pointerReleaseObservationPendingAfterFocusLoss) {
+        this.pauseResumeNeedsPointerRelease = false;
+      }
       this.gameOverRetryNeedsPointerRelease = false;
       return false;
     }
@@ -1867,6 +1904,7 @@ export class GameScene extends Phaser.Scene {
     this.pauseResumeNeedsMovementRelease = false;
     this.pauseResumeNeedsPointerRelease = false;
     this.pauseResumeNeedsPrimaryActionKeyRelease = false;
+    this.pointerReleaseObservationPendingAfterFocusLoss = false;
     this.gameOverRetryNeedsMovementRelease = movementInputActive;
     this.gameOverRetryNeedsPointerRelease = pointerInputActive;
     this.gameOverRetryNeedsPrimaryActionKeyRelease = this.hasPrimaryActionKeyInput();

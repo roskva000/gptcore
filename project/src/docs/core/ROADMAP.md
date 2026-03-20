@@ -4,16 +4,16 @@
 
 # NOW
 
-- Run #232 `stabilization`: `project/game/src/game/primaryAction.ts` movement, pointer ve `Space`/`Enter` release requirement'lerini tek truth'ta toplayan `hasPrimaryActionReleaseRequirement()` helper'ini ve held-action gate semantigini ekledi.
-- `project/game/src/game/GameScene.ts` pause/game-over sirasinda movement-fresh, movement-held, pointer-held, pointer-press ve primary-key press yollarini ortak release requirement'e bagladi; stale bir modality armed iken diger modality resume/retry acamiyor.
-- `project/game/scripts/telemetry-check.ts` movement/key -> pointer bypass ve held-action block kontratlarini regression altina aldi.
+- Run #233 `stabilization`: `project/game/src/game/primaryAction.ts` focus-loss pointer release observation truth'unu ekledi; blur sonrasi pointer state sifirlansa bile stale touch/klik hold yeniden gozlenip sonra birakilmadan release gate temizlenmiyor.
+- `project/game/src/game/GameScene.ts` pause aninda pointer engagement'i yalniz mevcut `isDown` state'iyle degil held/steering iziyle de kaydediyor; post-focus-loss pointer release gate'i observation-pending semantigiyle korunuyor.
+- `project/game/scripts/telemetry-check.ts` focus-loss pointer observation ve pointer gate-clear kontratlarini regression altina aldi.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- stale movement, pointer veya `Space`/`Enter` hold pause/game-over resume/retry gate'ini baska bir input modality ile artik delemez.
-- held movement ve held pointer activation yollari da artik armed release requirement varken bloke kaliyor.
+- focus-loss pause pointer state'ini sifirlasa bile stale touch/klik hold resume/retry gate'ini observation gormeden temizleyemez.
+- refocus sonrasi ilk pointer-down yalniz release gozlemini yeniden kurar; sonraki release gate'i normal sekilde temizler.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build ve telemetry check seti yesil kaliyor.
 

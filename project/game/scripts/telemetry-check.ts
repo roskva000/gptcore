@@ -72,8 +72,10 @@ import {
   shouldClearPointerReleaseRequirement,
   shouldHandlePrimaryActionKey,
   shouldHandlePrimaryActionPointer,
+  shouldObservePointerReleaseAfterFocusLoss,
   shouldObservePrimaryActionKeyReleaseAfterReset,
   shouldObserveMovementReleaseAfterReset,
+  shouldRequirePointerReleaseObservationAfterFocusLoss,
 } from '../src/game/primaryAction.ts';
 import {
   isGameplayViewportAnchorPhase,
@@ -1140,6 +1142,38 @@ assert.equal(
   'Canceled touch input should not force a stale release gate after focus loss or browser gesture interruption.',
 );
 assert.equal(
+  shouldRequirePointerReleaseObservationAfterFocusLoss({
+    pointerInputActive: false,
+    pointerEngagedBeforePause: true,
+  }),
+  true,
+  'Focus-loss pause should keep a release gate armed when pointer steering was active just before the browser reset pointer state.',
+);
+assert.equal(
+  shouldRequirePointerReleaseObservationAfterFocusLoss({
+    pointerInputActive: true,
+    pointerEngagedBeforePause: true,
+  }),
+  false,
+  'A still-observed held pointer should not add extra focus-loss observation work on top of the existing release gate.',
+);
+assert.equal(
+  shouldObservePointerReleaseAfterFocusLoss({
+    pointerInputActive: true,
+    postFocusLossReleaseObservationPending: true,
+  }),
+  true,
+  'The first refocused pointer-down state after focus loss should only re-arm release observation.',
+);
+assert.equal(
+  shouldObservePointerReleaseAfterFocusLoss({
+    pointerInputActive: false,
+    postFocusLossReleaseObservationPending: true,
+  }),
+  false,
+  'Idle pointer state after focus loss should keep waiting for a fresh pointer observation before release can clear the gate.',
+);
+assert.equal(
   shouldAllowPointerPrimaryActionPress({
     pointer: {
       isDown: true,
@@ -1218,7 +1252,7 @@ assert.equal(
     wasTouch: true,
     primaryDown: false,
     button: 0,
-  }),
+  }, false, false),
   true,
   'Pointer release should clear replay/resume release gates immediately instead of waiting for another update tick.',
 );
@@ -1229,9 +1263,19 @@ assert.equal(
     primaryDown: true,
     button: 0,
     event: { isPrimary: false } as PointerEvent,
-  }),
+  }, false, false),
   true,
   'A released or non-primary touch should clear replay/resume release gates instead of keeping stale touch ownership alive.',
+);
+assert.equal(
+  shouldClearPointerReleaseRequirement({
+    isDown: false,
+    wasTouch: true,
+    primaryDown: false,
+    button: 0,
+  }, false, true),
+  false,
+  'Pointer release should stay blocked until a post-focus-loss pointer hold is observed once and then released.',
 );
 assert.equal(
   shouldClearPointerReleaseRequirement({
@@ -1239,7 +1283,7 @@ assert.equal(
     wasTouch: false,
     button: 0,
     event: { buttons: 1 } as PointerEvent,
-  }),
+  }, false, false),
   false,
   'Release gates should stay armed while the primary pointer is still held down.',
 );

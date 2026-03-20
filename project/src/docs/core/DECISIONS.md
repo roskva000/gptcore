@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #233]
+
+Decision:
+`stabilization` modunda focus-loss pause sonrasi stale pointer hold'unun yeniden gozlenmeden release edilmis sayilmasini kapat.
+
+Reason:
+Runtime hala bloklu ve audit frozen identity/fairness/audio/mobile koridorlarina samplesiz donusu yasakliyor. Run #228-232 movement, pointer ve primary-key release gate'lerini modality ve cross-modality bazinda sertlestirdi; ancak focus-loss aninda browser pointer state'ini sifirlarsa pause aninda `isDown=false` gorunebiliyor ve stale touch/klik hold release gozlemi olmadan temizlenmis sayilabiliyordu. Kalan dar source problemi, pointer release gate'i icin blur-sonrasi observation eksikligiydi.
+
+Impact:
+`project/game/src/game/primaryAction.ts` focus-loss pointer observation helper'larini ekledi. `project/game/src/game/GameScene.ts` pause aninda pointer engagement'i held/steering iziyle de kaydedip blur-sonrasi pointer release gate'ini observation-pending semantigiyle koruyor; stale pointer hold ancak refocus sonrasi yeniden gorulup sonra birakildiginda temizleniyor. `project/game/scripts/telemetry-check.ts` focus-loss pointer observation ve gate-clear kontratlarini regression altina aldi. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek headed runtime sample'i bu pointer observation gate'inin meşru tap/click resume niyetini gereksiz surtundurdugunu gosterirse yalniz post-focus-loss pointer release semantigi dar kapsamda yeniden ayarlanir; bu bahaneyle yeni input manager'i, framework'u veya orchestration/preflight katmani acilmaz.
+
 ### [Run #232]
 
 Decision:

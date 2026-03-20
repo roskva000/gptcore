@@ -181,6 +181,14 @@ export const shouldRequirePointerReleaseAfterPause = (
   pointerWasCancelled = false,
 ): boolean => isPrimaryPointerDown(pointer, pointerWasCancelled);
 
+export const shouldRequirePointerReleaseObservationAfterFocusLoss = ({
+  pointerInputActive,
+  pointerEngagedBeforePause,
+}: {
+  pointerInputActive: boolean;
+  pointerEngagedBeforePause: boolean;
+}): boolean => pointerEngagedBeforePause && !pointerInputActive;
+
 export const shouldAllowPointerPrimaryActionPress = ({
   pointer,
   pointerWasCancelled = false,
@@ -210,7 +218,18 @@ export const shouldClearPointerReleaseRequirement = (
     'isDown' | 'button' | 'event' | 'wasTouch' | 'primaryDown'
   > | null,
   pointerWasCancelled = false,
-): boolean => !isPrimaryPointerDown(pointer, pointerWasCancelled);
+  postFocusLossReleaseObservationPending = false,
+): boolean =>
+  !isPrimaryPointerDown(pointer, pointerWasCancelled) &&
+  !postFocusLossReleaseObservationPending;
+
+export const shouldObservePointerReleaseAfterFocusLoss = ({
+  pointerInputActive,
+  postFocusLossReleaseObservationPending = false,
+}: {
+  pointerInputActive: boolean;
+  postFocusLossReleaseObservationPending?: boolean;
+}): boolean => postFocusLossReleaseObservationPending && pointerInputActive;
 
 export const shouldDelayPointerSteeringAfterPrimaryAction = ({
   source,
