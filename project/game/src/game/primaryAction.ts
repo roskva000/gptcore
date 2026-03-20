@@ -27,6 +27,14 @@ export const shouldHandlePrimaryActionKey = (
   event?: Pick<KeyboardEvent, 'repeat'> | null,
 ): boolean => !event?.repeat;
 
+export const shouldAllowPrimaryActionKeyPress = ({
+  event,
+  pointerReleaseRequired = false,
+}: {
+  event?: Pick<KeyboardEvent, 'repeat'> | null;
+  pointerReleaseRequired?: boolean;
+} = {}): boolean => shouldHandlePrimaryActionKey(event) && !pointerReleaseRequired;
+
 export const hasFreshMovementInput = (
   movementInputState: number,
   previousMovementInputState: number,

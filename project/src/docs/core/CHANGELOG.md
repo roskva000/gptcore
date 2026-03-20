@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #229
+
+- `project/game/src/game/primaryAction.ts` yeni `shouldAllowPrimaryActionKeyPress()` helper'i ile `Space`/`Enter` primary-action yolunu stale pointer release gate semantigine bagladi
+- `project/game/src/game/GameScene.ts` pause ve game-over sirasinda eski touch/click hold'u dururken keyboard primary-action retry/resume bypass'ini kapatti
+- `project/game/scripts/telemetry-check.ts` stale pointer hold altinda `Space`/`Enter` bloklamasi ve release-sonrasi tekrar izin verilmesi icin regression assert'leri ekledi
+- deterministic survival baseline `31.2s avg / 10.0s first death / 0% early` ve `40s` cap korundu; bu pass frozen mutation/fairness/audio/mobile koridorlarina donmedi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #228
 
 - `project/game/src/game/primaryAction.ts` yeni `shouldAllowFreshMovementPrimaryAction()` helper'i ile fresh movement start/retry/resume yolunu explicit release gate semantigine bagladi

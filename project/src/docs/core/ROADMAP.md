@@ -4,15 +4,15 @@
 
 # NOW
 
-- Run #228 `stabilization`: `project/game/src/game/primaryAction.ts` fresh movement primary-action yoluna explicit release gate ekledi; `project/game/src/game/GameScene.ts` pause/game-over sonrasi yeni yon ekleyerek istemsiz resume/retry tetiklenmesini kapatti.
-- `project/game/scripts/telemetry-check.ts` bu movement release gate'i icin yeni regression assert'leri ekledi; held input birakilmadan gelen yeni yon ekleri artik replay/resume bypass sayilmiyor.
+- Run #229 `stabilization`: `project/game/src/game/primaryAction.ts` yeni `shouldAllowPrimaryActionKeyPress()` helper'i ile `Space`/`Enter` yolunu stale pointer release gate'e bagladi; `project/game/src/game/GameScene.ts` pause/game-over sirasinda eski touch/click hold'u dururken primary-key retry/resume bypass'ini kapatti.
+- `project/game/scripts/telemetry-check.ts` stale pointer hold + primary-key regression assert'leri ekledi; explicit key press artik pointer release requirement'ini sessizce delmiyor.
 - Deterministic headline degismedi: `31.2s / 10.0s / 0%` ve `40s` simulation cap korunuyor.
 - Bu pass strafe/lead/surge/echo/drift knob'larini, threat horizon/death snapshot/spectacle copy'sini, fairness guard'larini, touch/mobile/audio stabilization'ini veya yeni validation/tooling katmani acmayi retune etmedi.
 - `npm run telemetry:check` ve `npm run build` yesil kaldi. Mevcut Vite script uyarisi ve buyuk bundle warning'i degismedi.
 
 Success markers:
-- pause ve game-over release gate'i artik yeni movement yonu eklenerek delinmiyor.
-- fresh movement primary-action yolu pointer gate semantigiyle hizalandi; replay/resume explicit release gerektiriyor.
+- pause ve game-over pointer release gate'i artik `Space`/`Enter` ile delinemiyor.
+- primary-key yolu stale pointer hold varken explicit olarak bloklaniyor; replay/resume temiz release gerektiriyor.
 - deterministic survival baseline `31.2s / 10.0s / 0%` olarak yesil kaliyor.
 - build ve telemetry check seti yesil kaliyor.
 

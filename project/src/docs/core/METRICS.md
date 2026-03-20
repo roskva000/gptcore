@@ -4,11 +4,17 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #228:
+Current deterministic survival headline after Run #229:
 - `31.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+
+pointer_release_gate_primary_key_integrity:
+current: Run #229 `project/game/src/game/primaryAction.ts` `shouldAllowPrimaryActionKeyPress()` helper'i ile `Space`/`Enter` yolunu stale pointer release gate'e bagliyor; `project/game/src/game/GameScene.ts` pause/game-over sirasinda eski touch/click hold'u surerken primary-key retry/resume'u blokluyor
+baseline: onceki source pause veya death aninda pointer hala held durumdayken `Space`/`Enter` yolunu hic pointer release requirement'ine baglamiyordu; boylece stale touch/click hold mevcutken keyboard primary-action replay/resume'u sessizce acabiliyordu
+target: sonraki headed sample replay/resume'un hybrid input altinda daha niyetli ve daha az kazara tetiklenen bir control hissi verdigini gostersin; runtime blokluysa bu akisa samplesiz yeni input framework'u veya manager'i eklenmesin
+validation: `npm run telemetry:check`, `npm run build`
 
 movement_release_gate_integrity:
 current: Run #228 `project/game/src/game/primaryAction.ts` fresh movement primary-action yolunu `shouldAllowFreshMovementPrimaryAction()` ile explicit release gate'e bagliyor; `project/game/src/game/GameScene.ts` pause ve game-over sonrasi yeni yon ekleyerek istemsiz resume/retry tetiklenmesini kapatiyor

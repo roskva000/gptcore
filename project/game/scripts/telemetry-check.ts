@@ -60,6 +60,7 @@ import {
   getResumeActionPromptText,
   getRetryActionPromptText,
   isPrimaryPointerDown,
+  shouldAllowPrimaryActionKeyPress,
   shouldAllowFreshMovementPrimaryAction,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldRequirePointerReleaseAfterPause,
@@ -784,6 +785,22 @@ assert.equal(
   shouldHandlePrimaryActionKey({ repeat: true }),
   false,
   'Held Space/Enter auto-repeat should not retrigger primary actions during waiting, pause, or game-over overlays.',
+);
+assert.equal(
+  shouldAllowPrimaryActionKeyPress({
+    event: { repeat: false } as KeyboardEvent,
+    pointerReleaseRequired: true,
+  }),
+  false,
+  'Space/Enter should stay blocked while pause/retry still requires the stale pointer hold to be fully released.',
+);
+assert.equal(
+  shouldAllowPrimaryActionKeyPress({
+    event: { repeat: false } as KeyboardEvent,
+    pointerReleaseRequired: false,
+  }),
+  true,
+  'Fresh primary-key presses should resume/start immediately once the stale pointer release gate is cleared.',
 );
 assert.equal(
   shouldHandlePrimaryActionPointer({ button: 0 }),

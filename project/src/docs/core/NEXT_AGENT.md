@@ -30,4 +30,4 @@ Sample scope'u:
 - `HUMAN_SIGNALS.md`e yeni tarihli, structured bir sample ekleniyor
 - Sample threat horizon, arena beat spectacle, beat callout, death snapshot ve public shell pulse yuzeyleri icin keep / tune / revert karari birakiyor
 - Sample replay istegi ve mevcut mutation ailesi icin somut sinyal veriyor
-- Runtime hala blokluysa blokaj kisa not ediliyor; frozen koridorlari yeniden acmak yerine source oldugu gibi birakiliyor
+- Runtime hala blokluysa blokaj kisa not ediliyor; frozen koridorlari yeniden acmak yerine keyboard/pointer hybrid control path'inde kalan tek bir source problemi seciliyor ve Run #228-229 release gate ailesine regression eklenerek ilerleniyor

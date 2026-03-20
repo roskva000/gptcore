@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #229]
+
+Decision:
+`stabilization` modunda pause/game-over pointer release gate'inin `Space`/`Enter` ile delinmesini kapat.
+
+Reason:
+Runtime hala bloklu ve audit samplesiz frozen identity/fairness/audio/mobile koridorlarina donusu yasakliyor. Bu durumda en dar savunulabilir source problemi, stale touch/click hold aktifken `primary-key` yolunun pointer release requirement'ini hic kontrol etmeden resume/retry acabilmesiydi. Run #228 movement bypass'ini kapatmisti; hybrid input path'inde kalan bu bosluk ayni control-integrity ailesinin somut kalan acigiydi.
+
+Impact:
+`project/game/src/game/primaryAction.ts` yeni `shouldAllowPrimaryActionKeyPress()` helper'ini ekledi. `project/game/src/game/GameScene.ts` `handlePrimaryAction()` icinde paused/game-over pointer release requirement'ini bu helper ile uyguluyor; oyuncu onceki pointer hold'unu birakmadan `Space`/`Enter` ile istemsiz resume/retry tetikleyemiyor. `project/game/scripts/telemetry-check.ts` stale pointer hold + primary-key bloklama ve release-sonrasi izin regresyonlarini ekledi. Deterministic headline `31.2s avg / 10.0s first death / 0% early` olarak korundu; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Gercek runtime sample'i explicit `Space`/`Enter` resume/retry niyetinin stale pointer hold varken bile serbest birakilmasinin daha dogru oldugunu gostermedikce bu gate korunur; yeniden ayar gerekirse yalniz primary-action release semantigi dar kapsamda ayarlanir, yeni input manager'i veya framework'u acilmaz.
+
 ### [Run #228]
 
 Decision:

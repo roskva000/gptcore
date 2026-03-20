@@ -76,12 +76,12 @@ import {
   getRetryActionPromptText as getPrimaryRetryActionPromptText,
   hasFreshMovementInput,
   isPrimaryPointerDown,
+  shouldAllowPrimaryActionKeyPress,
   shouldAllowFreshMovementPrimaryAction,
   shouldDelayPointerSteeringAfterPrimaryAction,
   shouldAllowPointerPrimaryActionPress,
   shouldClearMovementReleaseRequirement,
   shouldClearPointerReleaseRequirement,
-  shouldHandlePrimaryActionKey,
   shouldRequirePointerReleaseAfterPause,
 } from './primaryAction.ts';
 import {
@@ -936,7 +936,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   private handlePrimaryAction(event?: KeyboardEvent): void {
-    if (!shouldHandlePrimaryActionKey(event)) {
+    const pointerReleaseRequired =
+      (this.phase === 'paused' && this.pauseResumeNeedsPointerRelease) ||
+      (this.phase === 'gameOver' && this.gameOverRetryNeedsPointerRelease);
+
+    if (
+      !shouldAllowPrimaryActionKeyPress({
+        event,
+        pointerReleaseRequired,
+      })
+    ) {
       return;
     }
 
