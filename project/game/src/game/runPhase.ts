@@ -1,4 +1,5 @@
 import {
+  DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_RELEASE_WINDOW_SECONDS,
   DRIFT_SWEEP_WINDOW_START_SECONDS,
   DRIFT_SWEEP_WINDOW_SECONDS,
@@ -30,7 +31,7 @@ export type RunPhaseShiftAnnouncement = {
   title: string;
 };
 
-export type EndgameDriftCueId = 'release' | 'rebound' | 'late-sweep';
+export type EndgameDriftCueId = 'release' | 'rebound' | 'late-sweep' | 'aftershock';
 
 export type EndgameDriftCue = {
   accentColor: number;
@@ -71,7 +72,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep. Stretch the release lane and push for 60s.',
+      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep before an aftershock clamp tries to keep you pinned. Stretch the release lane and push for 60s.',
   },
   {
     id: 'overtime',
@@ -99,6 +100,10 @@ const DRIFT_RELEASE_WINDOW_END_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_SWEEP_WINDOW_END_SECONDS =
   DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS;
+const DRIFT_AFTERSHOCK_WINDOW_START_SECONDS =
+  DRIFT_SWEEP_WINDOW_END_SECONDS;
+const DRIFT_AFTERSHOCK_WINDOW_END_SECONDS =
+  DRIFT_AFTERSHOCK_WINDOW_START_SECONDS + DRIFT_AFTERSHOCK_WINDOW_SECONDS;
 
 export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | null => {
   if (progressSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS || progressSeconds >= SURVIVAL_GOAL_SECONDS) {
@@ -138,6 +143,21 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       rematchLabel: 'the late sweep snapback',
       accentColor: 0xfff0c7,
       body: 'The late sweep whips back across the arena. Read the cross-lane turn and keep the run alive through the snapback.',
+    };
+  }
+
+  if (
+    progressSeconds >= DRIFT_AFTERSHOCK_WINDOW_START_SECONDS &&
+    progressSeconds < DRIFT_AFTERSHOCK_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'aftershock',
+      title: 'AFTERSHOCK HOLD LIVE',
+      hudLabel: 'AFTERSHOCK LIVE',
+      snapshotLabel: 'AFTERSHOCK HOLD',
+      rematchLabel: 'the aftershock clamp',
+      accentColor: 0xff9eb1,
+      body: 'Late sweep does not fully let go. The aftershock clamp stays on the sweep side and tries to pin the escape lane one beat longer.',
     };
   }
 
@@ -284,7 +304,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Killbox releases sideways into drift. The first bend rebounds once, then a wider sweep keeps stretching the arena late.',
+          'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then an aftershock clamp tries to pin the exit.',
       };
     case 'overtime':
       return {

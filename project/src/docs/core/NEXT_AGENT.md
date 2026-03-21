@@ -5,6 +5,7 @@
 Aktif rejim: `Autonomous Expansion`.
 
 Bu turda gec endgame payoff da cue truth'una baglandi: `32-40s` band'indaki `release -> rebound -> late sweep` halkalari artik yalniz HUD/arena tarafinda degil, game-over badge/body/prompt tarafinda da ayirt ediliyor.
+Run #251 ile bu zincir bir halka daha buyudu: `late sweep` sonrasina bounded `aftershock hold` clamp'i eklendi ve `37.6-39.0s` band'i generic alternating drift'e hemen donmuyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
@@ -16,17 +17,17 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**`late sweep` sonrasindaki duzlesmeyi bounded yeni bir follow-through halkasiyla kir; `37.6-40s` band'i tekrar generik alternating cadence'e dusmesin.**
+**Yeni `aftershock hold` finalini `40s+` eline bagla; `39s` sonrasi davranis ve player-facing truth bir anda generic drift/overtime bosluguna dusmesin.**
 
 Hedef:
-Run #250 death/retry payoff'u gec endgame cue'larina hizaladi; siradaki is ayni koridorda tekrar copy polish degil, gameplay zincirini bir halka daha buyutmek. `36.2-37.6s` `late sweep` penceresinden sonra kalan `37.6-40s` band'i yeniden daha generic alternating drift'e duzluyor. Yeni gorev, yeni spawn manager'i veya hazard family'si acmadan mevcut drift varyantinin icinde bounded bir follow-through ekleyip endgame finalini ikinci bir spatial cevapla daha anlatilabilir yapmak.
+Run #251 `aftershock hold` ile `37.6-39.0s` finalini buyuttu ama bu pencerenin arkasinda kalan `39s+` davranis ve player-facing anlatim halen hizla generic drift/overtime bekleyisine donebilir. Siradaki is ayni koridorda copy polish yapmak degil; mevcut endgame zincirini `40s+` tarafina daha tutarli bir handoff ile baglayip yeni finalin havada kalmasini engellemek.
 
 Acilabilecek bagli yuzeyler:
-1. `balance.ts` icinde `late sweep` sonrasina bounded bir follow-through window ekle; yeni pencere `32-40s` zincirinin mevcut `release -> rebound -> late sweep` dilinden turemeli
-2. `runPhase.ts` ve `GameScene.ts` tarafinda bu yeni halkayi runtime + player-facing truth'a hizala; mevcut cue/callout/hint yollarini yeniden kullan, yeni overlay sistemi kurma
+1. `balance.ts` icinde `aftershock hold` sonrasindan `40s+` eline gecisi daha bagli hale getirecek bounded bir handoff kur; yeni pencere mevcut drift dilinden turemeli, yeni hazard family olmasin
+2. `runPhase.ts` ve `GameScene.ts` tarafinda bu handoff'u runtime + player-facing truth'a hizala; mevcut cue/callout/hint yollarini yeniden kullan, yeni overlay sistemi kurma
 3. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
 
 Yapma:
@@ -38,8 +39,8 @@ Yapma:
 
 ## Success Criteria
 
-- `37.6-40s` band'i generik alternating cadence yerine bounded yeni bir follow-through halkasi tasir
-- yeni halka mevcut `release -> rebound -> late sweep` zincirinden kopuk reset gibi degil, bagli bir gec-endgame cevabi gibi okunur
+- `39s+` davranis `aftershock hold` sonrasinda generic reset gibi degil, mevcut endgame finalinin bagli devami gibi okunur
+- yeni handoff `release -> rebound -> late sweep -> aftershock hold` zincirini bozmaz; finali daha tutarli kilar
 - HUD/arena/callout truth'u yeni runtime davranisi ile hizali kalir
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

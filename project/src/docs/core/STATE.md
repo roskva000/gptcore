@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #250
+Updated By: Codex Run #251
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: gec endgame olumlerinde `release -> rebound -> late sweep` halkalarindan hangisinde kopuldugunu death/retry payoff'una tasimak; late band retry istegi de uretsin
+- run mode: `mutation`
+- ana hedef: `late sweep` sonrasindaki duzlesmeyi bounded bir `aftershock hold` halkasiyla kirip `37.6-40s` band'ini tekrar olayli hale getirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/runPhase.ts` endgame cue truth'unu death/retry payoff tarafina da tasidi; `release`, `rebound` ve `late sweep` artik kendi `snapshotLabel` ve `rematchLabel` alanlariyla game-over yuzeyine baglaniyor
-- `project/game/src/game/deathPresentation.ts` badge onceligini structural phase/cue lehine cevirdi; gec olumler artik stale `10s BROKEN` etiketi yerine aktif cue badge'i, cue-spesifik death summary ve rematch hedefi tasiyor
-- ayni dosya endgame cue aktifken generic `Next beat` satirina dusmuyor; retry prompt dogrudan kacirilan halkayi rematch hedefi olarak satiyor
-- `project/game/scripts/telemetry-check.ts` yeni payoff truth'unu regression altina aldi; `33.8s` rebound olumunde badge/body/prompt artik cue-spesifik kontratla kilitli
+- `project/game/src/game/balance.ts` `late sweep` sonrasina `1.4s`lik yeni `aftershock hold` penceresi ekledi; drift varyanti bu pencere boyunca generic alternating cadence'e donmeden sweep tarafinda `30deg`lik daha sert bir clamp ve `0.04s`lik daha siki lag ile devam ediyor
+- `project/game/src/game/runPhase.ts` endgame cue truth'unu `aftershock` halkasina buyuttu; phase detail, shift announcement, death summary, badge ve rematch dili artik `release -> rebound -> late sweep -> aftershock hold` zincirini ayni truth ile tasiyor
+- `project/game/src/game/GameScene.ts` endgame hint/callout/spectacle yogunlugunu yeni `aftershock` cue'suna hizaladi; late-band follow-through ekranda da ayrisiyor
+- `project/game/scripts/telemetry-check.ts` ile `project/game/scripts/telemetry-reports.ts` yeni aftershock davranisi, cue payoff'i, controller string'i, rotation ve lag kontratini deterministic regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -72,6 +72,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` -> `ENDGAME` zinciri artik HUD/arena ve death/retry payoff tarafinda okunuyor; siradaki buyuk adim `36-40s` sonrasindaki duzlesmeyi yeni bounded davranisla kirip late band'e bir halka daha eklemek
+- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold` olarak hem runtime hem player-facing truth'ta okunuyor; siradaki buyuk adim ya bu finali `40s+` eline daha bagli bir overtime handoff'una tasimak ya da UI/identity tarafinda esit buyuklukte yeni bir cephe acmak
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

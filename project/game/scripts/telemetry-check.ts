@@ -4,6 +4,9 @@ import {
   getVerticalCalloutPlacement,
 } from '../src/game/deathOverlayLayout.ts';
 import {
+  DRIFT_AFTERSHOCK_ROTATION_DEGREES,
+  DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS,
+  DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_OBSTACLE_CADENCE,
   DRIFT_RELEASE_ROTATION_DEGREES,
   DRIFT_REBOUND_ROTATION_DEGREES,
@@ -296,6 +299,11 @@ assert.equal(
   'The first rebound stays on the release side. Hold the opened lane before the wider sweep flips back across it. Next phase at 60s.',
   'Endgame detail should surface the live rebound window so the 32-40s chain reads like staged arena behavior instead of a single generic drift paragraph.',
 );
+assert.equal(
+  getRunPhaseDetailText(37.8),
+  'Late sweep does not fully let go. The aftershock clamp stays on the sweep side and tries to pin the escape lane one beat longer. Next phase at 60s.',
+  'The late band should keep a dedicated follow-through cue after the sweep so 37.6-40s does not flatten back into generic drift copy.',
+);
 assert.deepEqual(
   getEndgameDriftCue(32.2),
   {
@@ -335,6 +343,19 @@ assert.deepEqual(
   },
   'The late sweep should expose a separate cue so the second half of the chain does not collapse back into generic drift copy.',
 );
+assert.deepEqual(
+  getEndgameDriftCue(38),
+  {
+    id: 'aftershock',
+    title: 'AFTERSHOCK HOLD LIVE',
+    hudLabel: 'AFTERSHOCK LIVE',
+    snapshotLabel: 'AFTERSHOCK HOLD',
+    rematchLabel: 'the aftershock clamp',
+    accentColor: 0xff9eb1,
+    body: 'Late sweep does not fully let go. The aftershock clamp stays on the sweep side and tries to pin the escape lane one beat longer.',
+  },
+  'The late band follow-through should expose its own cue so the post-sweep window stays tellable instead of falling straight back to generic drift.',
+);
 assert.equal(
   getEndgameDriftCue(35.4),
   null,
@@ -356,6 +377,11 @@ assert.equal(
   'Bounded endgame deaths should surface the live cue as the fallback badge so late failures stay tellable on the death screen.',
 );
 assert.equal(
+  getRunPhaseReachedBadgeText(38),
+  'AFTERSHOCK HOLD',
+  'Deaths inside the post-sweep clamp should expose the new late follow-through badge instead of collapsing back to generic endgame wording.',
+);
+assert.equal(
   getRunPhaseDeathSummaryText(7.4),
   'Opening window snapped. Break 10s to start the ladder.',
   'Opening deaths should convert the miss into a clear next threshold instead of dumping generic survival-goal copy.',
@@ -371,6 +397,11 @@ assert.equal(
   'Late-run death summary should say which endgame ring broke instead of collapsing every 32-40s death into the same generic endgame line.',
 );
 assert.equal(
+  getRunPhaseDeathSummaryText(38),
+  'AFTERSHOCK HOLD snapped inside ENDGAME DRIFT. 22.0s short of OVERTIME.',
+  'The post-sweep follow-through should carry through to the death summary so late failures stay attributable in the retry payoff.',
+);
+assert.equal(
   getRunPhaseRetryGoalText(20),
   'Reach ENDGAME DRIFT in +12.0s',
   'Retry goal text should turn the next phase into an immediate rematch target.',
@@ -379,6 +410,11 @@ assert.equal(
   getRunPhaseRetryGoalText(33.8),
   'Rematch the rebound hold and carry it to 60s clear in +26.2s',
   'Late-run retry text should pitch the missed ring as the rematch target so endgame deaths feel worth replaying.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(38),
+  'Rematch the aftershock clamp and carry it to 60s clear in +22.0s',
+  'The post-sweep follow-through should become the retry target instead of dropping the player back to generic endgame phrasing.',
 );
 const lateEndgameDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
@@ -442,7 +478,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Killbox releases sideways into drift. The first bend rebounds once, then a wider sweep keeps stretching the arena late.',
+    body: 'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then an aftershock clamp tries to pin the exit.',
   },
   'Endgame should announce a lateral release out of killbox instead of sounding like a disconnected late-run reset.',
 );
@@ -641,8 +677,20 @@ assert.equal(
     survivalTimeSeconds: DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.2,
     runSpawnCount: 1,
   }),
+  'drift',
+  'A post-sweep aftershock window should keep the late band on a bounded drift follow-through instead of reverting to generic cadence immediately.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds:
+      DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      0.2,
+    runSpawnCount: 1,
+  }),
   'standard',
-  'Forced rebound and sweep windows should stay bounded instead of replacing the whole late phase with permanent drift pressure.',
+  'Forced rebound, sweep, and aftershock windows should stay bounded instead of replacing the whole late phase with permanent drift pressure.',
 );
 assert.equal(
   getObstacleVariant({
@@ -882,6 +930,26 @@ assert.deepEqual(
       getObstacleTravelDirection({
         spawnPoint: { x: 856, y: 300 },
         targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds:
+          DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.1,
+        variant: 'drift',
+        runSpawnCount: 3,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.866,
+    y: 0.5,
+  },
+  'The aftershock clamp should stay on the sweep side with a harder angle so the final late-band beat feels like a real follow-through instead of generic drift cadence.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
         variant: 'drift',
         runSpawnCount: DRIFT_OBSTACLE_CADENCE,
       }),
@@ -960,11 +1028,24 @@ assert.equal(
 );
 assert.equal(
   getObstacleTargetLagSeconds({
-    survivalTimeSeconds: DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.1,
+    survivalTimeSeconds:
+      DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.1,
+    variant: 'drift',
+  }),
+  DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS,
+  'The aftershock clamp should tighten lag again so the post-sweep follow-through feels like a pin on the crossed lane instead of a soft reset.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds:
+      DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      0.1,
     variant: 'drift',
   }),
   0,
-  'Later drift beats should drop the inherited lag once the bounded release-rebound-sweep chain is over.',
+  'Later drift beats should drop the inherited lag once the bounded release-rebound-sweep-aftershock chain is over.',
 );
 assert.equal(
   KILLBOX_ECHO_CADENCE_ROTATION_DEGREES,
@@ -975,6 +1056,11 @@ assert.equal(
   DRIFT_RELEASE_ROTATION_DEGREES,
   14,
   'The first drift handoff should stay milder than the full drift sweep so the release reads as a continuation of killbox rather than an instant hard reset.',
+);
+assert.equal(
+  DRIFT_AFTERSHOCK_ROTATION_DEGREES,
+  30,
+  'The aftershock clamp should hit harder than the late sweep so the final late-band follow-through reads like a real pin instead of generic drift cadence.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -2746,7 +2832,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 1\.6s killbox-release handoff at 14deg, a 1\.4s rebound at 28deg with 0\.16s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, before alternating 22deg travel rotation, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 1\.6s killbox-release handoff at 14deg, a 1\.4s rebound at 28deg with 0\.16s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 1\.4s aftershock clamp at 30deg with 0\.04s lag before alternating 22deg travel rotation, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

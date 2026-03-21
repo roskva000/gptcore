@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #251]
+
+Decision:
+`mutation` modunda `37.6-40s` band'ina bounded bir `aftershock hold` halkasi ekle; `late sweep` sonrasi drift tekrar generik alternating cadence'e donmesin.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #250 gec endgame zincirini death/retry payoff'una tasidi ama runtime davranis `late sweep` sonrasinda yeniden duzlesiyordu. Yeni spawn manager'i, yeni hazard family'si ya da overlay sistemi acmadan en yuksek etkili hamle, mevcut drift varyantinin icinde bir follow-through window daha tanimlayip ayni truth'u gameplay, cue ve deterministic regression tarafina yaymakti.
+
+Impact:
+`project/game/src/game/balance.ts` `late sweep` sonrasina `1.4s`lik `aftershock hold` penceresi ekledi; bu pencere `30deg` clamp ve `0.04s` lag ile sweep tarafinda bir beat daha pinliyor. `project/game/src/game/runPhase.ts` yeni `aftershock` cue truth'unu ekledi; phase detail, endgame announcement, badge, death summary ve retry hedefi artik `release -> rebound -> late sweep -> aftershock hold` zincirini ayni yerden okuyor. `project/game/src/game/GameScene.ts` endgame hint/callout yogunlugunu yeni cue'ya hizaladi. `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni cue, variant forcing, travel rotation, target lag ve controller anlatimini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni `aftershock hold` halkasinin okunur bir late-band finali yerine cheap wipe, gereksiz pin veya HUD/callout gurultusu urettigini gosterirse yalniz bu pencerenin sure/rotation/lag truth'u ve cue siddeti dar kapsamda ayarlanir; bu bahaneyle yeni orchestration/readiness katmani, yeni spawn manager'i, yeni hazard family ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #250]
 
 Decision:

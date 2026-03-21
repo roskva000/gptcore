@@ -3208,7 +3208,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways, rebounds once, then the lane whips into a wider late sweep.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, then an aftershock clamp tries to pin the exit lane.';
     }
 
     if (phaseId === 'overtime') {
@@ -3230,6 +3230,8 @@ export class GameScene extends Phaser.Scene {
         return 0.75;
       case 'late-sweep':
         return 0.82;
+      case 'aftershock':
+        return 0.88;
       default:
         return 0;
     }
