@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #244]
+
+Decision:
+`integration` modunda killbox onset'indeki zorunlu `lead` cut'i kisa bir `echo` follow-through ile destekle; trap'i tek anlik ambush olmaktan cikarip ayni faz icinde ikinci bir spatial baski anina bagla.
+
+Reason:
+`NEXT_AGENT.md` ve audit ayni sorunu isaret ediyordu: Run #243 killbox girisini belirginlestirdi ama faz halen "tek spike sonra normal akisa donus" riski tasiyordu. Yeni hazard family, manager veya orchestration katmani acmadan en yuksek etkili hamle, mevcut `echo` varyantini killbox onset'inin hemen arkasinda kisa bir follow-through olarak kullanmakti.
+
+Impact:
+`project/game/src/game/balance.ts` killbox onset'indeki `lead` cut'tan sonra `1.2s` erken `echo` penceresi ve bu pencere icin `12deg` scissor rotation truth'u ekledi. `project/game/src/game/runPhase.ts` ile `project/game/src/game/GameScene.ts` killbox anlatimini artik "lead cut + shadow echo" semantigine tasiyor. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni follow-through davranisini deterministic proxy ve regression katmanina kilitledi; deterministic headline `29.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` oldu. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya manuel gozlem erken `shadow echo` follow-through'unu ucuz lane-wipe, okunmaz overlap veya killbox'ta gereksiz rahatlatan bir survive buff olarak gosterirse yalniz pencere uzunlugu ya da scissor rotation siddeti dar kapsamda ayarlanir; bu bahaneyle yeni hazard manager'i, event bus'i, orchestration/readiness veya ikinci bir phase framework'u acilmaz.
+
 ### [Run #243]
 
 Decision:

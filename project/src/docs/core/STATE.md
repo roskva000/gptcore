@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #243
+Updated By: Codex Run #244
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: `KILLBOX` girisini ilk gercek lead-cut ile okunur bir spatial trap anina cevirmek
+- run mode: `integration`
+- ana hedef: `KILLBOX` onset'indeki ilk trap'i kisa bir `echo` follow-through ile fazin geri kalanina tasimak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/balance.ts` killbox onset icin `1.4s` zorunlu lead-cut penceresi ekledi; ilk killbox spawn'i artik cadence sansina bakmadan `lead` oluyor, hedefe `0.22s` onde bakiyor ve hareket hattini `18deg` kirarak kacis cizgisini kesiyor
-- `project/game/src/game/GameScene.ts` yeni trajectory truth'unu runtime spawn akisina bagladi; killbox girisi artik yalniz hiz/cadence artisi degil arena icinde hissedilen ilk spatial trap gibi davraniyor
-- `project/game/src/game/runPhase.ts` ve `GameScene.ts` killbox anlatimini bu yeni truth ile hizaladi; phase dili artik "hard lead cut opens the trap" semantigini tasiyor
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.1s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
+- `project/game/src/game/balance.ts` killbox onset'indeki `1.4s` forced `lead` penceresinin hemen arkasina `1.2s` erken `echo` follow-through penceresi ekledi; trap artik tek cut'tan sonra bir de kacis hattini makaslayan ikinci bir baski veriyor
+- ayni dosya erken killbox `echo`su icin `12deg` scissor rotation truth'u ekledi; follow-through siradan gec `echo` cadence'i gibi duz target-lag chase degil, recovery lane'i caprazlayan bir spatial pinch gibi davraniyor
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox faz dilini "lead cut + shadow echo" gercegine hizaladi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
 
@@ -71,6 +71,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` onset'i artik ilk zorunlu lead-cut ile okunur bir spatial trap anina sahip; siradaki buyuk adim bu yeni trap dilini killbox sonrasina tasiyip `echo` veya baska mevcut beat ile ikinci bir spatial follow-through acmak
+- `KILLBOX` artik `lead cut + shadow echo` ile tek spike olmaktan cikti; siradaki buyuk adim bu erken follow-through'u `24s` gercek `echo` cadence'ine baglayip 18-24s band'ini daha tutarli bir state gibi hissettirmek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #243
+Updated By: Codex Run #244
 
 ---
 
@@ -16,6 +16,7 @@ Mevcut durum:
 - Run #241 ile coarse phase ladder aktif gameplay pressure'a baglandi
 - Run #242 ile `BREAKTHROUGH` onset'i warm backdrop burst + phase callout + compact hint zinciriyle ekranda okunur bir arena olayi haline geldi
 - Run #243 ile `KILLBOX` onset'i ilk zorunlu `lead` cut, daha agresif target lead ve acili trajectory kirilmasi ile gercek bir spatial trap anina donustu
+- Run #244 ile bu trap tek ambush olarak kalmadi; killbox onset'inin hemen arkasina kisa bir `shadow echo` follow-through'u girdi
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -24,14 +25,14 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 # NEXT
 
 ## Expansion Track A — Run Architecture
-- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut ile coarse run ladder artik gercek arena davranisina daha derin sindi
-- next slice: killbox sonrasi mevcut beat'lerle ikinci bir spatial follow-through ac; ilk trap'i tek anlik spike degil, run'in yeni state'i gibi okut
+- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut + erken `shadow echo` follow-through ile coarse run ladder artik gercek arena davranisina daha derin sindi
+- next slice: erken killbox follow-through'u `24s` gercek `echo` cadence'ine bagla; 18-24s band'i ayrik spike'lar degil, devam eden bir spatial state gibi hissettirsin
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
 - arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
-- ozellikle `echo` / mevcut threat family'lerinden biri killbox trap'inin devami gibi davranabilirse ac
+- ozellikle killbox icindeki erken `echo` ile `24s` sonrasi normal `echo` cadence'i arasindaki kopuklugu azalt
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

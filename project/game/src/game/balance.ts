@@ -24,6 +24,8 @@ export const LEAD_OBSTACLE_TARGET_LEAD_SECONDS = 0.14;
 export const KILLBOX_FORCED_LEAD_WINDOW_SECONDS = 1.4;
 export const KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS = 0.22;
 export const KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES = 18;
+export const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS = 1.2;
+export const KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES = 12;
 export const LEAD_OBSTACLE_TINT = 0xff9eb1;
 export const ECHO_OBSTACLE_UNLOCK_SECONDS = 24;
 export const ECHO_OBSTACLE_CADENCE = 6;
@@ -140,6 +142,12 @@ export const getObstacleVariant = ({
   runSpawnCount > 0 &&
   runSpawnCount % ECHO_OBSTACLE_CADENCE === 0
     ? 'echo'
+    : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS &&
+  survivalTimeSeconds <
+    LEAD_OBSTACLE_UNLOCK_SECONDS +
+      KILLBOX_FORCED_LEAD_WINDOW_SECONDS +
+      KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS
+      ? 'echo'
     : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS
       ? 'lead'
@@ -256,6 +264,32 @@ export const getObstacleTravelDirection = ({
         : crossProduct > 0
           ? KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES
           : -KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES;
+
+    return normalize(rotate(baseDirection, rotationDegrees));
+  }
+
+  if (
+    variant === 'echo' &&
+    survivalTimeSeconds !== undefined &&
+    survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS &&
+    survivalTimeSeconds <
+      LEAD_OBSTACLE_UNLOCK_SECONDS +
+        KILLBOX_FORCED_LEAD_WINDOW_SECONDS +
+        KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS &&
+    playerVelocity &&
+    (playerVelocity.x !== 0 || playerVelocity.y !== 0)
+  ) {
+    const movementDirection = normalize(playerVelocity);
+    const crossProduct =
+      baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
+    const rotationDegrees =
+      crossProduct === 0
+        ? Math.floor(runSpawnCount / ECHO_OBSTACLE_CADENCE) % 2 === 0
+          ? -KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
+          : KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
+        : crossProduct > 0
+          ? -KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
+          : KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES;
 
     return normalize(rotate(baseDirection, rotationDegrees));
   }

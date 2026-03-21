@@ -3129,7 +3129,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'killbox') {
-      return 'Killbox is live. The first lead cut opens the trap, then cadence and speed crush straight escapes.';
+      return 'Killbox is live. The first lead cut opens the trap, then a shadow echo catches the dodge before cadence and speed crush straight escapes.';
     }
 
     if (phaseId === 'endgame') {

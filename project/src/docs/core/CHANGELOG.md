@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #244
+
+- `project/game/src/game/balance.ts` killbox onset'indeki forced `lead` sonrasina `1.2s` erken `echo` follow-through penceresi ekledi; trap artik tek cut'tan sonra makaslayan ikinci bir baski katiyla devam ediyor
+- ayni dosya bu erken `echo` icin `12deg` scissor travel truth'u ekledi; follow-through siradan gec `echo` cadence'i gibi duz target-lag chase okumuyor
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox anlatimini `lead cut + shadow echo` semantigine tasidi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni killbox follow-through penceresini deterministic proxy ve regression katmanina kilitledi; survival snapshot `29.4s avg / 10.0s first death / 0% early` olarak guncellendi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #243
 
 - `project/game/src/game/balance.ts` killbox onset icin `1.4s` forced `lead` window ekledi; ilk killbox spawn'i artik `0.22s` ileri hedef ve `18deg` trajectory cut ile geliyor
