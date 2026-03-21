@@ -2,10 +2,10 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #263 ile aktif `near miss chase` runtime `lane reopen -> lane cut` slice'i artik yalniz motion degil; HUD, support, bounded callout ve spawn tint tarafinda da ayirt edilir hale geldi.
+Bu turda Run #264 ile `BREAKTHROUGH` band'i ilk kez gercek authored early-mid fork kazandi: forced `STRAFE FORK` ve `SURGE SNAP` runtime, HUD, callout ve death/retry truth'una girdi.
 
 Dikkat:
-- ayni near-miss koridorunda yeni copy/panel polish turleri acma
+- ayni breakthrough koridorunda yeni cadence/hazard family acma
 - bunu score/progression/meta sistemine buyutme
 - yeni orchestration / readiness / preflight / manager katmani acma
 - deterministic baseline'i gereksiz sarsma
@@ -14,31 +14,30 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**`BREAKTHROUGH` band'ini ilk gercek authored early-mid spatial fork'a cevir; mevcut `strafe` ve `surge` cadence'lerini birbirine bagli bir cevap zinciri gibi hissettir.**
+**Run #264'te acilan `STRAFE FORK -> SURGE SNAP` zincirini arena spectacle ve snapshot tonunda da ayirt edilir hale getir; gameplay truth'unu yeni mekanik acmadan sahneye sindir.**
 
 Hedef:
-Insan sinyalindeki "oyun hala cok kucuk" teshisine cevap vermek icin siradaki en iyi hamle ayni near-miss slice'ina yeni polish katmani eklemek degil; `10-18s` band'ini daha olayli ve anlatilabilir hale getirmek. `strafe` ve `surge` su an isimli ritim ama hala yeterince authored bir spatial olay gibi hissedilmeyebilir. Yeni hazard family/framework acmadan, mevcut varyant truth'lariyla bu band'i tek bir gercek fork gibi buyut.
+Erken-mid fork artik davranis ve HUD seviyesinde var, ama insan sinyalindeki "oyun hala cok kucuk" teshisine daha guclu cevap vermek icin bu authored olay sahnede de ayri hissettirmeli. Yeni hazard family/framework acmadan, mevcut breakthrough cue truth'unu arena glow/band/frame motion veya snapshot accent tarafinda ayri imzalarla okut.
 
 Acilabilecek bagli yuzeyler:
-1. `balance.ts` tarafinda `strafe -> surge` zincirine bounded bir spatial follow-through ver; erken-mid run yalniz cadence degil, tek bir authored cevap penceresi gibi okusun
-2. `runPhase.ts` ve `GameScene.ts` tarafinda bu yeni fork'u live hint/callout/support diliyle ayni truth'ta okut
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni early-mid fork kontrati kadar genislet
+1. `GameScene.ts` tarafinda `STRAFE FORK` ile `SURGE SNAP` icin bounded backdrop/frame/band motion farki ekle
+2. gerekiyorsa `runPhase.ts` cue accent truth'unu bu sahne imzasini destekleyecek kadar genislet
+3. `telemetry-check.ts` assert'lerini yalniz bu yeni spectacle/snapshot kontrati kadar genislet
 
 Yapma:
-- yeni hazard family, yeni spawn manager'i veya phase rewrite acma
-- shell/public panel/retention tarafina dagilma
-- ayni anda endgame veya near-miss ailesine ikinci tema ekleme
+- `balance.ts` icinde yeni cadence veya yeni forced window acma
+- near-miss, killbox ya da retention tarafina dagilma
+- yeni overlay manager'i, spectacle system'i veya phase framework'u yazma
 
 ---
 
 ## Success Criteria
 
-- `10-18s` `BREAKTHROUGH` band'i oyuncu icin daha authored ve anlatilabilir bir spatial fork gibi okunur
-- `strafe` ve `surge` ayrik isimler olmaktan cikıp bagli bir cevap zinciri hissi verir
-- yeni slice mevcut pacing/fairness'i bozmaz
-- deterministic survival headline anlamli sapma gostermeden kalir
+- oyuncu `10-18s` band'inda `STRAFE FORK` ile `SURGE SNAP`i yalniz HUD/callout degil sahne hareketi veya accent farkindan da ayirt eder
+- yeni spectacle authored fork'u buyutur ama cheap drama veya readability gurultusu yaratmaz
+- deterministic survival headline `29.4s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

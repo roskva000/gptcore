@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #263
+Updated By: Codex Run #264
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: Run #262'nin aktif `near miss chase` runtime `lane reopen -> lane cut` slice'ini player-facing live readability tarafinda ayirt edilir hale getirmek
+- run mode: `mutation`
+- ana hedef: `BREAKTHROUGH` band'ini ilk gercek authored early-mid spatial fork'a cevirmek; `strafe -> surge` artik bounded bir cevap zinciri gibi okunuyor
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,13 +26,14 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `integration`
-- ana hedef: Run #262'nin aktif `near miss chase` runtime `lane reopen -> lane cut` slice'ini yalniz hissedilen bir spawn kaymasi olmaktan cikarip canli HUD/support/callout dilinde de ayirt edilir hale getirmek
-- `project/game/src/game/nearMiss.ts` near-miss chase icin step-spesifik HUD/support/callout truth'unu ve `reopen` ile `cut` obstacle tint'lerini ekledi
-- `project/game/src/game/GameScene.ts` runtime step spawn oldugunda bounded `LANE REOPEN LIVE` / `LANE CUT LIVE` callout'u basiyor, support satirini bu aktif beat'e bagliyor ve near-miss HUD etiketini generic `CHASE LIVE` yerine ilgili step adi ile guncelliyor
-- ayni dosya near-miss runtime spawn'larinin tint'ini step'e gore ayiriyor; oyuncu kisa reopened lane ile geri kesen snapback beat'ini yalniz motion'dan degil obstacle rengi ve bounded callout'tan da okuyabiliyor
-- `project/game/scripts/telemetry-check.ts` yeni HUD/support/callout/tint helper kontratlarini regression altina aldi
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
+- run mode: `mutation`
+- ana hedef: `BREAKTHROUGH` band'ini ilk gercek authored early-mid spatial fork'a cevirmek; `strafe` ve `surge` yalniz isimli cadence olmaktan cikip tek bir bounded cevap zincirine baglandi
+- `project/game/src/game/balance.ts` `12.0-13.4s` icin forced `STRAFE FORK`, `15.0-16.6s` icin forced `SURGE SNAP` window'larini ekledi; strafe daha sert cross-lane cut aliyor, surge ise kisa forward lead ile yeniden kapanan cevap cizgisine donuyor
+- ayni dosya bu breakthrough pencereleri bittiginde normal cadence'e geri donuyor; yeni hazard family, spawn manager'i veya phase rewrite acilmadi
+- `project/game/src/game/runPhase.ts` breakthrough cue truth'unu ekledi; HUD/detail/support, death summary, badge ve retry-goal artik `STRAFE FORK` ile `SURGE SNAP` isimlerini tek kaynaktan okuyor
+- `project/game/src/game/GameScene.ts` breakthrough cue canliya girdiginde bounded hint + beat callout basiyor, phase HUD'ina aktif cue etiketini ekliyor ve ilk `10s` sonrasi breakthrough hint'ini yeni authored zincire hizaliyor
+- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni breakthrough fork kontratini ve guncel deterministic baseline'i kayda aldi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
 
 ---
 
@@ -74,8 +75,8 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `near miss chase` artik HUD + support + backdrop + death snapshot prompt + body/badge + impact marker + fatal spotlight + title + runtime spawn line tarafinda bagli bir dil tasiyor
-- bu slice simdi live readability katmanina da baglandi; ayni theme etrafindaki anlamli sonraki adim yeni bir runtime family acmak olmali, ayni near-miss copy polish koridorunda oyalanmak degil
-- ayni tema etrafinda kal; shell/tooling veya baska phase polish koridorlarina dagilma
+- `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` olarak adlandirilmis erken-mid spatial cevap zinciri tasiyor
+- bu slice gameplay + HUD + callout + death/retry truth'una baglandi; siradaki mantikli adim ayni truth'u arena spectacle ve snapshot tonunda da ayirt edilir kilmak, yeni cadence ailesi acmak degil
+- ayni tema etrafinda kal; score/meta/tooling veya baska phase polish koridorlarina dagilma
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

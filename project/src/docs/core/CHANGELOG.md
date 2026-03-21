@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #264
+
+- `project/game/src/game/balance.ts` `BREAKTHROUGH` icin ilk authored early-mid fork'u ekledi; `12.0-13.4s` forced `STRAFE FORK`, `15.0-16.6s` forced `SURGE SNAP` window'lari artik cadence beklemeden devreye giriyor
+- ayni dosya breakthrough strafe'i daha sert cross-lane rotation ile, surge'i ise kisa forward lead ve snapback rotation ile ayirtiyor; pencere bitince normal cadence geri donuyor
+- `project/game/src/game/runPhase.ts` yeni breakthrough cue truth'unu `STRAFE FORK` / `SURGE SNAP` title-body-hud-snapshot-rematch kontrati olarak ekledi
+- `project/game/src/game/GameScene.ts` breakthrough cue canliya girdiginde bounded hint + beat callout basiyor, phase HUD'ina aktif cue etiketini ekliyor ve `10s` sonrasi ilk breakthrough hint copy'sini yeni fork'a hizaliyor
+- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni fork kontratini ve guncel deterministic baseline'i (`29.4s avg / 10.0s first death / 0% early`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #263
 
 - `project/game/src/game/nearMiss.ts` near-miss chase icin step-spesifik `LANE REOPEN` / `LANE CUT` HUD ve support helper'larini, bounded live callout metinlerini ve step tint truth'unu ekledi

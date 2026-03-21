@@ -1,4 +1,7 @@
 import {
+  BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS,
+  BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS,
+  STRAFE_OBSTACLE_UNLOCK_SECONDS,
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
@@ -10,6 +13,7 @@ import {
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
   DRIFT_REBOUND_WINDOW_SECONDS,
   LEAD_OBSTACLE_UNLOCK_SECONDS,
+  SURGE_OBSTACLE_UNLOCK_SECONDS,
   SURVIVAL_GOAL_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
 } from './balance.ts';
@@ -32,6 +36,18 @@ export type RunPhaseState = {
 
 export type RunPhaseShiftAnnouncement = {
   body: string;
+  title: string;
+};
+
+export type BreakthroughCueId = 'strafe-fork' | 'surge-snap';
+
+export type BreakthroughCue = {
+  accentColor: number;
+  body: string;
+  hudLabel: string;
+  id: BreakthroughCueId;
+  rematchLabel: string;
+  snapshotLabel: string;
   title: string;
 };
 
@@ -112,6 +128,11 @@ const formatRangeLabel = (phase: RunPhaseDefinition, nextPhase: RunPhaseDefiniti
 };
 
 const RUN_PHASE_ONSET_DURATION_SECONDS = 1.6;
+const BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS =
+  STRAFE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS;
+const BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS = SURGE_OBSTACLE_UNLOCK_SECONDS;
+const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
+  BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_START_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_END_SECONDS =
@@ -134,6 +155,44 @@ const DRIFT_PRECLEAR_WINDOW_END_SECONDS =
   DRIFT_PRECLEAR_WINDOW_START_SECONDS + DRIFT_PRECLEAR_WINDOW_SECONDS;
 
 export const ENDGAME_CLEAR_CLIMB_START_SECONDS = DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS;
+
+export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | null => {
+  if (progressSeconds < TARGET_FIRST_DEATH_SECONDS || progressSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS) {
+    return null;
+  }
+
+  if (
+    progressSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
+    progressSeconds < BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'strafe-fork',
+      title: 'STRAFE FORK LIVE',
+      hudLabel: 'STRAFE FORK',
+      snapshotLabel: 'STRAFE FORK',
+      rematchLabel: 'the strafe fork',
+      accentColor: 0xffb88a,
+      body: 'Breakthrough peels sideways here. A bounded strafe fork reopens one lane first; take the fresh air before surge snaps the answer shut.',
+    };
+  }
+
+  if (
+    progressSeconds >= BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS &&
+    progressSeconds < BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'surge-snap',
+      title: 'SURGE SNAP LIVE',
+      hudLabel: 'SURGE SNAP',
+      snapshotLabel: 'SURGE SNAP',
+      rematchLabel: 'the surge snapback',
+      accentColor: 0xffd38a,
+      body: 'The fork cashes in here. Surge rushes back through the reopened lane with a forward snap; break across the closing line before killbox wakes up.',
+    };
+  }
+
+  return null;
+};
 
 export const getEndgameClearClimbState = (
   progressSeconds: number,
@@ -283,12 +342,18 @@ export const getRunPhaseStatusText = (progressSeconds: number): string => {
 
 export const getRunPhaseDetailText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
+  const breakthroughCue =
+    currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   if (nextPhase === null) {
     return currentPhase.detail;
+  }
+
+  if (breakthroughCue !== null) {
+    return `${breakthroughCue.body} Next phase at ${nextPhase.startSeconds}s.`;
   }
 
   if (endgameCue !== null) {
@@ -304,12 +369,18 @@ export const getRunPhaseDetailText = (progressSeconds: number): string => {
 
 export const getRunPhaseSupportText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
+  const breakthroughCue =
+    currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   if (nextPhase === null) {
     return `${currentPhase.title}: ${currentPhase.detail}`;
+  }
+
+  if (breakthroughCue !== null) {
+    return `${currentPhase.title} ${breakthroughCue.hudLabel}: ${breakthroughCue.body} Next shift ${nextPhase.startSeconds}s.`;
   }
 
   if (endgameCue !== null) {
@@ -325,13 +396,15 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
 
 export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | null => {
   const { currentPhase } = getRunPhaseState(progressSeconds);
+  const breakthroughCue =
+    currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   switch (currentPhase.id) {
     case 'breakthrough':
-      return 'BREAKTHROUGH';
+      return breakthroughCue?.snapshotLabel ?? 'BREAKTHROUGH';
     case 'killbox':
       return 'KILLBOX';
     case 'endgame':
@@ -345,6 +418,8 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
 
 export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
+  const breakthroughCue =
+    currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
@@ -355,6 +430,10 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
 
   if (currentPhase.id === 'opening') {
     return `Opening window snapped. Break ${TARGET_FIRST_DEATH_SECONDS}s to start the ladder.`;
+  }
+
+  if (breakthroughCue !== null) {
+    return `${breakthroughCue.snapshotLabel} snapped inside ${currentPhase.title}. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
   }
 
   if (endgameCue !== null) {
@@ -370,6 +449,8 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
 
 export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
+  const breakthroughCue =
+    currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
@@ -380,6 +461,10 @@ export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
 
   if (clearClimbState !== null) {
     return `Rematch ${clearClimbState.rematchLabel} and carry it to ${SURVIVAL_GOAL_SECONDS}s clear in +${secondsUntilNextPhase.toFixed(1)}s`;
+  }
+
+  if (breakthroughCue !== null) {
+    return `Rematch ${breakthroughCue.rematchLabel} and carry it to ${nextPhase.title} in +${secondsUntilNextPhase.toFixed(1)}s`;
   }
 
   if (endgameCue !== null) {
@@ -405,7 +490,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'breakthrough':
       return {
         title: 'BREAKTHROUGH LIVE',
-        body: 'Gate broken. The arena heats up and strafe/surge pressure starts stacking.',
+        body: 'Gate broken. A bounded strafe fork opens the early-mid lane, then surge snaps back through it before killbox wakes up.',
       };
     case 'killbox':
       return {

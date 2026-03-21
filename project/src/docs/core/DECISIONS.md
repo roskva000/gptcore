@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #264]
+
+Decision:
+`mutation` modunda `BREAKTHROUGH` band'ini ilk gercek authored early-mid spatial fork'a cevir; yeni hazard family acmadan `strafe -> surge` zincirini bounded runtime window, phase cue ve death/retry truth'u olarak bagla.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: son zincir near-miss readability tarafinda ilerledi ama insan sinyalindeki "oyun hala cok kucuk" teshisine cevap verecek bir sonraki hamle erken-mid run'da gercek bir authored olay acmakti. En dar ve yuksek etkili hareket; mevcut `balance.ts`, `runPhase.ts` ve `GameScene.ts` uzerinden `12-18s` band'ini generic cadence anlatisindan cikarip named `STRAFE FORK` ve `SURGE SNAP` pencerelerine cevirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `12.0-13.4s` icin forced `STRAFE FORK`, `15.0-16.6s` icin forced `SURGE SNAP` window'larini ekledi; strafe daha sert cross-lane cut aliyor, surge ise `0.08s` forward lead ile kapanan bir cevap cizgisine donuyor. `project/game/src/game/runPhase.ts` breakthrough cue truth'unu phase detail/support/badge/death/retry yardimcilarina yaydi. `project/game/src/game/GameScene.ts` bu cue'lari bounded hint ve beat callout olarak gosteriyor, phase HUD'ina aktif cue etiketini ekliyor. `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni kontrati ve guncel baseline'i kayda aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.4s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni breakthrough fork'unun erken-mid band'i anlatilir kilmak yerine cheap zigzag, unfair snapback veya callout spam'i urettigini gosterirse yalniz window sureleri, rotation siddeti ve cue yogunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni phase manager'i, orchestration/readiness katmani, ikinci bir hazard family ya da score/meta sistemi acilmaz.
+
 ### [Run #263]
 
 Decision:

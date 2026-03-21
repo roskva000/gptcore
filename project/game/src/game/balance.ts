@@ -18,6 +18,11 @@ export const STRAFE_OBSTACLE_UNLOCK_SECONDS = 12;
 export const STRAFE_OBSTACLE_CADENCE = 8;
 export const STRAFE_OBSTACLE_ROTATION_DEGREES = 14;
 export const STRAFE_OBSTACLE_TINT = 0xffb88a;
+export const BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS = 1.4;
+export const BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES = 20;
+export const BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS = 1.6;
+export const BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES = 16;
+export const BREAKTHROUGH_SURGE_SNAP_TARGET_LEAD_SECONDS = 0.08;
 export const LEAD_OBSTACLE_UNLOCK_SECONDS = 18;
 export const LEAD_OBSTACLE_CADENCE = 9;
 export const LEAD_OBSTACLE_TARGET_LEAD_SECONDS = 0.14;
@@ -96,6 +101,10 @@ const clamp = (value: number, min: number, max: number): number => Math.min(Math
 
 const KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS =
   LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS;
+const BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS =
+  STRAFE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS;
+const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
+  SURGE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
 const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_END_SECONDS =
   KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS + KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS;
 const KILLBOX_ECHO_BRIDGE_WINDOW_END_SECONDS =
@@ -106,6 +115,14 @@ const KILLBOX_ECHO_HANDOFF_WINDOW_END_SECONDS =
 const isKillboxEchoBridgeWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS &&
   survivalTimeSeconds < KILLBOX_ECHO_BRIDGE_WINDOW_END_SECONDS;
+
+const isBreakthroughStrafeForkWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds < BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS;
+
+const isBreakthroughSurgeSnapWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds < BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS;
 
 const isKillboxEchoFollowThroughWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS &&
@@ -279,9 +296,15 @@ export const getObstacleVariant = ({
   runSpawnCount % LEAD_OBSTACLE_CADENCE === 0
       ? 'lead'
     : survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds < BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS
+      ? 'strafe'
+    : survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
   runSpawnCount % STRAFE_OBSTACLE_CADENCE === 0
       ? 'strafe'
+    : survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
+        survivalTimeSeconds < BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS
+      ? 'surge'
     : survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
         runSpawnCount > 0 &&
         runSpawnCount % SURGE_OBSTACLE_CADENCE === 0
@@ -360,11 +383,41 @@ export const getObstacleTravelDirection = ({
     const rotationDegrees =
       crossProduct === 0
         ? Math.floor(runSpawnCount / STRAFE_OBSTACLE_CADENCE) % 2 === 0
-          ? STRAFE_OBSTACLE_ROTATION_DEGREES
-          : -STRAFE_OBSTACLE_ROTATION_DEGREES
+          ? isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
+            ? BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : STRAFE_OBSTACLE_ROTATION_DEGREES
+          : isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
+            ? -BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : -STRAFE_OBSTACLE_ROTATION_DEGREES
         : crossProduct > 0
-          ? -STRAFE_OBSTACLE_ROTATION_DEGREES
-          : STRAFE_OBSTACLE_ROTATION_DEGREES;
+          ? isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
+            ? -BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : -STRAFE_OBSTACLE_ROTATION_DEGREES
+          : isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
+            ? BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : STRAFE_OBSTACLE_ROTATION_DEGREES;
+
+    return normalize(rotate(baseDirection, rotationDegrees));
+  }
+
+  if (
+    variant === 'surge' &&
+    survivalTimeSeconds !== undefined &&
+    isBreakthroughSurgeSnapWindow(survivalTimeSeconds) &&
+    playerVelocity &&
+    (playerVelocity.x !== 0 || playerVelocity.y !== 0)
+  ) {
+    const movementDirection = normalize(playerVelocity);
+    const crossProduct =
+      baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
+    const rotationDegrees =
+      crossProduct === 0
+        ? Math.floor(runSpawnCount / SURGE_OBSTACLE_CADENCE) % 2 === 0
+          ? -BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES
+          : BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES
+        : crossProduct > 0
+          ? BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES
+          : -BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES;
 
     return normalize(rotate(baseDirection, rotationDegrees));
   }
@@ -513,7 +566,9 @@ export const getObstacleTargetLagSeconds = ({
   survivalTimeSeconds: number;
   variant: ObstacleVariant;
 }): number =>
-  variant === 'lead'
+  variant === 'surge' && isBreakthroughSurgeSnapWindow(survivalTimeSeconds)
+    ? -BREAKTHROUGH_SURGE_SNAP_TARGET_LEAD_SECONDS
+    : variant === 'lead'
     ? -(
         survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS
           ? KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS

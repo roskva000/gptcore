@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #263:
-- `29.7s` average survival
+Current deterministic survival headline after Run #264:
+- `29.4s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+breakthrough_authored_fork_surface:
+current: Run #264 `project/game/src/game/balance.ts` `12.0-13.4s` araliginda forced `STRAFE FORK`, `15.0-16.6s` araliginda forced `SURGE SNAP` window'larini aciyor; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni cue truth'unu HUD/detail/support/callout/death-retry zincirine tasiyor
+baseline: Run #263 state'inde `BREAKTHROUGH` generic phase/breakpoint dili tasiyordu; `strafe` ve `surge` unlock olsa da erken-mid band henuz tek bir authored spatial cevap zinciri gibi okunmayabilirdi
+target: sonraki browser veya manuel gozlem oyuncunun `10-18s` band'ini artik "once lane acildi, sonra surge geri kapatti" diye anlatabildigini gostersin; yeni cue cheap zigzag, unfair snapback veya callout spam'i gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 near_miss_chase_live_readability_surface:
 current: Run #263 `project/game/src/game/GameScene.ts` runtime `reopen` ve `cut` spawn step'lerini bounded live callout, support satiri ve near-miss HUD etiketiyle ayri ayri okutuyor; ayni dosya ilgili obstacle'lara `project/game/src/game/nearMiss.ts` icindeki step-spesifik tint truth'unu uyguluyor

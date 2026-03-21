@@ -93,6 +93,7 @@ import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   ENDGAME_CLEAR_CLIMB_START_SECONDS,
+  getBreakthroughCue,
   getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDetailText,
@@ -102,6 +103,7 @@ import {
   getRunPhaseShiftAnnouncement,
   getRunPhaseSupportText,
   getRunPhaseTimelineText,
+  type BreakthroughCue,
   type EndgameDriftCue,
   type RunPhaseId,
 } from './runPhase.ts';
@@ -404,6 +406,7 @@ export class GameScene extends Phaser.Scene {
   private beatCalloutHideAtElapsedMs: number | null = null;
   private lastAnnouncedRunBeatLabel: string | null = null;
   private lastShownRunPhaseId: RunPhaseId | null = null;
+  private lastShownBreakthroughCueId: BreakthroughCue['id'] | null = null;
   private lastShownEndgameDriftCueId: EndgameDriftCue['id'] | 'clear-climb' | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
@@ -1043,6 +1046,7 @@ export class GameScene extends Phaser.Scene {
     this.updateBestText();
     this.updateRunPhaseHud();
     this.maybeShowRunPhaseShiftHint(activeRunElapsedMs);
+    this.maybeShowBreakthroughCue(activeRunElapsedMs);
     this.maybeShowEndgameDriftCue(activeRunElapsedMs);
     this.updatePersonalBestChase();
     this.updateNearMissTracking(activeRunElapsedMs);
@@ -1494,6 +1498,7 @@ export class GameScene extends Phaser.Scene {
     this.nearMissLiveSpawnStepHideAtElapsedMs = null;
     this.beatCalloutHideAtElapsedMs = null;
     this.lastAnnouncedRunBeatLabel = null;
+    this.lastShownBreakthroughCueId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnRerolls = 0;
     this.runSpawnCount = 0;
@@ -1662,6 +1667,7 @@ export class GameScene extends Phaser.Scene {
     this.personalBestCelebratedThisRun = false;
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownRunPhaseId = null;
+    this.lastShownBreakthroughCueId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnCount = 0;
     this.tweens.killTweensOf([
@@ -3192,25 +3198,39 @@ export class GameScene extends Phaser.Scene {
 
   private updateRunPhaseHud(): void {
     const { currentPhase } = getRunPhaseState(this.survivalTime);
+    const breakthroughCue =
+      currentPhase.id === 'breakthrough' ? getBreakthroughCue(this.survivalTime) : null;
     const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(this.survivalTime) : null;
     const clearClimbState =
       currentPhase.id === 'endgame' ? getEndgameClearClimbState(this.survivalTime) : null;
     const phaseStatusText = getRunPhaseStatusText(this.survivalTime);
     this.phaseStatusText
       .setText(
-        endgameCue !== null
+        breakthroughCue !== null
+          ? `${phaseStatusText} | ${breakthroughCue.hudLabel}`
+          : endgameCue !== null
           ? `${phaseStatusText} | ${endgameCue.hudLabel}`
           : clearClimbState !== null
             ? `${phaseStatusText} | ${clearClimbState.hudLabel}`
             : phaseStatusText,
       )
       .setColor(
-        colorToCssHex(endgameCue?.accentColor ?? clearClimbState?.accentColor ?? currentPhase.accentColor),
+        colorToCssHex(
+          breakthroughCue?.accentColor ??
+            endgameCue?.accentColor ??
+            clearClimbState?.accentColor ??
+            currentPhase.accentColor,
+        ),
       );
     this.phaseDetailText
       .setText(getRunPhaseDetailText(this.survivalTime))
       .setColor(
-        colorToCssHex(endgameCue?.accentColor ?? clearClimbState?.accentColor ?? currentPhase.accentColor),
+        colorToCssHex(
+          breakthroughCue?.accentColor ??
+            endgameCue?.accentColor ??
+            clearClimbState?.accentColor ??
+            currentPhase.accentColor,
+        ),
       );
   }
 
@@ -3253,6 +3273,40 @@ export class GameScene extends Phaser.Scene {
       .setText(`${currentPhase.title}\n${shiftHint}`)
       .setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
+  }
+
+  private maybeShowBreakthroughCue(activeRunElapsedMs: number): void {
+    const breakthroughCue = getBreakthroughCue(this.survivalTime);
+
+    if (breakthroughCue === null) {
+      this.lastShownBreakthroughCueId = null;
+      return;
+    }
+
+    if (breakthroughCue.id === this.lastShownBreakthroughCueId) {
+      return;
+    }
+
+    this.lastShownBreakthroughCueId = breakthroughCue.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.hintText
+      .setText(`${breakthroughCue.title}\n${breakthroughCue.body}`)
+      .setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
+    this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${breakthroughCue.title}\n${breakthroughCue.body}`)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.92,
+      duration: 160,
+      ease: 'Quad.Out',
+    });
   }
 
   private maybeShowEndgameDriftCue(activeRunElapsedMs: number): void {
@@ -3469,7 +3523,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getFirstDeathTargetHintText(): string {
-    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nBREAKTHROUGH is live. Strafe and surge are awake now.`;
+    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nBREAKTHROUGH is live. The strafe fork opens first, then surge snaps back before killbox.`;
   }
 
   private getSurvivalGoalHintText(): string {
@@ -3486,8 +3540,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     const { currentPhase } = getRunPhaseState(this.survivalTime);
+    const breakthroughCue =
+      currentPhase.id === 'breakthrough' ? getBreakthroughCue(this.survivalTime) : null;
     const clearClimbState =
       currentPhase.id === 'endgame' ? getEndgameClearClimbState(this.survivalTime) : null;
+
+    if (breakthroughCue !== null) {
+      return `${breakthroughCue.title}\n${breakthroughCue.body}`;
+    }
 
     if (clearClimbState !== null) {
       return `${clearClimbState.title}\n${clearClimbState.body}`;
@@ -3623,7 +3683,7 @@ export class GameScene extends Phaser.Scene {
 
   private getRunPhaseShiftHintText(phaseId: RunPhaseId): string | null {
     if (phaseId === 'breakthrough') {
-      return 'Breakthrough is live. The arena warms up and the first pressure stack starts now.';
+      return 'Breakthrough is live. The lane forks sideways first, then surge snaps back through it before killbox.';
     }
 
     if (phaseId === 'killbox') {
