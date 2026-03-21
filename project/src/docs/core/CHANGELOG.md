@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #259
+
+- `project/game/src/game/nearMiss.ts` near-miss chase icin ortak accent/snapshot renk truth'unu ve sureye bagli visual-intensity helper'ini ekledi
+- `project/game/src/game/GameScene.ts` aktif `near miss chase` sirasinda backdrop glow/aura/band/frame'i kisa teal heat pulse'una bagladi; earned pencere artik sahnede de ayirt ediliyor
+- ayni dosya death snapshot prompt/background stilini near-miss chase aktifken ozel accent'e tasidi; overlay artik generic retry kutusu gibi acilmiyor
+- `project/game/src/game/deathPresentation.ts` near-miss chase snapshot'i icin style flag ve prompt renk kontratini ekledi
+- `project/game/scripts/telemetry-check.ts` yeni near-miss visual-intensity ve death snapshot style regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #258
 
 - `project/game/src/game/nearMiss.ts` near-miss zincirine `CHASE LIVE` helper'larini ekledi; yakin gecis artik countdown'lu HUD label'i, support copy'si ve retry prompt kancasi olan kisa omurlu bir earned pencere tasiyor

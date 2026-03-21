@@ -5,6 +5,9 @@ export type NearMissState = {
 };
 
 export const NEAR_MISS_CHASE_DURATION_MS = 2600;
+export const NEAR_MISS_CHASE_ACCENT_COLOR = 0x7ce8d7;
+export const NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND = '#18463f';
+export const NEAR_MISS_CHASE_SNAPSHOT_TEXT = '#d8fff4';
 
 export type NearMissSnapshot = {
   playerPosition: {
@@ -78,6 +81,16 @@ export const getNearMissChaseRetryText = (chainCount: number): string =>
   chainCount > 1
     ? `${chainCount}x near-miss chase snapped. Reopen that lane.`
     : 'Near-miss chase snapped. Reopen that lane.';
+
+export const getNearMissChaseVisualIntensity = (remainingMs: number): number => {
+  if (remainingMs <= 0) {
+    return 0;
+  }
+
+  const normalizedRemaining = Math.min(remainingMs / NEAR_MISS_CHASE_DURATION_MS, 1);
+
+  return 0.28 + normalizedRemaining * 0.72;
+};
 
 export const evaluateNearMiss = (
   snapshot: NearMissSnapshot,

@@ -4,7 +4,7 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda yakin gecisler ilk kez replay kancasina baglandi: Run #258 ile `near miss` pulse'u `CHASE LIVE` countdown'una dondu, support satiri aktif risk penceresini anlatmaya basladi ve olum aninda aktif chase varsa death snapshot prompt'u bunu dogrudan rematch hedefi olarak satiyor.
+Bu turda `near miss chase` slice'i sahneye de sindi: Run #259 ile aktif pencere backdrop glow/aura/band/frame uzerinde kisa bir teal heat state'i tasiyor ve death snapshot prompt'u generic overlay yerine bu earned state'in accent'iyle aciliyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
@@ -19,14 +19,14 @@ Dikkat:
 Run mode: `integration`
 
 Ana tema:
-**Yeni `near miss chase` slice'ini sahnede ve game-over snapshot'ta biraz daha sahiplen; oyuncu bu pencereyi yalniz yazida degil, kisa ama net bir earned state olarak hissetsin.**
+**Aktif `near miss chase` kopusunu death snapshot body/badge tarafinda daha anlatilabilir bir earned an yap; prompt tint'i artik var, siradaki is snapshot anlatimini tamamlamak.**
 
 Hedef:
-Run #258 near-miss'i kisa bir retry kancasina cevirdi ama slice halen agirlikla text/HUD tarafinda yasiyor. Siradaki en iyi hamle yeni score sistemi acmak degil; mevcut `near miss chase` truth'unu ya sahnede kisa bir arena/screen-state imzasi ile ya da game-over snapshot'ta daha sahiplenilen bir earned an ile biraz daha oyunsal hale getirmek. Tek tema disina tasma.
+Run #259 sahne heat'ini ve prompt accent'ini acti ama game-over snapshot halen bu state'i agirlikla prompt kutusunda tasiyor. Siradaki en iyi hamle yeni score sistemi acmak degil; mevcut `near miss chase` truth'unu badge veya body tarafinda kisa ama net bir `earned state snapped here` anlatisina cevirmek. Phase ilerlemesini silme, ama snapshot'i generic olmaktan biraz daha cikar.
 
 Acilabilecek bagli yuzeyler:
-1. `GameScene.ts` uzerinden aktif chase penceresine hafif ama net bir spectacle/HUD accent ekle; countdown'un yaninda sahnede de "earned heat" hissi olsun
-2. veya death snapshot body/stats tarafinda bu chase'in koptugunu daha anlatilabilir kil; mevcut prompt override'i tek basina kalmasin
+1. `deathPresentation.ts` icinde near-miss aktifse body veya badge'i kisa bir chase-kopus truth'u ile zenginlestir
+2. `GameScene.ts` overlay layout/styling tarafinda bu yeni tek satiri okunur tut
 3. yalniz gerekiyorsa `telemetry-check.ts` assert'lerini bu yeni tek slice icin dar kapsamda genislet
 
 Yapma:
@@ -38,8 +38,8 @@ Yapma:
 
 ## Success Criteria
 
-- oyuncu aktif `near miss chase` penceresini yalniz text degil, oyunsal olarak da ayirt eder
-- death snapshot bu pencereyi daha temiz bir replay kancasina cevirir
+- death snapshot aktif `near miss chase` kopusunu prompt disinda da tasir
+- phase ilerlemesi ve retry hedefi kaybolmadan snapshot daha anlatilabilir bir earned an olur
 - bu yeni slice mevcut pacing ve fairness'i bozmaz
 - deterministic survival headline anlamli sapma gostermeden kalir
 - `npm run telemetry:check` yesil kalir

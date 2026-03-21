@@ -67,11 +67,13 @@ import {
 import { getPointerSteeringVelocity } from './pointerSteering.ts';
 import {
   NEAR_MISS_CHASE_DURATION_MS,
+  NEAR_MISS_CHASE_ACCENT_COLOR,
   createNearMissState,
   evaluateNearMiss,
   getNearMissChaseHudText,
   getNearMissChaseRetryText,
   getNearMissChaseSupportText,
+  getNearMissChaseVisualIntensity,
   getNearMissLabel,
   isNearMissChaseActive,
   isNearMissHintActive,
@@ -142,6 +144,7 @@ const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
 const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_X = -34;
 const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_Y = -10;
+const NEAR_MISS_BACKDROP_PULSE_MS = 150;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
 const FATAL_OBSTACLE_DEPTH = 3;
@@ -1144,6 +1147,7 @@ export class GameScene extends Phaser.Scene {
       this.phase === 'playing' ? getEndgameClearClimbState(this.survivalTime) : null;
     const endgameCueIntensity = this.getEndgameDriftCueIntensity(endgameCue);
     const clearClimbIntensity = this.getEndgameClearClimbIntensity(clearClimbState);
+    const nearMissChaseIntensity = this.getNearMissChaseBackdropIntensity(time);
     const breakthroughOnsetAlphaBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughOnsetScaleBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughTellColor = 0xffc18a;
@@ -1151,105 +1155,147 @@ export class GameScene extends Phaser.Scene {
     const endgameCueScaleBoost = endgameCueIntensity * 0.12;
     const clearClimbAlphaBoost = clearClimbIntensity * 0.14;
     const clearClimbScaleBoost = clearClimbIntensity * 0.08;
+    const nearMissChaseAlphaBoost = nearMissChaseIntensity * 0.16;
+    const nearMissChaseScaleBoost = nearMissChaseIntensity * 0.1;
     const endgameCueColor =
       endgameCue?.accentColor ?? clearClimbState?.accentColor ?? spectacle.glowColor;
     const clearClimbBackdropMotion = this.getClearClimbBackdropMotion(clearClimbState, time);
+    const nearMissBackdropMotion = this.getNearMissBackdropMotion(time, nearMissChaseIntensity);
+    const accentColor =
+      breakthroughOnsetIntensity > 0
+        ? breakthroughTellColor
+        : nearMissChaseIntensity > 0
+          ? NEAR_MISS_CHASE_ACCENT_COLOR
+          : endgameCueIntensity > 0 || clearClimbIntensity > 0
+            ? endgameCueColor
+            : spectacle.glowColor;
 
     this.backdropBase.setFillStyle(spectacle.backgroundColor, 1);
     this.backdropGlow
       .setPosition(
-        ARENA_WIDTH / 2 + clearClimbBackdropMotion.glowOffsetX,
-        ARENA_HEIGHT / 2 + clearClimbBackdropMotion.glowOffsetY,
+        ARENA_WIDTH / 2 +
+          clearClimbBackdropMotion.glowOffsetX +
+          nearMissBackdropMotion.glowOffsetX,
+        ARENA_HEIGHT / 2 +
+          clearClimbBackdropMotion.glowOffsetY +
+          nearMissBackdropMotion.glowOffsetY,
       )
       .setFillStyle(
-        breakthroughOnsetIntensity > 0
-          ? breakthroughTellColor
-          : endgameCueIntensity > 0 || clearClimbIntensity > 0
-            ? endgameCueColor
-            : spectacle.glowColor,
+        accentColor,
         spectacle.glowAlpha +
           breakthroughOnsetAlphaBoost +
           endgameCueAlphaBoost +
-          clearClimbAlphaBoost,
+          clearClimbAlphaBoost +
+          nearMissChaseAlphaBoost,
       )
       .setScale(
         spectacle.glowScale +
           breakthroughOnsetScaleBoost +
           endgameCueScaleBoost +
-          clearClimbScaleBoost,
+          clearClimbScaleBoost +
+          nearMissChaseScaleBoost,
       );
     this.backdropAura
       .setPosition(
-        ARENA_WIDTH / 2 + clearClimbBackdropMotion.glowOffsetX * 0.7,
-        ARENA_HEIGHT / 2 + clearClimbBackdropMotion.glowOffsetY * 0.6,
+        ARENA_WIDTH / 2 +
+          clearClimbBackdropMotion.glowOffsetX * 0.7 +
+          nearMissBackdropMotion.glowOffsetX * 0.6,
+        ARENA_HEIGHT / 2 +
+          clearClimbBackdropMotion.glowOffsetY * 0.6 +
+          nearMissBackdropMotion.glowOffsetY * 0.6,
       )
       .setStrokeStyle(
-        4 + breakthroughOnsetIntensity * 2 + endgameCueIntensity * 1.6 + clearClimbIntensity,
-        breakthroughOnsetIntensity > 0
-          ? breakthroughTellColor
-          : endgameCueIntensity > 0 || clearClimbIntensity > 0
-            ? endgameCueColor
-            : spectacle.glowColor,
+        4 +
+          breakthroughOnsetIntensity * 2 +
+          endgameCueIntensity * 1.6 +
+          clearClimbIntensity +
+          nearMissChaseIntensity * 1.1,
+        accentColor,
         spectacle.auraAlpha +
           breakthroughOnsetAlphaBoost +
           endgameCueAlphaBoost +
-          clearClimbAlphaBoost,
+          clearClimbAlphaBoost +
+          nearMissChaseAlphaBoost,
       )
       .setScale(
         spectacle.auraScale +
           breakthroughOnsetScaleBoost +
           endgameCueScaleBoost +
-          clearClimbScaleBoost,
+          clearClimbScaleBoost +
+          nearMissChaseScaleBoost * 0.9,
       );
     this.backdropTopBand
-      .setPosition(ARENA_WIDTH / 2 + clearClimbBackdropMotion.topBandOffsetX, 0)
-      .setAngle(clearClimbBackdropMotion.topBandAngle)
+      .setPosition(
+        ARENA_WIDTH / 2 +
+          clearClimbBackdropMotion.topBandOffsetX +
+          nearMissBackdropMotion.topBandOffsetX,
+        0,
+      )
+      .setAngle(clearClimbBackdropMotion.topBandAngle + nearMissBackdropMotion.topBandAngle)
       .setFillStyle(
-        breakthroughOnsetIntensity > 0
-          ? breakthroughTellColor
-          : endgameCueIntensity > 0 || clearClimbIntensity > 0
-            ? endgameCueColor
-            : spectacle.edgeColor,
+        accentColor,
         spectacle.edgeAlpha +
           breakthroughOnsetAlphaBoost +
           endgameCueAlphaBoost * 0.92 +
-          clearClimbAlphaBoost * 0.86,
+          clearClimbAlphaBoost * 0.86 +
+          nearMissChaseAlphaBoost * 0.7,
       );
     this.backdropBottomBand
-      .setPosition(ARENA_WIDTH / 2 + clearClimbBackdropMotion.bottomBandOffsetX, ARENA_HEIGHT)
-      .setAngle(clearClimbBackdropMotion.bottomBandAngle)
+      .setPosition(
+        ARENA_WIDTH / 2 +
+          clearClimbBackdropMotion.bottomBandOffsetX +
+          nearMissBackdropMotion.bottomBandOffsetX,
+        ARENA_HEIGHT,
+      )
+      .setAngle(
+        clearClimbBackdropMotion.bottomBandAngle + nearMissBackdropMotion.bottomBandAngle,
+      )
       .setFillStyle(
-        breakthroughOnsetIntensity > 0
-          ? breakthroughTellColor
-          : endgameCueIntensity > 0 || clearClimbIntensity > 0
-            ? endgameCueColor
-            : spectacle.edgeColor,
+        accentColor,
         spectacle.edgeAlpha * 0.88 +
           breakthroughOnsetAlphaBoost * 0.88 +
           endgameCueAlphaBoost * 0.8 +
-          clearClimbAlphaBoost * 0.76,
+          clearClimbAlphaBoost * 0.76 +
+          nearMissChaseAlphaBoost * 0.62,
       );
     this.backdropGrid.setAlpha(
-      spectacle.gridAlpha + endgameCueAlphaBoost * 0.28 + clearClimbAlphaBoost * 0.22,
+      spectacle.gridAlpha +
+        endgameCueAlphaBoost * 0.28 +
+        clearClimbAlphaBoost * 0.22 +
+        nearMissChaseAlphaBoost * 0.18,
     );
     this.backdropFrame
       .setStrokeStyle(
-        3 + breakthroughOnsetIntensity + endgameCueIntensity * 0.8 + clearClimbIntensity * 0.7,
+        3 +
+          breakthroughOnsetIntensity +
+          endgameCueIntensity * 0.8 +
+          clearClimbIntensity * 0.7 +
+          nearMissChaseIntensity * 0.9,
         breakthroughOnsetIntensity > 0
           ? breakthroughTellColor
-          : endgameCueIntensity > 0 || clearClimbIntensity > 0
-            ? endgameCueColor
-            : spectacle.frameColor,
+          : nearMissChaseIntensity > 0
+            ? NEAR_MISS_CHASE_ACCENT_COLOR
+            : endgameCueIntensity > 0 || clearClimbIntensity > 0
+              ? endgameCueColor
+              : spectacle.frameColor,
         spectacle.frameAlpha +
           breakthroughOnsetAlphaBoost +
           endgameCueAlphaBoost +
-          clearClimbAlphaBoost,
+          clearClimbAlphaBoost +
+          nearMissChaseAlphaBoost,
       )
       .setPosition(
-        ARENA_WIDTH / 2 + clearClimbBackdropMotion.frameOffsetX,
-        ARENA_HEIGHT / 2 + clearClimbBackdropMotion.frameOffsetY,
+        ARENA_WIDTH / 2 +
+          clearClimbBackdropMotion.frameOffsetX +
+          nearMissBackdropMotion.frameOffsetX,
+        ARENA_HEIGHT / 2 +
+          clearClimbBackdropMotion.frameOffsetY +
+          nearMissBackdropMotion.frameOffsetY,
       )
-      .setScale(clearClimbBackdropMotion.frameScaleX, clearClimbBackdropMotion.frameScaleY);
+      .setScale(
+        clearClimbBackdropMotion.frameScaleX + nearMissBackdropMotion.frameScaleBoostX,
+        clearClimbBackdropMotion.frameScaleY + nearMissBackdropMotion.frameScaleBoostY,
+      );
   }
 
   private handlePrimaryAction(event?: KeyboardEvent): void {
@@ -2198,7 +2244,12 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.overlayPrompt
       .setText(deathPresentation.prompt)
+      .setBackgroundColor(deathPresentation.promptBackgroundColor)
+      .setColor(deathPresentation.promptTextColor)
       .setVisible(true);
+    this.fatalCallout.setColor(
+      deathPresentation.hasNearMissChaseSnapshot ? '#7ce8d7' : '#ff8a73',
+    );
     this.overlayStats
       .setText(deathPresentation.stats)
       .setVisible(true);
@@ -3491,6 +3542,68 @@ export class GameScene extends Phaser.Scene {
       frameOffsetY: -4 - stairStepPulse * 2,
       frameScaleX: 1.012,
       frameScaleY: 0.992,
+    };
+  }
+
+  private getNearMissChaseBackdropIntensity(time: number): number {
+    if (this.phase !== 'playing') {
+      return 0;
+    }
+
+    const remainingMs = this.getNearMissChaseRemainingMs(this.getActiveRunElapsedMs(time));
+
+    if (remainingMs <= 0) {
+      return 0;
+    }
+
+    const pulse = 0.82 + Math.max(0, Math.sin(time / NEAR_MISS_BACKDROP_PULSE_MS)) * 0.18;
+
+    return getNearMissChaseVisualIntensity(remainingMs) * pulse;
+  }
+
+  private getNearMissBackdropMotion(
+    time: number,
+    intensity: number,
+  ): {
+    bottomBandAngle: number;
+    bottomBandOffsetX: number;
+    frameOffsetX: number;
+    frameOffsetY: number;
+    frameScaleBoostX: number;
+    frameScaleBoostY: number;
+    glowOffsetX: number;
+    glowOffsetY: number;
+    topBandAngle: number;
+    topBandOffsetX: number;
+  } {
+    if (intensity <= 0) {
+      return {
+        glowOffsetX: 0,
+        glowOffsetY: 0,
+        topBandOffsetX: 0,
+        bottomBandOffsetX: 0,
+        topBandAngle: 0,
+        bottomBandAngle: 0,
+        frameOffsetX: 0,
+        frameOffsetY: 0,
+        frameScaleBoostX: 0,
+        frameScaleBoostY: 0,
+      };
+    }
+
+    const pulse = Math.sin(time / NEAR_MISS_BACKDROP_PULSE_MS);
+
+    return {
+      glowOffsetX: pulse * 10 * intensity,
+      glowOffsetY: -6 * intensity + Math.cos(time / 190) * 4 * intensity,
+      topBandOffsetX: 14 * intensity + pulse * 8 * intensity,
+      bottomBandOffsetX: -12 * intensity - pulse * 6 * intensity,
+      topBandAngle: 2.6 * intensity,
+      bottomBandAngle: -2.2 * intensity,
+      frameOffsetX: pulse * 3 * intensity,
+      frameOffsetY: -3 * intensity,
+      frameScaleBoostX: 0.012 * intensity,
+      frameScaleBoostY: -0.01 * intensity,
     };
   }
 

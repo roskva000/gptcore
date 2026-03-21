@@ -78,11 +78,14 @@ import {
 } from '../src/game/spawnGrace.ts';
 import {
   NEAR_MISS_CHASE_DURATION_MS,
+  NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
+  NEAR_MISS_CHASE_SNAPSHOT_TEXT,
   createNearMissState,
   evaluateNearMiss,
   getNearMissChaseHudText,
   getNearMissChaseRetryText,
   getNearMissChaseSupportText,
+  getNearMissChaseVisualIntensity,
   getNearMissLabel,
   isNearMissChaseActive,
   isNearMissHintActive,
@@ -248,6 +251,26 @@ assert.equal(
   nearMissPromptDeathPresentation.prompt,
   'Next lane: BREAK RIGHT\n2x near-miss chase snapped. Reopen that lane.\nRetry: Space, Enter, tap/click, or move',
   'A live near-miss chase should take over the retry middle line so the death screen feeds straight back into another risky run.',
+);
+assert.equal(
+  nearMissPromptDeathPresentation.hasNearMissChaseSnapshot,
+  true,
+  'A snapped near-miss chase should mark the death snapshot so the overlay can visibly own that earned state.',
+);
+assert.equal(
+  nearMissPromptDeathPresentation.promptBackgroundColor,
+  NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
+  'A snapped near-miss chase should tint the retry prompt background so the death snapshot keeps the lane-hot state visually alive.',
+);
+assert.equal(
+  nearMissPromptDeathPresentation.promptTextColor,
+  NEAR_MISS_CHASE_SNAPSHOT_TEXT,
+  'Near-miss chase snapshot text should keep its readable accent palette instead of falling back to the generic overlay styling.',
+);
+assert.equal(
+  deathPresentation.hasNearMissChaseSnapshot,
+  false,
+  'Normal deaths should keep the generic snapshot styling when no near-miss chase was active.',
 );
 assert.equal(
   deathPresentation.title,
@@ -2397,6 +2420,16 @@ assert.equal(
   getNearMissChaseRetryText(3),
   '3x near-miss chase snapped. Reopen that lane.',
   'A death during the chase window should turn the earned close-shave chain into a direct retry hook.',
+);
+assert.equal(
+  Number(getNearMissChaseVisualIntensity(NEAR_MISS_CHASE_DURATION_MS).toFixed(2)),
+  1,
+  'A fresh near-miss chase should drive the full heat accent so the arena visibly owns the earned state.',
+);
+assert.equal(
+  Number(getNearMissChaseVisualIntensity(0).toFixed(2)),
+  0,
+  'Expired near-miss chase state should fully drop its heat accent instead of reviving stale spectacle.',
 );
 assert.equal(
   isNearMissChaseActive(6400, 6400 + NEAR_MISS_CHASE_DURATION_MS),

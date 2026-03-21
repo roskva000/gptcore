@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #258:
+Current deterministic survival headline after Run #259:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+near_miss_chase_scene_snapshot_surface:
+current: Run #259 `project/game/src/game/GameScene.ts` aktif `near miss chase` sirasinda backdrop glow/aura/band/frame'i kisa teal heat pulse'una sokuyor; death snapshot prompt'u da `project/game/src/game/deathPresentation.ts` uzerinden ozel accent palette'i ile aciliyor. `project/game/src/game/nearMiss.ts` bu ortak heat/snapshot truth'unu renk + intensity helper'lariyla tasiyor
+baseline: Run #258 state'inde `near miss chase` countdown, support ve retry prompt tarafinda acilmisti ama arena ve game-over snapshot bu pencereyi halen buyuk oranda generic kendi stilleriyle gosteriyordu; earned state gorunur ama tam sahiplenilmis degildi
+target: sonraki browser veya manuel gozlem oyuncunun aktif chase penceresini kisa bir lane-hot state olarak sahnede ayirt ettigini ve olum aninda snapshot'in bunu generic retry kutusundan farkli bir an olarak tasidigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
 
 near_miss_chase_retry_surface:
 current: Run #258 `project/game/src/game/nearMiss.ts` yakin gecisi `CHASE LIVE` countdown'u olan kisa omurlu bir earned pencereye cevirdi; `project/game/src/game/GameScene.ts` bu truth'u near-miss HUD text'i, support satiri ve olum aninda death snapshot prompt'una bagliyor

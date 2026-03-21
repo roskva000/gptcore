@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #259]
+
+Decision:
+`integration` modunda aktif `near miss chase` slice'ini sahne ve death snapshot stiline sindir; yeni score/progression sistemi acmadan bu kisa earned pencereyi arena heat + overlay accent olarak okut.
+
+Reason:
+`AUDIT.md`, `NEXT_AGENT.md` ve insan sinyali ayni boslugu gosteriyordu: Run #258 replay kancasini acti ama truth halen agirlikla HUD/prompt katmaninda yasiyordu. En yuksek etkili dar entegrasyon; yeni orchestration/readiness katmani veya ayri retention sistemi acmadan mevcut `nearMiss.ts`, `GameScene.ts` ve `deathPresentation.ts` uzerinden bu pencereye kisa bir sahne sicakligi ve game-over accent sahiplenmesi vermekti.
+
+Impact:
+`project/game/src/game/nearMiss.ts` chase accent/snapshot palette truth'unu ve sureye bagli visual-intensity helper'ini ekledi. `project/game/src/game/GameScene.ts` aktif chase sirasinda backdrop glow/aura/band/frame'i teal heat pulse'una tasidi ve death snapshot prompt/callout stilini bu state'e bagladi. `project/game/src/game/deathPresentation.ts` near-miss aktifligi icin snapshot style kontrati tasiyor. `project/game/scripts/telemetry-check.ts` yeni visual-intensity ve snapshot style beklentilerini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni chase heat katmaninin ucuz neon drama, dikkat dagitan frame motion'u veya death snapshot'ta gereksiz renk gosterisine donustugunu gosterirse yalniz backdrop alpha/motion siddeti ve overlay accent yogunlugu dar kapsamda ayarlanir; bu bahaneyle yeni spectacle manager'i, overlay framework'u, readiness/preflight ya da ikinci bir retention sistemi acilmaz.
+
 ### [Run #258]
 
 Decision:

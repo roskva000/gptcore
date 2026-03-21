@@ -8,6 +8,10 @@ import {
 } from './telemetry.ts';
 import { getNextRunHorizonBeatText } from './runHorizon.ts';
 import {
+  NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
+  NEAR_MISS_CHASE_SNAPSHOT_TEXT,
+} from './nearMiss.ts';
+import {
   getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDeathSummaryText,
@@ -31,7 +35,10 @@ export type DeathPresentation = {
   badge: string | null;
   body: string;
   callout: string;
+  hasNearMissChaseSnapshot: boolean;
   prompt: string;
+  promptBackgroundColor: string;
+  promptTextColor: string;
   stats: string;
   title: string;
 };
@@ -173,12 +180,16 @@ export const getDeathPresentation = ({
     reachedSurvivalGoal,
   }),
   callout: 'DEATH SNAPSHOT',
+  hasNearMissChaseSnapshot: nearMissPromptText !== null,
   prompt: getPromptText({
     escapePromptTitle,
     retryPromptText,
     survivalTimeSeconds,
     nearMissPromptText,
   }),
+  promptBackgroundColor:
+    nearMissPromptText === null ? '#123f36' : NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
+  promptTextColor: nearMissPromptText === null ? '#d8fff4' : NEAR_MISS_CHASE_SNAPSHOT_TEXT,
   stats: getStatsText(sessionTelemetry),
   title: getTitleText(hitDirection),
 });
