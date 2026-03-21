@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #255
+
+- `project/game/src/game/runPhase.ts` `CLEAR CLIMB` truth'una `snapshotLabel` ve `rematchLabel` ekledi; `45.6s+` olumler artik fallback `ENDGAME/OVERTIME` dili yerine dogrudan `CLEAR CLIMB` payoff'u ile badge/summary/rematch uretiyor
+- ayni dosya `getRunPhaseReachedBadgeText()`, `getRunPhaseDeathSummaryText()` ve `getRunPhaseRetryGoalText()` yardimcilari uzerinden final-stretch olumlerini `60s CLEAR`e kalan farkla ozetliyor
+- `project/game/src/game/deathPresentation.ts` clear climb aktifken gereksiz `Next beat: 60s clear` ekini dusurdu; final prompt tek rematch hedefe indirildi
+- `project/game/scripts/telemetry-check.ts` yeni clear-climb death/payoff regression'lerini ve `50.0s` death presentation assert'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #254
 
 - `project/game/src/game/runPhase.ts` `preclear squeeze` sonrasina yeni `CLEAR CLIMB LIVE` truth'unu ekledi; `45.6-60s` band'i artik generic endgame paragrafina degil, kalan sureyi ve `60s` payoff'unu acikca satan authored bir final chase diline bagli

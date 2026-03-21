@@ -55,6 +55,8 @@ export type EndgameClearClimbState = {
   accentColor: number;
   body: string;
   hudLabel: string;
+  rematchLabel: string;
+  snapshotLabel: string;
   title: string;
 };
 
@@ -146,6 +148,8 @@ export const getEndgameClearClimbState = (
     title: 'CLEAR CLIMB LIVE',
     hudLabel: 'CLEAR CLIMB',
     accentColor: 0xfff0c7,
+    snapshotLabel: 'CLEAR CLIMB',
+    rematchLabel: 'the clear climb',
     body: `Preclear squeeze finally gives way to the clear line. Hold the opened route for ${secondsToClear.toFixed(1)}s more and carry the run clean into ${SURVIVAL_GOAL_SECONDS}s.`,
   };
 };
@@ -315,6 +319,8 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
 export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | null => {
   const { currentPhase } = getRunPhaseState(progressSeconds);
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
+  const clearClimbState =
+    currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   switch (currentPhase.id) {
     case 'breakthrough':
@@ -322,7 +328,7 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
     case 'killbox':
       return 'KILLBOX';
     case 'endgame':
-      return endgameCue?.snapshotLabel ?? 'ENDGAME';
+      return clearClimbState?.snapshotLabel ?? endgameCue?.snapshotLabel ?? 'ENDGAME';
     case 'overtime':
       return 'OVERTIME';
     default:
@@ -333,6 +339,8 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
 export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
+  const clearClimbState =
+    currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
     return `${currentPhase.title} reached. ${SURVIVAL_GOAL_SECONDS}s clear is banked.`;
@@ -346,15 +354,25 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
     return `${endgameCue.snapshotLabel} snapped inside ${currentPhase.title}. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
   }
 
+  if (clearClimbState !== null) {
+    return `${clearClimbState.snapshotLabel} snapped inside ${currentPhase.title}. ${secondsUntilNextPhase.toFixed(1)}s short of ${SURVIVAL_GOAL_SECONDS}s CLEAR.`;
+  }
+
   return `${currentPhase.title} reached. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
 };
 
 export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
+  const clearClimbState =
+    currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
     return `${currentPhase.title} live. Push past ${SURVIVAL_GOAL_SECONDS}s.`;
+  }
+
+  if (clearClimbState !== null) {
+    return `Rematch ${clearClimbState.rematchLabel} and carry it to ${SURVIVAL_GOAL_SECONDS}s clear in +${secondsUntilNextPhase.toFixed(1)}s`;
   }
 
   if (endgameCue !== null) {

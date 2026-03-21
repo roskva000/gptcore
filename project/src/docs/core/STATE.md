@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #254
+Updated By: Codex Run #255
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `integration`
-- ana hedef: `preclear squeeze` sonrasindaki `45.6s+ -> 60s clear` band'ini generic countdown olmaktan cikarip gorunur bir `clear climb` payoff'una cevirmek
+- ana hedef: `clear climb` truth'unu `45.6s+` death/retry payoff'una sindirip final-stretch olumlerini dogrudan kacirilan `60s clear` push'i gibi okutmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/runPhase.ts` `45.6s+` band'i icin yeni `CLEAR CLIMB LIVE` truth'unu ekledi; `preclear squeeze` bittikten sonra phase detail ve support satiri artik generic endgame paragrafina degil, kalan sureyi ve `60s` payoff'unu satan authored bir final chase diline baglaniyor
-- `project/game/src/game/telemetry.ts` aktif goal badge'ini gec finalde `CLEAR CLIMB | x.xs to 60s` metnine tasidi; `45.6s+` band'i yalniz countdown degil isimli bir payoff penceresi olarak okunuyor
-- `project/game/src/game/GameScene.ts` clear-climb truth'unu HUD renklerine, phase status/detail satirlarina, endgame callout/hint akisina ve arena spectacle yogunluguna bagladi; `preclear` sonrasinda ekran tekrar generic `60s` chase'e duzlesmiyor
-- `project/game/scripts/telemetry-check.ts` yeni clear-climb detail/state/goal-badge kontratini deterministic regression altina aldi
+- `project/game/src/game/runPhase.ts` `CLEAR CLIMB` state'ini `snapshotLabel` ve `rematchLabel` ile genisletti; `45.6s+` olumler artik generic `OVERTIME` esigi gibi degil, dogrudan `60s CLEAR` kacisi olarak ozetleniyor
+- ayni truth `getRunPhaseReachedBadgeText()`, `getRunPhaseDeathSummaryText()` ve `getRunPhaseRetryGoalText()` uzerinden game-over badge/body/prompt satirlarina tasindi; `50s` civari bir olum artik `CLEAR CLIMB` badge'i, `10.0s short of 60s CLEAR` summary'si ve dogrudan rematch hedefi uretiyor
+- `project/game/src/game/deathPresentation.ts` final stretch'te gereksiz `Next beat: 60s clear` ekini dusurup prompt'u tek rematch hedefe indirdi; son stretch mesaji ikili copy'ye dagilmiyor
+- `project/game/scripts/telemetry-check.ts` yeni clear-climb badge/summary/retry-goal ve `50.0s` death presentation kontratlarini deterministic regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -72,6 +72,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` olarak hem runtime hem player-facing truth'ta okunuyor; siradaki buyuk adim bu son `45.6-60s` yuzeyini death/retry payoff veya daha somut final arena davranisiyla tamamlamak
+- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` olarak runtime, HUD ve death/retry payoff tarafinda okunuyor; siradaki buyuk adim bu son `45.6-60s` yuzeyine daha somut arena davranisi veya fark edilir final-threat karakteri eklemek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

@@ -7,15 +7,21 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #254:
+Current deterministic survival headline after Run #255:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+endgame_clear_climb_death_retry_surface:
+current: Run #255 `project/game/src/game/runPhase.ts` `CLEAR CLIMB` state'ine snapshot/rematch truth'unu ekledi; `project/game/src/game/deathPresentation.ts` final stretch'te ikinci satiri tek rematch hedefe indiriyor. `45.6s+` olumler artik `CLEAR CLIMB` badge'i, `x.xs short of 60s CLEAR` body'i ve dogrudan rematch prompt'u ile final push olarak okunuyor
+baseline: Run #254 state'inde `clear climb` run icinde okunuyordu ama game-over/rematch yuzeyi bu son stretch'i halen kismen generic `OVERTIME` veya `Next beat: 60s clear` diliyle tasiyabiliyordu
+target: sonraki browser veya manuel gozlem `45.6s+` olumlerin artik daha anlatilabilir, daha retry-tetikleyici ve daha az ikili-copy hissi verdigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 endgame_clear_climb_payoff_surface:
-current: Run #254 `project/game/src/game/runPhase.ts` `45.6s+` band'ina yeni `CLEAR CLIMB LIVE` truth'unu ekledi; `project/game/src/game/telemetry.ts` aktif goal badge'ini `CLEAR CLIMB | x.xs to 60s` formuna tasidi ve `project/game/src/game/GameScene.ts` ayni truth'u HUD renkleri, live hint/callout ve arena spectacle'a bagladi. `preclear squeeze` sonrasinda `60s` yolu artik generic countdown degil, isimli bir gec-final payoff'u gibi okunuyor
+current: Run #255 state'inde Run #254'un `CLEAR CLIMB LIVE` truth'u korunuyor; ayni final-stretch payoff artik death/retry yuzeyine de sindigi icin `preclear squeeze` sonrasindaki `60s` yolu hem run icinde hem olum sonrasi ayni isimli final chase olarak okunuyor
 baseline: Run #253 state'inde `preclear squeeze` `41.2-45.6s` band'ini authored hale getirmisti ama bu pencerenin arkasindaki `45.6s -> 60s` yolu halen gorece soyut ve generic `60s clear` countdown'una dusme riski tasiyordu
 target: sonraki browser veya manuel gozlem `clear climb` yuzeyinin gec finali copy kalabaligi olmadan daha istenir, daha takip edilir ve `60s` yolunu daha anlatilabilir hale getirdigini gostersin
 validation: `npm run telemetry:check`, `npm run build`

@@ -8,6 +8,7 @@ import {
 } from './telemetry.ts';
 import { getNextRunHorizonBeatText } from './runHorizon.ts';
 import {
+  getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDeathSummaryText,
   getRunPhaseReachedBadgeText,
@@ -126,9 +127,10 @@ const getPromptText = ({
   survivalTimeSeconds: number;
 }): string => {
   const endgameCue = getEndgameDriftCue(survivalTimeSeconds);
+  const clearClimbState = getEndgameClearClimbState(survivalTimeSeconds);
   const retryTargetText = getRunPhaseRetryGoalText(survivalTimeSeconds);
   const retryPlanText =
-    endgameCue === null
+    endgameCue === null && clearClimbState === null
       ? `${retryTargetText} | ${getNextRunHorizonBeatText(survivalTimeSeconds)}`
       : retryTargetText;
 

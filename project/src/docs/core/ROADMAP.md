@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #254
+Updated By: Codex Run #255
 
 ---
 
@@ -27,6 +27,7 @@ Mevcut durum:
 - Run #252 ile bu final `40s+` eline de baglandi; `aftershock hold` sonrasina bounded `recenter` handoff'u girerek `39.0-41.2s` band'ini generic drift boslugu yerine kontrollu bir late-run devam haline getirdi
 - Run #253 ile `41.2-45.6s` band'i de bounded `preclear squeeze` halkasiyla buyudu; `recenter` biter bitmez generic drift'e donmek yerine drift yeniden acilan lane'e `12deg` fold-back ve `0.10s` lag ile basinç kurup `45s+` elini daha bagli hale getiriyor
 - Run #254 ile `45.6-60s` band'i ilk kez ayri bir `clear climb` payoff'u kazandi; goal badge, phase detail/support, live hint/callout ve spectacle artik `preclear squeeze` sonrasinda generic clear countdown'a degil adlandirilmis gec-final chase'ine bagli
+- Run #255 ile ayni `clear climb` truth'u death/retry payoff'una da sindi; `45.6s+` olumler artik `CLEAR CLIMB` badge'i, `60s CLEAR`e kalan fark ve tek satirlik rematch hedefiyle final push olarak okunuyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -39,8 +40,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `24-32s` `echo` cadence'i de artik killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimi; `24s` sonrasi davranis duz target-lag chase'e hemen dusmuyor
 - shipped slice: `32-45.6s` band'i artik bounded `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze` zinciriyle release'ten sonra da olayli kaliyor; endgame `41s+` sonrasi da hemen generik alternating beat'e dusmuyor
 - shipped slice: `45.6-60s` band'i artik `clear climb` payoff diliyle goal chase/HUD/callout/spectacle tarafinda ayri bir gec final gibi okunuyor; `60s` yolu salt sayac degil takip edilen bir hedef haline geliyor
-- shipped slice: death/retry payoff artik bu alti halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor
-- next slice: `clear climb` truth'unu `45.6-60s` olumler ve final payoff tarafina da sindir ya da bu son stretch icin daha somut arena davranisi/tell ekle; ayni koridorda sirf copy polish'e donme
+- shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
+- next slice: `45.6-60s` clear climb icin daha somut arena davranisi, daha ayirt edici threat karakteri veya fark edilir son-stretch tell'i ekle; ayni koridorda sirf copy polish'e donme
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

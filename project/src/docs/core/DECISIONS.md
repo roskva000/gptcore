@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #255]
+
+Decision:
+`integration` modunda `clear climb` payoff'unu `45.6s+` death/retry truth'una sindir; final-stretch olumleri generic `OVERTIME` basamagi gibi degil, dogrudan kacirilan `60s CLEAR` push'i gibi okut.
+
+Reason:
+`NEXT_AGENT.md` ve audit ayni boslugu isaret ediyordu: Run #254 canli HUD/callout tarafinda yeni `clear climb` payoff'unu acti ama game-over/rematch truth'u halen bu son stretch'i yeterince sahiplenmiyordu. Yeni bounded pencere, yeni overlay sistemi veya orchestration katmani acmadan en yuksek etkili hamle, mevcut `runPhase` helper'larini genisletip `deathPresentation` prompt'unu final-stretch icin tek rematch hedefine dusurmekti.
+
+Impact:
+`project/game/src/game/runPhase.ts` `EndgameClearClimbState` icine `snapshotLabel` ve `rematchLabel` ekledi; `getRunPhaseReachedBadgeText()`, `getRunPhaseDeathSummaryText()` ve `getRunPhaseRetryGoalText()` artik `45.6s+` olumleri `CLEAR CLIMB` badge'i, `x.xs short of 60s CLEAR` summary'si ve dogrudan rematch hedefiyle uretiyor. `project/game/src/game/deathPresentation.ts` clear climb aktifken fazladan `Next beat: 60s clear` ekini dusurup prompt'u tek payoff hattina indiriyor. `project/game/scripts/telemetry-check.ts` yeni `50.0s` death presentation, clear-climb badge/summary/retry-goal ve state kontratlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni final-stretch payoff'un death screen'i daha gurultulu, fazla copy'li veya cheap-fake-finish gibi hissettirdigini gosterirse yalniz clear-climb badge/body/prompt yogunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni overlay framework'u, yeni orchestration/readiness katmani, yeni hazard manager'i veya ek phase sistemi acilmaz.
+
 ### [Run #254]
 
 Decision:

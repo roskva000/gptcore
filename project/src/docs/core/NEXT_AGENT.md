@@ -4,8 +4,8 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda `preclear squeeze` sonrasi da yeni payoff acildi: `45.6-60s` band'i artik `CLEAR CLIMB LIVE` olarak goal badge, phase detail/support, live hint/callout ve arena spectacle tarafinda ayri bir gec final gibi okunuyor.
-Run #254 ile zincir `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` oldu; endgame finali `45.6s+` sonrasi yalniz generic `60s CLEAR` countdown'una duzlesmiyor.
+Bu turda `clear climb` death/retry payoff'una da sindi: `45.6-60s` olumler artik `CLEAR CLIMB` badge'i, `60s CLEAR`e kalan fark ve tek satirlik rematch hedefiyle okunuyor.
+Run #255 ile zincir `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` hem runtime hem death/retry truth'unda tamamladi; son stretch artik generic `OVERTIME` veya `Next beat` copy'sine duzlesmiyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
@@ -17,31 +17,31 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Yeni `clear climb` yuzeyini `45.6-60s` olum/payoff gercegine sindir; bu son stretch'te olen oyuncu generic `ENDGAME` ozeti degil, dogrudan kacirdigi final chase'i gorsun.**
+**`clear climb` son stretch'ine daha somut arena davranisi ekle; `45.6-60s` band'i artik yalniz payoff copy'si degil, ekranda fark edilir bir final threat karakteri tasisin.**
 
 Hedef:
-Run #254 `45.6-60s` band'ini run icinde okunur hale getirdi ama game-over/rematch truth'u bu son stretch'i halen tam tasimiyor. Siradaki is yeni bir bounded pencere daha acmak degil; mevcut `clear climb` gercegini death summary, badge ve retry hedefi tarafina sindirip `52s` civari bir olumun "late run'da oldum" yerine dogrudan kacirilan clear push gibi okunmasini saglamak.
+Run #255 final-stretch payoff'unu death/retry tarafinda kapatti. Siradaki is ayni metni tekrar cilalamak degil; `45.6-60s` band'ine mevcut zinciri bozmadan daha ayirt edici bir spatial davranis, hazard baski imzasi veya final tell eklemek. Oyuncu bu band'i hem run icinde hem olum sonrasi anlatabilmeli.
 
 Acilabilecek bagli yuzeyler:
-1. `runPhase.ts` ve `deathPresentation.ts` tarafinda `45.6-60s` olumlerini yeni `clear climb` truth'u ile badge/body/prompt'a bagla; yeni overlay sistemi kurma
-2. `GameScene.ts` tarafinda bu payoff'u mevcut game-over ve rematch hedef kanallarina sindir; yeni orchestration katmani acma
+1. `balance.ts` tarafinda yeni system acmadan mevcut `drift`/late-final davranisina bounded bir `clear climb` baski imzasi ekle; phase sayisini arttirma
+2. `runPhase.ts` ve `GameScene.ts` tarafinda bu yeni final behavior'u mevcut HUD/callout/spectacle truth'una sindir
 3. deterministic regression ekle; tooling genisletmesini ana is yapma
 
 Yapma:
-- `balance.ts` icine refleks olarak yeni bounded pencere daha ekleme
-- yeni shell framework'u, event bus'i, hazard manager'i veya preflight/readiness katmani kurma
-- yalniz copy churn yapip bunu ilerleme diye sunma
+- yeni orchestration / readiness / preflight / manager katmani acma
+- bu isi sirf copy/HUD polish'ine indirgeme
+- retention/shell/tooling'i ikinci tema olarak acma
 
 ---
 
 ## Success Criteria
 
-- `45.6-60s` olumleri generic `ENDGAME` kaybi gibi degil, dogrudan kacirilan `clear climb` payoff'u gibi okunur
-- yeni payoff dili `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` zincirini bozmaz
-- game-over badge/body/prompt truth'u mevcut runtime ve HUD truth'u ile hizali kalir
+- `45.6-60s` band'i run icinde diger endgame halkalarindan ayri, fark edilir bir final threat karakteri kazanir
+- yeni final behavior mevcut `clear climb` payoff ve death/retry truth'u ile hizali kalir
+- `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` zinciri bozulmaz
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

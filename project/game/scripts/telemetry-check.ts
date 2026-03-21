@@ -410,6 +410,8 @@ assert.deepEqual(
     title: 'CLEAR CLIMB LIVE',
     hudLabel: 'CLEAR CLIMB',
     accentColor: 0xfff0c7,
+    snapshotLabel: 'CLEAR CLIMB',
+    rematchLabel: 'the clear climb',
     body: 'Preclear squeeze finally gives way to the clear line. Hold the opened route for 10.0s more and carry the run clean into 60s.',
   },
   'The final 45.6s+ stretch should expose a dedicated clear-climb state so HUD and spectacle can sell the push to 60s as a payoff window.',
@@ -455,6 +457,11 @@ assert.equal(
   'Deaths after recenter should expose the preclear squeeze badge so 41s+ failures stay attributable before the long clear climb.',
 );
 assert.equal(
+  getRunPhaseReachedBadgeText(50),
+  'CLEAR CLIMB',
+  'Deaths in the final 45.6s+ stretch should surface the clear climb badge so the last push does not collapse back to generic endgame wording.',
+);
+assert.equal(
   getRunPhaseDeathSummaryText(7.4),
   'Opening window snapped. Break 10s to start the ladder.',
   'Opening deaths should convert the miss into a clear next threshold instead of dumping generic survival-goal copy.',
@@ -485,6 +492,11 @@ assert.equal(
   'The post-recenter squeeze should carry through to the death summary so 41s+ deaths still point at the authored late-run miss.',
 );
 assert.equal(
+  getRunPhaseDeathSummaryText(50),
+  'CLEAR CLIMB snapped inside ENDGAME DRIFT. 10.0s short of 60s CLEAR.',
+  'The final 45.6s+ death summary should frame the miss as a failed clear climb, not merely another generic step toward overtime.',
+);
+assert.equal(
   getRunPhaseRetryGoalText(20),
   'Reach ENDGAME DRIFT in +12.0s',
   'Retry goal text should turn the next phase into an immediate rematch target.',
@@ -508,6 +520,11 @@ assert.equal(
   getRunPhaseRetryGoalText(42),
   'Rematch the preclear squeeze and carry it to 60s clear in +18.0s',
   'The post-recenter squeeze should become the retry target so the 41s+ band still sells a concrete rematch hook.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(50),
+  'Rematch the clear climb and carry it to 60s clear in +10.0s',
+  'The final 45.6s+ retry goal should sell the missed clear push directly instead of routing the player through generic overtime wording.',
 );
 const lateEndgameDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
@@ -541,6 +558,39 @@ assert.equal(
   lateEndgameDeathPresentation.prompt,
   'Next lane: BREAK LEFT\nRematch the rebound hold and carry it to 60s clear in +26.2s\nRetry: Space, Enter, tap/click, or move',
   'Late endgame retry prompt should frame the active ring as the rematch target without falling back to a generic next-beat line.',
+);
+const clearClimbDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 0, offsetY: -1, label: 'up' },
+  survivalTimeSeconds: 50,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 5,
+    totalRuns: 5,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 9200,
+    retryCount: 5,
+    recentDeathTimes: [20.1, 29.7, 42.0, 47.4, 50.0],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '54.3s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK DOWN',
+});
+assert.equal(
+  clearClimbDeathPresentation.badge,
+  'CLEAR CLIMB',
+  'Final-stretch deaths should surface the clear climb badge so the player sees the missed finish window immediately.',
+);
+assert.equal(
+  clearClimbDeathPresentation.body,
+  'Run 50.0s. Best 54.3s.\nCLEAR CLIMB snapped inside ENDGAME DRIFT. 10.0s short of 60s CLEAR.',
+  'Final-stretch death body should explain that the player missed the named clear push, not just another generic endgame segment.',
+);
+assert.equal(
+  clearClimbDeathPresentation.prompt,
+  'Next lane: BREAK DOWN\nRematch the clear climb and carry it to 60s clear in +10.0s\nRetry: Space, Enter, tap/click, or move',
+  'Final-stretch retry prompt should push the player straight back toward the missed 60s clear instead of generic overtime phrasing.',
 );
 assert.equal(
   getRunPhaseTimelineText(20),
