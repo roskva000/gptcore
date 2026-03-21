@@ -6,9 +6,16 @@ import {
 import {
   DRIFT_OBSTACLE_CADENCE,
   DRIFT_RELEASE_ROTATION_DEGREES,
+  DRIFT_REBOUND_ROTATION_DEGREES,
+  DRIFT_REBOUND_TARGET_LAG_SECONDS,
+  DRIFT_REBOUND_WINDOW_SECONDS,
   DRIFT_RELEASE_WINDOW_SECONDS,
   DRIFT_OBSTACLE_ROTATION_DEGREES,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
+  DRIFT_SWEEP_ROTATION_DEGREES,
+  DRIFT_SWEEP_TARGET_LAG_SECONDS,
+  DRIFT_SWEEP_WINDOW_SECONDS,
+  DRIFT_SWEEP_WINDOW_START_SECONDS,
   ECHO_OBSTACLE_CADENCE,
   ECHO_OBSTACLE_TARGET_LAG_SECONDS,
   ECHO_OBSTACLE_UNLOCK_SECONDS,
@@ -285,7 +292,7 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(34),
-  'Killbox fold releases sideways, then drift keeps bending the lane into a wider lateral sweep. Stretch the release lane and push for 60s. Next phase at 60s.',
+  'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep. Stretch the release lane and push for 60s. Next phase at 60s.',
   'Endgame detail should read like a handoff out of killbox instead of a fresh unrelated cadence reset.',
 );
 assert.equal(
@@ -342,7 +349,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Killbox releases sideways into drift. The first bend opens a new lateral lane, then the sweep keeps stretching the arena late.',
+    body: 'Killbox releases sideways into drift. The first bend rebounds once, then a wider sweep keeps stretching the arena late.',
   },
   'Endgame should announce a lateral release out of killbox instead of sounding like a disconnected late-run reset.',
 );
@@ -519,6 +526,30 @@ assert.equal(
   }),
   'drift',
   'Drift cadence should take priority when a late-run spawn lands on every mutation cadence so the newest beat stays visible.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS + 0.1,
+    runSpawnCount: 1,
+  }),
+  'drift',
+  'The first post-release drift rebound should stay forced so the handoff does not immediately fall back to generic cadence luck.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: DRIFT_SWEEP_WINDOW_START_SECONDS + 0.1,
+    runSpawnCount: 2,
+  }),
+  'drift',
+  'A second bounded drift sweep should arrive later in the 32-40s band so endgame reads like a continuing chain instead of one opening cut.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.2,
+    runSpawnCount: 1,
+  }),
+  'standard',
+  'Forced rebound and sweep windows should stay bounded instead of replacing the whole late phase with permanent drift pressure.',
 );
 assert.equal(
   getObstacleVariant({
@@ -719,6 +750,45 @@ assert.deepEqual(
       getObstacleTravelDirection({
         spawnPoint: { x: 856, y: 300 },
         targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds:
+          DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS + 0.1,
+        variant: 'drift',
+        runSpawnCount: 1,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.883,
+    y: -0.469,
+  },
+  'The first post-release rebound should stay on the same lateral answer as the opening cut so endgame feels chained instead of reset.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: DRIFT_SWEEP_WINDOW_START_SECONDS + 0.1,
+        variant: 'drift',
+        runSpawnCount: 2,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.951,
+    y: 0.309,
+  },
+  'The late bounded sweep should whip back across the lane so the 32-40s band tells a release-then-rebound story instead of one-sided drift spam.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
         variant: 'drift',
         runSpawnCount: DRIFT_OBSTACLE_CADENCE,
       }),
@@ -784,8 +854,24 @@ assert.equal(
     survivalTimeSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS + 0.1,
     variant: 'drift',
   }),
+  DRIFT_REBOUND_TARGET_LAG_SECONDS,
+  'The rebound beat should keep a shorter inherited lag so the lane still feels chained to killbox without trailing as softly as the opening release.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: DRIFT_SWEEP_WINDOW_START_SECONDS + 0.1,
+    variant: 'drift',
+  }),
+  DRIFT_SWEEP_TARGET_LAG_SECONDS,
+  'The late sweep should tighten its lag further so the second handoff reads like a sharper lane whip instead of another echo clone.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.1,
+    variant: 'drift',
+  }),
   0,
-  'Later drift beats should drop the inherited echo lag once the release window is over.',
+  'Later drift beats should drop the inherited lag once the bounded release-rebound-sweep chain is over.',
 );
 assert.equal(
   KILLBOX_ECHO_CADENCE_ROTATION_DEGREES,
@@ -2561,13 +2647,13 @@ assert.equal(
   40,
   'Deterministic survival snapshot should stay long enough to exercise the 32s drift mutation.',
 );
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 29.6, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 29.7, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 10, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 1\.6s killbox-release handoff at 14deg before alternating 22deg travel rotation, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 1\.6s killbox-release handoff at 14deg, a 1\.4s rebound at 28deg with 0\.16s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, before alternating 22deg travel rotation, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(
@@ -2575,8 +2661,8 @@ assert.deepEqual(
   {
     under10Seconds: 0,
     between10And20Seconds: 4,
-    between20And30Seconds: 18,
-    reachedSimulationCap: 2,
+    between20And30Seconds: 16,
+    reachedSimulationCap: 4,
   },
   'Survival bucket distribution regressed.',
 );
@@ -2586,7 +2672,7 @@ assert.ok(
   ),
   'Deterministic survival sample should include at least one post-32s run so the drift mutation is actually exercised.',
 );
-assert.equal(survivalReport.averageSpawnCount, 34.9, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 35.1, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.6, 'Spawn reroll snapshot changed unexpectedly.');
 assert.equal(seed3TrajectoryReport.deathTimeSeconds, 35, 'Seed #3 trajectory baseline drifted.');
 assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 42, 'Seed #3 spawn count changed unexpectedly.');
@@ -2685,7 +2771,7 @@ assert.equal(
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=29.1s | first_death=16.3s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=30.8s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 29.6s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=29.1s | first_death=16.3s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=30.8s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 29.7s avg / 10.0s first death / 0% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(
@@ -2700,7 +2786,7 @@ assert.equal(
     totalSpawnRerolls: 3,
     lastSurvivalTime: 30,
   }),
-  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/35/89 | deterministic survival 29.6s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/35/89 | deterministic survival 29.7s avg / 10.0s first death / 0% early',
   'Validation export should report only completed runs even if a fresh start increased totalRuns beyond totalDeaths.',
 );
 assert.equal(
@@ -2714,7 +2800,7 @@ assert.equal(
     earlyDeathsUnderTarget: 1,
     lastSurvivalTime: 9.96,
   }),
-  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/35/89 | deterministic survival 29.6s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/35/89 | deterministic survival 29.7s avg / 10.0s first death / 0% early',
   'Telemetry exports should keep under-10s deaths flagged even when UI-facing times round up to 10.0s.',
 );
 assert.equal(

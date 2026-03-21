@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #247:
-- `29.6s` average survival
+Current deterministic survival headline after Run #248:
+- `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+killbox_to_drift_rebound_sweep_surface:
+current: Run #248 `project/game/src/game/balance.ts` `32s` sonrasi `DRIFT` band'ina iki bounded devam penceresi ekliyor; `33.6-35.0s` civarindaki rebound ilk release cut'inin ayni yone devam ediyor, `36.2-37.6s` civarindaki late sweep ise ters yone kirilip band'i ikinci kez hareketlendiriyor. `project/game/src/game/runPhase.ts` ile `project/game/src/game/GameScene.ts` bunu "release, rebounds once, then whips into a wider late sweep" diye anlatiyor
+baseline: Run #247 ilk `DRIFT` release'ini acmisti ama sonrasindaki cadence'ler hizla generik alternating `22deg` sweep'e donebiliyordu; 32-40s band'i hala esas olarak tek acilis cut'i etrafinda yasiyordu
+target: sonraki browser veya manuel gozlem `32-40s` band'inin artik tek release degil, killbox'tan cikan bagli bir release -> rebound -> sweep zinciri gibi hissedildigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 killbox_to_drift_release_surface:
-current: Run #247 `project/game/src/game/balance.ts` `32s` `DRIFT` onset'ine `1.6s`lik killbox-release penceresi ekliyor; ilk drift `14deg` lateral cut ile killbox fold yonunun tersine aciliyor ve `echo` lag'ini kisa sure miras alip handoff'u bagli tutuyor. `project/game/src/game/runPhase.ts` ile `project/game/src/game/GameScene.ts` bu gecisi "killbox releases sideways into drift" diye anlatiyor
+current: Run #248 state'inde Run #247'nin `1.6s`lik killbox-release penceresi korunuyor; bu acilis artik rebound ve late sweep halkalarini besleyen ilk spatial cevap gorevini goruyor
 baseline: Run #246 killbox cadence'ini `32s`'ye kadar tasiyordu ama ilk drift halen yeni beat/reset gibi okunabilirdi; target ve trajectory dili bir anda degisiyordu
-target: sonraki browser veya manuel gozlem `32s` gecisinin killbox'tan kopuk sifirdan baslayan bir cadence degil, once kapanan trap'in yeni bir lateral cevaba acilmasi gibi hissedildigini gostersin
+target: sonraki browser veya manuel gozlem `32s` gecisinin yalniz acilis aninda degil, sonraki iki drift halkasini da doguran gercek bir release gibi hissedildigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 killbox_echo_cadence_lane_fold_surface:

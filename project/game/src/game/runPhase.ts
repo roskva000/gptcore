@@ -55,7 +55,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, then drift keeps bending the lane into a wider lateral sweep. Stretch the release lane and push for 60s.',
+      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep. Stretch the release lane and push for 60s.',
   },
   {
     id: 'overtime',
@@ -195,7 +195,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Killbox releases sideways into drift. The first bend opens a new lateral lane, then the sweep keeps stretching the arena late.',
+          'Killbox releases sideways into drift. The first bend rebounds once, then a wider sweep keeps stretching the arena late.',
       };
     case 'overtime':
       return {

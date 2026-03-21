@@ -3133,7 +3133,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways into a wider bend, then the lane keeps sweeping late.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, then the lane whips into a wider late sweep.';
     }
 
     if (phaseId === 'overtime') {

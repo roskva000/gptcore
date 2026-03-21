@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #247
+Updated By: Codex Run #248
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `integration`
-- ana hedef: `32s` `DRIFT` onset'ini `KILLBOX` fold rejiminden dogan lateral bir release/handoff'a cevirmek; endgame yeni beat gibi gelse de kopuk reset gibi okunmasin
+- ana hedef: `32-40s` band'inda `DRIFT` zincirini ilk killbox-release cut'inin devam eden rebound + late sweep handoff'u gibi okutmak; endgame bir spawn sonra generik alternating beat'e dusmesin
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,12 +26,12 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/balance.ts` `DRIFT` onset'i icin `1.6s`lik bir `release` penceresi ekledi; ilk drift artik killbox fold yonunun tersine `14deg` lateral cut ile aciliyor ve tam sweep'e bir anda ziplamiyor
-- ayni dosya bu erken drift handoff'unda `echo` target lag'ini kisa sure koruyor; `32s` gecisi soguk reset yerine killbox'tan tureyen yeni bir cevap gibi davranıyor
-- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame dilini yeni gercege hizaladi: drift artik "lane keeps bending"ten once "killbox releases sideways" olarak okunuyor
-- `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi runtime ile gercekten hizaladi; obstacle travel hesabi artik survival time'i da kullanarak killbox/drift pencerelerini dogru simule ediyor
-- `project/game/scripts/telemetry-check.ts` yeni drift release direction, target lag ve endgame phase anlatimini regression altina aldi
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.6s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
+- `project/game/src/game/balance.ts` killbox'tan sonra iki bounded drift penceresi ekledi: `33.6-35.0s` civarinda ayni yone devam eden `rebound`, `36.2-37.6s` civarinda karsiya kirilan `late sweep`; endgame artik tek release cut'ten hemen sonra generic cadence'e dusmuyor
+- ayni dosya bu zincir icin yeni `28deg` rebound ve `18deg` late sweep travel truth'lari ile kademeli target lag kullaniyor; `32-40s` band'i release -> rebound -> sweep akisi olarak davranıyor
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame dilini yeni gercege hizaladi: drift artik "release, rebounds once, then whips into a wider late sweep" olarak okunuyor
+- `project/game/scripts/telemetry-reports.ts` deterministic controller anlatimini yeni rebound/sweep pencereleriyle hizaladi
+- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni drift windows, travel vectors, lag baselines ve validation metnini regression altina aldi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
 
@@ -73,6 +73,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` artik `32s`'ye kadar fold zincirini koruyor ve `DRIFT` onset'i ilk release cut'ini aldi; siradaki buyuk adim bu release'i `32-40s` boyunca daha olayli bir lateral sweep zincirine cevirmek
+- `KILLBOX` artik `32s` sonrasina release -> rebound -> sweep zinciri aciyor; siradaki buyuk adim bunun player-facing okunurlugunu ve retry dürtüsünü UI/shell tarafinda da buyutmek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

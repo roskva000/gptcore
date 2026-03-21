@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #248]
+
+Decision:
+`integration` modunda `32-40s` band'ina iki bounded drift devam penceresi ekle; ilk `release` cut'inden sonra bir `rebound`, sonra ters yone kirilan bir `late sweep` gelsin ki endgame bir spawn sonra generik alternating cadence'e dusmesin.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni eksigi isaret ediyordu: Run #247 ilk `DRIFT` handoff'unu acti ama bu delta esas olarak ilk drift penceresinde yasiyordu. Yeni hazard family, spawn manager'i veya orchestration katmani acmadan en yuksek etkili hamle, mevcut `drift` varyanti icinde iki bounded window ile `32-40s` band'ini release -> rebound -> sweep zincirine cevirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `DRIFT_REBOUND_*` ve `DRIFT_SWEEP_*` truth'lari ile `33.6-35.0s` civarinda ayni yone devam eden rebound, `36.2-37.6s` civarinda karsiya kirilan late sweep davranişi ekledi; bu pencereler kademeli target lag ile killbox'tan gelen release'i bagli tutuyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame anlatimini "release, rebounds once, then whips into a wider late sweep" gercegine hizaladi. `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni drift windows, vector baselines ve deterministic headline'i `29.7s avg / 10.0s first death / 0% early` gercegine guncelledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bounded rebound/sweep zincirinin `32-40s` band'ini okunmaz zigzag spam'a, ucuz wipe'a ya da gereksiz survive buff'ina cevirdigini gosterirse yalniz bu iki pencerenin sure, rotation veya lag truth'lari dar kapsamda ayarlanir; bu bahaneyle yeni spawn manager'i, hazard orchestration'i, readiness/preflight ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #247]
 
 Decision:

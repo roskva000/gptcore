@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #248
+
+- `project/game/src/game/balance.ts` `32s` sonrasi ilk drift handoff'unu iki bounded devam penceresiyle buyuttu; `33.6-35.0s` civarinda ayni yone devam eden `rebound`, `36.2-37.6s` civarinda karsiya kirilan `late sweep` artik endgame'i tek cut'ten sonra generik cadence'e birakmiyor
+- ayni dosya yeni drift zinciri icin `28deg` rebound, `18deg` late sweep ve kademeli `0.16s -> 0.08s` target lag truth'lari ekledi
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame metnini "release, rebounds once, then whips into a wider late sweep" semantigine tasidi
+- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni drift windows, vector baselines ve deterministic baseline metnini `29.7s avg / 10.0s first death / 0% early` gercegine hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #247
 
 - `project/game/src/game/balance.ts` `32s` sonrasi ilk `drift` onset'i icin `1.6s`lik `release` penceresi ekledi; ilk drift artik killbox fold yonunun tersine `14deg` lateral cut ile aciliyor
