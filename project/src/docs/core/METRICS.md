@@ -7,23 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #251:
+Current deterministic survival headline after Run #252:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
-endgame_aftershock_hold_surface:
-current: Run #251 `project/game/src/game/balance.ts` `late sweep` sonrasina `1.4s`lik `aftershock hold` penceresi ekledi; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` bu yeni halkayi runtime + player-facing cue truth'una bagliyor. `37.6-39.0s` band'i artik `AFTERSHOCK HOLD` badge/rematch dili, `30deg` clamp ve `0.04s` lag ile late sweep'ten sonra da sweep tarafinda bir beat daha yasiyor
-baseline: Run #250 state'inde gec endgame payoff cue truth'una tasinmisti ama runtime davranis `late sweep` bittikten sonra tekrar generic alternating drift cadence'ine duzluyordu; `37.6-40s` finali anlatilabilir ama tam buyumemis kaliyordu
-target: sonraki browser veya manuel gozlem `aftershock hold` halkasinin late sweep'i ucuz sertlikle degil okunur bir final pin ile takip ettigini ve `32-40s` band'ini daha olayli, daha anlatilabilir hale getirdigini gostersin
+endgame_recenter_handoff_surface:
+current: Run #252 `project/game/src/game/balance.ts` `aftershock hold` sonrasina `2.2s`lik `recenter` penceresi ekledi; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` bu yeni halkayi runtime + player-facing cue truth'una bagliyor. `39.0-41.2s` band'i artik `RECENTER` badge/rematch dili, `20deg` travel ve `0.06s` lag ile 40s eline generic drift boslugu olmadan baglaniyor
+baseline: Run #251 state'inde `aftershock hold` finali `37.6-39.0s` band'ini buyutmustu ama bu pencerenin arkasinda kalan `39s+` davranis hizla generic alternating drift cadence'ine donebiliyordu; 40s handoff'u anlatilabilir ama tam bagli degildi
+target: sonraki browser veya manuel gozlem `recenter` halkasinin late finali cheap uzatma yerine okunur bir 40s handoff'una cevirdigini ve `32-41s` zincirini daha anlatilabilir hale getirdigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 endgame_drift_death_retry_payoff_surface:
-current: Run #251 state'inde Run #250'un payoff yuzeyi korunuyor ve yeni `aftershock hold` halkasini da tasiyor; gec endgame olumleri artik `release`, `rebound`, `late sweep` veya `aftershock hold` badge/rematch hedefiyle ayirt ediliyor
+current: Run #252 state'inde Run #250'un payoff yuzeyi korunuyor ve yeni `recenter` halkasini da tasiyor; gec endgame olumleri artik `release`, `rebound`, `late sweep`, `aftershock hold` veya `recenter` badge/rematch hedefiyle ayirt ediliyor
 baseline: Run #249 `32-40s` zincirini HUD/arena tarafinda player-facing hale getirmisti ama game-over/rematch yuzeyi gec olumleri hala generic phase diliyle okuyordu; aktif halka payoff tarafinda kayboluyordu
-target: sonraki browser veya manuel gozlem gec endgame olumlerinin artik "late run'da oldum" yerine hangi halkada koptugunu ve neden tekrar denemek istedigini anlatabildigini, yeni final halkayi da ayirt ettigini gostersin
+target: sonraki browser veya manuel gozlem gec endgame olumlerinin artik "late run'da oldum" yerine hangi halkada koptugunu ve neden tekrar denemek istedigini anlatabildigini, yeni `recenter` halkayi da ayirt ettigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 endgame_drift_player_facing_cue_surface:

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #252]
+
+Decision:
+`integration` modunda `aftershock hold` sonrasina bounded bir `recenter` handoff'u ekle; `39s` sonrasi drift tekrar generic alternating cadence'e donmesin ve final `40s+` eline bagli kalsin.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #251 `37.6-39.0s` finalini buyuttu ama bu pencerenin arkasinda kalan `39s+` davranis hizla generic drift/overtime bekleyisine donebiliyordu. Yeni hazard family, spawn manager'i ya da overlay sistemi acmadan en yuksek etkili hamle, mevcut `drift` varyanti icinde bir handoff window daha tanimlayip ayni truth'u gameplay, cue ve deterministic regression tarafina yaymakti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `recenter` penceresi ile `39.0-41.2s` band'ini `20deg` travel ve `0.06s` lag ile bounded bir 40s handoff'una cevirdi. `project/game/src/game/runPhase.ts` endgame cue truth'una `RECENTER` halkasini ekledi; phase detail, shift announcement, fallback badge, death summary ve retry hedefi artik bu halkayi da tasiyor. `project/game/src/game/GameScene.ts` endgame hint/intensity dilini yeni handoff gercegine hizaladi. `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni cue, variant forcing, travel rotation, target lag ve controller anlatimini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni `recenter` halkasinin kontrollu 40s handoff'u yerine cheap uzatma, okunmaz tekrar veya gereksiz pin hissi urettigini gosterirse yalniz bu pencerenin sure/rotation/lag truth'u ve cue siddeti dar kapsamda ayarlanir; bu bahaneyle yeni orchestration/readiness katmani, yeni spawn manager'i, yeni hazard family ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #251]
 
 Decision:

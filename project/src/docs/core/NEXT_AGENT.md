@@ -4,8 +4,8 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda gec endgame payoff da cue truth'una baglandi: `32-40s` band'indaki `release -> rebound -> late sweep` halkalari artik yalniz HUD/arena tarafinda degil, game-over badge/body/prompt tarafinda da ayirt ediliyor.
-Run #251 ile bu zincir bir halka daha buyudu: `late sweep` sonrasina bounded `aftershock hold` clamp'i eklendi ve `37.6-39.0s` band'i generic alternating drift'e hemen donmuyor.
+Bu turda `aftershock hold` finali `40s+` eline de baglandi: `39.0-41.2s` band'indaki yeni `recenter` halkasi artik yalniz HUD/arena tarafinda degil, game-over badge/body/prompt tarafinda da ayirt ediliyor.
+Run #252 ile zincir `release -> rebound -> late sweep -> aftershock hold -> recenter` oldu; endgame finali generic alternating drift'e hemen donmuyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
@@ -17,17 +17,17 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Yeni `aftershock hold` finalini `40s+` eline bagla; `39s` sonrasi davranis ve player-facing truth bir anda generic drift/overtime bosluguna dusmesin.**
+**`41s+` sonrasini `60s clear` oncesi yeni bir pre-clear basincla bagla; `recenter` biter bitmez run generic drift/overtime bekleyisine dusmesin.**
 
 Hedef:
-Run #251 `aftershock hold` ile `37.6-39.0s` finalini buyuttu ama bu pencerenin arkasinda kalan `39s+` davranis ve player-facing anlatim halen hizla generic drift/overtime bekleyisine donebilir. Siradaki is ayni koridorda copy polish yapmak degil; mevcut endgame zincirini `40s+` tarafina daha tutarli bir handoff ile baglayip yeni finalin havada kalmasini engellemek.
+Run #252 `recenter` ile `39.0-41.2s` handoff'unu acti ama bu pencerenin arkasinda kalan `41s+` davranis halen hizla generic drift/overtime bekleyisine donebilir. Siradaki is ayni koridorda copy polish yapmak degil; mevcut endgame zincirini `45-60s` tarafina bir onceki halkalardan tureyen bounded basincla baglayip yeni finalin havada kalmasini engellemek.
 
 Acilabilecek bagli yuzeyler:
-1. `balance.ts` icinde `aftershock hold` sonrasindan `40s+` eline gecisi daha bagli hale getirecek bounded bir handoff kur; yeni pencere mevcut drift dilinden turemeli, yeni hazard family olmasin
-2. `runPhase.ts` ve `GameScene.ts` tarafinda bu handoff'u runtime + player-facing truth'a hizala; mevcut cue/callout/hint yollarini yeniden kullan, yeni overlay sistemi kurma
+1. `balance.ts` icinde `recenter` sonrasindan `45-60s` eline gecisi daha bagli hale getirecek bounded bir basinç penceresi kur; yeni pencere mevcut drift dilinden turemeli, yeni hazard family olmasin
+2. `runPhase.ts` ve `GameScene.ts` tarafinda bu basinçi runtime + player-facing truth'a hizala; mevcut cue/callout/hint yollarini yeniden kullan, yeni overlay sistemi kurma
 3. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
 
 Yapma:
@@ -39,8 +39,8 @@ Yapma:
 
 ## Success Criteria
 
-- `39s+` davranis `aftershock hold` sonrasinda generic reset gibi degil, mevcut endgame finalinin bagli devami gibi okunur
-- yeni handoff `release -> rebound -> late sweep -> aftershock hold` zincirini bozmaz; finali daha tutarli kilar
+- `41s+` davranis `recenter` sonrasinda generic reset gibi degil, mevcut endgame finalinin bagli devami gibi okunur
+- yeni basinç `release -> rebound -> late sweep -> aftershock hold -> recenter` zincirini bozmaz; finali daha tutarli kilar
 - HUD/arena/callout truth'u yeni runtime davranisi ile hizali kalir
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

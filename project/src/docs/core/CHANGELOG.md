@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #252
+
+- `project/game/src/game/balance.ts` `aftershock hold` sonrasina yeni `recenter` handoff penceresi ekledi; `39.0-41.2s` band'i artik generic alternating drift'e dusmeden `20deg` travel ve `0.06s` lag ile 40s eline bagli kaliyor
+- ayni dosya yeni recenter penceresini drift forcing, travel direction ve target lag kontratina bagladi; bounded zincir artik `release -> rebound -> late sweep -> aftershock hold -> recenter` olarak okunuyor
+- `project/game/src/game/runPhase.ts` endgame cue truth'unu `RECENTER` halkasiyla buyuttu; phase detail, endgame shift announcement, fallback badge, death summary ve retry hedefi yeni halkayi da tasiyor
+- `project/game/src/game/GameScene.ts` endgame shift hint'ini ve cue intensity haritasini yeni 40s handoff gercegine hizaladi
+- `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni recenter cue/rotation/lag/controller string regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #251
 
 - `project/game/src/game/balance.ts` `late sweep` sonrasina yeni `aftershock hold` penceresi ekledi; `37.6-39.0s` band'i artik generic alternating drift'e dusmeden `30deg`lik daha sert bir clamp ve `0.04s` lag ile ayni sweep tarafinda bir beat daha kaliyor
