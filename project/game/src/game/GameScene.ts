@@ -74,6 +74,7 @@ import {
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
+  ENDGAME_CLEAR_CLIMB_START_SECONDS,
   getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDetailText,
@@ -2945,8 +2946,14 @@ export class GameScene extends Phaser.Scene {
       }),
     );
     this.goalStatusText
-      .setColor(clearClimbState === null ? '#d8fff4' : '#fff3d1')
-      .setBackgroundColor(clearClimbState === null ? '#123f36' : '#4c2414');
+      .setColor(clearClimbState === null ? '#d8fff4' : colorToCssHex(clearClimbState.accentColor))
+      .setBackgroundColor(
+        clearClimbState === null
+          ? '#123f36'
+          : clearClimbState.threatLabel === 'SUMMIT SNAP'
+            ? '#4a1620'
+            : '#4c2414',
+      );
   }
 
   private updateRunPhaseHud(): void {
@@ -3311,7 +3318,7 @@ export class GameScene extends Phaser.Scene {
       return 0;
     }
 
-    const secondsIntoClearClimb = this.survivalTime - 45.6;
+    const secondsIntoClearClimb = this.survivalTime - ENDGAME_CLEAR_CLIMB_START_SECONDS;
 
     if (secondsIntoClearClimb <= 0) {
       return 0.86;
@@ -3500,10 +3507,20 @@ export class GameScene extends Phaser.Scene {
     }
 
     const endgameCue = getEndgameDriftCue(this.survivalTime);
+    const clearClimbState = getEndgameClearClimbState(this.survivalTime);
 
     if (endgameCue !== null && endgameCue.id !== 'release') {
       this.beatCalloutText
         .setText(`${endgameCue.title}\n${endgameCue.body}`)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
+
+    if (clearClimbState !== null) {
+      this.beatCalloutText
+        .setText(`${clearClimbState.title}\n${clearClimbState.body}`)
         .setAlpha(0.92)
         .setScale(1)
         .setVisible(true);

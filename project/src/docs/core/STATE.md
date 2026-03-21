@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #255
+Updated By: Codex Run #256
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `clear climb` truth'unu `45.6s+` death/retry payoff'una sindirip final-stretch olumlerini dogrudan kacirilan `60s clear` push'i gibi okutmak
+- run mode: `mutation`
+- ana hedef: `45.6-60s` `clear climb` band'ini gercek bir final-threat davranisina cevirip son stretch'i yalniz payoff copy'si degil, canli spatial baski olarak hissettirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,11 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/runPhase.ts` `CLEAR CLIMB` state'ini `snapshotLabel` ve `rematchLabel` ile genisletti; `45.6s+` olumler artik generic `OVERTIME` esigi gibi degil, dogrudan `60s CLEAR` kacisi olarak ozetleniyor
-- ayni truth `getRunPhaseReachedBadgeText()`, `getRunPhaseDeathSummaryText()` ve `getRunPhaseRetryGoalText()` uzerinden game-over badge/body/prompt satirlarina tasindi; `50s` civari bir olum artik `CLEAR CLIMB` badge'i, `10.0s short of 60s CLEAR` summary'si ve dogrudan rematch hedefi uretiyor
-- `project/game/src/game/deathPresentation.ts` final stretch'te gereksiz `Next beat: 60s clear` ekini dusurup prompt'u tek rematch hedefe indirdi; son stretch mesaji ikili copy'ye dagilmiyor
-- `project/game/scripts/telemetry-check.ts` yeni clear-climb badge/summary/retry-goal ve `50.0s` death presentation kontratlarini deterministic regression altina aldi
+- `project/game/src/game/balance.ts` `45.6-60s` band'ini generic cadence'e birakmiyor; clear climb boyunca drift artik zorunlu olarak calisiyor ve iki bounded davranis tasiyor: `45.6-52.0s` arasi `ascent stair` (`16deg`, `0.12s lag`), son `52.0-60.0s` arasi `summit snap` (`26deg`, `0.03s lag`)
+- ayni dosya clear-climb onset ve summit snap'i `getObstacleVariant()`, `getObstacleTravelDirection()` ve `getObstacleTargetLagSeconds()` truth'una bagladi; final stretch artik yalniz named payoff degil, gercek runtime basinç yuzeyi
+- `project/game/src/game/runPhase.ts` `CLEAR CLIMB LIVE` durumunu dinamik hale getirip `ASCENT STAIR` ve `SUMMIT SNAP` anlatisini ayni truth'tan uretiyor; endgame detail/announcement dili final stretch davranisini artik bu yeni spatial karakterle anlatiyor
+- `project/game/src/game/GameScene.ts` clear-climb accent rengini goal badge'ine tasidi ve pause/resume sonrasi clear-climb beat callout'unu korudu; son stretch sunumu runtime gerceginden kopmuyor
+- `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni clear-climb forcing, rotation, lag, detail ve controller anlatimini regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -72,6 +73,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` olarak runtime, HUD ve death/retry payoff tarafinda okunuyor; siradaki buyuk adim bu son `45.6-60s` yuzeyine daha somut arena davranisi veya fark edilir final-threat karakteri eklemek
+- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb(ascent stair -> summit snap)` olarak runtime truth'unda tamamlandi; siradaki adim bu yeni final threat'i arena spectacle / browser-gozlenebilir okunurluk tarafinda daha da ayirt etmek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

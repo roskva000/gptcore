@@ -1,5 +1,7 @@
 import {
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
+  DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
+  DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
   DRIFT_RELEASE_WINDOW_SECONDS,
@@ -57,6 +59,7 @@ export type EndgameClearClimbState = {
   hudLabel: string;
   rematchLabel: string;
   snapshotLabel: string;
+  threatLabel: string;
   title: string;
 };
 
@@ -89,7 +92,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep, an aftershock clamp, a short recenter handoff, and a preclear squeeze before the long push to 60s. Stretch the release lane and push for 60s.',
+      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep, an aftershock clamp, a short recenter handoff, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane and push for 60s.',
   },
   {
     id: 'overtime',
@@ -130,7 +133,7 @@ const DRIFT_PRECLEAR_WINDOW_START_SECONDS =
 const DRIFT_PRECLEAR_WINDOW_END_SECONDS =
   DRIFT_PRECLEAR_WINDOW_START_SECONDS + DRIFT_PRECLEAR_WINDOW_SECONDS;
 
-export const ENDGAME_CLEAR_CLIMB_START_SECONDS = DRIFT_PRECLEAR_WINDOW_END_SECONDS;
+export const ENDGAME_CLEAR_CLIMB_START_SECONDS = DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS;
 
 export const getEndgameClearClimbState = (
   progressSeconds: number,
@@ -143,14 +146,18 @@ export const getEndgameClearClimbState = (
   }
 
   const secondsToClear = Math.max(SURVIVAL_GOAL_SECONDS - progressSeconds, 0);
+  const inSummitSnapWindow = progressSeconds >= DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS;
 
   return {
     title: 'CLEAR CLIMB LIVE',
     hudLabel: 'CLEAR CLIMB',
-    accentColor: 0xfff0c7,
+    accentColor: inSummitSnapWindow ? 0xff9eb1 : 0xfff0c7,
     snapshotLabel: 'CLEAR CLIMB',
     rematchLabel: 'the clear climb',
-    body: `Preclear squeeze finally gives way to the clear line. Hold the opened route for ${secondsToClear.toFixed(1)}s more and carry the run clean into ${SURVIVAL_GOAL_SECONDS}s.`,
+    threatLabel: inSummitSnapWindow ? 'SUMMIT SNAP' : 'ASCENT STAIR',
+    body: inSummitSnapWindow
+      ? `The summit snap is live. Drift whips back across the opened lane while ${secondsToClear.toFixed(1)}s remain; keep the route alive and finish the ${SURVIVAL_GOAL_SECONDS}s clear under the snapback.`
+      : `Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for ${secondsToClear.toFixed(1)}s more; hold the climb and carry the run clean into ${SURVIVAL_GOAL_SECONDS}s.`,
   };
 };
 
@@ -409,7 +416,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, and a preclear squeeze keep the 40s alive.',
+          'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

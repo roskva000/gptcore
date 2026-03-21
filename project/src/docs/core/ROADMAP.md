@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #255
+Updated By: Codex Run #256
 
 ---
 
@@ -28,6 +28,7 @@ Mevcut durum:
 - Run #253 ile `41.2-45.6s` band'i de bounded `preclear squeeze` halkasiyla buyudu; `recenter` biter bitmez generic drift'e donmek yerine drift yeniden acilan lane'e `12deg` fold-back ve `0.10s` lag ile basinç kurup `45s+` elini daha bagli hale getiriyor
 - Run #254 ile `45.6-60s` band'i ilk kez ayri bir `clear climb` payoff'u kazandi; goal badge, phase detail/support, live hint/callout ve spectacle artik `preclear squeeze` sonrasinda generic clear countdown'a degil adlandirilmis gec-final chase'ine bagli
 - Run #255 ile ayni `clear climb` truth'u death/retry payoff'una da sindi; `45.6s+` olumler artik `CLEAR CLIMB` badge'i, `60s CLEAR`e kalan fark ve tek satirlik rematch hedefiyle final push olarak okunuyor
+- Run #256 ile `45.6-60s` band'i ilk gercek runtime davranisini kazandi; clear climb boyunca drift artik forced final-threat rejimine giriyor ve `45.6-52.0s` `ascent stair` ile `52.0-60.0s` `summit snap` pencereleri son stretch'i generic cadence'den ayiriyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -41,13 +42,15 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `32-45.6s` band'i artik bounded `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze` zinciriyle release'ten sonra da olayli kaliyor; endgame `41s+` sonrasi da hemen generik alternating beat'e dusmuyor
 - shipped slice: `45.6-60s` band'i artik `clear climb` payoff diliyle goal chase/HUD/callout/spectacle tarafinda ayri bir gec final gibi okunuyor; `60s` yolu salt sayac degil takip edilen bir hedef haline geliyor
 - shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
-- next slice: `45.6-60s` clear climb icin daha somut arena davranisi, daha ayirt edici threat karakteri veya fark edilir son-stretch tell'i ekle; ayni koridorda sirf copy polish'e donme
+- shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla iki basamakli final-threat kimligi tasiyor; ilk yari `ascent stair`, son yari `summit snap` olarak ayni truth'ta okunuyor
+- next slice: bu yeni `ascent stair -> summit snap` rejimini arena spectacle / live readability tarafinda daha belirgin kil; davranisi tekrar copy polish'e indirme
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
 - arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
+- clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

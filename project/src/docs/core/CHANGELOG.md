@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #256
+
+- `project/game/src/game/balance.ts` `45.6s+` clear-climb stretch'ini forced drift final-threat rejimine cevirdi; `45.6-52.0s` `ascent stair` `16deg` rotation ve `0.12s` lag, `52.0-60.0s` `summit snap` `26deg` rotation ve `0.03s` lag ile final stretch artik generic cadence'e dusmuyor
+- ayni dosya yeni clear-climb pencerelerini `getObstacleVariant()`, `getObstacleTravelDirection()` ve `getObstacleTargetLagSeconds()` kontratina bagladi; final stretch artik yalniz isimli payoff degil, gercek runtime spatial baski
+- `project/game/src/game/runPhase.ts` `CLEAR CLIMB LIVE` state'ini dinamik `ASCENT STAIR` / `SUMMIT SNAP` body+accent truth'u ile genisletti; endgame announcement dili de yeni final-threat karakterini anlatiyor
+- `project/game/src/game/GameScene.ts` clear-climb accent rengini goal badge'ine tasidi ve pause/resume sonrasi clear-climb beat callout'unu geri getirir hale getirdi
+- `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni clear-climb forcing, rotation, lag, detail ve controller anlatimini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #255
 
 - `project/game/src/game/runPhase.ts` `CLEAR CLIMB` truth'una `snapshotLabel` ve `rematchLabel` ekledi; `45.6s+` olumler artik fallback `ENDGAME/OVERTIME` dili yerine dogrudan `CLEAR CLIMB` payoff'u ile badge/summary/rematch uretiyor

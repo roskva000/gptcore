@@ -7,6 +7,12 @@ import {
   DRIFT_AFTERSHOCK_ROTATION_DEGREES,
   DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS,
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
+  DRIFT_CLEAR_CLIMB_ASCENT_ROTATION_DEGREES,
+  DRIFT_CLEAR_CLIMB_ASCENT_TARGET_LAG_SECONDS,
+  DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
+  DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
+  DRIFT_CLEAR_CLIMB_SUMMIT_ROTATION_DEGREES,
+  DRIFT_CLEAR_CLIMB_SUMMIT_TARGET_LAG_SECONDS,
   DRIFT_PRECLEAR_ROTATION_DEGREES,
   DRIFT_PRECLEAR_TARGET_LAG_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
@@ -323,8 +329,13 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(50),
-  'Preclear squeeze finally gives way to the clear line. Hold the opened route for 10.0s more and carry the run clean into 60s. Next phase at 60s.',
-  'Once preclear ends, the phase detail should turn into a visible clear-climb payoff instead of falling back to a generic 60s countdown.',
+  'Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for 10.0s more; hold the climb and carry the run clean into 60s. Next phase at 60s.',
+  'Once preclear ends, the phase detail should turn into a visible clear-climb ascent threat instead of falling back to a generic 60s countdown.',
+);
+assert.equal(
+  getRunPhaseDetailText(54),
+  'The summit snap is live. Drift whips back across the opened lane while 6.0s remain; keep the route alive and finish the 60s clear under the snapback. Next phase at 60s.',
+  'Late clear-climb detail should expose the summit snap so the final seconds read like a live threat, not a flat victory lap.',
 );
 assert.deepEqual(
   getEndgameDriftCue(32.2),
@@ -412,9 +423,23 @@ assert.deepEqual(
     accentColor: 0xfff0c7,
     snapshotLabel: 'CLEAR CLIMB',
     rematchLabel: 'the clear climb',
-    body: 'Preclear squeeze finally gives way to the clear line. Hold the opened route for 10.0s more and carry the run clean into 60s.',
+    threatLabel: 'ASCENT STAIR',
+    body: 'Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for 10.0s more; hold the climb and carry the run clean into 60s.',
   },
-  'The final 45.6s+ stretch should expose a dedicated clear-climb state so HUD and spectacle can sell the push to 60s as a payoff window.',
+  'The early clear-climb stretch should expose an ascent-stair state so HUD and spectacle can sell the push to 60s as an authored threat window.',
+);
+assert.deepEqual(
+  getEndgameClearClimbState(54),
+  {
+    title: 'CLEAR CLIMB LIVE',
+    hudLabel: 'CLEAR CLIMB',
+    accentColor: 0xff9eb1,
+    snapshotLabel: 'CLEAR CLIMB',
+    rematchLabel: 'the clear climb',
+    threatLabel: 'SUMMIT SNAP',
+    body: 'The summit snap is live. Drift whips back across the opened lane while 6.0s remain; keep the route alive and finish the 60s clear under the snapback.',
+  },
+  'The late clear-climb stretch should expose a summit-snap variant so the final seconds gain a sharper spatial identity before 60s.',
 );
 assert.equal(
   getEndgameClearClimbState(42),
@@ -621,7 +646,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, and a preclear squeeze keep the 40s alive.',
+    body: 'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
   },
   'Endgame should announce the authored late-run chain instead of sounding like a disconnected late-run reset.',
 );
@@ -859,8 +884,16 @@ assert.equal(
       0.2,
     runSpawnCount: 1,
   }),
-  'standard',
-  'Forced rebound, sweep, aftershock, recenter, and preclear windows should stay bounded instead of replacing the whole late phase with permanent drift pressure.',
+  'drift',
+  'Clear-climb onset should now force drift pressure immediately so 45.6s+ reads like a live final threat instead of a flat victory lap.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS + 0.2,
+    runSpawnCount: 1,
+  }),
+  'drift',
+  'The summit snap should keep the final clear-climb seconds on bounded drift pressure instead of falling back to generic cadence before 60s.',
 );
 assert.equal(
   getObstacleVariant({
@@ -1167,6 +1200,44 @@ assert.deepEqual(
       getObstacleTravelDirection({
         spawnPoint: { x: 856, y: 300 },
         targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS + 0.1,
+        variant: 'drift',
+        runSpawnCount: 6,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.961,
+    y: -0.276,
+  },
+  'Clear-climb ascent should keep stair-stepping up the release side so 45.6s+ still feels spatially alive after preclear ends.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS + 0.1,
+        variant: 'drift',
+        runSpawnCount: 7,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.899,
+    y: 0.438,
+  },
+  'The summit snap should whip back across the opened lane so the last seconds before 60s gain a sharper final-threat character.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
         variant: 'drift',
         runSpawnCount: DRIFT_OBSTACLE_CADENCE,
       }),
@@ -1280,16 +1351,19 @@ assert.equal(
 assert.equal(
   getObstacleTargetLagSeconds({
     survivalTimeSeconds:
-      DRIFT_SWEEP_WINDOW_START_SECONDS +
-      DRIFT_SWEEP_WINDOW_SECONDS +
-      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
-      DRIFT_RECENTER_WINDOW_SECONDS +
-      DRIFT_PRECLEAR_WINDOW_SECONDS +
-      0.1,
+      DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS + 0.1,
     variant: 'drift',
   }),
-  0,
-  'Later drift beats should drop the inherited lag once the bounded release-rebound-sweep-aftershock-recenter-preclear chain is over.',
+  DRIFT_CLEAR_CLIMB_ASCENT_TARGET_LAG_SECONDS,
+  'Clear-climb ascent should keep a dedicated lag so the newly opened lane still feels hunted instead of immediately flattening out.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS + 0.1,
+    variant: 'drift',
+  }),
+  DRIFT_CLEAR_CLIMB_SUMMIT_TARGET_LAG_SECONDS,
+  'The summit snap should tighten lag again so the last seconds before 60s feel like a sharper snapback instead of a victory coast.',
 );
 assert.equal(
   KILLBOX_ECHO_CADENCE_ROTATION_DEGREES,
@@ -1315,6 +1389,16 @@ assert.equal(
   DRIFT_PRECLEAR_ROTATION_DEGREES,
   12,
   'The preclear squeeze should stay milder than recenter so the late 40s pressure reads like a controlled fold-back instead of another full sweep.',
+);
+assert.equal(
+  DRIFT_CLEAR_CLIMB_ASCENT_ROTATION_DEGREES,
+  16,
+  'Clear-climb ascent should stay firmer than preclear so the 45.6s+ lane keeps climbing under visible pressure.',
+);
+assert.equal(
+  DRIFT_CLEAR_CLIMB_SUMMIT_ROTATION_DEGREES,
+  26,
+  'The summit snap should hit harder than clear-climb ascent so the final seconds before 60s gain a distinct snapback character.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -3093,7 +3177,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 1\.6s killbox-release handoff at 14deg, a 1\.4s rebound at 28deg with 0\.16s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag and a 4\.4s preclear squeeze at 12deg with 0\.10s lag before alternating 22deg travel rotation, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 1\.6s killbox-release handoff at 14deg, a 1\.4s rebound at 28deg with 0\.16s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 4\.4s preclear squeeze at 12deg with 0\.10s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

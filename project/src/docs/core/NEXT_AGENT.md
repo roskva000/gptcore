@@ -4,8 +4,8 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda `clear climb` death/retry payoff'una da sindi: `45.6-60s` olumler artik `CLEAR CLIMB` badge'i, `60s CLEAR`e kalan fark ve tek satirlik rematch hedefiyle okunuyor.
-Run #255 ile zincir `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` hem runtime hem death/retry truth'unda tamamladi; son stretch artik generic `OVERTIME` veya `Next beat` copy'sine duzlesmiyor.
+Bu turda `clear climb` ilk gercek runtime threat karakterini de kazandi: `45.6-52.0s` arasi forced drift `ascent stair`, `52.0-60.0s` arasi forced drift `summit snap` olarak calisiyor.
+Run #256 ile zincir `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb(ascent stair -> summit snap)` hem runtime hem HUD/death-retry truth'unda tamamlandi; son stretch artik generic `OVERTIME`, copy-only payoff veya duz cadence'e duzlesmiyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
@@ -17,18 +17,18 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**`clear climb` son stretch'ine daha somut arena davranisi ekle; `45.6-60s` band'i artik yalniz payoff copy'si degil, ekranda fark edilir bir final threat karakteri tasisin.**
+**Yeni `clear climb` runtime davranisini arena spectacle ve live readability tarafinda daha ayirt edilir hale getir; `ascent stair -> summit snap` zinciri oyuncuya sadece hissedilen degil, gorulen bir final olay gibi gelsin.**
 
 Hedef:
-Run #255 final-stretch payoff'unu death/retry tarafinda kapatti. Siradaki is ayni metni tekrar cilalamak degil; `45.6-60s` band'ine mevcut zinciri bozmadan daha ayirt edici bir spatial davranis, hazard baski imzasi veya final tell eklemek. Oyuncu bu band'i hem run icinde hem olum sonrasi anlatabilmeli.
+Run #256 final stretch'i runtime tarafinda gercek threat'e cevirdi. Siradaki is yeni mechanic veya phase eklemek degil; mevcut `ascent stair -> summit snap` davranisinin arena spectacle, callout ritmi veya diger mevcut player-facing yuzeylerde daha net ayirt edilmesini saglamak. Oyuncu bu son stretch'i sadece metinden degil, ekrandaki olaydan anlayabilmeli.
 
 Acilabilecek bagli yuzeyler:
-1. `balance.ts` tarafinda yeni system acmadan mevcut `drift`/late-final davranisina bounded bir `clear climb` baski imzasi ekle; phase sayisini arttirma
-2. `runPhase.ts` ve `GameScene.ts` tarafinda bu yeni final behavior'u mevcut HUD/callout/spectacle truth'una sindir
-3. deterministic regression ekle; tooling genisletmesini ana is yapma
+1. `GameScene.ts` ve varsa mevcut spectacle helper'larinda `ascent stair` ile `summit snap` icin daha net ama bounded arena/shell farki ac; yeni framework acma
+2. `runPhase.ts` / mevcut hint-callout yuzeylerinde ayni final-truth'u fazla copy buyutmeden daha okunur hale getir
+3. yalniz gerekiyorsa mevcut deterministic regression'i bu yeni spectacle/readability truth'una dar kapsamda genislet
 
 Yapma:
 - yeni orchestration / readiness / preflight / manager katmani acma
@@ -39,8 +39,8 @@ Yapma:
 
 ## Success Criteria
 
-- `45.6-60s` band'i run icinde diger endgame halkalarindan ayri, fark edilir bir final threat karakteri kazanir
-- yeni final behavior mevcut `clear climb` payoff ve death/retry truth'u ile hizali kalir
+- `ascent stair -> summit snap` zinciri run icinde diger endgame halkalarindan daha gorunur ve daha kolay ayirt edilir hale gelir
+- yeni player-facing treatment mevcut `clear climb` payoff ve runtime truth'u ile hizali kalir
 - `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb` zinciri bozulmaz
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

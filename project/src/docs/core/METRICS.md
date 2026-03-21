@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #255:
+Current deterministic survival headline after Run #256:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+endgame_clear_climb_final_threat_surface:
+current: Run #256 `project/game/src/game/balance.ts` clear climb boyunca forced drift rejimi ekledi; `45.6-52.0s` `ascent stair` `16deg` rotation + `0.12s` lag, `52.0-60.0s` `summit snap` `26deg` rotation + `0.03s` lag ile final stretch artik generic cadence yerine iki basamakli spatial baski olarak davraniyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni truth'u dynamic body/accent/callout tarafina tasiyor
+baseline: Run #255 state'inde clear climb HUD ve death/retry payoff'u tarafinda isimliydi ama runtime davranis halen buyuk oranda generic late drift cadence'ine benziyordu; final stretch'in kendine ait somut spatial imzasi zayifti
+target: sonraki browser veya manuel gozlem oyuncunun `clear climb`i yalniz `60s` countdown'u olarak degil, once yukari tirmanan sonra sert snapback yapan ayri bir final-threat penceresi olarak anlatabildigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 endgame_clear_climb_death_retry_surface:
-current: Run #255 `project/game/src/game/runPhase.ts` `CLEAR CLIMB` state'ine snapshot/rematch truth'unu ekledi; `project/game/src/game/deathPresentation.ts` final stretch'te ikinci satiri tek rematch hedefe indiriyor. `45.6s+` olumler artik `CLEAR CLIMB` badge'i, `x.xs short of 60s CLEAR` body'i ve dogrudan rematch prompt'u ile final push olarak okunuyor
-baseline: Run #254 state'inde `clear climb` run icinde okunuyordu ama game-over/rematch yuzeyi bu son stretch'i halen kismen generic `OVERTIME` veya `Next beat: 60s clear` diliyle tasiyabiliyordu
-target: sonraki browser veya manuel gozlem `45.6s+` olumlerin artik daha anlatilabilir, daha retry-tetikleyici ve daha az ikili-copy hissi verdigini gostersin
+current: Run #256 state'inde Run #255'in clear-climb death/retry payoff'u korunuyor; yeni forced final-threat davranisi sayesinde `45.6s+` olumler artik yalniz `CLEAR CLIMB` badge'i ve rematch prompt'u degil, arkasinda gercek runtime baski imzasi da tasiyor
+baseline: Run #255 state'inde death/retry payoff dogruydu ama runtime baski karakteri henuz zayif oldugu icin final-stretch anlatisi kismen copy-first kalabilirdi
+target: sonraki browser veya manuel gozlem `45.6s+` olumlerin artik hem anlatilabilir hem de oyunda hissedilen somut bir threat penceresinden geldigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 endgame_clear_climb_payoff_surface:

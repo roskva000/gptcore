@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #256]
+
+Decision:
+`mutation` modunda `45.6-60s` `clear climb` band'ini iki basamakli gercek runtime threat'e cevir; final stretch artik yalniz payoff copy'si degil, forced drift `ascent stair -> summit snap` davranisi tasisin.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #254-255 clear climb'i HUD ve death/retry truth'unda anlatti ama final stretch runtime tarafinda halen fazla soyut kalabiliyordu. Yeni phase sayisi, yeni hazard family, yeni manager ya da orchestration katmani acmadan en yuksek etkili hamle; mevcut `drift` varyantini clear climb boyunca bounded iki pencereyle zorlayip ayni truth'u `runPhase`, `GameScene`, telemetry regression ve report anlatimina sindirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS` sonrasinda forced drift davranisi ekledi; `45.6-52.0s` `ascent stair` `16deg` rotation + `0.12s` lag, `52.0-60.0s` `summit snap` `26deg` rotation + `0.03s` lag ile final stretch'i generic cadence'den ayirdi. `project/game/src/game/runPhase.ts` clear-climb body/accent truth'unu `ASCENT STAIR` ve `SUMMIT SNAP` olarak dinamiklestirdi. `project/game/src/game/GameScene.ts` goal badge rengini ayni truth'tan aliyor ve pause/resume sonrasi clear-climb beat callout'unu koruyor. `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni forcing/rotation/lag/detail/controller anlatimini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem forced clear-climb drift'in son stretch'i okunur final-threat yerine cheap spike, yorgun drift spam'i veya yapay zorlastirma gibi hissettirdigini gosterirse yalniz clear-climb ascent/summit window sureleri, rotation ve lag truth'u dar kapsamda ayarlanir; bu bahaneyle yeni phase sistemi, yeni hazard manager'i, yeni orchestration/readiness katmani veya ikinci endgame framework'u acilmaz.
+
 ### [Run #255]
 
 Decision:
