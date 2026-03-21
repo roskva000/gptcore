@@ -8,6 +8,9 @@ export const NEAR_MISS_CHASE_DURATION_MS = 2600;
 export const NEAR_MISS_CHASE_ACCENT_COLOR = 0x7ce8d7;
 export const NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND = '#18463f';
 export const NEAR_MISS_CHASE_SNAPSHOT_TEXT = '#d8fff4';
+export const NEAR_MISS_CHASE_IMPACT_COLOR = 0x8ff4e3;
+export const NEAR_MISS_CHASE_IMPACT_TEXT = '#e6fff9';
+export const NEAR_MISS_CHASE_FATAL_LABEL_BACKGROUND = '#18463f';
 
 export type NearMissSnapshot = {
   playerPosition: {
@@ -89,6 +92,21 @@ export const getNearMissChaseSnapshotSummaryText = (chainCount: number): string 
   chainCount > 1
     ? `${chainCount}x near-miss chase snapped before the lane cooled.`
     : 'Near-miss chase snapped before the lane cooled.';
+
+export const getNearMissChaseImpactLabelText = (
+  directionLabel: string,
+  isCenterHit: boolean,
+): string => (isCenterHit ? 'CENTER SNAP' : `${directionLabel.toUpperCase()} SNAP`);
+
+export const getNearMissChaseFatalLabelText = (
+  directionLabel: string,
+  isCenterHit: boolean,
+): string => (isCenterHit ? 'SNAP\nCENTER' : `SNAP\n${directionLabel.toUpperCase()} LANE`);
+
+export const getNearMissChaseTitleText = (
+  directionLabel: string,
+  isCenterHit: boolean,
+): string => (isCenterHit ? 'Lane snapped at center' : `Lane snapped from ${directionLabel}`);
 
 export const getNearMissChaseVisualIntensity = (remainingMs: number): number => {
   if (remainingMs <= 0) {

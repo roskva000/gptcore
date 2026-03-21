@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #260:
+Current deterministic survival headline after Run #261:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+near_miss_chase_hit_snapshot_surface:
+current: Run #261 `project/game/src/game/GameScene.ts` aktif near-miss chase varsa impact marker'i generic yon etiketinden `LEFT SNAP` tipi snapped-lane marker'ina ceviriyor; fatal spotlight da ayni anda `SNAP / LEFT LANE` label'i ve teal accent ile bu kopusun nerede oldugunu sahipleniyor. `project/game/src/game/deathPresentation.ts` overlay title'i de ayni truth'a gecerek `Lane snapped from left` semantigini tasiyor
+baseline: Run #260 state'inde near-miss chase prompt, body ve badge tarafinda sahiplenilmisti ama hit ani halen generic `left/right` impact etiketi ve `KILLER` spotlight diliyle okunuyordu; earned state snap anina tam tasinmiyordu
+target: sonraki browser veya manuel gozlem oyuncunun olum anini artik yalniz yon bilgisi degil, kisa ama net bir `lane snapped here` olayi gibi okuyabildigini gostersin; yeni accent generic impact okunurlugunu bozmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 near_miss_chase_snapshot_badge_body_surface:
 current: Run #260 `project/game/src/game/deathPresentation.ts` aktif `near miss chase` varsa death snapshot badge'ini phase truth'u ile `CHASE SNAP` etrafinda birlestiriyor ve body ikinci satirini `project/game/src/game/nearMiss.ts` helper'lariyla earned kopus anlatimina ceviriyor; `project/game/src/game/GameScene.ts` bu katman icin chain count truth'unu da snapshot'a geciyor

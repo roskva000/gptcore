@@ -78,6 +78,9 @@ import {
 } from '../src/game/spawnGrace.ts';
 import {
   NEAR_MISS_CHASE_DURATION_MS,
+  getNearMissChaseFatalLabelText,
+  getNearMissChaseImpactLabelText,
+  getNearMissChaseTitleText,
   NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
   NEAR_MISS_CHASE_SNAPSHOT_TEXT,
   createNearMissState,
@@ -255,6 +258,11 @@ assert.equal(
   'A snapped near-miss chase should reach the badge so the overlay owns the earned state before the retry prompt.',
 );
 assert.equal(
+  nearMissPromptDeathPresentation.title,
+  'Lane snapped from left',
+  'A snapped near-miss chase should retitle the death snapshot around the broken lane instead of falling back to a generic hit direction sentence.',
+);
+assert.equal(
   nearMissPromptDeathPresentation.body,
   'Run 12.3s. Best 14.1s.\n2x near-miss chase snapped before the lane cooled. BREAKTHROUGH reached. 5.7s short of KILLBOX.',
   'A snapped near-miss chase should rewrite the body summary around the earned state without hiding the structural phase progress.',
@@ -288,6 +296,21 @@ assert.equal(
   deathPresentation.title,
   'Hit from left',
   'Death overlay title should keep the hit direction explicit for readability.',
+);
+assert.equal(
+  getNearMissChaseImpactLabelText('left', false),
+  'LEFT SNAP',
+  'Near-miss impact labels should turn the generic direction tag into a snapped-lane marker.',
+);
+assert.equal(
+  getNearMissChaseFatalLabelText('left', false),
+  'SNAP\nLEFT LANE',
+  'Near-miss fatal spotlight labels should name the broken lane instead of the generic killer direction.',
+);
+assert.equal(
+  getNearMissChaseTitleText('left', false),
+  'Lane snapped from left',
+  'Near-miss death titles should keep the copy aligned with the snapped-lane truth used by the live hit marker and fatal spotlight.',
 );
 assert.equal(
   deathPresentation.body,

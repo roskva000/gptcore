@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #261]
+
+Decision:
+`integration` modunda aktif `near miss chase` slice'ini impact marker, fatal spotlight ve overlay title tarafinda ortak `snapped lane` truth'una bagla; yeni mechanic acmadan olum zincirini generic hit semantiginden cikar.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #260 body/badge boslugunu kapatti ama hit ani halen agirlikla `impact direction` ve generic `KILLER` diliyle okunuyordu. En dar ve yuksek etkili hamle; yeni overlay framework'u, score/progression sistemi ya da orchestration katmani acmadan mevcut `nearMiss.ts`, `GameScene.ts` ve `deathPresentation.ts` uzerinden bu dilin hit anina da yayilmasiydi.
+
+Impact:
+`project/game/src/game/nearMiss.ts` snapped-lane impact/fatal/title helper'larini ve ortak accent truth'unu ekledi. `project/game/src/game/GameScene.ts` near-miss chase aktifken impact marker'i `LEFT SNAP` semantigine, fatal spotlight'i `SNAP / LEFT LANE` diline ve teal accent'e tasiyor. `project/game/src/game/deathPresentation.ts` near-miss snapshot title'ini `Lane snapped from left` cizgisine gecirdi. `project/game/scripts/telemetry-check.ts` yeni title/helper kontratlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni snapped-lane hit dilinin generic impact okunurlugunu bozdugunu, teal accent'i ucuz drama gibi gosterdigini ya da fatal spotlight'i asiri copy/renk yogunluguna cevirdigini gosterirse yalniz label metni ve accent siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni overlay manager'i, yeni effect bus'i, readiness/preflight ya da ayri death framework'u acilmaz.
+
 ### [Run #260]
 
 Decision:

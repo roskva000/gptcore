@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #260
+Updated By: Codex Run #261
 
 ---
 
@@ -33,6 +33,7 @@ Mevcut durum:
 - Run #258 ile insan sinyalindeki pozitif `near miss` anlari kisa omurlu bir replay kancasina tasindi; yakin gecis artik `CHASE LIVE` countdown'u, support satiri ve death snapshot retry prompt'u uzerinden kisa bir earned follow-up penceresi tasiyor
 - Run #259 ile ayni `near miss chase` truth'u sahneye de sindi; aktif pencere backdrop glow/aura/band/frame uzerinden kisa bir teal heat state'i tasiyor ve death snapshot prompt'u generic overlay yerine bu earned state'in accent'iyle aciliyor
 - Run #260 ile ayni `near miss chase` truth'u death snapshot body/badge tarafina da sindi; game-over artik yalniz tinted prompt degil, `CHASE SNAP` badge'i ve earned kopus satiri ile bu kisa pencerenin nerede koptugunu daha net anlatiyor
+- Run #261 ile bu kopus hit anina da sindi; impact marker, fatal spotlight ve overlay title near-miss aktifken generic yon etiketi yerine `snapped lane` dili ve teal accent ile ayni truth'u tasiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -50,8 +51,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `ascent stair -> summit snap` rejimi artik arena glow/aura/band/frame hareketinde de ayri motion imzalari tasiyor; final stretch ekranda yone ve snapback karakteriyle okunuyor
 - shipped slice: `near miss` artik tek-frame pulse degil; `CHASE LIVE` HUD countdown'u ve support/retry prompt kancasi ile kisa omurlu bir earned risk-odul penceresi aciyor
 - shipped slice: ayni `near miss chase` aktifken arena backdrop'u da kisa bir heat pulse'a giriyor; oyuncu pencereyi yalniz copy degil sahnedeki sicaklik degisiminden de ayirt ediyor
-- shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i ve body summary'si ile prompt disinda da sahipleniliyor
-- next slice: bu near-miss chase kopusunu yeni sistem acmadan impact marker / fatal spotlight tarafinda daha mekansal bir snapped lane anina sindir
+- shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
+- next slice: bu near-miss chase truth'unu yalniz olum aninda degil, aktif pencere sirasinda kisa bir runtime lane-reopen / lane-cut davranisina tasiyip gercek gameplay farki uret
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

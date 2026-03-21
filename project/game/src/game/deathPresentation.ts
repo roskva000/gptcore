@@ -8,6 +8,7 @@ import {
 } from './telemetry.ts';
 import { getNextRunHorizonBeatText } from './runHorizon.ts';
 import {
+  getNearMissChaseTitleText,
   NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
   NEAR_MISS_CHASE_SNAPSHOT_TEXT,
   getNearMissChaseSnapshotBadgeText,
@@ -102,7 +103,20 @@ const getBadgeText = ({
     : getNearMissChaseSnapshotBadgeText(nearMissChainCount);
 };
 
-const getTitleText = (hitDirection: ImpactDirection): string => {
+const getTitleTextWithNearMissChase = ({
+  hitDirection,
+  nearMissChainCount,
+}: {
+  hitDirection: ImpactDirection;
+  nearMissChainCount: number | null;
+}): string => {
+  if (nearMissChainCount !== null) {
+    return getNearMissChaseTitleText(
+      hitDirection.label,
+      hitDirection.offsetX === 0 && hitDirection.offsetY === 0,
+    );
+  }
+
   if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
     return 'Caught at center';
   }
@@ -214,5 +228,8 @@ export const getDeathPresentation = ({
     nearMissPromptText === null ? '#123f36' : NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
   promptTextColor: nearMissPromptText === null ? '#d8fff4' : NEAR_MISS_CHASE_SNAPSHOT_TEXT,
   stats: getStatsText(sessionTelemetry),
-  title: getTitleText(hitDirection),
+  title: getTitleTextWithNearMissChase({
+    hitDirection,
+    nearMissChainCount,
+  }),
 });

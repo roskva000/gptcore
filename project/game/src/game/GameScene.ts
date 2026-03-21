@@ -68,9 +68,14 @@ import { getPointerSteeringVelocity } from './pointerSteering.ts';
 import {
   NEAR_MISS_CHASE_DURATION_MS,
   NEAR_MISS_CHASE_ACCENT_COLOR,
+  NEAR_MISS_CHASE_FATAL_LABEL_BACKGROUND,
+  NEAR_MISS_CHASE_IMPACT_COLOR,
+  NEAR_MISS_CHASE_IMPACT_TEXT,
   createNearMissState,
   evaluateNearMiss,
+  getNearMissChaseFatalLabelText,
   getNearMissChaseHudText,
+  getNearMissChaseImpactLabelText,
   getNearMissChaseRetryText,
   getNearMissChaseSupportText,
   getNearMissChaseVisualIntensity,
@@ -2139,6 +2144,9 @@ export class GameScene extends Phaser.Scene {
     const previousBestSurvivalTime = getBestSurvivalTime(this.telemetry);
     const isNewBest =
       previousBestSurvivalTime === null || this.survivalTime > previousBestSurvivalTime;
+    const nearMissDeathSnapshotChainCount =
+      this.getNearMissDeathSnapshotChainCount(activeRunElapsedMs);
+    const nearMissDeathPromptText = this.getNearMissDeathPromptText(activeRunElapsedMs);
     const deathPresentation = getDeathPresentation({
       hitDirection,
       survivalTimeSeconds: this.survivalTime,
@@ -2148,8 +2156,8 @@ export class GameScene extends Phaser.Scene {
       reachedSurvivalGoal,
       retryPromptText: this.getRetryActionPromptText(),
       escapePromptTitle: escapePrompt.title,
-      nearMissChainCount: this.getNearMissDeathSnapshotChainCount(activeRunElapsedMs),
-      nearMissPromptText: this.getNearMissDeathPromptText(activeRunElapsedMs),
+      nearMissChainCount: nearMissDeathSnapshotChainCount,
+      nearMissPromptText: nearMissDeathPromptText,
     });
 
     this.setPhase('gameOver');
@@ -2227,8 +2235,8 @@ export class GameScene extends Phaser.Scene {
       yoyo: true,
       ease: 'Cubic.Out',
     });
-    this.showImpactMarker(hitDirection);
-    this.showFatalSpotlight(fatalObstacle, hitDirection);
+    this.showImpactMarker(hitDirection, nearMissDeathSnapshotChainCount);
+    this.showFatalSpotlight(fatalObstacle, hitDirection, nearMissDeathSnapshotChainCount);
 
     this.overlay.setVisible(true);
     const hasOverlayBadge = deathPresentation.badge !== null;
@@ -2431,16 +2439,35 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  private showImpactMarker(hitDirection: ImpactDirection): void {
+  private showImpactMarker(
+    hitDirection: ImpactDirection,
+    nearMissChainCount: number | null,
+  ): void {
+    const hasNearMissChaseSnapshot = nearMissChainCount !== null;
+    const impactStrokeColor = hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_IMPACT_COLOR : 0xffd2cb;
+    const impactAccentColor = hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_IMPACT_COLOR : 0xffb29f;
+    const impactLabelText = hasNearMissChaseSnapshot
+      ? getNearMissChaseImpactLabelText(
+          hitDirection.label,
+          hitDirection.offsetX === 0 && hitDirection.offsetY === 0,
+        )
+      : hitDirection.offsetX === 0 && hitDirection.offsetY === 0
+        ? 'CENTER'
+        : hitDirection.label.toUpperCase();
+
     if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
       this.impactRay.setAlpha(0).setVisible(false);
       this.impactArrowHead.setAlpha(0).setVisible(false);
       this.impactMarker
+        .setStrokeStyle(4, impactStrokeColor, 0.95)
         .setPosition(this.player.x, this.player.y)
         .setScale(0.72)
         .setAlpha(0.95)
         .setVisible(true);
-      this.impactMarkerLabel.setText('CENTER');
+      this.impactMarkerLabel.setColor(
+        hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_IMPACT_TEXT : '#ffd9d2',
+      );
+      this.impactMarkerLabel.setText(impactLabelText);
       this.impactMarkerLabel
         .setPosition(
           getHorizontalCalloutCenterX({
@@ -2487,21 +2514,26 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.impactRay
+      .setStrokeStyle(5, impactAccentColor, 0.95)
       .setTo(rayStartX, rayStartY, rayEndX, rayEndY)
       .setAlpha(0.95)
       .setVisible(true);
     this.impactArrowHead
+      .setFillStyle(impactAccentColor, 0.98)
       .setPosition(rayEndX, rayEndY)
       .setRotation(this.getDirectionRotation(hitDirection.offsetX, hitDirection.offsetY))
       .setScale(0.72)
       .setAlpha(0.98)
       .setVisible(true);
     this.impactMarker
+      .setStrokeStyle(4, impactStrokeColor, 0.95)
       .setPosition(markerX, markerY)
       .setScale(0.72)
       .setAlpha(0.95)
       .setVisible(true);
-    this.impactMarkerLabel.setText(hitDirection.label.toUpperCase());
+    this.impactMarkerLabel
+      .setColor(hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_IMPACT_TEXT : '#ffd9d2')
+      .setText(impactLabelText);
     this.impactMarkerLabel
       .setPosition(
         getHorizontalCalloutCenterX({
@@ -2546,7 +2578,10 @@ export class GameScene extends Phaser.Scene {
   private showFatalSpotlight(
     obstacle: Phaser.Physics.Arcade.Image,
     hitDirection: ImpactDirection,
+    nearMissChainCount: number | null,
   ): void {
+    const hasNearMissChaseSnapshot = nearMissChainCount !== null;
+    const spotlightColor = hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_IMPACT_COLOR : 0xfff0c7;
     const spotlightX = Phaser.Math.Clamp(obstacle.x, 44, ARENA_WIDTH - 44);
     const spotlightY = Phaser.Math.Clamp(obstacle.y, 44, ARENA_HEIGHT - 44);
     const fatalLabelPlacement = getVerticalCalloutPlacement({
@@ -2562,15 +2597,22 @@ export class GameScene extends Phaser.Scene {
       : Math.min(fatalLabelPlacement.labelY + 18, spotlightY - 12);
 
     this.fatalSpotlight
+      .setStrokeStyle(5, spotlightColor, 0.98)
       .setPosition(spotlightX, spotlightY)
       .setScale(0.72)
       .setAlpha(1)
       .setVisible(true);
     this.fatalSpotlightConnector
+      .setStrokeStyle(3, spotlightColor, 0.96)
       .setTo(spotlightX, connectorStartY, spotlightX, connectorEndY)
       .setAlpha(0.96)
       .setVisible(true);
-    this.fatalSpotlightLabel.setText(this.getFatalSpotlightLabelText(hitDirection));
+    this.fatalSpotlightLabel
+      .setBackgroundColor(
+        hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_FATAL_LABEL_BACKGROUND : '#4c2414',
+      )
+      .setColor(hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_IMPACT_TEXT : '#fff3d1')
+      .setText(this.getFatalSpotlightLabelText(hitDirection, nearMissChainCount));
     this.fatalSpotlightLabel
       .setPosition(
         getHorizontalCalloutCenterX({
@@ -2701,7 +2743,17 @@ export class GameScene extends Phaser.Scene {
     };
   }
 
-  private getFatalSpotlightLabelText(hitDirection: ImpactDirection): string {
+  private getFatalSpotlightLabelText(
+    hitDirection: ImpactDirection,
+    nearMissChainCount: number | null,
+  ): string {
+    if (nearMissChainCount !== null) {
+      return getNearMissChaseFatalLabelText(
+        hitDirection.label,
+        hitDirection.offsetX === 0 && hitDirection.offsetY === 0,
+      );
+    }
+
     if (hitDirection.offsetX === 0 && hitDirection.offsetY === 0) {
       return 'KILLER\nCENTER';
     }

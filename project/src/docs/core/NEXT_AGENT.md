@@ -4,7 +4,7 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda `near miss chase` slice'i death snapshot body/badge tarafina da sindi: Run #260 ile aktif pencere artik yalniz sahne heat'i ve prompt tint'i degil, `CHASE SNAP` badge'i ve earned body satiri da tasiyor.
+Bu turda `near miss chase` slice'i hit anina da sindi: Run #261 ile aktif pencere artik yalniz sahne heat'i, prompt/body/badge degil; impact marker, fatal spotlight ve overlay title tarafinda da `snapped lane` dili tasiyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
@@ -16,18 +16,18 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Aktif `near miss chase` kopusunu impact marker / fatal spotlight tarafinda daha mekansal bir `earned lane snapped here` anina cevir; snapshot body/badge artik var, siradaki is bu kopusu hit anina da sindirmek.**
+**Aktif `near miss chase` penceresini yalniz snapshot dili olmaktan cikarip kisa bir runtime lane-reopen / lane-cut davranisina cevir; oyuncu bu pencereyi sadece olumde degil oynarken de mekansal olarak hissetsin.**
 
 Hedef:
-Run #260 snapshot body/badge boslugunu kapatti ama hit anlatisi halen agirlikla generic impact direction + fatal spotlight semantiginde. Siradaki en iyi hamle yeni score sistemi acmak degil; mevcut `near miss chase` truth'unu impact marker, fatal spotlight veya overlay title tarafinda kisa ama net bir mekansal kopus olarak okutmak. Phase ilerlemesini silme; yeni overlay framework'u acma; yalniz mevcut hit/snapshot yuzeylerini ayni truth etrafinda bagla.
+Run #261 hit/snapshot zincirini bagladi ama slice halen buyuk oranda presentation-first. Siradaki en iyi hamle yeni score sistemi acmak veya shell'e dagilmak degil; aktif near-miss chase sirasinda bir sonraki tehdit ya da kisa pencere icindeki obstacle line'ini lane-reopen sonra lane-cut semantigine sokarak gercek gameplay farki uretmek. Ama bunu yeni hazard family, yeni manager ya da phase rewrite olmadan yap.
 
 Acilabilecek bagli yuzeyler:
-1. `GameScene.ts` icinde near-miss aktifken impact marker / fatal spotlight accent veya label'ini bu snapped lane truth'una bagla
-2. `deathPresentation.ts` icinde yalniz gerekiyorsa title veya callout'un tek kelimelik yan truth'unu bu slice'a hizala
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni hit/snapshot slice'i kadar genislet
+1. `balance.ts` veya mevcut obstacle truth'lari icinde near-miss chase aktifken kisa, bounded bir lane-reopen / lane-cut davranisi icin en dar runtime pencereyi sec
+2. `GameScene.ts` icinde bu davranisi mevcut near-miss HUD/support/backdrop diliyle ayni truth'ta okut ama yeni spectacle framework'u acma
+3. `telemetry-check.ts` assert'lerini yalniz bu yeni runtime slice'i kadar genislet
 
 Yapma:
 - yeni orchestration / readiness / preflight / manager katmani acma
@@ -38,8 +38,8 @@ Yapma:
 
 ## Success Criteria
 
-- aktif `near miss chase` kopusu hit aninda da generic impact olayi olmaktan cikar
-- phase ilerlemesi ve retry hedefi kaybolmadan impact/snapshot zinciri daha anlatilabilir bir earned an olur
+- aktif `near miss chase` pencereyi oynanis sirasinda da kisa ama hissedilir bir lane davranisina cevirir
+- yeni runtime slice mevcut snapshot/impact/title zinciriyle ayni dili tasir
 - bu yeni slice mevcut pacing ve fairness'i bozmaz
 - deterministic survival headline anlamli sapma gostermeden kalir
 - `npm run telemetry:check` yesil kalir

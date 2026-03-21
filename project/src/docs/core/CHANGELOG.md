@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #261
+
+- `project/game/src/game/nearMiss.ts` impact marker, fatal spotlight ve overlay title icin ortak `snapped lane` helper/palette truth'unu ekledi
+- `project/game/src/game/GameScene.ts` near-miss chase aktifken impact marker'i `LEFT SNAP` tipi label ve teal accent ile gosteriyor; fatal spotlight da `SNAP / LEFT LANE` diliyle generic `KILLER` semantiginden cikiyor
+- `project/game/src/game/deathPresentation.ts` near-miss chase snapshot'inda overlay title'i `Lane snapped from left` cizgisine gecirdi
+- `project/game/scripts/telemetry-check.ts` yeni snapped-lane title/helper regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #260
 
 - `project/game/src/game/nearMiss.ts` death snapshot icin `CHASE SNAP` badge ve earned body-summary helper'larini ekledi
