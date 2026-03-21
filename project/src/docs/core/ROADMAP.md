@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #262
+Updated By: Codex Run #263
 
 ---
 
@@ -35,6 +35,7 @@ Mevcut durum:
 - Run #260 ile ayni `near miss chase` truth'u death snapshot body/badge tarafina da sindi; game-over artik yalniz tinted prompt degil, `CHASE SNAP` badge'i ve earned kopus satiri ile bu kisa pencerenin nerede koptugunu daha net anlatiyor
 - Run #261 ile bu kopus hit anina da sindi; impact marker, fatal spotlight ve overlay title near-miss aktifken generic yon etiketi yerine `snapped lane` dili ve teal accent ile ayni truth'u tasiyor
 - Run #262 ile ayni `near miss chase` ilk kez runtime spawn line'ina da girdi; tetiklenen close shave dominant lane'i kilitliyor ve chase penceresindeki en fazla iki sonraki threat once kisa `lane reopen`, sonra `lane cut` target kaymasi alarak oynanis sirasinda da ayni earned snap semantigini hissettiriyor
+- Run #263 ile bu runtime `lane reopen -> lane cut` slice'i artik player-facing live readability'ye de baglandi; HUD `CHASE LIVE` yerine aktif beat'e gore `LANE REOPEN` / `LANE CUT` etiketine geciyor, support/callout bu iki beat'i isimlendiriyor ve ilgili spawn'lar step-spesifik tint tasiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -54,7 +55,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: ayni `near miss chase` aktifken arena backdrop'u da kisa bir heat pulse'a giriyor; oyuncu pencereyi yalniz copy degil sahnedeki sicaklik degisiminden de ayirt ediyor
 - shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
 - shipped slice: ayni truth artik aktif chase sirasinda kisa bir runtime `lane reopen -> lane cut` zinciri de tasiyor; spawn target'i en fazla iki beat boyunca snapped lane'den uzaklasip sonra ayni lane'e geri kapanarak gercek mekansal fark uretiyor
-- next slice: bu yeni runtime beat'i mevcut HUD/support/hint/backdrop diliyle ayni anda daha net okut; oyuncu reopen ve cut'i yalniz hissetmesin, canli okunurlukte de ayirt etsin
+- shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
+- next slice: ayni near-miss koridorunda daha fazla copy/sunum polish'ine donme; bir sonraki buyuk hamle erken-mid run'da yeni gercek spatial davranis farki acmali
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -62,6 +64,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
+- yeni aday: `BREAKTHROUGH` band'ini ilk gercek authored fork'a cevir; strafe/surge artik sadece isimli cadence olmasin, birbirine bagli bir spatial cevap zinciri uretsin
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

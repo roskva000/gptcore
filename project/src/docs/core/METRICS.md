@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #262:
+Current deterministic survival headline after Run #263:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+near_miss_chase_live_readability_surface:
+current: Run #263 `project/game/src/game/GameScene.ts` runtime `reopen` ve `cut` spawn step'lerini bounded live callout, support satiri ve near-miss HUD etiketiyle ayri ayri okutuyor; ayni dosya ilgili obstacle'lara `project/game/src/game/nearMiss.ts` icindeki step-spesifik tint truth'unu uyguluyor
+baseline: Run #262 state'inde near-miss chase artik runtime `lane reopen -> lane cut` davranisi tasiyordu ama player-facing canli okunurluk henuz buyuk oranda generic `CHASE LIVE` HUD'u ve ortak heat/accent diliyle kalabiliyordu; iki beat motion'a fazla yukleniyordu
+target: sonraki browser veya manuel gozlem oyuncunun ayni earned pencere icinde lane'in bir beat acilip bir beat tekrar kesildigini yalniz trajectory degil HUD/callout/renk tarafinda da ayirt edebildigini gostersin; bu slice cheap drama veya gereksiz callout spam'ine donusmemeli
+validation: `npm run telemetry:check`, `npm run build`
 
 near_miss_chase_runtime_lane_surface:
 current: Run #262 `project/game/src/game/GameScene.ts` aktif near-miss chase sirasinda dominant snapped lane'i sakliyor ve en fazla iki sonraki spawn'a bounded `reopen` sonra `cut` target kaymasi uyguluyor; `project/game/src/game/nearMiss.ts` bu slice icin lane secimi ve offset truth'unu sagliyor

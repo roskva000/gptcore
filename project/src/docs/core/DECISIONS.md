@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #263]
+
+Decision:
+`integration` modunda Run #262'nin aktif `near miss chase` runtime `lane reopen -> lane cut` slice'ini live readability tarafina sindir; yeni score/meta veya orchestration katmani acmadan bu iki beat'i HUD/support/callout/tint uzerinden ayirt edilir hale getir.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: runtime lane kaymasi artik gercek source deltasi olsa da oyuncu bunu yalniz motion'dan hissetme riski tasiyordu. En dar ve yuksek etkili hamle; `nearMiss.ts`, `GameScene.ts` ve `telemetry-check.ts` uzerinden mevcut truth'u player-facing canli okunurluga tasimakti.
+
+Impact:
+`project/game/src/game/nearMiss.ts` step-spesifik HUD/support/callout helper'lari ve `reopen`/`cut` tint truth'unu ekledi. `project/game/src/game/GameScene.ts` runtime step spawn oldugunda bounded live callout basiyor, near-miss HUD'i ilgili beat etiketine geciriyor, support satirini ayni truth'a bagliyor ve ilgili obstacle'lari step-spesifik tint ile gosteriyor. `project/game/scripts/telemetry-check.ts` bu yeni helper kontratlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni readability katmaninin cheap drama, fazla callout spam'i ya da obstacle okunurlugunu bozan gereksiz renk dagilimi urettigini gosterirse yalniz metin yogunlugu, callout suresi veya tint siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni event bus, overlay manager'i, readiness/preflight ya da ayri near-miss framework'u acilmaz.
+
 ### [Run #262]
 
 Decision:

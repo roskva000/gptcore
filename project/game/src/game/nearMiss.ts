@@ -13,6 +13,8 @@ export const NEAR_MISS_CHASE_IMPACT_TEXT = '#e6fff9';
 export const NEAR_MISS_CHASE_FATAL_LABEL_BACKGROUND = '#18463f';
 export const NEAR_MISS_CHASE_REOPEN_TARGET_OFFSET_PX = 72;
 export const NEAR_MISS_CHASE_CUT_TARGET_OFFSET_PX = 56;
+export const NEAR_MISS_CHASE_REOPEN_TINT = 0xa8fff0;
+export const NEAR_MISS_CHASE_CUT_TINT = 0xffd4de;
 
 type Point = {
   x: number;
@@ -76,18 +78,50 @@ const getNearMissChaseRemainingSecondsText = (remainingMs: number): string =>
 export const getNearMissChaseHudText = (
   chainCount: number,
   remainingMs: number,
+  liveStep: NearMissChaseSpawnStep | null = null,
 ): string =>
-  `${getNearMissLabel(chainCount)}\nCHASE LIVE ${getNearMissChaseRemainingSecondsText(remainingMs)}`;
+  `${getNearMissLabel(chainCount)}\n${
+    liveStep === 'reopen'
+      ? 'LANE REOPEN'
+      : liveStep === 'cut'
+        ? 'LANE CUT'
+        : 'CHASE LIVE'
+  } ${getNearMissChaseRemainingSecondsText(remainingMs)}`;
 
 export const getNearMissChaseSupportText = (
   chainCount: number,
   remainingMs: number,
+  liveStep: NearMissChaseSpawnStep | null = null,
 ): string => {
   const leadText =
     chainCount > 1 ? `${chainCount}x near-miss chase live.` : 'Near-miss chase live.';
 
+  if (liveStep === 'reopen') {
+    return `${leadText} The next threat reopens the snapped lane for ${getNearMissChaseRemainingSecondsText(remainingMs)}; hold the air before the cut snaps back.`;
+  }
+
+  if (liveStep === 'cut') {
+    return `${leadText} The cut is snapping back into the hot lane with ${getNearMissChaseRemainingSecondsText(remainingMs)} left; break across it before the space closes.`;
+  }
+
   return `${leadText} Thread another close shave within ${getNearMissChaseRemainingSecondsText(remainingMs)} to keep the lane hot.`;
 };
+
+export const getNearMissChaseStepAnnouncement = (
+  step: NearMissChaseSpawnStep,
+): { title: string; body: string } =>
+  step === 'reopen'
+    ? {
+        title: 'LANE REOPEN LIVE',
+        body: 'The next threat peels off the snapped lane for one beat. Hold the breathing room before the cut swings back.',
+      }
+    : {
+        title: 'LANE CUT LIVE',
+        body: 'The lane snaps shut again. Read the snapback and break across the closing line before the chase cools.',
+      };
+
+export const getNearMissChaseStepTint = (step: NearMissChaseSpawnStep): number =>
+  step === 'reopen' ? NEAR_MISS_CHASE_REOPEN_TINT : NEAR_MISS_CHASE_CUT_TINT;
 
 export const getNearMissChaseRetryText = (chainCount: number): string =>
   chainCount > 1

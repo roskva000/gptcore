@@ -90,6 +90,8 @@ import {
   evaluateNearMiss,
   getNearMissChaseHudText,
   getNearMissChaseRetryText,
+  getNearMissChaseStepAnnouncement,
+  getNearMissChaseStepTint,
   getNearMissChaseSupportText,
   getNearMissChaseVisualIntensity,
   getNearMissLaneDirection,
@@ -2471,9 +2473,55 @@ assert.equal(
   'Near-miss chase HUD should turn a close shave into a short live countdown instead of dropping back to a one-frame pulse.',
 );
 assert.equal(
+  getNearMissChaseHudText(2, 2300, 'reopen'),
+  '2x NEAR MISS\nLANE REOPEN 2.3s',
+  'The first live near-miss chase beat should switch the HUD into a lane-reopen label so the runtime slice reads as more than a generic timer.',
+);
+assert.equal(
+  getNearMissChaseHudText(2, 1700, 'cut'),
+  '2x NEAR MISS\nLANE CUT 1.7s',
+  'The follow-up near-miss chase beat should read as a lane cut on the HUD so the snapback stays distinguishable while the chase is live.',
+);
+assert.equal(
   getNearMissChaseSupportText(1, 1800),
   'Near-miss chase live. Thread another close shave within 1.8s to keep the lane hot.',
   'Near-miss chase support copy should sell the short replay-worthy follow-up without opening a new progression system.',
+);
+assert.equal(
+  getNearMissChaseSupportText(2, 2300, 'reopen'),
+  '2x near-miss chase live. The next threat reopens the snapped lane for 2.3s; hold the air before the cut snaps back.',
+  'The reopen beat should use support text to tell the player that the hot lane is briefly breathing open before the snapback.',
+);
+assert.equal(
+  getNearMissChaseSupportText(2, 1700, 'cut'),
+  '2x near-miss chase live. The cut is snapping back into the hot lane with 1.7s left; break across it before the space closes.',
+  'The cut beat should turn support text into a direct snapback warning instead of leaving the runtime slice implicit.',
+);
+assert.deepEqual(
+  getNearMissChaseStepAnnouncement('reopen'),
+  {
+    title: 'LANE REOPEN LIVE',
+    body: 'The next threat peels off the snapped lane for one beat. Hold the breathing room before the cut swings back.',
+  },
+  'The reopen beat should have a dedicated bounded callout so the player sees the lane open in live feedback, not just in obstacle motion.',
+);
+assert.deepEqual(
+  getNearMissChaseStepAnnouncement('cut'),
+  {
+    title: 'LANE CUT LIVE',
+    body: 'The lane snaps shut again. Read the snapback and break across the closing line before the chase cools.',
+  },
+  'The cut beat should have its own bounded callout so the player can read the snapback as a separate live event.',
+);
+assert.equal(
+  getNearMissChaseStepTint('reopen'),
+  0xa8fff0,
+  'Reopen-step threats should carry a cooler mint tint so the briefly opened lane reads differently from the snapback.',
+);
+assert.equal(
+  getNearMissChaseStepTint('cut'),
+  0xffd4de,
+  'Cut-step threats should carry a warmer tint so the follow-up snapback reads differently from the reopen beat.',
 );
 assert.equal(
   getNearMissChaseRetryText(3),

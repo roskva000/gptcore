@@ -1,47 +1,44 @@
-# NEXT_AGENT.md
-
 ## Governance Note
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda `near miss chase` slice'i runtime'a da sindi: Run #262 ile aktif pencere artik yalniz sahne heat'i ve death snapshot degil; dominant snapped lane uzerinden en fazla iki sonraki spawn'a kisa `lane reopen -> lane cut` davranisi da tasiyor.
+Bu turda Run #263 ile aktif `near miss chase` runtime `lane reopen -> lane cut` slice'i artik yalniz motion degil; HUD, support, bounded callout ve spawn tint tarafinda da ayirt edilir hale geldi.
 
 Dikkat:
-- yeni orchestration / readiness / preflight katmani acma
+- ayni near-miss koridorunda yeni copy/panel polish turleri acma
 - bunu score/progression/meta sistemine buyutme
-- ayni anda retention, shell ve validation'i ayri temalara dagitma
+- yeni orchestration / readiness / preflight / manager katmani acma
 - deterministic baseline'i gereksiz sarsma
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Run #262'nin yeni runtime `lane reopen -> lane cut` slice'ini mevcut near-miss HUD/support/hint/backdrop diliyle daha okunur hale getir; oyuncu bu iki beat'i yalniz hissetmesin, canli feedback'te de ayirt etsin.**
+**`BREAKTHROUGH` band'ini ilk gercek authored early-mid spatial fork'a cevir; mevcut `strafe` ve `surge` cadence'lerini birbirine bagli bir cevap zinciri gibi hissettir.**
 
 Hedef:
-Run #262 runtime farki acti ama okunurluk henuz implicit kalabilir. Siradaki en iyi hamle yeni score sistemi acmak veya shell'e dagilmak degil; mevcut chase HUD/support/backdrop/hint zincirini bu yeni `reopen` ve `cut` beat'leriyle ayni truth'ta baglayip aktif spawn line'inin ne yaptigini oyuncuya daha net okutmak. Ama bunu yeni hazard family, yeni manager ya da phase rewrite olmadan yap.
+Insan sinyalindeki "oyun hala cok kucuk" teshisine cevap vermek icin siradaki en iyi hamle ayni near-miss slice'ina yeni polish katmani eklemek degil; `10-18s` band'ini daha olayli ve anlatilabilir hale getirmek. `strafe` ve `surge` su an isimli ritim ama hala yeterince authored bir spatial olay gibi hissedilmeyebilir. Yeni hazard family/framework acmadan, mevcut varyant truth'lariyla bu band'i tek bir gercek fork gibi buyut.
 
 Acilabilecek bagli yuzeyler:
-1. `GameScene.ts` icinde mevcut pending `reopen` / `cut` spawn step'ini live HUD/support/hint veya mevcut bounded callout diliyle ayni truth'ta okut
-2. varsa ilgili obstacle tint/accent veya mevcut backdrop pulse siddetini bu iki beat'i ayirt edecek kadar dar kapsamda bagla; yeni spectacle framework'u acma
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni live readability slice'i kadar genislet
+1. `balance.ts` tarafinda `strafe -> surge` zincirine bounded bir spatial follow-through ver; erken-mid run yalniz cadence degil, tek bir authored cevap penceresi gibi okusun
+2. `runPhase.ts` ve `GameScene.ts` tarafinda bu yeni fork'u live hint/callout/support diliyle ayni truth'ta okut
+3. `telemetry-check.ts` assert'lerini yalniz bu yeni early-mid fork kontrati kadar genislet
 
 Yapma:
-- yeni orchestration / readiness / preflight / manager katmani acma
-- bunu score inflation, agir progression ya da ayri meta sistemi acmaya cevirmeme
-- ayni anda shell/tooling/readability polish'i ikinci tema olarak acma; yalniz bu runtime near-miss truth'una hizmet eden okunurlugu degistir
+- yeni hazard family, yeni spawn manager'i veya phase rewrite acma
+- shell/public panel/retention tarafina dagilma
+- ayni anda endgame veya near-miss ailesine ikinci tema ekleme
 
 ---
 
 ## Success Criteria
 
-- aktif `near miss chase` pencere icindeki `reopen` ve `cut` beat'leri oyuncu tarafinda canli olarak ayirt edilir
-- yeni live readability slice mevcut runtime/spawn ve snapshot/impact/title zinciriyle ayni dili tasir
-- bu entegrasyon mevcut pacing ve fairness'i bozmaz
+- `10-18s` `BREAKTHROUGH` band'i oyuncu icin daha authored ve anlatilabilir bir spatial fork gibi okunur
+- `strafe` ve `surge` ayrik isimler olmaktan cikıp bagli bir cevap zinciri hissi verir
+- yeni slice mevcut pacing/fairness'i bozmaz
 - deterministic survival headline anlamli sapma gostermeden kalir
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
-- core docs gerekli gercegi yansitir

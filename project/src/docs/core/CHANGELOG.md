@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #263
+
+- `project/game/src/game/nearMiss.ts` near-miss chase icin step-spesifik `LANE REOPEN` / `LANE CUT` HUD ve support helper'larini, bounded live callout metinlerini ve step tint truth'unu ekledi
+- `project/game/src/game/GameScene.ts` runtime near-miss chase spawn step'i geldiginde bounded callout gosteriyor, near-miss HUD ve support satirini aktif beat'e bagliyor ve ilgili obstacle'i `reopen` / `cut` tint'i ile ayirtiyor
+- ayni dosya pause/restore sonrasi bu bounded live readability slice'ini geri getirebiliyor; yeni manager/orchestration katmani acilmadi
+- `project/game/scripts/telemetry-check.ts` yeni near-miss live readability helper'larini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #262
 
 - `project/game/src/game/nearMiss.ts` near-miss chase icin dominant snapped lane helper'ini ve iki asamali `reopen` / `cut` spawn target offset truth'unu ekledi
