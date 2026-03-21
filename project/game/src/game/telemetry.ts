@@ -3,7 +3,7 @@ import { SURVIVAL_GOAL_SECONDS, TARGET_FIRST_DEATH_SECONDS } from './balance.ts'
 export const TELEMETRY_RECENT_RUN_LIMIT = 4;
 export const VALIDATION_SAMPLE_RUN_TARGET = 5;
 export const VALIDATION_BASELINE_TEXT =
-  'baseline=pacing 10/32/76 | deterministic survival 31.2s avg / 10.0s first death / 0% early';
+  'baseline=pacing 10/35/89 | deterministic survival 26.8s avg / 10.0s first death / 0% early';
 
 export type GameplayTelemetry = {
   totalRuns: number;

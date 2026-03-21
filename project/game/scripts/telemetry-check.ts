@@ -265,7 +265,7 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(20),
-  'Lead and echo punish straight lines. Reroute late and stay unpredictable. Next phase at 32s.',
+  'Speed and cadence kick up. Lead and echo punish straight lines, so reroute late. Next phase at 32s.',
   'The phase detail line should describe the active structural pressure instead of restating raw timer data.',
 );
 assert.equal(
@@ -1409,14 +1409,14 @@ assert.deepEqual(
   'Early pacing snapshot changed.',
 );
 assert.equal(spawnsBy(10), 10, '10s spawn pacing regressed.');
-assert.equal(spawnsBy(30), 32, '30s spawn pacing regressed.');
-assert.equal(spawnsBy(60), 76, '60s spawn pacing regressed.');
+assert.equal(spawnsBy(30), 35, '30s spawn pacing regressed.');
+assert.equal(spawnsBy(60), 89, '60s spawn pacing regressed.');
 assert.equal(speedAt(0), 145, '0s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(10), 183, '10s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(15), 200, '15s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(20), 217, '20s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(30), 253, '30s obstacle speed changed unexpectedly.');
-assert.equal(speedAt(45), 308, '45s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(10), 187, '10s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(15), 204, '15s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(20), 232, '20s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(30), 271, '30s obstacle speed changed unexpectedly.');
+assert.equal(speedAt(45), 320, '45s obstacle speed changed unexpectedly.');
 assert.equal(speedAt(60), 320, '60s obstacle speed changed unexpectedly.');
 assert.equal(balanceReport.balanceCurve.find((entry) => entry.seconds === 0)?.requiredSpawnDistance, 370, '0s required spawn distance changed unexpectedly.');
 assert.equal(balanceReport.balanceCurve.find((entry) => entry.seconds === 5)?.requiredSpawnDistance, 335, '5s required spawn distance changed unexpectedly.');
@@ -2296,7 +2296,7 @@ assert.equal(
   40,
   'Deterministic survival snapshot should stay long enough to exercise the 32s drift mutation.',
 );
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 31.2, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 26.8, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 10, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
@@ -2310,8 +2310,8 @@ assert.deepEqual(
   {
     under10Seconds: 0,
     between10And20Seconds: 4,
-    between20And30Seconds: 11,
-    reachedSimulationCap: 9,
+    between20And30Seconds: 17,
+    reachedSimulationCap: 3,
   },
   'Survival bucket distribution regressed.',
 );
@@ -2321,10 +2321,10 @@ assert.ok(
   ),
   'Deterministic survival sample should include at least one post-32s run so the drift mutation is actually exercised.',
 );
-assert.equal(survivalReport.averageSpawnCount, 34.1, 'Average spawn count snapshot changed unexpectedly.');
-assert.equal(survivalReport.averageSpawnRerolls, 0.5, 'Spawn reroll snapshot changed unexpectedly.');
-assert.equal(seed3TrajectoryReport.deathTimeSeconds, 21.2, 'Seed #3 trajectory baseline drifted.');
-assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 22, 'Seed #3 spawn count changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 31, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnRerolls, 0.6, 'Spawn reroll snapshot changed unexpectedly.');
+assert.equal(seed3TrajectoryReport.deathTimeSeconds, 33.6, 'Seed #3 trajectory baseline drifted.');
+assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 40, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(
   seed3TrajectoryReport.spawnRerollsBeforeDeath,
   1,
@@ -2415,12 +2415,12 @@ assert.deepEqual(
 );
 assert.equal(
   validationReport.validationSummary,
-  '5 runs | first death 18.2s | early 0% | 5/5 runs, target met',
+  '5 runs | first death 16.3s | early 0% | 5/5 runs, target met',
   'Validation export summary regressed.',
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=31.9s | first_death=18.2s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=18.2s | validation=5/5 runs, target met | baseline=pacing 10/32/76 | deterministic survival 31.2s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=27.3s | first_death=16.3s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=40.0s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 26.8s avg / 10.0s first death / 0% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(
@@ -2435,7 +2435,7 @@ assert.equal(
     totalSpawnRerolls: 3,
     lastSurvivalTime: 30,
   }),
-  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/32/76 | deterministic survival 31.2s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/35/89 | deterministic survival 26.8s avg / 10.0s first death / 0% early',
   'Validation export should report only completed runs even if a fresh start increased totalRuns beyond totalDeaths.',
 );
 assert.equal(
@@ -2449,7 +2449,7 @@ assert.equal(
     earlyDeathsUnderTarget: 1,
     lastSurvivalTime: 9.96,
   }),
-  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/32/76 | deterministic survival 31.2s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/35/89 | deterministic survival 26.8s avg / 10.0s first death / 0% early',
   'Telemetry exports should keep under-10s deaths flagged even when UI-facing times round up to 10.0s.',
 );
 assert.equal(

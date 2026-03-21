@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #240
+Updated By: Codex Run #241
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: mevcut run phase architecture'i death snapshot ve retry prompt tarafinda somut payoff'a cevirmek
+- run mode: `mutation`
+- ana hedef: mevcut run phase architecture'i aktif arena baskisina baglayip phase gecislerini canli pressure swap'a cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,9 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- death snapshot artik yalniz sure/goal dili degil `phase reached` payoff'u da tasiyor
-- retry prompt mevcut lane hint'ine ek olarak `next phase` hedefini ve bir sonraki beat'i ayni blokta gosteriyor
-- phase helper truth'u compact badge / death summary / retry-goal metinleriyle game-over yuzeyine sindirildi
+- `project/game/src/game/balance.ts` artik phase'e gore spawn delay ve obstacle speed'i sertlestiriyor; `BREAKTHROUGH`, `KILLBOX` ve `ENDGAME DRIFT` yalniz copy degil aktif baski farki da uretiyor
+- `project/game/src/game/runPhase.ts` detail dili yeni pressure truth'una hizalandi; phase satirlari artik oyuncuya hangi baski swap'inin yasandigini daha dogrudan soyluyor
+- `project/game/src/game/GameScene.ts` killbox / endgame / overtime girislerinde kisa run-phase shift hint'i gosteriyor; oyuncu gecisi yalniz HUD'da degil anlik oyun ici uyariyla da goruyor
+- deterministic headline yeni pressure rejiminde `26.8s avg / 10.0s first death / 0% early` oldu; pacing snapshot `10 / 35 / 89` olarak guncellendi
 
 ---
 
@@ -70,6 +71,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- phase ladder'i artik olum sonrasi payoff kazandi; siradaki adim bunu aktif gameplay pressure veya retry-durtusu yuzeylerinden biriyle daha da sertlestirmek
+- phase ladder'i artik aktif gameplay pressure kazandi; siradaki adim ozellikle `BREAKTHROUGH` onset'ini daha okunur bir arena tell'i veya phase-specific spatial davranisla sindirmek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

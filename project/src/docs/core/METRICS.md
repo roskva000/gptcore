@@ -7,22 +7,29 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #240:
-- `31.2s` average survival
+Current deterministic survival headline after Run #241:
+- `26.8s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
+- pacing snapshot `10 / 35 / 89`
+
+run_phase_live_pressure_swap_surface:
+current: Run #241 `project/game/src/game/balance.ts` coarse phase ladder'i ilk kez aktif pressure profiline bagliyor; `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` artik spawn delay ve base obstacle speed tarafinda ayri davranıyor. `project/game/src/game/GameScene.ts` killbox/endgame/overtime onset'lerinde compact phase-shift hint'i gosterip support text'i yeni baski truth'una tasiyor
+baseline: Run #240 faz dili waiting/HUD/death-retry payoff yuzeylerinde gorunur olsa da aktif arena baskisi buyuk oranda ayni tempo egrisinin ustunde yasiyordu; oyuncu phase degisimini daha cok okuyor, daha az hissediyordu
+target: sonraki manual sample veya browser gozlemi en az bir phase gecisinde baski swap'inin arena hissini gercekten degistirdigini gostersin; siradaki run bu yeni numerik pressure rejimini ozellikle `BREAKTHROUGH` onset'inde okunur bir spatial tell veya threat-shape farkiyla derinlestirsin
+validation: `npm run telemetry:check`, `npm run build`
 
 run_phase_death_retry_payoff_surface:
-current: Run #240 `project/game/src/game/runPhase.ts` coarse phase ladder'i icin `phase reached` badge, death summary ve retry-goal helper'lari sagliyor; `project/game/src/game/deathPresentation.ts` olum overlay'ini artik phase ulasimi + sonraki structural hedef + sonraki beat'i ayni compact payoff blokunda gosteriyor
+current: Run #240 death/retry payoff zinciri korunuyor; Run #241 ile artik yalniz post-death payoff degil aktif phase pressure truth'u da ayni ladder'a bagli oldugu icin game-over hedefi sahnede yasanan baskiyla daha tutarli hale geldi
 baseline: Run #239 faz dilini waiting ve aktif HUD'a tasimisti ama game-over yuzeyi hala agirlikla sure/goal ve bir sonraki beat copy'sine yaslaniyor, oyuncuya "hangi phase'e kadar ciktim ve bir sonraki run'da neyi kovaliyorum" hissini yeterince net vermiyordu
-target: sonraki manual sample bu yeni death/retry payoff yuzeyinin olum sonrasi sikilma hissini azalttigini, retry niyetini daha somut hale getirdigini ve death screen'i tekrar text-dump'a cevirmedigini gostersin; runtime blokluysa ayni copy yuzeyine mikro-churn yerine bu phase payoff'unu aktif gameplay pressure veya retry feedback tarafina baglayan source problemi secilsin
+target: sonraki manual sample death/retry payoff'unun artik aktif oynanis pressure swap'lariyla daha tutarli okundugunu gostersin; runtime blokluysa bu yuzeyde copy churn'u degil mevcut pressure rejimini daha okunur yapan source problemi secilsin
 validation: `npm run telemetry:check`, `npm run build`
 
 run_phase_architecture_identity_surface:
-current: Run #239 `project/game/src/game/runPhase.ts` coarse run ladder'i `OPENING WINDOW`, `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` truth'una topluyor; `project/game/src/game/GameScene.ts` aktif HUD'da phase status/detail slice'i ve waiting intro'da `RUN PHASES` forecast'i gosteriyor
+current: Run #241 `project/game/src/game/runPhase.ts` coarse run ladder'i artik hem identity hem pressure truth'u tasiyor; `project/game/src/game/GameScene.ts` aktif HUD, waiting intro ve phase-shift hint'lerinde ayni dili koruyor
 baseline: onceki source beat announcement ve horizon slice'lari tasisa da run'in ilk 30-60 saniyesi hala oyuncuya agirlikla timer + tekil unlock kutlamalari olarak gorunuyordu; coarse structural state dili yoktu
-target: sonraki manual sample bu yeni phase architecture + death payoff zincirinin run'i daha buyuk, daha okunur ve daha "bir seye donusuyor" hissettiren bir slice oldugunu gostersin; runtime blokluysa ayni yuzeye mikro-copy churn'u yerine bu phase'leri gameplay pressure veya retry feedback ile daha derin baglayan source problemi secilsin
+target: sonraki manual sample bu yeni phase architecture + live pressure zincirinin run'i daha buyuk, daha okunur ve daha "bir seye donusuyor" hissettiren bir slice oldugunu gostersin; runtime blokluysa ayni yuzeye mikro-copy churn'u yerine `BREAKTHROUGH` onset'ini daha okunur yapan source problemi secilsin
 validation: `npm run telemetry:check`, `npm run build`
 
 survival_goal_chase_identity_surface:

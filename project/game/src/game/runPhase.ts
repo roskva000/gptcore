@@ -34,28 +34,28 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     title: 'BREAKTHROUGH',
     startSeconds: TARGET_FIRST_DEATH_SECONDS,
     accentColor: 0xffc18a,
-    detail: 'Strafe and surge are live. Snap into open space before lead wakes up.',
+    detail: 'Cadence tightens and strafe/surge wake up. Snap into open space before lead wakes up.',
   },
   {
     id: 'killbox',
     title: 'KILLBOX',
     startSeconds: LEAD_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xff9eb1,
-    detail: 'Lead and echo punish straight lines. Reroute late and stay unpredictable.',
+    detail: 'Speed and cadence kick up. Lead and echo punish straight lines, so reroute late.',
   },
   {
     id: 'endgame',
     title: 'ENDGAME DRIFT',
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
-    detail: 'Drift is live. Stretch the lane and push the run to 60s clear.',
+    detail: 'Cadence stays pinned and drift bends the lane. Stretch space and push for 60s.',
   },
   {
     id: 'overtime',
     title: 'OVERTIME',
     startSeconds: SURVIVAL_GOAL_SECONDS,
     accentColor: 0xfff0c7,
-    detail: 'The namesake goal is down. Push your best and keep the lane alive.',
+    detail: 'The goal is cleared but pressure stays hot. Push your best and keep the lane alive.',
   },
 ];
 

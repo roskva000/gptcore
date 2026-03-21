@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #241]
+
+Decision:
+`mutation` modunda coarse run phase architecture'i aktif arena baskisina bagla; phase gecisleri artik spawn cadence + threat speed tarafinda da gercek pressure swap uretsin.
+
+Reason:
+Run #239-240 faz dilini waiting, HUD ve death/retry payoff yuzeylerine tasidi ama aktif oynanis hala buyuk oranda mevcut obstacle unlock ritmine yaslaniyordu. `NEXT_AGENT.md` ve audit ayni soruyu birakti: oyuncu arena davranisinda phase degisimini gercekten hissediyor mu? Yeni hazard family veya state-manager acmadan en yuksek etkili hamle, mevcut phase truth'unu balance zincirine baglayip `BREAKTHROUGH`, `KILLBOX` ve `ENDGAME DRIFT` icin sertlesen cadence/speed profilleri uretmekti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni run-phase pressure multipliers ile spawn delay ve base obstacle speed'i phase band'lerine gore sertlestirdi. `project/game/src/game/runPhase.ts` detail copy'si bu yeni baski semantigine hizalandi. `project/game/src/game/GameScene.ts` killbox/endgame/overtime girislerinde kisa phase-shift hint'i gosterip support text'i yeni truth ile yeniliyor. `project/game/src/game/telemetry.ts` deterministic baseline'i `pacing 10/35/89 | 26.8s avg / 10.0s first death / 0% early` olarak guncelledi; `project/game/scripts/telemetry-check.ts` yeni pacing, survival ve validation snapshot'larini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Manuel sample veya browser gozlemi bu yeni phase pressure rejiminin opener'i gereksiz sertlestirdigini, killbox/endgame gecislerini ucuz numerik spike'a cevirdigini ya da readability'yi bozdugunu gosterirse yalniz ilgili multiplier siddeti ve phase-shift hint yogunlugu dar kapsamda ayarlanir; bu bahaneyle yeni spawn framework'u, state-manager'i, orchestration/preflight veya hazard orchestration katmani acilmaz.
+
 ### [Run #240]
 
 Decision:

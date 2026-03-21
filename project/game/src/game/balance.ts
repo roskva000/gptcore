@@ -30,10 +30,24 @@ export const DRIFT_OBSTACLE_UNLOCK_SECONDS = 32;
 export const DRIFT_OBSTACLE_CADENCE = 7;
 export const DRIFT_OBSTACLE_ROTATION_DEGREES = 22;
 export const DRIFT_OBSTACLE_TINT = 0xc8ff9a;
+export const BREAKTHROUGH_PHASE_SPAWN_DELAY_MULTIPLIER = 0.94;
+export const KILLBOX_PHASE_SPAWN_DELAY_MULTIPLIER = 0.86;
+export const ENDGAME_PHASE_SPAWN_DELAY_MULTIPLIER = 0.8;
+export const OVERTIME_PHASE_SPAWN_DELAY_MULTIPLIER = 0.78;
+export const BREAKTHROUGH_PHASE_OBSTACLE_SPEED_MULTIPLIER = 1.02;
+export const KILLBOX_PHASE_OBSTACLE_SPEED_MULTIPLIER = 1.07;
+export const ENDGAME_PHASE_OBSTACLE_SPEED_MULTIPLIER = 1.12;
+export const OVERTIME_PHASE_OBSTACLE_SPEED_MULTIPLIER = 1.15;
 
 type Point = {
   x: number;
   y: number;
+};
+
+export type RunPhasePressureProfile = {
+  obstacleSpeedMultiplier: number;
+  phaseId: 'opening' | 'breakthrough' | 'killbox' | 'endgame' | 'overtime';
+  spawnDelayMultiplier: number;
 };
 
 export type ObstacleVariant =
@@ -46,20 +60,64 @@ export type ObstacleVariant =
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
+export const getRunPhasePressureProfile = (
+  survivalTimeSeconds: number,
+): RunPhasePressureProfile => {
+  if (survivalTimeSeconds >= SURVIVAL_GOAL_SECONDS) {
+    return {
+      phaseId: 'overtime',
+      spawnDelayMultiplier: OVERTIME_PHASE_SPAWN_DELAY_MULTIPLIER,
+      obstacleSpeedMultiplier: OVERTIME_PHASE_OBSTACLE_SPEED_MULTIPLIER,
+    };
+  }
+
+  if (survivalTimeSeconds >= DRIFT_OBSTACLE_UNLOCK_SECONDS) {
+    return {
+      phaseId: 'endgame',
+      spawnDelayMultiplier: ENDGAME_PHASE_SPAWN_DELAY_MULTIPLIER,
+      obstacleSpeedMultiplier: ENDGAME_PHASE_OBSTACLE_SPEED_MULTIPLIER,
+    };
+  }
+
+  if (survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS) {
+    return {
+      phaseId: 'killbox',
+      spawnDelayMultiplier: KILLBOX_PHASE_SPAWN_DELAY_MULTIPLIER,
+      obstacleSpeedMultiplier: KILLBOX_PHASE_OBSTACLE_SPEED_MULTIPLIER,
+    };
+  }
+
+  if (survivalTimeSeconds >= TARGET_FIRST_DEATH_SECONDS) {
+    return {
+      phaseId: 'breakthrough',
+      spawnDelayMultiplier: BREAKTHROUGH_PHASE_SPAWN_DELAY_MULTIPLIER,
+      obstacleSpeedMultiplier: BREAKTHROUGH_PHASE_OBSTACLE_SPEED_MULTIPLIER,
+    };
+  }
+
+  return {
+    phaseId: 'opening',
+    spawnDelayMultiplier: 1,
+    obstacleSpeedMultiplier: 1,
+  };
+};
+
 export const getSpawnDelayMs = (survivalTimeSeconds: number): number =>
   clamp(
-    INITIAL_SPAWN_DELAY_MS - survivalTimeSeconds * 8,
+    (INITIAL_SPAWN_DELAY_MS - survivalTimeSeconds * 8) *
+      getRunPhasePressureProfile(survivalTimeSeconds).spawnDelayMultiplier,
     MIN_SPAWN_DELAY_MS,
     INITIAL_SPAWN_DELAY_MS,
   );
 
 export const getObstacleSpeed = (survivalTimeSeconds: number): number =>
   clamp(
-    survivalTimeSeconds <= 10
+    (survivalTimeSeconds <= 10
       ? 145 + survivalTimeSeconds * 3.8
       : survivalTimeSeconds <= 20
         ? 183 + (survivalTimeSeconds - 10) * 3.4
-        : 217 + (survivalTimeSeconds - 20) * 3.62,
+        : 217 + (survivalTimeSeconds - 20) * 3.62) *
+      getRunPhasePressureProfile(survivalTimeSeconds).obstacleSpeedMultiplier,
     145,
     320,
   );

@@ -19,31 +19,31 @@ Ama dikkat:
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**Run phase architecture'i aktif gameplay pressure tarafina bagla.**
+**`BREAKTHROUGH` onset'ini okunur bir arena tell'ine bagla.**
 
 Hedef:
-Oyuncu sadece HUD ve death screen'de degil, arena davranisinda da phase degistigini hissetsin. Coarse phase ladder yeni bir pressure swap, arena state farki veya retry-durtusu yaratan canli davranisla desteklensin.
+Run #241 phase ladder'i aktif pressure'a bagladi ama en erken buyuk gecis hala agirlikla sayisal hizlanma gibi okunuyor. Simdi hedef, `10s` sonrasi `BREAKTHROUGH` anini oyuncunun ekranda hemen fark edecegi kisa ve okunur bir arena tell'iyle sindirmek.
 
 Acilabilecek bagli yuzeyler:
-1. bir veya iki phase gecisinde obstacle davranisi / cadence / arena baskisi belirgin bicimde degissin
-2. bu yeni pressure swap'i mevcut `runPhase` truth'u ile ayni helper zincirine bagla
-3. gerekiyorsa beat callout, support text veya compact HUD feedback ile yeni pressure farkini okunur kil
-4. mutlaka deterministic regression ekle; ama validation/tooling genisletmesini ana is yapma
+1. `BREAKTHROUGH` baslangicinda mevcut backdrop / beat callout / obstacle entry davranisindan birini kullanarak kisa ama net bir onset tell'i ver
+2. bu tell yeni manager acmadan mevcut `runPhase` truth'u ve mevcut oyun yuzeylerinden biriyle calissin
+3. tell readability saglasin ama opener fairness'ini bozmasin; yeni raw stat squeeze'i ana hareket yapma
+4. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
 
 Yapma:
-- phase helper etrafinda yeni orchestration/state-manager kurma
-- yalniz death copy polish'i yapip urun ilerlemesi gibi sunma
-- ayni anda gameplay, shell, mobile ve validation'i ayri temalara dagitma
+- yeni orchestration/state-manager kurma
+- sirf copy degistirip phase tell'i cozuldu diye sunma
+- ayni anda killbox, shell, mobile ve validation'i ayri temalara dagitma
 
 ---
 
 ## Success Criteria
 
-- oyuncu en az bir phase gecisinde arena baskisinin degistigini ekranda fark eder
-- yeni pressure behavior mevcut phase architecture ile ayni dili konusur
+- oyuncu `10s` civarinda run'in opener'dan ciktigini ekranda hemen fark eder
+- yeni tell mevcut phase architecture ve Run #241 pressure rejimiyle ayni dili konusur
 - build yesil kalir
-- gerekliyse telemetry/browser guard calisir
+- `npm run telemetry:check` yesil kalir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

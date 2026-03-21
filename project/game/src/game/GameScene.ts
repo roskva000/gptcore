@@ -79,6 +79,7 @@ import {
   getRunPhaseStatusText,
   getRunPhaseSupportText,
   getRunPhaseTimelineText,
+  type RunPhaseId,
 } from './runPhase.ts';
 import {
   getLaunchActionPromptText as getPrimaryLaunchActionPromptText,
@@ -364,6 +365,7 @@ export class GameScene extends Phaser.Scene {
   private nearMissHintHideAtElapsedMs: number | null = null;
   private beatCalloutHideAtElapsedMs: number | null = null;
   private lastAnnouncedRunBeatLabel: string | null = null;
+  private lastShownRunPhaseId: RunPhaseId | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
@@ -1001,6 +1003,7 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
     this.updateBestText();
     this.updateRunPhaseHud();
+    this.maybeShowRunPhaseShiftHint(activeRunElapsedMs);
     this.updatePersonalBestChase();
     this.updateNearMissTracking(activeRunElapsedMs);
     this.updateArenaBeatSpectacle(time);
@@ -1298,6 +1301,7 @@ export class GameScene extends Phaser.Scene {
     this.survivalGoalReachedThisRun = false;
     this.runPersonalBestTargetTime = getBestSurvivalTime(this.telemetry);
     this.personalBestCelebratedThisRun = false;
+    this.lastShownRunPhaseId = getRunPhaseState(0).currentPhase.id;
     this.nearMissChainCount = 0;
     this.nearMissChainExpiresAtElapsedMs = 0;
     this.nearMissHintHideAtElapsedMs = null;
@@ -1463,6 +1467,7 @@ export class GameScene extends Phaser.Scene {
     this.runPersonalBestTargetTime = null;
     this.personalBestCelebratedThisRun = false;
     this.lastAnnouncedRunBeatLabel = null;
+    this.lastShownRunPhaseId = null;
     this.runSpawnCount = 0;
     this.tweens.killTweensOf([
       this.player,
@@ -2855,6 +2860,28 @@ export class GameScene extends Phaser.Scene {
       .setColor(colorToCssHex(currentPhase.accentColor));
   }
 
+  private maybeShowRunPhaseShiftHint(activeRunElapsedMs: number): void {
+    const { currentPhase } = getRunPhaseState(this.survivalTime);
+
+    if (currentPhase.id === this.lastShownRunPhaseId) {
+      return;
+    }
+
+    this.lastShownRunPhaseId = currentPhase.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+
+    const shiftHint = this.getRunPhaseShiftHintText(currentPhase.id);
+
+    if (shiftHint === null) {
+      return;
+    }
+
+    this.hintText
+      .setText(`${currentPhase.title}\n${shiftHint}`)
+      .setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
+  }
+
   private updatePersonalBestChase(): void {
     if (
       this.phase !== 'playing' ||
@@ -3049,6 +3076,22 @@ export class GameScene extends Phaser.Scene {
     }
 
     return getRunPhaseSupportText(this.survivalTime);
+  }
+
+  private getRunPhaseShiftHintText(phaseId: RunPhaseId): string | null {
+    if (phaseId === 'killbox') {
+      return 'Killbox is live. Cadence tightens, speed rises, and straight lines die fast.';
+    }
+
+    if (phaseId === 'endgame') {
+      return 'Endgame drift is live. The lane keeps bending while cadence stays pinned.';
+    }
+
+    if (phaseId === 'overtime') {
+      return 'Overtime is live. The goal is down, but the arena stays hot.';
+    }
+
+    return null;
   }
 
   private getWaitingHintText(): string {

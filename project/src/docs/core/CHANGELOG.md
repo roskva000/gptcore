@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #241
+
+- `project/game/src/game/balance.ts` phase tabanli pressure multipliers ekledi; `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` artik spawn cadence ve obstacle speed tarafinda da ayrisiyor
+- `project/game/src/game/runPhase.ts` phase detail metinlerini yeni pressure truth'una hizaladi; HUD satiri artik yalniz obstacle unlock adlarini degil aktif baski farkini da soyluyor
+- `project/game/src/game/GameScene.ts` killbox / endgame / overtime onset'lerinde kisa run-phase shift hint'i gosteriyor ve support text'i yeni phase'e gecince tazeliyor
+- `project/game/src/game/telemetry.ts` deterministic baseline'i `pacing 10/35/89 | 26.8s avg / 10.0s first death / 0% early` olarak guncelledi
+- `project/game/scripts/telemetry-check.ts` yeni pacing, survival ve validation snapshot'larini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #240
 
 - `project/game/src/game/runPhase.ts` death/retry payoff icin yeni `phase reached` badge, death summary ve retry-goal helper'larini ekledi

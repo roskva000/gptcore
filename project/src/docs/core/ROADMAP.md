@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #240
+Updated By: Codex Run #241
 
 ---
 
@@ -13,7 +13,7 @@ Mevcut durum:
 - deterministic ve browser guard tabani yeterli
 - son donem mutation / presentation birikimi var
 - sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
-- Run #240 ile coarse phase ladder artik death snapshot + retry prompt tarafinda da payoff kazandi; siradaki is bu dili aktif gameplay pressure veya retry-durtusu feedback'iyle daha sert baglamak
+- Run #241 ile coarse phase ladder ilk kez aktif gameplay pressure'a baglandi; spawn cadence ve obstacle speed artik phase'e gore sertlesiyor, killbox/endgame girisleri kisa hint'lerle okunur kaliyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -22,13 +22,13 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 # NEXT
 
 ## Expansion Track A — Run Architecture
-- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff ile coarse run ladder uc ana yuzeye sindi
-- next slice: phase ulasimini aktif gameplay pressure behavior'i veya retry urge feedback'iyle bagla
+- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers ile coarse run ladder artik dort bagli yuzeye sindi
+- next slice: ozellikle `BREAKTHROUGH` onset'ini sayisal hizlanma olmaktan cikarip okunur bir arena tell'i, spawn-shape farki veya compact warning beat'i ile sindir
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
 - arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
-- yeni hazard family, pressure swap veya environment state mantigi ac
+- yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir
