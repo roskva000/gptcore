@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #241
+Updated By: Codex Run #242
 
 ---
 
@@ -13,7 +13,8 @@ Mevcut durum:
 - deterministic ve browser guard tabani yeterli
 - son donem mutation / presentation birikimi var
 - sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
-- Run #241 ile coarse phase ladder ilk kez aktif gameplay pressure'a baglandi; spawn cadence ve obstacle speed artik phase'e gore sertlesiyor, killbox/endgame girisleri kisa hint'lerle okunur kaliyor
+- Run #241 ile coarse phase ladder aktif gameplay pressure'a baglandi
+- Run #242 ile `BREAKTHROUGH` onset'i warm backdrop burst + phase callout + compact hint zinciriyle ekranda okunur bir arena olayi haline geldi
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -22,8 +23,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 # NEXT
 
 ## Expansion Track A — Run Architecture
-- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers ile coarse run ladder artik dort bagli yuzeye sindi
-- next slice: ozellikle `BREAKTHROUGH` onset'ini sayisal hizlanma olmaktan cikarip okunur bir arena tell'i, spawn-shape farki veya compact warning beat'i ile sindir
+- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i ile coarse run ladder artik bes bagli yuzeye sindi
+- next slice: `KILLBOX` girisini yalniz numerik sertlesme olmaktan cikarip ilk lead cut / spatial trap karakteriyle ayirt edilir kil
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

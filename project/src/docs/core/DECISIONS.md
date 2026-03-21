@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #242]
+
+Decision:
+`integration` modunda `BREAKTHROUGH` onset'ini mevcut `runPhase` truth'una bagli bir arena tell'ine cevir; yeni manager acmadan backdrop, phase callout ve compact hint zincirini ayni an icinde hizala.
+
+Reason:
+Run #241 phase ladder'i artik gercek pressure swap uretiyordu ama `NEXT_AGENT.md` ve audit'in biraktigi acik sorun duruyordu: en erken buyuk gecis hala agirlikla timer + numerik hizlanma gibi okunuyordu. En yuksek etkili dar entegrasyon hamlesi, yeni orchestration katmani veya yeni hazard family acmadan `10s` sonrasi `BREAKTHROUGH` anini mevcut backdrop, hint ve callout yuzeylerinde tek truth ile sahnelemekti.
+
+Impact:
+`project/game/src/game/runPhase.ts` yeni `getRunPhaseShiftAnnouncement()` ve `getRunPhaseOnsetIntensity()` helper'larini ekledi. `project/game/src/game/GameScene.ts` `BREAKTHROUGH` onset'inde warm backdrop burst, phase shift beat callout'u ve kisa hint gosteriyor; ayni announcement yolu killbox/endgame/overtime gecislerinde de ortaklasti. `project/game/scripts/telemetry-check.ts` yeni phase-shift announcement ve onset intensity kontratlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni onset tell'inin ucuz, gurultulu veya opener readability'sini bozan bir flash gibi hissettigini gosterirse yalniz burst siddeti ve callout yogunlugu dar kapsamda ayarlanir; bu bahaneyle yeni phase manager'i, orchestration/preflight ya da ayri backdrop controller katmani acilmaz.
+
 ### [Run #241]
 
 Decision:

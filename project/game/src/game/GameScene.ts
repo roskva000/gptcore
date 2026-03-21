@@ -75,8 +75,10 @@ import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   getRunPhaseDetailText,
+  getRunPhaseOnsetIntensity,
   getRunPhaseState,
   getRunPhaseStatusText,
+  getRunPhaseShiftAnnouncement,
   getRunPhaseSupportText,
   getRunPhaseTimelineText,
   type RunPhaseId,
@@ -125,6 +127,7 @@ const NEAR_MISS_EXTRA_DISTANCE_PX = 22;
 const NEAR_MISS_CHAIN_WINDOW_MS = 1800;
 const NEAR_MISS_HINT_DURATION_MS = 900;
 const RUN_BEAT_CALLOUT_DURATION_MS = 1700;
+const RUN_PHASE_SHIFT_CALLOUT_DURATION_MS = 1900;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
 const FATAL_OBSTACLE_DEPTH = 3;
@@ -1119,18 +1122,40 @@ export class GameScene extends Phaser.Scene {
       progressSeconds,
       pulseMs: time,
     });
+    const breakthroughOnsetIntensity =
+      this.phase === 'playing' ? getRunPhaseOnsetIntensity(this.survivalTime, 'breakthrough') : 0;
+    const breakthroughOnsetAlphaBoost = breakthroughOnsetIntensity * 0.2;
+    const breakthroughOnsetScaleBoost = breakthroughOnsetIntensity * 0.2;
+    const breakthroughTellColor = 0xffc18a;
 
     this.backdropBase.setFillStyle(spectacle.backgroundColor, 1);
     this.backdropGlow
-      .setFillStyle(spectacle.glowColor, spectacle.glowAlpha)
-      .setScale(spectacle.glowScale);
+      .setFillStyle(
+        breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.glowColor,
+        spectacle.glowAlpha + breakthroughOnsetAlphaBoost,
+      )
+      .setScale(spectacle.glowScale + breakthroughOnsetScaleBoost);
     this.backdropAura
-      .setStrokeStyle(4, spectacle.glowColor, spectacle.auraAlpha)
-      .setScale(spectacle.auraScale);
-    this.backdropTopBand.setFillStyle(spectacle.edgeColor, spectacle.edgeAlpha);
-    this.backdropBottomBand.setFillStyle(spectacle.edgeColor, spectacle.edgeAlpha * 0.88);
+      .setStrokeStyle(
+        4 + breakthroughOnsetIntensity * 2,
+        breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.glowColor,
+        spectacle.auraAlpha + breakthroughOnsetAlphaBoost,
+      )
+      .setScale(spectacle.auraScale + breakthroughOnsetScaleBoost);
+    this.backdropTopBand.setFillStyle(
+      breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.edgeColor,
+      spectacle.edgeAlpha + breakthroughOnsetAlphaBoost,
+    );
+    this.backdropBottomBand.setFillStyle(
+      breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.edgeColor,
+      spectacle.edgeAlpha * 0.88 + breakthroughOnsetAlphaBoost * 0.88,
+    );
     this.backdropGrid.setAlpha(spectacle.gridAlpha);
-    this.backdropFrame.setStrokeStyle(3, spectacle.frameColor, spectacle.frameAlpha);
+    this.backdropFrame.setStrokeStyle(
+      3 + breakthroughOnsetIntensity,
+      breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.frameColor,
+      spectacle.frameAlpha + breakthroughOnsetAlphaBoost,
+    );
   }
 
   private handlePrimaryAction(event?: KeyboardEvent): void {
@@ -2870,6 +2895,25 @@ export class GameScene extends Phaser.Scene {
     this.lastShownRunPhaseId = currentPhase.id;
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
 
+    const shiftAnnouncement = getRunPhaseShiftAnnouncement(currentPhase.id);
+
+    if (shiftAnnouncement !== null) {
+      this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + RUN_PHASE_SHIFT_CALLOUT_DURATION_MS;
+      this.tweens.killTweensOf(this.beatCalloutText);
+      this.beatCalloutText
+        .setText(`${shiftAnnouncement.title}\n${shiftAnnouncement.body}`)
+        .setAlpha(1)
+        .setScale(0.92)
+        .setVisible(true);
+      this.tweens.add({
+        targets: this.beatCalloutText,
+        scale: 1,
+        alpha: 0.92,
+        duration: 180,
+        ease: 'Quad.Out',
+      });
+    }
+
     const shiftHint = this.getRunPhaseShiftHintText(currentPhase.id);
 
     if (shiftHint === null) {
@@ -3079,6 +3123,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getRunPhaseShiftHintText(phaseId: RunPhaseId): string | null {
+    if (phaseId === 'breakthrough') {
+      return 'Breakthrough is live. The arena warms up and the first pressure stack starts now.';
+    }
+
     if (phaseId === 'killbox') {
       return 'Killbox is live. Cadence tightens, speed rises, and straight lines die fast.';
     }

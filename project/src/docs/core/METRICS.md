@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #241:
+Current deterministic survival headline after Run #242:
 - `26.8s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+breakthrough_onset_arena_tell_surface:
+current: Run #242 `project/game/src/game/runPhase.ts` `BREAKTHROUGH` icin ayrik phase-shift announcement ve onset intensity truth'u uretiyor; `project/game/src/game/GameScene.ts` `10s` kirildigi anda warm backdrop burst, compact callout ve kisa hint ile bu gecisi ekranda okutuyor
+baseline: Run #241 `BREAKTHROUGH` artik gercek pressure swap uretiyordu ama ekrandaki onset halen agirlikla HUD/timer ve numerik sertlesme gibi okunuyordu; killbox/endgame icin kisa hint vardi, ilk buyuk gecisin kendi arena tell'i yoktu
+target: sonraki browser veya manuel gozlem `10s` sonrasi run'in opener'dan ciktigini tek bakista fark edilir kilan kisa ama okunur bir onset hissi raporlasin; sonraki run bu yeni tell'i ilk `KILLBOX` girisinin spatial karakteriyle takip etsin
+validation: `npm run telemetry:check`, `npm run build`
+
 run_phase_live_pressure_swap_surface:
-current: Run #241 `project/game/src/game/balance.ts` coarse phase ladder'i ilk kez aktif pressure profiline bagliyor; `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` artik spawn delay ve base obstacle speed tarafinda ayri davranıyor. `project/game/src/game/GameScene.ts` killbox/endgame/overtime onset'lerinde compact phase-shift hint'i gosterip support text'i yeni baski truth'una tasiyor
+current: Run #241 `project/game/src/game/balance.ts` coarse phase ladder'i aktif pressure profiline bagliyor; `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` artik spawn delay ve base obstacle speed tarafinda ayri davranıyor. Run #242 bunu `BREAKTHROUGH` onset tell'i ile sunum tarafinda daha okunur kilıyor
 baseline: Run #240 faz dili waiting/HUD/death-retry payoff yuzeylerinde gorunur olsa da aktif arena baskisi buyuk oranda ayni tempo egrisinin ustunde yasiyordu; oyuncu phase degisimini daha cok okuyor, daha az hissediyordu
-target: sonraki manual sample veya browser gozlemi en az bir phase gecisinde baski swap'inin arena hissini gercekten degistirdigini gostersin; siradaki run bu yeni numerik pressure rejimini ozellikle `BREAKTHROUGH` onset'inde okunur bir spatial tell veya threat-shape farkiyla derinlestirsin
+target: sonraki manual sample veya browser gozlemi en az bir phase gecisinde baski swap'inin arena hissini gercekten degistirdigini gostersin; siradaki run odagi `KILLBOX` girisinin spatial karakterini ayirt etmek olsun
 validation: `npm run telemetry:check`, `npm run build`
 
 run_phase_death_retry_payoff_surface:

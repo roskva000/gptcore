@@ -59,8 +59,10 @@ import {
   getRunPhaseReachedBadgeText,
   getRunPhaseRetryGoalText,
   getRunPhaseDetailText,
+  getRunPhaseOnsetIntensity,
   getRunPhaseState,
   getRunPhaseStatusText,
+  getRunPhaseShiftAnnouncement,
   getRunPhaseTimelineText,
 } from '../src/game/runPhase.ts';
 import {
@@ -301,6 +303,28 @@ assert.equal(
     '60s+ OVERTIME | Best reached: KILLBOX',
   ].join('\n'),
   'Waiting presentation should forecast the coarse run ladder and mark the best phase reached so far.',
+);
+assert.deepEqual(
+  getRunPhaseShiftAnnouncement('breakthrough'),
+  {
+    title: 'BREAKTHROUGH LIVE',
+    body: 'Gate broken. The arena heats up and strafe/surge pressure starts stacking.',
+  },
+  'The first major phase shift should expose a dedicated announcement so the 10s transition reads as an arena tell instead of only timer math.',
+);
+assert.equal(
+  getRunPhaseOnsetIntensity(10, 'breakthrough'),
+  1,
+  'Breakthrough onset intensity should peak right when the 10s gate breaks so the arena tell can hit immediately.',
+);
+assert.ok(
+  getRunPhaseOnsetIntensity(10.8, 'breakthrough') > 0,
+  'Breakthrough onset intensity should stay alive briefly after the gate break so the tell remains readable in motion.',
+);
+assert.equal(
+  getRunPhaseOnsetIntensity(12, 'breakthrough'),
+  0,
+  'Breakthrough onset intensity should decay away before later strafe/surge beat callouts take over the presentation.',
 );
 const openingSpectacle = getArenaBeatSpectacle({
   phase: 'playing',

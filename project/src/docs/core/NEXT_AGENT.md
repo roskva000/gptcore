@@ -19,31 +19,31 @@ Ama dikkat:
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**`BREAKTHROUGH` onset'ini okunur bir arena tell'ine bagla.**
+**`KILLBOX` girisini ilk lead cut ile okunur bir spatial trap anina cevir.**
 
 Hedef:
-Run #241 phase ladder'i aktif pressure'a bagladi ama en erken buyuk gecis hala agirlikla sayisal hizlanma gibi okunuyor. Simdi hedef, `10s` sonrasi `BREAKTHROUGH` anini oyuncunun ekranda hemen fark edecegi kisa ve okunur bir arena tell'iyle sindirmek.
+Run #242 `BREAKTHROUGH` onset'ini warm backdrop burst + callout + hint ile ekranda okunur hale getirdi. Simdi siradaki hedef, `18s` sonrasi `KILLBOX` girisini yalniz hiz/cadence artisi olmaktan cikarip oyuncunun ilk lead baskisini ayirt edecegi kisa ama net bir spatial event'e cevirmek.
 
 Acilabilecek bagli yuzeyler:
-1. `BREAKTHROUGH` baslangicinda mevcut backdrop / beat callout / obstacle entry davranisindan birini kullanarak kisa ama net bir onset tell'i ver
-2. bu tell yeni manager acmadan mevcut `runPhase` truth'u ve mevcut oyun yuzeylerinden biriyle calissin
-3. tell readability saglasin ama opener fairness'ini bozmasin; yeni raw stat squeeze'i ana hareket yapma
+1. `KILLBOX` baslangicinda ilk `lead` baskisini mevcut spawn/variant truth'u icinde daha ayirt edilir bir giris anina bagla
+2. yeni behavior yeni manager acmadan mevcut `runPhase`, `lead` variant ve mevcut presentation yuzeylerinden biriyle calissin
+3. odak spatial/readability olsun; ayni problemi sadece daha fazla raw speed veya spawn squeeze ile cozme
 4. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
 
 Yapma:
 - yeni orchestration/state-manager kurma
-- sirf copy degistirip phase tell'i cozuldu diye sunma
-- ayni anda killbox, shell, mobile ve validation'i ayri temalara dagitma
+- sirf copy degistirip killbox karakteri cozuldu diye sunma
+- ayni anda shell, mobile, retention ve validation'i ayri temalara dagitma
 
 ---
 
 ## Success Criteria
 
-- oyuncu `10s` civarinda run'in opener'dan ciktigini ekranda hemen fark eder
-- yeni tell mevcut phase architecture ve Run #241 pressure rejimiyle ayni dili konusur
+- oyuncu `18s` civarinda `KILLBOX` girisini yalniz HUD degil arena davranisinda da hemen fark eder
+- yeni davranis mevcut phase architecture ve mevcut lead pressure rejimiyle ayni dili konusur
 - build yesil kalir
 - `npm run telemetry:check` yesil kalir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

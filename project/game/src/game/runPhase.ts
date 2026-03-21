@@ -21,6 +21,11 @@ export type RunPhaseState = {
   secondsUntilNextPhase: number | null;
 };
 
+export type RunPhaseShiftAnnouncement = {
+  body: string;
+  title: string;
+};
+
 const RUN_PHASES: RunPhaseDefinition[] = [
   {
     id: 'opening',
@@ -66,6 +71,8 @@ const formatRangeLabel = (phase: RunPhaseDefinition, nextPhase: RunPhaseDefiniti
 
   return `${phase.startSeconds}-${nextPhase.startSeconds}s`;
 };
+
+const RUN_PHASE_ONSET_DURATION_SECONDS = 1.6;
 
 export const getRunPhaseState = (progressSeconds: number): RunPhaseState => {
   const clampedProgressSeconds = Math.max(progressSeconds, 0);
@@ -166,4 +173,56 @@ export const getRunPhaseTimelineText = (progressSeconds: number): string => {
     `${formatRangeLabel(RUN_PHASES[2], RUN_PHASES[3])} ${RUN_PHASES[2].title} | ${formatRangeLabel(RUN_PHASES[3], RUN_PHASES[4])} ${RUN_PHASES[3].title}`,
     `${formatRangeLabel(RUN_PHASES[4], null)} ${RUN_PHASES[4].title} | Best reached: ${currentPhase.title}`,
   ].join('\n');
+};
+
+export const getRunPhaseShiftAnnouncement = (
+  phaseId: RunPhaseId,
+): RunPhaseShiftAnnouncement | null => {
+  switch (phaseId) {
+    case 'breakthrough':
+      return {
+        title: 'BREAKTHROUGH LIVE',
+        body: 'Gate broken. The arena heats up and strafe/surge pressure starts stacking.',
+      };
+    case 'killbox':
+      return {
+        title: 'KILLBOX LIVE',
+        body: 'Lead cuts are online now. Cadence and speed both punish straight escapes.',
+      };
+    case 'endgame':
+      return {
+        title: 'ENDGAME DRIFT LIVE',
+        body: 'Drift bends the lane while cadence stays pinned. Stretch open space late.',
+      };
+    case 'overtime':
+      return {
+        title: 'OVERTIME LIVE',
+        body: 'The goal is cleared, but the arena stays hot. Push the run past your best.',
+      };
+    default:
+      return null;
+  }
+};
+
+export const getRunPhaseOnsetIntensity = (
+  progressSeconds: number,
+  phaseId: RunPhaseId,
+): number => {
+  if (phaseId === 'opening') {
+    return 0;
+  }
+
+  const phase = RUN_PHASES.find((candidate) => candidate.id === phaseId);
+
+  if (!phase) {
+    return 0;
+  }
+
+  const elapsedSincePhaseStart = Math.max(progressSeconds - phase.startSeconds, 0);
+
+  if (elapsedSincePhaseStart > RUN_PHASE_ONSET_DURATION_SECONDS) {
+    return 0;
+  }
+
+  return 1 - elapsedSincePhaseStart / RUN_PHASE_ONSET_DURATION_SECONDS;
 };

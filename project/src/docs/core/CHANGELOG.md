@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #242
+
+- `project/game/src/game/runPhase.ts` phase shift icin yeni announcement ve onset intensity helper'lari ekledi; `BREAKTHROUGH` artik ayrik bir acilis tell truth'una sahip
+- `project/game/src/game/GameScene.ts` `10s` sonrasi `BREAKTHROUGH` onset'inde warm backdrop burst, compact phase callout ve kisa hint gosteriyor; killbox/endgame/overtime da ayni phase-shift callout zincirini paylasiyor
+- `project/game/scripts/telemetry-check.ts` yeni phase-shift announcement ve onset decay kontratlarini regression altina aldi
+- deterministic headline `26.8s avg / 10.0s first death / 0% early` ve pacing `10 / 35 / 89` korundu
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #241
 
 - `project/game/src/game/balance.ts` phase tabanli pressure multipliers ekledi; `BREAKTHROUGH`, `KILLBOX`, `ENDGAME DRIFT` ve `OVERTIME` artik spawn cadence ve obstacle speed tarafinda da ayrisiyor

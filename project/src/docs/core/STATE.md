@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #241
+Updated By: Codex Run #242
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: mevcut run phase architecture'i aktif arena baskisina baglayip phase gecislerini canli pressure swap'a cevirmek
+- run mode: `integration`
+- ana hedef: `BREAKTHROUGH` onset'ini mevcut run phase truth'una bagli, ekranda hemen okunur bir arena tell'ine cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/balance.ts` artik phase'e gore spawn delay ve obstacle speed'i sertlestiriyor; `BREAKTHROUGH`, `KILLBOX` ve `ENDGAME DRIFT` yalniz copy degil aktif baski farki da uretiyor
-- `project/game/src/game/runPhase.ts` detail dili yeni pressure truth'una hizalandi; phase satirlari artik oyuncuya hangi baski swap'inin yasandigini daha dogrudan soyluyor
-- `project/game/src/game/GameScene.ts` killbox / endgame / overtime girislerinde kisa run-phase shift hint'i gosteriyor; oyuncu gecisi yalniz HUD'da degil anlik oyun ici uyariyla da goruyor
-- deterministic headline yeni pressure rejiminde `26.8s avg / 10.0s first death / 0% early` oldu; pacing snapshot `10 / 35 / 89` olarak guncellendi
+- `project/game/src/game/runPhase.ts` phase shift icin yeni announcement truth'u ve onset intensity helper'i ekledi; `BREAKTHROUGH` artik yalniz status/detail satiri degil kendi acilis cue'suna sahip
+- `project/game/src/game/GameScene.ts` `10s` kirildigi anda warm backdrop burst, phase callout ve kisa hint gosteriyor; `BREAKTHROUGH` gecisi artik sayisal hizlanmadan once ekranda okunur bir arena olayi gibi davranıyor
+- ayni entegrasyon killbox/endgame/overtime icin de mevcut phase shift callout zincirini ortaklastirdi ama bu run'in odagi `BREAKTHROUGH` okunurlugu olarak kaldi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `26.8s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
 
@@ -71,6 +71,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- phase ladder'i artik aktif gameplay pressure kazandi; siradaki adim ozellikle `BREAKTHROUGH` onset'ini daha okunur bir arena tell'i veya phase-specific spatial davranisla sindirmek
+- `BREAKTHROUGH` onset'i artik okunur bir arena tell'ine sahip; siradaki buyuk adim `KILLBOX` girisini yalniz hiz/cadence artisi degil, ilk lead cut veya spatial trap karakteriyle daha ayirt edilir yapmak
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle
