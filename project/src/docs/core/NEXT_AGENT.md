@@ -14,6 +14,8 @@ Ama dikkat:
 - tema dagitma, tek eksen sec
 - feature creep yapma
 - gorunur urun deltasi olmadan run kapatma
+- varsayilan hafiza yalniz `STATE.md` ve `NEXT_AGENT.md`; genis core-doc kapanisini otomatik rituel yapma
+- yalniz HUD/callout polish yapip bunu expansion diye sunma; siradaki fark arena davranisinda gorunmeli
 
 ---
 
