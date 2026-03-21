@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #246
+Updated By: Codex Run #247
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: `24-32s` arasindaki normal `echo` cadence'ini `KILLBOX` icin kalici bir lane-fold ritmine cevirip fazin spatial kimligini `DRIFT` onset'ine kadar tasimak
+- run mode: `integration`
+- ana hedef: `32s` `DRIFT` onset'ini `KILLBOX` fold rejiminden dogan lateral bir release/handoff'a cevirmek; endgame yeni beat gibi gelse de kopuk reset gibi okunmasin
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,11 +26,12 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/balance.ts` killbox'in yalniz bridge + handoff pencerelerini degil, `24-32s` icindeki tum `echo` cadence'ini de lane-fold davranisina bagladi; cadence ile gelen `echo` spawn'lari artik `DRIFT` onset'ine kadar duz chase'e donmuyor
-- ayni dosya yeni `KILLBOX_ECHO_CADENCE_ROTATION_DEGREES` truth'u ile handoff sonrasi `echo` tehditlerini kontrollu `6deg` scissor travel'da tutuyor; killbox artik erken pinch, `24s` lock-in ve sonrasindaki live cadence olarak tek spatial rejim gibi davraniyor
-- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox anlatimini yeni gercege hizaladi: `echo` cadence artik trap'in devam eden parcası olarak tarif ediliyor
-- `project/game/scripts/telemetry-check.ts` ile `project/game/scripts/telemetry-reports.ts` bu yeni cadence fold davranisini deterministic regression ve proxy anlatimina kilitledi
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
+- `project/game/src/game/balance.ts` `DRIFT` onset'i icin `1.6s`lik bir `release` penceresi ekledi; ilk drift artik killbox fold yonunun tersine `14deg` lateral cut ile aciliyor ve tam sweep'e bir anda ziplamiyor
+- ayni dosya bu erken drift handoff'unda `echo` target lag'ini kisa sure koruyor; `32s` gecisi soguk reset yerine killbox'tan tureyen yeni bir cevap gibi davranıyor
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame dilini yeni gercege hizaladi: drift artik "lane keeps bending"ten once "killbox releases sideways" olarak okunuyor
+- `project/game/scripts/telemetry-reports.ts` deterministic proxy'yi runtime ile gercekten hizaladi; obstacle travel hesabi artik survival time'i da kullanarak killbox/drift pencerelerini dogru simule ediyor
+- `project/game/scripts/telemetry-check.ts` yeni drift release direction, target lag ve endgame phase anlatimini regression altina aldi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.6s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
 
@@ -72,6 +73,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` artik `24-32s` boyunca da echo cadence ile lane-fold kimligini koruyor; siradaki buyuk adim `32s` `DRIFT` onset'ini bu trap rejiminden dogan yeni bir spatial release/handoff'a cevirmek
+- `KILLBOX` artik `32s`'ye kadar fold zincirini koruyor ve `DRIFT` onset'i ilk release cut'ini aldi; siradaki buyuk adim bu release'i `32-40s` boyunca daha olayli bir lateral sweep zincirine cevirmek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

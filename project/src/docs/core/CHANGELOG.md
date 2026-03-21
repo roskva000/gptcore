@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #247
+
+- `project/game/src/game/balance.ts` `32s` sonrasi ilk `drift` onset'i icin `1.6s`lik `release` penceresi ekledi; ilk drift artik killbox fold yonunun tersine `14deg` lateral cut ile aciliyor
+- ayni dosya bu erken drift handoff'unda `echo` target lag'ini kisa sure koruyor; `DRIFT` onset'i artik soguk reset yerine killbox'tan tureyen bir spatial cevap gibi davranıyor
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame metnini "killbox releases sideways into drift" semantigine tasidi
+- `project/game/scripts/telemetry-reports.ts` obstacle travel hesabina `survivalTimeSeconds` gecerek deterministic proxy'nin killbox/drift pencerelerini runtime ile hizaladi
+- `project/game/src/game/telemetry.ts` validation baseline metnini yeni deterministic truth'a guncelledi; `project/game/scripts/telemetry-check.ts` drift release regression'lerini ve yeni snapshot baseline'larini kilitledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #246
 
 - `project/game/src/game/balance.ts` killbox sonrasi `echo` cadence'ini `24-32s` boyunca kalici lane-fold davranisina bagladi; cadence ile gelen `echo` spawn'lari artik `DRIFT` onset'ine kadar duz chase'e donmuyor

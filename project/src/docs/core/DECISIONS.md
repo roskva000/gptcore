@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #247]
+
+Decision:
+`integration` modunda `32s` `DRIFT` onset'ine killbox'tan dogan kisa bir lateral `release` penceresi ekle; ilk drift spawn'lari ayni spatial dilden gelsin ama killbox fold yonunu acarak yeni bir cevap versin.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni kopuklugu isaret ediyordu: Run #246 killbox cadence'ini `32s`'ye kadar tasidi ama `DRIFT` onset'i halen "yeni beat basladi" gibi okuyabilirdi. Yeni hazard family, manager ya da orchestration katmani acmadan en yuksek etkili hamle, mevcut `drift` varyantina kisa bir handoff penceresi verip ilk drift trajectory ve target lag'ini killbox diline baglamakti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `DRIFT_RELEASE_WINDOW_SECONDS = 1.6` ve `DRIFT_RELEASE_ROTATION_DEGREES = 14` truth'lari ile ilk drift onset'ini killbox fold yonunun tersine acilan lateral cut'a cevirdi; bu pencere boyunca drift `echo` target lag'ini kisa sure miras aliyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame dilini "killbox releases sideways into drift" gercegine hizaladi. `project/game/scripts/telemetry-reports.ts` obstacle travel hesabina `survivalTimeSeconds` gecerek deterministic proxy'yi runtime pencereleriyle dogru hizaladi. `project/game/scripts/telemetry-check.ts` yeni drift release direction, lag ve updated validation baseline'ini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.6s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` oldu.
+
+Rollback Condition:
+Browser veya manuel gozlem ilk drift release'inin killbox'tan cikan okunur bir lateral cevap yerine fazla yumusak, fazla belirsiz ya da tam tersine ucuz wipe gibi hissettigini gosterirse yalniz `DRIFT_RELEASE_WINDOW_SECONDS`, `DRIFT_RELEASE_ROTATION_DEGREES` veya bu penceredeki miras lag dar kapsamda ayarlanir; bu bahaneyle yeni hazard family, spawn manager'i, readiness/preflight ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #246]
 
 Decision:

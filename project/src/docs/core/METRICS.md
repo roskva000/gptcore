@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #246:
-- `30.4s` average survival
+Current deterministic survival headline after Run #247:
+- `29.6s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+killbox_to_drift_release_surface:
+current: Run #247 `project/game/src/game/balance.ts` `32s` `DRIFT` onset'ine `1.6s`lik killbox-release penceresi ekliyor; ilk drift `14deg` lateral cut ile killbox fold yonunun tersine aciliyor ve `echo` lag'ini kisa sure miras alip handoff'u bagli tutuyor. `project/game/src/game/runPhase.ts` ile `project/game/src/game/GameScene.ts` bu gecisi "killbox releases sideways into drift" diye anlatiyor
+baseline: Run #246 killbox cadence'ini `32s`'ye kadar tasiyordu ama ilk drift halen yeni beat/reset gibi okunabilirdi; target ve trajectory dili bir anda degisiyordu
+target: sonraki browser veya manuel gozlem `32s` gecisinin killbox'tan kopuk sifirdan baslayan bir cadence degil, once kapanan trap'in yeni bir lateral cevaba acilmasi gibi hissedildigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 killbox_echo_cadence_lane_fold_surface:
-current: Run #246 `project/game/src/game/balance.ts` killbox'in `24-32s` bandindaki normal `echo` cadence'ini `KILLBOX_ECHO_CADENCE_ROTATION_DEGREES = 6` truth'u ile scissor/lane-fold davranisina bagliyor; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox'i artik `24s` lock-in'den sonra da live `echo` cadence ile trap'i katlayan bir faz olarak anlatiyor
+current: Run #247 state'inde Run #246'nun `24-32s` killbox cadence fold rejimi korunuyor; bu rejim artik Run #247'nin drift release handoff'u icin direkt onceki spatial kaynak gorevini goruyor
 baseline: Run #245 killbox'i `24s` echo lock-in'e kadar baglamisti ama handoff sonrasi gercek cadence echo'lari halen buyuk oranda standart `echo` chase davranisina donuyordu; faz `DRIFT` onset'inden once kismen duzlesebiliyordu
-target: sonraki browser veya manuel gozlem `24-32s` bandinin artik lock-in sonrasi da ayni trap dilini korudugunu ve `DRIFT` onset'inin bu fold rejiminden dogan yeni bir handoff gibi hissettirdigini gostersin
+target: sonraki browser veya manuel gozlem `24-32s` fold rejiminin artik `32s` release handoff'unu besleyen onceki spatial state olarak da okunabildigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 killbox_echo_lock_in_surface:

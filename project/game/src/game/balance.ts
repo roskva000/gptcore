@@ -39,6 +39,8 @@ export const KILLBOX_ECHO_CADENCE_ROTATION_DEGREES = 6;
 export const ECHO_OBSTACLE_TINT = 0x8ad9ff;
 export const DRIFT_OBSTACLE_UNLOCK_SECONDS = 32;
 export const DRIFT_OBSTACLE_CADENCE = 7;
+export const DRIFT_RELEASE_WINDOW_SECONDS = 1.6;
+export const DRIFT_RELEASE_ROTATION_DEGREES = 14;
 export const DRIFT_OBSTACLE_ROTATION_DEGREES = 22;
 export const DRIFT_OBSTACLE_TINT = 0xc8ff9a;
 export const BREAKTHROUGH_PHASE_SPAWN_DELAY_MULTIPLIER = 0.94;
@@ -95,6 +97,10 @@ const isKillboxEchoHandoffWindow = (survivalTimeSeconds: number): boolean =>
 const isKillboxEchoCadenceWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS;
+
+const isDriftReleaseWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= DRIFT_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 
 export const getRunPhasePressureProfile = (
   survivalTimeSeconds: number,
@@ -332,6 +338,27 @@ export const getObstacleTravelDirection = ({
     return baseDirection;
   }
 
+  if (
+    survivalTimeSeconds !== undefined &&
+    isDriftReleaseWindow(survivalTimeSeconds) &&
+    playerVelocity &&
+    (playerVelocity.x !== 0 || playerVelocity.y !== 0)
+  ) {
+    const movementDirection = normalize(playerVelocity);
+    const crossProduct =
+      baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
+    const rotationDegrees =
+      crossProduct === 0
+        ? Math.floor(runSpawnCount / DRIFT_OBSTACLE_CADENCE) % 2 === 0
+          ? DRIFT_RELEASE_ROTATION_DEGREES
+          : -DRIFT_RELEASE_ROTATION_DEGREES
+        : crossProduct > 0
+          ? DRIFT_RELEASE_ROTATION_DEGREES
+          : -DRIFT_RELEASE_ROTATION_DEGREES;
+
+    return normalize(rotate(baseDirection, rotationDegrees));
+  }
+
   const rotationDegrees =
     Math.floor(runSpawnCount / DRIFT_OBSTACLE_CADENCE) % 2 === 0
       ? DRIFT_OBSTACLE_ROTATION_DEGREES
@@ -371,6 +398,8 @@ export const getObstacleTargetLagSeconds = ({
       )
     : variant === 'echo'
     ? Math.max(getSpawnTargetLagSeconds(survivalTimeSeconds), ECHO_OBSTACLE_TARGET_LAG_SECONDS)
+    : variant === 'drift' && isDriftReleaseWindow(survivalTimeSeconds)
+      ? ECHO_OBSTACLE_TARGET_LAG_SECONDS
     : getSpawnTargetLagSeconds(survivalTimeSeconds);
 
 export const getSpawnCollisionGraceMs = (survivalTimeSeconds: number): number =>

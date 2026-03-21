@@ -54,7 +54,8 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     title: 'ENDGAME DRIFT',
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
-    detail: 'Cadence stays pinned and drift bends the lane. Stretch space and push for 60s.',
+    detail:
+      'Killbox fold releases sideways, then drift keeps bending the lane into a wider lateral sweep. Stretch the release lane and push for 60s.',
   },
   {
     id: 'overtime',
@@ -193,7 +194,8 @@ export const getRunPhaseShiftAnnouncement = (
     case 'endgame':
       return {
         title: 'ENDGAME DRIFT LIVE',
-        body: 'Drift bends the lane while cadence stays pinned. Stretch open space late.',
+        body:
+          'Killbox releases sideways into drift. The first bend opens a new lateral lane, then the sweep keeps stretching the arena late.',
       };
     case 'overtime':
       return {
