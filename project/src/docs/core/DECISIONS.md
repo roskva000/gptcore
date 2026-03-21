@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #250]
+
+Decision:
+`integration` modunda endgame cue zincirini death/retry payoff'una bagla; gec olumlerde `release`, `rebound` ve `late sweep` halkalarindan hangisinin koptugu badge/body/prompt tarafinda okunabilsin.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #249 `32-40s` zincirini HUD/arena tarafinda player-facing hale getirdi ama game-over yuzeyi halen gec olumleri generic `ENDGAME` veya stale `10s BROKEN` diliyle okuyordu. Yeni overlay sistemi, shell katmani veya yeni orchestration acmadan en yuksek etkili hamle, mevcut cue truth'una `snapshotLabel/rematchLabel` ekleyip death presentation ve retry hedefini bu truth'a baglamakti.
+
+Impact:
+`project/game/src/game/runPhase.ts` endgame cue'larina `snapshotLabel` ve `rematchLabel` alanlari ekledi; bounded cue pencereleri artik death badge, summary ve retry hedefi icin de tek truth kaynagi. `project/game/src/game/deathPresentation.ts` badge onceligini structural phase/cue lehine tasidi; gec endgame olumleri artik stale `10s BROKEN` etiketi yerine aktif cue badge'i ve rematch hedefi tasiyor. Endgame cue aktifken prompt ikinci satiri generic `Next beat` yerine dogrudan rematch hedefini soyluyor. `project/game/scripts/telemetry-check.ts` `33.8s` rebound olumunde badge/body/prompt kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem cue-spesifik badge/prompt'un game-over yuzeyini daha gurultulu, daha az okunur veya cheap copy mutation'a cevirdigini gosterirse yalniz cue etiketi veya prompt yogunlugu dar kapsamda ayarlanir; bu bahaneyle yeni overlay framework'u, event bus, readiness/preflight ya da shell orchestration katmani acilmaz.
+
 ### [Run #249]
 
 Decision:

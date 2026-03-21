@@ -302,6 +302,8 @@ assert.deepEqual(
     id: 'release',
     title: 'RELEASE CUT LIVE',
     hudLabel: 'RELEASE LIVE',
+    snapshotLabel: 'RELEASE CUT',
+    rematchLabel: 'the release cut',
     accentColor: 0x7ce8ff,
     body: 'Killbox opens sideways here. Stretch the release lane before the rebound clamps onto the same answer.',
   },
@@ -313,6 +315,8 @@ assert.deepEqual(
     id: 'rebound',
     title: 'REBOUND LIVE',
     hudLabel: 'REBOUND LIVE',
+    snapshotLabel: 'REBOUND',
+    rematchLabel: 'the rebound hold',
     accentColor: 0xc8ff9a,
     body: 'The first rebound stays on the release side. Hold the opened lane before the wider sweep flips back across it.',
   },
@@ -324,6 +328,8 @@ assert.deepEqual(
     id: 'late-sweep',
     title: 'LATE SWEEP LIVE',
     hudLabel: 'LATE SWEEP LIVE',
+    snapshotLabel: 'LATE SWEEP',
+    rematchLabel: 'the late sweep snapback',
     accentColor: 0xfff0c7,
     body: 'The late sweep whips back across the arena. Read the cross-lane turn and keep the run alive through the snapback.',
   },
@@ -345,6 +351,11 @@ assert.equal(
   'Deaths after the lead unlock should surface the coarse phase reached as a compact fallback badge.',
 );
 assert.equal(
+  getRunPhaseReachedBadgeText(33.8),
+  'REBOUND',
+  'Bounded endgame deaths should surface the live cue as the fallback badge so late failures stay tellable on the death screen.',
+);
+assert.equal(
   getRunPhaseDeathSummaryText(7.4),
   'Opening window snapped. Break 10s to start the ladder.',
   'Opening deaths should convert the miss into a clear next threshold instead of dumping generic survival-goal copy.',
@@ -355,9 +366,52 @@ assert.equal(
   'Death summary text should tell the player which structural phase they reached and how far the next one sits ahead.',
 );
 assert.equal(
+  getRunPhaseDeathSummaryText(33.8),
+  'REBOUND snapped inside ENDGAME DRIFT. 26.2s short of OVERTIME.',
+  'Late-run death summary should say which endgame ring broke instead of collapsing every 32-40s death into the same generic endgame line.',
+);
+assert.equal(
   getRunPhaseRetryGoalText(20),
   'Reach ENDGAME DRIFT in +12.0s',
   'Retry goal text should turn the next phase into an immediate rematch target.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(33.8),
+  'Rematch the rebound hold and carry it to 60s clear in +26.2s',
+  'Late-run retry text should pitch the missed ring as the rematch target so endgame deaths feel worth replaying.',
+);
+const lateEndgameDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 33.8,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 4,
+    totalRuns: 4,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 8000,
+    retryCount: 4,
+    recentDeathTimes: [20.1, 29.7, 32.4, 33.8],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '36.0s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+});
+assert.equal(
+  lateEndgameDeathPresentation.badge,
+  'REBOUND',
+  'Late endgame deaths should surface the active rebound ring as the fallback badge when no higher-priority milestone overrides it.',
+);
+assert.equal(
+  lateEndgameDeathPresentation.body,
+  'Run 33.8s. Best 36.0s.\nREBOUND snapped inside ENDGAME DRIFT. 26.2s short of OVERTIME.',
+  'Late endgame death body should carry the missed rebound ring so the game-over surface explains which late chain segment failed.',
+);
+assert.equal(
+  lateEndgameDeathPresentation.prompt,
+  'Next lane: BREAK LEFT\nRematch the rebound hold and carry it to 60s clear in +26.2s\nRetry: Space, Enter, tap/click, or move',
+  'Late endgame retry prompt should frame the active ring as the rematch target without falling back to a generic next-beat line.',
 );
 assert.equal(
   getRunPhaseTimelineText(20),

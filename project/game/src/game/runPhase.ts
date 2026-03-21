@@ -37,6 +37,8 @@ export type EndgameDriftCue = {
   body: string;
   hudLabel: string;
   id: EndgameDriftCueId;
+  rematchLabel: string;
+  snapshotLabel: string;
   title: string;
 };
 
@@ -108,6 +110,8 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       id: 'release',
       title: 'RELEASE CUT LIVE',
       hudLabel: 'RELEASE LIVE',
+      snapshotLabel: 'RELEASE CUT',
+      rematchLabel: 'the release cut',
       accentColor: 0x7ce8ff,
       body: 'Killbox opens sideways here. Stretch the release lane before the rebound clamps onto the same answer.',
     };
@@ -118,6 +122,8 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       id: 'rebound',
       title: 'REBOUND LIVE',
       hudLabel: 'REBOUND LIVE',
+      snapshotLabel: 'REBOUND',
+      rematchLabel: 'the rebound hold',
       accentColor: 0xc8ff9a,
       body: 'The first rebound stays on the release side. Hold the opened lane before the wider sweep flips back across it.',
     };
@@ -128,6 +134,8 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       id: 'late-sweep',
       title: 'LATE SWEEP LIVE',
       hudLabel: 'LATE SWEEP LIVE',
+      snapshotLabel: 'LATE SWEEP',
+      rematchLabel: 'the late sweep snapback',
       accentColor: 0xfff0c7,
       body: 'The late sweep whips back across the arena. Read the cross-lane turn and keep the run alive through the snapback.',
     };
@@ -199,6 +207,7 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
 
 export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | null => {
   const { currentPhase } = getRunPhaseState(progressSeconds);
+  const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
 
   switch (currentPhase.id) {
     case 'breakthrough':
@@ -206,7 +215,7 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
     case 'killbox':
       return 'KILLBOX';
     case 'endgame':
-      return 'ENDGAME';
+      return endgameCue?.snapshotLabel ?? 'ENDGAME';
     case 'overtime':
       return 'OVERTIME';
     default:
@@ -216,6 +225,7 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
 
 export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
+  const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
     return `${currentPhase.title} reached. ${SURVIVAL_GOAL_SECONDS}s clear is banked.`;
@@ -225,14 +235,23 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
     return `Opening window snapped. Break ${TARGET_FIRST_DEATH_SECONDS}s to start the ladder.`;
   }
 
+  if (endgameCue !== null) {
+    return `${endgameCue.snapshotLabel} snapped inside ${currentPhase.title}. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
+  }
+
   return `${currentPhase.title} reached. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
 };
 
 export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
+  const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
     return `${currentPhase.title} live. Push past ${SURVIVAL_GOAL_SECONDS}s.`;
+  }
+
+  if (endgameCue !== null) {
+    return `Rematch ${endgameCue.rematchLabel} and carry it to ${SURVIVAL_GOAL_SECONDS}s clear in +${secondsUntilNextPhase.toFixed(1)}s`;
   }
 
   return `Reach ${nextPhase.title} in +${secondsUntilNextPhase.toFixed(1)}s`;

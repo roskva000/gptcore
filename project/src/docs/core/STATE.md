@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #249
+Updated By: Codex Run #250
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `integration`
-- ana hedef: `32-40s` band'indaki mevcut `release -> rebound -> late sweep` zincirini oyuncu tarafinda arena/HUD/callout uzerinden ayirt edilir hale getirmek; late band yalniz runtime truth olarak kalmasin
+- ana hedef: gec endgame olumlerinde `release -> rebound -> late sweep` halkalarindan hangisinde kopuldugunu death/retry payoff'una tasimak; late band retry istegi de uretsin
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/runPhase.ts` endgame icin yeni player-facing cue truth'u ekledi; `release`, `rebound` ve `late sweep` artik ayrik `title/body/hudLabel/accent` ile okunuyor
-- `project/game/src/game/GameScene.ts` endgame cue'larini HUD status/detail, alt support satiri, kisa hint ve bounded beat callout zincirine bagladi; `release` phase shift'te, `rebound` ve `late sweep` ise kendi kisa canli anonslariyla ekrana geliyor
-- ayni dosya arena spectacle tarafinda cue'ya bagli glow/aura/frame renk ve siddet boost'u verdi; `32-40s` band'i artik yalniz spawn davranisiyla degil arka plan ritmiyle de ayirt ediliyor
-- `project/game/scripts/telemetry-check.ts` yeni cue truth'unu regression altina aldi; endgame detail satiri artik generic paragraf yerine canli cue penceresini temsil ediyor
+- `project/game/src/game/runPhase.ts` endgame cue truth'unu death/retry payoff tarafina da tasidi; `release`, `rebound` ve `late sweep` artik kendi `snapshotLabel` ve `rematchLabel` alanlariyla game-over yuzeyine baglaniyor
+- `project/game/src/game/deathPresentation.ts` badge onceligini structural phase/cue lehine cevirdi; gec olumler artik stale `10s BROKEN` etiketi yerine aktif cue badge'i, cue-spesifik death summary ve rematch hedefi tasiyor
+- ayni dosya endgame cue aktifken generic `Next beat` satirina dusmuyor; retry prompt dogrudan kacirilan halkayi rematch hedefi olarak satiyor
+- `project/game/scripts/telemetry-check.ts` yeni payoff truth'unu regression altina aldi; `33.8s` rebound olumunde badge/body/prompt artik cue-spesifik kontratla kilitli
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -72,6 +72,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` artik `32s` sonrasina release -> rebound -> sweep zinciri aciyor ve bu zincir artik HUD/arena tarafinda da okunuyor; siradaki buyuk adim bunu retry/death payoff tarafina baglayip gec olumleri daha davetkar rematch anina cevirmek
+- `KILLBOX` -> `ENDGAME` zinciri artik HUD/arena ve death/retry payoff tarafinda okunuyor; siradaki buyuk adim `36-40s` sonrasindaki duzlesmeyi yeni bounded davranisla kirip late band'e bir halka daha eklemek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

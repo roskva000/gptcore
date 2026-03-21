@@ -4,11 +4,11 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda endgame runtime truth ilk kez player-facing hale geldi: `32-40s` band'indaki `release -> rebound -> late sweep` halkalari artik yalniz spawn davranisinda degil, HUD detail/status, hint, bounded callout ve arena spectacle tarafinda da ayirt ediliyor.
+Bu turda gec endgame payoff da cue truth'una baglandi: `32-40s` band'indaki `release -> rebound -> late sweep` halkalari artik yalniz HUD/arena tarafinda degil, game-over badge/body/prompt tarafinda da ayirt ediliyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
-- sirf copy/HUD polish'i yapip bunu ilerleme diye sunma
+- sirf copy/HUD/death-copy polish'i yapip bunu ilerleme diye sunma
 - ayni anda retention, shell ve validation'i ayri temalara dagitma
 - deterministic baseline'i gereksiz sarsma
 
@@ -16,21 +16,21 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Yeni endgame cue zincirini death/retry payoff'una bagla; gec olumler artik "late run'da oldun" demekle kalmasin, release/rebound/sweep halkasindan hangisinde koptugunu ve neden tekrar denemeye deger oldugunu hissettirsin.**
+**`late sweep` sonrasindaki duzlesmeyi bounded yeni bir follow-through halkasiyla kir; `37.6-40s` band'i tekrar generik alternating cadence'e dusmesin.**
 
 Hedef:
-Run #249 `32-40s` zincirini HUD/arena tarafinda okuttu, ama gec olum sonrasi payoff halen bu halkalari yeterince kullanmiyor. Siradaki is, yeni mechanic veya yeni shell sistemi acmadan mevcut death/retry/durum yuzeylerini bu endgame cue truth'una hizalamak. Hedef, oyuncunun `34s` veya `36.5s` civarinda oldugunda yalniz `ENDGAME` degil, hangi halkayi kacirdigini ve neden tekrar denemek istedigini daha net okuması.
+Run #250 death/retry payoff'u gec endgame cue'larina hizaladi; siradaki is ayni koridorda tekrar copy polish degil, gameplay zincirini bir halka daha buyutmek. `36.2-37.6s` `late sweep` penceresinden sonra kalan `37.6-40s` band'i yeniden daha generic alternating drift'e duzluyor. Yeni gorev, yeni spawn manager'i veya hazard family'si acmadan mevcut drift varyantinin icinde bounded bir follow-through ekleyip endgame finalini ikinci bir spatial cevapla daha anlatilabilir yapmak.
 
 Acilabilecek bagli yuzeyler:
-1. `deathPresentation.ts`, `runPhase.ts` ve ilgili `GameScene` overlay/hint yuzeylerinde `release`, `rebound`, `late sweep` halkalarina gore daha spesifik death summary / retry prompt / payoff dili kur
-2. gec endgame olumlerinde mevcut cue accent'lerini veya compact badge/callout yollarini kullanarak rematch hissini buyut, ama yeni overlay sistemi kurma
+1. `balance.ts` icinde `late sweep` sonrasina bounded bir follow-through window ekle; yeni pencere `32-40s` zincirinin mevcut `release -> rebound -> late sweep` dilinden turemeli
+2. `runPhase.ts` ve `GameScene.ts` tarafinda bu yeni halkayi runtime + player-facing truth'a hizala; mevcut cue/callout/hint yollarini yeniden kullan, yeni overlay sistemi kurma
 3. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
 
 Yapma:
-- yeni spawn manager'i, event bus'i veya hazard orchestration sistemi kurma
+- yeni spawn manager'i, yeni hazard family'si, event bus'i veya hazard orchestration sistemi kurma
 - yalniz speed multiplier, raw spawn squeeze veya copy churn yapip bunu ilerleme diye satma
 - ayni anda shell/mobile/retention temalari acma
 
@@ -38,8 +38,9 @@ Yapma:
 
 ## Success Criteria
 
- - gec endgame olumlerinde death/retry payoff hangi halkada kopuldugunu (`release`, `rebound` veya `late sweep`) okunur bicimde tasir
- - retry prompt bu halkayi rematch hedefi gibi sunar; gec olumler daha anlatilabilir ve tekrar denemeye deger hissedilir
+- `37.6-40s` band'i generik alternating cadence yerine bounded yeni bir follow-through halkasi tasir
+- yeni halka mevcut `release -> rebound -> late sweep` zincirinden kopuk reset gibi degil, bagli bir gec-endgame cevabi gibi okunur
+- HUD/arena/callout truth'u yeni runtime davranisi ile hizali kalir
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

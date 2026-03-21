@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #249:
+Current deterministic survival headline after Run #250:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+endgame_drift_death_retry_payoff_surface:
+current: Run #250 `project/game/src/game/runPhase.ts` endgame cue truth'una `snapshotLabel` ve `rematchLabel` ekledi; `project/game/src/game/deathPresentation.ts` gec endgame olumlerinde stale `10s BROKEN` yerine aktif cue badge'i, cue-spesifik death summary ve dogrudan rematch hedefi gosteriyor. `33.8s` rebound olumunde payoff artik `REBOUND` badge'i, `REBOUND snapped inside ENDGAME DRIFT` body'si ve `Rematch the rebound hold...` prompt'u ile okunuyor
+baseline: Run #249 `32-40s` zincirini HUD/arena tarafinda player-facing hale getirmisti ama game-over/rematch yuzeyi gec olumleri hala generic phase diliyle okuyordu; aktif halka payoff tarafinda kayboluyordu
+target: sonraki browser veya manuel gozlem gec endgame olumlerinin artik "late run'da oldum" yerine hangi halkada koptugunu ve neden tekrar denemek istedigini anlatabildigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 endgame_drift_player_facing_cue_surface:
-current: Run #249 `project/game/src/game/runPhase.ts` yeni `getEndgameDriftCue()` truth'u ile `release`, `rebound` ve `late sweep` icin ayri `title/body/hudLabel/accent` paketi veriyor; `project/game/src/game/GameScene.ts` bu cue'lari phase HUD, hint, support ve bounded callout ile arena spectacle boost'una bagliyor. `32-40s` band'i artik yalniz runtime davranis degil, ekranda okunan bir zincir
+current: Run #250 state'inde Run #249'un player-facing cue zinciri korunuyor; ayni `release`, `rebound` ve `late sweep` truth'u artik death/retry payoff'una da sindigi icin `32-40s` band'i hem run icinde hem olum aninda okunuyor
 baseline: Run #248 gameplay truth'u release -> rebound -> sweep olarak buyumustu ama oyuncu tarafinda bu buyume agirlikla phase paragraph'i ve genel drift anlatiminda eriyordu; `32-40s` band'inin halkalari ayri ayri okunmuyordu
-target: sonraki browser veya manuel gozlem oyuncunun `32-40s` band'inda `release`, `rebound` ve `late sweep` halkalarini yalniz hissetmekle kalmayip ekranda ayirt ederek anlatabildigini gostersin
+target: sonraki browser veya manuel gozlem oyuncunun `32-40s` band'inda `release`, `rebound` ve `late sweep` halkalarini yalniz hissetmekle kalmayip hem run icinde hem death/retry payoff'unda ayirt ederek anlatabildigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 killbox_to_drift_rebound_sweep_surface:

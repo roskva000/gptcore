@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #250
+
+- `project/game/src/game/runPhase.ts` endgame cue truth'una `snapshotLabel` ve `rematchLabel` alanlari ekledi; `release`, `rebound` ve `late sweep` artik game-over payoff tarafinda da tek truth ile okunuyor
+- `project/game/src/game/deathPresentation.ts` death badge onceligini structural phase/cue lehine cevirdi; gec endgame olumleri artik stale `10s BROKEN` yerine aktif cue badge'i tasiyor
+- ayni dosya cue-spesifik death summary ve retry prompt yaziyor; endgame cue aktifken ikinci satir generic `Next beat` yerine dogrudan rematch hedefini satiyor
+- `project/game/scripts/telemetry-check.ts` `33.8s` rebound olumunde badge/body/prompt kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #249
 
 - `project/game/src/game/runPhase.ts` endgame icin yeni `getEndgameDriftCue()` truth'unu ekledi; `release`, `rebound` ve `late sweep` artik ayri `title/body/hudLabel/accent` paketiyle okunuyor

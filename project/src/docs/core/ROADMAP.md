@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #249
+Updated By: Codex Run #250
 
 ---
 
@@ -22,6 +22,7 @@ Mevcut durum:
 - Run #247 ile `32s` `DRIFT` onset'i artik killbox'tan kopuk reset degil; ilk drift `1.6s`lik lateral release cut'i ve kisa miras `echo` lag'i ile ayni trap rejiminden dogan yeni bir cevap gibi giriyor
 - Run #248 ile `32-40s` endgame band'i tek acilis cut'i olmaktan cikti; `33.6-35.0s` rebound ve `36.2-37.6s` late sweep pencereleri release'i bagli bir spatial zincire cevirdi
 - Run #249 ile ayni `32-40s` zinciri ilk kez player-facing olarak da parcalandi; HUD status/detail, hint, bounded callout ve arena spectacle artik `release -> rebound -> late sweep` halkalarini ayri ayri okutuyor
+- Run #250 ile bu zincir game-over/rematch yuzeyine de sindi; gec olumler artik generic `ENDGAME` veya stale `10s BROKEN` etiketi yerine aktif halka badge'i, cue-spesifik death summary ve dogrudan rematch hedefi tasiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -33,13 +34,14 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut + erken `shadow echo` follow-through + `21.2s` bridge echo + `24s` echo lock-in ile coarse run ladder artik gercek arena davranisina daha derin sindi
 - shipped slice: `24-32s` `echo` cadence'i de artik killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimi; `24s` sonrasi davranis duz target-lag chase'e hemen dusmuyor
 - shipped slice: `32-40s` band'i artik bounded `rebound` ve `late sweep` pencereleriyle release'ten sonra da olayli kaliyor; endgame hemen generik alternating beat'e dusmuyor
-- next slice: yeni player-facing `release -> rebound -> sweep` zincirini death/retry payoff'una tasi; gec olumler "yine ayni failure" yerine hangi halka kacirildi ve neden tekrar denemeye deger oldugu hissini versin
+- shipped slice: death/retry payoff artik `release`, `rebound` ve `late sweep` halkalarindan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor
+- next slice: `late sweep` sonrasindaki duzlesmeyi bounded yeni bir follow-through halkasiyla kir; `37.6-40s` band'i yeniden generik alternating cadence'e dusmesin
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
 - arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
-- ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing truth'a girdi; sonraki adim bu late band'de olum/tekrar dene motivasyonunu da buyutmek
+- ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late band'in sonunu yeni spatial davranisla tekrar buyutmek
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir
