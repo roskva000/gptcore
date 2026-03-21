@@ -1,5 +1,6 @@
 import {
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
+  DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
   DRIFT_RELEASE_WINDOW_SECONDS,
   DRIFT_SWEEP_WINDOW_START_SECONDS,
@@ -37,7 +38,8 @@ export type EndgameDriftCueId =
   | 'rebound'
   | 'late-sweep'
   | 'aftershock'
-  | 'recenter';
+  | 'recenter'
+  | 'preclear';
 
 export type EndgameDriftCue = {
   accentColor: number;
@@ -78,7 +80,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep, an aftershock clamp, and a short recenter handoff into the 40s lane. Stretch the release lane and push for 60s.',
+      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep, an aftershock clamp, a short recenter handoff, and a preclear squeeze before the long push to 60s. Stretch the release lane and push for 60s.',
   },
   {
     id: 'overtime',
@@ -114,6 +116,10 @@ const DRIFT_RECENTER_WINDOW_START_SECONDS =
   DRIFT_AFTERSHOCK_WINDOW_END_SECONDS;
 const DRIFT_RECENTER_WINDOW_END_SECONDS =
   DRIFT_RECENTER_WINDOW_START_SECONDS + DRIFT_RECENTER_WINDOW_SECONDS;
+const DRIFT_PRECLEAR_WINDOW_START_SECONDS =
+  DRIFT_RECENTER_WINDOW_END_SECONDS;
+const DRIFT_PRECLEAR_WINDOW_END_SECONDS =
+  DRIFT_PRECLEAR_WINDOW_START_SECONDS + DRIFT_PRECLEAR_WINDOW_SECONDS;
 
 export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | null => {
   if (progressSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS || progressSeconds >= SURVIVAL_GOAL_SECONDS) {
@@ -183,6 +189,21 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       rematchLabel: 'the recenter handoff',
       accentColor: 0x7ce8ff,
       body: 'Aftershock finally loosens, but drift still leans across the sweep lane long enough to hand the run into the 40s instead of snapping straight back to generic cadence.',
+    };
+  }
+
+  if (
+    progressSeconds >= DRIFT_PRECLEAR_WINDOW_START_SECONDS &&
+    progressSeconds < DRIFT_PRECLEAR_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'preclear',
+      title: 'PRECLEAR SQUEEZE LIVE',
+      hudLabel: 'PRECLEAR LIVE',
+      snapshotLabel: 'PRECLEAR SQUEEZE',
+      rematchLabel: 'the preclear squeeze',
+      accentColor: 0xd8fff4,
+      body: 'Recenter does not settle the lane. Drift folds back toward the reopened side and keeps a bounded squeeze on the run so 45s+ still feels live before the long 60s push.',
     };
   }
 
@@ -329,7 +350,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock and recenter hand the run into the 40s.',
+          'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, and a preclear squeeze keep the 40s alive.',
       };
     case 'overtime':
       return {

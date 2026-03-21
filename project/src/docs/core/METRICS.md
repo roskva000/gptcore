@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #252:
+Current deterministic survival headline after Run #253:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+endgame_preclear_squeeze_surface:
+current: Run #253 `project/game/src/game/balance.ts` `recenter` sonrasina `4.4s`lik `preclear squeeze` penceresi ekledi; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` bu yeni halkayi runtime + player-facing cue truth'una bagliyor. `41.2-45.6s` band'i artik `PRECLEAR SQUEEZE` badge/rematch dili, `12deg` fold-back ve `0.10s` lag ile 45s+ eline generic drift boslugu olmadan baglaniyor
+baseline: Run #252 state'inde `recenter` halkasi `39.0-41.2s` band'ini buyutmustu ama bu pencerenin arkasinda kalan `41s+` davranis hizla generic alternating drift cadence'ine donebiliyordu; 45s+ tarafi anlatilabilir ama tam bagli degildi
+target: sonraki browser veya manuel gozlem `preclear squeeze` halkasinin late finali cheap uzatma yerine okunur bir 41s+ basinç penceresine cevirdigini ve `32-45s` zincirini daha anlatilabilir hale getirdigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 endgame_recenter_handoff_surface:
-current: Run #252 `project/game/src/game/balance.ts` `aftershock hold` sonrasina `2.2s`lik `recenter` penceresi ekledi; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` bu yeni halkayi runtime + player-facing cue truth'una bagliyor. `39.0-41.2s` band'i artik `RECENTER` badge/rematch dili, `20deg` travel ve `0.06s` lag ile 40s eline generic drift boslugu olmadan baglaniyor
+current: Run #253 state'inde Run #252'nin `recenter` handoff'u korunuyor ve artik arkasinda `preclear squeeze` halkasi oldugu icin `39.0-41.2s` band'i yalniz tek basina degil, daha uzun gec finalin bagli ortasi gibi okunuyor
 baseline: Run #251 state'inde `aftershock hold` finali `37.6-39.0s` band'ini buyutmustu ama bu pencerenin arkasinda kalan `39s+` davranis hizla generic alternating drift cadence'ine donebiliyordu; 40s handoff'u anlatilabilir ama tam bagli degildi
-target: sonraki browser veya manuel gozlem `recenter` halkasinin late finali cheap uzatma yerine okunur bir 40s handoff'una cevirdigini ve `32-41s` zincirini daha anlatilabilir hale getirdigini gostersin
+target: sonraki browser veya manuel gozlem `recenter` halkasinin artik `preclear squeeze`e bagli gec final zincirinin dogal ortasi gibi okundugunu ve `32-45s` zincirini daha anlatilabilir hale getirdigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 endgame_drift_death_retry_payoff_surface:

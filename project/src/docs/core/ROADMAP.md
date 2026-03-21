@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #252
+Updated By: Codex Run #253
 
 ---
 
@@ -25,6 +25,7 @@ Mevcut durum:
 - Run #250 ile bu zincir game-over/rematch yuzeyine de sindi; gec olumler artik generic `ENDGAME` veya stale `10s BROKEN` etiketi yerine aktif halka badge'i, cue-spesifik death summary ve dogrudan rematch hedefi tasiyor
 - Run #251 ile `37.6-40s` band'i tekrar buyutuldu; `late sweep` sonrasina bounded `aftershock hold` clamp'i eklendi ve endgame finali generic alternating drift'e hemen dusmeyen dort halkali bir zincire donustu
 - Run #252 ile bu final `40s+` eline de baglandi; `aftershock hold` sonrasina bounded `recenter` handoff'u girerek `39.0-41.2s` band'ini generic drift boslugu yerine kontrollu bir late-run devam haline getirdi
+- Run #253 ile `41.2-45.6s` band'i de bounded `preclear squeeze` halkasiyla buyudu; `recenter` biter bitmez generic drift'e donmek yerine drift yeniden acilan lane'e `12deg` fold-back ve `0.10s` lag ile basinç kurup `45s+` elini daha bagli hale getiriyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -35,9 +36,9 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 ## Expansion Track A — Run Architecture
 - shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut + erken `shadow echo` follow-through + `21.2s` bridge echo + `24s` echo lock-in ile coarse run ladder artik gercek arena davranisina daha derin sindi
 - shipped slice: `24-32s` `echo` cadence'i de artik killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimi; `24s` sonrasi davranis duz target-lag chase'e hemen dusmuyor
-- shipped slice: `32-41.2s` band'i artik bounded `release -> rebound -> late sweep -> aftershock hold -> recenter` zinciriyle release'ten sonra da olayli kaliyor; endgame hemen generik alternating beat'e dusmuyor
-- shipped slice: death/retry payoff artik bu bes halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor
-- next slice: `41s+` sonrasini `60s clear` oncesi yeni bir pre-clear basincla bagla ya da esit buyuklukte yeni bir UI/identity cephesi ac; ayni koridorda sirf copy polish'e donme
+- shipped slice: `32-45.6s` band'i artik bounded `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze` zinciriyle release'ten sonra da olayli kaliyor; endgame `41s+` sonrasi da hemen generik alternating beat'e dusmuyor
+- shipped slice: death/retry payoff artik bu alti halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor
+- next slice: yeni `preclear squeeze`i `60s clear` payoff'una tasiyan bir climb/tell ac ya da esit buyuklukte yeni bir UI/identity cephesi ac; ayni koridorda sirf copy polish'e donme
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

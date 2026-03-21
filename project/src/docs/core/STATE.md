@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #252
+Updated By: Codex Run #253
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `aftershock hold` finalini `40s+` eline baglayip endgame'in `39s` sonrasi generic drift bosluguna dusmesini engellemek
+- run mode: `mutation`
+- ana hedef: `recenter` sonrasini bounded bir `preclear squeeze` ile `45s+` eline baglayip endgame'in `41s+` sonrasi generic drift bosluguna dusmesini engellemek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/balance.ts` `aftershock hold` sonrasina `2.2s`lik bounded `recenter` handoff'u ekledi; drift varyanti `39.0-41.2s` band'inda generic alternating cadence'e donmeden sweep tarafina egimli `20deg` travel ve `0.06s` lag ile run'i 40'lara tasiyor
-- `project/game/src/game/runPhase.ts` endgame cue truth'unu `recenter` halkasina buyuttu; phase detail, shift announcement, death summary, badge ve rematch dili artik `release -> rebound -> late sweep -> aftershock hold -> recenter` zincirini ayni truth ile tasiyor
-- `project/game/src/game/GameScene.ts` endgame hint/spectacle yogunlugunu yeni 40s handoff'una hizaladi; late final ekranda da generic drift yerine bagli bir devam gibi okunuyor
-- `project/game/scripts/telemetry-check.ts` ile `project/game/scripts/telemetry-reports.ts` yeni recenter davranisi, cue payoff'i, controller string'i, rotation ve lag kontratini deterministic regression altina aldi
+- `project/game/src/game/balance.ts` `recenter` sonrasina `4.4s`lik bounded `preclear squeeze` penceresi ekledi; drift varyanti `41.2-45.6s` band'inda generic alternating cadence'e donmeden yeniden acilan lane'e `12deg` fold-back ve `0.10s` lag ile geri basinç kuruyor
+- `project/game/src/game/runPhase.ts` endgame cue truth'unu `preclear` halkasiyla buyuttu; phase detail, shift announcement, death summary, badge ve rematch dili artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze` zincirini ayni truth ile tasiyor
+- `project/game/src/game/GameScene.ts` endgame hint/intensity anlatimini yeni `preclear squeeze` halkasina hizaladi; `41s+` band'i ekranda generic drift bekleyisi yerine yeni bir bounded gec final olarak okunuyor
+- `project/game/scripts/telemetry-check.ts` ile `project/game/scripts/telemetry-reports.ts` yeni `preclear` cue/payoff'i, forced drift penceresi, travel rotation, target lag ve controller string kontratini deterministic regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -72,6 +72,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter` olarak hem runtime hem player-facing truth'ta okunuyor; siradaki buyuk adim ya bu finali `45-60s` pre-clear eline daha olayli bir basincla tasimak ya da UI/identity tarafinda esit buyuklukte yeni bir cephe acmak
+- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze` olarak hem runtime hem player-facing truth'ta okunuyor; siradaki buyuk adim bu yeni `41.2-45.6s` basinçtan `60s clear` payoff'una daha karakterli bir climb kurmak ya da UI/identity tarafinda esit buyuklukte yeni bir cephe acmak
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

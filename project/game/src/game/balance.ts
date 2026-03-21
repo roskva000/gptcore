@@ -54,6 +54,9 @@ export const DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS = 0.04;
 export const DRIFT_RECENTER_WINDOW_SECONDS = 2.2;
 export const DRIFT_RECENTER_ROTATION_DEGREES = 20;
 export const DRIFT_RECENTER_TARGET_LAG_SECONDS = 0.06;
+export const DRIFT_PRECLEAR_WINDOW_SECONDS = 4.4;
+export const DRIFT_PRECLEAR_ROTATION_DEGREES = 12;
+export const DRIFT_PRECLEAR_TARGET_LAG_SECONDS = 0.1;
 export const DRIFT_OBSTACLE_ROTATION_DEGREES = 22;
 export const DRIFT_OBSTACLE_TINT = 0xc8ff9a;
 export const BREAKTHROUGH_PHASE_SPAWN_DELAY_MULTIPLIER = 0.94;
@@ -144,6 +147,19 @@ const isDriftRecenterWindow = (survivalTimeSeconds: number): boolean =>
       DRIFT_AFTERSHOCK_WINDOW_SECONDS +
       DRIFT_RECENTER_WINDOW_SECONDS;
 
+const isDriftPreclearWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >=
+    DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      DRIFT_RECENTER_WINDOW_SECONDS &&
+  survivalTimeSeconds <
+    DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_PRECLEAR_WINDOW_SECONDS;
+
 export const getRunPhasePressureProfile = (
   survivalTimeSeconds: number,
 ): RunPhasePressureProfile => {
@@ -220,7 +236,8 @@ export const getObstacleVariant = ({
     : isDriftReboundWindow(survivalTimeSeconds) ||
         isDriftSweepWindow(survivalTimeSeconds) ||
         isDriftAftershockWindow(survivalTimeSeconds) ||
-        isDriftRecenterWindow(survivalTimeSeconds)
+        isDriftRecenterWindow(survivalTimeSeconds) ||
+        isDriftPreclearWindow(survivalTimeSeconds)
       ? 'drift'
     : survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
@@ -391,7 +408,8 @@ export const getObstacleTravelDirection = ({
       isDriftReboundWindow(survivalTimeSeconds) ||
       isDriftSweepWindow(survivalTimeSeconds) ||
       isDriftAftershockWindow(survivalTimeSeconds) ||
-      isDriftRecenterWindow(survivalTimeSeconds)) &&
+      isDriftRecenterWindow(survivalTimeSeconds) ||
+      isDriftPreclearWindow(survivalTimeSeconds)) &&
     playerVelocity &&
     (playerVelocity.x !== 0 || playerVelocity.y !== 0)
   ) {
@@ -399,16 +417,20 @@ export const getObstacleTravelDirection = ({
     const crossProduct =
       baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
     const isReleaseSideWindow =
-      isDriftReleaseWindow(survivalTimeSeconds) || isDriftReboundWindow(survivalTimeSeconds);
+      isDriftReleaseWindow(survivalTimeSeconds) ||
+      isDriftReboundWindow(survivalTimeSeconds) ||
+      isDriftPreclearWindow(survivalTimeSeconds);
     const rotationMagnitude = isDriftReleaseWindow(survivalTimeSeconds)
       ? DRIFT_RELEASE_ROTATION_DEGREES
       : isDriftReboundWindow(survivalTimeSeconds)
         ? DRIFT_REBOUND_ROTATION_DEGREES
         : isDriftSweepWindow(survivalTimeSeconds)
           ? DRIFT_SWEEP_ROTATION_DEGREES
-          : isDriftAftershockWindow(survivalTimeSeconds)
-            ? DRIFT_AFTERSHOCK_ROTATION_DEGREES
-            : DRIFT_RECENTER_ROTATION_DEGREES;
+        : isDriftAftershockWindow(survivalTimeSeconds)
+          ? DRIFT_AFTERSHOCK_ROTATION_DEGREES
+          : isDriftRecenterWindow(survivalTimeSeconds)
+            ? DRIFT_RECENTER_ROTATION_DEGREES
+            : DRIFT_PRECLEAR_ROTATION_DEGREES;
     const rotationDegrees =
       crossProduct === 0
         ? Math.floor(runSpawnCount / DRIFT_OBSTACLE_CADENCE) % 2 === 0
@@ -478,6 +500,8 @@ export const getObstacleTargetLagSeconds = ({
       ? DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftRecenterWindow(survivalTimeSeconds)
       ? DRIFT_RECENTER_TARGET_LAG_SECONDS
+    : variant === 'drift' && isDriftPreclearWindow(survivalTimeSeconds)
+      ? DRIFT_PRECLEAR_TARGET_LAG_SECONDS
     : getSpawnTargetLagSeconds(survivalTimeSeconds);
 
 export const getSpawnCollisionGraceMs = (survivalTimeSeconds: number): number =>

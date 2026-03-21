@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #253]
+
+Decision:
+`mutation` modunda `recenter` sonrasina bounded bir `preclear squeeze` halkasi ekle; `41s+` sonrasi drift tekrar generic alternating cadence'e donmesin ve late final `45s+` eline daha bagli kalsin.
+
+Reason:
+`NEXT_AGENT.md` ve `AUDIT.md` ayni boslugu isaret ediyordu: Run #252 `39.0-41.2s` `recenter` handoff'unu acti ama bu pencerenin arkasinda kalan `41s+` davranis hizla generic drift/overtime bekleyisine donebilirdi. Yeni hazard family, spawn manager'i ya da overlay sistemi acmadan en yuksek etkili hamle, mevcut `drift` varyanti icinde bir bounded pencere daha tanimlayip ayni truth'u gameplay, cue ve deterministic regression tarafina yaymakti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `preclear squeeze` penceresi ile `41.2-45.6s` band'ini `12deg` fold-back ve `0.10s` lag ile bounded bir gec final basinç hattina cevirdi. `project/game/src/game/runPhase.ts` endgame cue truth'una `PRECLEAR SQUEEZE` halkasini ekledi; phase detail, shift announcement, fallback badge, death summary ve retry hedefi artik bu halkayi da tasiyor. `project/game/src/game/GameScene.ts` endgame hint/intensity dilini yeni `41s+` basinç gercegine hizaladi. `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni cue, variant forcing, travel rotation, target lag ve controller anlatimini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni `preclear squeeze` halkasinin `41s+` band'ini okunur bir gec final yerine cheap uzatma, gereksiz tekrar veya yorgun drift spam'ina cevirdigini gosterirse yalniz bu pencerenin sure/rotation/lag truth'u dar kapsamda ayarlanir; bu bahaneyle yeni orchestration/readiness katmani, yeni spawn manager'i, yeni hazard family ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #252]
 
 Decision:

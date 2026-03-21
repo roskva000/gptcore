@@ -3208,7 +3208,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, then aftershock and recenter carry the run into the 40s lane.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, then aftershock, recenter, and a preclear squeeze keep the 40s lane under pressure.';
     }
 
     if (phaseId === 'overtime') {
@@ -3234,6 +3234,8 @@ export class GameScene extends Phaser.Scene {
         return 0.88;
       case 'recenter':
         return 0.7;
+      case 'preclear':
+        return 0.78;
       default:
         return 0;
     }
