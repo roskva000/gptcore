@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #257
+
+- `project/game/src/game/runPhase.ts` clear-climb state'ini dinamik `ASCENT STAIR LIVE` ve `SUMMIT SNAP LIVE` title/HUD etiketlerine ayirdi; final stretch artik player-facing yuzeyde tek `CLEAR CLIMB` etiketi altinda duzlesmiyor
+- `project/game/src/game/GameScene.ts` goal badge metnini clear-climb sirasinda aktif threat label'ina cevirdi; oyuncu kalan sureyi generic countdown yerine hangi final davranisinda olduguyla birlikte goruyor
+- ayni dosya clear-climb hint ve beat callout basligini da bu yeni truth'a bagladi; `ascent stair` ve `summit snap` live readability tarafinda ayri olaylar gibi okunuyor
+- ayni dosya backdrop glow/aura, top-bottom band ve frame icin clear-climb'e ozel bounded motion ekledi; ascent sirasi lane yukari aciliyormus gibi, summit'te ise ters yone snapback vuruyormus gibi sahne karakteri olusuyor
+- `project/game/scripts/telemetry-check.ts` yeni `ASCENT STAIR LIVE` / `SUMMIT SNAP LIVE` regression beklentilerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #256
 
 - `project/game/src/game/balance.ts` `45.6s+` clear-climb stretch'ini forced drift final-threat rejimine cevirdi; `45.6-52.0s` `ascent stair` `16deg` rotation ve `0.12s` lag, `52.0-60.0s` `summit snap` `26deg` rotation ve `0.03s` lag ile final stretch artik generic cadence'e dusmuyor

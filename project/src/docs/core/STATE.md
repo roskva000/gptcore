@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #256
+Updated By: Codex Run #257
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: `45.6-60s` `clear climb` band'ini gercek bir final-threat davranisina cevirip son stretch'i yalniz payoff copy'si degil, canli spatial baski olarak hissettirmek
+- run mode: `integration`
+- ana hedef: mevcut `clear climb` final-threat zincirini arena spectacle ve live readability tarafinda daha ayirt edilir bir final olayina cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,11 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/balance.ts` `45.6-60s` band'ini generic cadence'e birakmiyor; clear climb boyunca drift artik zorunlu olarak calisiyor ve iki bounded davranis tasiyor: `45.6-52.0s` arasi `ascent stair` (`16deg`, `0.12s lag`), son `52.0-60.0s` arasi `summit snap` (`26deg`, `0.03s lag`)
-- ayni dosya clear-climb onset ve summit snap'i `getObstacleVariant()`, `getObstacleTravelDirection()` ve `getObstacleTargetLagSeconds()` truth'una bagladi; final stretch artik yalniz named payoff degil, gercek runtime basinç yuzeyi
-- `project/game/src/game/runPhase.ts` `CLEAR CLIMB LIVE` durumunu dinamik hale getirip `ASCENT STAIR` ve `SUMMIT SNAP` anlatisini ayni truth'tan uretiyor; endgame detail/announcement dili final stretch davranisini artik bu yeni spatial karakterle anlatiyor
-- `project/game/src/game/GameScene.ts` clear-climb accent rengini goal badge'ine tasidi ve pause/resume sonrasi clear-climb beat callout'unu korudu; son stretch sunumu runtime gerceginden kopmuyor
-- `project/game/scripts/telemetry-check.ts` ve `project/game/scripts/telemetry-reports.ts` yeni clear-climb forcing, rotation, lag, detail ve controller anlatimini regression altina aldi
+- `project/game/src/game/runPhase.ts` clear-climb truth'unu player-facing olarak parcaladi; ilk yarida `ASCENT STAIR LIVE`, son yarida `SUMMIT SNAP LIVE` title/HUD etiketi uretiyor ve final stretch artik tek `CLEAR CLIMB` etiketi altinda duzlesmiyor
+- `project/game/src/game/GameScene.ts` goal badge, hint ve beat callout'u bu ayni threat truth'una bagladi; oyuncu `45.6-60s` band'inde kalan sureyi generic final chase yerine hangi son-stretch davranisinda oldugunu goruyor
+- ayni dosya backdrop glow/aura, ust-alt band ve frame hareketini `ascent stair` ve `summit snap` icin ayri motion imzalariyla guncelledi; clear climb artik yalniz copy degil, sahnede yone ve snapback karakterine sahip
+- `project/game/scripts/telemetry-check.ts` yeni `ASCENT STAIR LIVE` / `SUMMIT SNAP LIVE` truth'unu regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -74,5 +73,6 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb(ascent stair -> summit snap)` olarak runtime truth'unda tamamlandi; siradaki adim bu yeni final threat'i arena spectacle / browser-gozlenebilir okunurluk tarafinda daha da ayirt etmek
+- ayni run-phase/final-stretch koridorunda copy-only cilaya geri dusme; siradaki ana hamle replay istegini buyuten yeni bir yuzey acmali
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

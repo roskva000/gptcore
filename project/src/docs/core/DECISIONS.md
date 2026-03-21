@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #257]
+
+Decision:
+`integration` modunda mevcut `clear climb` final-threat truth'unu arena spectacle ve live readability tarafinda parcalandir; oyuncu `45.6-60s` band'inde generic final chase degil, ayri `ASCENT STAIR` ve `SUMMIT SNAP` olaylari gorsun.
+
+Reason:
+`NEXT_AGENT.md` ile audit ayni boslugu isaret ediyordu: Run #256 runtime baskiyi acti ama bu yeni son-stretch kimligi sahnede halen yeterince ayirt edilmeyebilirdi. Yeni phase, hazard family, manager veya orchestration katmani acmadan en yuksek etkili hamle; mevcut `clear climb` truth'unu `runPhase` title/HUD etiketleri ve `GameScene` spectacle hareketiyle daha gorulur hale getirmekti.
+
+Impact:
+`project/game/src/game/runPhase.ts` clear climb state'ini dinamik `ASCENT STAIR LIVE` / `SUMMIT SNAP LIVE` title ve HUD label'lariyla parcaladi. `project/game/src/game/GameScene.ts` goal badge, hint ve beat callout'u ayni threat label'larini gosterecek sekilde guncelledi; backdrop glow/aura, top-bottom band ve frame artik ascent'te yukari-acilan, summit'te ters yone sert snapback yapan bounded motion kullanıyor. `project/game/scripts/telemetry-check.ts` yeni player-facing clear-climb truth'unu regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni spectacle/readability katmaninin final stretch'i daha anlasilir kilmak yerine HUD gurultusu, cheap screen motion veya gereksiz drama urettigini gosterirse yalniz clear-climb motion offset/angle siddeti ve label yogunlugu dar kapsamda ayarlanir; bu bahaneyle yeni backdrop controller'i, yeni spectacle framework'u, yeni phase sistemi veya orchestration/readiness katmani acilmaz.
+
 ### [Run #256]
 
 Decision:

@@ -7,15 +7,21 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #256:
+Current deterministic survival headline after Run #257:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+endgame_clear_climb_spectacle_readability_surface:
+current: Run #257 `project/game/src/game/runPhase.ts` clear climb'i player-facing olarak `ASCENT STAIR LIVE` ve `SUMMIT SNAP LIVE` etiketlerine ayirdi; `project/game/src/game/GameScene.ts` goal badge, hint ve beat callout bu ayni truth'u kullaniyor. Backdrop glow/aura, top-bottom band ve frame de ascent ile summit icin ayri motion imzalari tasiyor; final stretch artik sahnede de yon degistiren bir olay gibi okunuyor
+baseline: Run #256 state'inde clear climb runtime tarafinda iki basamakli threat'ti ama player-facing sunum halen buyuk oranda tek `CLEAR CLIMB` etiketi ve ortak spectacle boost'u etrafinda kaliyordu; `ascent stair` ile `summit snap` ekranda yeterince ayrismayabilirdi
+target: sonraki browser veya manuel gozlem oyuncunun `45.6-60s` band'ini generic final push yerine once yukari acilan sonra sert snapback vuran iki farkli final anı olarak ayirt edebildigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 endgame_clear_climb_final_threat_surface:
-current: Run #256 `project/game/src/game/balance.ts` clear climb boyunca forced drift rejimi ekledi; `45.6-52.0s` `ascent stair` `16deg` rotation + `0.12s` lag, `52.0-60.0s` `summit snap` `26deg` rotation + `0.03s` lag ile final stretch artik generic cadence yerine iki basamakli spatial baski olarak davraniyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni truth'u dynamic body/accent/callout tarafina tasiyor
+current: Run #257 state'inde Run #256'nin runtime final-threat truth'u korunuyor; `45.6-52.0s` `ascent stair` ve `52.0-60.0s` `summit snap` davranisi artik player-facing title/HUD/spectacle tarafinda da ayri ayri okunuyor
 baseline: Run #255 state'inde clear climb HUD ve death/retry payoff'u tarafinda isimliydi ama runtime davranis halen buyuk oranda generic late drift cadence'ine benziyordu; final stretch'in kendine ait somut spatial imzasi zayifti
 target: sonraki browser veya manuel gozlem oyuncunun `clear climb`i yalniz `60s` countdown'u olarak degil, once yukari tirmanan sonra sert snapback yapan ayri bir final-threat penceresi olarak anlatabildigini gostersin
 validation: `npm run telemetry:check`, `npm run build`

@@ -418,8 +418,8 @@ assert.deepEqual(
 assert.deepEqual(
   getEndgameClearClimbState(50),
   {
-    title: 'CLEAR CLIMB LIVE',
-    hudLabel: 'CLEAR CLIMB',
+    title: 'ASCENT STAIR LIVE',
+    hudLabel: 'ASCENT STAIR',
     accentColor: 0xfff0c7,
     snapshotLabel: 'CLEAR CLIMB',
     rematchLabel: 'the clear climb',
@@ -431,8 +431,8 @@ assert.deepEqual(
 assert.deepEqual(
   getEndgameClearClimbState(54),
   {
-    title: 'CLEAR CLIMB LIVE',
-    hudLabel: 'CLEAR CLIMB',
+    title: 'SUMMIT SNAP LIVE',
+    hudLabel: 'SUMMIT SNAP',
     accentColor: 0xff9eb1,
     snapshotLabel: 'CLEAR CLIMB',
     rematchLabel: 'the clear climb',

@@ -149,8 +149,8 @@ export const getEndgameClearClimbState = (
   const inSummitSnapWindow = progressSeconds >= DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS;
 
   return {
-    title: 'CLEAR CLIMB LIVE',
-    hudLabel: 'CLEAR CLIMB',
+    title: inSummitSnapWindow ? 'SUMMIT SNAP LIVE' : 'ASCENT STAIR LIVE',
+    hudLabel: inSummitSnapWindow ? 'SUMMIT SNAP' : 'ASCENT STAIR',
     accentColor: inSummitSnapWindow ? 0xff9eb1 : 0xfff0c7,
     snapshotLabel: 'CLEAR CLIMB',
     rematchLabel: 'the clear climb',
