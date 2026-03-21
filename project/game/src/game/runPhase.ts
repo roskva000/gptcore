@@ -1,5 +1,9 @@
 import {
+  DRIFT_RELEASE_WINDOW_SECONDS,
+  DRIFT_SWEEP_WINDOW_START_SECONDS,
+  DRIFT_SWEEP_WINDOW_SECONDS,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
+  DRIFT_REBOUND_WINDOW_SECONDS,
   LEAD_OBSTACLE_UNLOCK_SECONDS,
   SURVIVAL_GOAL_SECONDS,
   TARGET_FIRST_DEATH_SECONDS,
@@ -23,6 +27,16 @@ export type RunPhaseState = {
 
 export type RunPhaseShiftAnnouncement = {
   body: string;
+  title: string;
+};
+
+export type EndgameDriftCueId = 'release' | 'rebound' | 'late-sweep';
+
+export type EndgameDriftCue = {
+  accentColor: number;
+  body: string;
+  hudLabel: string;
+  id: EndgameDriftCueId;
   title: string;
 };
 
@@ -75,6 +89,52 @@ const formatRangeLabel = (phase: RunPhaseDefinition, nextPhase: RunPhaseDefiniti
 };
 
 const RUN_PHASE_ONSET_DURATION_SECONDS = 1.6;
+const DRIFT_REBOUND_WINDOW_START_SECONDS =
+  DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
+const DRIFT_REBOUND_WINDOW_END_SECONDS =
+  DRIFT_REBOUND_WINDOW_START_SECONDS + DRIFT_REBOUND_WINDOW_SECONDS;
+const DRIFT_RELEASE_WINDOW_END_SECONDS =
+  DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
+const DRIFT_SWEEP_WINDOW_END_SECONDS =
+  DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS;
+
+export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | null => {
+  if (progressSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS || progressSeconds >= SURVIVAL_GOAL_SECONDS) {
+    return null;
+  }
+
+  if (progressSeconds < DRIFT_RELEASE_WINDOW_END_SECONDS) {
+    return {
+      id: 'release',
+      title: 'RELEASE CUT LIVE',
+      hudLabel: 'RELEASE LIVE',
+      accentColor: 0x7ce8ff,
+      body: 'Killbox opens sideways here. Stretch the release lane before the rebound clamps onto the same answer.',
+    };
+  }
+
+  if (progressSeconds < DRIFT_REBOUND_WINDOW_END_SECONDS) {
+    return {
+      id: 'rebound',
+      title: 'REBOUND LIVE',
+      hudLabel: 'REBOUND LIVE',
+      accentColor: 0xc8ff9a,
+      body: 'The first rebound stays on the release side. Hold the opened lane before the wider sweep flips back across it.',
+    };
+  }
+
+  if (progressSeconds >= DRIFT_SWEEP_WINDOW_START_SECONDS && progressSeconds < DRIFT_SWEEP_WINDOW_END_SECONDS) {
+    return {
+      id: 'late-sweep',
+      title: 'LATE SWEEP LIVE',
+      hudLabel: 'LATE SWEEP LIVE',
+      accentColor: 0xfff0c7,
+      body: 'The late sweep whips back across the arena. Read the cross-lane turn and keep the run alive through the snapback.',
+    };
+  }
+
+  return null;
+};
 
 export const getRunPhaseState = (progressSeconds: number): RunPhaseState => {
   const clampedProgressSeconds = Math.max(progressSeconds, 0);
@@ -109,9 +169,14 @@ export const getRunPhaseStatusText = (progressSeconds: number): string => {
 
 export const getRunPhaseDetailText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
+  const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
 
   if (nextPhase === null) {
     return currentPhase.detail;
+  }
+
+  if (endgameCue !== null) {
+    return `${endgameCue.body} Next phase at ${nextPhase.startSeconds}s.`;
   }
 
   return `${currentPhase.detail} Next phase at ${nextPhase.startSeconds}s.`;
@@ -119,9 +184,14 @@ export const getRunPhaseDetailText = (progressSeconds: number): string => {
 
 export const getRunPhaseSupportText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
+  const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
 
   if (nextPhase === null) {
     return `${currentPhase.title}: ${currentPhase.detail}`;
+  }
+
+  if (endgameCue !== null) {
+    return `${currentPhase.title} ${endgameCue.hudLabel}: ${endgameCue.body} Next shift ${nextPhase.startSeconds}s.`;
   }
 
   return `${currentPhase.title}: ${currentPhase.detail} Next shift ${nextPhase.startSeconds}s.`;

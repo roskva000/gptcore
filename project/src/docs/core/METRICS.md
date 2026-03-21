@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #248:
+Current deterministic survival headline after Run #249:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+endgame_drift_player_facing_cue_surface:
+current: Run #249 `project/game/src/game/runPhase.ts` yeni `getEndgameDriftCue()` truth'u ile `release`, `rebound` ve `late sweep` icin ayri `title/body/hudLabel/accent` paketi veriyor; `project/game/src/game/GameScene.ts` bu cue'lari phase HUD, hint, support ve bounded callout ile arena spectacle boost'una bagliyor. `32-40s` band'i artik yalniz runtime davranis degil, ekranda okunan bir zincir
+baseline: Run #248 gameplay truth'u release -> rebound -> sweep olarak buyumustu ama oyuncu tarafinda bu buyume agirlikla phase paragraph'i ve genel drift anlatiminda eriyordu; `32-40s` band'inin halkalari ayri ayri okunmuyordu
+target: sonraki browser veya manuel gozlem oyuncunun `32-40s` band'inda `release`, `rebound` ve `late sweep` halkalarini yalniz hissetmekle kalmayip ekranda ayirt ederek anlatabildigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 killbox_to_drift_rebound_sweep_surface:
-current: Run #248 `project/game/src/game/balance.ts` `32s` sonrasi `DRIFT` band'ina iki bounded devam penceresi ekliyor; `33.6-35.0s` civarindaki rebound ilk release cut'inin ayni yone devam ediyor, `36.2-37.6s` civarindaki late sweep ise ters yone kirilip band'i ikinci kez hareketlendiriyor. `project/game/src/game/runPhase.ts` ile `project/game/src/game/GameScene.ts` bunu "release, rebounds once, then whips into a wider late sweep" diye anlatiyor
+current: Run #249 state'inde Run #248'in runtime truth'u korunuyor; `33.6-35.0s` rebound ilk release cut'inin ayni yone devam ediyor, `36.2-37.6s` late sweep ise ters yone kirilip band'i ikinci kez hareketlendiriyor. Bu zincir artik yeni cue helper'i sayesinde HUD/spectacle tarafinda da ayri ayri okunuyor
 baseline: Run #247 ilk `DRIFT` release'ini acmisti ama sonrasindaki cadence'ler hizla generik alternating `22deg` sweep'e donebiliyordu; 32-40s band'i hala esas olarak tek acilis cut'i etrafinda yasiyordu
-target: sonraki browser veya manuel gozlem `32-40s` band'inin artik tek release degil, killbox'tan cikan bagli bir release -> rebound -> sweep zinciri gibi hissedildigini gostersin
+target: sonraki browser veya manuel gozlem `32-40s` band'inin artik tek release degil, killbox'tan cikan bagli bir release -> rebound -> sweep zinciri gibi hissedildigini ve bu zincirin player-facing cue'larla da okunabildigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 killbox_to_drift_release_surface:

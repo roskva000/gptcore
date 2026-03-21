@@ -4,8 +4,7 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda `32s` `DRIFT` onset'i artik killbox'tan kopuk reset gibi degil; ilk drift `1.6s`lik lateral release cut'i ve kisa miras `echo` lag'i ile trap'ten dogan yeni cevap gibi giriyor.
-Run #248 bunu derinlestirdi: `32-40s` band'inda artik bounded `rebound` ve `late sweep` halkalari var; runtime truth zinciri release -> rebound -> sweep olarak akiyor.
+Bu turda endgame runtime truth ilk kez player-facing hale geldi: `32-40s` band'indaki `release -> rebound -> late sweep` halkalari artik yalniz spawn davranisinda degil, HUD detail/status, hint, bounded callout ve arena spectacle tarafinda da ayirt ediliyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
@@ -20,14 +19,14 @@ Dikkat:
 Run mode: `integration`
 
 Ana tema:
-**Run #248'in release -> rebound -> sweep zincirini oyuncu tarafinda daha okunur ve daha heyecanli hale getir; endgame runtime'ta buyudu, simdi arena/HUD feedback de ayni hikayeyi anlatmali.**
+**Yeni endgame cue zincirini death/retry payoff'una bagla; gec olumler artik "late run'da oldun" demekle kalmasin, release/rebound/sweep halkasindan hangisinde koptugunu ve neden tekrar denemeye deger oldugunu hissettirsin.**
 
 Hedef:
-Run #248 endgame davranisini buyuttu ama bu buyume su an agirlikla gameplay truth ve phase copy tarafinda. Siradaki is, yeni hazard family veya orchestration katmani acmadan mevcut `release`, `rebound` ve `late sweep` windows'unu arena spectacle / HUD / shift hint zincirinde daha ayirt edilebilir kilmak. Hedef, oyuncunun `32-40s` band'ini sadece hissetmesi degil, ekranda da "killbox acildi, rebound geldi, sweep karsiya kirildi" diye okuyabilmesi.
+Run #249 `32-40s` zincirini HUD/arena tarafinda okuttu, ama gec olum sonrasi payoff halen bu halkalari yeterince kullanmiyor. Siradaki is, yeni mechanic veya yeni shell sistemi acmadan mevcut death/retry/durum yuzeylerini bu endgame cue truth'una hizalamak. Hedef, oyuncunun `34s` veya `36.5s` civarinda oldugunda yalniz `ENDGAME` degil, hangi halkayi kacirdigini ve neden tekrar denemek istedigini daha net okuması.
 
 Acilabilecek bagli yuzeyler:
-1. `GameScene` veya mevcut spectacle helper'larinda `release`, `rebound` ve `late sweep` windows'una bagli kisa ama ayirt edilebilir arena/HUD feedback kur; ana delta oyuncunun bu zinciri okuyabilmesi olsun
-2. gerekiyorsa mevcut phase detail / shift hint / onset pulse zincirini bu yeni late-band hikayesine hizala, ama yalniz copy polish'i yapma
+1. `deathPresentation.ts`, `runPhase.ts` ve ilgili `GameScene` overlay/hint yuzeylerinde `release`, `rebound`, `late sweep` halkalarina gore daha spesifik death summary / retry prompt / payoff dili kur
+2. gec endgame olumlerinde mevcut cue accent'lerini veya compact badge/callout yollarini kullanarak rematch hissini buyut, ama yeni overlay sistemi kurma
 3. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
 
 Yapma:
@@ -39,8 +38,8 @@ Yapma:
 
 ## Success Criteria
 
- - oyuncu `32-40s` band'inda release, rebound ve late sweep halkalarini ekranda ayirt edebilir
- - yeni feedback zinciri gameplay truth'u destekler; drift band'i daha olayli gorunur ama cheap spectacle spam'e donmez
+ - gec endgame olumlerinde death/retry payoff hangi halkada kopuldugunu (`release`, `rebound` veya `late sweep`) okunur bicimde tasir
+ - retry prompt bu halkayi rematch hedefi gibi sunar; gec olumler daha anlatilabilir ve tekrar denemeye deger hissedilir
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

@@ -75,6 +75,7 @@ import {
   getRunHorizonText,
 } from '../src/game/runHorizon.ts';
 import {
+  getEndgameDriftCue,
   getRunPhaseDeathSummaryText,
   getRunPhaseReachedBadgeText,
   getRunPhaseRetryGoalText,
@@ -292,8 +293,46 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(34),
-  'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep. Stretch the release lane and push for 60s. Next phase at 60s.',
-  'Endgame detail should read like a handoff out of killbox instead of a fresh unrelated cadence reset.',
+  'The first rebound stays on the release side. Hold the opened lane before the wider sweep flips back across it. Next phase at 60s.',
+  'Endgame detail should surface the live rebound window so the 32-40s chain reads like staged arena behavior instead of a single generic drift paragraph.',
+);
+assert.deepEqual(
+  getEndgameDriftCue(32.2),
+  {
+    id: 'release',
+    title: 'RELEASE CUT LIVE',
+    hudLabel: 'RELEASE LIVE',
+    accentColor: 0x7ce8ff,
+    body: 'Killbox opens sideways here. Stretch the release lane before the rebound clamps onto the same answer.',
+  },
+  'The first endgame cue should mark the lateral release so the killbox handoff stays explicit on the HUD.',
+);
+assert.deepEqual(
+  getEndgameDriftCue(33.8),
+  {
+    id: 'rebound',
+    title: 'REBOUND LIVE',
+    hudLabel: 'REBOUND LIVE',
+    accentColor: 0xc8ff9a,
+    body: 'The first rebound stays on the release side. Hold the opened lane before the wider sweep flips back across it.',
+  },
+  'The mid-band rebound should expose its own cue so the first post-release answer reads as a distinct player-facing event.',
+);
+assert.deepEqual(
+  getEndgameDriftCue(36.4),
+  {
+    id: 'late-sweep',
+    title: 'LATE SWEEP LIVE',
+    hudLabel: 'LATE SWEEP LIVE',
+    accentColor: 0xfff0c7,
+    body: 'The late sweep whips back across the arena. Read the cross-lane turn and keep the run alive through the snapback.',
+  },
+  'The late sweep should expose a separate cue so the second half of the chain does not collapse back into generic drift copy.',
+);
+assert.equal(
+  getEndgameDriftCue(35.4),
+  null,
+  'Cue windows should stay bounded so the live callouts highlight the release-rebound-sweep chain instead of permanently occupying the endgame HUD.',
 );
 assert.equal(
   getRunPhaseReachedBadgeText(0),

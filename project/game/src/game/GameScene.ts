@@ -74,6 +74,7 @@ import {
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
+  getEndgameDriftCue,
   getRunPhaseDetailText,
   getRunPhaseOnsetIntensity,
   getRunPhaseState,
@@ -81,6 +82,7 @@ import {
   getRunPhaseShiftAnnouncement,
   getRunPhaseSupportText,
   getRunPhaseTimelineText,
+  type EndgameDriftCue,
   type RunPhaseId,
 } from './runPhase.ts';
 import {
@@ -128,6 +130,7 @@ const NEAR_MISS_CHAIN_WINDOW_MS = 1800;
 const NEAR_MISS_HINT_DURATION_MS = 900;
 const RUN_BEAT_CALLOUT_DURATION_MS = 1700;
 const RUN_PHASE_SHIFT_CALLOUT_DURATION_MS = 1900;
+const ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS = 1500;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
 const FATAL_OBSTACLE_DEPTH = 3;
@@ -369,6 +372,7 @@ export class GameScene extends Phaser.Scene {
   private beatCalloutHideAtElapsedMs: number | null = null;
   private lastAnnouncedRunBeatLabel: string | null = null;
   private lastShownRunPhaseId: RunPhaseId | null = null;
+  private lastShownEndgameDriftCueId: EndgameDriftCue['id'] | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
@@ -1007,6 +1011,7 @@ export class GameScene extends Phaser.Scene {
     this.updateBestText();
     this.updateRunPhaseHud();
     this.maybeShowRunPhaseShiftHint(activeRunElapsedMs);
+    this.maybeShowEndgameDriftCue(activeRunElapsedMs);
     this.updatePersonalBestChase();
     this.updateNearMissTracking(activeRunElapsedMs);
     this.updateArenaBeatSpectacle(time);
@@ -1124,37 +1129,62 @@ export class GameScene extends Phaser.Scene {
     });
     const breakthroughOnsetIntensity =
       this.phase === 'playing' ? getRunPhaseOnsetIntensity(this.survivalTime, 'breakthrough') : 0;
+    const endgameCue = this.phase === 'playing' ? getEndgameDriftCue(this.survivalTime) : null;
+    const endgameCueIntensity = this.getEndgameDriftCueIntensity(endgameCue);
     const breakthroughOnsetAlphaBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughOnsetScaleBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughTellColor = 0xffc18a;
+    const endgameCueAlphaBoost = endgameCueIntensity * 0.18;
+    const endgameCueScaleBoost = endgameCueIntensity * 0.12;
+    const endgameCueColor = endgameCue?.accentColor ?? spectacle.glowColor;
 
     this.backdropBase.setFillStyle(spectacle.backgroundColor, 1);
     this.backdropGlow
       .setFillStyle(
-        breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.glowColor,
-        spectacle.glowAlpha + breakthroughOnsetAlphaBoost,
+        breakthroughOnsetIntensity > 0
+          ? breakthroughTellColor
+          : endgameCueIntensity > 0
+            ? endgameCueColor
+            : spectacle.glowColor,
+        spectacle.glowAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost,
       )
-      .setScale(spectacle.glowScale + breakthroughOnsetScaleBoost);
+      .setScale(spectacle.glowScale + breakthroughOnsetScaleBoost + endgameCueScaleBoost);
     this.backdropAura
       .setStrokeStyle(
-        4 + breakthroughOnsetIntensity * 2,
-        breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.glowColor,
-        spectacle.auraAlpha + breakthroughOnsetAlphaBoost,
+        4 + breakthroughOnsetIntensity * 2 + endgameCueIntensity * 1.6,
+        breakthroughOnsetIntensity > 0
+          ? breakthroughTellColor
+          : endgameCueIntensity > 0
+            ? endgameCueColor
+            : spectacle.glowColor,
+        spectacle.auraAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost,
       )
-      .setScale(spectacle.auraScale + breakthroughOnsetScaleBoost);
+      .setScale(spectacle.auraScale + breakthroughOnsetScaleBoost + endgameCueScaleBoost);
     this.backdropTopBand.setFillStyle(
-      breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.edgeColor,
-      spectacle.edgeAlpha + breakthroughOnsetAlphaBoost,
+      breakthroughOnsetIntensity > 0
+        ? breakthroughTellColor
+        : endgameCueIntensity > 0
+          ? endgameCueColor
+          : spectacle.edgeColor,
+      spectacle.edgeAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost * 0.92,
     );
     this.backdropBottomBand.setFillStyle(
-      breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.edgeColor,
-      spectacle.edgeAlpha * 0.88 + breakthroughOnsetAlphaBoost * 0.88,
+      breakthroughOnsetIntensity > 0
+        ? breakthroughTellColor
+        : endgameCueIntensity > 0
+          ? endgameCueColor
+          : spectacle.edgeColor,
+      spectacle.edgeAlpha * 0.88 + breakthroughOnsetAlphaBoost * 0.88 + endgameCueAlphaBoost * 0.8,
     );
-    this.backdropGrid.setAlpha(spectacle.gridAlpha);
+    this.backdropGrid.setAlpha(spectacle.gridAlpha + endgameCueAlphaBoost * 0.28);
     this.backdropFrame.setStrokeStyle(
-      3 + breakthroughOnsetIntensity,
-      breakthroughOnsetIntensity > 0 ? breakthroughTellColor : spectacle.frameColor,
-      spectacle.frameAlpha + breakthroughOnsetAlphaBoost,
+      3 + breakthroughOnsetIntensity + endgameCueIntensity * 0.8,
+      breakthroughOnsetIntensity > 0
+        ? breakthroughTellColor
+        : endgameCueIntensity > 0
+          ? endgameCueColor
+          : spectacle.frameColor,
+      spectacle.frameAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost,
     );
   }
 
@@ -1332,6 +1362,7 @@ export class GameScene extends Phaser.Scene {
     this.nearMissHintHideAtElapsedMs = null;
     this.beatCalloutHideAtElapsedMs = null;
     this.lastAnnouncedRunBeatLabel = null;
+    this.lastShownEndgameDriftCueId = null;
     this.runSpawnRerolls = 0;
     this.runSpawnCount = 0;
     this.updateHudChromeVisibility();
@@ -1493,6 +1524,7 @@ export class GameScene extends Phaser.Scene {
     this.personalBestCelebratedThisRun = false;
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownRunPhaseId = null;
+    this.lastShownEndgameDriftCueId = null;
     this.runSpawnCount = 0;
     this.tweens.killTweensOf([
       this.player,
@@ -2878,12 +2910,16 @@ export class GameScene extends Phaser.Scene {
 
   private updateRunPhaseHud(): void {
     const { currentPhase } = getRunPhaseState(this.survivalTime);
+    const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(this.survivalTime) : null;
+    const phaseStatusText = getRunPhaseStatusText(this.survivalTime);
     this.phaseStatusText
-      .setText(getRunPhaseStatusText(this.survivalTime))
-      .setColor(colorToCssHex(currentPhase.accentColor));
+      .setText(
+        endgameCue === null ? phaseStatusText : `${phaseStatusText} | ${endgameCue.hudLabel}`,
+      )
+      .setColor(colorToCssHex(endgameCue?.accentColor ?? currentPhase.accentColor));
     this.phaseDetailText
       .setText(getRunPhaseDetailText(this.survivalTime))
-      .setColor(colorToCssHex(currentPhase.accentColor));
+      .setColor(colorToCssHex(endgameCue?.accentColor ?? currentPhase.accentColor));
   }
 
   private maybeShowRunPhaseShiftHint(activeRunElapsedMs: number): void {
@@ -2925,6 +2961,45 @@ export class GameScene extends Phaser.Scene {
       .setText(`${currentPhase.title}\n${shiftHint}`)
       .setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
+  }
+
+  private maybeShowEndgameDriftCue(activeRunElapsedMs: number): void {
+    const endgameCue = getEndgameDriftCue(this.survivalTime);
+
+    if (endgameCue === null) {
+      this.lastShownEndgameDriftCueId = null;
+      return;
+    }
+
+    if (endgameCue.id === this.lastShownEndgameDriftCueId) {
+      return;
+    }
+
+    this.lastShownEndgameDriftCueId = endgameCue.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.hintText
+      .setText(`ENDGAME DRIFT\n${endgameCue.body}`)
+      .setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
+
+    if (endgameCue.id === 'release') {
+      return;
+    }
+
+    this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${endgameCue.title}\n${endgameCue.body}`)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.92,
+      duration: 160,
+      ease: 'Quad.Out',
+    });
   }
 
   private updatePersonalBestChase(): void {
@@ -3143,6 +3218,23 @@ export class GameScene extends Phaser.Scene {
     return null;
   }
 
+  private getEndgameDriftCueIntensity(endgameCue: EndgameDriftCue | null): number {
+    if (endgameCue === null) {
+      return 0;
+    }
+
+    switch (endgameCue.id) {
+      case 'release':
+        return 0.9;
+      case 'rebound':
+        return 0.75;
+      case 'late-sweep':
+        return 0.82;
+      default:
+        return 0;
+    }
+  }
+
   private getWaitingHintText(): string {
     return [
       'Steer with WASD / arrows or hold click / touch.',
@@ -3319,6 +3411,17 @@ export class GameScene extends Phaser.Scene {
     if (activeRunElapsedMs >= this.beatCalloutHideAtElapsedMs) {
       this.beatCalloutText.setVisible(false).setText('');
       this.beatCalloutHideAtElapsedMs = null;
+      return;
+    }
+
+    const endgameCue = getEndgameDriftCue(this.survivalTime);
+
+    if (endgameCue !== null && endgameCue.id !== 'release') {
+      this.beatCalloutText
+        .setText(`${endgameCue.title}\n${endgameCue.body}`)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
       return;
     }
 

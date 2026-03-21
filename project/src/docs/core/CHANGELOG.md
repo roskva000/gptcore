@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #249
+
+- `project/game/src/game/runPhase.ts` endgame icin yeni `getEndgameDriftCue()` truth'unu ekledi; `release`, `rebound` ve `late sweep` artik ayri `title/body/hudLabel/accent` paketiyle okunuyor
+- ayni dosya endgame detail/support satirlarini aktif cue penceresine bagladi; `32-40s` band'i generic drift paragrafi yerine canli halkayi anlatiyor
+- `project/game/src/game/GameScene.ts` endgame cue'larini phase HUD, hint, support satiri ve bounded beat callout'a bagladi; `rebound` ve `late sweep` kendi kisa live anonslarini aliyor
+- ayni dosya arena spectacle tarafinda cue accent'lerine bagli glow/aura/frame boost'u ekledi; late band artik arka planda da ayirt ediliyor
+- `project/game/scripts/telemetry-check.ts` yeni endgame cue regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #248
 
 - `project/game/src/game/balance.ts` `32s` sonrasi ilk drift handoff'unu iki bounded devam penceresiyle buyuttu; `33.6-35.0s` civarinda ayni yone devam eden `rebound`, `36.2-37.6s` civarinda karsiya kirilan `late sweep` artik endgame'i tek cut'ten sonra generik cadence'e birakmiyor

@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #248
+Updated By: Codex Run #249
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `integration`
-- ana hedef: `32-40s` band'inda `DRIFT` zincirini ilk killbox-release cut'inin devam eden rebound + late sweep handoff'u gibi okutmak; endgame bir spawn sonra generik alternating beat'e dusmesin
+- ana hedef: `32-40s` band'indaki mevcut `release -> rebound -> late sweep` zincirini oyuncu tarafinda arena/HUD/callout uzerinden ayirt edilir hale getirmek; late band yalniz runtime truth olarak kalmasin
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,11 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/balance.ts` killbox'tan sonra iki bounded drift penceresi ekledi: `33.6-35.0s` civarinda ayni yone devam eden `rebound`, `36.2-37.6s` civarinda karsiya kirilan `late sweep`; endgame artik tek release cut'ten hemen sonra generic cadence'e dusmuyor
-- ayni dosya bu zincir icin yeni `28deg` rebound ve `18deg` late sweep travel truth'lari ile kademeli target lag kullaniyor; `32-40s` band'i release -> rebound -> sweep akisi olarak davranıyor
-- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` endgame dilini yeni gercege hizaladi: drift artik "release, rebounds once, then whips into a wider late sweep" olarak okunuyor
-- `project/game/scripts/telemetry-reports.ts` deterministic controller anlatimini yeni rebound/sweep pencereleriyle hizaladi
-- `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni drift windows, travel vectors, lag baselines ve validation metnini regression altina aldi
+- `project/game/src/game/runPhase.ts` endgame icin yeni player-facing cue truth'u ekledi; `release`, `rebound` ve `late sweep` artik ayrik `title/body/hudLabel/accent` ile okunuyor
+- `project/game/src/game/GameScene.ts` endgame cue'larini HUD status/detail, alt support satiri, kisa hint ve bounded beat callout zincirine bagladi; `release` phase shift'te, `rebound` ve `late sweep` ise kendi kisa canli anonslariyla ekrana geliyor
+- ayni dosya arena spectacle tarafinda cue'ya bagli glow/aura/frame renk ve siddet boost'u verdi; `32-40s` band'i artik yalniz spawn davranisiyla degil arka plan ritmiyle de ayirt ediliyor
+- `project/game/scripts/telemetry-check.ts` yeni cue truth'unu regression altina aldi; endgame detail satiri artik generic paragraf yerine canli cue penceresini temsil ediyor
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -73,6 +72,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` artik `32s` sonrasina release -> rebound -> sweep zinciri aciyor; siradaki buyuk adim bunun player-facing okunurlugunu ve retry dürtüsünü UI/shell tarafinda da buyutmek
+- `KILLBOX` artik `32s` sonrasina release -> rebound -> sweep zinciri aciyor ve bu zincir artik HUD/arena tarafinda da okunuyor; siradaki buyuk adim bunu retry/death payoff tarafina baglayip gec olumleri daha davetkar rematch anina cevirmek
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

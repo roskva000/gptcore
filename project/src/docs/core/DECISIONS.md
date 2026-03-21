@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #249]
+
+Decision:
+`integration` modunda mevcut `32-40s` endgame zincirini player-facing cue'lara bagla; `release`, `rebound` ve `late sweep` pencereleri arena/HUD/callout tarafinda ayri ayri okunabilsin.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #248 gameplay truth'u buyuttu ama bu buyume agirlikla runtime davranis ve phase copy katmaninda kalıyordu. Yeni hazard family, orchestration ya da validation omurgasi acmadan en yuksek etkili hamle, mevcut late-band pencerelerini tek truth ile isimlendirip mevcut spectacle/HUD yuzeylerine baglamakti.
+
+Impact:
+`project/game/src/game/runPhase.ts` yeni `getEndgameDriftCue()` helper'i ile `release`, `rebound` ve `late sweep` icin ayri `title/body/hudLabel/accent` truth'u ekledi; endgame detail/support satirlari aktif cue penceresinde artik generic paragraf yerine canli halkayi anlatiyor. `project/game/src/game/GameScene.ts` bu cue'lari HUD status/detail, alt support satiri, hint ve bounded beat callout'a bagladi; `rebound` ile `late sweep` kendi kisa anonslarini alirken arena glow/aura/frame de cue accent'leriyle gucleniyor. `project/game/scripts/telemetry-check.ts` yeni cue truth'unu regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni cue zincirinin cheap spectacle spam, HUD gurultusu ya da endgame okunurlugu yerine dikkat dagitma urettigini gosterirse yalniz cue metin yogunlugu, callout sureleri veya spectacle boost siddeti dar kapsamda ayarlanir; bu bahaneyle yeni event bus, orchestration/readiness, yeni hazard family ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #248]
 
 Decision:
