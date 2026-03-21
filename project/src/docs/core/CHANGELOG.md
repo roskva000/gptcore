@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #246
+
+- `project/game/src/game/balance.ts` killbox sonrasi `echo` cadence'ini `24-32s` boyunca kalici lane-fold davranisina bagladi; cadence ile gelen `echo` spawn'lari artik `DRIFT` onset'ine kadar duz chase'e donmuyor
+- ayni dosya `KILLBOX_ECHO_CADENCE_ROTATION_DEGREES = 6` truth'unu ekledi; handoff sonrasi live `echo` ritmi kontrollu scissor travel ile ayni trap dilini koruyor
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox metnini "live echo cadence keeps the trap folding" gercegine hizaladi
+- `project/game/scripts/telemetry-check.ts` yeni `27s` killbox cadence regression'ini ekledi; `project/game/scripts/telemetry-reports.ts` deterministic proxy controller anlatimini yeni cadence fold truth'u ile guncelledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #245
 
 - `project/game/src/game/balance.ts` killbox zincirine `21.2s`'de `1.2s` bridge echo ve `24s` unlock'ta `1.4s` echo lock-in penceresi ekledi; 18-24s band'i artik tek onset'ten sonra sönmuyor

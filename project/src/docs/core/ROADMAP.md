@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #245
+Updated By: Codex Run #246
 
 ---
 
@@ -18,6 +18,7 @@ Mevcut durum:
 - Run #243 ile `KILLBOX` onset'i ilk zorunlu `lead` cut, daha agresif target lead ve acili trajectory kirilmasi ile gercek bir spatial trap anina donustu
 - Run #244 ile bu trap tek ambush olarak kalmadi; killbox onset'inin hemen arkasina kisa bir `shadow echo` follow-through'u girdi
 - Run #245 ile `KILLBOX` band'i `21.2s` bridge echo ve `24s` echo lock-in penceresiyle erken pinch'ten normal cadence'e baglandi; 18-24s artik daha tutarli bir spatial state gibi okunuyor
+- Run #246 ile `24-32s` `echo` cadence'i killbox icin kalici `lane-fold` rejimine dondu; faz artik `24s` sonrasinda duz chase'e dusmeden `DRIFT` onset'ine kadar ayni spatial dili tasiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -27,13 +28,14 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
 ## Expansion Track A — Run Architecture
 - shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut + erken `shadow echo` follow-through + `21.2s` bridge echo + `24s` echo lock-in ile coarse run ladder artik gercek arena davranisina daha derin sindi
-- next slice: `24-32s` echo cadence'ini killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimine cevir; `24s` sonrasi davranis tekrar duz target-lag chase'e cok hizli dusmesin
+- shipped slice: `24-32s` `echo` cadence'i de artik killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimi; `24s` sonrasi davranis duz target-lag chase'e hemen dusmuyor
+- next slice: `32s` `DRIFT` onset'ini killbox fold rejiminden dogan yeni bir lateral release/handoff anina cevir; endgame yeni beat olsa da killbox'tan kopuk reset gibi okunmasin
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
 - arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
-- ozellikle killbox'in `24s` sonrasi echo tekrarlarini kalici bir phase davranisina cevir; handoff sonrasi spatial kimlik hemen kaybolmasin
+- ozellikle `DRIFT` onset'ini killbox'tan sonra yeni bir spatial cevap olarak okut; killbox'tan endgame'e gecis sanki sifirdan baska bir cadence basliyormus gibi kopuk kalmasin
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

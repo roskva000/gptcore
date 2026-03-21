@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #245:
+Current deterministic survival headline after Run #246:
 - `30.4s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+killbox_echo_cadence_lane_fold_surface:
+current: Run #246 `project/game/src/game/balance.ts` killbox'in `24-32s` bandindaki normal `echo` cadence'ini `KILLBOX_ECHO_CADENCE_ROTATION_DEGREES = 6` truth'u ile scissor/lane-fold davranisina bagliyor; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox'i artik `24s` lock-in'den sonra da live `echo` cadence ile trap'i katlayan bir faz olarak anlatiyor
+baseline: Run #245 killbox'i `24s` echo lock-in'e kadar baglamisti ama handoff sonrasi gercek cadence echo'lari halen buyuk oranda standart `echo` chase davranisina donuyordu; faz `DRIFT` onset'inden once kismen duzlesebiliyordu
+target: sonraki browser veya manuel gozlem `24-32s` bandinin artik lock-in sonrasi da ayni trap dilini korudugunu ve `DRIFT` onset'inin bu fold rejiminden dogan yeni bir handoff gibi hissettirdigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 killbox_echo_lock_in_surface:
-current: Run #245 `project/game/src/game/balance.ts` killbox zincirine `21.2s` bridge echo ve `24s` echo lock-in penceresi ekliyor; bridge `10deg`, lock-in ise `6deg` scissor travel ile ilk follow-through'u normal echo cadence'ine bagliyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox'i artik `24s`ye kadar lane'i katlayan bir spatial state olarak anlatiyor
+current: Run #246 state'inde Run #245'un `21.2s` bridge echo ve `24s` echo lock-in pencereleri korunuyor; bunlar artik killbox cadence echo'larinin da ayni fold rejimine girmesiyle tek spatial zincirin ilk baglari olarak calisiyor
 baseline: Run #244 killbox onset'ini `lead cut + shadow echo` olarak buyutmustu ama erken pinch ile normal `24s` echo cadence'i arasinda halen hissedilir bir kopukluk vardi
-target: sonraki browser veya manuel gozlem killbox'in 18-24s boyunca birkac ardil spatial fold ile devam ettigini ve ilk post-`24s` echo'nun ayni state'in lock-in ani gibi okundugunu gostersin; sonraki run bu lock-in'den sonra echo cadence'inin de ayni phase kimligini daha uzun tasimasini hedeflesin
+target: sonraki browser veya manuel gozlem killbox'in 18-24s boyunca birkac ardil spatial fold ile devam ettigini ve lock-in'in artik sonraki cadence rejimine kesintisiz baglandigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 killbox_shadow_echo_follow_through_surface:

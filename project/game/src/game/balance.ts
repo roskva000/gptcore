@@ -35,6 +35,7 @@ export const ECHO_OBSTACLE_CADENCE = 6;
 export const ECHO_OBSTACLE_TARGET_LAG_SECONDS = 0.22;
 export const KILLBOX_ECHO_HANDOFF_WINDOW_SECONDS = 1.4;
 export const KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES = 6;
+export const KILLBOX_ECHO_CADENCE_ROTATION_DEGREES = 6;
 export const ECHO_OBSTACLE_TINT = 0x8ad9ff;
 export const DRIFT_OBSTACLE_UNLOCK_SECONDS = 32;
 export const DRIFT_OBSTACLE_CADENCE = 7;
@@ -90,6 +91,10 @@ const isKillboxEchoFollowThroughWindow = (survivalTimeSeconds: number): boolean 
 const isKillboxEchoHandoffWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < KILLBOX_ECHO_HANDOFF_WINDOW_END_SECONDS;
+
+const isKillboxEchoCadenceWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS;
 
 export const getRunPhasePressureProfile = (
   survivalTimeSeconds: number,
@@ -297,7 +302,7 @@ export const getObstacleTravelDirection = ({
     survivalTimeSeconds !== undefined &&
     (isKillboxEchoFollowThroughWindow(survivalTimeSeconds) ||
       isKillboxEchoBridgeWindow(survivalTimeSeconds) ||
-      isKillboxEchoHandoffWindow(survivalTimeSeconds)) &&
+      isKillboxEchoCadenceWindow(survivalTimeSeconds)) &&
     playerVelocity &&
     (playerVelocity.x !== 0 || playerVelocity.y !== 0)
   ) {
@@ -308,7 +313,9 @@ export const getObstacleTravelDirection = ({
       ? KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
       : isKillboxEchoBridgeWindow(survivalTimeSeconds)
         ? KILLBOX_ECHO_BRIDGE_ROTATION_DEGREES
-        : KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES;
+        : isKillboxEchoHandoffWindow(survivalTimeSeconds)
+          ? KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES
+          : KILLBOX_ECHO_CADENCE_ROTATION_DEGREES;
     const rotationDegrees =
       crossProduct === 0
         ? Math.floor(runSpawnCount / ECHO_OBSTACLE_CADENCE) % 2 === 0

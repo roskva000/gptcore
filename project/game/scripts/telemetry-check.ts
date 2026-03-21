@@ -7,10 +7,12 @@ import {
   DRIFT_OBSTACLE_CADENCE,
   DRIFT_OBSTACLE_ROTATION_DEGREES,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
+  ECHO_OBSTACLE_CADENCE,
   ECHO_OBSTACLE_TARGET_LAG_SECONDS,
   ECHO_OBSTACLE_UNLOCK_SECONDS,
   KILLBOX_ECHO_BRIDGE_ROTATION_DEGREES,
   KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS,
+  KILLBOX_ECHO_CADENCE_ROTATION_DEGREES,
   KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES,
   KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS,
   KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES,
@@ -276,7 +278,7 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(20),
-  'Lead cuts hit first, shadow echoes keep scissoring the lane into 24s echo lock-in, then cadence and speed pin the lane. Break your line late and escape sideways. Next phase at 32s.',
+  'Lead cuts hit first, shadow echoes keep scissoring the lane into 24s echo lock-in, then echo cadence keeps folding the lane while speed pins straight escapes. Break your line late and escape sideways. Next phase at 32s.',
   'The phase detail line should describe the active structural pressure instead of restating raw timer data.',
 );
 assert.equal(
@@ -325,7 +327,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('killbox'),
   {
     title: 'KILLBOX LIVE',
-    body: 'A hard lead cut opens the trap, shadow echoes keep the lane folding toward 24s echo lock-in, then cadence and speed pin the lane.',
+    body: 'A hard lead cut opens the trap, shadow echoes fold the lane into 24s echo lock-in, then the live echo cadence keeps the trap folding while speed pins straight escapes.',
   },
   'Killbox should announce an immediate lead-cut trap instead of reading like a generic late speed bump.',
 );
@@ -646,6 +648,25 @@ assert.deepEqual(
       getObstacleTravelDirection({
         spawnPoint: { x: 856, y: 300 },
         targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: 27,
+        variant: 'echo',
+        runSpawnCount: ECHO_OBSTACLE_CADENCE,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.995,
+    y: 0.105,
+  },
+  'Killbox-phase echo cadence should keep folding the lane after 24s instead of dropping back to a flat chase until drift takes over.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
         survivalTimeSeconds: 22,
         variant: 'lead',
         runSpawnCount: LEAD_OBSTACLE_CADENCE,
@@ -715,6 +736,11 @@ assert.equal(
   }),
   ECHO_OBSTACLE_TARGET_LAG_SECONDS,
   'Echo obstacles should trail the player with a dedicated target lag once the late-run mutation unlocks.',
+);
+assert.equal(
+  KILLBOX_ECHO_CADENCE_ROTATION_DEGREES,
+  6,
+  'Killbox-phase echo cadence should keep a bounded scissor rotation so the live echo rhythm preserves the trap language without inventing a new threat family.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -2486,7 +2512,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #246]
+
+Decision:
+`mutation` modunda `24-32s` arasindaki normal `echo` cadence'ini killbox'in kalici lane-fold rejimine cevir; `24s` sonrasinda `echo` spawn'lari duz chase'e donmesin.
+
+Reason:
+`NEXT_AGENT.md` ile audit ayni kopuklugu isaret ediyordu: Run #245 killbox'i `24s` echo lock-in'e kadar bagladi ama lock-in'den sonraki gercek cadence halen buyuk oranda standart `echo` gibi davraniyordu. Yeni hazard family, manager veya orchestration katmani acmadan en yuksek etkili hamle, mevcut `echo` cadence'inin travel truth'unu killbox fazi boyunca ayni scissor/lane-fold diline baglamakti.
+
+Impact:
+`project/game/src/game/balance.ts` yeni `KILLBOX_ECHO_CADENCE_ROTATION_DEGREES` truth'u ile `24-32s` killbox fazindaki `echo` cadence'ini `6deg` scissor travel'da tuttu; handoff penceresi bittikten sonra bile cadence ile gelen `echo` tehditleri `DRIFT` onset'ine kadar trap kimligini koruyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox anlatimini bu yeni "live echo cadence keeps the trap folding" gercegine hizaladi. `project/game/scripts/telemetry-check.ts` yeni `27s` regression'i ekledi, `project/game/scripts/telemetry-reports.ts` deterministic proxy controller anlatimini guncelledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `30.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem killbox cadence echo'larinin `24-32s` bandini okunmaz lane-wipe'a, fazla tekrarli makasa veya `DRIFT` onset'ini bogan bir baskiya cevirdigini gosterirse yalniz bu cadence rotation siddeti dar kapsamda ayarlanir; bu bahaneyle yeni spawn manager'i, hazard orchestration'i, readiness/preflight ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #245]
 
 Decision:

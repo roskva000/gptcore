@@ -47,7 +47,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: LEAD_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xff9eb1,
     detail:
-      'Lead cuts hit first, shadow echoes keep scissoring the lane into 24s echo lock-in, then cadence and speed pin the lane. Break your line late and escape sideways.',
+      'Lead cuts hit first, shadow echoes keep scissoring the lane into 24s echo lock-in, then echo cadence keeps folding the lane while speed pins straight escapes. Break your line late and escape sideways.',
   },
   {
     id: 'endgame',
@@ -188,7 +188,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'killbox':
       return {
         title: 'KILLBOX LIVE',
-        body: 'A hard lead cut opens the trap, shadow echoes keep the lane folding toward 24s echo lock-in, then cadence and speed pin the lane.',
+        body: 'A hard lead cut opens the trap, shadow echoes fold the lane into 24s echo lock-in, then the live echo cadence keeps the trap folding while speed pins straight escapes.',
       };
     case 'endgame':
       return {
