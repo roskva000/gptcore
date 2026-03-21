@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #245
+
+- `project/game/src/game/balance.ts` killbox zincirine `21.2s`'de `1.2s` bridge echo ve `24s` unlock'ta `1.4s` echo lock-in penceresi ekledi; 18-24s band'i artik tek onset'ten sonra sönmuyor
+- ayni dosya bu iki yeni pencere icin sirasiyla `10deg` ve `6deg` scissor travel truth'u ekledi; erken follow-through ile ilk normal echo cadence'i ayni spatial dilin farkli siddetleriyle baglaniyor
+- `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox metnini `24s echo lock-in` gercegine hizaladi
+- `project/game/scripts/telemetry-reports.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` deterministic baseline'i `30.4s avg / 10.0s first death / 0% early` gercegine guncelledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #244
 
 - `project/game/src/game/balance.ts` killbox onset'indeki forced `lead` sonrasina `1.2s` erken `echo` follow-through penceresi ekledi; trap artik tek cut'tan sonra makaslayan ikinci bir baski katiyla devam ediyor

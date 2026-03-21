@@ -26,10 +26,15 @@ export const KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS = 0.22;
 export const KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES = 18;
 export const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS = 1.2;
 export const KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES = 12;
+export const KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS = 21.2;
+export const KILLBOX_ECHO_BRIDGE_WINDOW_SECONDS = 1.2;
+export const KILLBOX_ECHO_BRIDGE_ROTATION_DEGREES = 10;
 export const LEAD_OBSTACLE_TINT = 0xff9eb1;
 export const ECHO_OBSTACLE_UNLOCK_SECONDS = 24;
 export const ECHO_OBSTACLE_CADENCE = 6;
 export const ECHO_OBSTACLE_TARGET_LAG_SECONDS = 0.22;
+export const KILLBOX_ECHO_HANDOFF_WINDOW_SECONDS = 1.4;
+export const KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES = 6;
 export const ECHO_OBSTACLE_TINT = 0x8ad9ff;
 export const DRIFT_OBSTACLE_UNLOCK_SECONDS = 32;
 export const DRIFT_OBSTACLE_CADENCE = 7;
@@ -64,6 +69,27 @@ export type ObstacleVariant =
   | 'drift';
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
+
+const KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS =
+  LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS;
+const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_END_SECONDS =
+  KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS + KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS;
+const KILLBOX_ECHO_BRIDGE_WINDOW_END_SECONDS =
+  KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS + KILLBOX_ECHO_BRIDGE_WINDOW_SECONDS;
+const KILLBOX_ECHO_HANDOFF_WINDOW_END_SECONDS =
+  ECHO_OBSTACLE_UNLOCK_SECONDS + KILLBOX_ECHO_HANDOFF_WINDOW_SECONDS;
+
+const isKillboxEchoBridgeWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS &&
+  survivalTimeSeconds < KILLBOX_ECHO_BRIDGE_WINDOW_END_SECONDS;
+
+const isKillboxEchoFollowThroughWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS &&
+  survivalTimeSeconds < KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_END_SECONDS;
+
+const isKillboxEchoHandoffWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds < KILLBOX_ECHO_HANDOFF_WINDOW_END_SECONDS;
 
 export const getRunPhasePressureProfile = (
   survivalTimeSeconds: number,
@@ -142,14 +168,12 @@ export const getObstacleVariant = ({
   runSpawnCount > 0 &&
   runSpawnCount % ECHO_OBSTACLE_CADENCE === 0
     ? 'echo'
-    : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS &&
-  survivalTimeSeconds <
-    LEAD_OBSTACLE_UNLOCK_SECONDS +
-      KILLBOX_FORCED_LEAD_WINDOW_SECONDS +
-      KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS
+    : isKillboxEchoHandoffWindow(survivalTimeSeconds) ||
+        isKillboxEchoBridgeWindow(survivalTimeSeconds) ||
+        isKillboxEchoFollowThroughWindow(survivalTimeSeconds)
       ? 'echo'
     : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
-  survivalTimeSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS
+  survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS
       ? 'lead'
     : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
@@ -249,7 +273,7 @@ export const getObstacleTravelDirection = ({
   if (
     variant === 'lead' &&
     survivalTimeSeconds !== undefined &&
-    survivalTimeSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS &&
+    survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS &&
     playerVelocity &&
     (playerVelocity.x !== 0 || playerVelocity.y !== 0)
   ) {
@@ -271,25 +295,28 @@ export const getObstacleTravelDirection = ({
   if (
     variant === 'echo' &&
     survivalTimeSeconds !== undefined &&
-    survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS &&
-    survivalTimeSeconds <
-      LEAD_OBSTACLE_UNLOCK_SECONDS +
-        KILLBOX_FORCED_LEAD_WINDOW_SECONDS +
-        KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS &&
+    (isKillboxEchoFollowThroughWindow(survivalTimeSeconds) ||
+      isKillboxEchoBridgeWindow(survivalTimeSeconds) ||
+      isKillboxEchoHandoffWindow(survivalTimeSeconds)) &&
     playerVelocity &&
     (playerVelocity.x !== 0 || playerVelocity.y !== 0)
   ) {
     const movementDirection = normalize(playerVelocity);
     const crossProduct =
       baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
+    const echoRotationDegrees = isKillboxEchoFollowThroughWindow(survivalTimeSeconds)
+      ? KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
+      : isKillboxEchoBridgeWindow(survivalTimeSeconds)
+        ? KILLBOX_ECHO_BRIDGE_ROTATION_DEGREES
+        : KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES;
     const rotationDegrees =
       crossProduct === 0
         ? Math.floor(runSpawnCount / ECHO_OBSTACLE_CADENCE) % 2 === 0
-          ? -KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
-          : KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
+          ? -echoRotationDegrees
+          : echoRotationDegrees
         : crossProduct > 0
-          ? -KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES
-          : KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES;
+          ? -echoRotationDegrees
+          : echoRotationDegrees;
 
     return normalize(rotate(baseDirection, rotationDegrees));
   }
@@ -331,8 +358,7 @@ export const getObstacleTargetLagSeconds = ({
 }): number =>
   variant === 'lead'
     ? -(
-        survivalTimeSeconds <
-        LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS
+        survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS
           ? KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS
           : LEAD_OBSTACLE_TARGET_LEAD_SECONDS
       )

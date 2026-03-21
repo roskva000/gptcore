@@ -8,8 +8,13 @@ import {
   DRIFT_OBSTACLE_ROTATION_DEGREES,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
   ECHO_OBSTACLE_TARGET_LAG_SECONDS,
+  ECHO_OBSTACLE_UNLOCK_SECONDS,
+  KILLBOX_ECHO_BRIDGE_ROTATION_DEGREES,
+  KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS,
   KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES,
   KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS,
+  KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES,
+  KILLBOX_ECHO_HANDOFF_WINDOW_SECONDS,
   KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS,
   KILLBOX_FORCED_LEAD_WINDOW_SECONDS,
   LEAD_OBSTACLE_CADENCE,
@@ -271,7 +276,7 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(20),
-  'Lead cuts hit first, a shadow echo catches the dodge, then cadence and speed pin the lane. Break your line late and escape sideways. Next phase at 32s.',
+  'Lead cuts hit first, shadow echoes keep scissoring the lane into 24s echo lock-in, then cadence and speed pin the lane. Break your line late and escape sideways. Next phase at 32s.',
   'The phase detail line should describe the active structural pressure instead of restating raw timer data.',
 );
 assert.equal(
@@ -320,7 +325,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('killbox'),
   {
     title: 'KILLBOX LIVE',
-    body: 'A hard lead cut opens the trap, then a shadow echo catches the dodge before cadence and speed pin the lane.',
+    body: 'A hard lead cut opens the trap, shadow echoes keep the lane folding toward 24s echo lock-in, then cadence and speed pin the lane.',
   },
   'Killbox should announce an immediate lead-cut trap instead of reading like a generic late speed bump.',
 );
@@ -435,15 +440,28 @@ assert.equal(
 );
 assert.equal(
   getObstacleVariant({
+    survivalTimeSeconds: KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS + 0.1,
+    runSpawnCount: 3,
+  }),
+  'echo',
+  'Killbox should fire a late bridge echo before 24s so the band reads like a continuing spatial regime instead of going quiet after the opener.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: 24.2,
+    runSpawnCount: 3,
+  }),
+  'echo',
+  'The first post-24s echo should lock into the same killbox language immediately instead of waiting for cadence luck to reconnect the state.',
+);
+assert.equal(
+  getObstacleVariant({
     survivalTimeSeconds:
-      LEAD_OBSTACLE_UNLOCK_SECONDS +
-      KILLBOX_FORCED_LEAD_WINDOW_SECONDS +
-      KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS +
-      0.1,
+      ECHO_OBSTACLE_UNLOCK_SECONDS + KILLBOX_ECHO_HANDOFF_WINDOW_SECONDS + 0.1,
     runSpawnCount: 3,
   }),
   'standard',
-  'The forced killbox follow-through should stay a short bridge instead of replacing the whole phase with permanent echo pressure.',
+  'Forced killbox echo bridges should stay bounded instead of replacing the whole phase with permanent echo pressure before cadence earns it.',
 );
 assert.equal(
   getObstacleVariant({
@@ -583,6 +601,44 @@ assert.deepEqual(
     y: 0.208,
   },
   'Killbox follow-through echo should scissor across the recovery lane instead of trailing on the same flat chase line as the later echo cadence.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS + 0.1,
+        variant: 'echo',
+        runSpawnCount: 3,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.985,
+    y: 0.174,
+  },
+  'Late killbox bridge echoes should keep folding the recovery lane so 18-24s still reads like one spatial state.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: 24.2,
+        variant: 'echo',
+        runSpawnCount: 3,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.995,
+    y: 0.105,
+  },
+  'The first post-24s echo should still carry a lighter scissor cut so the normal cadence feels like the same regime locking in.',
 );
 assert.deepEqual(
   Object.fromEntries(
@@ -2424,13 +2480,13 @@ assert.equal(
   40,
   'Deterministic survival snapshot should stay long enough to exercise the 32s drift mutation.',
 );
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 29.4, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 30.4, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 10, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.2s bridge echo at 21\.2s with 10deg travel, and a 1\.4s echo lock-in from 24s with 6deg travel, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, collision, and cull guards.',
 );
 assert.deepEqual(
@@ -2438,8 +2494,8 @@ assert.deepEqual(
   {
     under10Seconds: 0,
     between10And20Seconds: 4,
-    between20And30Seconds: 17,
-    reachedSimulationCap: 3,
+    between20And30Seconds: 12,
+    reachedSimulationCap: 8,
   },
   'Survival bucket distribution regressed.',
 );
@@ -2449,10 +2505,10 @@ assert.ok(
   ),
   'Deterministic survival sample should include at least one post-32s run so the drift mutation is actually exercised.',
 );
-assert.equal(survivalReport.averageSpawnCount, 34.9, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 36.5, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.6, 'Spawn reroll snapshot changed unexpectedly.');
-assert.equal(seed3TrajectoryReport.deathTimeSeconds, 34.6, 'Seed #3 trajectory baseline drifted.');
-assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 42, 'Seed #3 spawn count changed unexpectedly.');
+assert.equal(seed3TrajectoryReport.deathTimeSeconds, 34.4, 'Seed #3 trajectory baseline drifted.');
+assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 41, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(
   seed3TrajectoryReport.spawnRerollsBeforeDeath,
   1,
@@ -2548,7 +2604,7 @@ assert.equal(
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=29.6s | first_death=16.3s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=24.3s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 29.1s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=32.0s | first_death=16.3s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=40.0s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 30.4s avg / 10.0s first death / 0% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(
@@ -2563,7 +2619,7 @@ assert.equal(
     totalSpawnRerolls: 3,
     lastSurvivalTime: 30,
   }),
-  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/35/89 | deterministic survival 29.1s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/35/89 | deterministic survival 30.4s avg / 10.0s first death / 0% early',
   'Validation export should report only completed runs even if a fresh start increased totalRuns beyond totalDeaths.',
 );
 assert.equal(
@@ -2577,7 +2633,7 @@ assert.equal(
     earlyDeathsUnderTarget: 1,
     lastSurvivalTime: 9.96,
   }),
-  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/35/89 | deterministic survival 29.1s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/35/89 | deterministic survival 30.4s avg / 10.0s first death / 0% early',
   'Telemetry exports should keep under-10s deaths flagged even when UI-facing times round up to 10.0s.',
 );
 assert.equal(

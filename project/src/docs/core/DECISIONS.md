@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #245]
+
+Decision:
+`integration` modunda killbox echo zincirini iki kopru penceresiyle `24s` cadence'ine bagla; 18-24s band'ini tek onset + bosluk modeli yerine devam eden bir spatial state gibi okut.
+
+Reason:
+Audit ve `NEXT_AGENT.md` ayni kopuklugu isaret ediyordu: Run #244 ilk `shadow echo`yu ekledi ama killbox halen erken pinch'ten sonra `24s`'ye kadar sonebilen bir rejim gibi hissedebilirdi. Yeni hazard family, manager veya orchestration katmani acmadan en yuksek etkili hamle, mevcut `echo` varyantini killbox icinde iki baglayici pencereyle tekrar kullanip ilk post-`24s` cadence'i de ayni lane-folding diline kisa sureli baglamakti.
+
+Impact:
+`project/game/src/game/balance.ts` killbox icine `21.2s`'de `1.2s` bridge echo ve `24s`'de `1.4s` echo lock-in penceresi ekledi; bunlar sirasiyla `10deg` ve `6deg` scissor travel truth'u kullaniyor. `project/game/src/game/runPhase.ts` ile `project/game/src/game/GameScene.ts` killbox'i artik `24s echo lock-in`a kadar lane'i katlayan bir state olarak anlatiyor. `project/game/scripts/telemetry-reports.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` deterministic proxy/baseline'i bu yeni rejime hizaladi; deterministic headline `30.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` oldu. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni bridge/lock-in echo'lari killbox'i ucuz sustain wipe'a, okunmaz overlap'e veya asiri rahat survive buff'ina cevirirse yalniz ilgili pencere sureleri ya da scissor siddetleri dar kapsamda ayarlanir; bu bahaneyle yeni spawn manager'i, hazard orchestration'i, readiness/preflight ya da ikinci bir phase framework'u acilmaz.
+
 ### [Run #244]
 
 Decision:

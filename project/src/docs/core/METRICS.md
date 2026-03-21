@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #244:
-- `29.4s` average survival
+Current deterministic survival headline after Run #245:
+- `30.4s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+killbox_echo_lock_in_surface:
+current: Run #245 `project/game/src/game/balance.ts` killbox zincirine `21.2s` bridge echo ve `24s` echo lock-in penceresi ekliyor; bridge `10deg`, lock-in ise `6deg` scissor travel ile ilk follow-through'u normal echo cadence'ine bagliyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` killbox'i artik `24s`ye kadar lane'i katlayan bir spatial state olarak anlatiyor
+baseline: Run #244 killbox onset'ini `lead cut + shadow echo` olarak buyutmustu ama erken pinch ile normal `24s` echo cadence'i arasinda halen hissedilir bir kopukluk vardi
+target: sonraki browser veya manuel gozlem killbox'in 18-24s boyunca birkac ardil spatial fold ile devam ettigini ve ilk post-`24s` echo'nun ayni state'in lock-in ani gibi okundugunu gostersin; sonraki run bu lock-in'den sonra echo cadence'inin de ayni phase kimligini daha uzun tasimasini hedeflesin
+validation: `npm run telemetry:check`, `npm run build`
+
 killbox_shadow_echo_follow_through_surface:
-current: Run #244 `project/game/src/game/balance.ts` killbox onset'indeki `1.4s` forced `lead` penceresinin arkasina `1.2s` erken `echo` follow-through'u ve bu pencere icin `12deg` scissor travel truth'u ekliyor; `project/game/src/game/GameScene.ts` runtime'da bunu ayni trajectory hesabiyla kullaniyor, `project/game/src/game/runPhase.ts` killbox'i artik "lead cut + shadow echo" diye anlatiyor
+current: Run #245 state'inde Run #244'un erken `shadow echo` follow-through'u korunuyor ve artik bridge + lock-in echo pencereleriyle daha uzun bir spatial zincirin ilk halkasi gibi davraniyor
 baseline: Run #243 killbox girisini ilk gercek spatial trap anina cevirmisti ama faz halen tek ambush sonra normal cadence'e donus riski tasiyordu; ikinci spatial baski ani eksikti
-target: sonraki browser veya manuel gozlem killbox'in artik ilk cut'tan sonra da farkli davrandigini ve oyuncuyu recovery lane'inde tekrar siktigini gostersin; sonraki run bu erken follow-through'u `24s` gercek `echo` cadence'i ile daha tutarli baglasin
+target: sonraki browser veya manuel gozlem ilk `shadow echo`nun artik yalniz tek follow-through degil, killbox boyunca devam eden echo rejiminin okunur ilk adimi oldugunu gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 breakthrough_onset_arena_tell_surface:
