@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #242:
-- `26.8s` average survival
+Current deterministic survival headline after Run #243:
+- `29.1s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+killbox_onset_spatial_trap_surface:
+current: Run #243 `project/game/src/game/balance.ts` killbox onset'te `1.4s` forced `lead` penceresi, `0.22s` predictive target lead ve `18deg` cut rotation kullaniyor; `project/game/src/game/GameScene.ts` bu truth'u runtime spawn trajectory'sine tasiyor, `project/game/src/game/runPhase.ts` killbox'i artik "hard lead cut opens the trap" diye anlatiyor
+baseline: Run #242 killbox girisini callout/hint tarafinda daha okunur hale getirmisti ama arena davranisi hala agirlikla hiz/cadence bump'i gibi okunuyordu; ilk gercek spatial trap anı eksikti
+target: sonraki browser veya manuel gozlem `18s` civarinda killbox girisinin ilk lead cut ile arena icinde hemen fark edildigini gostersin; sonraki run bu trap'i killbox sonrasina tasiyan ikinci bir follow-through beat acsin
+validation: `npm run telemetry:check`, `npm run build`
 
 breakthrough_onset_arena_tell_surface:
 current: Run #242 `project/game/src/game/runPhase.ts` `BREAKTHROUGH` icin ayrik phase-shift announcement ve onset intensity truth'u uretiyor; `project/game/src/game/GameScene.ts` `10s` kirildigi anda warm backdrop burst, compact callout ve kisa hint ile bu gecisi ekranda okutuyor

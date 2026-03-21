@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #242
+Updated By: Codex Run #243
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `BREAKTHROUGH` onset'ini mevcut run phase truth'una bagli, ekranda hemen okunur bir arena tell'ine cevirmek
+- run mode: `mutation`
+- ana hedef: `KILLBOX` girisini ilk gercek lead-cut ile okunur bir spatial trap anina cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,10 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/runPhase.ts` phase shift icin yeni announcement truth'u ve onset intensity helper'i ekledi; `BREAKTHROUGH` artik yalniz status/detail satiri degil kendi acilis cue'suna sahip
-- `project/game/src/game/GameScene.ts` `10s` kirildigi anda warm backdrop burst, phase callout ve kisa hint gosteriyor; `BREAKTHROUGH` gecisi artik sayisal hizlanmadan once ekranda okunur bir arena olayi gibi davranıyor
-- ayni entegrasyon killbox/endgame/overtime icin de mevcut phase shift callout zincirini ortaklastirdi ama bu run'in odagi `BREAKTHROUGH` okunurlugu olarak kaldi
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `26.8s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
+- `project/game/src/game/balance.ts` killbox onset icin `1.4s` zorunlu lead-cut penceresi ekledi; ilk killbox spawn'i artik cadence sansina bakmadan `lead` oluyor, hedefe `0.22s` onde bakiyor ve hareket hattini `18deg` kirarak kacis cizgisini kesiyor
+- `project/game/src/game/GameScene.ts` yeni trajectory truth'unu runtime spawn akisina bagladi; killbox girisi artik yalniz hiz/cadence artisi degil arena icinde hissedilen ilk spatial trap gibi davraniyor
+- `project/game/src/game/runPhase.ts` ve `GameScene.ts` killbox anlatimini bu yeni truth ile hizaladi; phase dili artik "hard lead cut opens the trap" semantigini tasiyor
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.1s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
 
@@ -71,6 +71,6 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `BREAKTHROUGH` onset'i artik okunur bir arena tell'ine sahip; siradaki buyuk adim `KILLBOX` girisini yalniz hiz/cadence artisi degil, ilk lead cut veya spatial trap karakteriyle daha ayirt edilir yapmak
+- `KILLBOX` onset'i artik ilk zorunlu lead-cut ile okunur bir spatial trap anina sahip; siradaki buyuk adim bu yeni trap dilini killbox sonrasina tasiyip `echo` veya baska mevcut beat ile ikinci bir spatial follow-through acmak
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

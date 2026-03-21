@@ -2,50 +2,44 @@
 
 ## Governance Note
 
-Yeni rejim: `Autonomous Expansion`.
+Aktif rejim: `Autonomous Expansion`.
 
-Artik:
-- human sample bekleme yok
-- tek dar source problemi zorunlulugu yok
-- full core-doc kapanisi default degil
-- expansion / mutation varsayilan mod
+Bu turda `KILLBOX` onset'i artik ilk zorunlu `lead` cut ile arena icinde hissedilen bir spatial trap anina donustu.
 
-Ama dikkat:
-- tema dagitma, tek eksen sec
-- feature creep yapma
-- gorunur urun deltasi olmadan run kapatma
-- varsayilan hafiza yalniz `STATE.md` ve `NEXT_AGENT.md`; genis core-doc kapanisini otomatik rituel yapma
-- yalniz HUD/callout polish yapip bunu expansion diye sunma; siradaki fark arena davranisinda gorunmeli
+Dikkat:
+- yeni orchestration / readiness / preflight katmani acma
+- sirf copy/HUD polish'i yapip bunu ilerleme diye sunma
+- ayni anda retention, shell ve validation'i ayri temalara dagitma
+- deterministic baseline'i gereksiz sarsma
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**`KILLBOX` girisini ilk lead cut ile okunur bir spatial trap anina cevir.**
+**Killbox trap'ini tek anlik ambush olmaktan cikar; mevcut beat'lerden biriyle ikinci bir spatial follow-through yarat.**
 
 Hedef:
-Run #242 `BREAKTHROUGH` onset'ini warm backdrop burst + callout + hint ile ekranda okunur hale getirdi. Simdi siradaki hedef, `18s` sonrasi `KILLBOX` girisini yalniz hiz/cadence artisi olmaktan cikarip oyuncunun ilk lead baskisini ayirt edecegi kisa ama net bir spatial event'e cevirmek.
+Run #243 `18s` killbox girisini ilk `lead` cut ile acikca ayirt edilir hale getirdi. Siradaki is, bu trap'in hemen sonrasinda fazin gerisinin de farkli hissettigini gostermek. Yeni hazard family veya yeni manager acmadan, mevcut `echo`, mevcut `lead` cadence'i, mevcut backdrop/spectacle veya mevcut spawn truth'lerinden biriyle killbox'in "tek spike degil, yeni arena state'i" oldugunu okut.
 
 Acilabilecek bagli yuzeyler:
-1. `KILLBOX` baslangicinda ilk `lead` baskisini mevcut spawn/variant truth'u icinde daha ayirt edilir bir giris anina bagla
-2. yeni behavior yeni manager acmadan mevcut `runPhase`, `lead` variant ve mevcut presentation yuzeylerinden biriyle calissin
-3. odak spatial/readability olsun; ayni problemi sadece daha fazla raw speed veya spawn squeeze ile cozme
-4. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
+1. killbox onset sonrasi ilk mevcut beat'i spatial follow-through'a cevir; oyuncu ilk cut'tan sonra da lane'in farkli davrandigini hissetsin
+2. gerekiyorsa mevcut arena spectacle / phase hint zincirini bu yeni davranisi destekleyecek kadar hizala, ama ana delta gameplay/spatial davranis olsun
+3. deterministic regression ekle; validation/tooling genisletmesini ana is yapma
 
 Yapma:
-- yeni orchestration/state-manager kurma
-- sirf copy degistirip killbox karakteri cozuldu diye sunma
-- ayni anda shell, mobile, retention ve validation'i ayri temalara dagitma
+- yeni spawn manager'i, event bus'i veya hazard orchestration sistemi kurma
+- yalniz speed multiplier veya raw spawn squeeze ekleyip bunu follow-through diye satma
+- killbox disina ayni anda shell/mobile/retention temalari acma
 
 ---
 
 ## Success Criteria
 
-- oyuncu `18s` civarinda `KILLBOX` girisini yalniz HUD degil arena davranisinda da hemen fark eder
-- yeni davranis mevcut phase architecture ve mevcut lead pressure rejimiyle ayni dili konusur
-- build yesil kalir
+- oyuncu `18s+` killbox penceresinde ilk lead cut'tan sonra da fazin farkli bir spatial baski rejimine girdigini hisseder
+- yeni davranis mevcut phase ladder ve mevcut threat family'leriyle ayni dili konusur
 - `npm run telemetry:check` yesil kalir
+- `npm run build` yesil kalir
 - `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir

@@ -21,6 +21,9 @@ export const STRAFE_OBSTACLE_TINT = 0xffb88a;
 export const LEAD_OBSTACLE_UNLOCK_SECONDS = 18;
 export const LEAD_OBSTACLE_CADENCE = 9;
 export const LEAD_OBSTACLE_TARGET_LEAD_SECONDS = 0.14;
+export const KILLBOX_FORCED_LEAD_WINDOW_SECONDS = 1.4;
+export const KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS = 0.22;
+export const KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES = 18;
 export const LEAD_OBSTACLE_TINT = 0xff9eb1;
 export const ECHO_OBSTACLE_UNLOCK_SECONDS = 24;
 export const ECHO_OBSTACLE_CADENCE = 6;
@@ -138,6 +141,9 @@ export const getObstacleVariant = ({
   runSpawnCount % ECHO_OBSTACLE_CADENCE === 0
     ? 'echo'
     : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS
+      ? 'lead'
+    : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
   runSpawnCount % LEAD_OBSTACLE_CADENCE === 0
       ? 'lead'
@@ -195,12 +201,14 @@ export const getObstacleTravelDirection = ({
   spawnPoint,
   targetPoint,
   playerVelocity,
+  survivalTimeSeconds,
   variant,
   runSpawnCount,
 }: {
   spawnPoint: Point;
   targetPoint: Point;
   playerVelocity?: Point;
+  survivalTimeSeconds?: number;
   variant: ObstacleVariant;
   runSpawnCount: number;
 }): Point => {
@@ -226,6 +234,28 @@ export const getObstacleTravelDirection = ({
         : crossProduct > 0
           ? -STRAFE_OBSTACLE_ROTATION_DEGREES
           : STRAFE_OBSTACLE_ROTATION_DEGREES;
+
+    return normalize(rotate(baseDirection, rotationDegrees));
+  }
+
+  if (
+    variant === 'lead' &&
+    survivalTimeSeconds !== undefined &&
+    survivalTimeSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS &&
+    playerVelocity &&
+    (playerVelocity.x !== 0 || playerVelocity.y !== 0)
+  ) {
+    const movementDirection = normalize(playerVelocity);
+    const crossProduct =
+      baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
+    const rotationDegrees =
+      crossProduct === 0
+        ? Math.floor(runSpawnCount / LEAD_OBSTACLE_CADENCE) % 2 === 0
+          ? KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES
+          : -KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES
+        : crossProduct > 0
+          ? KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES
+          : -KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES;
 
     return normalize(rotate(baseDirection, rotationDegrees));
   }
@@ -266,7 +296,12 @@ export const getObstacleTargetLagSeconds = ({
   variant: ObstacleVariant;
 }): number =>
   variant === 'lead'
-    ? -LEAD_OBSTACLE_TARGET_LEAD_SECONDS
+    ? -(
+        survivalTimeSeconds <
+        LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS
+          ? KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS
+          : LEAD_OBSTACLE_TARGET_LEAD_SECONDS
+      )
     : variant === 'echo'
     ? Math.max(getSpawnTargetLagSeconds(survivalTimeSeconds), ECHO_OBSTACLE_TARGET_LAG_SECONDS)
     : getSpawnTargetLagSeconds(survivalTimeSeconds);

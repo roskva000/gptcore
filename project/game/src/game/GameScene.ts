@@ -1680,6 +1680,7 @@ export class GameScene extends Phaser.Scene {
         x: playerBody.velocity.x,
         y: playerBody.velocity.y,
       },
+      survivalTimeSeconds: currentSurvivalTimeSeconds,
       variant: obstacleVariant,
       runSpawnCount: this.runSpawnCount,
     });
@@ -3128,7 +3129,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'killbox') {
-      return 'Killbox is live. Cadence tightens, speed rises, and straight lines die fast.';
+      return 'Killbox is live. The first lead cut opens the trap, then cadence and speed crush straight escapes.';
     }
 
     if (phaseId === 'endgame') {

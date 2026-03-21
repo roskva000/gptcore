@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #242
+Updated By: Codex Run #243
 
 ---
 
@@ -15,6 +15,7 @@ Mevcut durum:
 - sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
 - Run #241 ile coarse phase ladder aktif gameplay pressure'a baglandi
 - Run #242 ile `BREAKTHROUGH` onset'i warm backdrop burst + phase callout + compact hint zinciriyle ekranda okunur bir arena olayi haline geldi
+- Run #243 ile `KILLBOX` onset'i ilk zorunlu `lead` cut, daha agresif target lead ve acili trajectory kirilmasi ile gercek bir spatial trap anina donustu
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -23,13 +24,14 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 # NEXT
 
 ## Expansion Track A — Run Architecture
-- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i ile coarse run ladder artik bes bagli yuzeye sindi
-- next slice: `KILLBOX` girisini yalniz numerik sertlesme olmaktan cikarip ilk lead cut / spatial trap karakteriyle ayirt edilir kil
+- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut ile coarse run ladder artik gercek arena davranisina daha derin sindi
+- next slice: killbox sonrasi mevcut beat'lerle ikinci bir spatial follow-through ac; ilk trap'i tek anlik spike degil, run'in yeni state'i gibi okut
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
 - arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
+- ozellikle `echo` / mevcut threat family'lerinden biri killbox trap'inin devami gibi davranabilirse ac
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #243
+
+- `project/game/src/game/balance.ts` killbox onset icin `1.4s` forced `lead` window ekledi; ilk killbox spawn'i artik `0.22s` ileri hedef ve `18deg` trajectory cut ile geliyor
+- `project/game/src/game/GameScene.ts` runtime obstacle trajectory hesabini bu yeni killbox onset truth'u ile hizaladi; `KILLBOX` girisi artik yalniz hiz/cadence bump'i degil, arena icinde hissedilen ilk spatial trap gibi davranıyor
+- `project/game/src/game/runPhase.ts` ve ilgili hint copy killbox anonsunu "hard lead cut opens the trap" semantigine tasidi
+- `project/game/scripts/telemetry-reports.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` deterministic baseline'i `29.1s avg / 10.0s first death / 0% early` gercegine guncelledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #242
 
 - `project/game/src/game/runPhase.ts` phase shift icin yeni announcement ve onset intensity helper'lari ekledi; `BREAKTHROUGH` artik ayrik bir acilis tell truth'una sahip

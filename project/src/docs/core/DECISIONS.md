@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #243]
+
+Decision:
+`mutation` modunda `KILLBOX` girisini ilk gercek spatial trap anina cevir; killbox onset'inde kisa bir pencere icin zorunlu `lead` spawn, daha ileri predictive aim ve hareket hattini kesen trajectory kirilmasi kullan.
+
+Reason:
+Audit ve `NEXT_AGENT.md` ayni acigi isaretliyordu: `18s` sonrasi `KILLBOX` hala agirlikla hiz/cadence sertlesmesi gibi okunuyordu. Yeni hazard family, manager veya orchestration katmani acmadan en yuksek etkili hamle, mevcut `lead` varyantini killbox onset'inde kisa bir ambush penceresine cevirmekti. Boylece phase gecisi arena davranisinda hemen hissedilen bir "line cut" anina donusebildi.
+
+Impact:
+`project/game/src/game/balance.ts` killbox onset icin `1.4s` forced lead window, `0.22s` predictive target lead ve `18deg` cut rotation truth'unu ekledi; sonraki lead'ler normal cadence davranisina geri donuyor. `project/game/src/game/GameScene.ts` runtime spawn akisinda bu yeni trajectory truth'unu kullaniyor. `project/game/src/game/runPhase.ts` ve `GameScene.ts` killbox copy/hint dilini yeni spatial trap gercegine hizaladi. `project/game/scripts/telemetry-reports.ts`, `project/game/scripts/telemetry-check.ts` ve `project/game/src/game/telemetry.ts` deterministic baseline'i `29.1s avg / 10.0s first death / 0% early` gercegine guncelledi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya manuel gozlem killbox onset forced lead'inin ucuz spike, okunmaz wipe veya killbox fazinin geri kalanini gereksiz monotona cevirdigini gosterirse yalniz onset penceresi, predictive lead mesafesi veya cut rotation siddeti dar kapsamda ayarlanir; bu bahaneyle yeni spawn manager'i, hazard orchestration'i veya readiness/preflight katmani acilmaz.
+
 ### [Run #242]
 
 Decision:

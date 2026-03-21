@@ -46,7 +46,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     title: 'KILLBOX',
     startSeconds: LEAD_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xff9eb1,
-    detail: 'Speed and cadence kick up. Lead and echo punish straight lines, so reroute late.',
+    detail: 'Lead cuts hit first, then cadence and speed pin the lane. Break your line late and escape sideways.',
   },
   {
     id: 'endgame',
@@ -187,7 +187,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'killbox':
       return {
         title: 'KILLBOX LIVE',
-        body: 'Lead cuts are online now. Cadence and speed both punish straight escapes.',
+        body: 'A hard lead cut opens the trap. Cadence and speed now punish straight escapes.',
       };
     case 'endgame':
       return {
