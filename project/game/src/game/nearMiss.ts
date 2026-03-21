@@ -11,6 +11,15 @@ export const NEAR_MISS_CHASE_SNAPSHOT_TEXT = '#d8fff4';
 export const NEAR_MISS_CHASE_IMPACT_COLOR = 0x8ff4e3;
 export const NEAR_MISS_CHASE_IMPACT_TEXT = '#e6fff9';
 export const NEAR_MISS_CHASE_FATAL_LABEL_BACKGROUND = '#18463f';
+export const NEAR_MISS_CHASE_REOPEN_TARGET_OFFSET_PX = 72;
+export const NEAR_MISS_CHASE_CUT_TARGET_OFFSET_PX = 56;
+
+type Point = {
+  x: number;
+  y: number;
+};
+
+export type NearMissChaseSpawnStep = 'reopen' | 'cut';
 
 export type NearMissSnapshot = {
   playerPosition: {
@@ -116,6 +125,42 @@ export const getNearMissChaseVisualIntensity = (remainingMs: number): number => 
   const normalizedRemaining = Math.min(remainingMs / NEAR_MISS_CHASE_DURATION_MS, 1);
 
   return 0.28 + normalizedRemaining * 0.72;
+};
+
+export const getNearMissLaneDirection = (
+  playerPosition: Point,
+  obstaclePosition: Point,
+): Point => {
+  const deltaX = obstaclePosition.x - playerPosition.x;
+  const deltaY = obstaclePosition.y - playerPosition.y;
+
+  if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+    return {
+      x: deltaX < 0 ? -1 : 1,
+      y: 0,
+    };
+  }
+
+  return {
+    x: 0,
+    y: deltaY < 0 ? -1 : 1,
+  };
+};
+
+export const getNearMissChaseTargetOffset = (
+  step: NearMissChaseSpawnStep,
+  laneDirection: Point,
+): Point => {
+  const distance =
+    step === 'reopen'
+      ? NEAR_MISS_CHASE_REOPEN_TARGET_OFFSET_PX
+      : NEAR_MISS_CHASE_CUT_TARGET_OFFSET_PX;
+  const directionMultiplier = step === 'reopen' ? -1 : 1;
+
+  return {
+    x: laneDirection.x === 0 ? 0 : laneDirection.x * distance * directionMultiplier,
+    y: laneDirection.y === 0 ? 0 : laneDirection.y * distance * directionMultiplier,
+  };
 };
 
 export const evaluateNearMiss = (

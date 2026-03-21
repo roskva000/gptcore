@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #262]
+
+Decision:
+`mutation` modunda aktif `near miss chase` penceresini kisa bir runtime `lane reopen -> lane cut` spawn slice'ina bagla; yeni hazard family veya phase rewrite acmadan snapshot dilini oynanis sirasinda da mekansal fark ureten dar bir davranisa cevir.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #258-261 zinciri near-miss earned state'ini HUD, scene ve death snapshot tarafinda buyuttu ama slice halen agirlikla presentation-first kalma riski tasiyordu. En dar ve yuksek etkili hamle; mevcut `nearMiss.ts` ile `GameScene.ts` uzerinden dominant lane truth'unu yakalayıp chase aktifken en fazla iki sonraki spawn'a bounded target offset vererek `reopen -> cut` davranisi uretmekti.
+
+Impact:
+`project/game/src/game/nearMiss.ts` dominant snapped lane helper'i ile `reopen` ve `cut` target offset truth'unu ekledi. `project/game/src/game/GameScene.ts` near miss tetiginde lane yonunu sakliyor, chase penceresinde en fazla iki spawn'a bu offset'i uyguluyor ve pending runtime slice'i soguyunca temizliyor. `project/game/scripts/telemetry-check.ts` yeni dominant-lane ve target-offset kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni runtime slice'in lane'i anlatilir kılmak yerine ucuz zigzag hissi, unfair target kaymasi ya da killbox/endgame threat dilini bulaniklastirdigini gosterirse yalniz target offset mesafeleri ve uygulanacak spawn sayisi dar kapsamda sadeleştirilir; bu bahaneyle yeni spawn manager'i, readiness/preflight, second-phase near-miss framework'u ya da ayri orchestration katmani acilmaz.
+
 ### [Run #261]
 
 Decision:

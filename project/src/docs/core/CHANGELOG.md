@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #262
+
+- `project/game/src/game/nearMiss.ts` near-miss chase icin dominant snapped lane helper'ini ve iki asamali `reopen` / `cut` spawn target offset truth'unu ekledi
+- `project/game/src/game/GameScene.ts` near miss tetiginde lane yonunu yakalayip chase aktifken en fazla iki sonraki spawn'a bounded target kaymasi uyguluyor; earned pencere artik oynanis sirasinda da kisa bir runtime `lane reopen -> lane cut` davranisi tasiyor
+- ayni dosya bu runtime slice'i obstacle state'ine yaziyor ve chase sogudunda pending step'leri temizliyor
+- `project/game/scripts/telemetry-check.ts` dominant lane secimi ile yeni runtime target offset kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #261
 
 - `project/game/src/game/nearMiss.ts` impact marker, fatal spotlight ve overlay title icin ortak `snapped lane` helper/palette truth'unu ekledi

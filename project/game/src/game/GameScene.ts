@@ -22,6 +22,7 @@ import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
   OBSTACLE_COLLISION_RADIUS,
+  clampPointToArena,
   getSpawnEdge,
   getSpawnTargetPoint,
   isPointInsideArena,
@@ -78,10 +79,13 @@ import {
   getNearMissChaseImpactLabelText,
   getNearMissChaseRetryText,
   getNearMissChaseSupportText,
+  getNearMissChaseTargetOffset,
   getNearMissChaseVisualIntensity,
+  getNearMissLaneDirection,
   getNearMissLabel,
   isNearMissChaseActive,
   isNearMissHintActive,
+  type NearMissChaseSpawnStep,
 } from './nearMiss.ts';
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
@@ -390,6 +394,8 @@ export class GameScene extends Phaser.Scene {
   private nearMissChaseExpiresAtElapsedMs: number | null = null;
   private nearMissHintHideAtElapsedMs: number | null = null;
   private lastNearMissChainCount = 0;
+  private nearMissChaseLaneDirection: { x: number; y: number } | null = null;
+  private nearMissChasePendingSpawnSteps: NearMissChaseSpawnStep[] = [];
   private beatCalloutHideAtElapsedMs: number | null = null;
   private lastAnnouncedRunBeatLabel: string | null = null;
   private lastShownRunPhaseId: RunPhaseId | null = null;
@@ -1477,6 +1483,8 @@ export class GameScene extends Phaser.Scene {
     this.nearMissChaseExpiresAtElapsedMs = null;
     this.nearMissHintHideAtElapsedMs = null;
     this.lastNearMissChainCount = 0;
+    this.nearMissChaseLaneDirection = null;
+    this.nearMissChasePendingSpawnSteps = [];
     this.beatCalloutHideAtElapsedMs = null;
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownEndgameDriftCueId = null;
@@ -1633,6 +1641,8 @@ export class GameScene extends Phaser.Scene {
     this.nearMissChaseExpiresAtElapsedMs = null;
     this.nearMissHintHideAtElapsedMs = null;
     this.lastNearMissChainCount = 0;
+    this.nearMissChaseLaneDirection = null;
+    this.nearMissChasePendingSpawnSteps = [];
     this.beatCalloutHideAtElapsedMs = null;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
@@ -1811,11 +1821,12 @@ export class GameScene extends Phaser.Scene {
       .setVelocity(0, 0);
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
+    const nearMissChaseSpawnPlan = this.consumeNearMissChaseSpawnStep();
     const spawnTargetLagSeconds = getObstacleTargetLagSeconds({
       survivalTimeSeconds: currentSurvivalTimeSeconds,
       variant: obstacleVariant,
     });
-    const targetPoint = getSpawnTargetPoint({
+    const baseTargetPoint = getSpawnTargetPoint({
       playerPosition: { x: this.player.x, y: this.player.y },
       playerVelocity: {
         x: playerBody.velocity.x,
@@ -1824,6 +1835,16 @@ export class GameScene extends Phaser.Scene {
       playerReachabilityMargin: PLAYER_COLLISION_RADIUS,
       targetLagSeconds: spawnTargetLagSeconds,
     });
+    const targetPoint =
+      nearMissChaseSpawnPlan === null
+        ? baseTargetPoint
+        : clampPointToArena(
+            {
+              x: baseTargetPoint.x + nearMissChaseSpawnPlan.targetOffset.x,
+              y: baseTargetPoint.y + nearMissChaseSpawnPlan.targetOffset.y,
+            },
+            { margin: PLAYER_COLLISION_RADIUS },
+          );
     const travelDirection = getObstacleTravelDirection({
       spawnPoint,
       targetPoint,
@@ -1851,6 +1872,7 @@ export class GameScene extends Phaser.Scene {
     obstacle.setData('collisionUnlockElapsedMs', collisionUnlockElapsedMs);
     obstacle.setData('nearMissConsumed', false);
     obstacle.setData('nearMissState', createNearMissState());
+    obstacle.setData('nearMissChaseSpawnStep', nearMissChaseSpawnPlan?.step ?? null);
     obstacle.setData('spawnGraceTween', null);
     obstacle.setVelocity(velocity.x, velocity.y);
     this.applySpawnGraceVisualState(obstacle, collisionGraceMs === 0);
@@ -2281,6 +2303,7 @@ export class GameScene extends Phaser.Scene {
     obstacle.setData('collisionUnlockElapsedMs', null);
     obstacle.setData('nearMissConsumed', false);
     obstacle.setData('nearMissState', createNearMissState());
+    obstacle.setData('nearMissChaseSpawnStep', null);
     obstacle.setData('spawnGraceTween', null);
     obstacle.clearTint().setAlpha(1).setScale(1).setDepth(OBSTACLE_DEPTH).setVelocity(0, 0);
     obstacle.disableBody(true, true);
@@ -2340,20 +2363,31 @@ export class GameScene extends Phaser.Scene {
 
       if (nextState.triggered) {
         obstacle.setData('nearMissConsumed', true);
-        this.triggerNearMissFeedback(activeRunElapsedMs);
+        this.triggerNearMissFeedback(
+          activeRunElapsedMs,
+          getNearMissLaneDirection(
+            { x: this.player.x, y: this.player.y },
+            { x: obstacle.x, y: obstacle.y },
+          ),
+        );
       }
 
       return true;
     });
   }
 
-  private triggerNearMissFeedback(activeRunElapsedMs: number): void {
+  private triggerNearMissFeedback(
+    activeRunElapsedMs: number,
+    laneDirection: { x: number; y: number },
+  ): void {
     const withinChainWindow = activeRunElapsedMs <= this.nearMissChainExpiresAtElapsedMs;
     this.nearMissChainCount = withinChainWindow ? this.nearMissChainCount + 1 : 1;
     this.nearMissChainExpiresAtElapsedMs = activeRunElapsedMs + NEAR_MISS_CHAIN_WINDOW_MS;
     this.nearMissChaseExpiresAtElapsedMs = activeRunElapsedMs + NEAR_MISS_CHASE_DURATION_MS;
     this.nearMissHintHideAtElapsedMs = activeRunElapsedMs + NEAR_MISS_HINT_DURATION_MS;
     this.lastNearMissChainCount = this.nearMissChainCount;
+    this.nearMissChaseLaneDirection = laneDirection;
+    this.nearMissChasePendingSpawnSteps = ['reopen', 'cut'];
 
     this.tweens.killTweensOf(this.nearMissText);
     this.tweens.killTweensOf(this.player);
@@ -2401,6 +2435,8 @@ export class GameScene extends Phaser.Scene {
 
       if (!chaseActive) {
         this.nearMissChainCount = 0;
+        this.nearMissChaseLaneDirection = null;
+        this.nearMissChasePendingSpawnSteps = [];
       }
 
       return;
@@ -3440,6 +3476,41 @@ export class GameScene extends Phaser.Scene {
     }
 
     return Math.max((this.nearMissChaseExpiresAtElapsedMs ?? activeRunElapsedMs) - activeRunElapsedMs, 0);
+  }
+
+  private consumeNearMissChaseSpawnStep():
+    | { step: NearMissChaseSpawnStep; targetOffset: { x: number; y: number } }
+    | null {
+    const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
+
+    if (
+      !isNearMissChaseActive(activeRunElapsedMs, this.nearMissChaseExpiresAtElapsedMs) ||
+      this.nearMissChainCount <= 0 ||
+      this.nearMissChaseLaneDirection === null
+    ) {
+      this.nearMissChasePendingSpawnSteps = [];
+      return null;
+    }
+
+    const nextStep = this.nearMissChasePendingSpawnSteps.shift() ?? null;
+
+    if (nextStep === null) {
+      return null;
+    }
+
+    const targetOffset = getNearMissChaseTargetOffset(
+      nextStep,
+      this.nearMissChaseLaneDirection,
+    );
+
+    if (this.nearMissChasePendingSpawnSteps.length === 0) {
+      this.nearMissChaseLaneDirection = null;
+    }
+
+    return {
+      step: nextStep,
+      targetOffset,
+    };
   }
 
   private getNearMissHudText(activeRunElapsedMs: number): string {

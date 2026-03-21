@@ -1,6 +1,6 @@
 # ROADMAP.md
-Last Updated: 2026-03-21
-Updated By: Codex Run #261
+Last Updated: 2026-03-22
+Updated By: Codex Run #262
 
 ---
 
@@ -34,6 +34,7 @@ Mevcut durum:
 - Run #259 ile ayni `near miss chase` truth'u sahneye de sindi; aktif pencere backdrop glow/aura/band/frame uzerinden kisa bir teal heat state'i tasiyor ve death snapshot prompt'u generic overlay yerine bu earned state'in accent'iyle aciliyor
 - Run #260 ile ayni `near miss chase` truth'u death snapshot body/badge tarafina da sindi; game-over artik yalniz tinted prompt degil, `CHASE SNAP` badge'i ve earned kopus satiri ile bu kisa pencerenin nerede koptugunu daha net anlatiyor
 - Run #261 ile bu kopus hit anina da sindi; impact marker, fatal spotlight ve overlay title near-miss aktifken generic yon etiketi yerine `snapped lane` dili ve teal accent ile ayni truth'u tasiyor
+- Run #262 ile ayni `near miss chase` ilk kez runtime spawn line'ina da girdi; tetiklenen close shave dominant lane'i kilitliyor ve chase penceresindeki en fazla iki sonraki threat once kisa `lane reopen`, sonra `lane cut` target kaymasi alarak oynanis sirasinda da ayni earned snap semantigini hissettiriyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -52,7 +53,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `near miss` artik tek-frame pulse degil; `CHASE LIVE` HUD countdown'u ve support/retry prompt kancasi ile kisa omurlu bir earned risk-odul penceresi aciyor
 - shipped slice: ayni `near miss chase` aktifken arena backdrop'u da kisa bir heat pulse'a giriyor; oyuncu pencereyi yalniz copy degil sahnedeki sicaklik degisiminden de ayirt ediyor
 - shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
-- next slice: bu near-miss chase truth'unu yalniz olum aninda degil, aktif pencere sirasinda kisa bir runtime lane-reopen / lane-cut davranisina tasiyip gercek gameplay farki uret
+- shipped slice: ayni truth artik aktif chase sirasinda kisa bir runtime `lane reopen -> lane cut` zinciri de tasiyor; spawn target'i en fazla iki beat boyunca snapped lane'den uzaklasip sonra ayni lane'e geri kapanarak gercek mekansal fark uretiyor
+- next slice: bu yeni runtime beat'i mevcut HUD/support/hint/backdrop diliyle ayni anda daha net okut; oyuncu reopen ve cut'i yalniz hissetmesin, canli okunurlukte de ayirt etsin
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -68,7 +70,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 ## Expansion Track D — Retention Hooks
 - tekrar denemeyi tetikleyen hafif meta, route, challenge veya earned payoff katmani ac
 - yakin gecislerin zaten pozitif insan sinyali verdigi unutulmasin; replay istegini yukselten dar ama oyunsal bir odak sec
-- aktif near-miss chase slice'i ilk retained adaydir; siradaki is bu pencereyi impact/snapshot zincirinde daha mekansal sahiplenmek olmali
+- aktif near-miss chase slice'i ilk retained adaydir; siradaki is runtime `reopen -> cut` davranisini player-facing canli okunurlukte de belirginlestirmek olmali
 - agir progression bloat'a kacma
 
 ## Expansion Track E — Browser Validation In Practice

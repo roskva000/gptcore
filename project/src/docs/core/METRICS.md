@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #261:
+Current deterministic survival headline after Run #262:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+near_miss_chase_runtime_lane_surface:
+current: Run #262 `project/game/src/game/GameScene.ts` aktif near-miss chase sirasinda dominant snapped lane'i sakliyor ve en fazla iki sonraki spawn'a bounded `reopen` sonra `cut` target kaymasi uyguluyor; `project/game/src/game/nearMiss.ts` bu slice icin lane secimi ve offset truth'unu sagliyor
+baseline: Run #261 state'inde near-miss chase hit/snapshot tarafinda artik tam sahipleniliyordu ama aktif pencere hala buyuk oranda HUD/backdrop/death presentation-first idi; oyuncu earned state'i oynanis sirasinda yeni threat line'inda henuz hissetmiyordu
+target: sonraki browser veya manuel gozlem oyuncunun near-miss chase aktifken gelen bir sonraki threat'i ayni lane'in once acilip sonra tekrar kesilmesi gibi ayirt edebildigini gostersin; bu yeni runtime slice cheap zigzag veya unfair snap gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 near_miss_chase_hit_snapshot_surface:
 current: Run #261 `project/game/src/game/GameScene.ts` aktif near-miss chase varsa impact marker'i generic yon etiketinden `LEFT SNAP` tipi snapped-lane marker'ina ceviriyor; fatal spotlight da ayni anda `SNAP / LEFT LANE` label'i ve teal accent ile bu kopusun nerede oldugunu sahipleniyor. `project/game/src/game/deathPresentation.ts` overlay title'i de ayni truth'a gecerek `Lane snapped from left` semantigini tasiyor

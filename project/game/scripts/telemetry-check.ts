@@ -78,8 +78,11 @@ import {
 } from '../src/game/spawnGrace.ts';
 import {
   NEAR_MISS_CHASE_DURATION_MS,
+  NEAR_MISS_CHASE_CUT_TARGET_OFFSET_PX,
+  NEAR_MISS_CHASE_REOPEN_TARGET_OFFSET_PX,
   getNearMissChaseFatalLabelText,
   getNearMissChaseImpactLabelText,
+  getNearMissChaseTargetOffset,
   getNearMissChaseTitleText,
   NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
   NEAR_MISS_CHASE_SNAPSHOT_TEXT,
@@ -89,6 +92,7 @@ import {
   getNearMissChaseRetryText,
   getNearMissChaseSupportText,
   getNearMissChaseVisualIntensity,
+  getNearMissLaneDirection,
   getNearMissLabel,
   isNearMissChaseActive,
   isNearMissHintActive,
@@ -311,6 +315,24 @@ assert.equal(
   getNearMissChaseTitleText('left', false),
   'Lane snapped from left',
   'Near-miss death titles should keep the copy aligned with the snapped-lane truth used by the live hit marker and fatal spotlight.',
+);
+assert.deepEqual(
+  getNearMissLaneDirection(
+    { x: 400, y: 300 },
+    { x: 332, y: 292 },
+  ),
+  { x: -1, y: 0 },
+  'Near-miss chase runtime should collapse the last close shave into a dominant lane so follow-up spawns can reopen or cut that same space without inventing a new manager.',
+);
+assert.deepEqual(
+  getNearMissChaseTargetOffset('reopen', { x: -1, y: 0 }),
+  { x: NEAR_MISS_CHASE_REOPEN_TARGET_OFFSET_PX, y: 0 },
+  'The first near-miss chase runtime beat should shove the next spawn target away from the snapped lane so the player feels a brief lane reopen while the chase is hot.',
+);
+assert.deepEqual(
+  getNearMissChaseTargetOffset('cut', { x: -1, y: 0 }),
+  { x: -NEAR_MISS_CHASE_CUT_TARGET_OFFSET_PX, y: 0 },
+  'The second near-miss chase runtime beat should cut back into the same lane so the live chase earns a visible reopen-then-snap rhythm instead of staying presentation-only.',
 );
 assert.equal(
   deathPresentation.body,

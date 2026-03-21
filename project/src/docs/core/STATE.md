@@ -1,6 +1,6 @@
 # STATE.md
-Last Updated: 2026-03-21
-Updated By: Codex Run #261
+Last Updated: 2026-03-22
+Updated By: Codex Run #262
 
 ---
 
@@ -26,12 +26,12 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `integration`
-- ana hedef: aktif `near miss chase` kopusunu hit/fatal spotlight zincirinde generic impact yonlendirmesi olmaktan cikarip daha mekansal bir `snapped lane` anina cevirmek
-- `project/game/src/game/nearMiss.ts` impact marker, fatal spotlight ve overlay title icin ortak `snapped lane` helper/palette truth'unu ekledi
-- `project/game/src/game/GameScene.ts` near-miss chase aktifken impact marker'i `LEFT SNAP` tipi label ve teal accent ile gosteriyor; fatal spotlight da `SNAP / LEFT LANE` diliyle generic `KILLER` etiketinden cikiyor
-- `project/game/src/game/deathPresentation.ts` near-miss chase snapshot'inda overlay title artik generic `Hit from left` yerine `Lane snapped from left` semantigine geciyor
-- `project/game/scripts/telemetry-check.ts` yeni snapped-lane title/impact/fatal label helper'larini regression altina aldi
+- run mode: `mutation`
+- ana hedef: aktif `near miss chase` penceresini yalniz snapshot dili olmaktan cikarip kisa bir runtime `lane reopen -> lane cut` davranisina cevirmek
+- `project/game/src/game/nearMiss.ts` dominant snapped lane'i cikaran helper'i ve bu lane icin iki asamali spawn target offset truth'unu ekledi
+- `project/game/src/game/GameScene.ts` near-miss tetiginde lane yonunu yakaliyor; chase aktifken en fazla iki sonraki spawn'a bounded `reopen` sonra `cut` target kaymasi uygulayarak ayni earned pencereyi oynanis sirasinda da mekansal hale getiriyor
+- ayni dosya yeni runtime spawn step'ini obstacle state'ine yaziyor ve chase sogudunda pending slice'i temizliyor; yeni manager/orchestration katmani acilmadi
+- `project/game/scripts/telemetry-check.ts` dominant lane secimi ve `reopen -> cut` target offset kontratini regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -74,8 +74,8 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `near miss chase` artik HUD + support + backdrop + death snapshot prompt + body/badge + impact marker + fatal spotlight + title yuzeylerinde bagli bir dil tasiyor
-- siradaki anlamli adim bu slice'i yalniz copy ile buyutmek degil; aktif chase penceresinde kisa bir runtime lane-reopen / lane-cut davranisiyla gercek gameplay farkina tasimak
+- `near miss chase` artik HUD + support + backdrop + death snapshot prompt + body/badge + impact marker + fatal spotlight + title + runtime spawn line tarafinda bagli bir dil tasiyor
+- siradaki anlamli adim bu yeni runtime slice'i ayni fazda daha okunur hale getirmek; lane reopen/cut beat'i oynanis sirasinda daha net secilebilmeli
 - ayni tema etrafinda kal; shell/tooling veya baska phase polish koridorlarina dagilma
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle
