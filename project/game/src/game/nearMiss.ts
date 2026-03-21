@@ -82,6 +82,14 @@ export const getNearMissChaseRetryText = (chainCount: number): string =>
     ? `${chainCount}x near-miss chase snapped. Reopen that lane.`
     : 'Near-miss chase snapped. Reopen that lane.';
 
+export const getNearMissChaseSnapshotBadgeText = (chainCount: number): string =>
+  chainCount > 1 ? `${chainCount}x CHASE SNAP` : 'CHASE SNAP';
+
+export const getNearMissChaseSnapshotSummaryText = (chainCount: number): string =>
+  chainCount > 1
+    ? `${chainCount}x near-miss chase snapped before the lane cooled.`
+    : 'Near-miss chase snapped before the lane cooled.';
+
 export const getNearMissChaseVisualIntensity = (remainingMs: number): number => {
   if (remainingMs <= 0) {
     return 0;

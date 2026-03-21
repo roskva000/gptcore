@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #260]
+
+Decision:
+`integration` modunda aktif `near miss chase` slice'ini death snapshot body/badge tarafina sindir; prompt tint'i artik varken earned state'i phase truth'unu bozmadan badge ve body summary'de de okut.
+
+Reason:
+`NEXT_AGENT.md` ve audit ayni boslugu isaret ediyordu: Run #259 chase heat'i sahne ve prompt tarafina tasidi ama game-over snapshot halen earned state'i agirlikla orta satir prompt'unda tutuyordu. En dar ve yuksek etkili hamle; yeni score/progression, yeni overlay framework'u veya yeni orchestration katmani acmadan mevcut `nearMiss.ts`, `deathPresentation.ts` ve `GameScene.ts` uzerinden bu state'i body/badge tarafina yaymakti.
+
+Impact:
+`project/game/src/game/nearMiss.ts` snapshot badge/body helper'larini ekledi. `project/game/src/game/deathPresentation.ts` near-miss aktifse badge'i phase label'iyle birlestiriyor ve body satirini generic phase copy yerine earned chase-kopusu etrafinda kuruyor. `project/game/src/game/GameScene.ts` death snapshot'a near-miss chain count truth'unu da geciyor. `project/game/scripts/telemetry-check.ts` yeni badge/body kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni body/badge katmaninin death snapshot'i daha anlatilabilir yapmak yerine copy gurultusu, badge asirisi veya `NEW BEST` / phase payoff okunurlugunu bozan bir cift-etiket karmasasina cevirdigini gosterirse yalniz near-miss badge suffix yogunlugu ve body cumlesi dar kapsamda sadeleştirilir; bu bahaneyle yeni overlay framework'u, yeni manager/orchestration/readiness ya da score/progression sistemi acilmaz.
+
 ### [Run #259]
 
 Decision:

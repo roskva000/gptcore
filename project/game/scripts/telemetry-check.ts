@@ -216,6 +216,7 @@ const deathPresentation = getDeathPresentation({
   reachedSurvivalGoal: false,
   retryPromptText: 'Space, Enter, tap/click, or move',
   escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: null,
   nearMissPromptText: null,
 });
 assert.equal(
@@ -245,8 +246,19 @@ const nearMissPromptDeathPresentation = getDeathPresentation({
   reachedSurvivalGoal: false,
   retryPromptText: 'Space, Enter, tap/click, or move',
   escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: 2,
   nearMissPromptText: '2x near-miss chase snapped. Reopen that lane.',
 });
+assert.equal(
+  nearMissPromptDeathPresentation.badge,
+  'BREAKTHROUGH | 2x CHASE SNAP',
+  'A snapped near-miss chase should reach the badge so the overlay owns the earned state before the retry prompt.',
+);
+assert.equal(
+  nearMissPromptDeathPresentation.body,
+  'Run 12.3s. Best 14.1s.\n2x near-miss chase snapped before the lane cooled. BREAKTHROUGH reached. 5.7s short of KILLBOX.',
+  'A snapped near-miss chase should rewrite the body summary around the earned state without hiding the structural phase progress.',
+);
 assert.equal(
   nearMissPromptDeathPresentation.prompt,
   'Next lane: BREAK RIGHT\n2x near-miss chase snapped. Reopen that lane.\nRetry: Space, Enter, tap/click, or move',
@@ -621,6 +633,7 @@ const lateEndgameDeathPresentation = getDeathPresentation({
   reachedSurvivalGoal: false,
   retryPromptText: 'Space, Enter, tap/click, or move',
   escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
   nearMissPromptText: null,
 });
 assert.equal(
@@ -655,6 +668,7 @@ const clearClimbDeathPresentation = getDeathPresentation({
   reachedSurvivalGoal: false,
   retryPromptText: 'Space, Enter, tap/click, or move',
   escapePromptTitle: 'BREAK DOWN',
+  nearMissChainCount: null,
   nearMissPromptText: null,
 });
 assert.equal(

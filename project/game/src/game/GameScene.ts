@@ -2148,6 +2148,7 @@ export class GameScene extends Phaser.Scene {
       reachedSurvivalGoal,
       retryPromptText: this.getRetryActionPromptText(),
       escapePromptTitle: escapePrompt.title,
+      nearMissChainCount: this.getNearMissDeathSnapshotChainCount(activeRunElapsedMs),
       nearMissPromptText: this.getNearMissDeathPromptText(activeRunElapsedMs),
     });
 
@@ -3400,13 +3401,23 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getNearMissDeathPromptText(activeRunElapsedMs: number): string | null {
+    const nearMissChainCount = this.getNearMissDeathSnapshotChainCount(activeRunElapsedMs);
+
+    if (nearMissChainCount === null) {
+      return null;
+    }
+
+    return getNearMissChaseRetryText(nearMissChainCount);
+  }
+
+  private getNearMissDeathSnapshotChainCount(activeRunElapsedMs: number): number | null {
     const chaseRemainingMs = this.getNearMissChaseRemainingMs(activeRunElapsedMs);
 
     if (chaseRemainingMs <= 0 || this.lastNearMissChainCount <= 0) {
       return null;
     }
 
-    return getNearMissChaseRetryText(this.lastNearMissChainCount);
+    return this.lastNearMissChainCount;
   }
 
   private getCurrentPlayingSupportText(): string {

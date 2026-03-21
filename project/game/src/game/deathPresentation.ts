@@ -10,6 +10,8 @@ import { getNextRunHorizonBeatText } from './runHorizon.ts';
 import {
   NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
   NEAR_MISS_CHASE_SNAPSHOT_TEXT,
+  getNearMissChaseSnapshotBadgeText,
+  getNearMissChaseSnapshotSummaryText,
 } from './nearMiss.ts';
 import {
   getEndgameClearClimbState,
@@ -28,6 +30,7 @@ type DeathPresentationParams = {
   reachedSurvivalGoal: boolean;
   retryPromptText: string;
   escapePromptTitle: string;
+  nearMissChainCount: number | null;
   nearMissPromptText: string | null;
 };
 
@@ -65,10 +68,12 @@ const getBadgeText = ({
   isNewBest,
   survivalTimeSeconds,
   reachedSurvivalGoal,
+  nearMissChainCount,
 }: {
   isNewBest: boolean;
   survivalTimeSeconds: number;
   reachedSurvivalGoal: boolean;
+  nearMissChainCount: number | null;
 }): string | null => {
   if (reachedSurvivalGoal) {
     return `${SURVIVAL_GOAL_SECONDS}s CLEAR`;
@@ -81,14 +86,20 @@ const getBadgeText = ({
   const phaseReachedBadge = getRunPhaseReachedBadgeText(survivalTimeSeconds);
 
   if (phaseReachedBadge !== null) {
-    return phaseReachedBadge;
+    return nearMissChainCount === null
+      ? phaseReachedBadge
+      : `${phaseReachedBadge} | ${getNearMissChaseSnapshotBadgeText(nearMissChainCount)}`;
   }
 
   if (hasReachedFirstDeathTarget(survivalTimeSeconds)) {
-    return `${TARGET_FIRST_DEATH_SECONDS}s BROKEN`;
+    return nearMissChainCount === null
+      ? `${TARGET_FIRST_DEATH_SECONDS}s BROKEN`
+      : `${TARGET_FIRST_DEATH_SECONDS}s BROKEN | ${getNearMissChaseSnapshotBadgeText(nearMissChainCount)}`;
   }
 
-  return null;
+  return nearMissChainCount === null
+    ? null
+    : getNearMissChaseSnapshotBadgeText(nearMissChainCount);
 };
 
 const getTitleText = (hitDirection: ImpactDirection): string => {
@@ -104,11 +115,13 @@ const getBodyText = ({
   isNewBest,
   bestSurvivalTimeText,
   reachedSurvivalGoal,
+  nearMissChainCount,
 }: {
   survivalTimeSeconds: number;
   isNewBest: boolean;
   bestSurvivalTimeText: string;
   reachedSurvivalGoal: boolean;
+  nearMissChainCount: number | null;
 }): string => {
   const roundedSurvivalTime = survivalTimeSeconds.toFixed(1);
   const runLine = isNewBest
@@ -117,6 +130,13 @@ const getBodyText = ({
 
   const phaseLine = getRunPhaseDeathSummaryText(survivalTimeSeconds);
   const progressLine = getProgressLine({ survivalTimeSeconds, reachedSurvivalGoal });
+
+  if (nearMissChainCount !== null) {
+    return [
+      runLine,
+      `${getNearMissChaseSnapshotSummaryText(nearMissChainCount)} ${phaseLine}`,
+    ].join('\n');
+  }
 
   if (phaseLine === progressLine) {
     return [runLine, progressLine].join('\n');
@@ -166,18 +186,21 @@ export const getDeathPresentation = ({
   reachedSurvivalGoal,
   retryPromptText,
   escapePromptTitle,
+  nearMissChainCount,
   nearMissPromptText,
 }: DeathPresentationParams): DeathPresentation => ({
   badge: getBadgeText({
     isNewBest,
     survivalTimeSeconds,
     reachedSurvivalGoal,
+    nearMissChainCount,
   }),
   body: getBodyText({
     survivalTimeSeconds,
     isNewBest,
     bestSurvivalTimeText,
     reachedSurvivalGoal,
+    nearMissChainCount,
   }),
   callout: 'DEATH SNAPSHOT',
   hasNearMissChaseSnapshot: nearMissPromptText !== null,

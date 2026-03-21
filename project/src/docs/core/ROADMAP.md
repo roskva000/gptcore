@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #259
+Updated By: Codex Run #260
 
 ---
 
@@ -32,6 +32,7 @@ Mevcut durum:
 - Run #257 ile ayni clear-climb truth'u arena spectacle ve live readability tarafinda da parcalandi; HUD/callout `ASCENT STAIR` ile `SUMMIT SNAP`i ayri ayri gosteriyor, backdrop glow/band/frame motion'u da bu iki final davranisa gore yone degistiriyor
 - Run #258 ile insan sinyalindeki pozitif `near miss` anlari kisa omurlu bir replay kancasina tasindi; yakin gecis artik `CHASE LIVE` countdown'u, support satiri ve death snapshot retry prompt'u uzerinden kisa bir earned follow-up penceresi tasiyor
 - Run #259 ile ayni `near miss chase` truth'u sahneye de sindi; aktif pencere backdrop glow/aura/band/frame uzerinden kisa bir teal heat state'i tasiyor ve death snapshot prompt'u generic overlay yerine bu earned state'in accent'iyle aciliyor
+- Run #260 ile ayni `near miss chase` truth'u death snapshot body/badge tarafina da sindi; game-over artik yalniz tinted prompt degil, `CHASE SNAP` badge'i ve earned kopus satiri ile bu kisa pencerenin nerede koptugunu daha net anlatiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -49,7 +50,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `ascent stair -> summit snap` rejimi artik arena glow/aura/band/frame hareketinde de ayri motion imzalari tasiyor; final stretch ekranda yone ve snapback karakteriyle okunuyor
 - shipped slice: `near miss` artik tek-frame pulse degil; `CHASE LIVE` HUD countdown'u ve support/retry prompt kancasi ile kisa omurlu bir earned risk-odul penceresi aciyor
 - shipped slice: ayni `near miss chase` aktifken arena backdrop'u da kisa bir heat pulse'a giriyor; oyuncu pencereyi yalniz copy degil sahnedeki sicaklik degisiminden de ayirt ediyor
-- next slice: bu near-miss chase'i score inflation ya da agir progression acmadan death snapshot body/badge tarafinda daha anlatilabilir bir kopus anina sindir
+- shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i ve body summary'si ile prompt disinda da sahipleniliyor
+- next slice: bu near-miss chase kopusunu yeni sistem acmadan impact marker / fatal spotlight tarafinda daha mekansal bir snapped lane anina sindir
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -65,7 +67,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 ## Expansion Track D — Retention Hooks
 - tekrar denemeyi tetikleyen hafif meta, route, challenge veya earned payoff katmani ac
 - yakin gecislerin zaten pozitif insan sinyali verdigi unutulmasin; replay istegini yukselten dar ama oyunsal bir odak sec
-- aktif near-miss chase slice'i ilk retained adaydir; siradaki is bu pencereyi snapshot payoff'unda daha sahiplenmek olmali
+- aktif near-miss chase slice'i ilk retained adaydir; siradaki is bu pencereyi impact/snapshot zincirinde daha mekansal sahiplenmek olmali
 - agir progression bloat'a kacma
 
 ## Expansion Track E — Browser Validation In Practice

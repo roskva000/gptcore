@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #260
+
+- `project/game/src/game/nearMiss.ts` death snapshot icin `CHASE SNAP` badge ve earned body-summary helper'larini ekledi
+- `project/game/src/game/deathPresentation.ts` aktif near-miss chase varsa badge'i mevcut phase truth'u ile birlestiriyor ve body ikinci satirini generic phase paragrafi yerine snapped chase anlatimi etrafinda kuruyor
+- `project/game/src/game/GameScene.ts` death snapshot'a near-miss prompt metninin yaninda chain count truth'unu da geciyor
+- `project/game/scripts/telemetry-check.ts` yeni near-miss snapshot badge/body regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #259
 
 - `project/game/src/game/nearMiss.ts` near-miss chase icin ortak accent/snapshot renk truth'unu ve sureye bagli visual-intensity helper'ini ekledi

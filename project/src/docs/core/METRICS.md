@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #259:
+Current deterministic survival headline after Run #260:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+near_miss_chase_snapshot_badge_body_surface:
+current: Run #260 `project/game/src/game/deathPresentation.ts` aktif `near miss chase` varsa death snapshot badge'ini phase truth'u ile `CHASE SNAP` etrafinda birlestiriyor ve body ikinci satirini `project/game/src/game/nearMiss.ts` helper'lariyla earned kopus anlatimina ceviriyor; `project/game/src/game/GameScene.ts` bu katman icin chain count truth'unu da snapshot'a geciyor
+baseline: Run #259 state'inde near-miss chase snapshot accent, prompt tint ve arena heat tarafinda vardi ama body/badge halen buyuk oranda generic phase/payoff cizgisinde kaliyordu; earned state prompt disina tam tasinmiyordu
+target: sonraki browser veya manuel gozlem oyuncunun death snapshot'ta artik yalniz tinted bir retry kutusu degil, kisa ama net bir `earned lane snapped here` anlatisi gordugunu gostersin; bu yeni badge/body dili `NEW BEST` ve structural phase okunurlugunu bozmamali
+validation: `npm run telemetry:check`, `npm run build`
+
 near_miss_chase_scene_snapshot_surface:
-current: Run #259 `project/game/src/game/GameScene.ts` aktif `near miss chase` sirasinda backdrop glow/aura/band/frame'i kisa teal heat pulse'una sokuyor; death snapshot prompt'u da `project/game/src/game/deathPresentation.ts` uzerinden ozel accent palette'i ile aciliyor. `project/game/src/game/nearMiss.ts` bu ortak heat/snapshot truth'unu renk + intensity helper'lariyla tasiyor
+current: Run #260 state'inde Run #259'un sahne heat'i ve prompt accent'i korunuyor; buna ek olarak ayni near-miss chase artik badge/body tarafinda da sahiplenildigi icin sahne-snapshot zinciri daha bagli okunuyor
 baseline: Run #258 state'inde `near miss chase` countdown, support ve retry prompt tarafinda acilmisti ama arena ve game-over snapshot bu pencereyi halen buyuk oranda generic kendi stilleriyle gosteriyordu; earned state gorunur ama tam sahiplenilmis degildi
-target: sonraki browser veya manuel gozlem oyuncunun aktif chase penceresini kisa bir lane-hot state olarak sahnede ayirt ettigini ve olum aninda snapshot'in bunu generic retry kutusundan farkli bir an olarak tasidigini gostersin
+target: sonraki browser veya manuel gozlem oyuncunun aktif chase penceresini kisa bir lane-hot state olarak sahnede ayirt ettigini ve olum aninda snapshot'in bunu generic retry kutusundan farkli, daha sahiplenilmis bir an olarak tasidigini gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 near_miss_chase_retry_surface:
