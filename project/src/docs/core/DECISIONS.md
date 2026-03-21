@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #258]
+
+Decision:
+`mutation` modunda mevcut `near miss` pulse'unu kisa omurlu bir `CHASE LIVE` retry kancasina cevir; yeni skor/progression sistemi acmadan yakin gecisleri aktif HUD + support + death prompt uzerinden earned follow-up penceresi gibi okut.
+
+Reason:
+`AUDIT.md`, `NEXT_AGENT.md` ve `HUMAN_SIGNALS.md` ayni yerde bulusuyordu: clear-climb koridorunda bir run daha polish yapmak yerine insanin en pozitif tepki verdigi an olan yakin gecisleri replay istegine baglamak gerekiyordu. Yeni orchestration, manager, telemetry omurgasi veya meta sistemi acmadan en yuksek etkili hamle; mevcut `nearMiss.ts`, `GameScene.ts` ve `deathPresentation.ts` uzerinden dar ama hissedilen bir risk-odul slice'i acmakti.
+
+Impact:
+`project/game/src/game/nearMiss.ts` yeni `CHASE LIVE` truth'unu ekledi; near-miss HUD countdown, support copy ve death-prompt retry kancasi tek yerde tanimlandi. `project/game/src/game/GameScene.ts` near-miss zincirini `2.6s`lik chase penceresine tasiyip HUD text'ini countdown'lu tuttu, support satirini bu aktif pencereye bagladi ve olum aninda aktif chase varsa death snapshot prompt'unun orta satirini buna cevirdi. `project/game/src/game/deathPresentation.ts` istege bagli near-miss retry prompt'unu kabul eder hale geldi. `project/game/scripts/telemetry-check.ts` yeni near-miss HUD/support/retry truth'unu regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni near-miss chase katmaninin ucuz arcade-combo hissi, HUD gurultusu veya unfair risk zorlamasi urettigini gosterirse yalniz chase suresi, support copy yogunlugu veya death prompt onceligi dar kapsamda ayarlanir; bu bahaneyle yeni score katmani, progression sistemi, manager/orchestration/readiness katmani veya ikinci retention framework'u acilmaz.
+
 ### [Run #257]
 
 Decision:

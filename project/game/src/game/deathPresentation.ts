@@ -24,6 +24,7 @@ type DeathPresentationParams = {
   reachedSurvivalGoal: boolean;
   retryPromptText: string;
   escapePromptTitle: string;
+  nearMissPromptText: string | null;
 };
 
 export type DeathPresentation = {
@@ -121,10 +122,12 @@ const getPromptText = ({
   escapePromptTitle,
   retryPromptText,
   survivalTimeSeconds,
+  nearMissPromptText,
 }: {
   escapePromptTitle: string;
   retryPromptText: string;
   survivalTimeSeconds: number;
+  nearMissPromptText: string | null;
 }): string => {
   const endgameCue = getEndgameDriftCue(survivalTimeSeconds);
   const clearClimbState = getEndgameClearClimbState(survivalTimeSeconds);
@@ -136,7 +139,7 @@ const getPromptText = ({
 
   return [
     `Next lane: ${escapePromptTitle}`,
-    retryPlanText,
+    nearMissPromptText ?? retryPlanText,
     `Retry: ${retryPromptText}`,
   ].join('\n');
 };
@@ -156,6 +159,7 @@ export const getDeathPresentation = ({
   reachedSurvivalGoal,
   retryPromptText,
   escapePromptTitle,
+  nearMissPromptText,
 }: DeathPresentationParams): DeathPresentation => ({
   badge: getBadgeText({
     isNewBest,
@@ -173,6 +177,7 @@ export const getDeathPresentation = ({
     escapePromptTitle,
     retryPromptText,
     survivalTimeSeconds,
+    nearMissPromptText,
   }),
   stats: getStatsText(sessionTelemetry),
   title: getTitleText(hitDirection),

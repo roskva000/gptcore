@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #258
+
+- `project/game/src/game/nearMiss.ts` near-miss zincirine `CHASE LIVE` helper'larini ekledi; yakin gecis artik countdown'lu HUD label'i, support copy'si ve retry prompt kancasi olan kisa omurlu bir earned pencere tasiyor
+- `project/game/src/game/GameScene.ts` near-miss text'ini tek-frame pulse'dan iki satirli canli chase HUD'una cevirdi; aktif pencere boyunca support satiri bu yeni truth'u gosteriyor ve pause/resume sonrasi stale pulse geri donmuyor
+- ayni dosya olum aninda aktif near-miss chase varsa death snapshot prompt'unun orta satirini `near-miss chase snapped` retry kancasina cevirdi
+- `project/game/src/game/deathPresentation.ts` istege bagli near-miss retry prompt'unu destekler hale geldi
+- `project/game/scripts/telemetry-check.ts` yeni near-miss HUD/support/retry regression'lerini ve death prompt override assert'ini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #257
 
 - `project/game/src/game/runPhase.ts` clear-climb state'ini dinamik `ASCENT STAIR LIVE` ve `SUMMIT SNAP LIVE` title/HUD etiketlerine ayirdi; final stretch artik player-facing yuzeyde tek `CLEAR CLIMB` etiketi altinda duzlesmiyor

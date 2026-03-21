@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #257
+Updated By: Codex Run #258
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: mevcut `clear climb` final-threat zincirini arena spectacle ve live readability tarafinda daha ayirt edilir bir final olayina cevirmek
+- run mode: `mutation`
+- ana hedef: mevcut `near miss` pulse'unu kisa omurlu bir earned chase/retry yakitina cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,10 +26,11 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- `project/game/src/game/runPhase.ts` clear-climb truth'unu player-facing olarak parcaladi; ilk yarida `ASCENT STAIR LIVE`, son yarida `SUMMIT SNAP LIVE` title/HUD etiketi uretiyor ve final stretch artik tek `CLEAR CLIMB` etiketi altinda duzlesmiyor
-- `project/game/src/game/GameScene.ts` goal badge, hint ve beat callout'u bu ayni threat truth'una bagladi; oyuncu `45.6-60s` band'inde kalan sureyi generic final chase yerine hangi son-stretch davranisinda oldugunu goruyor
-- ayni dosya backdrop glow/aura, ust-alt band ve frame hareketini `ascent stair` ve `summit snap` icin ayri motion imzalariyla guncelledi; clear climb artik yalniz copy degil, sahnede yone ve snapback karakterine sahip
-- `project/game/scripts/telemetry-check.ts` yeni `ASCENT STAIR LIVE` / `SUMMIT SNAP LIVE` truth'unu regression altina aldi
+- `project/game/src/game/nearMiss.ts` mevcut close-shave zincirine yeni `CHASE LIVE` truth'unu ekledi; near-miss artik yalniz bir frame pulse degil, `2.6s`lik kisa follow-up penceresi ve retry copy'si olan earned bir slice
+- `project/game/src/game/GameScene.ts` near-miss text'ini canli countdown'lu iki satirli HUD'a cevirdi, support satirini bu aktif chase penceresinden besledi ve pause/resume sonrasi stale pulse yerine kalan chase state'ini dogru geri getirdi
+- ayni dosya olum aninda aktif near-miss chase varsa death snapshot prompt'unun orta satirini phase retry hedefinden bu yeni risk-odul kancasina cevirdi; oyuncu koptugu anda `near-miss chase snapped` rematch hattini goruyor
+- `project/game/src/game/deathPresentation.ts` aktif near-miss retry kancasini kabul edecek sekilde prompt secimini genisletti
+- `project/game/scripts/telemetry-check.ts` yeni near-miss HUD/support/retry prompt truth'unu regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`
 
 ---
@@ -72,7 +73,7 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `KILLBOX` -> `ENDGAME` zinciri artik `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb(ascent stair -> summit snap)` olarak runtime truth'unda tamamlandi; siradaki adim bu yeni final threat'i arena spectacle / browser-gozlenebilir okunurluk tarafinda daha da ayirt etmek
-- ayni run-phase/final-stretch koridorunda copy-only cilaya geri dusme; siradaki ana hamle replay istegini buyuten yeni bir yuzey acmali
+- `near miss` artik kisa omurlu bir chase/retry slice tasiyor; siradaki adim bunu score/progression sisirmeden daha guclu bir oyuncu payoff'una sindirmek
+- ayni tema etrafinda kal; shell/tooling veya baska phase polish koridorlarina dagilma
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

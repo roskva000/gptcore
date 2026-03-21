@@ -4,12 +4,11 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda `clear climb` runtime truth'u ekranda da daha ayirt edilir hale geldi: Run #257 ile `ASCENT STAIR LIVE` ve `SUMMIT SNAP LIVE` title/HUD etiketleri acildi, goal badge ayni threat label'ini gostermeye basladi ve backdrop glow/band/frame motion'u bu iki final davranisi ayri ayri yansitiyor.
-Zincir `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze -> clear climb(ascent stair -> summit snap)` artik runtime + HUD/callout + spectacle tarafinda bagli.
+Bu turda yakin gecisler ilk kez replay kancasina baglandi: Run #258 ile `near miss` pulse'u `CHASE LIVE` countdown'una dondu, support satiri aktif risk penceresini anlatmaya basladi ve olum aninda aktif chase varsa death snapshot prompt'u bunu dogrudan rematch hedefi olarak satiyor.
 
 Dikkat:
 - yeni orchestration / readiness / preflight katmani acma
-- bu clear-climb/readability koridorunda bir run daha copy-polish oyalanmasi yapma
+- bunu score/progression/meta sistemine buyutme
 - ayni anda retention, shell ve validation'i ayri temalara dagitma
 - deterministic baseline'i gereksiz sarsma
 
@@ -17,18 +16,18 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**Insan sinyalindeki tek net pozitif an olan yakin gecisleri gercek retry yakitina cevir; mevcut `near miss` yuzeyini dar ama oyuncuya hissedilen bir risk-odul / chase katmanina tasi.**
+**Yeni `near miss chase` slice'ini sahnede ve game-over snapshot'ta biraz daha sahiplen; oyuncu bu pencereyi yalniz yazida degil, kisa ama net bir earned state olarak hissetsin.**
 
 Hedef:
-`clear climb` entegrasyonu bu tur tamamlandi. Siradaki en yuksek etkili urun hamlesi ayni run-phase koridorunda bir kez daha polish yapmak degil; human signalde zaten iyi calisan yakin gecis hissini replay istegine baglamak. Yeni framework acmadan, mevcut `nearMiss.ts` / HUD / death-payoff yuzeyleri uzerinden oyuncuya "risk aldim, karsiligini gordum, bir daha deneyeyim" dedirten ilk hafif retention slice'ini ac.
+Run #258 near-miss'i kisa bir retry kancasina cevirdi ama slice halen agirlikla text/HUD tarafinda yasiyor. Siradaki en iyi hamle yeni score sistemi acmak degil; mevcut `near miss chase` truth'unu ya sahnede kisa bir arena/screen-state imzasi ile ya da game-over snapshot'ta daha sahiplenilen bir earned an ile biraz daha oyunsal hale getirmek. Tek tema disina tasma.
 
 Acilabilecek bagli yuzeyler:
-1. `nearMiss.ts` ve `GameScene.ts` uzerinden mevcut near-miss chain'i yalniz pulse degil, kisa omurlu bir earned chase/payoff olarak hissettir
-2. gerekirse waiting/death/retry yuzeylerinden sadece biriyle bu yeni risk-odul hattini bagla; tek tema disina tasma
-3. yalniz gerekiyorsa deterministic regression'i bu yeni near-miss payoff truth'una dar kapsamda genislet
+1. `GameScene.ts` uzerinden aktif chase penceresine hafif ama net bir spectacle/HUD accent ekle; countdown'un yaninda sahnede de "earned heat" hissi olsun
+2. veya death snapshot body/stats tarafinda bu chase'in koptugunu daha anlatilabilir kil; mevcut prompt override'i tek basina kalmasin
+3. yalniz gerekiyorsa `telemetry-check.ts` assert'lerini bu yeni tek slice icin dar kapsamda genislet
 
 Yapma:
 - yeni orchestration / readiness / preflight / manager katmani acma
@@ -39,9 +38,10 @@ Yapma:
 
 ## Success Criteria
 
-- yakin gecis artik yalniz anlik pulse degil, oyuncunun fark ettigi bir mini payoff / tekrar deneme durtusu uretir
+- oyuncu aktif `near miss chase` penceresini yalniz text degil, oyunsal olarak da ayirt eder
+- death snapshot bu pencereyi daha temiz bir replay kancasina cevirir
 - bu yeni slice mevcut pacing ve fairness'i bozmaz
 - deterministic survival headline anlamli sapma gostermeden kalir
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
-- `STATE.md` ve `NEXT_AGENT.md` yeni gercegi yansitir
+- core docs gerekli gercegi yansitir

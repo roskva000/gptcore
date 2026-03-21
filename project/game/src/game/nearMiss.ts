@@ -4,6 +4,8 @@ export type NearMissState = {
   closestDistanceWasVisible: boolean;
 };
 
+export const NEAR_MISS_CHASE_DURATION_MS = 2600;
+
 export type NearMissSnapshot = {
   playerPosition: {
     x: number;
@@ -47,6 +49,35 @@ export const isNearMissHintActive = (
   activeRunElapsedMs: number,
   hideAtElapsedMs: number | null,
 ): boolean => hideAtElapsedMs !== null && activeRunElapsedMs < hideAtElapsedMs;
+
+export const isNearMissChaseActive = (
+  activeRunElapsedMs: number,
+  expiresAtElapsedMs: number | null,
+): boolean => expiresAtElapsedMs !== null && activeRunElapsedMs < expiresAtElapsedMs;
+
+const getNearMissChaseRemainingSecondsText = (remainingMs: number): string =>
+  `${(Math.max(remainingMs, 0) / 1000).toFixed(1)}s`;
+
+export const getNearMissChaseHudText = (
+  chainCount: number,
+  remainingMs: number,
+): string =>
+  `${getNearMissLabel(chainCount)}\nCHASE LIVE ${getNearMissChaseRemainingSecondsText(remainingMs)}`;
+
+export const getNearMissChaseSupportText = (
+  chainCount: number,
+  remainingMs: number,
+): string => {
+  const leadText =
+    chainCount > 1 ? `${chainCount}x near-miss chase live.` : 'Near-miss chase live.';
+
+  return `${leadText} Thread another close shave within ${getNearMissChaseRemainingSecondsText(remainingMs)} to keep the lane hot.`;
+};
+
+export const getNearMissChaseRetryText = (chainCount: number): string =>
+  chainCount > 1
+    ? `${chainCount}x near-miss chase snapped. Reopen that lane.`
+    : 'Near-miss chase snapped. Reopen that lane.';
 
 export const evaluateNearMiss = (
   snapshot: NearMissSnapshot,

@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-21
-Updated By: Codex Run #257
+Updated By: Codex Run #258
 
 ---
 
@@ -30,6 +30,7 @@ Mevcut durum:
 - Run #255 ile ayni `clear climb` truth'u death/retry payoff'una da sindi; `45.6s+` olumler artik `CLEAR CLIMB` badge'i, `60s CLEAR`e kalan fark ve tek satirlik rematch hedefiyle final push olarak okunuyor
 - Run #256 ile `45.6-60s` band'i ilk gercek runtime davranisini kazandi; clear climb boyunca drift artik forced final-threat rejimine giriyor ve `45.6-52.0s` `ascent stair` ile `52.0-60.0s` `summit snap` pencereleri son stretch'i generic cadence'den ayiriyor
 - Run #257 ile ayni clear-climb truth'u arena spectacle ve live readability tarafinda da parcalandi; HUD/callout `ASCENT STAIR` ile `SUMMIT SNAP`i ayri ayri gosteriyor, backdrop glow/band/frame motion'u da bu iki final davranisa gore yone degistiriyor
+- Run #258 ile insan sinyalindeki pozitif `near miss` anlari kisa omurlu bir replay kancasina tasindi; yakin gecis artik `CHASE LIVE` countdown'u, support satiri ve death snapshot retry prompt'u uzerinden kisa bir earned follow-up penceresi tasiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -45,7 +46,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
 - shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla iki basamakli final-threat kimligi tasiyor; ilk yari `ascent stair`, son yari `summit snap` olarak ayni truth'ta okunuyor
 - shipped slice: `ascent stair -> summit snap` rejimi artik arena glow/aura/band/frame hareketinde de ayri motion imzalari tasiyor; final stretch ekranda yone ve snapback karakteriyle okunuyor
-- next slice: run-phase/final-stretch koridorunda oyalanmadan replay istegini buyuten ilk hafif risk-odul / retention yuzeyini ac
+- shipped slice: `near miss` artik tek-frame pulse degil; `CHASE LIVE` HUD countdown'u ve support/retry prompt kancasi ile kisa omurlu bir earned risk-odul penceresi aciyor
+- next slice: bu near-miss chase'i score inflation ya da agir progression acmadan daha guclu bir oyuncu payoff'una sindir
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -61,6 +63,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 ## Expansion Track D — Retention Hooks
 - tekrar denemeyi tetikleyen hafif meta, route, challenge veya earned payoff katmani ac
 - yakin gecislerin zaten pozitif insan sinyali verdigi unutulmasin; replay istegini yukselten dar ama oyunsal bir odak sec
+- aktif near-miss chase slice'i ilk retained adaydir; siradaki is bu pencereyi gorsel/oyunsal olarak biraz daha sahiplenmek olmali
 - agir progression bloat'a kacma
 
 ## Expansion Track E — Browser Validation In Practice

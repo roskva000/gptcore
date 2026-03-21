@@ -77,9 +77,14 @@ import {
   SPAWN_GRACE_DEPTH,
 } from '../src/game/spawnGrace.ts';
 import {
+  NEAR_MISS_CHASE_DURATION_MS,
   createNearMissState,
   evaluateNearMiss,
+  getNearMissChaseHudText,
+  getNearMissChaseRetryText,
+  getNearMissChaseSupportText,
   getNearMissLabel,
+  isNearMissChaseActive,
   isNearMissHintActive,
 } from '../src/game/nearMiss.ts';
 import { getFeedbackAudioContextCtor } from '../src/game/feedbackAudio.ts';
@@ -208,6 +213,7 @@ const deathPresentation = getDeathPresentation({
   reachedSurvivalGoal: false,
   retryPromptText: 'Space, Enter, tap/click, or move',
   escapePromptTitle: 'BREAK RIGHT',
+  nearMissPromptText: null,
 });
 assert.equal(
   deathPresentation.callout,
@@ -218,6 +224,30 @@ assert.equal(
   deathPresentation.badge,
   'NEW BEST',
   'A new-best death should keep its high-priority badge even after phase-payoff copy is added to the death overlay.',
+);
+const nearMissPromptDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
+  survivalTimeSeconds: 12.3,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 3,
+    totalRuns: 3,
+    firstDeathTime: 8.4,
+    totalRetryDelayMs: 4200,
+    retryCount: 3,
+    recentDeathTimes: [8.4, 10.2, 12.3],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '14.1s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+  nearMissPromptText: '2x near-miss chase snapped. Reopen that lane.',
+});
+assert.equal(
+  nearMissPromptDeathPresentation.prompt,
+  'Next lane: BREAK RIGHT\n2x near-miss chase snapped. Reopen that lane.\nRetry: Space, Enter, tap/click, or move',
+  'A live near-miss chase should take over the retry middle line so the death screen feeds straight back into another risky run.',
 );
 assert.equal(
   deathPresentation.title,
@@ -568,6 +598,7 @@ const lateEndgameDeathPresentation = getDeathPresentation({
   reachedSurvivalGoal: false,
   retryPromptText: 'Space, Enter, tap/click, or move',
   escapePromptTitle: 'BREAK LEFT',
+  nearMissPromptText: null,
 });
 assert.equal(
   lateEndgameDeathPresentation.badge,
@@ -601,6 +632,7 @@ const clearClimbDeathPresentation = getDeathPresentation({
   reachedSurvivalGoal: false,
   retryPromptText: 'Space, Enter, tap/click, or move',
   escapePromptTitle: 'BREAK DOWN',
+  nearMissPromptText: null,
 });
 assert.equal(
   clearClimbDeathPresentation.badge,
@@ -2350,6 +2382,31 @@ assert.equal(
   getNearMissLabel(3),
   '3x NEAR MISS',
   'Chained close shaves should restore the earned multiplier label after interruptions.',
+);
+assert.equal(
+  getNearMissChaseHudText(2, 2300),
+  '2x NEAR MISS\nCHASE LIVE 2.3s',
+  'Near-miss chase HUD should turn a close shave into a short live countdown instead of dropping back to a one-frame pulse.',
+);
+assert.equal(
+  getNearMissChaseSupportText(1, 1800),
+  'Near-miss chase live. Thread another close shave within 1.8s to keep the lane hot.',
+  'Near-miss chase support copy should sell the short replay-worthy follow-up without opening a new progression system.',
+);
+assert.equal(
+  getNearMissChaseRetryText(3),
+  '3x near-miss chase snapped. Reopen that lane.',
+  'A death during the chase window should turn the earned close-shave chain into a direct retry hook.',
+);
+assert.equal(
+  isNearMissChaseActive(6400, 6400 + NEAR_MISS_CHASE_DURATION_MS),
+  true,
+  'Near-miss chase should stay active through its short earned follow-up window.',
+);
+assert.equal(
+  isNearMissChaseActive(6400 + NEAR_MISS_CHASE_DURATION_MS, 6400 + NEAR_MISS_CHASE_DURATION_MS),
+  false,
+  'Near-miss chase should expire exactly at the configured deadline instead of reviving stale tension.',
 );
 assert.equal(
   isNearMissHintActive(6400, 6500),

@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #257:
+Current deterministic survival headline after Run #258:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+near_miss_chase_retry_surface:
+current: Run #258 `project/game/src/game/nearMiss.ts` yakin gecisi `CHASE LIVE` countdown'u olan kisa omurlu bir earned pencereye cevirdi; `project/game/src/game/GameScene.ts` bu truth'u near-miss HUD text'i, support satiri ve olum aninda death snapshot prompt'una bagliyor
+baseline: Run #257 state'inde near-miss pozitif bir anlik pulse'du ama replay istegine veya sonraki risk kararina baglanan kalici bir follow-up truth'u yoktu; iyi his anı hemen sönüyordu
+target: sonraki browser veya manuel gozlem oyuncunun yakin gecisi artik yalniz "guzel atlattim" diye degil, birkac saniye daha kovaladigi kisa bir risk penceresi ve daha guclu retry durtusu olarak anlattigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_clear_climb_spectacle_readability_surface:
 current: Run #257 `project/game/src/game/runPhase.ts` clear climb'i player-facing olarak `ASCENT STAIR LIVE` ve `SUMMIT SNAP LIVE` etiketlerine ayirdi; `project/game/src/game/GameScene.ts` goal badge, hint ve beat callout bu ayni truth'u kullaniyor. Backdrop glow/aura, top-bottom band ve frame de ascent ile summit icin ayri motion imzalari tasiyor; final stretch artik sahnede de yon degistiren bir olay gibi okunuyor

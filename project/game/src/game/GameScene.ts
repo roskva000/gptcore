@@ -66,9 +66,14 @@ import {
 } from './telemetry.ts';
 import { getPointerSteeringVelocity } from './pointerSteering.ts';
 import {
+  NEAR_MISS_CHASE_DURATION_MS,
   createNearMissState,
   evaluateNearMiss,
+  getNearMissChaseHudText,
+  getNearMissChaseRetryText,
+  getNearMissChaseSupportText,
   getNearMissLabel,
+  isNearMissChaseActive,
   isNearMissHintActive,
 } from './nearMiss.ts';
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
@@ -374,7 +379,9 @@ export class GameScene extends Phaser.Scene {
   private survivalGoalReachedThisRun = false;
   private nearMissChainCount = 0;
   private nearMissChainExpiresAtElapsedMs = 0;
+  private nearMissChaseExpiresAtElapsedMs: number | null = null;
   private nearMissHintHideAtElapsedMs: number | null = null;
+  private lastNearMissChainCount = 0;
   private beatCalloutHideAtElapsedMs: number | null = null;
   private lastAnnouncedRunBeatLabel: string | null = null;
   private lastShownRunPhaseId: RunPhaseId | null = null;
@@ -1020,6 +1027,8 @@ export class GameScene extends Phaser.Scene {
     this.maybeShowEndgameDriftCue(activeRunElapsedMs);
     this.updatePersonalBestChase();
     this.updateNearMissTracking(activeRunElapsedMs);
+    this.updateNearMissHud(activeRunElapsedMs);
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.updateArenaBeatSpectacle(time);
     this.updateRunBeatAnnouncement(activeRunElapsedMs);
 
@@ -1029,11 +1038,6 @@ export class GameScene extends Phaser.Scene {
     ) {
       this.hintText.setVisible(false);
       this.playingHintHideAtElapsedMs = null;
-    }
-
-    if (!isNearMissHintActive(activeRunElapsedMs, this.nearMissHintHideAtElapsedMs)) {
-      this.nearMissText.setVisible(false).setText('');
-      this.nearMissHintHideAtElapsedMs = null;
     }
 
     if (
@@ -1419,7 +1423,9 @@ export class GameScene extends Phaser.Scene {
     this.lastShownRunPhaseId = getRunPhaseState(0).currentPhase.id;
     this.nearMissChainCount = 0;
     this.nearMissChainExpiresAtElapsedMs = 0;
+    this.nearMissChaseExpiresAtElapsedMs = null;
     this.nearMissHintHideAtElapsedMs = null;
+    this.lastNearMissChainCount = 0;
     this.beatCalloutHideAtElapsedMs = null;
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownEndgameDriftCueId = null;
@@ -1573,7 +1579,9 @@ export class GameScene extends Phaser.Scene {
     this.playingHintHideAtElapsedMs = null;
     this.nearMissChainCount = 0;
     this.nearMissChainExpiresAtElapsedMs = 0;
+    this.nearMissChaseExpiresAtElapsedMs = null;
     this.nearMissHintHideAtElapsedMs = null;
+    this.lastNearMissChainCount = 0;
     this.beatCalloutHideAtElapsedMs = null;
     this.pausedRunElapsedMs = 0;
     this.pauseStartedAt = null;
@@ -2078,6 +2086,7 @@ export class GameScene extends Phaser.Scene {
     const fatalObstacle = this.resolveFatalObstacle(
       obstacleGameObject as Phaser.Physics.Arcade.Image,
     );
+    const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
     const hitDirection = this.getHitDirection(fatalObstacle);
     const escapePrompt = this.getEscapePrompt(hitDirection);
     const reachedSurvivalGoal = hasReachedSurvivalGoal(this.survivalTime);
@@ -2093,6 +2102,7 @@ export class GameScene extends Phaser.Scene {
       reachedSurvivalGoal,
       retryPromptText: this.getRetryActionPromptText(),
       escapePromptTitle: escapePrompt.title,
+      nearMissPromptText: this.getNearMissDeathPromptText(activeRunElapsedMs),
     });
 
     this.setPhase('gameOver');
@@ -2281,12 +2291,14 @@ export class GameScene extends Phaser.Scene {
     const withinChainWindow = activeRunElapsedMs <= this.nearMissChainExpiresAtElapsedMs;
     this.nearMissChainCount = withinChainWindow ? this.nearMissChainCount + 1 : 1;
     this.nearMissChainExpiresAtElapsedMs = activeRunElapsedMs + NEAR_MISS_CHAIN_WINDOW_MS;
+    this.nearMissChaseExpiresAtElapsedMs = activeRunElapsedMs + NEAR_MISS_CHASE_DURATION_MS;
     this.nearMissHintHideAtElapsedMs = activeRunElapsedMs + NEAR_MISS_HINT_DURATION_MS;
+    this.lastNearMissChainCount = this.nearMissChainCount;
 
     this.tweens.killTweensOf(this.nearMissText);
     this.tweens.killTweensOf(this.player);
     this.nearMissText
-      .setText(getNearMissLabel(this.nearMissChainCount))
+      .setText(this.getNearMissHudText(activeRunElapsedMs))
       .setAlpha(1)
       .setScale(0.92)
       .setVisible(true);
@@ -2313,6 +2325,32 @@ export class GameScene extends Phaser.Scene {
         this.player.setScale(1);
       },
     });
+  }
+
+  private updateNearMissHud(activeRunElapsedMs: number): void {
+    const hintActive = isNearMissHintActive(activeRunElapsedMs, this.nearMissHintHideAtElapsedMs);
+    const chaseActive = isNearMissChaseActive(
+      activeRunElapsedMs,
+      this.nearMissChaseExpiresAtElapsedMs,
+    );
+
+    if (this.nearMissChainCount <= 0 || (!hintActive && !chaseActive)) {
+      this.nearMissText.setVisible(false).setText('');
+      this.nearMissHintHideAtElapsedMs = null;
+      this.nearMissChaseExpiresAtElapsedMs = chaseActive ? this.nearMissChaseExpiresAtElapsedMs : null;
+
+      if (!chaseActive) {
+        this.nearMissChainCount = 0;
+      }
+
+      return;
+    }
+
+    this.nearMissText
+      .setText(this.getNearMissHudText(activeRunElapsedMs))
+      .setAlpha(hintActive ? 0.82 : 0.7)
+      .setScale(1)
+      .setVisible(true);
   }
 
   private pauseActiveObstacleSpawnGraceTweens(): void {
@@ -3289,9 +3327,46 @@ export class GameScene extends Phaser.Scene {
     return `${currentPhase.title}\n${currentPhase.detail}`;
   }
 
+  private getNearMissChaseRemainingMs(activeRunElapsedMs: number): number {
+    if (
+      !isNearMissChaseActive(activeRunElapsedMs, this.nearMissChaseExpiresAtElapsedMs) ||
+      this.nearMissChainCount <= 0
+    ) {
+      return 0;
+    }
+
+    return Math.max((this.nearMissChaseExpiresAtElapsedMs ?? activeRunElapsedMs) - activeRunElapsedMs, 0);
+  }
+
+  private getNearMissHudText(activeRunElapsedMs: number): string {
+    const chaseRemainingMs = this.getNearMissChaseRemainingMs(activeRunElapsedMs);
+
+    if (chaseRemainingMs > 0) {
+      return getNearMissChaseHudText(this.nearMissChainCount, chaseRemainingMs);
+    }
+
+    return getNearMissLabel(this.nearMissChainCount);
+  }
+
+  private getNearMissDeathPromptText(activeRunElapsedMs: number): string | null {
+    const chaseRemainingMs = this.getNearMissChaseRemainingMs(activeRunElapsedMs);
+
+    if (chaseRemainingMs <= 0 || this.lastNearMissChainCount <= 0) {
+      return null;
+    }
+
+    return getNearMissChaseRetryText(this.lastNearMissChainCount);
+  }
+
   private getCurrentPlayingSupportText(): string {
     if (this.survivalGoalReachedThisRun) {
       return `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`;
+    }
+
+    const chaseRemainingMs = this.getNearMissChaseRemainingMs(this.getActiveRunElapsedMs(this.time.now));
+
+    if (chaseRemainingMs > 0) {
+      return getNearMissChaseSupportText(this.nearMissChainCount, chaseRemainingMs);
     }
 
     return getRunPhaseSupportText(this.survivalTime);
@@ -3540,23 +3615,11 @@ export class GameScene extends Phaser.Scene {
 
   private restoreNearMissHintAfterPause(): void {
     if (this.nearMissHintHideAtElapsedMs === null || this.nearMissChainCount <= 0) {
-      this.nearMissText.setVisible(false).setText('');
+      this.updateNearMissHud(this.getActiveRunElapsedMs(this.time.now));
       return;
     }
 
-    const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
-
-    if (!isNearMissHintActive(activeRunElapsedMs, this.nearMissHintHideAtElapsedMs)) {
-      this.nearMissText.setVisible(false).setText('');
-      this.nearMissHintHideAtElapsedMs = null;
-      return;
-    }
-
-    this.nearMissText
-      .setText(getNearMissLabel(this.nearMissChainCount))
-      .setAlpha(0.82)
-      .setScale(1)
-      .setVisible(true);
+    this.updateNearMissHud(this.getActiveRunElapsedMs(this.time.now));
   }
 
   private updateRunBeatAnnouncement(activeRunElapsedMs: number): void {
