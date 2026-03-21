@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #253:
+Current deterministic survival headline after Run #254:
 - `29.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
 
+endgame_clear_climb_payoff_surface:
+current: Run #254 `project/game/src/game/runPhase.ts` `45.6s+` band'ina yeni `CLEAR CLIMB LIVE` truth'unu ekledi; `project/game/src/game/telemetry.ts` aktif goal badge'ini `CLEAR CLIMB | x.xs to 60s` formuna tasidi ve `project/game/src/game/GameScene.ts` ayni truth'u HUD renkleri, live hint/callout ve arena spectacle'a bagladi. `preclear squeeze` sonrasinda `60s` yolu artik generic countdown degil, isimli bir gec-final payoff'u gibi okunuyor
+baseline: Run #253 state'inde `preclear squeeze` `41.2-45.6s` band'ini authored hale getirmisti ama bu pencerenin arkasindaki `45.6s -> 60s` yolu halen gorece soyut ve generic `60s clear` countdown'una dusme riski tasiyordu
+target: sonraki browser veya manuel gozlem `clear climb` yuzeyinin gec finali copy kalabaligi olmadan daha istenir, daha takip edilir ve `60s` yolunu daha anlatilabilir hale getirdigini gostersin
+validation: `npm run telemetry:check`, `npm run build`
+
 endgame_preclear_squeeze_surface:
-current: Run #253 `project/game/src/game/balance.ts` `recenter` sonrasina `4.4s`lik `preclear squeeze` penceresi ekledi; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` bu yeni halkayi runtime + player-facing cue truth'una bagliyor. `41.2-45.6s` band'i artik `PRECLEAR SQUEEZE` badge/rematch dili, `12deg` fold-back ve `0.10s` lag ile 45s+ eline generic drift boslugu olmadan baglaniyor
+current: Run #254 state'inde Run #253'un `preclear squeeze` halkasi korunuyor ve artik arkasinda `clear climb` payoff'u oldugu icin `41.2-45.6s` band'i yalniz bounded basinç degil, `60s` kovalamacasina acilan son authored esik gibi okunuyor
 baseline: Run #252 state'inde `recenter` halkasi `39.0-41.2s` band'ini buyutmustu ama bu pencerenin arkasinda kalan `41s+` davranis hizla generic alternating drift cadence'ine donebiliyordu; 45s+ tarafi anlatilabilir ama tam bagli degildi
-target: sonraki browser veya manuel gozlem `preclear squeeze` halkasinin late finali cheap uzatma yerine okunur bir 41s+ basinç penceresine cevirdigini ve `32-45s` zincirini daha anlatilabilir hale getirdigini gostersin
+target: sonraki browser veya manuel gozlem `preclear squeeze` halkasinin artik `clear climb`e dogal bir handoff gibi okundugunu ve `41.2s+` basinçtan `60s` payoff'una kopuksuz gecis kurdugunu gostersin
 validation: `npm run telemetry:check`, `npm run build`
 
 endgame_recenter_handoff_surface:

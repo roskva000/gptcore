@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #254
+
+- `project/game/src/game/runPhase.ts` `preclear squeeze` sonrasina yeni `CLEAR CLIMB LIVE` truth'unu ekledi; `45.6-60s` band'i artik generic endgame paragrafina degil, kalan sureyi ve `60s` payoff'unu acikca satan authored bir final chase diline bagli
+- `project/game/src/game/telemetry.ts` aktif `goalStatusText` metnini gec finalde `CLEAR CLIMB | x.xs to 60s` formuna cevirdi; `45.6s+` band'i yalniz countdown degil isimli bir payoff penceresi olarak okunuyor
+- `project/game/src/game/GameScene.ts` clear-climb truth'unu HUD renkleri, phase status/detail satirlari, endgame callout/hint akisi ve arena spectacle yogunluguna bagladi; `preclear` bittikten sonra ekran tekrar generic clear chase'e duzlesmiyor
+- `project/game/scripts/telemetry-check.ts` yeni clear-climb detail/state/goal-badge regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #253
 
 - `project/game/src/game/balance.ts` `recenter` sonrasina yeni `preclear squeeze` penceresi ekledi; `41.2-45.6s` band'i artik generic alternating drift'e dusmeden `12deg` fold-back ve `0.10s` lag ile yeniden acilan lane'e basinç kuruyor

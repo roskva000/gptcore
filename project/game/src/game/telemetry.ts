@@ -1,4 +1,5 @@
 import { SURVIVAL_GOAL_SECONDS, TARGET_FIRST_DEATH_SECONDS } from './balance.ts';
+import { ENDGAME_CLEAR_CLIMB_START_SECONDS } from './runPhase.ts';
 
 export const TELEMETRY_RECENT_RUN_LIMIT = 4;
 export const VALIDATION_SAMPLE_RUN_TARGET = 5;
@@ -135,6 +136,13 @@ export const getSurvivalGoalChaseText = ({
   currentSurvivalTime: number;
 }): string => {
   const remainingToClear = SURVIVAL_GOAL_SECONDS - currentSurvivalTime;
+
+  if (
+    currentSurvivalTime >= ENDGAME_CLEAR_CLIMB_START_SECONDS &&
+    remainingToClear > 0.04
+  ) {
+    return `CLEAR CLIMB | ${remainingToClear.toFixed(1)}s to ${SURVIVAL_GOAL_SECONDS}s`;
+  }
 
   if (remainingToClear > 0.04) {
     return `${remainingToClear.toFixed(1)}s TO ${SURVIVAL_GOAL_SECONDS}s CLEAR`;

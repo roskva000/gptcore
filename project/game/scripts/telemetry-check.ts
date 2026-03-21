@@ -84,6 +84,7 @@ import {
   getRunHorizonText,
 } from '../src/game/runHorizon.ts';
 import {
+  getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDeathSummaryText,
   getRunPhaseReachedBadgeText,
@@ -320,6 +321,11 @@ assert.equal(
   'Recenter does not settle the lane. Drift folds back toward the reopened side and keeps a bounded squeeze on the run so 45s+ still feels live before the long 60s push. Next phase at 60s.',
   'The 41s+ band should surface its own preclear squeeze so the endgame does not flatten back into generic drift right after recenter ends.',
 );
+assert.equal(
+  getRunPhaseDetailText(50),
+  'Preclear squeeze finally gives way to the clear line. Hold the opened route for 10.0s more and carry the run clean into 60s. Next phase at 60s.',
+  'Once preclear ends, the phase detail should turn into a visible clear-climb payoff instead of falling back to a generic 60s countdown.',
+);
 assert.deepEqual(
   getEndgameDriftCue(32.2),
   {
@@ -397,6 +403,21 @@ assert.deepEqual(
     body: 'Recenter does not settle the lane. Drift folds back toward the reopened side and keeps a bounded squeeze on the run so 45s+ still feels live before the long 60s push.',
   },
   'The post-recenter 40s band should expose a bounded preclear cue so the run still feels under authored pressure before the long 60s climb.',
+);
+assert.deepEqual(
+  getEndgameClearClimbState(50),
+  {
+    title: 'CLEAR CLIMB LIVE',
+    hudLabel: 'CLEAR CLIMB',
+    accentColor: 0xfff0c7,
+    body: 'Preclear squeeze finally gives way to the clear line. Hold the opened route for 10.0s more and carry the run clean into 60s.',
+  },
+  'The final 45.6s+ stretch should expose a dedicated clear-climb state so HUD and spectacle can sell the push to 60s as a payoff window.',
+);
+assert.equal(
+  getEndgameClearClimbState(42),
+  null,
+  'The clear-climb state should stay closed before the preclear squeeze finishes.',
 );
 assert.equal(
   getEndgameDriftCue(35.4),
@@ -1502,6 +1523,13 @@ assert.equal(
   }),
   '41.6s TO 60s CLEAR',
   'The live goal badge should keep the namesake clear target visible before the run reaches 60s.',
+);
+assert.equal(
+  getSurvivalGoalChaseText({
+    currentSurvivalTime: 50,
+  }),
+  'CLEAR CLIMB | 10.0s to 60s',
+  'The late-run goal badge should switch from a generic clear countdown to a named clear climb once preclear hands the run into the final stretch.',
 );
 assert.equal(
   getSurvivalGoalChaseText({

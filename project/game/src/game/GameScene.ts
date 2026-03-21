@@ -74,6 +74,7 @@ import {
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
+  getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDetailText,
   getRunPhaseOnsetIntensity,
@@ -372,7 +373,7 @@ export class GameScene extends Phaser.Scene {
   private beatCalloutHideAtElapsedMs: number | null = null;
   private lastAnnouncedRunBeatLabel: string | null = null;
   private lastShownRunPhaseId: RunPhaseId | null = null;
-  private lastShownEndgameDriftCueId: EndgameDriftCue['id'] | null = null;
+  private lastShownEndgameDriftCueId: EndgameDriftCue['id'] | 'clear-climb' | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
@@ -1130,61 +1131,94 @@ export class GameScene extends Phaser.Scene {
     const breakthroughOnsetIntensity =
       this.phase === 'playing' ? getRunPhaseOnsetIntensity(this.survivalTime, 'breakthrough') : 0;
     const endgameCue = this.phase === 'playing' ? getEndgameDriftCue(this.survivalTime) : null;
+    const clearClimbState =
+      this.phase === 'playing' ? getEndgameClearClimbState(this.survivalTime) : null;
     const endgameCueIntensity = this.getEndgameDriftCueIntensity(endgameCue);
+    const clearClimbIntensity = this.getEndgameClearClimbIntensity(clearClimbState);
     const breakthroughOnsetAlphaBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughOnsetScaleBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughTellColor = 0xffc18a;
     const endgameCueAlphaBoost = endgameCueIntensity * 0.18;
     const endgameCueScaleBoost = endgameCueIntensity * 0.12;
-    const endgameCueColor = endgameCue?.accentColor ?? spectacle.glowColor;
+    const clearClimbAlphaBoost = clearClimbIntensity * 0.14;
+    const clearClimbScaleBoost = clearClimbIntensity * 0.08;
+    const endgameCueColor =
+      endgameCue?.accentColor ?? clearClimbState?.accentColor ?? spectacle.glowColor;
 
     this.backdropBase.setFillStyle(spectacle.backgroundColor, 1);
     this.backdropGlow
       .setFillStyle(
         breakthroughOnsetIntensity > 0
           ? breakthroughTellColor
-          : endgameCueIntensity > 0
+          : endgameCueIntensity > 0 || clearClimbIntensity > 0
             ? endgameCueColor
             : spectacle.glowColor,
-        spectacle.glowAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost,
+        spectacle.glowAlpha +
+          breakthroughOnsetAlphaBoost +
+          endgameCueAlphaBoost +
+          clearClimbAlphaBoost,
       )
-      .setScale(spectacle.glowScale + breakthroughOnsetScaleBoost + endgameCueScaleBoost);
+      .setScale(
+        spectacle.glowScale +
+          breakthroughOnsetScaleBoost +
+          endgameCueScaleBoost +
+          clearClimbScaleBoost,
+      );
     this.backdropAura
       .setStrokeStyle(
-        4 + breakthroughOnsetIntensity * 2 + endgameCueIntensity * 1.6,
+        4 + breakthroughOnsetIntensity * 2 + endgameCueIntensity * 1.6 + clearClimbIntensity,
         breakthroughOnsetIntensity > 0
           ? breakthroughTellColor
-          : endgameCueIntensity > 0
+          : endgameCueIntensity > 0 || clearClimbIntensity > 0
             ? endgameCueColor
             : spectacle.glowColor,
-        spectacle.auraAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost,
+        spectacle.auraAlpha +
+          breakthroughOnsetAlphaBoost +
+          endgameCueAlphaBoost +
+          clearClimbAlphaBoost,
       )
-      .setScale(spectacle.auraScale + breakthroughOnsetScaleBoost + endgameCueScaleBoost);
+      .setScale(
+        spectacle.auraScale +
+          breakthroughOnsetScaleBoost +
+          endgameCueScaleBoost +
+          clearClimbScaleBoost,
+      );
     this.backdropTopBand.setFillStyle(
       breakthroughOnsetIntensity > 0
         ? breakthroughTellColor
-        : endgameCueIntensity > 0
+        : endgameCueIntensity > 0 || clearClimbIntensity > 0
           ? endgameCueColor
           : spectacle.edgeColor,
-      spectacle.edgeAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost * 0.92,
+      spectacle.edgeAlpha +
+        breakthroughOnsetAlphaBoost +
+        endgameCueAlphaBoost * 0.92 +
+        clearClimbAlphaBoost * 0.86,
     );
     this.backdropBottomBand.setFillStyle(
       breakthroughOnsetIntensity > 0
         ? breakthroughTellColor
-        : endgameCueIntensity > 0
+        : endgameCueIntensity > 0 || clearClimbIntensity > 0
           ? endgameCueColor
           : spectacle.edgeColor,
-      spectacle.edgeAlpha * 0.88 + breakthroughOnsetAlphaBoost * 0.88 + endgameCueAlphaBoost * 0.8,
+      spectacle.edgeAlpha * 0.88 +
+        breakthroughOnsetAlphaBoost * 0.88 +
+        endgameCueAlphaBoost * 0.8 +
+        clearClimbAlphaBoost * 0.76,
     );
-    this.backdropGrid.setAlpha(spectacle.gridAlpha + endgameCueAlphaBoost * 0.28);
+    this.backdropGrid.setAlpha(
+      spectacle.gridAlpha + endgameCueAlphaBoost * 0.28 + clearClimbAlphaBoost * 0.22,
+    );
     this.backdropFrame.setStrokeStyle(
-      3 + breakthroughOnsetIntensity + endgameCueIntensity * 0.8,
+      3 + breakthroughOnsetIntensity + endgameCueIntensity * 0.8 + clearClimbIntensity * 0.7,
       breakthroughOnsetIntensity > 0
         ? breakthroughTellColor
-        : endgameCueIntensity > 0
+        : endgameCueIntensity > 0 || clearClimbIntensity > 0
           ? endgameCueColor
           : spectacle.frameColor,
-      spectacle.frameAlpha + breakthroughOnsetAlphaBoost + endgameCueAlphaBoost,
+      spectacle.frameAlpha +
+        breakthroughOnsetAlphaBoost +
+        endgameCueAlphaBoost +
+        clearClimbAlphaBoost,
     );
   }
 
@@ -2897,29 +2931,46 @@ export class GameScene extends Phaser.Scene {
 
   private updateGoalStatusText(): void {
     if (this.phase !== 'playing') {
-      this.goalStatusText.setText(`${SURVIVAL_GOAL_SECONDS}s CLEAR`);
+      this.goalStatusText
+        .setText(`${SURVIVAL_GOAL_SECONDS}s CLEAR`)
+        .setColor('#d8fff4')
+        .setBackgroundColor('#123f36');
       return;
     }
 
+    const clearClimbState = getEndgameClearClimbState(this.survivalTime);
     this.goalStatusText.setText(
       getSurvivalGoalChaseText({
         currentSurvivalTime: this.survivalTime,
       }),
     );
+    this.goalStatusText
+      .setColor(clearClimbState === null ? '#d8fff4' : '#fff3d1')
+      .setBackgroundColor(clearClimbState === null ? '#123f36' : '#4c2414');
   }
 
   private updateRunPhaseHud(): void {
     const { currentPhase } = getRunPhaseState(this.survivalTime);
     const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(this.survivalTime) : null;
+    const clearClimbState =
+      currentPhase.id === 'endgame' ? getEndgameClearClimbState(this.survivalTime) : null;
     const phaseStatusText = getRunPhaseStatusText(this.survivalTime);
     this.phaseStatusText
       .setText(
-        endgameCue === null ? phaseStatusText : `${phaseStatusText} | ${endgameCue.hudLabel}`,
+        endgameCue !== null
+          ? `${phaseStatusText} | ${endgameCue.hudLabel}`
+          : clearClimbState !== null
+            ? `${phaseStatusText} | ${clearClimbState.hudLabel}`
+            : phaseStatusText,
       )
-      .setColor(colorToCssHex(endgameCue?.accentColor ?? currentPhase.accentColor));
+      .setColor(
+        colorToCssHex(endgameCue?.accentColor ?? clearClimbState?.accentColor ?? currentPhase.accentColor),
+      );
     this.phaseDetailText
       .setText(getRunPhaseDetailText(this.survivalTime))
-      .setColor(colorToCssHex(endgameCue?.accentColor ?? currentPhase.accentColor));
+      .setColor(
+        colorToCssHex(endgameCue?.accentColor ?? clearClimbState?.accentColor ?? currentPhase.accentColor),
+      );
   }
 
   private maybeShowRunPhaseShiftHint(activeRunElapsedMs: number): void {
@@ -2965,31 +3016,36 @@ export class GameScene extends Phaser.Scene {
 
   private maybeShowEndgameDriftCue(activeRunElapsedMs: number): void {
     const endgameCue = getEndgameDriftCue(this.survivalTime);
+    const clearClimbState = getEndgameClearClimbState(this.survivalTime);
 
-    if (endgameCue === null) {
+    if (endgameCue === null && clearClimbState === null) {
       this.lastShownEndgameDriftCueId = null;
       return;
     }
 
-    if (endgameCue.id === this.lastShownEndgameDriftCueId) {
+    const cueId = endgameCue?.id ?? 'clear-climb';
+
+    if (cueId === this.lastShownEndgameDriftCueId) {
       return;
     }
 
-    this.lastShownEndgameDriftCueId = endgameCue.id;
+    this.lastShownEndgameDriftCueId = cueId;
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.hintText
-      .setText(`ENDGAME DRIFT\n${endgameCue.body}`)
+      .setText(`ENDGAME DRIFT\n${endgameCue?.body ?? clearClimbState?.body ?? ''}`)
       .setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
 
-    if (endgameCue.id === 'release') {
+    if (endgameCue?.id === 'release') {
       return;
     }
 
     this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS;
     this.tweens.killTweensOf(this.beatCalloutText);
     this.beatCalloutText
-      .setText(`${endgameCue.title}\n${endgameCue.body}`)
+      .setText(
+        `${endgameCue?.title ?? clearClimbState?.title ?? 'ENDGAME DRIFT'}\n${endgameCue?.body ?? clearClimbState?.body ?? ''}`,
+      )
       .setAlpha(1)
       .setScale(0.94)
       .setVisible(true);
@@ -3187,6 +3243,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     const { currentPhase } = getRunPhaseState(this.survivalTime);
+    const clearClimbState =
+      currentPhase.id === 'endgame' ? getEndgameClearClimbState(this.survivalTime) : null;
+
+    if (clearClimbState !== null) {
+      return `${currentPhase.title}\n${clearClimbState.body}`;
+    }
+
     return `${currentPhase.title}\n${currentPhase.detail}`;
   }
 
@@ -3239,6 +3302,22 @@ export class GameScene extends Phaser.Scene {
       default:
         return 0;
     }
+  }
+
+  private getEndgameClearClimbIntensity(
+    clearClimbState: ReturnType<typeof getEndgameClearClimbState>,
+  ): number {
+    if (clearClimbState === null) {
+      return 0;
+    }
+
+    const secondsIntoClearClimb = this.survivalTime - 45.6;
+
+    if (secondsIntoClearClimb <= 0) {
+      return 0.86;
+    }
+
+    return Math.max(0.32, 0.86 - secondsIntoClearClimb * 0.12);
   }
 
   private getWaitingHintText(): string {

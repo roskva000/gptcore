@@ -51,6 +51,13 @@ export type EndgameDriftCue = {
   title: string;
 };
 
+export type EndgameClearClimbState = {
+  accentColor: number;
+  body: string;
+  hudLabel: string;
+  title: string;
+};
+
 const RUN_PHASES: RunPhaseDefinition[] = [
   {
     id: 'opening',
@@ -120,6 +127,28 @@ const DRIFT_PRECLEAR_WINDOW_START_SECONDS =
   DRIFT_RECENTER_WINDOW_END_SECONDS;
 const DRIFT_PRECLEAR_WINDOW_END_SECONDS =
   DRIFT_PRECLEAR_WINDOW_START_SECONDS + DRIFT_PRECLEAR_WINDOW_SECONDS;
+
+export const ENDGAME_CLEAR_CLIMB_START_SECONDS = DRIFT_PRECLEAR_WINDOW_END_SECONDS;
+
+export const getEndgameClearClimbState = (
+  progressSeconds: number,
+): EndgameClearClimbState | null => {
+  if (
+    progressSeconds < ENDGAME_CLEAR_CLIMB_START_SECONDS ||
+    progressSeconds >= SURVIVAL_GOAL_SECONDS
+  ) {
+    return null;
+  }
+
+  const secondsToClear = Math.max(SURVIVAL_GOAL_SECONDS - progressSeconds, 0);
+
+  return {
+    title: 'CLEAR CLIMB LIVE',
+    hudLabel: 'CLEAR CLIMB',
+    accentColor: 0xfff0c7,
+    body: `Preclear squeeze finally gives way to the clear line. Hold the opened route for ${secondsToClear.toFixed(1)}s more and carry the run clean into ${SURVIVAL_GOAL_SECONDS}s.`,
+  };
+};
 
 export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | null => {
   if (progressSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS || progressSeconds >= SURVIVAL_GOAL_SECONDS) {
@@ -244,6 +273,8 @@ export const getRunPhaseStatusText = (progressSeconds: number): string => {
 export const getRunPhaseDetailText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
+  const clearClimbState =
+    currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   if (nextPhase === null) {
     return currentPhase.detail;
@@ -253,12 +284,18 @@ export const getRunPhaseDetailText = (progressSeconds: number): string => {
     return `${endgameCue.body} Next phase at ${nextPhase.startSeconds}s.`;
   }
 
+  if (clearClimbState !== null) {
+    return `${clearClimbState.body} Next phase at ${nextPhase.startSeconds}s.`;
+  }
+
   return `${currentPhase.detail} Next phase at ${nextPhase.startSeconds}s.`;
 };
 
 export const getRunPhaseSupportText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
+  const clearClimbState =
+    currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
 
   if (nextPhase === null) {
     return `${currentPhase.title}: ${currentPhase.detail}`;
@@ -266,6 +303,10 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
 
   if (endgameCue !== null) {
     return `${currentPhase.title} ${endgameCue.hudLabel}: ${endgameCue.body} Next shift ${nextPhase.startSeconds}s.`;
+  }
+
+  if (clearClimbState !== null) {
+    return `${currentPhase.title} ${clearClimbState.hudLabel}: ${clearClimbState.body} Next shift ${nextPhase.startSeconds}s.`;
   }
 
   return `${currentPhase.title}: ${currentPhase.detail} Next shift ${nextPhase.startSeconds}s.`;

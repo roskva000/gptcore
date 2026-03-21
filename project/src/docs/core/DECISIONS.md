@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #254]
+
+Decision:
+`integration` modunda `preclear squeeze` sonrasindaki `45.6s+` band'i ayri bir `clear climb` payoff'una bagla; `60s clear` yolu generic countdown gibi degil, authored bir gec-final chase gibi okunsun.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni boslugu isaret ediyordu: Run #253 `41.2-45.6s` band'ini buyuttu ama `preclear squeeze` bittikten sonraki `45.6s -> 60s` yolu halen gorece soyut ve generic kalabilirdi. Yeni arena/orchestration/system katmani acmadan en yuksek etkili hamle, mevcut truth hatlarina `clear climb` adli son stretch dili ekleyip goal badge, phase copy, live callout ve spectacle tarafinda ayni kaynaktan okutmakti.
+
+Impact:
+`project/game/src/game/runPhase.ts` `45.6s+` icin yeni `CLEAR CLIMB LIVE` truth'unu ekledi; endgame detail/support satirlari artik kalan sureyi ve `60s` payoff'unu anlatan authored body kullaniyor. `project/game/src/game/telemetry.ts` aktif goal badge'ini bu band'de `CLEAR CLIMB | x.xs to 60s` diline tasidi. `project/game/src/game/GameScene.ts` clear-climb truth'unu HUD renklerine, phase status/detail satirlarina, yeni late-run callout/hint akisina ve arena spectacle yogunluguna bagladi. `project/game/scripts/telemetry-check.ts` yeni clear-climb state/detail/goal-badge kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89` korundu.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni `clear climb` yuzeyinin gec finali daha istenir kilmak yerine yalniz copy buyumesi, gereksiz HUD gurultusu veya cheap fake-payoff hissi urettigini gosterirse yalniz metin yogunlugu, renk siddeti ve spectacle vurgusu dar kapsamda ayarlanir; bu bahaneyle yeni orchestration/readiness katmani, yeni overlay framework'u, yeni hazard manager'i veya ikinci bir endgame system'i acilmaz.
+
 ### [Run #253]
 
 Decision:
