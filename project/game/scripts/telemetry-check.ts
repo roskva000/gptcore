@@ -38,6 +38,9 @@ import {
   DRIFT_RELEASE_WINDOW_SECONDS,
   DRIFT_OBSTACLE_ROTATION_DEGREES,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
+  DRIFT_SWEEP_LOCK_ROTATION_DEGREES,
+  DRIFT_SWEEP_LOCK_TARGET_LAG_SECONDS,
+  DRIFT_SWEEP_LOCK_WINDOW_SECONDS,
   DRIFT_SWEEP_ROTATION_DEGREES,
   DRIFT_SWEEP_TARGET_LAG_SECONDS,
   DRIFT_SWEEP_WINDOW_SECONDS,
@@ -602,6 +605,11 @@ assert.equal(
   'The late rebound slice should expose the same-side punish so the player-facing truth turns into a hold-or-cross decision instead of one long same-lane sustain.',
 );
 assert.equal(
+  getRunPhaseDetailText(37.1),
+  'Late sweep cashes in here. Sweep lock keeps biting on the crossed lane before aftershock slams down; do not leak back into the first reopen. Next phase at 60s.',
+  'The late-sweep follow-through should expose a second bounded lock so the 36-38s band creates a fresh spatial consequence instead of one long whip.',
+);
+assert.equal(
   getRunPhaseDetailText(37.8),
   'Late sweep does not fully let go. The aftershock clamp stays on the sweep side and tries to pin the escape lane one beat longer. Next phase at 60s.',
   'The late band should keep a dedicated follow-through cue after the sweep so 37.6-40s does not flatten back into generic drift copy.',
@@ -674,9 +682,22 @@ assert.deepEqual(
     snapshotLabel: 'LATE SWEEP',
     rematchLabel: 'the late sweep snapback',
     accentColor: 0xfff0c7,
-    body: 'The late sweep whips back across the arena. Read the cross-lane turn and keep the run alive through the snapback.',
+    body: 'The late sweep whips back across the arena. Read the first cross-lane turn, then stay off that closed side before sweep lock tightens it again.',
   },
   'The late sweep should expose a separate cue so the second half of the chain does not collapse back into generic drift copy.',
+);
+assert.deepEqual(
+  getEndgameDriftCue(37.1),
+  {
+    id: 'sweep-lock',
+    title: 'SWEEP LOCK LIVE',
+    hudLabel: 'SWEEP LOCK',
+    snapshotLabel: 'SWEEP LOCK',
+    rematchLabel: 'the sweep lock',
+    accentColor: 0xffd6a5,
+    body: 'Late sweep cashes in here. Sweep lock keeps biting on the crossed lane before aftershock slams down; do not leak back into the first reopen.',
+  },
+  'The late-sweep tail should expose a second bounded cue so the cross-lane turn produces a fresh player-facing consequence before aftershock.',
 );
 assert.deepEqual(
   getEndgameDriftCue(38),
@@ -789,6 +810,11 @@ assert.equal(
   'Deaths in the late rebound punish should surface the crossed-lane punish beat instead of flattening back to the generic rebound badge.',
 );
 assert.equal(
+  getRunPhaseReachedBadgeText(37.1),
+  'SWEEP LOCK',
+  'Deaths in the late sweep lock should surface the new cross-lane clamp instead of jumping straight from late sweep to aftershock.',
+);
+assert.equal(
   getRunPhaseReachedBadgeText(38),
   'AFTERSHOCK HOLD',
   'Deaths inside the post-sweep clamp should expose the new late follow-through badge instead of collapsing back to generic endgame wording.',
@@ -844,6 +870,11 @@ assert.equal(
   'Deaths in the punish slice should explain that the release lane closed again before late sweep takes over.',
 );
 assert.equal(
+  getRunPhaseDeathSummaryText(37.1),
+  'SWEEP LOCK snapped inside ENDGAME DRIFT. 22.9s short of OVERTIME.',
+  'Deaths in the sweep-lock slice should explain that the cross-lane whip stayed shut for one more beat before aftershock took over.',
+);
+assert.equal(
   getRunPhaseDeathSummaryText(38),
   'AFTERSHOCK HOLD snapped inside ENDGAME DRIFT. 22.0s short of OVERTIME.',
   'The post-sweep follow-through should carry through to the death summary so late failures stay attributable in the retry payoff.',
@@ -892,6 +923,11 @@ assert.equal(
   getRunPhaseRetryGoalText(34.5),
   'Rematch the rebound punish and carry it to 60s clear in +25.5s',
   'Retry guidance should name the punish slice directly so the player knows the same-side hold stopped being safe.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(37.1),
+  'Rematch the sweep lock and carry it to 60s clear in +22.9s',
+  'Retry guidance should name the sweep lock directly so the late sweep now sells a concrete second consequence instead of one generic crossback.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(38),
@@ -1122,7 +1158,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane before aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
+    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, preclear, plus a clear-climb summit snap keep the 40s alive.',
   },
   'Endgame should announce the authored late-run chain instead of sounding like a disconnected late-run reset.',
 );
@@ -1778,6 +1814,28 @@ assert.deepEqual(
         targetPoint: { x: 400, y: 300 },
         playerVelocity: { x: 0, y: -214 },
         survivalTimeSeconds:
+          DRIFT_SWEEP_WINDOW_START_SECONDS +
+          (DRIFT_SWEEP_WINDOW_SECONDS - DRIFT_SWEEP_LOCK_WINDOW_SECONDS) +
+          0.1,
+        variant: 'drift',
+        runSpawnCount: 2,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.914,
+    y: 0.407,
+  },
+  'The late sweep lock should tighten the crossed lane one more step so the cross-lane whip produces a second bounded consequence before aftershock.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds:
           DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.1,
         variant: 'drift',
         runSpawnCount: 3,
@@ -2012,6 +2070,17 @@ assert.equal(
 assert.equal(
   getObstacleTargetLagSeconds({
     survivalTimeSeconds:
+      DRIFT_SWEEP_WINDOW_START_SECONDS +
+      (DRIFT_SWEEP_WINDOW_SECONDS - DRIFT_SWEEP_LOCK_WINDOW_SECONDS) +
+      0.1,
+    variant: 'drift',
+  }),
+  DRIFT_SWEEP_LOCK_TARGET_LAG_SECONDS,
+  'The sweep lock should tighten lag beyond late sweep so the crossed lane stays threatening for one more bounded beat before aftershock.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds:
       DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS + 0.1,
     variant: 'drift',
   }),
@@ -2114,6 +2183,21 @@ assert.equal(
   DRIFT_REBOUND_PUNISH_TARGET_LAG_SECONDS,
   0.1,
   'The rebound punish should tighten lag versus rebound hold so the same-side closure feels intentional before the wider sweep.',
+);
+assert.equal(
+  DRIFT_SWEEP_LOCK_WINDOW_SECONDS,
+  0.6,
+  'The sweep lock should stay short so late sweep gains a second consequence without stretching the entire 36-38s band into another long clamp.',
+);
+assert.equal(
+  DRIFT_SWEEP_LOCK_ROTATION_DEGREES,
+  24,
+  'The sweep lock should hit harder than late sweep so the crossed lane stays closed for one more beat before aftershock.',
+);
+assert.equal(
+  DRIFT_SWEEP_LOCK_TARGET_LAG_SECONDS,
+  0.05,
+  'The sweep lock should keep a tighter lag than late sweep so the follow-through feels like an intentional cross-lane lock instead of a soft drift tail.',
 );
 assert.equal(
   DRIFT_AFTERSHOCK_ROTATION_DEGREES,
@@ -3998,7 +4082,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 4\.4s preclear squeeze at 12deg with 0\.10s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 4\.4s preclear squeeze at 12deg with 0\.10s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

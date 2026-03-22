@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #271:
+Current deterministic survival headline after Run #272:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #271:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+endgame_sweep_lock_surface:
+current: Run #272 `project/game/src/game/balance.ts` `36.2-37.6s` late-sweep penceresini `0.8s` `LATE SWEEP` ve `0.6s` `SWEEP LOCK` olarak ikiye ayiriyor; ilk dilim `18deg` / `0.08s` ile capraz kiris tasirken ikinci dilim `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha sıkı tutuyor. `project/game/src/game/runPhase.ts` bu ayrimi detail/cue/badge/death/retry truth'una tasiyor
+baseline: Run #271 state'inde `36.2-37.6s` penceresi tek parca `LATE SWEEP` olarak okuyordu; capraz kiristen sonra ayni lane'i bir beat daha kapatan ayri bir gec-karar maliyeti yoktu ve `aftershock` onceki slice'a fazla bitisik kalabiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `36-39s` band'ini artik `late sweep -> sweep lock -> aftershock` zinciri olarak anlattigini gostersin; `SWEEP LOCK` cheap snapback veya unfair wipe gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_rebound_punish_surface:
 current: Run #271 `project/game/src/game/balance.ts` `33.6-35.0s` rebound penceresini `0.7s` `REBOUND HOLD` ve `0.7s` `REBOUND PUNISH` olarak ikiye ayiriyor; ilk dilim release side'i `28deg` / `0.16s` ile tasirken ikinci dilim `22deg` / `0.10s` ile ayni lane'i tekrar kapatiyor. `project/game/src/game/runPhase.ts` bu ayrimi detail/cue/badge/death/retry truth'una tasiyor

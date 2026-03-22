@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #271
+Updated By: Codex Run #272
 
 ---
 
@@ -43,6 +43,7 @@ Mevcut durum:
 - Run #268 ile ayni killbox authored trap'i sahne ve snapshot tonunda da parcalandi; `PINCH LOCK` ile `SEAL SNAP` artik backdrop glow/band/frame motion'u ve death overlay palette'i tarafinda da ayri imza tasiyor
 - Run #269 ile `24-32s` killbox fold rejimi ilk yeni runtime karar anini kazandi; `27.2-28.4s` `FOLD SNAP` penceresi `echo lock-in` sonrasi lane'i `14deg` rotation ve `0.14s` lag ile tekrar sikiyor, boylece drift release oncesi lock-in band'i generik cadence'e dusmuyor
 - Run #271 ile `33.6-35.0s` rebound penceresi ilk kez iki kararli bir zincire dondu; ilk `0.7s` `REBOUND HOLD` release side'i tasirken kalan `0.7s` `REBOUND PUNISH` ayni lane'i `22deg` / `0.10s` ile tekrar kapatiyor ve `32-35s` band'ini gercek `hold-or-cross` sorusuna ceviriyor
+- Run #272 ile `36.2-37.6s` late-sweep penceresi de ikinci bir bounded sonuca kavustu; ilk `0.8s` `LATE SWEEP` capraz kirisi aciyor, son `0.6s` `SWEEP LOCK` ise `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha kapatip `aftershock` oncesi yeni bir gec-karar maliyeti uretiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -53,7 +54,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 ## Expansion Track A — Run Architecture
 - shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut + erken `shadow echo` follow-through + `21.2s` bridge echo + `24s` echo lock-in ile coarse run ladder artik gercek arena davranisina daha derin sindi
 - shipped slice: `24-32s` `echo` cadence'i de artik killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimi; `24s` sonrasi davranis duz target-lag chase'e hemen dusmuyor
-- shipped slice: `32-45.6s` band'i artik bounded `release -> rebound -> late sweep -> aftershock hold -> recenter -> preclear squeeze` zinciriyle release'ten sonra da olayli kaliyor; endgame `41s+` sonrasi da hemen generik alternating beat'e dusmuyor
+- shipped slice: `32-45.6s` band'i artik bounded `release -> rebound -> late sweep -> sweep lock -> aftershock hold -> recenter -> preclear squeeze` zinciriyle release'ten sonra da olayli kaliyor; endgame `41s+` sonrasi da hemen generik alternating beat'e dusmuyor
 - shipped slice: `45.6-60s` band'i artik `clear climb` payoff diliyle goal chase/HUD/callout/spectacle tarafinda ayri bir gec final gibi okunuyor; `60s` yolu salt sayac degil takip edilen bir hedef haline geliyor
 - shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
 - shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla iki basamakli final-threat kimligi tasiyor; ilk yari `ascent stair`, son yari `summit snap` olarak ayni truth'ta okunuyor
@@ -67,7 +68,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
-- next slice: bu yeni `REBOUND PUNISH`i arena spectacle/death snapshot tarafinda da ayri okunur yap veya `36.2s+` late-sweep tarafina benzer dar bir runtime halka ekle; yeni hazard family acma
+- next slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimini arena spectacle/death snapshot tarafinda da ayri motion/palette truth'una sindir; yeni runtime halka veya hazard family acma
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -75,7 +76,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
-- yeni aday: `REBOUND PUNISH` slice'ini sahne ve snapshot tarafinda ayri okunur hale getir veya `late sweep` oncesi/sonrasi tek dar behavioural consequence ac; yeni hazard family acma
+- yeni aday: `SWEEP LOCK` slice'ini sahne ve snapshot tarafinda ayri okunur hale getir; `late sweep` ile `aftershock` arasindaki fark artik yalniz copy degil motion/overlay tonunda da okunmali
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

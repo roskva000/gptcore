@@ -14,6 +14,7 @@ import {
   DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
   DRIFT_RELEASE_WINDOW_SECONDS,
+  DRIFT_SWEEP_LOCK_WINDOW_SECONDS,
   DRIFT_SWEEP_WINDOW_START_SECONDS,
   DRIFT_SWEEP_WINDOW_SECONDS,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
@@ -75,6 +76,7 @@ export type EndgameDriftCueId =
   | 'rebound'
   | 'rebound-punish'
   | 'late-sweep'
+  | 'sweep-lock'
   | 'aftershock'
   | 'recenter'
   | 'preclear';
@@ -128,7 +130,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, an aftershock clamp, a short recenter handoff, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane, then cross clean, and push for 60s.',
+      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane, then cross clean, and push for 60s.',
   },
   {
     id: 'overtime',
@@ -169,6 +171,8 @@ const DRIFT_RELEASE_WINDOW_END_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_SWEEP_WINDOW_END_SECONDS =
   DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS;
+const DRIFT_SWEEP_LOCK_WINDOW_START_SECONDS =
+  DRIFT_SWEEP_WINDOW_END_SECONDS - DRIFT_SWEEP_LOCK_WINDOW_SECONDS;
 const DRIFT_AFTERSHOCK_WINDOW_START_SECONDS =
   DRIFT_SWEEP_WINDOW_END_SECONDS;
 const DRIFT_AFTERSHOCK_WINDOW_END_SECONDS =
@@ -333,14 +337,26 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
   }
 
   if (progressSeconds >= DRIFT_SWEEP_WINDOW_START_SECONDS && progressSeconds < DRIFT_SWEEP_WINDOW_END_SECONDS) {
+    if (progressSeconds < DRIFT_SWEEP_LOCK_WINDOW_START_SECONDS) {
+      return {
+        id: 'late-sweep',
+        title: 'LATE SWEEP LIVE',
+        hudLabel: 'LATE SWEEP LIVE',
+        snapshotLabel: 'LATE SWEEP',
+        rematchLabel: 'the late sweep snapback',
+        accentColor: 0xfff0c7,
+        body: 'The late sweep whips back across the arena. Read the first cross-lane turn, then stay off that closed side before sweep lock tightens it again.',
+      };
+    }
+
     return {
-      id: 'late-sweep',
-      title: 'LATE SWEEP LIVE',
-      hudLabel: 'LATE SWEEP LIVE',
-      snapshotLabel: 'LATE SWEEP',
-      rematchLabel: 'the late sweep snapback',
-      accentColor: 0xfff0c7,
-      body: 'The late sweep whips back across the arena. Read the cross-lane turn and keep the run alive through the snapback.',
+      id: 'sweep-lock',
+      title: 'SWEEP LOCK LIVE',
+      hudLabel: 'SWEEP LOCK',
+      snapshotLabel: 'SWEEP LOCK',
+      rematchLabel: 'the sweep lock',
+      accentColor: 0xffd6a5,
+      body: 'Late sweep cashes in here. Sweep lock keeps biting on the crossed lane before aftershock slams down; do not leak back into the first reopen.',
     };
   }
 
@@ -605,7 +621,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane before aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, preclear, plus a clear-climb summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

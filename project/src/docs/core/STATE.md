@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #271
+Updated By: Codex Run #272
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `mutation`
-- ana hedef: `33.6-35.0s` rebound penceresini `hold-or-cross` kararina cevirmek
+- ana hedef: `36.2-37.6s` late-sweep penceresini ikinci bir cross-lane sonuc ile buyutmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -27,11 +27,12 @@ Ama urunun asıl eksigi:
 
 Bugunki ilerleme:
 - run mode: `mutation`
-- ana hedef: `33.6-35.0s` rebound penceresini tek parca same-lane sustain olmaktan cikarip `hold-or-cross` kararina cevirmek
-- `project/game/src/game/balance.ts` rebound'u iki bounded dilime boldu: ilk `0.7s` `REBOUND HOLD` hala release side'i uzerinde `28deg` / `0.16s` ile tasiyor, kalan `0.7s` ise `REBOUND PUNISH` olarak `22deg` / `0.10s` ile ayni lane'i tekrar kapatip capraz cikisi zorluyor
-- ayni runtime slice `32-35s` band'ini `fold-carry -> release stretch -> rebound hold -> rebound punish` zincirine ceviriyor; release'ten acilan yone sonsuza kadar tutunmak artik bedelsiz degil
-- `project/game/src/game/runPhase.ts` endgame detail, cue, badge, death summary ve retry goal truth'unu yeni `REBOUND HOLD` / `REBOUND PUNISH` ayrimina hizaladi; oyuncu bu pencerede neyi tutup ne zaman caprazlamasi gerektigini daha net okuyor
-- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni rebound split kontratini regression altina aldi; rotation, lag, player-facing cue ve deterministic proxy anlatimi bu yeni karar anini kilitliyor
+- ana hedef: `36.2-37.6s` late sweep'i tek parca crossback whiplash olmaktan cikarip ikinci bir bounded closure ile yeni bir karar anina cevirmek
+- `project/game/src/game/balance.ts` late-sweep zincirine yeni `0.6s` `SWEEP LOCK` slice'i ekledi; ilk `0.8s` `LATE SWEEP` halen `18deg` / `0.08s` ile capraz kirarken son `0.6s` `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha sıkı tutuyor
+- ayni runtime slice `32-40s` band'ini `fold-carry -> release stretch -> rebound hold -> rebound punish -> late sweep -> sweep lock -> aftershock` zincirine ceviriyor; ilk caprazdan sonra ayni lane'e erken geri sizmak artik daha net bir maliyet tasiyor
+- `project/game/src/game/runPhase.ts` yeni `SWEEP LOCK` cue truth'unu detail, badge, death summary ve retry goal zincirine ekledi; `ENDGAME DRIFT` artik `late sweep`ten dogrudan `aftershock`a atlamiyor
+- `project/game/src/game/GameScene.ts` endgame shift hint'ini ve cue intensity haritasini bu yeni halka ile hizaladi; `rebound-punish` intensity boslugu da kapanmis oldu
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni sweep-lock rotation/lag/controller kontratini deterministic regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline yine `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
 - deterministic bucket dagilimi korundu: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.2s`
 
@@ -76,8 +77,8 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
-- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-32s` lock-in band'i `FOLD SNAP`, `32s`deki fold-carry release cevabi ve simdi bunun `REBOUND HOLD -> REBOUND PUNISH` devami ile tek zincir gibi calisiyor
-- sonraki adim ayni rebound'u sadece copy/spectacle cilasina cekmek degil; ya bu yeni punish'i sahne/snapshot tarafinda ayri okunur hale getir ya da `36.2s+` tarafina benzer dar bir runtime sonuc daha ac
+- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND PUNISH` ve simdi `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
+- sonraki adim yeni runtime acmak degil; bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimini sahne/snapshot tarafinda da ayri okunur hale getir
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

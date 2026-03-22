@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #272]
+
+Decision:
+`mutation` modunda `36.2-37.6s` late-sweep penceresini iki bounded halkaya bol; ilk `0.8s`i capraz kiris olan `LATE SWEEP`, son `0.6s`i ise ayni crossed lane'i bir beat daha tutan `SWEEP LOCK` olarak kullan.
+
+Reason:
+`AUDIT.md` bu turda presentation integration degil yeni runtime delta istiyordu. `REBOUND PUNISH` sonrasi `late sweep` henuz tek parca crossback gibi okuyordu; en dar ve en yuksek etkili mutation, yeni hazard family acmadan ayni sweep penceresi icinde ikinci bir gec-karar maliyeti tanimlamakti.
+
+Impact:
+`project/game/src/game/balance.ts` `SWEEP LOCK` slice'ini `24deg` rotation ve `0.05s` lag ile ekledi; `LATE SWEEP` artik `0.8s` / `18deg` / `0.08s` olarak daha kisa bir ilk kiris tasiyor. `project/game/src/game/runPhase.ts` yeni cue'yu endgame detail/badge/death/retry truth'una ekledi. `project/game/src/game/GameScene.ts` endgame hint ve cue intensity map'ini yeni halka ile hizaladi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni `SWEEP LOCK` slice'inin okunur ikinci closure yerine cheap snapback, unfair late wipe veya `aftershock` ile birbirine karisan gurultulu bir clamp urettigini gosterirse yalniz `SWEEP LOCK` sure/rotation/lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni endgame manager'i, orchestration/readiness katmani ya da yeni threat family acilmaz.
+
 ### [Run #271]
 
 Decision:

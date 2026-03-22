@@ -69,8 +69,11 @@ export const DRIFT_REBOUND_PUNISH_ROTATION_DEGREES = 22;
 export const DRIFT_REBOUND_PUNISH_TARGET_LAG_SECONDS = 0.1;
 export const DRIFT_SWEEP_WINDOW_START_SECONDS = 36.2;
 export const DRIFT_SWEEP_WINDOW_SECONDS = 1.4;
+export const DRIFT_SWEEP_LOCK_WINDOW_SECONDS = 0.6;
 export const DRIFT_SWEEP_ROTATION_DEGREES = 18;
 export const DRIFT_SWEEP_TARGET_LAG_SECONDS = 0.08;
+export const DRIFT_SWEEP_LOCK_ROTATION_DEGREES = 24;
+export const DRIFT_SWEEP_LOCK_TARGET_LAG_SECONDS = 0.05;
 export const DRIFT_AFTERSHOCK_WINDOW_SECONDS = 1.4;
 export const DRIFT_AFTERSHOCK_ROTATION_DEGREES = 30;
 export const DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS = 0.04;
@@ -207,6 +210,12 @@ const isDriftReboundPunishWindow = (survivalTimeSeconds: number): boolean =>
 
 const isDriftSweepWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= DRIFT_SWEEP_WINDOW_START_SECONDS &&
+  survivalTimeSeconds < DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS;
+
+const isDriftSweepLockWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >=
+    DRIFT_SWEEP_WINDOW_START_SECONDS +
+      (DRIFT_SWEEP_WINDOW_SECONDS - DRIFT_SWEEP_LOCK_WINDOW_SECONDS) &&
   survivalTimeSeconds < DRIFT_SWEEP_WINDOW_START_SECONDS + DRIFT_SWEEP_WINDOW_SECONDS;
 
 const isDriftAftershockWindow = (survivalTimeSeconds: number): boolean =>
@@ -581,7 +590,9 @@ export const getObstacleTravelDirection = ({
         : isDriftReboundPunishWindow(survivalTimeSeconds)
           ? DRIFT_REBOUND_PUNISH_ROTATION_DEGREES
         : isDriftSweepWindow(survivalTimeSeconds)
-          ? DRIFT_SWEEP_ROTATION_DEGREES
+          ? isDriftSweepLockWindow(survivalTimeSeconds)
+            ? DRIFT_SWEEP_LOCK_ROTATION_DEGREES
+            : DRIFT_SWEEP_ROTATION_DEGREES
         : isDriftAftershockWindow(survivalTimeSeconds)
           ? DRIFT_AFTERSHOCK_ROTATION_DEGREES
         : isDriftRecenterWindow(survivalTimeSeconds)
@@ -667,7 +678,9 @@ export const getObstacleTargetLagSeconds = ({
         ? DRIFT_REBOUND_TARGET_LAG_SECONDS
         : DRIFT_REBOUND_PUNISH_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftSweepWindow(survivalTimeSeconds)
-      ? DRIFT_SWEEP_TARGET_LAG_SECONDS
+      ? isDriftSweepLockWindow(survivalTimeSeconds)
+        ? DRIFT_SWEEP_LOCK_TARGET_LAG_SECONDS
+        : DRIFT_SWEEP_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftAftershockWindow(survivalTimeSeconds)
       ? DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftRecenterWindow(survivalTimeSeconds)
