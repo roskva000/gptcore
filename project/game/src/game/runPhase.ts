@@ -10,6 +10,7 @@ import {
   STRAFE_OBSTACLE_UNLOCK_SECONDS,
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
+  DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
   DRIFT_FALSE_CLEAR_WINDOW_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
@@ -97,6 +98,7 @@ export type EndgameClearClimbState = {
   accentColor: number;
   body: string;
   hudLabel: string;
+  id: 'ascent-stair' | 'ridge-cut' | 'summit-snap';
   rematchLabel: string;
   snapshotLabel: string;
   threatLabel: string;
@@ -132,7 +134,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, a false-clear bait, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane, do not bite on the fake reopen, then push for 60s.',
+      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, a false-clear bait, and a preclear squeeze before clear climb stair-steps upward, cuts across the ridge, then snaps back near the summit. Stretch the release lane, do not bite on the fake reopen, then push for 60s.',
   },
   {
     id: 'overtime',
@@ -286,18 +288,32 @@ export const getEndgameClearClimbState = (
   }
 
   const secondsToClear = Math.max(SURVIVAL_GOAL_SECONDS - progressSeconds, 0);
-  const inSummitSnapWindow = progressSeconds >= DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS;
+  const inAscentWindow = progressSeconds < DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS;
+  const inRidgeWindow =
+    progressSeconds >= DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS &&
+    progressSeconds < DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS;
 
   return {
-    title: inSummitSnapWindow ? 'SUMMIT SNAP LIVE' : 'ASCENT STAIR LIVE',
-    hudLabel: inSummitSnapWindow ? 'SUMMIT SNAP' : 'ASCENT STAIR',
-    accentColor: inSummitSnapWindow ? 0xff9eb1 : 0xfff0c7,
-    snapshotLabel: 'CLEAR CLIMB',
-    rematchLabel: 'the clear climb',
-    threatLabel: inSummitSnapWindow ? 'SUMMIT SNAP' : 'ASCENT STAIR',
-    body: inSummitSnapWindow
-      ? `The summit snap is live. Drift whips back across the opened lane while ${secondsToClear.toFixed(1)}s remain; keep the route alive and finish the ${SURVIVAL_GOAL_SECONDS}s clear under the snapback.`
-      : `Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for ${secondsToClear.toFixed(1)}s more; hold the climb and carry the run clean into ${SURVIVAL_GOAL_SECONDS}s.`,
+    id: inAscentWindow ? 'ascent-stair' : inRidgeWindow ? 'ridge-cut' : 'summit-snap',
+    title: inAscentWindow
+      ? 'ASCENT STAIR LIVE'
+      : inRidgeWindow
+        ? 'RIDGE CUT LIVE'
+        : 'SUMMIT SNAP LIVE',
+    hudLabel: inAscentWindow ? 'ASCENT STAIR' : inRidgeWindow ? 'RIDGE CUT' : 'SUMMIT SNAP',
+    accentColor: inAscentWindow ? 0xfff0c7 : inRidgeWindow ? 0xbcecff : 0xff9eb1,
+    snapshotLabel: inAscentWindow ? 'ASCENT STAIR' : inRidgeWindow ? 'RIDGE CUT' : 'SUMMIT SNAP',
+    rematchLabel: inAscentWindow
+      ? 'the ascent stair'
+      : inRidgeWindow
+        ? 'the ridge cut'
+        : 'the summit snap',
+    threatLabel: inAscentWindow ? 'ASCENT STAIR' : inRidgeWindow ? 'RIDGE CUT' : 'SUMMIT SNAP',
+    body: inAscentWindow
+      ? `Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for ${secondsToClear.toFixed(1)}s more; hold the climb, then be ready to cut back off the ridge before ${SURVIVAL_GOAL_SECONDS}s.`
+      : inRidgeWindow
+        ? `The ridge cut is live. Drift slices back across the climb lane while ${secondsToClear.toFixed(1)}s remain; leave the first stair route now or the summit snap will cash it in.`
+        : `The summit snap is live. Drift whips back across the opened lane while ${secondsToClear.toFixed(1)}s remain; keep the route alive and finish the ${SURVIVAL_GOAL_SECONDS}s clear under the snapback.`,
   };
 };
 
@@ -642,7 +658,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, false clear, preclear, plus a clear-climb summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

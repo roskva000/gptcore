@@ -158,6 +158,8 @@ const RUN_PHASE_SHIFT_CALLOUT_DURATION_MS = 1900;
 const ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS = 1500;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
+const CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_X = -14;
+const CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_Y = -14;
 const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_X = -34;
 const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_Y = -10;
 const BREAKTHROUGH_STRAFE_GLOW_OFFSET_X = 24;
@@ -3315,9 +3317,11 @@ export class GameScene extends Phaser.Scene {
       .setBackgroundColor(
         clearClimbState === null
           ? '#123f36'
-          : clearClimbState.threatLabel === 'SUMMIT SNAP'
+          : clearClimbState.id === 'summit-snap'
             ? '#4a1620'
-            : '#4c2414',
+            : clearClimbState.id === 'ridge-cut'
+              ? '#14374a'
+              : '#4c2414',
       );
   }
 
@@ -3855,7 +3859,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a false-clear bait, and a preclear squeeze keep the 40s lane under pressure.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a false-clear bait, and a preclear squeeze feed a clear-climb ascent, a ridge cut, and the final summit snap.';
     }
 
     if (phaseId === 'overtime') {
@@ -3923,7 +3927,15 @@ export class GameScene extends Phaser.Scene {
       return 0.86;
     }
 
-    return Math.max(0.32, 0.86 - secondsIntoClearClimb * 0.12);
+    if (clearClimbState.id === 'ridge-cut') {
+      return 0.92;
+    }
+
+    if (clearClimbState.id === 'summit-snap') {
+      return Math.max(0.38, 0.9 - secondsIntoClearClimb * 0.1);
+    }
+
+    return Math.max(0.42, 0.84 - secondsIntoClearClimb * 0.08);
   }
 
   private getClearClimbBackdropMotion(
@@ -3958,7 +3970,7 @@ export class GameScene extends Phaser.Scene {
 
     const pulse = Math.sin(time / 180);
 
-    if (clearClimbState.threatLabel === 'SUMMIT SNAP') {
+    if (clearClimbState.id === 'summit-snap') {
       return {
         glowOffsetX: CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_X + pulse * 12,
         glowOffsetY: CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_Y + Math.cos(time / 210) * 6,
@@ -3970,6 +3982,23 @@ export class GameScene extends Phaser.Scene {
         frameOffsetY: -2,
         frameScaleX: 1.018,
         frameScaleY: 0.988,
+      };
+    }
+
+    if (clearClimbState.id === 'ridge-cut') {
+      const ridgeSway = Math.sin(time / 150);
+
+      return {
+        glowOffsetX: CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_X + ridgeSway * 14,
+        glowOffsetY: CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_Y + Math.cos(time / 200) * 5,
+        topBandOffsetX: -10 + ridgeSway * 12,
+        bottomBandOffsetX: 18 - ridgeSway * 10,
+        topBandAngle: -3.6,
+        bottomBandAngle: 2.9,
+        frameOffsetX: -4 + ridgeSway * 5,
+        frameOffsetY: -3,
+        frameScaleX: 1.02,
+        frameScaleY: 0.987,
       };
     }
 

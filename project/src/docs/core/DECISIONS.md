@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #276]
+
+Decision:
+`mutation` modunda `CLEAR CLIMB` finalini uc halkaya bol; `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` zinciriyle `45.6s+` final stretch'e yeni bir bounded route degistirme ani ekle.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni yere bakiyordu: late-40s integration kapandi, siradaki dogru adim yeni runtime/gameplay delta idi. En yuksek etkili ve en az dagitan mutation; ayni `clear climb` koridorunda yeni hazard family acmadan summit oncesi yeni bir karar ani yaratmakti.
+
+Impact:
+`project/game/src/game/balance.ts` clear climb ascent'ini `4.8s`e cekip araya `2.0s`lik `RIDGE CUT` (`22deg`, `0.07s`) ekledi; summit snap `28deg` / `0.02s` ile daha sert finale dondu. `project/game/src/game/runPhase.ts` yeni halka icin detail, badge, death summary ve retry goal truth'u yazdi. `project/game/src/game/GameScene.ts` goal badge/background ve clear-climb backdrop motion'unu yeni uc halkaya hizaladi. `project/game/scripts/telemetry-reports.ts` ile `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `RIDGE CUT` beat'inin summit oncesi okunur bir route degistirme ani yerine cheap zigzag, anlamsiz tekrar ya da readability kaybi urettigini gosterirse yalniz `RIDGE CUT` pencere suresi ile `rotation/lag` siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni clear-climb manager'i, overlay framework'u, orchestration/readiness katmani ya da ayni koridora ikinci bir hazard family acilmaz.
+
 ### [Run #275]
 
 Decision:

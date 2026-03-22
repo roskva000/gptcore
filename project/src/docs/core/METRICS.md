@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #275:
+Current deterministic survival headline after Run #276:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #275:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+clear_climb_ridge_cut_surface:
+current: Run #276 `project/game/src/game/balance.ts` clear climb'i `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkaya boluyor; yeni `RIDGE CUT` `50.4-52.4s` araliginda `22deg` travel ve `0.07s` lag ile climb lane'ini summit oncesi capraz kesiyor. `project/game/src/game/runPhase.ts` ayni beat'i detail/badge/death-retry truth'una tasiyor ve `project/game/src/game/GameScene.ts` goal badge ile backdrop motion'unu yeni halkaya hizaliyor
+baseline: Run #275 state'inde clear climb yalniz `ASCENT STAIR -> SUMMIT SNAP` olarak iki halkaliydi; `45.6s+` stretch climb'dan snapback'e dogrudan geciyor, summit oncesi ayri bir route degistirme ani sormuyordu
+target: sonraki browser veya manuel gozlem oyuncunun `50-52.5s` civarini artik summit oncesi ayri bir `RIDGE CUT` karari olarak anlattigini gostersin; yeni beat cheap zigzag veya readability kaybi gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_false_clear_preclear_spectacle_snapshot_surface:
 current: Run #275 `project/game/src/game/GameScene.ts` `false-clear` ile `preclear` icin ayri glow/band/frame motion truth'u uyguluyor; bait slice'i daha hafif reopen offset'iyle lane'in acildigi hissini verirken `project/game/src/game/deathPresentation.ts` ayni cue'yu serin reopen palette'iyle tasiyor. `PRECLEAR SQUEEZE` ise daha sert close motion'u ve daha sicak snapshot tonu ile bu bait'in cash-in'ini ayri okutur

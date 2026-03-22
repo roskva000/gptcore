@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #275
+Updated By: Codex Run #276
 
 ---
 
@@ -45,6 +45,7 @@ Mevcut durum:
 - Run #271 ile `33.6-35.0s` rebound penceresi ilk kez iki kararli bir zincire dondu; ilk `0.7s` `REBOUND HOLD` release side'i tasirken kalan `0.7s` `REBOUND PUNISH` ayni lane'i `22deg` / `0.10s` ile tekrar kapatiyor ve `32-35s` band'ini gercek `hold-or-cross` sorusuna ceviriyor
 - Run #272 ile `36.2-37.6s` late-sweep penceresi de ikinci bir bounded sonuca kavustu; ilk `0.8s` `LATE SWEEP` capraz kirisi aciyor, son `0.6s` `SWEEP LOCK` ise `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha kapatip `aftershock` oncesi yeni bir gec-karar maliyeti uretiyor
 - Run #275 ile `41.2-45.6s` `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi sahne ve death snapshot tarafina da sindi; false clear artik daha serin bir reopen motion/palette'i, preclear ise daha sert bir close motion/palette'i tasiyor
+- Run #276 ile `45.6-60s` clear climb finali uc halkaya cikti; `50.4-52.4s` yeni `RIDGE CUT` beat'i `ASCENT STAIR` ile `SUMMIT SNAP` arasina girip summit oncesi yeni bir route degistirme anı acti
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -59,8 +60,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `41.2-45.6s` handoff'u artik iki kararli bir finale dondu; `FALSE CLEAR` kisa bir guvenli-lane yem'i gosteriyor, ardindaki `PRECLEAR SQUEEZE` ise ayni baited lane'i daha sert kapatip `45.6s+` push'una authored bir cash-in veriyor
 - shipped slice: `45.6-60s` band'i artik `clear climb` payoff diliyle goal chase/HUD/callout/spectacle tarafinda ayri bir gec final gibi okunuyor; `60s` yolu salt sayac degil takip edilen bir hedef haline geliyor
 - shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
-- shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla iki basamakli final-threat kimligi tasiyor; ilk yari `ascent stair`, son yari `summit snap` olarak ayni truth'ta okunuyor
-- shipped slice: `ascent stair -> summit snap` rejimi artik arena glow/aura/band/frame hareketinde de ayri motion imzalari tasiyor; final stretch ekranda yone ve snapback karakteriyle okunuyor
+- shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla uc basamakli final-threat kimligi tasiyor; `ascent stair` climb lane'i yukari tasiyor, `ridge cut` ayni lane'i summit oncesi capraz kesiyor, `summit snap` ise son saniyeleri daha sert kapatiyor
+- shipped slice: `ascent stair -> ridge cut -> summit snap` rejimi artik HUD/detail/badge/retry goal ve arena glow/aura/band/frame hareketinde de ayri okunuyor; final stretch ekranda uc farkli niyet tasiyor
 - shipped slice: `near miss` artik tek-frame pulse degil; `CHASE LIVE` HUD countdown'u ve support/retry prompt kancasi ile kisa omurlu bir earned risk-odul penceresi aciyor
 - shipped slice: ayni `near miss chase` aktifken arena backdrop'u da kisa bir heat pulse'a giriyor; oyuncu pencereyi yalniz copy degil sahnedeki sicaklik degisiminden de ayirt ediyor
 - shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
@@ -72,14 +73,14 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
-- next slice: late-40s koridoruna geri donmeden baska bir phase cephesinde yeni runtime/gameplay delta ac; tercihen `clear climb` veya `breakthrough` icinde yeni bounded karar ani uret
+- next slice: yeni `ridge cut` runtime halkasini death snapshot tonunda da ayri okunur hale getir ya da baska bir phase cephesinde yeni runtime/gameplay delta ac; `41-45.6s` koridoruna geri donme
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
 - arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
-- clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
+- clear climb tarafinda summit oncesi yeni runtime basinç alindi; sonraki secim ya bu son stretch'in snapshot/readability tarafini sindirmek ya da yeni arena cephe ailesine gecmek
 - yeni aday: late chain'i birakip `45.6-60s` clear-climb veya `10-18s` breakthrough icinde yeni bounded runtime davranisi ac; ayni `41-45.6s` sayilarini bir kez daha tune etme
 
 ## Expansion Track C — UI / Shell Identity

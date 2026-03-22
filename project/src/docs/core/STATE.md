@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #275
+Updated By: Codex Run #276
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimini runtime'i buyutmadan sahne motion'u ve death snapshot tonunda da ayri okunur hale getirmek
+- run mode: `mutation`
+- ana hedef: `CLEAR CLIMB` finaline yeni bounded bir runtime karar ani ekleyip `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` zincirini acmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,12 +26,13 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `integration`
-- ana hedef: `41.2-45.6s` bait-then-cash-in zincirini gorsel davranis ve snapshot tonunda da ayristirmak
-- `project/game/src/game/GameScene.ts` `false-clear` ve `preclear` icin ayri glow/band/frame motion imzalari ekledi; bait slice'i daha acilan bir reopen, squeeze slice'i ise daha sert bir cross-lane close gibi akiyor
-- ayni dosya `false-clear` cue yogunlugunu `recenter`'dan daha hafif, `preclear` yogunlugunu ise daha sert olacak sekilde ayarladi; late 40s band'i artik sahnede de iki farkli niyet tasiyor
-- `project/game/src/game/deathPresentation.ts` `FALSE CLEAR` ve `PRECLEAR SQUEEZE` olumleri icin ayri palette/callout/title/prompt tonlari ekledi; snapshot artik bait ve cash-in beat'lerini ayni generic late-endgame overlay ile sunmuyor
-- `project/game/scripts/telemetry-check.ts` yeni snapshot tone kontratini regression altina aldi
+- run mode: `mutation`
+- ana hedef: `45.6s+` clear-climb finalini yeni bir route karari ile buyutmek
+- `project/game/src/game/balance.ts` clear climb'i iki parcadan uce cikardi; `45.6-50.4s` `ASCENT STAIR`, `50.4-52.4s` yeni `RIDGE CUT`, `52.4-60s` daha sert `SUMMIT SNAP` olarak akiyor
+- ayni dosya yeni `ridge cut` penceresini `22deg` travel ve `0.07s` target lag ile summit oncesi ayri bir cross-lane cevap anina cevirdi; summit snap de `28deg` / `0.02s` ile daha sert final cash-in oldu
+- `project/game/src/game/runPhase.ts` yeni final beat'i HUD/detail/badge/death summary/retry goal truth'una tasidi; clear-climb olumleri artik generic `CLEAR CLIMB` yerine aktif halka olan `ASCENT STAIR`, `RIDGE CUT` veya `SUMMIT SNAP` ile okunuyor
+- `project/game/src/game/GameScene.ts` clear-climb hint, goal badge ve backdrop motion'unu yeni uc halkaya hizaladi; ridge cut artik ayri bir sahne salinimi ve mavi-accent ara closure olarak okunuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline yine `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
 - build halen mevcut bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
@@ -79,8 +80,8 @@ Yeni rejim:
 - `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND PUNISH` ve simdi `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak uc farkli gec cevap tasiyor; oyuncuya kisa bir fake reopen sonra ikinci bir kapanis soruluyor
-- bu yeni `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik sahne motion'u ve death snapshot tonunda da ayri okunuyor
-- sonraki adim ayni late-40s runtime'i tekrar tune etmek degil; baska bir gameplay cephesinde yeni runtime delta sec
+- `45.6-60s` clear climb artik `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkali bir final stretch; summit oncesi yeni bir route degistirme anı kazandi
+- sonraki adim bu yeni clear-climb halkalarini sayisal olarak tekrar tune etmek degil; yeni acilan halka oyuncuya snapshot/ton tarafinda daha da net okunuyorsa onu sindir
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

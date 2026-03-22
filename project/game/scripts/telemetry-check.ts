@@ -15,6 +15,10 @@ import {
   DRIFT_CLEAR_CLIMB_ASCENT_ROTATION_DEGREES,
   DRIFT_CLEAR_CLIMB_ASCENT_TARGET_LAG_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
+  DRIFT_CLEAR_CLIMB_RIDGE_ROTATION_DEGREES,
+  DRIFT_CLEAR_CLIMB_RIDGE_TARGET_LAG_SECONDS,
+  DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS,
+  DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
   DRIFT_FALSE_CLEAR_ROTATION_DEGREES,
   DRIFT_FALSE_CLEAR_TARGET_LAG_SECONDS,
@@ -634,8 +638,13 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(50),
-  'Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for 10.0s more; hold the climb and carry the run clean into 60s. Next phase at 60s.',
+  'Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for 10.0s more; hold the climb, then be ready to cut back off the ridge before 60s. Next phase at 60s.',
   'Once preclear ends, the phase detail should turn into a visible clear-climb ascent threat instead of falling back to a generic 60s countdown.',
+);
+assert.equal(
+  getRunPhaseDetailText(51),
+  'The ridge cut is live. Drift slices back across the climb lane while 9.0s remain; leave the first stair route now or the summit snap will cash it in. Next phase at 60s.',
+  'Mid clear-climb detail should expose the ridge cut so the final stretch gains a fresh route answer before summit snap.',
 );
 assert.equal(
   getRunPhaseDetailText(54),
@@ -762,24 +771,40 @@ assert.deepEqual(
 assert.deepEqual(
   getEndgameClearClimbState(50),
   {
+    id: 'ascent-stair',
     title: 'ASCENT STAIR LIVE',
     hudLabel: 'ASCENT STAIR',
     accentColor: 0xfff0c7,
-    snapshotLabel: 'CLEAR CLIMB',
-    rematchLabel: 'the clear climb',
+    snapshotLabel: 'ASCENT STAIR',
+    rematchLabel: 'the ascent stair',
     threatLabel: 'ASCENT STAIR',
-    body: 'Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for 10.0s more; hold the climb and carry the run clean into 60s.',
+    body: 'Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for 10.0s more; hold the climb, then be ready to cut back off the ridge before 60s.',
   },
   'The early clear-climb stretch should expose an ascent-stair state so HUD and spectacle can sell the push to 60s as an authored threat window.',
 );
 assert.deepEqual(
+  getEndgameClearClimbState(51),
+  {
+    id: 'ridge-cut',
+    title: 'RIDGE CUT LIVE',
+    hudLabel: 'RIDGE CUT',
+    accentColor: 0xbcecff,
+    snapshotLabel: 'RIDGE CUT',
+    rematchLabel: 'the ridge cut',
+    threatLabel: 'RIDGE CUT',
+    body: 'The ridge cut is live. Drift slices back across the climb lane while 9.0s remain; leave the first stair route now or the summit snap will cash it in.',
+  },
+  'The middle clear-climb stretch should expose a ridge-cut state so the final push gains a new route answer before summit snap.',
+);
+assert.deepEqual(
   getEndgameClearClimbState(54),
   {
+    id: 'summit-snap',
     title: 'SUMMIT SNAP LIVE',
     hudLabel: 'SUMMIT SNAP',
     accentColor: 0xff9eb1,
-    snapshotLabel: 'CLEAR CLIMB',
-    rematchLabel: 'the clear climb',
+    snapshotLabel: 'SUMMIT SNAP',
+    rematchLabel: 'the summit snap',
     threatLabel: 'SUMMIT SNAP',
     body: 'The summit snap is live. Drift whips back across the opened lane while 6.0s remain; keep the route alive and finish the 60s clear under the snapback.',
   },
@@ -857,8 +882,18 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseReachedBadgeText(50),
-  'CLEAR CLIMB',
-  'Deaths in the final 45.6s+ stretch should surface the clear climb badge so the last push does not collapse back to generic endgame wording.',
+  'ASCENT STAIR',
+  'Deaths early in clear climb should surface the ascent stair badge so the last push does not collapse back to generic endgame wording.',
+);
+assert.equal(
+  getRunPhaseReachedBadgeText(51),
+  'RIDGE CUT',
+  'Deaths in the middle clear-climb slice should surface the ridge cut badge so the new final-route answer stays attributable.',
+);
+assert.equal(
+  getRunPhaseReachedBadgeText(54),
+  'SUMMIT SNAP',
+  'Deaths late in clear climb should surface the summit snap badge so the final seconds stay attributable instead of flattening into a generic clear push.',
 );
 assert.equal(
   getRunPhaseDeathSummaryText(7.4),
@@ -922,8 +957,18 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDeathSummaryText(50),
-  'CLEAR CLIMB snapped inside ENDGAME DRIFT. 10.0s short of 60s CLEAR.',
-  'The final 45.6s+ death summary should frame the miss as a failed clear climb, not merely another generic step toward overtime.',
+  'ASCENT STAIR snapped inside ENDGAME DRIFT. 10.0s short of 60s CLEAR.',
+  'The early clear-climb death summary should frame the miss as a failed ascent stair, not merely another generic step toward overtime.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(51),
+  'RIDGE CUT snapped inside ENDGAME DRIFT. 9.0s short of 60s CLEAR.',
+  'The middle clear-climb death summary should frame the miss as a failed ridge cut so the new route answer stays explicit.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(54),
+  'SUMMIT SNAP snapped inside ENDGAME DRIFT. 6.0s short of 60s CLEAR.',
+  'The late clear-climb death summary should frame the miss as a failed summit snap, not merely a generic clear-climb miss.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(20),
@@ -982,8 +1027,18 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseRetryGoalText(50),
-  'Rematch the clear climb and carry it to 60s clear in +10.0s',
-  'The final 45.6s+ retry goal should sell the missed clear push directly instead of routing the player through generic overtime wording.',
+  'Rematch the ascent stair and carry it to 60s clear in +10.0s',
+  'The early clear-climb retry goal should sell the missed ascent stair directly instead of routing the player through generic overtime wording.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(51),
+  'Rematch the ridge cut and carry it to 60s clear in +9.0s',
+  'The middle clear-climb retry goal should sell the new ridge cut directly so the final stretch stays concrete.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(54),
+  'Rematch the summit snap and carry it to 60s clear in +6.0s',
+  'The late clear-climb retry goal should sell the summit snap directly so the final seconds stay concrete.',
 );
 const lateEndgameDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
@@ -1212,18 +1267,18 @@ const clearClimbDeathPresentation = getDeathPresentation({
 });
 assert.equal(
   clearClimbDeathPresentation.badge,
-  'CLEAR CLIMB',
-  'Final-stretch deaths should surface the clear climb badge so the player sees the missed finish window immediately.',
+  'ASCENT STAIR',
+  'Final-stretch deaths should surface the active clear-climb beat badge so the player sees the missed finish window immediately.',
 );
 assert.equal(
   clearClimbDeathPresentation.body,
-  'Run 50.0s. Best 54.3s.\nCLEAR CLIMB snapped inside ENDGAME DRIFT. 10.0s short of 60s CLEAR.',
-  'Final-stretch death body should explain that the player missed the named clear push, not just another generic endgame segment.',
+  'Run 50.0s. Best 54.3s.\nASCENT STAIR snapped inside ENDGAME DRIFT. 10.0s short of 60s CLEAR.',
+  'Final-stretch death body should explain that the player missed the active named clear-climb beat, not just another generic endgame segment.',
 );
 assert.equal(
   clearClimbDeathPresentation.prompt,
-  'Next lane: BREAK DOWN\nRematch the clear climb and carry it to 60s clear in +10.0s\nRetry: Space, Enter, tap/click, or move',
-  'Final-stretch retry prompt should push the player straight back toward the missed 60s clear instead of generic overtime phrasing.',
+  'Next lane: BREAK DOWN\nRematch the ascent stair and carry it to 60s clear in +10.0s\nRetry: Space, Enter, tap/click, or move',
+  'Final-stretch retry prompt should push the player straight back toward the missed named clear-climb beat instead of generic overtime phrasing.',
 );
 assert.equal(
   getRunPhaseTimelineText(20),
@@ -1364,7 +1419,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, false clear, preclear, plus a clear-climb summit snap keep the 40s alive.',
+    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
   },
   'Endgame should announce the authored late-run chain instead of sounding like a disconnected late-run reset.',
 );
@@ -1656,6 +1711,14 @@ assert.equal(
 assert.equal(
   getObstacleVariant({
     survivalTimeSeconds: DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS + 0.2,
+    runSpawnCount: 1,
+  }),
+  'drift',
+  'The ridge cut should keep the middle clear-climb seconds on bounded drift pressure instead of falling back to generic cadence before summit snap.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS + 0.2,
     runSpawnCount: 1,
   }),
   'drift',
@@ -2159,8 +2222,27 @@ assert.deepEqual(
     ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
   ),
   {
-    x: -0.899,
-    y: 0.438,
+    x: -0.927,
+    y: 0.375,
+  },
+  'The ridge cut should slice back across the climb lane so the middle clear-climb beat asks for a fresh route answer before summit snap.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS + 0.1,
+        variant: 'drift',
+        runSpawnCount: 7,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.883,
+    y: 0.469,
   },
   'The summit snap should whip back across the opened lane so the last seconds before 60s gain a sharper final-threat character.',
 );
@@ -2371,6 +2453,14 @@ assert.equal(
     survivalTimeSeconds: DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS + 0.1,
     variant: 'drift',
   }),
+  DRIFT_CLEAR_CLIMB_RIDGE_TARGET_LAG_SECONDS,
+  'The ridge cut should tighten lag versus ascent so the middle clear-climb answer slices back across the lane instead of coasting up the stair.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS + 0.1,
+    variant: 'drift',
+  }),
   DRIFT_CLEAR_CLIMB_SUMMIT_TARGET_LAG_SECONDS,
   'The summit snap should tighten lag again so the last seconds before 60s feel like a sharper snapback instead of a victory coast.',
 );
@@ -2470,9 +2560,19 @@ assert.equal(
   'Clear-climb ascent should stay firmer than preclear so the 45.6s+ lane keeps climbing under visible pressure.',
 );
 assert.equal(
+  DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_SECONDS,
+  2,
+  'The ridge cut should stay short so the new clear-climb decision feels bounded and does not swallow the whole final stretch.',
+);
+assert.equal(
+  DRIFT_CLEAR_CLIMB_RIDGE_ROTATION_DEGREES,
+  22,
+  'The ridge cut should hit harder than ascent so the middle clear-climb slice asks for a real route change before summit snap.',
+);
+assert.equal(
   DRIFT_CLEAR_CLIMB_SUMMIT_ROTATION_DEGREES,
-  26,
-  'The summit snap should hit harder than clear-climb ascent so the final seconds before 60s gain a distinct snapback character.',
+  28,
+  'The summit snap should hit harder than the ridge cut so the final seconds before 60s gain a distinct snapback character.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -4332,7 +4432,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 4\.8s ascent stair at 16deg and 0\.12s lag, a 2\.0s ridge cut at 50\.4s with 22deg and 0\.07s lag, then a summit snap at 28deg with 0\.02s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

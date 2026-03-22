@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #276
+
+- `project/game/src/game/balance.ts` `45.6-60s` clear climb'i uc halkaya boldu; `ASCENT STAIR` `4.8s`e cekildi, araya yeni `2.0s`lik `RIDGE CUT` beat'i eklendi ve `SUMMIT SNAP` `28deg` / `0.02s` ile daha sert finale dondu
+- `project/game/src/game/runPhase.ts` yeni `RIDGE CUT` halka truth'unu detail, HUD, badge, death summary ve retry goal tarafina tasidi; clear-climb olumleri artik generic `CLEAR CLIMB` yerine aktif halka adi ile okunuyor
+- `project/game/src/game/GameScene.ts` clear-climb goal badge/background ve backdrop motion'unu `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` zincirine hizaladi; ridge cut yeni mavi-accent ara closure gibi okunuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni clear-climb runtime/controller kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #275
 
 - `project/game/src/game/GameScene.ts` `false-clear` ve `preclear` icin ayri endgame backdrop motion imzalari ekledi; bait slice'i daha hafif reopen offset/angle akisi tasirken squeeze slice'i daha sert bir late close motion'u kullaniyor
