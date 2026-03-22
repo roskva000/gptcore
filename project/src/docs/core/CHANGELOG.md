@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #286
+
+- `project/game/src/game/balance.ts` `64.0-68.0s` araligina yeni bounded `HOUSE CUT` penceresi ekledi; drift bu slice'ta `18deg` travel ve `0.08s` lag ile `CASH OUT` sonrasi kapatilmis lane'i birkac saniye daha taxed tutuyor
+- `project/game/src/game/runPhase.ts` overtime cue truth'unu `BANKED AIR -> CASH OUT -> HOUSE CUT` zincirine genisletti; detail, badge, death summary, retry goal ve phase-shift announcement artik `68s HOLD` hedefini tasiyor
+- `project/game/src/game/GameScene.ts` goal badge, survival hint ve live support/callout akisini `HOUSE CUT` cue'suna hizaladi; `64s+` sonrasi HUD generic score baskisina geri donmuyor
+- `project/game/src/game/deathPresentation.ts` `HOUSE CUT` olumleri icin ayri snapshot palette'i ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni overtime carry runtime/controller kontratini ve player-facing truth'unu regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #285
 
 - `project/game/src/game/balance.ts` `60.0-64.0s` band'ina yeni authored overtime opener ekledi; `BANKED AIR` `1.8s` boyunca `14deg` travel ve `0.10s` lag ile cleared lane'i kisa bir reopen'a ceviriyor, `CASH OUT` ise `2.2s` boyunca `26deg` travel ve `0.03s` lag ile bu reopen'i bounded snapback'e cash ediyor

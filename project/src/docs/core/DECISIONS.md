@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #286]
+
+Decision:
+`mutation` modunda `64.0-68.0s` band'ina tek halkali bir overtime carry ekle; `CASH OUT` sonrasini generic score baskisina dusurmek yerine `HOUSE CUT` follow-through'una cevir.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni boslugu gosteriyordu: Run #285 `60s CLEAR` icin opener acti ama `64s+` sonrasi yeniden duz overtime'a dusuyordu. En yuksek etkili dar secim; ayni koridoru mikro-polish etmeden `CASH OUT` arkasina bir bounded hold-or-break sonucu ekleyip overtime'i anlatilabilir ikinci katmana tasimakti.
+
+Impact:
+`project/game/src/game/balance.ts` `64.0-68.0s` band'ina `4.0s` `HOUSE CUT` (`18deg`, `0.08s`) drift kontrati ekledi. `project/game/src/game/runPhase.ts` overtime truth'unu `BANKED AIR -> CASH OUT -> HOUSE CUT` zincirine buyuttu ve `68s HOLD` retry/death hedefini tanimladi. `project/game/src/game/GameScene.ts` goal badge, survival hint ve live callout akisini yeni carry cue'suna hizaladi. `project/game/src/game/deathPresentation.ts` `HOUSE CUT` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni overtime carry runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `HOUSE CUT` beat'inin post-cash-out carry yerine cheap overtime stall, anlamsiz named-beat gurultusu veya generic cadence'i gereksiz uzatan bir tax hissi urettigini gosterirse yalniz `HOUSE CUT` sure, rotation ve lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `60.0-68.0s` koridorunda copy/snapshot polish zinciri acilmaz.
+
 ### [Run #285]
 
 Decision:

@@ -120,6 +120,9 @@ export const OVERTIME_OPENER_BANKED_TARGET_LAG_SECONDS = 0.1;
 export const OVERTIME_OPENER_CASHOUT_WINDOW_SECONDS = 2.2;
 export const OVERTIME_OPENER_CASHOUT_ROTATION_DEGREES = 26;
 export const OVERTIME_OPENER_CASHOUT_TARGET_LAG_SECONDS = 0.03;
+export const OVERTIME_CARRY_WINDOW_SECONDS = 4;
+export const OVERTIME_CARRY_ROTATION_DEGREES = 18;
+export const OVERTIME_CARRY_TARGET_LAG_SECONDS = 0.08;
 export const DRIFT_OBSTACLE_ROTATION_DEGREES = 22;
 export const DRIFT_OBSTACLE_TINT = 0xc8ff9a;
 export const BREAKTHROUGH_PHASE_SPAWN_DELAY_MULTIPLIER = 0.94;
@@ -357,6 +360,8 @@ export const OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS =
   SURVIVAL_GOAL_SECONDS + OVERTIME_OPENER_BANKED_WINDOW_SECONDS;
 export const OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS =
   OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS + OVERTIME_OPENER_CASHOUT_WINDOW_SECONDS;
+export const OVERTIME_CARRY_WINDOW_END_SECONDS =
+  OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS + OVERTIME_CARRY_WINDOW_SECONDS;
 
 const isDriftClearClimbAscentWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS &&
@@ -381,6 +386,10 @@ const isOvertimeOpenerBankedWindow = (survivalTimeSeconds: number): boolean =>
 const isOvertimeOpenerCashoutWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS &&
   survivalTimeSeconds < OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS;
+
+const isOvertimeCarryWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS &&
+  survivalTimeSeconds < OVERTIME_CARRY_WINDOW_END_SECONDS;
 
 const isDriftClearClimbLedgeWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS &&
@@ -472,7 +481,8 @@ export const getObstacleVariant = ({
         isDriftClearClimbCrestWindow(survivalTimeSeconds) ||
         isDriftClearClimbSummitWindow(survivalTimeSeconds) ||
         isOvertimeOpenerBankedWindow(survivalTimeSeconds) ||
-        isOvertimeOpenerCashoutWindow(survivalTimeSeconds)
+        isOvertimeOpenerCashoutWindow(survivalTimeSeconds) ||
+        isOvertimeCarryWindow(survivalTimeSeconds)
       ? 'drift'
     : survivalTimeSeconds >= ECHO_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
@@ -763,6 +773,8 @@ export const getObstacleTravelDirection = ({
                 ? OVERTIME_OPENER_BANKED_ROTATION_DEGREES
               : isOvertimeOpenerCashoutWindow(survivalTimeSeconds)
                 ? OVERTIME_OPENER_CASHOUT_ROTATION_DEGREES
+                : isOvertimeCarryWindow(survivalTimeSeconds)
+                  ? OVERTIME_CARRY_ROTATION_DEGREES
                 : DRIFT_CLEAR_CLIMB_SUMMIT_ROTATION_DEGREES;
     const rotationDegrees =
       crossProduct === 0
@@ -873,6 +885,8 @@ export const getObstacleTargetLagSeconds = ({
       ? OVERTIME_OPENER_BANKED_TARGET_LAG_SECONDS
     : variant === 'drift' && isOvertimeOpenerCashoutWindow(survivalTimeSeconds)
       ? OVERTIME_OPENER_CASHOUT_TARGET_LAG_SECONDS
+    : variant === 'drift' && isOvertimeCarryWindow(survivalTimeSeconds)
+      ? OVERTIME_CARRY_TARGET_LAG_SECONDS
     : getSpawnTargetLagSeconds(survivalTimeSeconds);
 
 export const getSpawnCollisionGraceMs = (survivalTimeSeconds: number): number =>

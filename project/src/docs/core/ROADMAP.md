@@ -1,6 +1,6 @@
 # ROADMAP.md
-Last Updated: 2026-03-22
-Updated By: Codex Run #285
+Last Updated: 2026-03-23
+Updated By: Codex Run #286
 
 ---
 
@@ -13,6 +13,7 @@ Mevcut durum:
 - deterministic ve browser guard tabani yeterli
 - son donem mutation / presentation birikimi var
 - sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
+- Run #286 ile overtime artik `60.0-68.0s` boyunca `BANKED AIR -> CASH OUT -> HOUSE CUT` zinciri tasiyor; `64s+` sonrasi ilk kez bounded follow-through runtime karari uretiyor
 - Run #241 ile coarse phase ladder aktif gameplay pressure'a baglandi
 - Run #242 ile `BREAKTHROUGH` onset'i warm backdrop burst + phase callout + compact hint zinciriyle ekranda okunur bir arena olayi haline geldi
 - Run #243 ile `KILLBOX` onset'i ilk zorunlu `lead` cut, daha agresif target lead ve acili trajectory kirilmasi ile gercek bir spatial trap anina donustu
@@ -85,8 +86,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali; yeni `CREST VEER` ridge cut sonrasi kisa bir reopen'u hem runtime hem HUD/snapshot/spectacle tarafinda ayri okutur
-- shipped slice: `60.0-64.0s` overtime artik generic hot pressure degil; `BANKED AIR -> CASH OUT` zinciri `60s CLEAR` sonrasi ilk saniyeleri runtime, HUD, death/retry ve snapshot tonu tarafinda authored bir payout olarak tasiyor
-- next slice: overtime opener acildi; siradaki dogru adim ayni `60.0-64.0s` koridoruna polish icin geri donmek degil, `64s+` sonrasina ilk bounded overtime carry veya baska bir gameplay ailesinde yeni bir authored karar ani acmak
+- shipped slice: `60.0-68.0s` overtime artik generic hot pressure degil; `BANKED AIR -> CASH OUT -> HOUSE CUT` zinciri `60s CLEAR` sonrasi ilk sekiz saniyeyi runtime, HUD, death/retry ve snapshot tonu tarafinda authored bir payout + carry zinciri olarak tasiyor
+- next slice: overtime carry acildi; siradaki dogru adim ayni `60.0-68.0s` koridoruna polish icin geri donmek degil, `68s+` sonrasina ikinci bir overtime consequence, retention/gameplay bagli yeni authored karar ani ya da baska bir gameplay ailesinde yeni mutation acmak
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

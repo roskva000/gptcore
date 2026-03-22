@@ -22,10 +22,12 @@ import {
   DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
   OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS,
+  OVERTIME_CARRY_WINDOW_END_SECONDS,
   OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS,
   DRIFT_CENTER_PIN_TARGET_LAG_SECONDS,
   DRIFT_FALSE_CLEAR_WINDOW_SECONDS,
   OVERTIME_OPENER_BANKED_WINDOW_SECONDS,
+  OVERTIME_CARRY_WINDOW_SECONDS,
   OVERTIME_OPENER_CASHOUT_WINDOW_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
@@ -132,7 +134,7 @@ export type OvertimeOpenerState = {
   accentColor: number;
   body: string;
   hudLabel: string;
-  id: 'banked-air' | 'cash-out';
+  id: 'banked-air' | 'cash-out' | 'house-cut';
   rematchLabel: string;
   snapshotLabel: string;
   threatLabel: string;
@@ -177,7 +179,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: SURVIVAL_GOAL_SECONDS,
     accentColor: 0xfff0c7,
     detail:
-      'The goal is cleared, but overtime does not open flat. Banked air briefly reopens the clear lane, then cash out snaps back across it before the run settles into raw score pressure.',
+      'The goal is cleared, but overtime does not open flat. Banked air briefly reopens the clear lane, cash out snaps back across it, then house cut keeps that snapped lane taxed a few beats longer before the run settles into raw score pressure.',
   },
 ];
 
@@ -629,25 +631,35 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
 };
 
 export const getOvertimeOpenerState = (progressSeconds: number): OvertimeOpenerState | null => {
-  if (progressSeconds < SURVIVAL_GOAL_SECONDS || progressSeconds >= OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS) {
+  if (progressSeconds < SURVIVAL_GOAL_SECONDS || progressSeconds >= OVERTIME_CARRY_WINDOW_END_SECONDS) {
     return null;
   }
 
   const secondsIntoOvertime = Math.max(progressSeconds - SURVIVAL_GOAL_SECONDS, 0);
   const secondsToCashoutEnd = Math.max(OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS - progressSeconds, 0);
+  const secondsToCarryEnd = Math.max(OVERTIME_CARRY_WINDOW_END_SECONDS - progressSeconds, 0);
   const inBankedWindow = progressSeconds < OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS;
+  const inCashoutWindow =
+    progressSeconds >= OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS &&
+    progressSeconds < OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS;
 
   return {
-    id: inBankedWindow ? 'banked-air' : 'cash-out',
-    title: inBankedWindow ? 'BANKED AIR LIVE' : 'CASH OUT LIVE',
-    hudLabel: inBankedWindow ? 'BANKED AIR' : 'CASH OUT',
-    snapshotLabel: inBankedWindow ? 'BANKED AIR' : 'CASH OUT',
-    rematchLabel: inBankedWindow ? 'the banked-air reopen' : 'the cash-out snap',
-    threatLabel: inBankedWindow ? 'BANKED AIR' : 'CASH OUT',
-    accentColor: inBankedWindow ? 0xd8fff4 : 0xffd6a5,
+    id: inBankedWindow ? 'banked-air' : inCashoutWindow ? 'cash-out' : 'house-cut',
+    title: inBankedWindow ? 'BANKED AIR LIVE' : inCashoutWindow ? 'CASH OUT LIVE' : 'HOUSE CUT LIVE',
+    hudLabel: inBankedWindow ? 'BANKED AIR' : inCashoutWindow ? 'CASH OUT' : 'HOUSE CUT',
+    snapshotLabel: inBankedWindow ? 'BANKED AIR' : inCashoutWindow ? 'CASH OUT' : 'HOUSE CUT',
+    rematchLabel: inBankedWindow
+      ? 'the banked-air reopen'
+      : inCashoutWindow
+        ? 'the cash-out snap'
+        : 'the house cut',
+    threatLabel: inBankedWindow ? 'BANKED AIR' : inCashoutWindow ? 'CASH OUT' : 'HOUSE CUT',
+    accentColor: inBankedWindow ? 0xd8fff4 : inCashoutWindow ? 0xffd6a5 : 0xffb1c8,
     body: inBankedWindow
       ? `The clear is banked, but overtime does not flatten. Drift briefly reopens the cleared lane for ${Math.max(OVERTIME_OPENER_BANKED_WINDOW_SECONDS - secondsIntoOvertime, 0).toFixed(1)}s; take the free air now because cash out is already lining up behind it.`
-      : `The overtime cash-out is live. Drift snaps back across the reopened clear lane and keeps score pressure earned for ${secondsToCashoutEnd.toFixed(1)}s more; do not overhold the banked air you just won.`,
+      : inCashoutWindow
+        ? `The overtime cash-out is live. Drift snaps back across the reopened clear lane and keeps score pressure earned for ${secondsToCashoutEnd.toFixed(1)}s more; do not overhold the banked air you just won.`
+        : `House cut is live. Cash out does not fully let go; drift keeps taxing the cashed lane for ${secondsToCarryEnd.toFixed(1)}s more, so leave the first soft reopen and break late before raw overtime pressure takes over.`,
   };
 };
 
@@ -694,7 +706,7 @@ export const getRunPhaseDetailText = (progressSeconds: number): string => {
     currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
 
   if (overtimeOpenerState !== null) {
-    return `${overtimeOpenerState.body} Bank the opener through ${OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS.toFixed(1)}s.`;
+    return `${overtimeOpenerState.body} Carry the authored overtime through ${OVERTIME_CARRY_WINDOW_END_SECONDS.toFixed(1)}s.`;
   }
 
   if (nextPhase === null) {
@@ -732,7 +744,7 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
     currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
 
   if (overtimeOpenerState !== null) {
-    return `${currentPhase.title} ${overtimeOpenerState.hudLabel}: ${overtimeOpenerState.body} Bank the opener through ${OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS.toFixed(1)}s.`;
+    return `${currentPhase.title} ${overtimeOpenerState.hudLabel}: ${overtimeOpenerState.body} Carry the authored overtime through ${OVERTIME_CARRY_WINDOW_END_SECONDS.toFixed(1)}s.`;
   }
 
   if (nextPhase === null) {
@@ -795,7 +807,7 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
     currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
 
   if (overtimeOpenerState !== null) {
-    return `${overtimeOpenerState.snapshotLabel} snapped inside ${currentPhase.title}. ${Math.max(OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS - progressSeconds, 0).toFixed(1)}s short of 64s BANK.`;
+    return `${overtimeOpenerState.snapshotLabel} snapped inside ${currentPhase.title}. ${Math.max(OVERTIME_CARRY_WINDOW_END_SECONDS - progressSeconds, 0).toFixed(1)}s short of 68s HOLD.`;
   }
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
@@ -837,7 +849,7 @@ export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
     currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
 
   if (overtimeOpenerState !== null) {
-    return `Rematch ${overtimeOpenerState.rematchLabel} and bank 64s in +${Math.max(OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS - progressSeconds, 0).toFixed(1)}s`;
+    return `Rematch ${overtimeOpenerState.rematchLabel} and hold 68s in +${Math.max(OVERTIME_CARRY_WINDOW_END_SECONDS - progressSeconds, 0).toFixed(1)}s`;
   }
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
@@ -895,7 +907,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'overtime':
       return {
         title: 'OVERTIME LIVE',
-        body: '60s is cleared, but overtime opens with earned movement: banked air briefly reopens the clear lane, then cash out snaps back across it before the run settles into raw score pressure.',
+        body: '60s is cleared, but overtime opens with earned movement: banked air briefly reopens the clear lane, cash out snaps back across it, then house cut keeps the snapped lane taxed before the run settles into raw score pressure.',
       };
     default:
       return null;

@@ -567,6 +567,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (overtimeOpenerState?.id === 'house-cut') {
+    return {
+      badgeBackgroundColor: '#4f2435',
+      badgeTextColor: '#ffe6ef',
+      bodyTextColor: '#f0cad8',
+      calloutBackgroundColor: '#401b2b',
+      calloutTextColor: '#ffb6cf',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#4f2435',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff0f6',
+      titleTextColor: '#ffd9e7',
+    };
+  }
+
   return {
     ...DEFAULT_SNAPSHOT_TONE,
     promptBackgroundColor: hasNearMissChaseSnapshot

@@ -460,6 +460,7 @@ export class GameScene extends Phaser.Scene {
     | 'summit-snap'
     | 'banked-air'
     | 'cash-out'
+    | 'house-cut'
     | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
@@ -3324,7 +3325,7 @@ export class GameScene extends Phaser.Scene {
     const overtimeOpenerState = getOvertimeOpenerState(this.survivalTime);
     this.goalStatusText.setText(
       overtimeOpenerState !== null
-        ? `${overtimeOpenerState.threatLabel} | ${(64 - this.survivalTime).toFixed(1)}s to 64s BANK`
+        ? `${overtimeOpenerState.threatLabel} | ${(68 - this.survivalTime).toFixed(1)}s to 68s HOLD`
         : clearClimbState === null
         ? getSurvivalGoalChaseText({
             currentSurvivalTime: this.survivalTime,
@@ -3343,6 +3344,8 @@ export class GameScene extends Phaser.Scene {
         overtimeOpenerState !== null
           ? overtimeOpenerState.id === 'banked-air'
             ? '#183f39'
+            : overtimeOpenerState.id === 'house-cut'
+              ? '#4a1f2f'
             : '#5a3317'
           : clearClimbState === null
           ? '#123f36'
@@ -3740,7 +3743,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSurvivalGoalHintText(): string {
-    return `${SURVIVAL_GOAL_SECONDS}s clear!\nBanked air opens first; take the brief free lane before cash out snaps back through overtime.`;
+    return `${SURVIVAL_GOAL_SECONDS}s clear!\nBanked air opens first, cash out snaps it back, then house cut keeps the taxed lane alive through 68s.`;
   }
 
   private getCurrentPlayingHintText(): string {
@@ -3914,7 +3917,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'overtime') {
-      return 'Overtime is live. Banked air briefly reopens the clear lane, then cash out snaps back across it before score-only pressure takes over.';
+      return 'Overtime is live. Banked air briefly reopens the clear lane, cash out snaps back across it, then house cut keeps that taxed lane alive before score-only pressure takes over.';
     }
 
     return null;

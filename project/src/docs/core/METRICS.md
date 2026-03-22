@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #285:
+Current deterministic survival headline after Run #286:
 - `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #285:
 - validation export last run `36.9s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+overtime_carry_surface:
+current: Run #286 `project/game/src/game/balance.ts` `64.0-68.0s` band'ini yeni `HOUSE CUT` slice'iyla buyutuyor; beat `18deg` travel ve `0.08s` lag ile `CASH OUT` tarafinda kapanmis lane'i birkac saniye daha taxed tutuyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni carry'yi detail/HUD/death-retry, live callout ve snapshot tonu tarafina da tasiyor
+baseline: Run #285 state'inde `64.0s+` sonrasi overtime opener bitince faz generic score baskisina geri dusuyordu; `CASH OUT` arkasinda yeni bir bounded follow-through veya ayri player-facing truth yoktu
+target: sonraki browser veya manuel gozlem oyuncunun `64.0-68.0s` band'ini artik `HOUSE CUT` carry olarak anlattigini gostersin; yeni beat cheap stall, anlamsiz named-beat gurultusu veya generic overtime'i gereksiz uzatan bir tax gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 overtime_opener_surface:
 current: Run #285 `project/game/src/game/balance.ts` `60.0-64.0s` band'ini `BANKED AIR -> CASH OUT` olarak ayiriyor; ilk slice `14deg` travel ve `0.10s` lag ile cleared lane'i kisa bir reopen'a ceviriyor, ikinci slice `26deg` travel ve `0.03s` lag ile bu reopen'i bounded snapback'e cash ediyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni opener'i detail/HUD/death-retry, live callout ve snapshot tonu tarafina da tasiyor
