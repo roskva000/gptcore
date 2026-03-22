@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #287
+Updated By: Codex Run #288
 
 ---
 
@@ -13,6 +13,7 @@ Mevcut durum:
 - deterministic ve browser guard tabani yeterli
 - son donem mutation / presentation birikimi var
 - sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
+- Run #288 ile `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT -> RELEASE CUT` zinciri tasiyor; `30.4s+` sonrasi ilk kez yumusayan lane'i tekrar kesen son bir bounded handoff uretiyor
 - Run #287 ile overtime artik `60.0-72.0s` boyunca `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zinciri tasiyor; `68s+` sonrasi ilk kez ikinci bounded overtime consequence uretiyor
 - Run #241 ile coarse phase ladder aktif gameplay pressure'a baglandi
 - Run #242 ile `BREAKTHROUGH` onset'i warm backdrop burst + phase callout + compact hint zinciriyle ekranda okunur bir arena olayi haline geldi
@@ -79,7 +80,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
 - shipped slice: `BREAKTHROUGH` artik generic phase break'i degil; `STRAFE FORK`, `SURGE SNAP` ve yeni `GATE CUT` cue'lari bounded forced runtime pencereleri ve death/retry payoff'u ile killbox oncesi uc halkali authored cevap zinciri tasiyor
 - shipped slice: `GATE CUT` artik killbox onset'e phase cliff gibi dusmuyor; `LEAD CUT` ve `ECHO FOLLOW` cue'lari `18.0-20.6s` killbox onset'ini HUD/detail/hint/death-retry/snapshot tarafinda adlandirip `PINCH LOCK` oncesini de ayni authored zincire bagliyor
-- shipped slice: `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG` olarak uc closure halkasi tasiyor; `29.2-30.4s` band'i generic echo paragrafina donmeden release handoff'una son bir route-break sorusu bagliyor
+- shipped slice: `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT` olarak dort closure halkasi tasiyor; `30.4-32.0s` band'i yumusayan lane'i bir kez daha kesip `RELEASE CUT`e earned bir final handoff satiyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
 - shipped slice: `32.0-41.2s` `DRIFT` zinciri artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound cross -> rebound punish -> late sweep -> sweep lock -> aftershock -> recenter -> center pin` ayni lane'i once aciyor, sonra committed cross istiyor, sonra birkac farkli closure/handoff halkasiyla ikinci yariyi olayli tutuyor
@@ -87,7 +88,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali; yeni `CREST VEER` ridge cut sonrasi kisa bir reopen'u hem runtime hem HUD/snapshot/spectacle tarafinda ayri okutur
 - shipped slice: `60.0-72.0s` overtime artik generic hot pressure degil; `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zinciri `60s CLEAR` sonrasi ilk on iki saniyeyi runtime, HUD, death/retry ve snapshot tonu tarafinda authored bir payout + second-consequence zinciri olarak tasiyor
-- next slice: ikinci overtime consequence acildi; siradaki dogru adim ayni `60.0-72.0s` koridoruna polish icin geri donmek degil, overtime disinda yeni bir gameplay ailesi, retention/gameplay bagli yeni authored karar ani ya da farkli bir arena davranis mutasyonu acmak
+- next slice: `SLACK CUT` acildi; siradaki dogru adim ayni `24-32s` veya `60.0-72.0s` koridoruna polish icin geri donmek degil, farkli bir gameplay ailesi, retention/gameplay bagli yeni authored karar ani ya da baska bir arena davranis mutasyonu acmak
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

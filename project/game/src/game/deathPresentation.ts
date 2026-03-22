@@ -359,6 +359,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (killboxCue?.id === 'slack-cut') {
+    return {
+      badgeBackgroundColor: '#1d4a40',
+      badgeTextColor: '#dcfff4',
+      bodyTextColor: '#c6ebdf',
+      calloutBackgroundColor: '#163a33',
+      calloutTextColor: '#9ef0d1',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#1d4a40',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#e8fff7',
+      titleTextColor: '#d4fff0',
+    };
+  }
+
   if (endgameCue?.id === 'rebound') {
     return {
       badgeBackgroundColor: '#234427',

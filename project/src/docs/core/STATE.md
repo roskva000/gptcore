@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #287
+Updated By: Codex Run #288
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `mutation`
-- ana hedef: `68.0-72.0s` band'inda ikinci bounded overtime consequence'i acmak
+- ana hedef: `30.4-32.0s` killbox tail'ini yeni bir bounded handoff kararina cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -27,13 +27,13 @@ Ama urunun asıl eksigi:
 
 Bugunki ilerleme:
 - run mode: `mutation`
-- ana hedef: `68.0-72.0s` band'inda `HOUSE CUT` sonrasina ikinci bounded overtime consequence'i acmak
-- `project/game/src/game/balance.ts` `68.0-72.0s` koridoruna yeni `DUE NOW` beat'ini ekledi; yeni slice `24deg / 0.04s` ile house-cut'in yumusayan reopen'unu tekrar cash ederek overtime'i bir kez daha break-or-stay kararina ceviriyor
-- `project/game/src/game/runPhase.ts` overtime truth'unu `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zincirine buyuttu; detail/HUD/badge/death summary/retry goal ve phase-shift anonsu artik `72s HOLD`e kadar authored bir follow-through satiyor
-- `project/game/src/game/GameScene.ts` goal badge, survival hint, live callout ve support akisini yeni `DUE NOW` cue'suna bagladi; overtime callout zincirinde mevcut eksik fallback de duzeltilerek `68s+` sonrasi ekran artik yeni bir final cash-in ani gosteriyor
-- `project/game/src/game/deathPresentation.ts` `DUE NOW` olumleri icin ayri snapshot tonu ekledi; ikinci overtime consequence artik `banked-air`, `cash-out` ve `house-cut`tan ayri okunuyor
-- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni overtime consequence runtime/controller kontratini ve player-facing truth'unu regression altina aldi
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `31.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation export `35.5s`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
+- ana hedef: `30.4-32.0s` killbox tail'ine yeni `SLACK CUT` handoff'unu eklemek
+- `project/game/src/game/balance.ts` `30.4-32.0s` koridoruna yeni bounded `SLACK CUT` beat'ini ekledi; echo varyanti bu slice'ta `16deg / 0.06s` ile `LOCK DRAG`in biraktigi yumusak lane'i tekrar kesip `32s` drift release'i daha earned bir cash-in'e cevirdi
+- `project/game/src/game/runPhase.ts` `24-32s` truth'unu `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT -> RELEASE CUT` zincirine buyuttu; detail/HUD/badge/death summary/retry goal ve `KILLBOX LIVE` phase-shift anonsu artik son killbox handoff'unu da isimli satiyor
+- `project/game/src/game/GameScene.ts` killbox cue intensity/backdrop motion imzasini `SLACK CUT` icin genisletti; `30.4s+` sonrasi ekran artik generic echo cadence'e degil final bir shearing handoff'a geciyor
+- `project/game/src/game/deathPresentation.ts` `SLACK CUT` olumleri icin ayri snapshot tonu ekledi; yeni handoff artik `LOCK DRAG` ile ilk drift release arasinda kaybolmuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni killbox-tail runtime/controller kontratini ve player-facing truth'unu regression altina aldi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `31.9s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation export `37.1s`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - build halen mevcut Vite bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
 ---
@@ -77,14 +77,14 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH -> KILLBOX` artik `STRAFE FORK -> SURGE SNAP -> GATE CUT -> LEAD CUT -> ECHO FOLLOW -> PINCH LOCK` olarak bagli okunuyor; ayni `16.6-20.6s` sayilarina geri donup mikro-polish yapma
-- `24-32s` killbox lock-in artik `SEAL SNAP -> echo lock-in -> FOLD SNAP -> LOCK DRAG -> RELEASE CUT` olarak daha bagli bir tail tasiyor; ayni `27.2-30.4s` sayilarina geri donup cue/copy polish'i yapma
+- `24-32s` killbox lock-in artik `SEAL SNAP -> echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT -> RELEASE CUT` olarak daha bagli bir tail tasiyor; ayni `27.2-32.0s` sayilarina geri donup cue/copy polish'i yapma
 - `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND CROSS -> REBOUND PUNISH` ve `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> CENTER PIN -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak dort halkali gec cevap tasiyor; oyuncuya once kontrollu bir handoff, sonra yeni bir center clamp, sonra fake reopen ve ikinci kapanis soruluyor
 - `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali bir final stretch; ayni `45.6-60.0s` koridoruna geri donup tone/copy mikro-polish'i yapma
 - `60.0-72.0s` overtime zinciri artik `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` olarak authored; ayni beat'lerin copy/tone mikro-polish'ine geri donme
 - ayni `32.0-35.0s` koridoruna geri donup copy/tone mikro-polish'i yapma
-- sonraki dogru adim yeni bir runtime/gameplay delta; bu tur ikinci overtime consequence acildi, siradaki aday ayni `60.0-72.0s` koridoruna polish degil overtime disinda yeni bir gameplay ailesi ya da retention/gameplay bagli yeni authored karar ani
+- sonraki dogru adim yeni bir runtime/gameplay delta; bu tur killbox tail'i yeni `SLACK CUT` handoff'unu kazandi, siradaki aday ayni `24-32s` veya `60-72s` sayilarina polish degil farkli bir gameplay ailesi ya da retention/gameplay bagli yeni authored karar ani
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

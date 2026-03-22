@@ -178,6 +178,8 @@ const KILLBOX_PINCH_GLOW_OFFSET_X = 28;
 const KILLBOX_PINCH_GLOW_OFFSET_Y = -6;
 const KILLBOX_SEAL_GLOW_OFFSET_X = -34;
 const KILLBOX_SEAL_GLOW_OFFSET_Y = -2;
+const KILLBOX_SLACK_GLOW_OFFSET_X = -20;
+const KILLBOX_SLACK_GLOW_OFFSET_Y = 4;
 const ENDGAME_LATE_SWEEP_GLOW_OFFSET_X = -26;
 const ENDGAME_LATE_SWEEP_GLOW_OFFSET_Y = -10;
 const ENDGAME_SWEEP_LOCK_GLOW_OFFSET_X = -38;
@@ -3973,6 +3975,10 @@ export class GameScene extends Phaser.Scene {
       return 0;
     }
 
+    if (killboxCue.id === 'slack-cut') {
+      return 0.92;
+    }
+
     if (killboxCue.id === 'lock-drag') {
       return 0.88;
     }
@@ -4423,6 +4429,21 @@ export class GameScene extends Phaser.Scene {
         frameOffsetY: -2 + clamp,
         frameScaleX: 1.02,
         frameScaleY: 0.984,
+      };
+    }
+
+    if (killboxCue.id === 'slack-cut') {
+      return {
+        glowOffsetX: KILLBOX_SLACK_GLOW_OFFSET_X + whip * 13,
+        glowOffsetY: KILLBOX_SLACK_GLOW_OFFSET_Y + clamp * 7,
+        topBandOffsetX: -8 + whip * 12,
+        bottomBandOffsetX: 14 - whip * 11,
+        topBandAngle: -3.6,
+        bottomBandAngle: 3.2,
+        frameOffsetX: -4 + whip * 5,
+        frameOffsetY: clamp * 1.5,
+        frameScaleX: 1.018,
+        frameScaleY: 0.986,
       };
     }
 

@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #288
+
+- `project/game/src/game/balance.ts` `30.4-32.0s` araligina yeni bounded `SLACK CUT` penceresi ekledi; `echo` varyanti bu slice'ta `16deg` travel ve `0.06s` lag ile `LOCK DRAG` sonrasi yumusayan lane'i tekrar kesip `32s` drift release'i daha earned hale getiriyor
+- `project/game/src/game/runPhase.ts` killbox cue truth'unu `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT -> RELEASE CUT` zincirine genisletti; detail, badge, death summary, retry goal ve phase-shift announcement artik son killbox handoff'unu da tasiyor
+- `project/game/src/game/GameScene.ts` killbox cue intensity map'i ve backdrop motion'una `SLACK CUT` imzasi ekledi
+- `project/game/src/game/deathPresentation.ts` `SLACK CUT` olumleri icin ayri snapshot palette'i ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni killbox-tail runtime/controller kontratini ve guncel deterministic snapshot'i (`31.9s avg / 10.0s first death / 0% early`, validation export `37.1s`, last run `40.0s`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #287
 
 - `project/game/src/game/balance.ts` `68.0-72.0s` araligina yeni bounded `DUE NOW` penceresi ekledi; drift bu slice'ta `24deg` travel ve `0.04s` lag ile `HOUSE CUT` sonrasi yumusayan reopen'u tekrar cash ediyor

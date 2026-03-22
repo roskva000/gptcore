@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #287:
-- `31.7s` average survival
+Current deterministic survival headline after Run #288:
+- `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
-- average spawn count `38.3`
-- validation export snapshot `35.5s` average survival
-- validation export last run `36.9s`
+- average spawn count `38.8`
+- validation export snapshot `37.1s` average survival
+- validation export last run `40.0s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+killbox_slack_cut_surface:
+current: Run #288 `project/game/src/game/balance.ts` `30.4-32.0s` band'ini yeni `SLACK CUT` slice'iyla buyutuyor; beat `16deg` travel ve `0.06s` lag ile `LOCK DRAG` sonrasi yumusayan lane'i tekrar kesiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni handoff'u detail/HUD/death-retry, live spectacle ve snapshot tonu tarafina da tasiyor
+baseline: Run #287 state'inde `30.4s+` sonrasi killbox tail'i `LOCK DRAG` sonrasinda generic echo cadence'e daha cok yaklasiyordu; `32s` drift release oncesi ayri bir bounded final cash-in veya ayri player-facing truth yoktu
+target: sonraki browser veya manuel gozlem oyuncunun `30.4-32.0s` band'ini artik `SLACK CUT` final handoff'u olarak anlattigini gostersin; yeni beat cheap zigzag, named-beat gurultusu veya `LOCK DRAG`in tekrarina benzeyen bir slice gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 overtime_due_now_surface:
 current: Run #287 `project/game/src/game/balance.ts` `68.0-72.0s` band'ini yeni `DUE NOW` slice'iyla buyutuyor; beat `24deg` travel ve `0.04s` lag ile `HOUSE CUT` sonrasi yumusayan reopen'u tekrar cash ediyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni consequence'i detail/HUD/death-retry, live callout ve snapshot tonu tarafina da tasiyor

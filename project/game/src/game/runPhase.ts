@@ -8,6 +8,8 @@ import {
   KILLBOX_FOLD_SNAP_WINDOW_SECONDS,
   KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS,
   KILLBOX_LOCK_DRAG_WINDOW_SECONDS,
+  KILLBOX_SLACK_CUT_WINDOW_START_SECONDS,
+  KILLBOX_SLACK_CUT_WINDOW_SECONDS,
   KILLBOX_FORCED_LEAD_WINDOW_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_SECONDS,
@@ -86,7 +88,8 @@ export type KillboxCueId =
   | 'pinch-lock'
   | 'seal-snap'
   | 'fold-snap'
-  | 'lock-drag';
+  | 'lock-drag'
+  | 'slack-cut';
 
 export type KillboxCue = {
   accentColor: number;
@@ -167,7 +170,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: LEAD_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xff9eb1,
     detail:
-      'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, seal snap shuts it again just before 24s lock-in, and the later fold snap plus lock drag keep the echo lane pinned before drift release. Break your line late and keep changing across the fold.',
+      'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, seal snap shuts it again just before 24s lock-in, and the later fold snap plus lock drag keep the echo lane pinned before slack cut shears the soft reopen shut on the way to drift release. Break your line late and keep changing across the fold.',
   },
   {
     id: 'endgame',
@@ -215,6 +218,8 @@ const KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS =
   KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS + KILLBOX_FOLD_SNAP_WINDOW_SECONDS;
 const KILLBOX_LOCK_DRAG_WINDOW_END_SECONDS =
   KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS + KILLBOX_LOCK_DRAG_WINDOW_SECONDS;
+const KILLBOX_SLACK_CUT_WINDOW_END_SECONDS =
+  KILLBOX_SLACK_CUT_WINDOW_START_SECONDS + KILLBOX_SLACK_CUT_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_START_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_REBOUND_HOLD_WINDOW_END_SECONDS =
@@ -306,7 +311,7 @@ export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | n
 };
 
 export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
-  if (progressSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS || progressSeconds >= KILLBOX_LOCK_DRAG_WINDOW_END_SECONDS) {
+  if (progressSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS || progressSeconds >= KILLBOX_SLACK_CUT_WINDOW_END_SECONDS) {
     return null;
   }
 
@@ -370,14 +375,26 @@ export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
     };
   }
 
+  if (progressSeconds < KILLBOX_LOCK_DRAG_WINDOW_END_SECONDS) {
+    return {
+      id: 'lock-drag',
+      title: 'LOCK DRAG LIVE',
+      hudLabel: 'LOCK DRAG',
+      snapshotLabel: 'LOCK DRAG',
+      rematchLabel: 'the lock drag',
+      accentColor: 0x9ee4ff,
+      body: 'Fold snap does not let go cleanly. Echo drags the same locked lane one beat longer before slack cut cashes the soft reopen back in; stay off the first loose-looking line and keep the late exit alive.',
+    };
+  }
+
   return {
-    id: 'lock-drag',
-    title: 'LOCK DRAG LIVE',
-    hudLabel: 'LOCK DRAG',
-    snapshotLabel: 'LOCK DRAG',
-    rematchLabel: 'the lock drag',
-    accentColor: 0x9ee4ff,
-    body: 'Fold snap does not let go cleanly. Echo drags the same locked lane one beat longer before drift release; stay off the slack-looking reopen and hold the late cut that opens 32s.',
+    id: 'slack-cut',
+    title: 'SLACK CUT LIVE',
+    hudLabel: 'SLACK CUT',
+    snapshotLabel: 'SLACK CUT',
+    rematchLabel: 'the slack cut',
+    accentColor: 0xd8fff4,
+    body: 'Lock drag finally gives a breath, then slack cut shears back across that softened lane before drift release cracks it open. Take the brief loosened air only if you are ready to cut away again for 32s.',
   };
 };
 
@@ -941,7 +958,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'killbox':
       return {
         title: 'KILLBOX LIVE',
-        body: 'Gate cut hands straight into killbox. A hard lead cut bends that entry, shadow echo keeps the same lane folding, pinch lock cashes it back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap and lock drag keep the echo lane pinned before drift release.',
+        body: 'Gate cut hands straight into killbox. A hard lead cut bends that entry, shadow echo keeps the same lane folding, pinch lock cashes it back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap, lock drag, and slack cut keep the echo lane pinned before drift release.',
       };
     case 'endgame':
       return {

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #288]
+
+Decision:
+`mutation` modunda `30.4-32.0s` killbox tail'ine yeni bir `SLACK CUT` handoff'u ekle; `LOCK DRAG` sonrasini generic echo cadence'e dusurmek yerine drift release oncesi son bir bounded lane cash-in'ine cevir.
+
+Reason:
+`AUDIT.md`, `NEXT_AGENT.md` ve mevcut state ayni yone bakiyordu: overtime koridoruna donmeden yeni runtime/gameplay delta acmak gerekiyordu. En yuksek etkili dar secim; `24-40s` zincirinde halen generiklesen son bosluk olan `30.4-32.0s` araligini isimli bir handoff'a cevirip `32s` release'i daha earned hale getirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `30.4-32.0s` band'ina `1.6s` `SLACK CUT` (`16deg`, `0.06s`) echo kontrati ekledi. `project/game/src/game/runPhase.ts` killbox truth'unu `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT -> RELEASE CUT` zincirine buyuttu; detail/HUD/death summary/retry goal ve `KILLBOX LIVE` phase-shift anonsu yeni handoff'u da adlandiriyor. `project/game/src/game/GameScene.ts` cue intensity ve backdrop motion imzasini yeni beat'e bagladi. `project/game/src/game/deathPresentation.ts` `SLACK CUT` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni killbox-tail runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.9s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `SLACK CUT` beat'inin son handoff yerine cheap zigzag, anlamsiz named-beat gurultusu ya da `LOCK DRAG`in yeniden isiitilmis kopyasi gibi okundugunu gosterirse yalniz `SLACK CUT` sure, rotation ve lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `24-32s` koridorunda copy/snapshot polish zinciri acilmaz.
+
 ### [Run #287]
 
 Decision:
