@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #283
+Updated By: Codex Run #284
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `mutation`
-- ana hedef: `45.6-52.4s` clear-climb stretch'inde `ASCENT STAIR -> RIDGE CUT` arasina yeni bir bounded route karari acmak
+- ana hedef: `52.4-60.0s` summit stretch'inde `RIDGE CUT` sonrasina yeni bounded final-route karari acmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -27,12 +27,12 @@ Ama urunun asıl eksigi:
 
 Bugunki ilerleme:
 - run mode: `mutation`
-- ana hedef: `45.6-52.4s` clear-climb stretch'inde `ASCENT STAIR -> RIDGE CUT` arasina yeni bir bounded route karari acmak
-- `project/game/src/game/balance.ts` clear-climb ilk yarisini dort halkaya cevirdi: `45.6-47.4s ASCENT STAIR`, yeni `47.4-49.6s LEDGE FEINT`, `49.6-52.4s RIDGE CUT`, sonra `SUMMIT SNAP`; yeni beat `20deg / 0.05s` ile climb lane'ini henuz capraz kesmeden duzlestirip oyuncuya ridge oncesi yeni bir cikis zamani soruyor
-- `project/game/src/game/runPhase.ts` yeni `LEDGE FEINT LIVE` cue'sunu detail/HUD/badge/death summary/retry truth'una ekledi; `ENDGAME DRIFT` macro anlatimi artik clear-climb'i `ascent -> ledge feint -> ridge cut -> summit snap` olarak okuyor
-- `project/game/src/game/GameScene.ts` `LEDGE FEINT` icin ayri goal-chip arkaplani, cue intensity ve backdrop motion imzasi ekledi; clear-climb artik yalniz warm climb'dan cold cut'a atlamiyor, arada flatter fake-safe bir tutus hali gosteriyor
-- `project/game/src/game/deathPresentation.ts` `LEDGE FEINT` olumleri icin ayri snapshot tonu ekledi; yeni beat ascent warm tonu ile ridge cold tonu arasinda kendi yesilimsi palette'ini tasiyor
-- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni ledge-feint runtime/controller kontratini ve clear-climb zincirini regression altina aldi
+- ana hedef: `52.4-60.0s` summit stretch'inde `RIDGE CUT` sonrasina yeni bounded final-route karari acmak
+- `project/game/src/game/balance.ts` clear-climb sonunu bes halkaya cikardi: `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP`; yeni `52.4-54.8s` `CREST VEER` penceresi `18deg / 0.04s` ile ridge kesisini kisa bir reopen'a cevirip summit snap oncesi son bir hold-or-leave karari soruyor
+- `project/game/src/game/runPhase.ts` yeni `CREST VEER LIVE` cue'sunu detail/HUD/badge/death summary/retry truth'una ekledi; `ENDGAME DRIFT` makro anlatimi artik final stretch'i `ascent -> ledge feint -> ridge cut -> crest veer -> summit snap` olarak okuyor
+- `project/game/src/game/GameScene.ts` `CREST VEER` icin ayri goal-chip tonu, cue intensity ve backdrop motion imzasi ekledi; summit finali tek parca snapback yerine kisa bir reopen sonra son bir cash-in gibi okunuyor
+- `project/game/src/game/deathPresentation.ts` `CREST VEER` olumleri icin ayri morumsu snapshot tonu ekledi; ridge cut'in soguk capraz dili ile summit snap'in sicak final tonu arasinda yeni bir ara niyet gorunuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni crest-veer runtime/controller kontratini ve clear-climb zincirini regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `31.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation export `35.5s`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - build halen mevcut Vite bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
@@ -81,9 +81,9 @@ Yeni rejim:
 - `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND CROSS -> REBOUND PUNISH` ve `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> CENTER PIN -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak dort halkali gec cevap tasiyor; oyuncuya once kontrollu bir handoff, sonra yeni bir center clamp, sonra fake reopen ve ikinci kapanis soruluyor
-- `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> SUMMIT SNAP` olarak dort halkali bir final stretch; ayni `45.6-49.6s` koridoruna geri donup tone/copy mikro-polish'i yapma
+- `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali bir final stretch; ayni `45.6-60.0s` koridoruna geri donup tone/copy mikro-polish'i yapma
 - ayni `32.0-35.0s` koridoruna geri donup copy/tone mikro-polish'i yapma
-- sonraki dogru adim yeni bir runtime/gameplay delta; bu tur clear-climb ilk yarisi buyudu, siradaki aday ayni `45.6-49.6s` feint koridorunda polish degil `52.4s+` summit stretch'inde yeni bounded final-route karari
+- sonraki dogru adim yeni bir runtime/gameplay delta; bu tur summit stretch'i buyudu, siradaki aday ayni clear-climb koridorunda tekrar polish degil `60s+` sonrasina earned bir overtime opener veya clear payout'u dogrudan oyunsallastiran yeni bir runtime sonucu
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

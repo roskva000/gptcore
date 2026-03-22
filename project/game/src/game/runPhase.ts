@@ -17,6 +17,7 @@ import {
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_CENTER_PIN_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
+  DRIFT_CLEAR_CLIMB_CREST_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
@@ -116,7 +117,7 @@ export type EndgameClearClimbState = {
   accentColor: number;
   body: string;
   hudLabel: string;
-  id: 'ascent-stair' | 'ledge-feint' | 'ridge-cut' | 'summit-snap';
+  id: 'ascent-stair' | 'ledge-feint' | 'ridge-cut' | 'crest-veer' | 'summit-snap';
   rematchLabel: string;
   snapshotLabel: string;
   threatLabel: string;
@@ -153,7 +154,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, holds the rebound once, cuts back across the lane, then punishes that same cross before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, a false-clear bait, and a preclear squeeze before clear climb stair-steps upward, flattens into a ledge feint, cuts across the ridge, then snaps back near the summit. Stretch the release lane, commit to the rebound cross, leave the ledge before the ridge cut, and push for 60s.',
+      'Killbox fold releases sideways, holds the rebound once, cuts back across the lane, then punishes that same cross before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, a false-clear bait, and a preclear squeeze before clear climb stair-steps upward, flattens into a ledge feint, cuts across the ridge, briefly veers back along the crest, then snaps again near the summit. Stretch the release lane, commit to the rebound cross, leave the ledge before the ridge cut, ride the crest veer without overholding it, and push for 60s.',
   },
   {
     id: 'overtime',
@@ -376,6 +377,9 @@ export const getEndgameClearClimbState = (
   const inRidgeWindow =
     progressSeconds >= DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_END_SECONDS &&
     progressSeconds < DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS;
+  const inCrestWindow =
+    progressSeconds >= DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS &&
+    progressSeconds < DRIFT_CLEAR_CLIMB_CREST_WINDOW_END_SECONDS;
 
   return {
     id: inAscentWindow
@@ -384,50 +388,72 @@ export const getEndgameClearClimbState = (
         ? 'ledge-feint'
         : inRidgeWindow
           ? 'ridge-cut'
-          : 'summit-snap',
+          : inCrestWindow
+            ? 'crest-veer'
+            : 'summit-snap',
     title: inAscentWindow
       ? 'ASCENT STAIR LIVE'
       : inLedgeWindow
         ? 'LEDGE FEINT LIVE'
         : inRidgeWindow
           ? 'RIDGE CUT LIVE'
-          : 'SUMMIT SNAP LIVE',
+          : inCrestWindow
+            ? 'CREST VEER LIVE'
+            : 'SUMMIT SNAP LIVE',
     hudLabel: inAscentWindow
       ? 'ASCENT STAIR'
       : inLedgeWindow
         ? 'LEDGE FEINT'
         : inRidgeWindow
           ? 'RIDGE CUT'
-          : 'SUMMIT SNAP',
-    accentColor: inAscentWindow ? 0xfff0c7 : inLedgeWindow ? 0xe8ffb0 : inRidgeWindow ? 0xbcecff : 0xff9eb1,
+          : inCrestWindow
+            ? 'CREST VEER'
+            : 'SUMMIT SNAP',
+    accentColor: inAscentWindow
+      ? 0xfff0c7
+      : inLedgeWindow
+        ? 0xe8ffb0
+        : inRidgeWindow
+          ? 0xbcecff
+          : inCrestWindow
+            ? 0xe8dcff
+            : 0xff9eb1,
     snapshotLabel: inAscentWindow
       ? 'ASCENT STAIR'
       : inLedgeWindow
         ? 'LEDGE FEINT'
         : inRidgeWindow
           ? 'RIDGE CUT'
-          : 'SUMMIT SNAP',
+          : inCrestWindow
+            ? 'CREST VEER'
+            : 'SUMMIT SNAP',
     rematchLabel: inAscentWindow
       ? 'the ascent stair'
       : inLedgeWindow
         ? 'the ledge feint'
         : inRidgeWindow
           ? 'the ridge cut'
-          : 'the summit snap',
+          : inCrestWindow
+            ? 'the crest veer'
+            : 'the summit snap',
     threatLabel: inAscentWindow
       ? 'ASCENT STAIR'
       : inLedgeWindow
         ? 'LEDGE FEINT'
         : inRidgeWindow
           ? 'RIDGE CUT'
-          : 'SUMMIT SNAP',
+          : inCrestWindow
+            ? 'CREST VEER'
+            : 'SUMMIT SNAP',
     body: inAscentWindow
       ? `Preclear squeeze gives way to an ascent stair. Drift keeps stair-stepping up the release lane for ${secondsToClear.toFixed(1)}s more; hold the climb, but be ready to leave the ledge before the ridge cut cashes it in.`
       : inLedgeWindow
         ? `The ledge feint is live. Drift still leans up the climb lane while ${secondsToClear.toFixed(1)}s remain, but the safer stair line is flattening; step off the tempting hold now or the ridge cut will shear across it.`
       : inRidgeWindow
-        ? `The ridge cut is live. Drift slices back across the climb lane while ${secondsToClear.toFixed(1)}s remain; leave the first stair route now or the summit snap will cash it in.`
-        : `The summit snap is live. Drift whips back across the opened lane while ${secondsToClear.toFixed(1)}s remain; keep the route alive and finish the ${SURVIVAL_GOAL_SECONDS}s clear under the snapback.`,
+        ? `The ridge cut is live. Drift slices back across the climb lane while ${secondsToClear.toFixed(1)}s remain; leave the first stair route now or the crest veer will bait one last reopen before summit snap.`
+        : inCrestWindow
+          ? `The crest veer is live. Drift briefly leans back along the cut lane while ${secondsToClear.toFixed(1)}s remain; ride the reopen without overholding it because summit snap is lining up behind the veer.`
+          : `The summit snap is live. Drift whips back across the reopened lane while ${secondsToClear.toFixed(1)}s remain; keep the route alive through the final snapback and finish the ${SURVIVAL_GOAL_SECONDS}s clear.`,
   };
 };
 
@@ -799,7 +825,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound cross asks for the first committed cut back, rebound punish snaps onto that crossed lane, then a wider sweep flips again across the arena while sweep lock, aftershock, recenter, center pin, false clear, preclear, plus a clear-climb ledge feint, ridge cut, and summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound cross asks for the first committed cut back, rebound punish snaps onto that crossed lane, then a wider sweep flips again across the arena while sweep lock, aftershock, recenter, center pin, false clear, preclear, plus a clear-climb ledge feint, ridge cut, crest veer, and summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

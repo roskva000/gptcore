@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #284
+
+- `project/game/src/game/balance.ts` `52.4-60.0s` summit stretch'ine yeni bounded `CREST VEER` penceresi ekledi; `RIDGE CUT` sonrasi `2.4s` boyunca drift `18deg` travel ve `0.04s` lag ile kisa bir reopen soruyor, `SUMMIT SNAP` ise bu reopen'i artik ayri bir final cash-in gibi kapatiyor
+- `project/game/src/game/runPhase.ts` yeni `CREST VEER LIVE` cue'sunu, guncel clear-climb macro anlatimini ve `ascent -> ledge feint -> ridge cut -> crest veer -> summit snap` phase truth'unu ekledi
+- `project/game/src/game/GameScene.ts` `CREST VEER` icin ayri goal-chip arkaplani, cue intensity ve backdrop motion imzasi tanimladi; summit finali tek parca snapback yerine kisa bir reopen sonra final snap olarak okunuyor
+- `project/game/src/game/deathPresentation.ts` `CREST VEER` olumleri icin ayri snapshot paleti ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni crest-veer runtime/controller kontratini, cue/death/retry truth'unu ve guncel clear-climb chain anlatimini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #283
 
 - `project/game/src/game/balance.ts` `45.6-52.4s` clear-climb stretch'ini dort halkaya boldu; `ASCENT STAIR` `1.8s`e cekildi, yeni `47.4-49.6s` `LEDGE FEINT` beat'i `20deg` travel ve `0.05s` lag ile ridge oncesi fake-safe hold soruyor, `RIDGE CUT` ise `49.6-52.4s`e kaydi

@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #283:
+Current deterministic survival headline after Run #284:
 - `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #283:
 - validation export last run `36.9s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+clear_climb_crest_veer_surface:
+current: Run #284 `project/game/src/game/balance.ts` `52.4-60.0s` summit stretch'ini `RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak ayiriyor; yeni `CREST VEER` beat'i `18deg` travel ve `0.04s` lag ile ridge sonrasi kisa bir reopen yaratiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor
+baseline: Run #283 state'inde `52.4-60.0s` band'i yalniz `SUMMIT SNAP` olarak tek parca kapanisti; ridge cut sonrasi summit finali yeni bir bounded reopen veya ek route karari uretmiyordu
+target: sonraki browser veya manuel gozlem oyuncunun `52.4-60.0s` band'ini artik `RIDGE CUT -> CREST VEER -> SUMMIT SNAP` zinciri olarak anlattigini gostersin; yeni crest-veer beat'i cheap yalpalama, named-beat gurultusu veya summit snap ile karisan anlamsiz bir ara slice gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 clear_climb_ledge_feint_surface:
 current: Run #283 `project/game/src/game/balance.ts` `45.6-52.4s` clear-climb stretch'ini `1.8s` `ASCENT STAIR`, yeni `2.2s` `LEDGE FEINT`, `2.8s` `RIDGE CUT` ve `SUMMIT SNAP` olarak ayiriyor; yeni beat `20deg` travel ve `0.05s` lag ile ridge oncesi fake-safe hold yaratiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor

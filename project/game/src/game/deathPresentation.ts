@@ -506,6 +506,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (clearClimbState?.id === 'crest-veer') {
+    return {
+      badgeBackgroundColor: '#493066',
+      badgeTextColor: '#f1e7ff',
+      bodyTextColor: '#ddd0f2',
+      calloutBackgroundColor: '#38244f',
+      calloutTextColor: '#d8b6ff',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#493066',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#f6eeff',
+      titleTextColor: '#eadcff',
+    };
+  }
+
   if (clearClimbState?.id === 'summit-snap') {
     return {
       badgeBackgroundColor: '#5a1d2c',

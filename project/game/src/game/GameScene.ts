@@ -455,6 +455,7 @@ export class GameScene extends Phaser.Scene {
     | 'ascent-stair'
     | 'ledge-feint'
     | 'ridge-cut'
+    | 'crest-veer'
     | 'summit-snap'
     | null = null;
   private runSpawnRerolls = 0;
@@ -3329,6 +3330,8 @@ export class GameScene extends Phaser.Scene {
       .setBackgroundColor(
         clearClimbState === null
           ? '#123f36'
+          : clearClimbState.id === 'crest-veer'
+            ? '#3a2954'
           : clearClimbState.id === 'summit-snap'
             ? '#4a1620'
             : clearClimbState.id === 'ledge-feint'
@@ -3878,7 +3881,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a center pin, a false-clear bait, and a preclear squeeze feed a clear-climb ascent, a ledge feint, a ridge cut, and the final summit snap.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a center pin, a false-clear bait, and a preclear squeeze feed a clear-climb ascent, a ledge feint, a ridge cut, a brief crest veer, and the final summit snap.';
     }
 
     if (phaseId === 'overtime') {
@@ -3970,6 +3973,10 @@ export class GameScene extends Phaser.Scene {
       return 0.92;
     }
 
+    if (clearClimbState.id === 'crest-veer') {
+      return 0.9;
+    }
+
     if (clearClimbState.id === 'ledge-feint') {
       return 0.88;
     }
@@ -4025,6 +4032,23 @@ export class GameScene extends Phaser.Scene {
         frameOffsetY: -2,
         frameScaleX: 1.018,
         frameScaleY: 0.988,
+      };
+    }
+
+    if (clearClimbState.id === 'crest-veer') {
+      const crestPulse = Math.sin(time / 145);
+
+      return {
+        glowOffsetX: CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_X + 10 + crestPulse * 13,
+        glowOffsetY: CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_Y - 12 + Math.cos(time / 185) * 6,
+        topBandOffsetX: 16 + crestPulse * 11,
+        bottomBandOffsetX: -14 - crestPulse * 9,
+        topBandAngle: 2.8,
+        bottomBandAngle: -2.4,
+        frameOffsetX: 6 + crestPulse * 5,
+        frameOffsetY: -4,
+        frameScaleX: 1.016,
+        frameScaleY: 0.99,
       };
     }
 

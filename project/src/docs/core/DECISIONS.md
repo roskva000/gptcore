@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #284]
+
+Decision:
+`mutation` modunda `52.4-60.0s` summit stretch'ini iki kararli finale cevir; `RIDGE CUT` ile `SUMMIT SNAP` arasina yeni `CREST VEER` beat'i ekleyip summit oncesi son bounded reopen'u ac.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni yone bakiyordu: ayni `45.6-49.6s` ledge-feint koridoruna geri donmeden yeni runtime/gameplay delta acmak gerekiyordu. En yuksek etkili ve dar secim; uzun tek parca okunan summit stretch'i `ridge cut -> crest veer -> summit snap` zincirine cevirip `60s` kovalamacasina son bir hold-or-leave karari eklemekti.
+
+Impact:
+`project/game/src/game/balance.ts` clear-climb sonuna yeni `2.4s` `CREST VEER` penceresi ekledi; beat `18deg` rotation ve `0.04s` lag ile ridge sonrasi kisa bir reopen uretirken summit snap artik bu reopen'i `28deg / 0.02s` ile cash-in ediyor. `project/game/src/game/runPhase.ts` yeni `CREST VEER LIVE` cue'sunu detail/HUD/badge/death summary/rematch truth'una ekledi ve endgame macro anlatimini guncelledi. `project/game/src/game/GameScene.ts` crest veer icin ayri goal-chip tonu, cue intensity ve backdrop motion imzasi verdi. `project/game/src/game/deathPresentation.ts` `CREST VEER` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve clear-climb zincirini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `CREST VEER` beat'inin summit oncesi okunur son reopen yerine cheap yalpalama, named-beat gurultusu ya da `RIDGE CUT` ile `SUMMIT SNAP` arasini bulaniklastiran anlamsiz bir ara slice urettigini gosterirse yalniz `CREST VEER` pencere suresi ile `rotation/lag` siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `45.6-60.0s` koridorunda tone/snapshot polish zinciri acilmaz.
+
 ### [Run #283]
 
 Decision:
