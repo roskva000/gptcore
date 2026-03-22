@@ -3895,8 +3895,10 @@ export class GameScene extends Phaser.Scene {
         return 0.9;
       case 'rebound':
         return 0.75;
+      case 'rebound-cross':
+        return 0.8;
       case 'rebound-punish':
-        return 0.83;
+        return 0.88;
       case 'late-sweep':
         return 0.82;
       case 'sweep-lock':
@@ -4067,7 +4069,9 @@ export class GameScene extends Phaser.Scene {
   } {
     if (
       endgameCue === null ||
-      (endgameCue.id !== 'late-sweep' &&
+      (endgameCue.id !== 'rebound-cross' &&
+        endgameCue.id !== 'rebound-punish' &&
+        endgameCue.id !== 'late-sweep' &&
         endgameCue.id !== 'sweep-lock' &&
         endgameCue.id !== 'aftershock' &&
         endgameCue.id !== 'false-clear' &&
@@ -4090,6 +4094,36 @@ export class GameScene extends Phaser.Scene {
     const sway = Math.sin(time / 170);
     const clamp = Math.cos(time / 210);
     const tease = Math.sin(time / 240);
+
+    if (endgameCue.id === 'rebound-cross') {
+      return {
+        glowOffsetX: 20 + sway * 11,
+        glowOffsetY: -14 + clamp * 6,
+        topBandOffsetX: 18 + sway * 9,
+        bottomBandOffsetX: -20 - sway * 8,
+        topBandAngle: 3.2,
+        bottomBandAngle: -2.8,
+        frameOffsetX: 7 + sway * 4,
+        frameOffsetY: -3 + clamp,
+        frameScaleX: 1.015,
+        frameScaleY: 0.99,
+      };
+    }
+
+    if (endgameCue.id === 'rebound-punish') {
+      return {
+        glowOffsetX: -22 + sway * 10,
+        glowOffsetY: -10 + clamp * 5,
+        topBandOffsetX: -20 + sway * 8,
+        bottomBandOffsetX: 24 - sway * 7,
+        topBandAngle: -3.9,
+        bottomBandAngle: 3.3,
+        frameOffsetX: -8 + sway * 4,
+        frameOffsetY: -2 + clamp,
+        frameScaleX: 1.018,
+        frameScaleY: 0.988,
+      };
+    }
 
     if (endgameCue.id === 'false-clear') {
       return {

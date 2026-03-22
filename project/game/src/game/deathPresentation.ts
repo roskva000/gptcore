@@ -350,6 +350,45 @@ const getSnapshotTone = ({
     };
   }
 
+  if (endgameCue?.id === 'rebound') {
+    return {
+      badgeBackgroundColor: '#234427',
+      badgeTextColor: '#e4ffe5',
+      bodyTextColor: '#ccebd1',
+      calloutBackgroundColor: '#1b351e',
+      calloutTextColor: '#b8f0bf',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#234427',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#ebffed',
+      titleTextColor: '#dbffe0',
+    };
+  }
+
+  if (endgameCue?.id === 'rebound-cross') {
+    return {
+      badgeBackgroundColor: '#1d4a40',
+      badgeTextColor: '#dcfff4',
+      bodyTextColor: '#c6ebdf',
+      calloutBackgroundColor: '#163a33',
+      calloutTextColor: '#9ef0d1',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#1d4a40',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#e8fff7',
+      titleTextColor: '#d4fff0',
+    };
+  }
+
+  if (endgameCue?.id === 'rebound-punish') {
+    return {
+      badgeBackgroundColor: '#5a2f18',
+      badgeTextColor: '#fff0d8',
+      bodyTextColor: '#f1d3b8',
+      calloutBackgroundColor: '#492414',
+      calloutTextColor: '#ffc99d',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a2f18',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff1e2',
+      titleTextColor: '#ffe2c7',
+    };
+  }
+
   if (endgameCue?.id === 'late-sweep') {
     return {
       badgeBackgroundColor: '#5c3416',

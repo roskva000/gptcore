@@ -70,9 +70,12 @@ export const DRIFT_RELEASE_FOLD_CARRY_ROTATION_DEGREES = 18;
 export const DRIFT_RELEASE_ROTATION_DEGREES = 14;
 export const DRIFT_RELEASE_TARGET_LAG_SECONDS = 0.18;
 export const DRIFT_REBOUND_WINDOW_SECONDS = 1.4;
-export const DRIFT_REBOUND_HOLD_WINDOW_SECONDS = 0.7;
+export const DRIFT_REBOUND_HOLD_WINDOW_SECONDS = 0.6;
+export const DRIFT_REBOUND_CROSS_WINDOW_SECONDS = 0.45;
 export const DRIFT_REBOUND_ROTATION_DEGREES = 28;
 export const DRIFT_REBOUND_TARGET_LAG_SECONDS = 0.16;
+export const DRIFT_REBOUND_CROSS_ROTATION_DEGREES = 16;
+export const DRIFT_REBOUND_CROSS_TARGET_LAG_SECONDS = 0.14;
 export const DRIFT_REBOUND_PUNISH_ROTATION_DEGREES = 22;
 export const DRIFT_REBOUND_PUNISH_TARGET_LAG_SECONDS = 0.1;
 export const DRIFT_SWEEP_WINDOW_START_SECONDS = 36.2;
@@ -224,11 +227,23 @@ const isDriftReboundHoldWindow = (survivalTimeSeconds: number): boolean =>
       DRIFT_RELEASE_WINDOW_SECONDS +
       DRIFT_REBOUND_HOLD_WINDOW_SECONDS;
 
-const isDriftReboundPunishWindow = (survivalTimeSeconds: number): boolean =>
+const isDriftReboundCrossWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >=
     DRIFT_OBSTACLE_UNLOCK_SECONDS +
       DRIFT_RELEASE_WINDOW_SECONDS +
       DRIFT_REBOUND_HOLD_WINDOW_SECONDS &&
+  survivalTimeSeconds <
+    DRIFT_OBSTACLE_UNLOCK_SECONDS +
+      DRIFT_RELEASE_WINDOW_SECONDS +
+      DRIFT_REBOUND_HOLD_WINDOW_SECONDS +
+      DRIFT_REBOUND_CROSS_WINDOW_SECONDS;
+
+const isDriftReboundPunishWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >=
+    DRIFT_OBSTACLE_UNLOCK_SECONDS +
+      DRIFT_RELEASE_WINDOW_SECONDS +
+      DRIFT_REBOUND_HOLD_WINDOW_SECONDS +
+      DRIFT_REBOUND_CROSS_WINDOW_SECONDS &&
   survivalTimeSeconds <
     DRIFT_OBSTACLE_UNLOCK_SECONDS +
       DRIFT_RELEASE_WINDOW_SECONDS +
@@ -648,6 +663,8 @@ export const getObstacleTravelDirection = ({
         : DRIFT_RELEASE_ROTATION_DEGREES
       : isDriftReboundHoldWindow(survivalTimeSeconds)
         ? DRIFT_REBOUND_ROTATION_DEGREES
+        : isDriftReboundCrossWindow(survivalTimeSeconds)
+          ? DRIFT_REBOUND_CROSS_ROTATION_DEGREES
         : isDriftReboundPunishWindow(survivalTimeSeconds)
           ? DRIFT_REBOUND_PUNISH_ROTATION_DEGREES
         : isDriftSweepWindow(survivalTimeSeconds)
@@ -745,7 +762,9 @@ export const getObstacleTargetLagSeconds = ({
     : variant === 'drift' && isDriftReboundWindow(survivalTimeSeconds)
       ? isDriftReboundHoldWindow(survivalTimeSeconds)
         ? DRIFT_REBOUND_TARGET_LAG_SECONDS
-        : DRIFT_REBOUND_PUNISH_TARGET_LAG_SECONDS
+        : isDriftReboundCrossWindow(survivalTimeSeconds)
+          ? DRIFT_REBOUND_CROSS_TARGET_LAG_SECONDS
+          : DRIFT_REBOUND_PUNISH_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftSweepWindow(survivalTimeSeconds)
       ? isDriftSweepLockWindow(survivalTimeSeconds)
         ? DRIFT_SWEEP_LOCK_TARGET_LAG_SECONDS

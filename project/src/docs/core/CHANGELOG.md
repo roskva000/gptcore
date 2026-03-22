@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #281
+
+- `project/game/src/game/balance.ts` `33.6-35.0s` rebound zincirini `REBOUND HOLD -> REBOUND CROSS -> REBOUND PUNISH` olarak uc halkaya ayirdi; yeni `REBOUND CROSS` beat'i `0.45s`, `16deg` rotation ve `0.14s` target lag ile ilk committed cut-back kararini aciyor
+- `project/game/src/game/runPhase.ts` yeni `REBOUND CROSS LIVE` cue'sunu, guncel `REBOUND PUNISH` copy'sini ve `ENDGAME DRIFT LIVE` phase-shift anlatimini rebound uc halkasina hizaladi
+- `project/game/src/game/GameScene.ts` endgame cue intensity map'ine `REBOUND CROSS` ekledi ve `REBOUND CROSS` / `REBOUND PUNISH` icin ayri backdrop motion imzalari tanimladi
+- `project/game/src/game/deathPresentation.ts` rebound hold, rebound cross ve rebound punish olumleri icin ayri snapshot palette'leri ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni rebound-cross runtime/controller kontratini, guncel average spawn count `38.3` snapshot'ini ve validation export `last_run=36.9s` degerini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #280
 
 - `project/game/src/game/balance.ts` `29.2-30.4s` araligina yeni bounded `LOCK DRAG` penceresi ekledi; `echo` varyanti bu slice'ta `20deg` rotation ve `0.09s` target lag ile ayni folded lane'i drift release oncesi bir beat daha kilitli tutuyor

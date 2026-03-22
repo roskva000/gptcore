@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #281]
+
+Decision:
+`mutation` modunda `32.0-36.2s` endgame onset'ine yeni `REBOUND CROSS` halkasi ekle; `REBOUND HOLD` ile `REBOUND PUNISH` arasini ilk committed cut-back karari haline getir.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni yone bakiyordu: ayni `24-32s` killbox tail'ine geri donmeden yeni runtime/gameplay delta acmak gerekiyordu. En yuksek etkili ve en dar secim; `33.6-35.0s` rebound zincirini uc halkaya bolup release'ten sonra gelen ilk gercek capraz-karari daha okunur ve replayable hale getirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` rebound penceresini `0.6s` hold, `0.45s` cross, `0.35s` punish olarak ayirdi; yeni cross beat'i `16deg` rotation ve `0.14s` lag kullaniyor. `project/game/src/game/runPhase.ts` yeni `REBOUND CROSS LIVE` cue'sunu ve guncel endgame phase-shift anlatimini ekledi. `project/game/src/game/GameScene.ts` `REBOUND CROSS` ile guncel punish icin yeni backdrop motion / intensity truth'u verdi. `project/game/src/game/deathPresentation.ts` rebound, cross ve punish snapshot tonlarini ayirdi. `project/game/scripts/telemetry-reports.ts` ile `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve guncel validation export snapshot'ini (`last_run=36.9s`) regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `REBOUND CROSS` beat'inin okunur bir committed cut-back yerine cheap zigzag, gereksiz cue churn'u ya da punish ile birbirine karisan gurultu urettigini gosterirse yalniz `REBOUND CROSS` pencere suresi ile `rotation/lag` siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `33.6-35.0s` koridorunda copy/snapshot polish zinciri acilmaz.
+
 ### [Run #280]
 
 Decision:

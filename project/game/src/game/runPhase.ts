@@ -27,6 +27,7 @@ import {
   DRIFT_SWEEP_WINDOW_SECONDS,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
   DRIFT_REBOUND_HOLD_WINDOW_SECONDS,
+  DRIFT_REBOUND_CROSS_WINDOW_SECONDS,
   DRIFT_REBOUND_WINDOW_SECONDS,
   LEAD_OBSTACLE_UNLOCK_SECONDS,
   SURGE_OBSTACLE_UNLOCK_SECONDS,
@@ -88,6 +89,7 @@ export type KillboxCue = {
 export type EndgameDriftCueId =
   | 'release'
   | 'rebound'
+  | 'rebound-cross'
   | 'rebound-punish'
   | 'late-sweep'
   | 'sweep-lock'
@@ -147,7 +149,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, a false-clear bait, and a preclear squeeze before clear climb stair-steps upward, cuts across the ridge, then snaps back near the summit. Stretch the release lane, do not bite on the fake reopen, then push for 60s.',
+      'Killbox fold releases sideways, holds the rebound once, cuts back across the lane, then punishes that same cross before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, a false-clear bait, and a preclear squeeze before clear climb stair-steps upward, cuts across the ridge, then snaps back near the summit. Stretch the release lane, commit to the rebound cross, do not bite on the fake reopen, then push for 60s.',
   },
   {
     id: 'overtime',
@@ -190,6 +192,8 @@ const DRIFT_REBOUND_WINDOW_START_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_REBOUND_HOLD_WINDOW_END_SECONDS =
   DRIFT_REBOUND_WINDOW_START_SECONDS + DRIFT_REBOUND_HOLD_WINDOW_SECONDS;
+const DRIFT_REBOUND_CROSS_WINDOW_END_SECONDS =
+  DRIFT_REBOUND_HOLD_WINDOW_END_SECONDS + DRIFT_REBOUND_CROSS_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_END_SECONDS =
   DRIFT_REBOUND_WINDOW_START_SECONDS + DRIFT_REBOUND_WINDOW_SECONDS;
 const DRIFT_RELEASE_WINDOW_END_SECONDS =
@@ -416,6 +420,18 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       };
     }
 
+    if (progressSeconds < DRIFT_REBOUND_CROSS_WINDOW_END_SECONDS) {
+      return {
+        id: 'rebound-cross',
+        title: 'REBOUND CROSS LIVE',
+        hudLabel: 'REBOUND CROSS',
+        snapshotLabel: 'REBOUND CROSS',
+        rematchLabel: 'the rebound cross',
+        accentColor: 0xd8fff4,
+        body: 'The rebound stops coasting here. Drift cuts back across the opened lane and asks for the first committed cross before punish cashes in on the same side.',
+      };
+    }
+
     return {
       id: 'rebound-punish',
       title: 'REBOUND PUNISH LIVE',
@@ -423,7 +439,7 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       snapshotLabel: 'REBOUND PUNISH',
       rematchLabel: 'the rebound punish',
       accentColor: 0xfff0c7,
-      body: 'The release lane stops being safe here. Cross back out before rebound punish pinches the same side shut ahead of the wider sweep.',
+      body: 'The rebound cross gets cashed in here. Rebound punish snaps back onto the committed lane; clear the crossed side now before late sweep takes over.',
     };
   }
 
@@ -727,7 +743,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound cross asks for the first committed cut back, rebound punish snaps onto that crossed lane, then a wider sweep flips again across the arena while sweep lock, aftershock, recenter, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

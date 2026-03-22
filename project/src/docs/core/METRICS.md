@@ -7,15 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #280:
+Current deterministic survival headline after Run #281:
 - `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+- average spawn count `38.3`
 - validation export snapshot `35.5s` average survival
+- validation export last run `36.9s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+endgame_rebound_cross_surface:
+current: Run #281 `project/game/src/game/balance.ts` `33.6-35.0s` rebound zincirini `0.6s` `REBOUND HOLD`, `0.45s` `REBOUND CROSS`, `0.35s` `REBOUND PUNISH` olarak uc halkaya ayiriyor; yeni `REBOUND CROSS` beat'i `16deg` travel ve `0.14s` lag ile ilk committed cut-back kararini soruyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor
+baseline: Run #280 state'inde `32.0-35.0s` endgame onset'i `RELEASE CUT -> REBOUND HOLD -> REBOUND PUNISH` olarak iki rebound sonucu tasiyordu; hold ile punish arasinda ayri bir committed cross sonucu yoktu ve punish biraz erken geliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `32-35s` band'ini artik `release -> rebound hold -> rebound cross -> rebound punish` zinciri olarak anlattigini gostersin; yeni cross beat'i cheap zigzag, named-beat gurultusu veya unfair snapback gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_lock_drag_surface:
 current: Run #280 `project/game/src/game/balance.ts` `29.2-30.4s` araliginda yeni bounded `LOCK DRAG` penceresi aciyor; `echo` varyanti bu beat'te `20deg` travel ve `0.09s` lag ile `FOLD SNAP` sonrasi ayni folded lane'i bir beat daha tasiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor

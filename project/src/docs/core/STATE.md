@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #280
+Updated By: Codex Run #281
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `GATE CUT -> KILLBOX` onset zincirini yeni runtime slice acmadan tek authored handoff gibi okutmak
+- run mode: `mutation`
+- ana hedef: `32.0-36.2s` endgame onset'inde `REBOUND HOLD -> REBOUND PUNISH` arasina yeni bir bounded karar ani acmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -27,12 +27,12 @@ Ama urunun asıl eksigi:
 
 Bugunki ilerleme:
 - run mode: `mutation`
-- ana hedef: `24-32s` killbox lock-in band'inda `FOLD SNAP` sonrasi cadence'in duzlesmesini bozup yeni bir bounded route-break acmak
-- `project/game/src/game/balance.ts` `29.2-30.4s` icin yeni `LOCK DRAG` penceresi ekledi; `echo` varyanti bu slice'ta `20deg` scissor travel ve `0.09s` target lag ile ayni folded lane'i drift release oncesi bir beat daha kilitli tutuyor
-- `project/game/src/game/runPhase.ts` killbox cue truth'unu `LOCK DRAG LIVE` halkasiyla genisletti; detail/support/badge/death summary/retry hedefi artik `24-32s` band'inin sonunu da isimli bir kapanis olarak tasiyor
-- `project/game/src/game/GameScene.ts` yeni beat icin cue intensity ve killbox backdrop motion'unu ayri imzaya bagladi; `FOLD SNAP -> LOCK DRAG` zinciri sahnede farkli iki closure gibi okunuyor
-- `project/game/src/game/deathPresentation.ts` `LOCK DRAG` olumleri icin ayri snapshot tonu ekledi; son pre-release kopusleri generic fold veya daha onceki sicak killbox tonlarina dusmuyor
-- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve guncel deterministic baseline'i kilitledi
+- ana hedef: `32.0-36.2s` band'inda `REBOUND HOLD -> REBOUND PUNISH` zincirini yeni bir committed cross sonucu ile buyutmek
+- `project/game/src/game/balance.ts` rebound zincirini `0.6s REBOUND HOLD -> 0.45s REBOUND CROSS -> 0.35s REBOUND PUNISH` olarak uc halkaya ayirdi; drift artik once release side'i tasiyor, sonra `16deg` / `0.14s` ile lane'i capraz kestiriyor, ardindan `22deg` / `0.10s` punish ayni committed cross'u cash-in yapiyor
+- `project/game/src/game/runPhase.ts` yeni `REBOUND CROSS LIVE` cue'sunu detail/support/badge/death summary/retry truth'una ekledi; `ENDGAME DRIFT` phase anlatimi artik `release -> rebound hold -> rebound cross -> rebound punish` zincirini acikca tasiyor
+- `project/game/src/game/GameScene.ts` `REBOUND CROSS` ve guncel `REBOUND PUNISH` icin yeni cue intensity/backdrop motion ekledi; endgame onset artik yalniz HUD copy degil sahnedeki hareketle de uc ayri rebound niyeti tasiyor
+- `project/game/src/game/deathPresentation.ts` rebound, rebound-cross ve punish olumleri icin ayri snapshot tonlari ekledi; yeni mid-band karar generic late-endgame paletine dusmuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini, validation export'taki `last_run=36.9s` snapshot'ini ve guncel spawn baseline'ini regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `31.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation export `35.5s`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - build halen mevcut Vite bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
@@ -78,11 +78,12 @@ Yeni rejim:
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH -> KILLBOX` artik `STRAFE FORK -> SURGE SNAP -> GATE CUT -> LEAD CUT -> ECHO FOLLOW -> PINCH LOCK` olarak bagli okunuyor; ayni `16.6-20.6s` sayilarina geri donup mikro-polish yapma
 - `24-32s` killbox lock-in artik `SEAL SNAP -> echo lock-in -> FOLD SNAP -> LOCK DRAG -> RELEASE CUT` olarak daha bagli bir tail tasiyor; ayni `27.2-30.4s` sayilarina geri donup cue/copy polish'i yapma
-- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND PUNISH` ve simdi `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
+- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND CROSS -> REBOUND PUNISH` ve `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak uc farkli gec cevap tasiyor; oyuncuya kisa bir fake reopen sonra ikinci bir kapanis soruluyor
 - `45.6-60s` clear climb artik `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkali bir final stretch; bu entegrasyon kapanmis durumda, ayni koridorda tekrar sayisal polish'e donme
-- sonraki dogru adim yeni bir runtime/gameplay delta; tercihen `32.0-36.2s` release/rebound cephesinde yeni bir bounded karar ani, ayni `24-32s` koridorunda tekrar polish degil
+- ayni `32.0-35.0s` koridoruna geri donup copy/tone mikro-polish'i yapma
+- sonraki dogru adim yeni bir runtime/gameplay delta; tercihen `39.0-41.2s` recenter handoff'unda yeni bounded karar ani, ayni rebound koridorunda tekrar polish degil
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle
