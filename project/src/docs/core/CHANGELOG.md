@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #285
+
+- `project/game/src/game/balance.ts` `60.0-64.0s` band'ina yeni authored overtime opener ekledi; `BANKED AIR` `1.8s` boyunca `14deg` travel ve `0.10s` lag ile cleared lane'i kisa bir reopen'a ceviriyor, `CASH OUT` ise `2.2s` boyunca `26deg` travel ve `0.03s` lag ile bu reopen'i bounded snapback'e cash ediyor
+- `project/game/src/game/runPhase.ts` yeni `BANKED AIR LIVE` ve `CASH OUT LIVE` overtime cue'larini detail/HUD/badge/death summary/retry goal ve phase-shift announcement truth'una ekledi; `OVERTIME` artik generic hot phase diliyle acilmiyor
+- `project/game/src/game/GameScene.ts` goal badge, live support, hint ve beat callout akisini yeni overtime opener cue'larina hizaladi; `60s CLEAR` sonrasi ekran yeni bir route karari satmaya devam ediyor
+- `project/game/src/game/deathPresentation.ts` `BANKED AIR` ve `CASH OUT` olumleri icin ayri snapshot palette'leri ekledi; post-clear retry prompt generic `push your best` copy'sine dusmuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni overtime opener runtime/controller kontratini, death/retry truth'unu ve deterministic controller anlatimini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #284
 
 - `project/game/src/game/balance.ts` `52.4-60.0s` summit stretch'ine yeni bounded `CREST VEER` penceresi ekledi; `RIDGE CUT` sonrasi `2.4s` boyunca drift `18deg` travel ve `0.04s` lag ile kisa bir reopen soruyor, `SUMMIT SNAP` ise bu reopen'i artik ayri bir final cash-in gibi kapatiyor

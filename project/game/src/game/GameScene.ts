@@ -94,9 +94,10 @@ import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   ENDGAME_CLEAR_CLIMB_START_SECONDS,
   getBreakthroughCue,
-  getKillboxCue,
   getEndgameClearClimbState,
   getEndgameDriftCue,
+  getKillboxCue,
+  getOvertimeOpenerState,
   getRunPhaseDetailText,
   getRunPhaseOnsetIntensity,
   getRunPhaseState,
@@ -457,6 +458,8 @@ export class GameScene extends Phaser.Scene {
     | 'ridge-cut'
     | 'crest-veer'
     | 'summit-snap'
+    | 'banked-air'
+    | 'cash-out'
     | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
@@ -3318,17 +3321,30 @@ export class GameScene extends Phaser.Scene {
     }
 
     const clearClimbState = getEndgameClearClimbState(this.survivalTime);
+    const overtimeOpenerState = getOvertimeOpenerState(this.survivalTime);
     this.goalStatusText.setText(
-      clearClimbState === null
+      overtimeOpenerState !== null
+        ? `${overtimeOpenerState.threatLabel} | ${(64 - this.survivalTime).toFixed(1)}s to 64s BANK`
+        : clearClimbState === null
         ? getSurvivalGoalChaseText({
             currentSurvivalTime: this.survivalTime,
           })
         : `${clearClimbState.threatLabel} | ${(SURVIVAL_GOAL_SECONDS - this.survivalTime).toFixed(1)}s to ${SURVIVAL_GOAL_SECONDS}s`,
     );
     this.goalStatusText
-      .setColor(clearClimbState === null ? '#d8fff4' : colorToCssHex(clearClimbState.accentColor))
+      .setColor(
+        overtimeOpenerState !== null
+          ? colorToCssHex(overtimeOpenerState.accentColor)
+          : clearClimbState === null
+            ? '#d8fff4'
+            : colorToCssHex(clearClimbState.accentColor),
+      )
       .setBackgroundColor(
-        clearClimbState === null
+        overtimeOpenerState !== null
+          ? overtimeOpenerState.id === 'banked-air'
+            ? '#183f39'
+            : '#5a3317'
+          : clearClimbState === null
           ? '#123f36'
           : clearClimbState.id === 'crest-veer'
             ? '#3a2954'
@@ -3350,6 +3366,8 @@ export class GameScene extends Phaser.Scene {
     const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(this.survivalTime) : null;
     const clearClimbState =
       currentPhase.id === 'endgame' ? getEndgameClearClimbState(this.survivalTime) : null;
+    const overtimeOpenerState =
+      currentPhase.id === 'overtime' ? getOvertimeOpenerState(this.survivalTime) : null;
     const phaseStatusText = getRunPhaseStatusText(this.survivalTime);
     this.phaseStatusText
       .setText(
@@ -3361,6 +3379,8 @@ export class GameScene extends Phaser.Scene {
           ? `${phaseStatusText} | ${endgameCue.hudLabel}`
           : clearClimbState !== null
             ? `${phaseStatusText} | ${clearClimbState.hudLabel}`
+            : overtimeOpenerState !== null
+              ? `${phaseStatusText} | ${overtimeOpenerState.hudLabel}`
             : phaseStatusText,
       )
       .setColor(
@@ -3369,6 +3389,7 @@ export class GameScene extends Phaser.Scene {
             killboxCue?.accentColor ??
             endgameCue?.accentColor ??
             clearClimbState?.accentColor ??
+            overtimeOpenerState?.accentColor ??
             currentPhase.accentColor,
         ),
       );
@@ -3380,6 +3401,7 @@ export class GameScene extends Phaser.Scene {
             killboxCue?.accentColor ??
             endgameCue?.accentColor ??
             clearClimbState?.accentColor ??
+            overtimeOpenerState?.accentColor ??
             currentPhase.accentColor,
         ),
       );
@@ -3497,13 +3519,14 @@ export class GameScene extends Phaser.Scene {
   private maybeShowEndgameDriftCue(activeRunElapsedMs: number): void {
     const endgameCue = getEndgameDriftCue(this.survivalTime);
     const clearClimbState = getEndgameClearClimbState(this.survivalTime);
+    const overtimeOpenerState = getOvertimeOpenerState(this.survivalTime);
 
-    if (endgameCue === null && clearClimbState === null) {
+    if (endgameCue === null && clearClimbState === null && overtimeOpenerState === null) {
       this.lastShownEndgameDriftCueId = null;
       return;
     }
 
-    const cueId = endgameCue?.id ?? clearClimbState?.id ?? null;
+    const cueId = endgameCue?.id ?? clearClimbState?.id ?? overtimeOpenerState?.id ?? null;
 
     if (cueId === null) {
       this.lastShownEndgameDriftCueId = null;
@@ -3518,7 +3541,7 @@ export class GameScene extends Phaser.Scene {
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.hintText
       .setText(
-        `${endgameCue?.title ?? clearClimbState?.title ?? 'ENDGAME DRIFT'}\n${endgameCue?.body ?? clearClimbState?.body ?? ''}`,
+        `${endgameCue?.title ?? clearClimbState?.title ?? overtimeOpenerState?.title ?? 'ENDGAME DRIFT'}\n${endgameCue?.body ?? clearClimbState?.body ?? overtimeOpenerState?.body ?? ''}`,
       )
       .setVisible(true);
     this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
@@ -3717,7 +3740,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSurvivalGoalHintText(): string {
-    return `${SURVIVAL_GOAL_SECONDS}s clear!\nYou beat the namesake goal. Keep the lane open and push your best.`;
+    return `${SURVIVAL_GOAL_SECONDS}s clear!\nBanked air opens first; take the brief free lane before cash out snaps back through overtime.`;
   }
 
   private getCurrentPlayingHintText(): string {
@@ -3734,6 +3757,8 @@ export class GameScene extends Phaser.Scene {
       currentPhase.id === 'breakthrough' ? getBreakthroughCue(this.survivalTime) : null;
     const clearClimbState =
       currentPhase.id === 'endgame' ? getEndgameClearClimbState(this.survivalTime) : null;
+    const overtimeOpenerState =
+      currentPhase.id === 'overtime' ? getOvertimeOpenerState(this.survivalTime) : null;
 
     if (breakthroughCue !== null) {
       return `${breakthroughCue.title}\n${breakthroughCue.body}`;
@@ -3741,6 +3766,10 @@ export class GameScene extends Phaser.Scene {
 
     if (clearClimbState !== null) {
       return `${clearClimbState.title}\n${clearClimbState.body}`;
+    }
+
+    if (overtimeOpenerState !== null) {
+      return `${overtimeOpenerState.title}\n${overtimeOpenerState.body}`;
     }
 
     return `${currentPhase.title}\n${currentPhase.detail}`;
@@ -3852,7 +3881,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getCurrentPlayingSupportText(): string {
-    if (this.survivalGoalReachedThisRun) {
+    if (this.survivalGoalReachedThisRun && getOvertimeOpenerState(this.survivalTime) === null) {
       return `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`;
     }
 
@@ -3885,7 +3914,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'overtime') {
-      return 'Overtime is live. The goal is down, but the arena stays hot.';
+      return 'Overtime is live. Banked air briefly reopens the clear lane, then cash out snaps back across it before score-only pressure takes over.';
     }
 
     return null;
@@ -4718,6 +4747,7 @@ export class GameScene extends Phaser.Scene {
     const killboxCue = getKillboxCue(this.survivalTime);
     const endgameCue = getEndgameDriftCue(this.survivalTime);
     const clearClimbState = getEndgameClearClimbState(this.survivalTime);
+    const overtimeOpenerState = getOvertimeOpenerState(this.survivalTime);
 
     if (killboxCue !== null) {
       this.beatCalloutText
@@ -4740,6 +4770,15 @@ export class GameScene extends Phaser.Scene {
     if (clearClimbState !== null) {
       this.beatCalloutText
         .setText(`${clearClimbState.title}\n${clearClimbState.body}`)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
+
+    if (overtimeOpenerState !== null) {
+      this.beatCalloutText
+        .setText(`${overtimeOpenerState.title}\n${overtimeOpenerState.body}`)
         .setAlpha(0.92)
         .setScale(1)
         .setVisible(true);

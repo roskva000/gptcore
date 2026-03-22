@@ -21,8 +21,12 @@ import {
   DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
+  OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS,
+  OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS,
   DRIFT_CENTER_PIN_TARGET_LAG_SECONDS,
   DRIFT_FALSE_CLEAR_WINDOW_SECONDS,
+  OVERTIME_OPENER_BANKED_WINDOW_SECONDS,
+  OVERTIME_OPENER_CASHOUT_WINDOW_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
   DRIFT_RELEASE_WINDOW_SECONDS,
@@ -124,6 +128,17 @@ export type EndgameClearClimbState = {
   title: string;
 };
 
+export type OvertimeOpenerState = {
+  accentColor: number;
+  body: string;
+  hudLabel: string;
+  id: 'banked-air' | 'cash-out';
+  rematchLabel: string;
+  snapshotLabel: string;
+  threatLabel: string;
+  title: string;
+};
+
 const RUN_PHASES: RunPhaseDefinition[] = [
   {
     id: 'opening',
@@ -161,7 +176,8 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     title: 'OVERTIME',
     startSeconds: SURVIVAL_GOAL_SECONDS,
     accentColor: 0xfff0c7,
-    detail: 'The goal is cleared but pressure stays hot. Push your best and keep the lane alive.',
+    detail:
+      'The goal is cleared, but overtime does not open flat. Banked air briefly reopens the clear lane, then cash out snaps back across it before the run settles into raw score pressure.',
   },
 ];
 
@@ -612,6 +628,29 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
   return null;
 };
 
+export const getOvertimeOpenerState = (progressSeconds: number): OvertimeOpenerState | null => {
+  if (progressSeconds < SURVIVAL_GOAL_SECONDS || progressSeconds >= OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS) {
+    return null;
+  }
+
+  const secondsIntoOvertime = Math.max(progressSeconds - SURVIVAL_GOAL_SECONDS, 0);
+  const secondsToCashoutEnd = Math.max(OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS - progressSeconds, 0);
+  const inBankedWindow = progressSeconds < OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS;
+
+  return {
+    id: inBankedWindow ? 'banked-air' : 'cash-out',
+    title: inBankedWindow ? 'BANKED AIR LIVE' : 'CASH OUT LIVE',
+    hudLabel: inBankedWindow ? 'BANKED AIR' : 'CASH OUT',
+    snapshotLabel: inBankedWindow ? 'BANKED AIR' : 'CASH OUT',
+    rematchLabel: inBankedWindow ? 'the banked-air reopen' : 'the cash-out snap',
+    threatLabel: inBankedWindow ? 'BANKED AIR' : 'CASH OUT',
+    accentColor: inBankedWindow ? 0xd8fff4 : 0xffd6a5,
+    body: inBankedWindow
+      ? `The clear is banked, but overtime does not flatten. Drift briefly reopens the cleared lane for ${Math.max(OVERTIME_OPENER_BANKED_WINDOW_SECONDS - secondsIntoOvertime, 0).toFixed(1)}s; take the free air now because cash out is already lining up behind it.`
+      : `The overtime cash-out is live. Drift snaps back across the reopened clear lane and keeps score pressure earned for ${secondsToCashoutEnd.toFixed(1)}s more; do not overhold the banked air you just won.`,
+  };
+};
+
 export const getRunPhaseState = (progressSeconds: number): RunPhaseState => {
   const clampedProgressSeconds = Math.max(progressSeconds, 0);
   let currentIndex = 0;
@@ -651,6 +690,12 @@ export const getRunPhaseDetailText = (progressSeconds: number): string => {
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
+  const overtimeOpenerState =
+    currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
+
+  if (overtimeOpenerState !== null) {
+    return `${overtimeOpenerState.body} Bank the opener through ${OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS.toFixed(1)}s.`;
+  }
 
   if (nextPhase === null) {
     return currentPhase.detail;
@@ -683,6 +728,12 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
+  const overtimeOpenerState =
+    currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
+
+  if (overtimeOpenerState !== null) {
+    return `${currentPhase.title} ${overtimeOpenerState.hudLabel}: ${overtimeOpenerState.body} Bank the opener through ${OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS.toFixed(1)}s.`;
+  }
 
   if (nextPhase === null) {
     return `${currentPhase.title}: ${currentPhase.detail}`;
@@ -715,6 +766,8 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
+  const overtimeOpenerState =
+    currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
 
   switch (currentPhase.id) {
     case 'breakthrough':
@@ -724,7 +777,7 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
     case 'endgame':
       return clearClimbState?.snapshotLabel ?? endgameCue?.snapshotLabel ?? 'ENDGAME';
     case 'overtime':
-      return 'OVERTIME';
+      return overtimeOpenerState?.snapshotLabel ?? 'OVERTIME';
     default:
       return null;
   }
@@ -738,6 +791,12 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
+  const overtimeOpenerState =
+    currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
+
+  if (overtimeOpenerState !== null) {
+    return `${overtimeOpenerState.snapshotLabel} snapped inside ${currentPhase.title}. ${Math.max(OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS - progressSeconds, 0).toFixed(1)}s short of 64s BANK.`;
+  }
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
     return `${currentPhase.title} reached. ${SURVIVAL_GOAL_SECONDS}s clear is banked.`;
@@ -774,6 +833,12 @@ export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
+  const overtimeOpenerState =
+    currentPhase.id === 'overtime' ? getOvertimeOpenerState(progressSeconds) : null;
+
+  if (overtimeOpenerState !== null) {
+    return `Rematch ${overtimeOpenerState.rematchLabel} and bank 64s in +${Math.max(OVERTIME_OPENER_CASHOUT_WINDOW_END_SECONDS - progressSeconds, 0).toFixed(1)}s`;
+  }
 
   if (nextPhase === null || secondsUntilNextPhase === null) {
     return `${currentPhase.title} live. Push past ${SURVIVAL_GOAL_SECONDS}s.`;
@@ -830,7 +895,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'overtime':
       return {
         title: 'OVERTIME LIVE',
-        body: 'The goal is cleared, but the arena stays hot. Push the run past your best.',
+        body: '60s is cleared, but overtime opens with earned movement: banked air briefly reopens the clear lane, then cash out snaps back across it before the run settles into raw score pressure.',
       };
     default:
       return null;

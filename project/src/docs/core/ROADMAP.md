@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #284
+Updated By: Codex Run #285
 
 ---
 
@@ -52,6 +52,7 @@ Mevcut durum:
 - Run #282 ile `39.0-41.2s` handoff ilk kez iki halkali oldu; `1.2s` `RECENTER` daha yumusak bir late handoff verirken yeni `1.0s` `CENTER PIN` merkez hattini `24deg` / `0.05s` ile tekrar kapatip `FALSE CLEAR` oncesi yeni bir bounded cut-back soruyor
 - Run #283 ile `45.6-52.4s` clear-climb stretch'i dort halkaya cikti; `ASCENT STAIR` `1.8s`e cekildi, araya yeni `2.2s`lik `LEDGE FEINT` beat'i eklendi, `RIDGE CUT` `49.6-52.4s`e kaydi ve final stretch ridge oncesi yeni bir fake-safe hold sorusu kazandi
 - Run #284 ile `52.4-60.0s` summit stretch'i de ikiye bolundu; yeni `52.4-54.8s` `CREST VEER` beat'i ridge cut sonrasi kisa bir reopen penceresi aciyor ve `SUMMIT SNAP` artik bu reopen'i cash-in eden ayri bir son kapanis gibi calisiyor
+- Run #285 ile `60.0-64.0s` band'i ilk authored overtime opener'ini kazandi; yeni `BANKED AIR -> CASH OUT` zinciri `60s CLEAR` sonrasini generic hot overtime yerine once kisa bir cleared-lane reopen, hemen ardindan bounded bir snapback kararina ceviriyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -84,7 +85,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali; yeni `CREST VEER` ridge cut sonrasi kisa bir reopen'u hem runtime hem HUD/snapshot/spectacle tarafinda ayri okutur
-- next slice: clear-climb summit mutation'i kapandi; siradaki dogru adim ayni `45.6-60.0s` koridoruna polish icin geri donmek degil, `60s+` sonrasina earned bir overtime opener veya clear payout'u dogrudan oyunsallastiran yeni bir runtime sonucu acmak
+- shipped slice: `60.0-64.0s` overtime artik generic hot pressure degil; `BANKED AIR -> CASH OUT` zinciri `60s CLEAR` sonrasi ilk saniyeleri runtime, HUD, death/retry ve snapshot tonu tarafinda authored bir payout olarak tasiyor
+- next slice: overtime opener acildi; siradaki dogru adim ayni `60.0-64.0s` koridoruna polish icin geri donmek degil, `64s+` sonrasina ilk bounded overtime carry veya baska bir gameplay ailesinde yeni bir authored karar ani acmak
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

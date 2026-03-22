@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #284:
+Current deterministic survival headline after Run #285:
 - `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #284:
 - validation export last run `36.9s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+overtime_opener_surface:
+current: Run #285 `project/game/src/game/balance.ts` `60.0-64.0s` band'ini `BANKED AIR -> CASH OUT` olarak ayiriyor; ilk slice `14deg` travel ve `0.10s` lag ile cleared lane'i kisa bir reopen'a ceviriyor, ikinci slice `26deg` travel ve `0.03s` lag ile bu reopen'i bounded snapback'e cash ediyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni opener'i detail/HUD/death-retry, live callout ve snapshot tonu tarafina da tasiyor
+baseline: Run #284 state'inde `60s CLEAR` sonrasi faz yalniz generic `OVERTIME` olarak okunuyordu; clear payoff'u ilk saniyelerde yeni bir bounded route karari veya ayri player-facing truth uretmiyordu
+target: sonraki browser veya manuel gozlem oyuncunun `60.0-64.0s` band'ini artik `BANKED AIR -> CASH OUT` zinciri olarak anlattigini gostersin; yeni opener cheap victory-lap drama, anlamsiz zigzag veya generic overtime copy'sine geri dusen bir slice gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 clear_climb_crest_veer_surface:
 current: Run #284 `project/game/src/game/balance.ts` `52.4-60.0s` summit stretch'ini `RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak ayiriyor; yeni `CREST VEER` beat'i `18deg` travel ve `0.04s` lag ile ridge sonrasi kisa bir reopen yaratiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor

@@ -19,6 +19,7 @@ import {
   getKillboxCue,
   getEndgameClearClimbState,
   getEndgameDriftCue,
+  getOvertimeOpenerState,
   getRunPhaseDeathSummaryText,
   getRunPhaseReachedBadgeText,
   getRunPhaseRetryGoalText,
@@ -106,12 +107,18 @@ const getBadgeText = ({
   reachedSurvivalGoal: boolean;
   nearMissChainCount: number | null;
 }): string | null => {
-  if (reachedSurvivalGoal) {
-    return `${SURVIVAL_GOAL_SECONDS}s CLEAR`;
-  }
-
   if (isNewBest) {
     return 'NEW BEST';
+  }
+
+  const overtimeOpenerState = getOvertimeOpenerState(survivalTimeSeconds);
+
+  if (overtimeOpenerState !== null) {
+    return overtimeOpenerState.snapshotLabel;
+  }
+
+  if (reachedSurvivalGoal) {
+    return `${SURVIVAL_GOAL_SECONDS}s CLEAR`;
   }
 
   const phaseReachedBadge = getRunPhaseReachedBadgeText(survivalTimeSeconds);
@@ -202,9 +209,10 @@ const getPromptText = ({
 }): string => {
   const endgameCue = getEndgameDriftCue(survivalTimeSeconds);
   const clearClimbState = getEndgameClearClimbState(survivalTimeSeconds);
+  const overtimeOpenerState = getOvertimeOpenerState(survivalTimeSeconds);
   const retryTargetText = getRunPhaseRetryGoalText(survivalTimeSeconds);
   const retryPlanText =
-    endgameCue === null && clearClimbState === null
+    endgameCue === null && clearClimbState === null && overtimeOpenerState === null
       ? `${retryTargetText} | ${getNextRunHorizonBeatText(survivalTimeSeconds)}`
       : retryTargetText;
 
@@ -232,6 +240,7 @@ const getSnapshotTone = ({
   const killboxCue = getKillboxCue(survivalTimeSeconds);
   const endgameCue = getEndgameDriftCue(survivalTimeSeconds);
   const clearClimbState = getEndgameClearClimbState(survivalTimeSeconds);
+  const overtimeOpenerState = getOvertimeOpenerState(survivalTimeSeconds);
 
   if (breakthroughCue?.id === 'strafe-fork') {
     return {
@@ -529,6 +538,32 @@ const getSnapshotTone = ({
       promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a1d2c',
       promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#ffeaf0',
       titleTextColor: '#ffd7e1',
+    };
+  }
+
+  if (overtimeOpenerState?.id === 'banked-air') {
+    return {
+      badgeBackgroundColor: '#18453d',
+      badgeTextColor: '#e2fff8',
+      bodyTextColor: '#c6eee5',
+      calloutBackgroundColor: '#14362f',
+      calloutTextColor: '#9ff6df',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#18453d',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#ecfff9',
+      titleTextColor: '#d6fff6',
+    };
+  }
+
+  if (overtimeOpenerState?.id === 'cash-out') {
+    return {
+      badgeBackgroundColor: '#5a3816',
+      badgeTextColor: '#fff0d4',
+      bodyTextColor: '#f0d9b8',
+      calloutBackgroundColor: '#472b12',
+      calloutTextColor: '#ffd49a',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a3816',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff5e7',
+      titleTextColor: '#ffe6bf',
     };
   }
 

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #285]
+
+Decision:
+`mutation` modunda `60.0-64.0s` band'ina iki halkali bir overtime opener ekle; `60s CLEAR` sonrasini generic hot overtime yerine `BANKED AIR -> CASH OUT` runtime zincirine cevir.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni boslugu gosteriyordu: clear-climb finali buyuduktan sonra siradaki dogru hamle ayni `45.6-60.0s` koridorunu tekrar polish etmek degil, `60s` clear'i hemen yeni bir route karariyla odullendirmekti. En yuksek etkili dar secim; overtime'in ilk saniyelerini bounded reopen-then-cash-in slice'ina cevirip replay istegini ve anlatilabilirligi buyutmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `60.0-64.0s` band'ina `1.8s` `BANKED AIR` (`14deg`, `0.10s`) ve `2.2s` `CASH OUT` (`26deg`, `0.03s`) drift kontratlari ekledi. `project/game/src/game/runPhase.ts` yeni overtime opener state'ini detail/HUD/badge/death summary/retry goal ve phase-shift truth'una bagladi. `project/game/src/game/GameScene.ts` goal badge, hint, support ve live callout akisini yeni overtime cue'larina hizaladi. `project/game/src/game/deathPresentation.ts` `BANKED AIR` ve `CASH OUT` snapshot tonlarini ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni overtime opener'in earned payout yerine cheap victory-lap drama, named-beat gurultusu veya summit sonrası anlamsiz zigzag urettigini gosterirse yalniz `BANKED AIR` / `CASH OUT` sure, rotation ve lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `60.0-64.0s` koridorunda copy/snapshot polish zinciri acilmaz.
+
 ### [Run #284]
 
 Decision:
