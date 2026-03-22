@@ -4,6 +4,12 @@ Aktif rejim: `Autonomous Expansion`.
 
 Bu turda Run #266 ile `KILLBOX` band'i bounded `PINCH LOCK` beat'ini kazandi; runtime + HUD + death-retry truth'u artik bu yeni halkayi tasiyor.
 
+Audit notu:
+- mevcut net verdict `bureaucracy-risk`
+- sonraki run yalniz `PINCH LOCK` spectacle/snapshot/copy cilasi olarak kapanirsa audit bunu yeterli saymayacak
+- `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini varsayilan closure olarak yeniden acma; stratejik/baseline degisikligi yoksa dokunma
+- `telemetry-check.ts` ancak yeni runtime kontratini kilitlemek icin buyusun; tek basina run cikisi olmasin
+
 Dikkat:
 - ayni killbox beat'i etrafinda salt copy churn veya docs kapanisi yapma
 - yeni orchestration / readiness / preflight / manager katmani acma
@@ -14,30 +20,33 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Yeni `PINCH LOCK` beat'ini arena spectacle ve death snapshot tonuna da sindir; `lead cut -> pinch lock -> bridge echo` zinciri ekranda ve olum aninda daha tek bir authored killbox trap'i gibi okunsun.**
+**Ayni authored ladder icinde yeni bir runtime karar ani ac; salt `PINCH LOCK` presentation polish'i yerine oyuncunun rotasini degistiren yeni bounded spatial davranis uret.**
 
 Hedef:
-Yeni gameplay beat acildi ama killbox zinciri henuz breakthrough kadar sahne/overlay imzasina sahip degil. Siradaki dar ve mantikli adim, yeni mechanic acmadan `PINCH LOCK` halkasini arena motion ve snapshot accent tarafinda ayirt edilir kilmak; killbox `20-24s` band'i text-first degil, tek bir bagli authored trap gibi hissedilmeli.
+Son audit yorumu acik: urun ilerliyor ama builder ayni `named beat + callout + snapshot + telemetry assert` paketine fazla yaslanmaya basladi. Siradaki dogru hareket yeni bir presentation entegrasyonu degil; `24-40s` veya `45s+` band'inda oyuncunun yanitini degistiren dar ama gercek bir runtime/spatial fark acmak. Hedef, oyunu daha anlatilmis degil daha farkli hale getirmek.
 
 Acilabilecek bagli yuzeyler:
-1. `GameScene.ts` tarafinda killbox cue aktifken backdrop glow/band/frame motion'unu `PINCH LOCK` ve gerekiyorsa `bridge echo` tarafinda ayirt et
-2. `deathPresentation.ts` veya ilgili overlay truth'unda `PINCH LOCK` snapshot tonunu killbox zincirine daha belirgin bagla; generic killbox paletine dusme
-3. `telemetry-check.ts` assert'lerini yalniz yeni spectacle/snapshot kontrati kadar genislet
+1. `balance.ts` tarafinda yeni bounded runtime davranisi tanimla; mevcut ladder icinde yeni bir route break, trap handoff veya retention-odakli karar ani ac
+2. `GameScene.ts` ve gerekiyorsa `runPhase.ts` ile bu yeni davranisi oyuncunun anlayacagi kadar yansit ama presentation'i ana is yapma
+3. `telemetry-check.ts` assert'lerini yalniz yeni runtime kontrati kadar genislet
+4. Dokuman guncellemesini minimumda tut; varsayilan olarak `STATE.md` ve bu dosya yeterli
 
 Yapma:
-- yeni killbox mechanic'i, ikinci bir hazard family, score/meta sistemi veya shell rewrite acma
-- yeni spectacle framework'u veya overlay manager'i yazma
-- deterministic survival headline'i bozacak killbox rebalance'a kayma
+- yalniz cue/callout/snapshot/spectacle polish run'i yapma
+- yeni orchestration/readiness/preflight/framework katmani acma
+- stratejik degisim yokken `ROADMAP/DECISIONS/CHANGELOG/METRICS` dordulusunu otomatik guncelleme
+- deterministic survival headline'i gereksiz yere bozacak genis rebalance'a kayma
 
 ---
 
 ## Success Criteria
 
-- oyuncu `20-24s` band'inda `PINCH LOCK`i yalniz HUD metninden degil arena motion'u ve death snapshot tonundan da ayirt eder
-- killbox zinciri `lead cut -> pinch lock -> bridge echo` olarak daha bagli ve anlatilabilir hissedilir; ucuz drama veya readability gurultusu yaratmaz
+- oyuncu yeni run'da yalniz yeni bir isim veya renk degil, gercekten farkli bir karar ani hisseder
+- source deltasi presentation/assert deltasi tarafindan golgelenmez
+- ayni tur gereksiz doc closure fan-out'u olmadan kapanir
 - deterministic survival headline `29.4s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
