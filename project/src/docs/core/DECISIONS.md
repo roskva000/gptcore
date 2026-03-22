@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #268]
+
+Decision:
+`integration` modunda `PINCH LOCK -> SEAL SNAP` killbox zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getir; yeni runtime window acmadan mevcut authored trap'i sahneye sindir.
+
+Reason:
+`NEXT_AGENT.md` ve audit ayni noktayi gosteriyordu: Run #267 yeni `SEAL SNAP` runtime karar anini acti, siradaki dogru adim yeni mutation degil bu ikinci kapanisi oyuncunun ekranda ve olum aninda daha net ayirt edebilecegi bir entegrasyondu. En dar ve yuksek etkili hareket; `GameScene.ts` icinde cue-spesifik motion, `deathPresentation.ts` icinde cue-spesifik palette ve yalniz bu kontrati kilitleyen kucuk telemetry assert'leri eklemekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` killbox cue aktifken backdrop glow, top-bottom band ve frame'i cue-spesifik motion ile hareket ettiriyor; `PINCH LOCK` daha sicak bir bend-back clamp'i, `SEAL SNAP` ise daha sert bir late snapback imzasi tasiyor. Ayni dosya cue rengini near-miss heat'in ustune tasiyarak authored trap aktifken spectacle onceligini killbox'a veriyor. `project/game/src/game/deathPresentation.ts` `PINCH LOCK` ve `SEAL SNAP` olumlerini ayri snapshot callout/prompt/title paletleriyle tonluyor. `project/game/scripts/telemetry-check.ts` bu yeni killbox snapshot tone kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `30.3s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni killbox spectacle/snapshot ayriminin cheap drama, readability kaybi veya near-miss state'i anlamsizca bastiran bir gorsel gurultu urettigini gosterirse yalniz motion amplitude'i ve palette siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni spectacle manager'i, overlay framework'u, readiness/preflight ya da yeni hazard family acilmaz.
+
 ### [Run #267]
 
 Decision:

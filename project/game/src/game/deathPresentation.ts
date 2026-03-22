@@ -259,12 +259,12 @@ const getSnapshotTone = ({
 
   if (killboxCue?.id === 'pinch-lock') {
     return {
-      badgeBackgroundColor: '#5d3318',
+      badgeBackgroundColor: '#5b3418',
       badgeTextColor: '#fff0cf',
       bodyTextColor: '#f3d7b0',
-      calloutBackgroundColor: '#4a2816',
+      calloutBackgroundColor: '#482717',
       calloutTextColor: '#ffd6a5',
-      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5d3318',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5b3418',
       promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff2d8',
       titleTextColor: '#ffe7c6',
     };
@@ -272,14 +272,14 @@ const getSnapshotTone = ({
 
   if (killboxCue?.id === 'seal-snap') {
     return {
-      badgeBackgroundColor: '#69311c',
-      badgeTextColor: '#fff1d6',
-      bodyTextColor: '#f2d2b2',
-      calloutBackgroundColor: '#552718',
-      calloutTextColor: '#ffc18a',
-      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#69311c',
-      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff3dd',
-      titleTextColor: '#ffe1bf',
+      badgeBackgroundColor: '#6d262b',
+      badgeTextColor: '#fff1dd',
+      bodyTextColor: '#f5cbc5',
+      calloutBackgroundColor: '#561d23',
+      calloutTextColor: '#ffb7ab',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#6d262b',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff1e8',
+      titleTextColor: '#ffd9d2',
     };
   }
 

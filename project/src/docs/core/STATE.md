@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #267
+Updated By: Codex Run #268
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: `KILLBOX` icinde `bridge echo` sonrasi toparlanma hattini tekrar kapatan yeni bir bounded runtime beat acmak
+- run mode: `integration`
+- ana hedef: `KILLBOX` icindeki `PINCH LOCK -> SEAL SNAP` zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,15 +26,14 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `mutation`
-- ana hedef: `21.2-24s` `KILLBOX` kozusunda bridge echo sonrasi oyuncuya verilen kisa toparlanma adimini tekrar bozan yeni bir route-break acmak
-- `project/game/src/game/balance.ts` `22.4-23.6s` araliginda yeni bounded `SEAL SNAP` penceresi ekliyor; mevcut `echo` family'sini koruyup hareketi `18deg` snapback rotation ve `0.10s` hedef lag ile sertlestiriyor
-- ayni dosya killbox spatial zincirini `lead cut -> shadow echo -> pinch lock -> bridge echo -> seal snap -> echo lock-in` hattina buyutuyor; yeni manager veya hazard family acilmadi
-- `project/game/src/game/runPhase.ts` `SEAL SNAP` cue truth'unu HUD/detail/support/badge/death summary/retry goal katmanina tasiyor; killbox artik tek pinch halkasiyla yetinmeyen iki asamali kapanis semantigi tasiyor
-- `project/game/src/game/GameScene.ts` killbox shift hint'ini yeni zincire hizaliyor; live callout ve HUD cue bu ikinci kapanisi ayri beat olarak okutuyor
-- `project/game/src/game/deathPresentation.ts` `SEAL SNAP` olumlerine ozel snapshot tonu ekliyor; late killbox kapanisi generic palette'e dusmuyor
+- run mode: `integration`
+- ana hedef: `20.6-23.6s` `KILLBOX` trap'inin iki bounded kapanisini sahne ve snapshot tonunda da ayirt edilir hale getirmek
+- `project/game/src/game/GameScene.ts` artik `PINCH LOCK` ve `SEAL SNAP` icin ayri backdrop glow, top-bottom band ve frame motion imzalari kullaniyor; killbox canli state'i tek renkli generic fold yerine iki farkli kapanis karakteri tasiyor
+- ayni dosya cue rengini near-miss heat'in ustune tasiyarak killbox trap aktifken arena spectacle'in authored kapanisi daha net sahiplenmesini sagliyor
+- `project/game/src/game/deathPresentation.ts` `PINCH LOCK` ile `SEAL SNAP` olumlerini farkli snapshot palette'lerine ayiriyor; pinch daha sicak clamp tonu tasirken seal snap daha sert ve daha hot close-out tonu kullaniyor
+- `project/game/scripts/telemetry-check.ts` yeni killbox snapshot tone kontratini regression altina aliyor; gereksiz validation buyumesi yapilmadi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.3s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
-- deterministic bucket dagilimi korunuyor: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.1s`
+- deterministic bucket dagilimi korundu: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.1s`
 
 ---
 
@@ -77,8 +76,8 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
-- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` degil; `bridge echo` sonrasi `SEAL SNAP` ile `24s` oncesi toparlanma hattini tekrar kapatiyor
-- bu slice artik runtime + HUD + death-retry truth'una baglandi; sonraki adim ayni beat etrafinda docs veya copy yiginmak degil, okunurlugu yuksek ama dar bir entegrasyon secmek
-- score/meta/tooling veya ayni early-mid spectacle cilasi koridoruna geri donme
+- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` degil; `SEAL SNAP` de runtime, HUD, spectacle ve death snapshot tonunda ayri halka olarak okunuyor
+- killbox authored trap'i `24s` oncesine kadar daha bagli hissediliyor; sonraki adim ayni yuzeyi bir kez daha cila etmek degil, `24-32s` lock-in eline yeni bir bounded gameplay karari tasimak
+- score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #267:
+Current deterministic survival headline after Run #268:
 - `30.3s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #267:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.1s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+killbox_trap_spectacle_snapshot_surface:
+current: Run #268 `project/game/src/game/GameScene.ts` `PINCH LOCK` ve `SEAL SNAP` icin ayri backdrop glow/band/frame motion imzalari uyguluyor; `project/game/src/game/deathPresentation.ts` da bu iki killbox olumunu farkli callout/title/prompt paletleriyle tonluyor. Killbox authored trap artik runtime/HUD truth'una ek olarak sahne ve death snapshot tarafinda da iki farkli kapanis karakteri tasiyor
+baseline: Run #267 state'inde killbox runtime, HUD ve death-retry truth'u `PINCH LOCK` ile `SEAL SNAP`i ayiriyordu ama arena spectacle ve snapshot tonu bu iki halkayi yeterince ayirmiyordu; ikinci kapanis daha cok text ve runtime farkindan okunuyordu
+target: sonraki browser veya manuel gozlem oyuncunun `20.6-23.6s` band'inda `PINCH LOCK` ile `SEAL SNAP`i yalniz HUD/copy degil sahnedeki motion ve death snapshot tonundan da ayirt edebildigini gostersin; yeni ton cheap drama veya readability gurultusu yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_seal_snap_surface:
 current: Run #267 `project/game/src/game/balance.ts` `22.4-23.6s` araliginda yeni bounded `SEAL SNAP` penceresi aciyor; `echo` varyanti bu beat'te `18deg` snapback rotation ve `0.10s` hedef lag ile bridge echo sonrasi verilen kisa toparlanma adimini tekrar kapatiyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni beat'i HUD/support/callout/death-retry truth'una tasiyor

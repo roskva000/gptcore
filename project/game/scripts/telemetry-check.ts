@@ -365,6 +365,71 @@ assert.equal(
   '#6a3916',
   'Deaths inside the surge snap should keep the retry block on the same snapback palette so the overlay tone matches the authored beat that failed.',
 );
+const pinchLockDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
+  survivalTimeSeconds: 20.8,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 5,
+    totalRuns: 5,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 7100,
+    retryCount: 5,
+    recentDeathTimes: [10.4, 14.8, 18.6, 20.1, 20.8],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '22.4s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  pinchLockDeathPresentation.calloutBackgroundColor,
+  '#482717',
+  'Deaths inside pinch lock should keep a warm clamp tone so the first killbox close reads differently from the later seal snap.',
+);
+assert.equal(
+  pinchLockDeathPresentation.promptBackgroundColor,
+  '#5b3418',
+  'Deaths inside pinch lock should tint the retry block around the bounded bend-back accent instead of falling back to the generic overlay palette.',
+);
+const sealSnapDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 22.8,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 6,
+    totalRuns: 6,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 8400,
+    retryCount: 6,
+    recentDeathTimes: [10.4, 14.8, 18.6, 20.1, 21.7, 22.8],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '24.9s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  sealSnapDeathPresentation.calloutBackgroundColor,
+  '#561d23',
+  'Deaths inside seal snap should shift the snapshot callout into a hotter close-out tone so the post-bridge shutoff reads differently from pinch lock.',
+);
+assert.equal(
+  sealSnapDeathPresentation.titleTextColor,
+  '#ffd9d2',
+  'Deaths inside seal snap should brighten the title around the harder late snap so the snapshot tone clearly separates the second killbox close.',
+);
+assert.equal(
+  sealSnapDeathPresentation.promptBackgroundColor,
+  '#6d262b',
+  'Deaths inside seal snap should keep the retry block on the hotter late-close palette so the overlay stays aligned with the failed post-bridge snapback.',
+);
 assert.equal(
   getNearMissChaseImpactLabelText('left', false),
   'LEFT SNAP',

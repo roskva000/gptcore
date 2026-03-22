@@ -164,6 +164,10 @@ const BREAKTHROUGH_STRAFE_GLOW_OFFSET_X = 24;
 const BREAKTHROUGH_STRAFE_GLOW_OFFSET_Y = -8;
 const BREAKTHROUGH_SURGE_GLOW_OFFSET_X = -28;
 const BREAKTHROUGH_SURGE_GLOW_OFFSET_Y = -4;
+const KILLBOX_PINCH_GLOW_OFFSET_X = 28;
+const KILLBOX_PINCH_GLOW_OFFSET_Y = -6;
+const KILLBOX_SEAL_GLOW_OFFSET_X = -34;
+const KILLBOX_SEAL_GLOW_OFFSET_Y = -2;
 const NEAR_MISS_BACKDROP_PULSE_MS = 150;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
@@ -1183,12 +1187,14 @@ export class GameScene extends Phaser.Scene {
       pulseMs: time,
     });
     const breakthroughCue = this.phase === 'playing' ? getBreakthroughCue(this.survivalTime) : null;
+    const killboxCue = this.phase === 'playing' ? getKillboxCue(this.survivalTime) : null;
     const breakthroughOnsetIntensity =
       this.phase === 'playing' ? getRunPhaseOnsetIntensity(this.survivalTime, 'breakthrough') : 0;
     const endgameCue = this.phase === 'playing' ? getEndgameDriftCue(this.survivalTime) : null;
     const clearClimbState =
       this.phase === 'playing' ? getEndgameClearClimbState(this.survivalTime) : null;
     const breakthroughCueIntensity = this.getBreakthroughCueIntensity(breakthroughCue);
+    const killboxCueIntensity = this.getKillboxCueIntensity(killboxCue);
     const endgameCueIntensity = this.getEndgameDriftCueIntensity(endgameCue);
     const clearClimbIntensity = this.getEndgameClearClimbIntensity(clearClimbState);
     const nearMissChaseIntensity = this.getNearMissChaseBackdropIntensity(time);
@@ -1196,6 +1202,8 @@ export class GameScene extends Phaser.Scene {
     const breakthroughOnsetScaleBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughCueAlphaBoost = breakthroughCueIntensity * 0.15;
     const breakthroughCueScaleBoost = breakthroughCueIntensity * 0.08;
+    const killboxCueAlphaBoost = killboxCueIntensity * 0.17;
+    const killboxCueScaleBoost = killboxCueIntensity * 0.1;
     const breakthroughTellColor = 0xffc18a;
     const endgameCueAlphaBoost = endgameCueIntensity * 0.18;
     const endgameCueScaleBoost = endgameCueIntensity * 0.12;
@@ -1206,6 +1214,7 @@ export class GameScene extends Phaser.Scene {
     const endgameCueColor =
       endgameCue?.accentColor ?? clearClimbState?.accentColor ?? spectacle.glowColor;
     const breakthroughCueMotion = this.getBreakthroughBackdropMotion(breakthroughCue, time);
+    const killboxCueMotion = this.getKillboxBackdropMotion(killboxCue, time);
     const clearClimbBackdropMotion = this.getClearClimbBackdropMotion(clearClimbState, time);
     const nearMissBackdropMotion = this.getNearMissBackdropMotion(time, nearMissChaseIntensity);
     const accentColor =
@@ -1213,6 +1222,8 @@ export class GameScene extends Phaser.Scene {
         ? breakthroughTellColor
         : breakthroughCue !== null
           ? breakthroughCue.accentColor
+          : killboxCue !== null
+            ? killboxCue.accentColor
         : nearMissChaseIntensity > 0
           ? NEAR_MISS_CHASE_ACCENT_COLOR
           : endgameCueIntensity > 0 || clearClimbIntensity > 0
@@ -1224,10 +1235,12 @@ export class GameScene extends Phaser.Scene {
       .setPosition(
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.glowOffsetX +
+          killboxCueMotion.glowOffsetX +
           clearClimbBackdropMotion.glowOffsetX +
           nearMissBackdropMotion.glowOffsetX,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.glowOffsetY +
+          killboxCueMotion.glowOffsetY +
           clearClimbBackdropMotion.glowOffsetY +
           nearMissBackdropMotion.glowOffsetY,
       )
@@ -1236,6 +1249,7 @@ export class GameScene extends Phaser.Scene {
         spectacle.glowAlpha +
           breakthroughOnsetAlphaBoost +
           breakthroughCueAlphaBoost +
+          killboxCueAlphaBoost +
           endgameCueAlphaBoost +
           clearClimbAlphaBoost +
           nearMissChaseAlphaBoost,
@@ -1244,6 +1258,7 @@ export class GameScene extends Phaser.Scene {
         spectacle.glowScale +
           breakthroughOnsetScaleBoost +
           breakthroughCueScaleBoost +
+          killboxCueScaleBoost +
           endgameCueScaleBoost +
           clearClimbScaleBoost +
           nearMissChaseScaleBoost,
@@ -1252,10 +1267,12 @@ export class GameScene extends Phaser.Scene {
       .setPosition(
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.glowOffsetX * 0.7 +
+          killboxCueMotion.glowOffsetX * 0.74 +
           clearClimbBackdropMotion.glowOffsetX * 0.7 +
           nearMissBackdropMotion.glowOffsetX * 0.6,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.glowOffsetY * 0.7 +
+          killboxCueMotion.glowOffsetY * 0.74 +
           clearClimbBackdropMotion.glowOffsetY * 0.6 +
           nearMissBackdropMotion.glowOffsetY * 0.6,
       )
@@ -1263,6 +1280,7 @@ export class GameScene extends Phaser.Scene {
         4 +
           breakthroughOnsetIntensity * 2 +
           breakthroughCueIntensity * 1.4 +
+          killboxCueIntensity * 1.5 +
           endgameCueIntensity * 1.6 +
           clearClimbIntensity +
           nearMissChaseIntensity * 1.1,
@@ -1270,6 +1288,7 @@ export class GameScene extends Phaser.Scene {
         spectacle.auraAlpha +
           breakthroughOnsetAlphaBoost +
           breakthroughCueAlphaBoost +
+          killboxCueAlphaBoost +
           endgameCueAlphaBoost +
           clearClimbAlphaBoost +
           nearMissChaseAlphaBoost,
@@ -1278,6 +1297,7 @@ export class GameScene extends Phaser.Scene {
         spectacle.auraScale +
           breakthroughOnsetScaleBoost +
           breakthroughCueScaleBoost +
+          killboxCueScaleBoost +
           endgameCueScaleBoost +
           clearClimbScaleBoost +
           nearMissChaseScaleBoost * 0.9,
@@ -1286,12 +1306,14 @@ export class GameScene extends Phaser.Scene {
       .setPosition(
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.topBandOffsetX +
+          killboxCueMotion.topBandOffsetX +
           clearClimbBackdropMotion.topBandOffsetX +
           nearMissBackdropMotion.topBandOffsetX,
         0,
       )
       .setAngle(
         breakthroughCueMotion.topBandAngle +
+          killboxCueMotion.topBandAngle +
           clearClimbBackdropMotion.topBandAngle +
           nearMissBackdropMotion.topBandAngle,
       )
@@ -1300,6 +1322,7 @@ export class GameScene extends Phaser.Scene {
         spectacle.edgeAlpha +
           breakthroughOnsetAlphaBoost +
           breakthroughCueAlphaBoost * 0.94 +
+          killboxCueAlphaBoost * 0.92 +
           endgameCueAlphaBoost * 0.92 +
           clearClimbAlphaBoost * 0.86 +
           nearMissChaseAlphaBoost * 0.7,
@@ -1308,12 +1331,14 @@ export class GameScene extends Phaser.Scene {
       .setPosition(
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.bottomBandOffsetX +
+          killboxCueMotion.bottomBandOffsetX +
           clearClimbBackdropMotion.bottomBandOffsetX +
           nearMissBackdropMotion.bottomBandOffsetX,
         ARENA_HEIGHT,
       )
       .setAngle(
         breakthroughCueMotion.bottomBandAngle +
+          killboxCueMotion.bottomBandAngle +
           clearClimbBackdropMotion.bottomBandAngle +
           nearMissBackdropMotion.bottomBandAngle,
       )
@@ -1322,6 +1347,7 @@ export class GameScene extends Phaser.Scene {
         spectacle.edgeAlpha * 0.88 +
           breakthroughOnsetAlphaBoost * 0.88 +
           breakthroughCueAlphaBoost * 0.82 +
+          killboxCueAlphaBoost * 0.86 +
           endgameCueAlphaBoost * 0.8 +
           clearClimbAlphaBoost * 0.76 +
           nearMissChaseAlphaBoost * 0.62,
@@ -1329,6 +1355,7 @@ export class GameScene extends Phaser.Scene {
     this.backdropGrid.setAlpha(
       spectacle.gridAlpha +
         breakthroughCueAlphaBoost * 0.16 +
+        killboxCueAlphaBoost * 0.2 +
         endgameCueAlphaBoost * 0.28 +
         clearClimbAlphaBoost * 0.22 +
         nearMissChaseAlphaBoost * 0.18,
@@ -1338,11 +1365,14 @@ export class GameScene extends Phaser.Scene {
         3 +
           breakthroughOnsetIntensity +
           breakthroughCueIntensity * 0.9 +
+          killboxCueIntensity +
           endgameCueIntensity * 0.8 +
           clearClimbIntensity * 0.7 +
           nearMissChaseIntensity * 0.9,
         breakthroughOnsetIntensity > 0
           ? breakthroughTellColor
+          : killboxCue !== null
+            ? killboxCue.accentColor
           : nearMissChaseIntensity > 0
             ? NEAR_MISS_CHASE_ACCENT_COLOR
             : endgameCueIntensity > 0 || clearClimbIntensity > 0
@@ -1351,6 +1381,7 @@ export class GameScene extends Phaser.Scene {
         spectacle.frameAlpha +
           breakthroughOnsetAlphaBoost +
           breakthroughCueAlphaBoost +
+          killboxCueAlphaBoost +
           endgameCueAlphaBoost +
           clearClimbAlphaBoost +
           nearMissChaseAlphaBoost,
@@ -1358,18 +1389,22 @@ export class GameScene extends Phaser.Scene {
       .setPosition(
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.frameOffsetX +
+          killboxCueMotion.frameOffsetX +
           clearClimbBackdropMotion.frameOffsetX +
           nearMissBackdropMotion.frameOffsetX,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.frameOffsetY +
+          killboxCueMotion.frameOffsetY +
           clearClimbBackdropMotion.frameOffsetY +
           nearMissBackdropMotion.frameOffsetY,
       )
       .setScale(
         breakthroughCueMotion.frameScaleX +
+          (killboxCueMotion.frameScaleX - 1) +
           nearMissBackdropMotion.frameScaleBoostX +
           (clearClimbBackdropMotion.frameScaleX - 1),
         breakthroughCueMotion.frameScaleY +
+          (killboxCueMotion.frameScaleY - 1) +
           nearMissBackdropMotion.frameScaleBoostY +
           (clearClimbBackdropMotion.frameScaleY - 1),
       );
@@ -3838,6 +3873,14 @@ export class GameScene extends Phaser.Scene {
     return breakthroughCue.id === 'surge-snap' ? 0.88 : 0.76;
   }
 
+  private getKillboxCueIntensity(killboxCue: KillboxCue | null): number {
+    if (killboxCue === null) {
+      return 0;
+    }
+
+    return killboxCue.id === 'seal-snap' ? 0.94 : 0.78;
+  }
+
   private getEndgameClearClimbIntensity(
     clearClimbState: ReturnType<typeof getEndgameClearClimbState>,
   ): number {
@@ -3976,6 +4019,68 @@ export class GameScene extends Phaser.Scene {
       frameOffsetY: -3,
       frameScaleX: 1.014,
       frameScaleY: 0.99,
+    };
+  }
+
+  private getKillboxBackdropMotion(
+    killboxCue: KillboxCue | null,
+    time: number,
+  ): {
+    bottomBandAngle: number;
+    bottomBandOffsetX: number;
+    frameOffsetX: number;
+    frameOffsetY: number;
+    frameScaleX: number;
+    frameScaleY: number;
+    glowOffsetX: number;
+    glowOffsetY: number;
+    topBandAngle: number;
+    topBandOffsetX: number;
+  } {
+    if (killboxCue === null) {
+      return {
+        glowOffsetX: 0,
+        glowOffsetY: 0,
+        topBandOffsetX: 0,
+        bottomBandOffsetX: 0,
+        topBandAngle: 0,
+        bottomBandAngle: 0,
+        frameOffsetX: 0,
+        frameOffsetY: 0,
+        frameScaleX: 1,
+        frameScaleY: 1,
+      };
+    }
+
+    const whip = Math.sin(time / 150);
+    const clamp = Math.cos(time / 210);
+
+    if (killboxCue.id === 'seal-snap') {
+      return {
+        glowOffsetX: KILLBOX_SEAL_GLOW_OFFSET_X + whip * 14,
+        glowOffsetY: KILLBOX_SEAL_GLOW_OFFSET_Y + clamp * 6,
+        topBandOffsetX: -24 + whip * 12,
+        bottomBandOffsetX: 30 - whip * 10,
+        topBandAngle: -4.8,
+        bottomBandAngle: 4.1,
+        frameOffsetX: -12 + whip * 5,
+        frameOffsetY: -1 + clamp * 1.5,
+        frameScaleX: 1.022,
+        frameScaleY: 0.982,
+      };
+    }
+
+    return {
+      glowOffsetX: KILLBOX_PINCH_GLOW_OFFSET_X + whip * 10,
+      glowOffsetY: KILLBOX_PINCH_GLOW_OFFSET_Y - clamp * 5,
+      topBandOffsetX: 18 + whip * 8,
+      bottomBandOffsetX: -20 - whip * 9,
+      topBandAngle: 3.6,
+      bottomBandAngle: -3,
+      frameOffsetX: 8 + whip * 3,
+      frameOffsetY: -3 - clamp,
+      frameScaleX: 1.016,
+      frameScaleY: 0.988,
     };
   }
 

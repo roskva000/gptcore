@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #268
+
+- `project/game/src/game/GameScene.ts` killbox cue aktifken arena spectacle'i cue-spesifik motion ile buyuttu; `PINCH LOCK` ve `SEAL SNAP` artik backdrop glow, top-bottom band ve frame offset/angle/scale tarafinda ayri imzalar tasiyor
+- ayni dosya killbox cue rengini near-miss heat'in ustune tasidi; authored trap aktifken sahne artik teal chase yerine killbox kapanisini sahipleniyor
+- `project/game/src/game/deathPresentation.ts` `PINCH LOCK` ile `SEAL SNAP` icin ayri snapshot accent paletleri ekledi; pinch daha sicak clamp tonu, seal snap ise daha hot late-close tonu kullaniyor
+- `project/game/scripts/telemetry-check.ts` yeni killbox snapshot tone regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #267
 
 - `project/game/src/game/balance.ts` `22.4-23.6s` icin yeni bounded `SEAL SNAP` penceresi ekledi; `echo` varyanti bu slice'ta `18deg` snapback rotation ve `0.10s` hedef lag ile bridge echo sonrasi toparlanma hattini tekrar kapatiyor

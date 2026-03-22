@@ -2,40 +2,40 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #267 ile `KILLBOX` band'i yeni bounded `SEAL SNAP` beat'ini kazandi; runtime + HUD + death-retry truth'u artik `bridge echo` sonrasi ikinci kapanisi da tasiyor.
+Bu turda Run #268 ile `PINCH LOCK -> SEAL SNAP` killbox zinciri spectacle ve death snapshot tonunda da ayrildi; authored trap artik runtime/HUD/death-retry yanina sahne imzasi da kazandi.
 
 Audit notu:
 - mevcut net verdict `bureaucracy-risk`
-- sonraki run yalniz `SEAL SNAP` copy/snapshot cilasi olarak kapanirsa audit bunu yeterli saymayacak
+- sonraki run yalniz ayni killbox tone/snapshot cilasi olarak kapanirsa audit bunu yeterli saymayacak
 - `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan closure haline getirme; yalniz stratejik/baseline degisikligi varsa ac
 - `telemetry-check.ts` ancak yeni entegrasyon kontratini kilitlemek icin buyusun; validation ana is olmasin
 
 Dikkat:
-- ayni killbox beat'i etrafinda salt docs kapanisi yapma
+- ayni killbox beat'i etrafinda ikinci bir presentation-only run yapma
 - yeni orchestration / readiness / preflight / manager katmani acma
 - deterministic baseline'i gereksiz sarsma
-- killbox zincirini yari yolda birakip shell/retention tarafina dagilma
+- killbox-to-drift hattini yari yolda birakip shell/retention tarafina dagilma
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**`bridge echo -> SEAL SNAP -> 24s lock-in` zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getir; yeni runtime slice acmadan mevcut killbox trap'ini oyuncuya daha net okut.**
+**`24s echo lock-in -> 32s drift release` handoff'una tek bir yeni bounded killbox beat ekle; yeni hazard family acmadan lock-in elini tekrar authored bir karar anina cevir.**
 
 Hedef:
-Bu tur yeni runtime karar ani acildi. Siradaki dogru adim tekrar yeni mutation acmak degil, killbox'in ikinci kapanisini sahne ve snapshot tarafinda okunur kilmak. `PINCH LOCK` ve `SEAL SNAP` ayni killbox cümlesinin iki farkli halkasi gibi hissedilmeli; oyuncu yalniz metinden degil motion ve tone farkindan da bu gecisi anlamali.
+Killbox'in ilk authored trap'i artik `23.6s`e kadar runtime, HUD, spectacle ve snapshot tarafinda bagli okuyor. Sonraki dogru adim shell ya da ayni tone polish'i degil; `24-32s` fold rejiminin ortasina tek bir yeni gameplay karari koyup `echo lock-in` tarafinin drift'e kadar duz cadence hissine dusmesini engellemek.
 
 Acilabilecek bagli yuzeyler:
-1. `GameScene.ts` tarafinda `PINCH LOCK` ile `SEAL SNAP` icin ayri backdrop/band/frame motion imzasi ekle; killbox live state'i tek renk yerine iki farkli kapanis karakteri tasisin
-2. `deathPresentation.ts` ve gerekiyorsa `runPhase.ts` ile `SEAL SNAP` snapshot tonunu `PINCH LOCK`tan net ayir ama overlay'i veri coplugune cevirme
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni spectacle/snapshot kontrati kadar genislet
+1. `balance.ts` icinde `24-32s` killbox fold rejimine tek bounded beat ekle; mevcut `echo`/`lead` ailesini kullan, yeni hazard family acma
+2. `runPhase.ts` ve `GameScene.ts` ile bu yeni beat'i HUD/support/callout/death-retry truth'una bagla
+3. `telemetry-check.ts` assert'lerini yalniz bu yeni runtime kontrati kadar genislet
 
 Yapma:
-- yeni hazard family veya yeni runtime window acma
-- `24-32s` cadence'i yeniden balance etmeye kalkma
+- ayni `PINCH LOCK` / `SEAL SNAP` tonunu bir kez daha cilalama
+- killbox band'ini bastan sona yeniden balance etmeye kalkma
 - yeni overlay/orchestration/framework katmani ekleme
 - stratejik degisim yokken docs paketini gereksiz buyutme
 
@@ -43,8 +43,8 @@ Yapma:
 
 ## Success Criteria
 
-- oyuncu `PINCH LOCK` ve `SEAL SNAP` farkini sahne ve death snapshot tonundan da ayirt eder
-- source deltasi hala gameplay/scene odakli kalir; docs veya telemetry run'i golgelemez
+- oyuncu `24-32s` killbox lock-in band'inda yeni bir bounded karar ani hisseder
+- source deltasi gameplay odakli kalir; docs veya telemetry run'i golgelemez
 - deterministic survival headline `30.3s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
