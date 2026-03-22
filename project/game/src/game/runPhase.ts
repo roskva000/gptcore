@@ -15,9 +15,11 @@ import {
   KILLBOX_SEAL_SNAP_WINDOW_SECONDS,
   STRAFE_OBSTACLE_UNLOCK_SECONDS,
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
+  DRIFT_CENTER_PIN_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
+  DRIFT_CENTER_PIN_TARGET_LAG_SECONDS,
   DRIFT_FALSE_CLEAR_WINDOW_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
@@ -95,6 +97,7 @@ export type EndgameDriftCueId =
   | 'sweep-lock'
   | 'aftershock'
   | 'recenter'
+  | 'center-pin'
   | 'false-clear'
   | 'preclear';
 
@@ -210,8 +213,12 @@ const DRIFT_RECENTER_WINDOW_START_SECONDS =
   DRIFT_AFTERSHOCK_WINDOW_END_SECONDS;
 const DRIFT_RECENTER_WINDOW_END_SECONDS =
   DRIFT_RECENTER_WINDOW_START_SECONDS + DRIFT_RECENTER_WINDOW_SECONDS;
-const DRIFT_FALSE_CLEAR_WINDOW_START_SECONDS =
+const DRIFT_CENTER_PIN_WINDOW_START_SECONDS =
   DRIFT_RECENTER_WINDOW_END_SECONDS;
+const DRIFT_CENTER_PIN_WINDOW_END_SECONDS =
+  DRIFT_CENTER_PIN_WINDOW_START_SECONDS + DRIFT_CENTER_PIN_WINDOW_SECONDS;
+const DRIFT_FALSE_CLEAR_WINDOW_START_SECONDS =
+  DRIFT_CENTER_PIN_WINDOW_END_SECONDS;
 const DRIFT_FALSE_CLEAR_WINDOW_END_SECONDS =
   DRIFT_FALSE_CLEAR_WINDOW_START_SECONDS + DRIFT_FALSE_CLEAR_WINDOW_SECONDS;
 const DRIFT_PRECLEAR_WINDOW_START_SECONDS =
@@ -498,6 +505,21 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
   }
 
   if (
+    progressSeconds >= DRIFT_CENTER_PIN_WINDOW_START_SECONDS &&
+    progressSeconds < DRIFT_CENTER_PIN_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'center-pin',
+      title: 'CENTER PIN LIVE',
+      hudLabel: 'CENTER PIN',
+      snapshotLabel: 'CENTER PIN',
+      rematchLabel: 'the center pin',
+      accentColor: 0xffd6f4,
+      body: `Recenter does not stay loose. Drift repins the center lane for ${DRIFT_CENTER_PIN_WINDOW_SECONDS.toFixed(1)}s at ${DRIFT_CENTER_PIN_TARGET_LAG_SECONDS.toFixed(2)}s lag, forcing one last tight cut before false clear offers baited air.`,
+    };
+  }
+
+  if (
     progressSeconds >= DRIFT_FALSE_CLEAR_WINDOW_START_SECONDS &&
     progressSeconds < DRIFT_FALSE_CLEAR_WINDOW_END_SECONDS
   ) {
@@ -743,7 +765,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound cross asks for the first committed cut back, rebound punish snaps onto that crossed lane, then a wider sweep flips again across the arena while sweep lock, aftershock, recenter, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound cross asks for the first committed cut back, rebound punish snaps onto that crossed lane, then a wider sweep flips again across the arena while sweep lock, aftershock, recenter, center pin, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

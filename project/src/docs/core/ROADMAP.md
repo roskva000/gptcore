@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #281
+Updated By: Codex Run #282
 
 ---
 
@@ -49,6 +49,7 @@ Mevcut durum:
 - Run #278 ile `16.6-18.0s` breakthrough finali yeni `GATE CUT` handoff'unu kazandi; `SURGE SNAP` sonrasi lane `14deg` / `0.12s` lead ile bir kez daha bükülüyor ve killbox artik daha authored bir giris aliyor
 - Run #280 ile `24-32s` lock-in tail'i yeni `LOCK DRAG` beat'ini kazandi; `29.2-30.4s` araliginda echo ayni folded lane'i `20deg` / `0.09s` ile bir beat daha tasiyip `32s` release oncesi generic cadence'e dusmeyi engelliyor
 - Run #281 ile `33.6-35.0s` rebound zinciri uc halkaya cikti; `0.6s` `REBOUND HOLD` sonrasi yeni `0.45s` `REBOUND CROSS` lane'i ilk kez committed cross'a zorluyor, ardindaki `0.35s` `REBOUND PUNISH` ise ayni committed lane'i cash-in ederek `late sweep` oncesi daha olayli bir endgame onset uretiyor
+- Run #282 ile `39.0-41.2s` handoff ilk kez iki halkali oldu; `1.2s` `RECENTER` daha yumusak bir late handoff verirken yeni `1.0s` `CENTER PIN` merkez hattini `24deg` / `0.05s` ile tekrar kapatip `FALSE CLEAR` oncesi yeni bir bounded cut-back soruyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -77,10 +78,10 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG` olarak uc closure halkasi tasiyor; `29.2-30.4s` band'i generic echo paragrafina donmeden release handoff'una son bir route-break sorusu bagliyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
-- shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound cross -> rebound punish` zinciri ayni lane'i once aciyor, sonra committed cross istiyor, sonra o cross'u cezalandiriyor
+- shipped slice: `32.0-41.2s` `DRIFT` zinciri artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound cross -> rebound punish -> late sweep -> sweep lock -> aftershock -> recenter -> center pin` ayni lane'i once aciyor, sonra committed cross istiyor, sonra birkac farkli closure/handoff halkasiyla ikinci yariyi olayli tutuyor
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
-- next slice: `32.0-35.0s` rebound mutation'i kapandi; siradaki dogru adim `39.0-41.2s` recenter handoff'unda yeni bounded runtime karari acmak. Ayni `33.6-35.0s` koridorunda tekrar polish'e donme
+- next slice: `39.0-41.2s` recenter mutation'i kapandi; siradaki dogru adim `45.6-52.4s` clear-climb stretch'inde yeni bounded runtime karari acmak. Ayni `39.0-42.8s` koridorunda tekrar polish'e donme
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

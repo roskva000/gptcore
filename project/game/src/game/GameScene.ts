@@ -3875,7 +3875,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a false-clear bait, and a preclear squeeze feed a clear-climb ascent, a ridge cut, and the final summit snap.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a center pin, a false-clear bait, and a preclear squeeze feed a clear-climb ascent, a ridge cut, and the final summit snap.';
     }
 
     if (phaseId === 'overtime') {
@@ -3907,6 +3907,8 @@ export class GameScene extends Phaser.Scene {
         return 0.88;
       case 'recenter':
         return 0.7;
+      case 'center-pin':
+        return 0.84;
       case 'false-clear':
         return 0.62;
       case 'preclear':
@@ -4074,6 +4076,7 @@ export class GameScene extends Phaser.Scene {
         endgameCue.id !== 'late-sweep' &&
         endgameCue.id !== 'sweep-lock' &&
         endgameCue.id !== 'aftershock' &&
+        endgameCue.id !== 'center-pin' &&
         endgameCue.id !== 'false-clear' &&
         endgameCue.id !== 'preclear')
     ) {
@@ -4137,6 +4140,21 @@ export class GameScene extends Phaser.Scene {
         frameOffsetY: -4 - clamp * 1.5,
         frameScaleX: 1.014,
         frameScaleY: 0.991,
+      };
+    }
+
+    if (endgameCue.id === 'center-pin') {
+      return {
+        glowOffsetX: 10 + clamp * 8,
+        glowOffsetY: -18 + sway * 5,
+        topBandOffsetX: -4 + clamp * 12,
+        bottomBandOffsetX: 6 - clamp * 10,
+        topBandAngle: -1.8,
+        bottomBandAngle: 1.8,
+        frameOffsetX: 2 + clamp * 3,
+        frameOffsetY: -5 + sway,
+        frameScaleX: 1.02,
+        frameScaleY: 0.986,
       };
     }
 

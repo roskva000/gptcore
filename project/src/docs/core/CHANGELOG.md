@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #282
+
+- `project/game/src/game/balance.ts` `39.0-41.2s` handoff'u ikiye boldu; `RECENTER` artik `1.2s`lik daha yumusak bir handoff, yeni `CENTER PIN` ise `40.2-41.2s` araliginda `24deg` travel ve `0.05s` lag ile `FALSE CLEAR` oncesi yeni bir bounded late-run closure soruyor
+- `project/game/src/game/runPhase.ts` yeni `CENTER PIN LIVE` cue'sunu, guncel `ENDGAME DRIFT` macro anlatimini ve `recenter -> center pin -> false clear` phase truth'unu ekledi
+- `project/game/src/game/GameScene.ts` `CENTER PIN` icin ayri cue intensity ve backdrop motion imzasi tanimladi; late-run handoff artik sahnede de ikinci bir clamp hissi tasiyor
+- `project/game/src/game/deathPresentation.ts` `CENTER PIN` olumleri icin ayri snapshot paleti ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni center-pin runtime/controller kontratini, cue/death/retry truth'unu ve guncel authored chain anlatimini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #281
 
 - `project/game/src/game/balance.ts` `33.6-35.0s` rebound zincirini `REBOUND HOLD -> REBOUND CROSS -> REBOUND PUNISH` olarak uc halkaya ayirdi; yeni `REBOUND CROSS` beat'i `0.45s`, `16deg` rotation ve `0.14s` target lag ile ilk committed cut-back kararini aciyor

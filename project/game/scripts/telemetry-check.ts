@@ -16,6 +16,9 @@ import {
   DRIFT_AFTERSHOCK_ROTATION_DEGREES,
   DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS,
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
+  DRIFT_CENTER_PIN_ROTATION_DEGREES,
+  DRIFT_CENTER_PIN_TARGET_LAG_SECONDS,
+  DRIFT_CENTER_PIN_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_ROTATION_DEGREES,
   DRIFT_CLEAR_CLIMB_ASCENT_TARGET_LAG_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
@@ -761,9 +764,19 @@ assert.equal(
   'The 40s handoff should stay tellable on the phase detail line instead of collapsing back into generic endgame copy as soon as aftershock ends.',
 );
 assert.equal(
+  getRunPhaseDetailText(40.6),
+  'Recenter does not stay loose. Drift repins the center lane for 1.0s at 0.05s lag, forcing one last tight cut before false clear offers baited air. Next phase at 60s.',
+  'The late recenter handoff should expose a distinct center pin so 40-41.2s gains a new bounded route answer before false clear baits a softer reopen.',
+);
+assert.equal(
   getRunPhaseDetailText(42),
   'Recenter opens just enough air to bait a hold. Drift briefly shows a safer lane, then preclear snaps back across it; take the baited reopen only if you are ready to cut again. Next phase at 60s.',
   'The first 41s+ slice should surface its own false-clear bait so the endgame does not flatten back into generic drift right after recenter ends.',
+);
+assert.equal(
+  getRunPhaseDetailText(41),
+  'Recenter does not stay loose. Drift repins the center lane for 1.0s at 0.05s lag, forcing one last tight cut before false clear offers baited air. Next phase at 60s.',
+  'The last beat before false clear should remain attributable to the new center pin instead of blending back into the broader recenter handoff.',
 );
 assert.equal(
   getRunPhaseDetailText(44),
@@ -888,6 +901,19 @@ assert.deepEqual(
     body: 'Aftershock finally loosens, but drift still leans across the sweep lane long enough to hand the run into the 40s instead of snapping straight back to generic cadence.',
   },
   'The first 40s handoff should expose its own cue so the endgame finale keeps reading as a chain instead of dropping straight into generic drift.',
+);
+assert.deepEqual(
+  getEndgameDriftCue(40.6),
+  {
+    id: 'center-pin',
+    title: 'CENTER PIN LIVE',
+    hudLabel: 'CENTER PIN',
+    snapshotLabel: 'CENTER PIN',
+    rematchLabel: 'the center pin',
+    accentColor: 0xffd6f4,
+    body: 'Recenter does not stay loose. Drift repins the center lane for 1.0s at 0.05s lag, forcing one last tight cut before false clear offers baited air.',
+  },
+  'The late 40s handoff should expose a center-pin cue so recenter produces a fresh bounded consequence before false clear reopens space.',
 );
 assert.deepEqual(
   getEndgameDriftCue(42),
@@ -1023,6 +1049,11 @@ assert.equal(
   'Deaths in the 40s handoff should expose the recenter badge so the finale does not collapse back to generic endgame wording once aftershock ends.',
 );
 assert.equal(
+  getRunPhaseReachedBadgeText(41),
+  'CENTER PIN',
+  'Deaths in the late recenter handoff should surface the new center pin badge so the added bounded cut stays attributable before false clear.',
+);
+assert.equal(
   getRunPhaseReachedBadgeText(42),
   'FALSE CLEAR',
   'Deaths right after recenter should expose the false-clear bait badge so the 41s band does not flatten back into generic endgame wording.',
@@ -1103,6 +1134,11 @@ assert.equal(
   'The 40s handoff should carry through to the death summary so late failures stay attributable after aftershock ends.',
 );
 assert.equal(
+  getRunPhaseDeathSummaryText(41),
+  'CENTER PIN snapped inside ENDGAME DRIFT. 19.0s short of OVERTIME.',
+  'The late recenter handoff should carry the new center pin into the death summary so the added closure stays tellable before false clear.',
+);
+assert.equal(
   getRunPhaseDeathSummaryText(42),
   'FALSE CLEAR snapped inside ENDGAME DRIFT. 18.0s short of OVERTIME.',
   'The false-clear bait should carry through to the death summary so 41s+ deaths still point at the baited late-run miss.',
@@ -1176,6 +1212,11 @@ assert.equal(
   getRunPhaseRetryGoalText(40),
   'Rematch the recenter handoff and carry it to 60s clear in +20.0s',
   'The 40s handoff should become the retry target instead of dropping the player back to generic endgame phrasing as soon as aftershock ends.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(41),
+  'Rematch the center pin and carry it to 60s clear in +19.0s',
+  'The new late recenter beat should become the retry target so the 40-41.2s handoff sells a concrete second rematch hook before false clear.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(42),
@@ -1371,6 +1412,41 @@ assert.equal(
   aftershockDeathPresentation.promptBackgroundColor,
   '#4f2331',
   'Deaths inside aftershock should keep the retry block on the post-sweep clamp palette so the overlay stays aligned with the final late-band hold.',
+);
+const centerPinDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 41,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 8,
+    totalRuns: 8,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 12400,
+    retryCount: 8,
+    recentDeathTimes: [20.1, 29.7, 33.8, 34.5, 36.4, 37.1, 38.0, 41.0],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '41.8s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  centerPinDeathPresentation.calloutBackgroundColor,
+  '#3b1b37',
+  'Deaths inside center pin should move into a tighter clamp tone so the new late recenter closure reads differently from aftershock and false clear.',
+);
+assert.equal(
+  centerPinDeathPresentation.titleTextColor,
+  '#ffd8f7',
+  'Deaths inside center pin should brighten the title around the new clamp palette so the added bounded cut stays readable in the snapshot.',
+);
+assert.equal(
+  centerPinDeathPresentation.promptBackgroundColor,
+  '#4a2445',
+  'Deaths inside center pin should keep the retry block on the new clamp palette so the overlay stays aligned with the failed late recenter cut.',
 );
 const falseClearDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
@@ -1823,7 +1899,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound cross asks for the first committed cut back, rebound punish snaps onto that crossed lane, then a wider sweep flips again across the arena while sweep lock, aftershock, recenter, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
+    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound cross asks for the first committed cut back, rebound punish snaps onto that crossed lane, then a wider sweep flips again across the arena while sweep lock, aftershock, recenter, center pin, false clear, preclear, plus a clear-climb ridge cut and summit snap keep the 40s alive.',
   },
   'Endgame should announce the authored late-run chain instead of sounding like a disconnected late-run reset.',
 );
@@ -2112,7 +2188,7 @@ assert.equal(
     runSpawnCount: 1,
   }),
   'drift',
-  'A post-recenter preclear window should keep the 41s+ band on bounded drift pressure instead of dropping straight to generic cadence.',
+  'The new center-pin window should keep the late recenter handoff on forced drift so the added cut stays authored instead of falling back to cadence luck.',
 );
 assert.equal(
   getObstacleVariant({
@@ -2121,6 +2197,22 @@ assert.equal(
       DRIFT_SWEEP_WINDOW_SECONDS +
       DRIFT_AFTERSHOCK_WINDOW_SECONDS +
       DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS +
+      0.2,
+    runSpawnCount: 1,
+  }),
+  'drift',
+  'A post-center-pin false-clear window should keep the 41s+ bait on bounded drift pressure instead of dropping straight to generic cadence.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds:
+      DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS +
+      DRIFT_FALSE_CLEAR_WINDOW_SECONDS +
       DRIFT_PRECLEAR_WINDOW_SECONDS +
       0.2,
     runSpawnCount: 1,
@@ -2617,8 +2709,8 @@ assert.deepEqual(
     ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
   ),
   {
-    x: -0.94,
-    y: 0.342,
+    x: -0.951,
+    y: 0.309,
   },
   'The recenter handoff should still lean across the sweep lane before the endgame drops back to alternating drift cadence.',
 );
@@ -2634,6 +2726,31 @@ assert.deepEqual(
           DRIFT_SWEEP_WINDOW_SECONDS +
           DRIFT_AFTERSHOCK_WINDOW_SECONDS +
           DRIFT_RECENTER_WINDOW_SECONDS +
+          0.1,
+        variant: 'drift',
+        runSpawnCount: 5,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.914,
+    y: 0.407,
+  },
+  'The center pin should cut back harder than recenter so the new late handoff closure feels like a fresh clamp before false clear.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds:
+          DRIFT_SWEEP_WINDOW_START_SECONDS +
+          DRIFT_SWEEP_WINDOW_SECONDS +
+          DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+          DRIFT_RECENTER_WINDOW_SECONDS +
+          DRIFT_CENTER_PIN_WINDOW_SECONDS +
           0.1,
         variant: 'drift',
         runSpawnCount: 5,
@@ -2658,6 +2775,7 @@ assert.deepEqual(
           DRIFT_SWEEP_WINDOW_SECONDS +
           DRIFT_AFTERSHOCK_WINDOW_SECONDS +
           DRIFT_RECENTER_WINDOW_SECONDS +
+          DRIFT_CENTER_PIN_WINDOW_SECONDS +
           DRIFT_FALSE_CLEAR_WINDOW_SECONDS +
           0.1,
         variant: 'drift',
@@ -2933,6 +3051,20 @@ assert.equal(
       0.1,
     variant: 'drift',
   }),
+  DRIFT_CENTER_PIN_TARGET_LAG_SECONDS,
+  'The center pin should tighten lag after recenter so the late handoff produces a fresh clamp before false clear reopens the lane.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds:
+      DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS +
+      0.1,
+    variant: 'drift',
+  }),
   DRIFT_FALSE_CLEAR_TARGET_LAG_SECONDS,
   'The false-clear bait should keep its own bounded lag so the first 41s slice reads like a tempting reopen instead of recenter copy.',
 );
@@ -2943,6 +3075,7 @@ assert.equal(
       DRIFT_SWEEP_WINDOW_SECONDS +
       DRIFT_AFTERSHOCK_WINDOW_SECONDS +
       DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS +
       DRIFT_FALSE_CLEAR_WINDOW_SECONDS +
       0.1,
     variant: 'drift',
@@ -3067,8 +3200,28 @@ assert.equal(
 );
 assert.equal(
   DRIFT_RECENTER_ROTATION_DEGREES,
-  20,
-  'The recenter handoff should stay firmer than generic drift but softer than aftershock so the 40s transition feels like a controlled release instead of another full clamp.',
+  18,
+  'The recenter handoff should soften slightly so the new center pin can own the tighter late cut instead of making the whole 39-41.2s band feel uniformly clamped.',
+);
+assert.equal(
+  DRIFT_RECENTER_TARGET_LAG_SECONDS,
+  0.08,
+  'The recenter handoff should loosen a touch so the added center pin can read like a fresh cash-in before false clear reopens space.',
+);
+assert.equal(
+  DRIFT_CENTER_PIN_WINDOW_SECONDS,
+  1,
+  'The center pin should stay brief so the late recenter handoff gains one sharp new decision without swallowing false clear.',
+);
+assert.equal(
+  DRIFT_CENTER_PIN_ROTATION_DEGREES,
+  24,
+  'The center pin should hit harder than recenter but stay below aftershock so the new cut feels like a renewed clamp, not a full late-band reset.',
+);
+assert.equal(
+  DRIFT_CENTER_PIN_TARGET_LAG_SECONDS,
+  0.05,
+  'The center pin should tighten lag versus recenter so the last pre-bait cut reads like a real cash-in before false clear reopens space.',
 );
 assert.equal(
   DRIFT_FALSE_CLEAR_ROTATION_DEGREES,
@@ -4958,7 +5111,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag, a 1\.2s lock drag from 29\.2s at 20deg with 0\.09s lag, before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.6s rebound hold at 28deg with 0\.16s lag, then a 0\.45s rebound cross at 16deg with 0\.14s lag, then a 0\.35s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 4\.8s ascent stair at 16deg and 0\.12s lag, a 2\.0s ridge cut at 50\.4s with 22deg and 0\.07s lag, then a summit snap at 28deg with 0\.02s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag, a 1\.2s lock drag from 29\.2s at 20deg with 0\.09s lag, before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.6s rebound hold at 28deg with 0\.16s lag, then a 0\.45s rebound cross at 16deg with 0\.14s lag, then a 0\.35s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 1\.2s recenter handoff at 18deg with 0\.08s lag, a 1\.0s center pin at 40\.2s with 24deg travel and 0\.05s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 4\.8s ascent stair at 16deg and 0\.12s lag, a 2\.0s ridge cut at 50\.4s with 22deg and 0\.07s lag, then a summit snap at 28deg with 0\.02s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

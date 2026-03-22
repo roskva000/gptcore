@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #281:
+Current deterministic survival headline after Run #282:
 - `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #281:
 - validation export last run `36.9s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+endgame_center_pin_surface:
+current: Run #282 `project/game/src/game/balance.ts` `39.0-41.2s` handoff'u `1.2s` `RECENTER` ve yeni `1.0s` `CENTER PIN` olarak ayiriyor; yeni beat `24deg` travel ve `0.05s` lag ile merkez hattini tekrar kapatip `FALSE CLEAR` oncesi yeni bir bounded cut-back soruyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor
+baseline: Run #281 state'inde `39.0-41.2s` band'i tek parca `RECENTER` handoff'uydu; `FALSE CLEAR` oncesi ayri bir late clamp olmadigi icin recenter bazen fazla tek-nota okunabiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `39-41.2s` band'ini artik `RECENTER -> CENTER PIN -> FALSE CLEAR` zinciri olarak anlattigini gostersin; yeni center pin beat'i unfair wipe, named-beat gurultusu veya `AFTERSHOCK` tekrarina benzeyen cheap recycle gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_rebound_cross_surface:
 current: Run #281 `project/game/src/game/balance.ts` `33.6-35.0s` rebound zincirini `0.6s` `REBOUND HOLD`, `0.45s` `REBOUND CROSS`, `0.35s` `REBOUND PUNISH` olarak uc halkaya ayiriyor; yeni `REBOUND CROSS` beat'i `16deg` travel ve `0.14s` lag ile ilk committed cut-back kararini soruyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor

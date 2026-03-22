@@ -88,9 +88,12 @@ export const DRIFT_SWEEP_LOCK_TARGET_LAG_SECONDS = 0.05;
 export const DRIFT_AFTERSHOCK_WINDOW_SECONDS = 1.4;
 export const DRIFT_AFTERSHOCK_ROTATION_DEGREES = 30;
 export const DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS = 0.04;
-export const DRIFT_RECENTER_WINDOW_SECONDS = 2.2;
-export const DRIFT_RECENTER_ROTATION_DEGREES = 20;
-export const DRIFT_RECENTER_TARGET_LAG_SECONDS = 0.06;
+export const DRIFT_RECENTER_WINDOW_SECONDS = 1.2;
+export const DRIFT_RECENTER_ROTATION_DEGREES = 18;
+export const DRIFT_RECENTER_TARGET_LAG_SECONDS = 0.08;
+export const DRIFT_CENTER_PIN_WINDOW_SECONDS = 1;
+export const DRIFT_CENTER_PIN_ROTATION_DEGREES = 24;
+export const DRIFT_CENTER_PIN_TARGET_LAG_SECONDS = 0.05;
 export const DRIFT_FALSE_CLEAR_WINDOW_SECONDS = 1.6;
 export const DRIFT_FALSE_CLEAR_ROTATION_DEGREES = 10;
 export const DRIFT_FALSE_CLEAR_TARGET_LAG_SECONDS = 0.12;
@@ -277,7 +280,7 @@ const isDriftRecenterWindow = (survivalTimeSeconds: number): boolean =>
       DRIFT_AFTERSHOCK_WINDOW_SECONDS +
       DRIFT_RECENTER_WINDOW_SECONDS;
 
-const isDriftFalseClearWindow = (survivalTimeSeconds: number): boolean =>
+const isDriftCenterPinWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >=
     DRIFT_SWEEP_WINDOW_START_SECONDS +
       DRIFT_SWEEP_WINDOW_SECONDS +
@@ -288,6 +291,21 @@ const isDriftFalseClearWindow = (survivalTimeSeconds: number): boolean =>
       DRIFT_SWEEP_WINDOW_SECONDS +
       DRIFT_AFTERSHOCK_WINDOW_SECONDS +
       DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS;
+
+const isDriftFalseClearWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >=
+    DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS &&
+  survivalTimeSeconds <
+    DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS +
       DRIFT_FALSE_CLEAR_WINDOW_SECONDS;
 
 const isDriftPreclearWindow = (survivalTimeSeconds: number): boolean =>
@@ -296,12 +314,14 @@ const isDriftPreclearWindow = (survivalTimeSeconds: number): boolean =>
       DRIFT_SWEEP_WINDOW_SECONDS +
       DRIFT_AFTERSHOCK_WINDOW_SECONDS +
       DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS +
       DRIFT_FALSE_CLEAR_WINDOW_SECONDS &&
   survivalTimeSeconds <
     DRIFT_SWEEP_WINDOW_START_SECONDS +
       DRIFT_SWEEP_WINDOW_SECONDS +
       DRIFT_AFTERSHOCK_WINDOW_SECONDS +
       DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_CENTER_PIN_WINDOW_SECONDS +
       DRIFT_FALSE_CLEAR_WINDOW_SECONDS +
       DRIFT_PRECLEAR_WINDOW_SECONDS;
 
@@ -310,6 +330,7 @@ export const DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS =
   DRIFT_SWEEP_WINDOW_SECONDS +
   DRIFT_AFTERSHOCK_WINDOW_SECONDS +
   DRIFT_RECENTER_WINDOW_SECONDS +
+  DRIFT_CENTER_PIN_WINDOW_SECONDS +
   DRIFT_FALSE_CLEAR_WINDOW_SECONDS +
   DRIFT_PRECLEAR_WINDOW_SECONDS;
 export const DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS =
@@ -406,6 +427,7 @@ export const getObstacleVariant = ({
         isDriftSweepWindow(survivalTimeSeconds) ||
         isDriftAftershockWindow(survivalTimeSeconds) ||
         isDriftRecenterWindow(survivalTimeSeconds) ||
+        isDriftCenterPinWindow(survivalTimeSeconds) ||
         isDriftFalseClearWindow(survivalTimeSeconds) ||
         isDriftPreclearWindow(survivalTimeSeconds) ||
         isDriftClearClimbAscentWindow(survivalTimeSeconds) ||
@@ -641,6 +663,7 @@ export const getObstacleTravelDirection = ({
       isDriftSweepWindow(survivalTimeSeconds) ||
       isDriftAftershockWindow(survivalTimeSeconds) ||
       isDriftRecenterWindow(survivalTimeSeconds) ||
+      isDriftCenterPinWindow(survivalTimeSeconds) ||
       isDriftFalseClearWindow(survivalTimeSeconds) ||
       isDriftPreclearWindow(survivalTimeSeconds) ||
       isDriftClearClimbAscentWindow(survivalTimeSeconds) ||
@@ -674,7 +697,9 @@ export const getObstacleTravelDirection = ({
         : isDriftAftershockWindow(survivalTimeSeconds)
           ? DRIFT_AFTERSHOCK_ROTATION_DEGREES
         : isDriftRecenterWindow(survivalTimeSeconds)
-            ? DRIFT_RECENTER_ROTATION_DEGREES
+          ? DRIFT_RECENTER_ROTATION_DEGREES
+          : isDriftCenterPinWindow(survivalTimeSeconds)
+            ? DRIFT_CENTER_PIN_ROTATION_DEGREES
             : isDriftFalseClearWindow(survivalTimeSeconds)
               ? DRIFT_FALSE_CLEAR_ROTATION_DEGREES
             : isDriftPreclearWindow(survivalTimeSeconds)
@@ -773,6 +798,8 @@ export const getObstacleTargetLagSeconds = ({
       ? DRIFT_AFTERSHOCK_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftRecenterWindow(survivalTimeSeconds)
       ? DRIFT_RECENTER_TARGET_LAG_SECONDS
+    : variant === 'drift' && isDriftCenterPinWindow(survivalTimeSeconds)
+      ? DRIFT_CENTER_PIN_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftFalseClearWindow(survivalTimeSeconds)
       ? DRIFT_FALSE_CLEAR_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftPreclearWindow(survivalTimeSeconds)

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #282]
+
+Decision:
+`mutation` modunda `39.0-41.2s` recenter handoff'unu iki halkaya bol; `RECENTER` arkasina yeni `CENTER PIN` beat'i ekleyip `FALSE CLEAR` oncesi yeni bounded late-run karari ac.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni yone bakiyordu: ayni `33.6-35.0s` rebound koridoruna geri donmeden yeni runtime/gameplay delta acmak gerekiyordu. En yuksek etkili ve en dar secim; `39.0-41.2s` handoff'u tek yumusak recenter yerine `recenter -> center pin` zincirine cevirip late-run ikinci yariyi daha replayable hale getirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` recenter penceresini `1.2s` `RECENTER` ve yeni `1.0s` `CENTER PIN` olarak ayirdi; recenter `18deg / 0.08s`, center pin `24deg / 0.05s` kontrati kullaniyor. `project/game/src/game/runPhase.ts` yeni `CENTER PIN LIVE` cue'sunu detail/HUD/badge/death summary/rematch truth'una ekledi ve `ENDGAME DRIFT` macro anlatimini guncelledi. `project/game/src/game/GameScene.ts` yeni beat icin cue intensity ve backdrop motion imzasi verdi. `project/game/src/game/deathPresentation.ts` `CENTER PIN` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve player-facing truth'u regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `CENTER PIN` beat'inin okunur late handoff clamp'i yerine unfair son-saniye wipe, `FALSE CLEAR` bait'ini bogan gürültu ya da `AFTERSHOCK` tekrarina benzeyen cheap recycle urettigini gosterirse yalniz `CENTER PIN` pencere suresi ile `rotation/lag` siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `39.0-42.8s` koridorunda copy/snapshot polish zinciri acilmaz.
+
 ### [Run #281]
 
 Decision:
