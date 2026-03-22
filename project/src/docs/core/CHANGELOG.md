@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #275
+
+- `project/game/src/game/GameScene.ts` `false-clear` ve `preclear` icin ayri endgame backdrop motion imzalari ekledi; bait slice'i daha hafif reopen offset/angle akisi tasirken squeeze slice'i daha sert bir late close motion'u kullaniyor
+- ayni dosya cue intensity map'ini guncelledi; `FALSE CLEAR` artik `RECENTER`'dan daha hafif, `PRECLEAR SQUEEZE` ise daha sert gorunur bir finale donuyor
+- `project/game/src/game/deathPresentation.ts` `FALSE CLEAR` ve `PRECLEAR SQUEEZE` olumleri icin ayri snapshot palette'leri ekledi; callout/title/prompt bloklari generic late-endgame tonuna dusmuyor
+- `project/game/scripts/telemetry-check.ts` yeni false-clear/preclear snapshot tone regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #274
 
 - `project/game/src/game/balance.ts` `41.2-45.6s` band'ini ikiye boldu; yeni `FALSE CLEAR` bait slice'i kisa bir reopen hissi verirken `PRECLEAR SQUEEZE` artik `42.8-45.6s` araliginda daha sert bir kapanis olarak calisiyor

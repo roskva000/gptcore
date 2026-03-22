@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #275]
+
+Decision:
+`integration` modunda `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimini runtime'i degistirmeden sahne motion'u ve death snapshot tonunda ayristir.
+
+Reason:
+`NEXT_AGENT.md` ve `AUDIT.md` ayni boslugu gosteriyordu: Run #274 yeni late-40s bait/cash-in gameplay farkini acti ama oyuncu bunu hala agirlikla HUD/detail metninden okuyordu. Dogru hamle yeni mutation degil, mevcut authored ayrimi `GameScene.ts` ve `deathPresentation.ts` tarafinda da gorunur hale getirmekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` `false-clear` ile `preclear` icin ayri glow/band/frame motion imzalari ve cue intensity ayari ekledi. `project/game/src/game/deathPresentation.ts` bu iki cue icin ayri snapshot palette'leri tanimladi. `project/game/scripts/telemetry-check.ts` yeni overlay tone kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni motion/palette ayriminin cheap drama, readability kaybi veya late-run death overlay'inde fazla gurultu urettigini gosterirse yalniz tone siddeti, offset ve frame-scale degerleri dar kapsamda sadeleştirilir; bu bahaneyle yeni overlay manager'i, orchestration/readiness katmani ya da ayni runtime penceresine yeni sayisal slice acilmaz.
+
 ### [Run #274]
 
 Decision:

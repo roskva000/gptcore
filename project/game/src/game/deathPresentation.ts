@@ -336,6 +336,32 @@ const getSnapshotTone = ({
     };
   }
 
+  if (endgameCue?.id === 'false-clear') {
+    return {
+      badgeBackgroundColor: '#204a3e',
+      badgeTextColor: '#dffff2',
+      bodyTextColor: '#c5eadd',
+      calloutBackgroundColor: '#173b31',
+      calloutTextColor: '#97f0cb',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#204a3e',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#e7fff5',
+      titleTextColor: '#d3ffec',
+    };
+  }
+
+  if (endgameCue?.id === 'preclear') {
+    return {
+      badgeBackgroundColor: '#6a2320',
+      badgeTextColor: '#ffe7df',
+      bodyTextColor: '#f4cbc1',
+      calloutBackgroundColor: '#541917',
+      calloutTextColor: '#ffb8a6',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#6a2320',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff0eb',
+      titleTextColor: '#ffddd4',
+    };
+  }
+
   return {
     ...DEFAULT_SNAPSHOT_TONE,
     promptBackgroundColor: hasNearMissChaseSnapshot

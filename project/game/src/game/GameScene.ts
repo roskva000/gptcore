@@ -174,6 +174,10 @@ const ENDGAME_SWEEP_LOCK_GLOW_OFFSET_X = -38;
 const ENDGAME_SWEEP_LOCK_GLOW_OFFSET_Y = -4;
 const ENDGAME_AFTERSHOCK_GLOW_OFFSET_X = 30;
 const ENDGAME_AFTERSHOCK_GLOW_OFFSET_Y = -2;
+const ENDGAME_FALSE_CLEAR_GLOW_OFFSET_X = 18;
+const ENDGAME_FALSE_CLEAR_GLOW_OFFSET_Y = -14;
+const ENDGAME_PRECLEAR_GLOW_OFFSET_X = -30;
+const ENDGAME_PRECLEAR_GLOW_OFFSET_Y = 2;
 const NEAR_MISS_BACKDROP_PULSE_MS = 150;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
@@ -3881,8 +3885,10 @@ export class GameScene extends Phaser.Scene {
         return 0.88;
       case 'recenter':
         return 0.7;
+      case 'false-clear':
+        return 0.62;
       case 'preclear':
-        return 0.78;
+        return 0.86;
       default:
         return 0;
     }
@@ -4002,7 +4008,9 @@ export class GameScene extends Phaser.Scene {
       endgameCue === null ||
       (endgameCue.id !== 'late-sweep' &&
         endgameCue.id !== 'sweep-lock' &&
-        endgameCue.id !== 'aftershock')
+        endgameCue.id !== 'aftershock' &&
+        endgameCue.id !== 'false-clear' &&
+        endgameCue.id !== 'preclear')
     ) {
       return {
         glowOffsetX: 0,
@@ -4020,6 +4028,37 @@ export class GameScene extends Phaser.Scene {
 
     const sway = Math.sin(time / 170);
     const clamp = Math.cos(time / 210);
+    const tease = Math.sin(time / 240);
+
+    if (endgameCue.id === 'false-clear') {
+      return {
+        glowOffsetX: ENDGAME_FALSE_CLEAR_GLOW_OFFSET_X + tease * 14,
+        glowOffsetY: ENDGAME_FALSE_CLEAR_GLOW_OFFSET_Y - clamp * 8,
+        topBandOffsetX: 16 + tease * 10,
+        bottomBandOffsetX: -12 - tease * 7,
+        topBandAngle: 2.6,
+        bottomBandAngle: -2.1,
+        frameOffsetX: 6 + tease * 4,
+        frameOffsetY: -4 - clamp * 1.5,
+        frameScaleX: 1.014,
+        frameScaleY: 0.991,
+      };
+    }
+
+    if (endgameCue.id === 'preclear') {
+      return {
+        glowOffsetX: ENDGAME_PRECLEAR_GLOW_OFFSET_X + sway * 13,
+        glowOffsetY: ENDGAME_PRECLEAR_GLOW_OFFSET_Y + clamp * 5,
+        topBandOffsetX: -24 + sway * 9,
+        bottomBandOffsetX: 28 - sway * 8,
+        topBandAngle: -4.7,
+        bottomBandAngle: 3.8,
+        frameOffsetX: -10 + sway * 4,
+        frameOffsetY: -1 + clamp,
+        frameScaleX: 1.022,
+        frameScaleY: 0.984,
+      };
+    }
 
     if (endgameCue.id === 'aftershock') {
       return {

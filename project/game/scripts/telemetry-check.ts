@@ -1120,6 +1120,76 @@ assert.equal(
   '#4f2331',
   'Deaths inside aftershock should keep the retry block on the post-sweep clamp palette so the overlay stays aligned with the final late-band hold.',
 );
+const falseClearDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
+  survivalTimeSeconds: 42,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 8,
+    totalRuns: 8,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 12900,
+    retryCount: 8,
+    recentDeathTimes: [20.1, 29.7, 33.8, 34.5, 36.4, 37.1, 38.0, 42.0],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '42.6s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  falseClearDeathPresentation.calloutBackgroundColor,
+  '#173b31',
+  'Deaths inside false clear should cool into a tempting reopen tone so the bait reads differently from the heavier preclear cash-in that follows.',
+);
+assert.equal(
+  falseClearDeathPresentation.titleTextColor,
+  '#d3ffec',
+  'Deaths inside false clear should brighten the title around the reopen palette so the snapshot keeps the bait readable instead of falling back to generic endgame tones.',
+);
+assert.equal(
+  falseClearDeathPresentation.promptBackgroundColor,
+  '#204a3e',
+  'Deaths inside false clear should keep the retry block on the reopen palette so the overlay stays aligned with the baited lane.',
+);
+const preclearDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 44,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 9,
+    totalRuns: 9,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 14100,
+    retryCount: 9,
+    recentDeathTimes: [20.1, 29.7, 33.8, 34.5, 36.4, 37.1, 38.0, 42.0, 44.0],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '44.8s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  preclearDeathPresentation.calloutBackgroundColor,
+  '#541917',
+  'Deaths inside preclear should shift into a hotter squeeze tone so the baited late-run cash-in reads differently from false clear.',
+);
+assert.equal(
+  preclearDeathPresentation.titleTextColor,
+  '#ffddd4',
+  'Deaths inside preclear should brighten the title around the harder squeeze palette so the snapshot keeps the second closure legible before clear climb.',
+);
+assert.equal(
+  preclearDeathPresentation.promptBackgroundColor,
+  '#6a2320',
+  'Deaths inside preclear should keep the retry block on the squeeze palette so the overlay stays aligned with the failed cash-in beat.',
+);
 const clearClimbDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: 0, offsetY: -1, label: 'up' },
   survivalTimeSeconds: 50,

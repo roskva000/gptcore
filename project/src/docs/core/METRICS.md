@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #274:
+Current deterministic survival headline after Run #275:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #274:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+endgame_false_clear_preclear_spectacle_snapshot_surface:
+current: Run #275 `project/game/src/game/GameScene.ts` `false-clear` ile `preclear` icin ayri glow/band/frame motion truth'u uyguluyor; bait slice'i daha hafif reopen offset'iyle lane'in acildigi hissini verirken `project/game/src/game/deathPresentation.ts` ayni cue'yu serin reopen palette'iyle tasiyor. `PRECLEAR SQUEEZE` ise daha sert close motion'u ve daha sicak snapshot tonu ile bu bait'in cash-in'ini ayri okutur
+baseline: Run #274 state'inde `FALSE CLEAR` ve `PRECLEAR SQUEEZE` runtime/HUD/death-retry truth'una girmisti ama sahne motion'u ile death snapshot tonu bu iki cue'yu ayirmiyordu; late 40s band'i gorsel olarak daha generic bir late-endgame diliyle sunuluyordu
+target: sonraki browser veya manuel gozlem oyuncunun `41-45.6s` band'inda once sahte bir reopen sonra daha sert bir cash-in oldugunu yalniz text degil sahnedeki motion ve death snapshot tonundan da ayirt ettigini gostersin; yeni ton cheap drama veya readability gurultusu yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_false_clear_precognition_surface:
 current: Run #274 `project/game/src/game/balance.ts` `41.2-42.8s` araliginda yeni `FALSE CLEAR` slice'i aciyor; drift `10deg` travel ve `0.12s` lag ile kisa bir safer-lane yem'i gosteriyor. `project/game/src/game/runPhase.ts` bunu `FALSE CLEAR` cue, badge, death summary ve retry goal truth'una tasiyor
