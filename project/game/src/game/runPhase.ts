@@ -3,8 +3,10 @@ import {
   BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS,
   BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS,
   BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS,
+  KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS,
   KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS,
   KILLBOX_FOLD_SNAP_WINDOW_SECONDS,
+  KILLBOX_FORCED_LEAD_WINDOW_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_SECONDS,
   KILLBOX_SEAL_SNAP_WINDOW_START_SECONDS,
@@ -63,7 +65,12 @@ export type BreakthroughCue = {
   title: string;
 };
 
-export type KillboxCueId = 'pinch-lock' | 'seal-snap' | 'fold-snap';
+export type KillboxCueId =
+  | 'lead-cut'
+  | 'echo-follow'
+  | 'pinch-lock'
+  | 'seal-snap'
+  | 'fold-snap';
 
 export type KillboxCue = {
   accentColor: number;
@@ -164,6 +171,10 @@ const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
 const BREAKTHROUGH_GATE_CUT_WINDOW_END_SECONDS =
   BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS + BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS;
+const KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS =
+  LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS;
+const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_END_SECONDS =
+  KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS + KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS;
 const KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS =
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS + KILLBOX_PINCH_LOCK_WINDOW_SECONDS;
 const KILLBOX_SEAL_SNAP_WINDOW_END_SECONDS =
@@ -255,11 +266,32 @@ export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | n
 };
 
 export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
-  if (
-    progressSeconds < KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS ||
-    progressSeconds >= KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS
-  ) {
+  if (progressSeconds < LEAD_OBSTACLE_UNLOCK_SECONDS || progressSeconds >= KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS) {
     return null;
+  }
+
+  if (progressSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS) {
+    return {
+      id: 'lead-cut',
+      title: 'LEAD CUT LIVE',
+      hudLabel: 'LEAD CUT',
+      snapshotLabel: 'LEAD CUT',
+      rematchLabel: 'the lead cut',
+      accentColor: 0xffd8b8,
+      body: 'Gate cut cashes into killbox here. The first lead cut bends the reopened lane into a harder entry; leave the clipped route now so the trap starts on your terms.',
+    };
+  }
+
+  if (progressSeconds < KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_END_SECONDS) {
+    return {
+      id: 'echo-follow',
+      title: 'ECHO FOLLOW LIVE',
+      hudLabel: 'ECHO FOLLOW',
+      snapshotLabel: 'ECHO FOLLOW',
+      rematchLabel: 'the echo follow-through',
+      accentColor: 0xffcaa0,
+      body: 'The bent entry keeps moving here. Shadow echo follows the lead cut across the same lane; stay off the first recovery line so pinch lock cannot cash in on a lazy hold.',
+    };
   }
 
   if (progressSeconds < KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS) {
@@ -270,7 +302,7 @@ export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
       snapshotLabel: 'PINCH LOCK',
       rematchLabel: 'the pinch lock',
       accentColor: 0xffd6a5,
-      body: 'Killbox bends back here. A bounded lead lock pinches the straight escape, then bridge echo gives one step back before the final close. Hold the first sidestep and stay ready to cut late again.',
+      body: 'The gate-cut handoff cashes in here. A bounded lead lock pinches the straight escape after the bent entry, then bridge echo gives one step back before the final close. Hold the first sidestep and stay ready to cut late again.',
     };
   }
 
@@ -672,7 +704,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'killbox':
       return {
         title: 'KILLBOX LIVE',
-        body: 'A hard lead cut opens the trap, shadow echoes fold the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap tightens the echo lane once more before drift release.',
+        body: 'Gate cut hands straight into killbox. A hard lead cut bends that entry, shadow echo keeps the same lane folding, pinch lock cashes it back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap tightens the echo lane once more before drift release.',
       };
     case 'endgame':
       return {

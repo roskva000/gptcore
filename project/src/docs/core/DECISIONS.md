@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #279]
+
+Decision:
+`integration` modunda yeni runtime slice acmadan `GATE CUT -> KILLBOX` onset zincirini player-facing truth tarafinda tamamla; killbox'in ilk `18.0-20.6s` elini `LEAD CUT` ve `ECHO FOLLOW` cue'lariyla isimlendir.
+
+Reason:
+`NEXT_AGENT.md` ile audit yonlendirmesi ayni boslugu gosteriyordu: `GATE CUT` mutation'i acilmisti ama `18.0-20.6s` killbox onset'i HUD/detail/death-retry tarafinda adsiz kaldigi icin handoff phase cliff gibi okunuyordu. Yeni runtime sayisi acmadan en yuksek etkili hamle; killbox onset'in ilk iki player-facing halkasini ekleyip `PINCH LOCK` oncesini de ayni authored zincire baglamakti.
+
+Impact:
+`project/game/src/game/runPhase.ts` yeni `LEAD CUT` ve `ECHO FOLLOW` cue'larini, guncel `KILLBOX LIVE` anonsunu ve `PINCH LOCK` handoff copy'sini ekledi; detail/support/badge/death summary/retry hedefi artik `18.0-20.6s` onset'i de isimlendiriyor. `project/game/src/game/GameScene.ts` killbox shift hint'i, first-death hedef hint'i, cue intensity'si ve backdrop motion'unu bu yeni early-killbox cue'lara hizaladi. `project/game/src/game/deathPresentation.ts` `LEAD CUT` ve `ECHO FOLLOW` icin ayri snapshot palette'leri ekledi. `project/game/scripts/telemetry-check.ts` yeni cue/detail/badge/death-retry/tone kontratlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `30.8s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni `LEAD CUT` / `ECHO FOLLOW` cue zincirinin callout spam'i, cheap drama ya da `PINCH LOCK` oncesi gereksiz adlandirma urettigini gosterirse yalniz cue copy/tone yogunlugu ve motion siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni koridorda yeni runtime slice acilmaz.
+
 ### [Run #278]
 
 Decision:

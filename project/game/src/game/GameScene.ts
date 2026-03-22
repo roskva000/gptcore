@@ -168,6 +168,10 @@ const BREAKTHROUGH_SURGE_GLOW_OFFSET_X = -28;
 const BREAKTHROUGH_SURGE_GLOW_OFFSET_Y = -4;
 const BREAKTHROUGH_GATE_GLOW_OFFSET_X = -8;
 const BREAKTHROUGH_GATE_GLOW_OFFSET_Y = -10;
+const KILLBOX_LEAD_GLOW_OFFSET_X = 20;
+const KILLBOX_LEAD_GLOW_OFFSET_Y = -8;
+const KILLBOX_ECHO_FOLLOW_GLOW_OFFSET_X = -10;
+const KILLBOX_ECHO_FOLLOW_GLOW_OFFSET_Y = -6;
 const KILLBOX_PINCH_GLOW_OFFSET_X = 28;
 const KILLBOX_PINCH_GLOW_OFFSET_Y = -6;
 const KILLBOX_SEAL_GLOW_OFFSET_X = -34;
@@ -3703,7 +3707,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getFirstDeathTargetHintText(): string {
-    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nBREAKTHROUGH is live. The strafe fork opens first, surge snaps back, then gate cut bends the lane into killbox.`;
+    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nBREAKTHROUGH is live. The strafe fork opens first, surge snaps back, then gate cut bends the lane into killbox before the first lead cut lands.`;
   }
 
   private getSurvivalGoalHintText(): string {
@@ -3867,7 +3871,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'killbox') {
-      return 'Killbox is live. The first lead cut opens the trap, pinch lock bends back into the straight escape, bridge echo gives one step back, then seal snap shuts it again before 24s lock-in while cadence keeps folding it.';
+      return 'Killbox is live. Gate cut hands the lane into a first lead cut, shadow echo keeps that bend alive, pinch lock cashes it back into the straight escape, then bridge echo and seal snap argue over the reopen before 24s lock-in.';
     }
 
     if (phaseId === 'endgame') {
@@ -3923,7 +3927,19 @@ export class GameScene extends Phaser.Scene {
       return 0;
     }
 
-    return killboxCue.id === 'seal-snap' ? 0.94 : 0.78;
+    if (killboxCue.id === 'seal-snap') {
+      return 0.94;
+    }
+
+    if (killboxCue.id === 'pinch-lock') {
+      return 0.84;
+    }
+
+    if (killboxCue.id === 'echo-follow') {
+      return 0.72;
+    }
+
+    return 0.68;
   }
 
   private getEndgameClearClimbIntensity(
@@ -4267,6 +4283,36 @@ export class GameScene extends Phaser.Scene {
         frameOffsetY: -1 + clamp * 1.5,
         frameScaleX: 1.022,
         frameScaleY: 0.982,
+      };
+    }
+
+    if (killboxCue.id === 'echo-follow') {
+      return {
+        glowOffsetX: KILLBOX_ECHO_FOLLOW_GLOW_OFFSET_X + whip * 12,
+        glowOffsetY: KILLBOX_ECHO_FOLLOW_GLOW_OFFSET_Y + clamp * 5,
+        topBandOffsetX: -12 + whip * 9,
+        bottomBandOffsetX: 18 - whip * 8,
+        topBandAngle: -3.1,
+        bottomBandAngle: 2.8,
+        frameOffsetX: -5 + whip * 4,
+        frameOffsetY: -2 + clamp,
+        frameScaleX: 1.016,
+        frameScaleY: 0.987,
+      };
+    }
+
+    if (killboxCue.id === 'lead-cut') {
+      return {
+        glowOffsetX: KILLBOX_LEAD_GLOW_OFFSET_X + whip * 8,
+        glowOffsetY: KILLBOX_LEAD_GLOW_OFFSET_Y - clamp * 4,
+        topBandOffsetX: 14 + whip * 7,
+        bottomBandOffsetX: -10 - whip * 6,
+        topBandAngle: 2.4,
+        bottomBandAngle: -2.1,
+        frameOffsetX: 5 + whip * 3,
+        frameOffsetY: -3,
+        frameScaleX: 1.014,
+        frameScaleY: 0.989,
       };
     }
 

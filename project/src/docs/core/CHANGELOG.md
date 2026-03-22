@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #279
+
+- `project/game/src/game/runPhase.ts` killbox onset'ine yeni `LEAD CUT` ve `ECHO FOLLOW` cue'larini ekledi; `18.0-20.6s` artik generic `KILLBOX` paragrafina dusmeden `GATE CUT` handoff'unu killbox'in ilk iki halkasina bagliyor
+- ayni dosya `PINCH LOCK` copy'sini ve `KILLBOX LIVE` phase-shift anonsunu guncelledi; `GATE CUT -> LEAD CUT -> ECHO FOLLOW -> PINCH LOCK` zinciri player-facing yuzeyde tek authored handoff gibi okunuyor
+- `project/game/src/game/GameScene.ts` ilk-death hedef hint'ini, killbox shift hint'ini, cue intensity'sini ve killbox backdrop motion'unu yeni onset cue'larina hizaladi
+- `project/game/src/game/deathPresentation.ts` `LEAD CUT` ve `ECHO FOLLOW` olumleri icin ayri snapshot palette'leri ekledi
+- `project/game/scripts/telemetry-check.ts` yeni early-killbox cue/detail/badge/death-retry/tone regression'lerini ekledi ve mevcut killbox beklentilerini yeni handoff truth'una hizaladi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #278
 
 - `project/game/src/game/balance.ts` `16.6-18.0s` araligina yeni bounded `GATE CUT` penceresi ekledi; `lead` varyanti `14deg` rotation ve `0.12s` forward lead ile `SURGE SNAP`ten killbox onset'ine son bir lane bukusu tasiyor

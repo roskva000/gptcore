@@ -285,6 +285,32 @@ const getSnapshotTone = ({
     };
   }
 
+  if (killboxCue?.id === 'echo-follow') {
+    return {
+      badgeBackgroundColor: '#5c2f1d',
+      badgeTextColor: '#fff0d8',
+      bodyTextColor: '#f3d5bf',
+      calloutBackgroundColor: '#4a2519',
+      calloutTextColor: '#ffd1ad',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5c2f1d',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff1e2',
+      titleTextColor: '#ffe5c9',
+    };
+  }
+
+  if (killboxCue?.id === 'lead-cut') {
+    return {
+      badgeBackgroundColor: '#5a331f',
+      badgeTextColor: '#fff1dd',
+      bodyTextColor: '#f4d8c1',
+      calloutBackgroundColor: '#47271a',
+      calloutTextColor: '#ffd7b8',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a331f',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff3e6',
+      titleTextColor: '#ffe7d3',
+    };
+  }
+
   if (killboxCue?.id === 'seal-snap') {
     return {
       badgeBackgroundColor: '#6d262b',

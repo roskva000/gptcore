@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #278
+Updated By: Codex Run #279
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: `BREAKTHROUGH` sonunu `KILLBOX` girisine daha keskin baglayan yeni bir bounded runtime karar ani acmak
+- run mode: `integration`
+- ana hedef: `GATE CUT -> KILLBOX` onset zincirini yeni runtime slice acmadan tek authored handoff gibi okutmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,13 +26,13 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `mutation`
-- ana hedef: `STRAFE FORK -> SURGE SNAP` sonrasina yeni `GATE CUT` halkasi ekleyip `16.6-18.0s` band'ini killbox oncesi son authored karar anina cevirmek
-- `project/game/src/game/balance.ts` yeni `GATE CUT` penceresini acti; `16.6-18.0s` araliginda obstacle bounded `lead` davranisina geciyor ve `14deg` rotation ile `0.12s` forward lead uzerinden killbox oncesi lane'i bir kez daha bukuyor
-- `project/game/src/game/runPhase.ts` breakthrough truth'unu uc halkaya cikardi; `GATE CUT LIVE` detail, HUD label, badge, death summary ve retry hedefi artik `BREAKTHROUGH` sonunu generic countdown yerine isimli bir handoff olarak tasiyor
-- `project/game/src/game/GameScene.ts` breakthrough hint metnini, cue intensity'sini ve backdrop motion'unu yeni handoff beat'ine hizaladi; `10-18s` artik strafe/surge'den sonra killbox'a sert bir giris egimi de tasiyor
-- `project/game/src/game/deathPresentation.ts` `GATE CUT` olumleri icin ayri snapshot tonu ekledi; bu yeni pre-killbox kopus overlay tarafinda generic breakthrough tonuna dusmuyor
-- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve guncel deterministic baseline'i regression altina aldi
+- run mode: `integration`
+- ana hedef: `18.0-20.6s` killbox onset'teki adsiz player-facing boslugu kapatip `GATE CUT -> LEAD CUT -> ECHO FOLLOW -> PINCH LOCK` zincirini tek akis gibi okutmak
+- `project/game/src/game/runPhase.ts` killbox cue truth'unu `LEAD CUT` ve `ECHO FOLLOW` halkalariyla genisletti; `18.0-20.6s` artik generic `KILLBOX` paragrafina dusmuyor, detail/support/badge/death summary/retry hedefi erken handoff'u da isimlendiriyor
+- ayni dosya `PINCH LOCK` ve `KILLBOX LIVE` copy'sini yeni zincire hizaladi; `GATE CUT` ile killbox onset artik ayri fazlar gibi degil ayni authored trap'in ardil halkalari gibi okunuyor
+- `project/game/src/game/GameScene.ts` ilk-death hedef hint'ini, killbox phase-shift hint'ini, cue intensity'sini ve backdrop motion'unu yeni early-killbox halkalarina hizaladi; onset artik `PINCH LOCK` beklenmeden sahnede okunuyor
+- `project/game/src/game/deathPresentation.ts` `LEAD CUT` ve `ECHO FOLLOW` olumleri icin ayri snapshot tonlari ekledi; early killbox kopusleri generic killbox veya daha gec `PINCH LOCK` tonuna dusmuyor
+- `project/game/scripts/telemetry-check.ts` yeni killbox-onset cue, detail, badge, death/retry ve snapshot tone kontratlarini regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.8s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - build halen mevcut Vite bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
@@ -76,11 +76,12 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `BREAKTHROUGH` artik `STRAFE FORK -> SURGE SNAP -> GATE CUT` olarak uc halkali; killbox girisi phase cliff yerine authored handoff gibi hissettirmeli
+- `BREAKTHROUGH -> KILLBOX` artik `STRAFE FORK -> SURGE SNAP -> GATE CUT -> LEAD CUT -> ECHO FOLLOW -> PINCH LOCK` olarak bagli okunuyor; ayni `16.6-20.6s` sayilarina geri donup mikro-polish yapma
 - `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND PUNISH` ve simdi `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak uc farkli gec cevap tasiyor; oyuncuya kisa bir fake reopen sonra ikinci bir kapanis soruluyor
 - `45.6-60s` clear climb artik `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkali bir final stretch; bu entegrasyon kapanmis durumda, ayni koridorda tekrar sayisal polish'e donme
+- sonraki dogru adim yeni bir runtime/gameplay delta; tercihen ayni cevrede copy/snapshot polish degil, baska bir bounded karar ani
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

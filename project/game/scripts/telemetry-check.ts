@@ -419,6 +419,66 @@ assert.equal(
   '#5d2c28',
   'Deaths inside the gate cut should keep the retry block on the same pre-killbox palette instead of falling back to the generic overlay styling.',
 );
+const leadCutDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
+  survivalTimeSeconds: 18.4,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 5,
+    totalRuns: 5,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 6800,
+    retryCount: 5,
+    recentDeathTimes: [10.4, 14.8, 16.8, 17.6, 18.4],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '20.1s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  leadCutDeathPresentation.calloutBackgroundColor,
+  '#47271a',
+  'Deaths inside the first killbox lead cut should move the snapshot into the first post-gate-cut trap tone instead of flattening back to generic killbox styling.',
+);
+assert.equal(
+  leadCutDeathPresentation.promptBackgroundColor,
+  '#5a331f',
+  'Deaths inside the lead cut should keep the retry block on the first killbox handoff palette so GATE CUT and killbox onset read as one chain.',
+);
+const echoFollowDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 19.8,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 5,
+    totalRuns: 5,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 7000,
+    retryCount: 5,
+    recentDeathTimes: [10.4, 14.8, 16.8, 18.4, 19.8],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '20.1s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  echoFollowDeathPresentation.calloutBackgroundColor,
+  '#4a2519',
+  'Deaths inside the echo follow-through should keep a distinct handoff tone so the bent killbox entry survives past the first lead cut.',
+);
+assert.equal(
+  echoFollowDeathPresentation.promptBackgroundColor,
+  '#5c2f1d',
+  'Deaths inside the echo follow-through should keep the retry block on the same post-lead handoff palette instead of collapsing into the later pinch-lock tone.',
+);
 const pinchLockDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
   survivalTimeSeconds: 20.8,
@@ -632,8 +692,8 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(20),
-  'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, seal snap shuts it again just before 24s lock-in, and a later fold snap tightens the echo lane once more before drift release. Break your line late and keep changing across the fold. Next phase at 32s.',
-  'The phase detail line should describe the active structural pressure instead of restating raw timer data.',
+  'The bent entry keeps moving here. Shadow echo follows the lead cut across the same lane; stay off the first recovery line so pinch lock cannot cash in on a lazy hold. Next phase at 32s.',
+  'The phase detail line should surface the active killbox handoff beat instead of falling back to a generic phase paragraph once GATE CUT crosses into killbox.',
 );
 assert.equal(
   getRunPhaseDetailText(34),
@@ -861,8 +921,8 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseReachedBadgeText(20),
-  'KILLBOX',
-  'Deaths after the lead unlock should surface the coarse phase reached as a compact fallback badge.',
+  'ECHO FOLLOW',
+  'Deaths during the early killbox handoff should surface the live shadow-echo beat instead of collapsing back to a coarse killbox fallback.',
 );
 assert.equal(
   getRunPhaseReachedBadgeText(20.8),
@@ -936,8 +996,8 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDeathSummaryText(20),
-  'KILLBOX reached. 12.0s short of ENDGAME DRIFT.',
-  'Death summary text should tell the player which structural phase they reached and how far the next one sits ahead.',
+  'ECHO FOLLOW snapped inside KILLBOX. 12.0s short of ENDGAME DRIFT.',
+  'Death summary text should surface the live early killbox handoff beat so the phase boundary no longer drops into generic killbox wording.',
 );
 assert.equal(
   getRunPhaseDeathSummaryText(20.8),
@@ -1006,8 +1066,8 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseRetryGoalText(20),
-  'Reach ENDGAME DRIFT in +12.0s',
-  'Retry goal text should turn the next phase into an immediate rematch target.',
+  'Rematch the echo follow-through and carry it to ENDGAME DRIFT in +12.0s',
+  'Retry goal text should turn the early killbox handoff into the immediate rematch target instead of skipping straight to a coarse phase label.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(20.8),
@@ -1404,6 +1464,42 @@ assert.equal(
   'Waiting presentation should forecast the coarse run ladder and mark the best phase reached so far.',
 );
 assert.deepEqual(
+  getKillboxCue(18.4),
+  {
+    id: 'lead-cut',
+    title: 'LEAD CUT LIVE',
+    hudLabel: 'LEAD CUT',
+    snapshotLabel: 'LEAD CUT',
+    rematchLabel: 'the lead cut',
+    accentColor: 0xffd8b8,
+    body: 'Gate cut cashes into killbox here. The first lead cut bends the reopened lane into a harder entry; leave the clipped route now so the trap starts on your terms.',
+  },
+  'Killbox should expose the first lead-cut cue right at phase onset so GATE CUT no longer drops into an unnamed first close.',
+);
+assert.equal(
+  getRunPhaseSupportText(18.4),
+  'KILLBOX LEAD CUT: Gate cut cashes into killbox here. The first lead cut bends the reopened lane into a harder entry; leave the clipped route now so the trap starts on your terms. Next shift 32s.',
+  'Killbox support text should surface the onset lead cut so the pre-killbox handoff stays explicit after the phase boundary.',
+);
+assert.deepEqual(
+  getKillboxCue(19.8),
+  {
+    id: 'echo-follow',
+    title: 'ECHO FOLLOW LIVE',
+    hudLabel: 'ECHO FOLLOW',
+    snapshotLabel: 'ECHO FOLLOW',
+    rematchLabel: 'the echo follow-through',
+    accentColor: 0xffcaa0,
+    body: 'The bent entry keeps moving here. Shadow echo follows the lead cut across the same lane; stay off the first recovery line so pinch lock cannot cash in on a lazy hold.',
+  },
+  'Killbox should expose the shadow-echo follow-through cue so the first killbox handoff reads like a chain instead of jumping from gate cut straight to pinch lock.',
+);
+assert.equal(
+  getRunPhaseSupportText(19.8),
+  'KILLBOX ECHO FOLLOW: The bent entry keeps moving here. Shadow echo follows the lead cut across the same lane; stay off the first recovery line so pinch lock cannot cash in on a lazy hold. Next shift 32s.',
+  'Killbox support text should keep the handoff alive through the first shadow echo instead of going silent until pinch lock.',
+);
+assert.deepEqual(
   getKillboxCue(20.8),
   {
     id: 'pinch-lock',
@@ -1412,13 +1508,13 @@ assert.deepEqual(
     snapshotLabel: 'PINCH LOCK',
     rematchLabel: 'the pinch lock',
     accentColor: 0xffd6a5,
-    body: 'Killbox bends back here. A bounded lead lock pinches the straight escape, then bridge echo gives one step back before the final close. Hold the first sidestep and stay ready to cut late again.',
+    body: 'The gate-cut handoff cashes in here. A bounded lead lock pinches the straight escape after the bent entry, then bridge echo gives one step back before the final close. Hold the first sidestep and stay ready to cut late again.',
   },
   'Killbox should expose a bounded pinch-lock cue so the 20s trap beat reads like a named spatial event rather than generic mid-phase pressure.',
 );
 assert.equal(
   getRunPhaseSupportText(20.8),
-  'KILLBOX PINCH LOCK: Killbox bends back here. A bounded lead lock pinches the straight escape, then bridge echo gives one step back before the final close. Hold the first sidestep and stay ready to cut late again. Next shift 32s.',
+  'KILLBOX PINCH LOCK: The gate-cut handoff cashes in here. A bounded lead lock pinches the straight escape after the bent entry, then bridge echo gives one step back before the final close. Hold the first sidestep and stay ready to cut late again. Next shift 32s.',
   'Killbox support text should surface the bounded trap beat while it is live instead of flattening the whole phase into one paragraph.',
 );
 assert.deepEqual(
@@ -1517,9 +1613,44 @@ assert.equal(
   'Breakthrough detail text should surface the pre-killbox gate cut once the final handoff window opens.',
 );
 assert.equal(
+  getRunPhaseDetailText(18.4),
+  'Gate cut cashes into killbox here. The first lead cut bends the reopened lane into a harder entry; leave the clipped route now so the trap starts on your terms. Next phase at 32s.',
+  'Killbox detail text should surface the onset lead cut instead of hiding the first post-gate-cut trap inside generic phase copy.',
+);
+assert.equal(
+  getRunPhaseDetailText(19.8),
+  'The bent entry keeps moving here. Shadow echo follows the lead cut across the same lane; stay off the first recovery line so pinch lock cannot cash in on a lazy hold. Next phase at 32s.',
+  'Killbox detail text should surface the shadow-echo follow-through so the first killbox handoff remains readable before pinch lock begins.',
+);
+assert.equal(
   getRunPhaseReachedBadgeText(12.4),
   'STRAFE FORK',
   'Deaths inside the first authored breakthrough window should surface the named fork badge instead of generic breakthrough fallback.',
+);
+assert.equal(
+  getRunPhaseReachedBadgeText(18.4),
+  'LEAD CUT',
+  'Deaths inside the first killbox handoff should surface the named lead-cut badge instead of generic killbox fallback.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(18.4),
+  'LEAD CUT snapped inside KILLBOX. 13.6s short of ENDGAME DRIFT.',
+  'Deaths inside the onset lead cut should explain the first post-gate-cut trap instead of flattening into generic killbox phrasing.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(18.4),
+  'Rematch the lead cut and carry it to ENDGAME DRIFT in +13.6s',
+  'Retry guidance should send the player back to the first killbox handoff so the named chain continues across the phase boundary.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(19.8),
+  'ECHO FOLLOW snapped inside KILLBOX. 12.2s short of ENDGAME DRIFT.',
+  'Deaths inside the shadow-echo follow-through should explain the second handoff beat instead of jumping straight to the later pinch-lock copy.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(19.8),
+  'Rematch the echo follow-through and carry it to ENDGAME DRIFT in +12.2s',
+  'Retry guidance should send the player back to the shadow-echo follow-through so the killbox onset remains a readable chain instead of a silent bridge.',
 );
 assert.equal(
   getRunPhaseDeathSummaryText(15.2),
@@ -1553,9 +1684,9 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('killbox'),
   {
     title: 'KILLBOX LIVE',
-    body: 'A hard lead cut opens the trap, shadow echoes fold the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap tightens the echo lane once more before drift release.',
+    body: 'Gate cut hands straight into killbox. A hard lead cut bends that entry, shadow echo keeps the same lane folding, pinch lock cashes it back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap tightens the echo lane once more before drift release.',
   },
-  'Killbox should announce an immediate lead-cut trap instead of reading like a generic late speed bump.',
+  'Killbox should announce the post-gate-cut handoff explicitly instead of dropping into a generic late speed bump at the phase boundary.',
 );
 assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),

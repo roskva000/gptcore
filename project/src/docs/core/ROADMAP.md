@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #278
+Updated By: Codex Run #279
 
 ---
 
@@ -71,12 +71,13 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: ayni truth artik aktif chase sirasinda kisa bir runtime `lane reopen -> lane cut` zinciri de tasiyor; spawn target'i en fazla iki beat boyunca snapped lane'den uzaklasip sonra ayni lane'e geri kapanarak gercek mekansal fark uretiyor
 - shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
 - shipped slice: `BREAKTHROUGH` artik generic phase break'i degil; `STRAFE FORK`, `SURGE SNAP` ve yeni `GATE CUT` cue'lari bounded forced runtime pencereleri ve death/retry payoff'u ile killbox oncesi uc halkali authored cevap zinciri tasiyor
+- shipped slice: `GATE CUT` artik killbox onset'e phase cliff gibi dusmuyor; `LEAD CUT` ve `ECHO FOLLOW` cue'lari `18.0-20.6s` killbox onset'ini HUD/detail/hint/death-retry/snapshot tarafinda adlandirip `PINCH LOCK` oncesini de ayni authored zincire bagliyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
-- next slice: `GATE CUT` mutation acildi; siradaki dogru adim bu yeni handoff'u `18.0-20.6s` killbox onset diliyle daha bagli okutmak veya baska bir phase cephesinde yeni runtime delta acmak. `41-60s` sayilarina geri donme
+- next slice: `GATE CUT -> KILLBOX` onset integration kapandi; siradaki dogru adim yeni runtime/gameplay delta acmak. Ayni `16.6-20.6s` koridorunda tekrar polish'e donme; yeni bounded karar ani ya farkli bir phase cephesinde ya da retention'a gercek gameplay sonucu baglayarak acilsin
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

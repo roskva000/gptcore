@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #278:
+Current deterministic survival headline after Run #279:
 - `30.8s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -17,10 +17,16 @@ Current deterministic survival headline after Run #278:
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 13 / 7` (`under10 / 10-20 / 20-30 / sim-cap`)
 
+killbox_onset_handoff_surface:
+current: Run #279 `project/game/src/game/runPhase.ts` `18.0-20.6s` killbox onset'ini `LEAD CUT` ve `ECHO FOLLOW` cue'lariyla player-facing tarafta isimlendiriyor; `project/game/src/game/GameScene.ts` ayni zinciri killbox shift hint'i, first-death hedef hint'i ve cue-aware backdrop motion ile tasiyor. `project/game/src/game/deathPresentation.ts` `LEAD CUT` ile `ECHO FOLLOW` olumleri icin ayri snapshot tone kullaniyor
+baseline: Run #278 state'inde `GATE CUT` cue'su `16.6-18.0s` breakthrough handoff'unu acmisti ama `18.0-20.6s` killbox onset'i HUD/detail/death-retry tarafinda adsiz kaliyor; oyuncu `GATE CUT`ten sonra dogrudan `PINCH LOCK`e atliyordu
+target: sonraki browser veya manuel gozlem oyuncunun artik `GATE CUT -> LEAD CUT -> ECHO FOLLOW -> PINCH LOCK` zincirini tek authored handoff gibi anlattigini gostersin; yeni cue'lar spam, cheap drama veya gereksiz named-beat gurultusu gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
+
 breakthrough_gate_cut_surface:
 current: Run #278 `project/game/src/game/balance.ts` `16.6-18.0s` araliginda yeni bounded `GATE CUT` penceresi aciyor; obstacle bu aralikta `lead` varyantiyle `14deg` travel ve `0.12s` forward lead kullanarak `SURGE SNAP`ten killbox onset'ine son bir lane bukusu tasiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/callout/death-retry ve snapshot tonu tarafina da tasiyor
 baseline: Run #277 state'inde `BREAKTHROUGH` yalniz `STRAFE FORK -> SURGE SNAP` zincirini tasiyordu; `16.6-18.0s` koridoru killbox onset'ine phase cliff gibi dusuyor, erken-mid authored chain son bir bagli karar ani uretmiyordu
-target: sonraki browser veya manuel gozlem oyuncunun `10-18s` band'ini artik `STRAFE FORK -> SURGE SNAP -> GATE CUT` zinciri olarak anlattigini gostersin; yeni handoff cheap prefire, unfair bend veya killbox onset'inin gurultulu kopyasi gibi okunmamali
+target: sonraki browser veya manuel gozlem oyuncunun `10-20.6s` band'ini artik `STRAFE FORK -> SURGE SNAP -> GATE CUT -> LEAD CUT -> ECHO FOLLOW` zinciri olarak anlattigini gostersin; yeni handoff cheap prefire, unfair bend veya killbox onset'inin gurultulu kopyasi gibi okunmamali
 validation: `npm run telemetry:check`, `npm run build`
 
 clear_climb_snapshot_cue_integration_surface:
