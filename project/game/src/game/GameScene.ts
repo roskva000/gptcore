@@ -168,6 +168,12 @@ const KILLBOX_PINCH_GLOW_OFFSET_X = 28;
 const KILLBOX_PINCH_GLOW_OFFSET_Y = -6;
 const KILLBOX_SEAL_GLOW_OFFSET_X = -34;
 const KILLBOX_SEAL_GLOW_OFFSET_Y = -2;
+const ENDGAME_LATE_SWEEP_GLOW_OFFSET_X = -26;
+const ENDGAME_LATE_SWEEP_GLOW_OFFSET_Y = -10;
+const ENDGAME_SWEEP_LOCK_GLOW_OFFSET_X = -38;
+const ENDGAME_SWEEP_LOCK_GLOW_OFFSET_Y = -4;
+const ENDGAME_AFTERSHOCK_GLOW_OFFSET_X = 30;
+const ENDGAME_AFTERSHOCK_GLOW_OFFSET_Y = -2;
 const NEAR_MISS_BACKDROP_PULSE_MS = 150;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
@@ -1215,6 +1221,7 @@ export class GameScene extends Phaser.Scene {
       endgameCue?.accentColor ?? clearClimbState?.accentColor ?? spectacle.glowColor;
     const breakthroughCueMotion = this.getBreakthroughBackdropMotion(breakthroughCue, time);
     const killboxCueMotion = this.getKillboxBackdropMotion(killboxCue, time);
+    const endgameCueMotion = this.getEndgameBackdropMotion(endgameCue, time);
     const clearClimbBackdropMotion = this.getClearClimbBackdropMotion(clearClimbState, time);
     const nearMissBackdropMotion = this.getNearMissBackdropMotion(time, nearMissChaseIntensity);
     const accentColor =
@@ -1236,11 +1243,13 @@ export class GameScene extends Phaser.Scene {
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.glowOffsetX +
           killboxCueMotion.glowOffsetX +
+          endgameCueMotion.glowOffsetX +
           clearClimbBackdropMotion.glowOffsetX +
           nearMissBackdropMotion.glowOffsetX,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.glowOffsetY +
           killboxCueMotion.glowOffsetY +
+          endgameCueMotion.glowOffsetY +
           clearClimbBackdropMotion.glowOffsetY +
           nearMissBackdropMotion.glowOffsetY,
       )
@@ -1268,11 +1277,13 @@ export class GameScene extends Phaser.Scene {
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.glowOffsetX * 0.7 +
           killboxCueMotion.glowOffsetX * 0.74 +
+          endgameCueMotion.glowOffsetX * 0.72 +
           clearClimbBackdropMotion.glowOffsetX * 0.7 +
           nearMissBackdropMotion.glowOffsetX * 0.6,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.glowOffsetY * 0.7 +
           killboxCueMotion.glowOffsetY * 0.74 +
+          endgameCueMotion.glowOffsetY * 0.7 +
           clearClimbBackdropMotion.glowOffsetY * 0.6 +
           nearMissBackdropMotion.glowOffsetY * 0.6,
       )
@@ -1307,6 +1318,7 @@ export class GameScene extends Phaser.Scene {
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.topBandOffsetX +
           killboxCueMotion.topBandOffsetX +
+          endgameCueMotion.topBandOffsetX +
           clearClimbBackdropMotion.topBandOffsetX +
           nearMissBackdropMotion.topBandOffsetX,
         0,
@@ -1314,6 +1326,7 @@ export class GameScene extends Phaser.Scene {
       .setAngle(
         breakthroughCueMotion.topBandAngle +
           killboxCueMotion.topBandAngle +
+          endgameCueMotion.topBandAngle +
           clearClimbBackdropMotion.topBandAngle +
           nearMissBackdropMotion.topBandAngle,
       )
@@ -1332,6 +1345,7 @@ export class GameScene extends Phaser.Scene {
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.bottomBandOffsetX +
           killboxCueMotion.bottomBandOffsetX +
+          endgameCueMotion.bottomBandOffsetX +
           clearClimbBackdropMotion.bottomBandOffsetX +
           nearMissBackdropMotion.bottomBandOffsetX,
         ARENA_HEIGHT,
@@ -1339,6 +1353,7 @@ export class GameScene extends Phaser.Scene {
       .setAngle(
         breakthroughCueMotion.bottomBandAngle +
           killboxCueMotion.bottomBandAngle +
+          endgameCueMotion.bottomBandAngle +
           clearClimbBackdropMotion.bottomBandAngle +
           nearMissBackdropMotion.bottomBandAngle,
       )
@@ -1390,21 +1405,25 @@ export class GameScene extends Phaser.Scene {
         ARENA_WIDTH / 2 +
           breakthroughCueMotion.frameOffsetX +
           killboxCueMotion.frameOffsetX +
+          endgameCueMotion.frameOffsetX +
           clearClimbBackdropMotion.frameOffsetX +
           nearMissBackdropMotion.frameOffsetX,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.frameOffsetY +
           killboxCueMotion.frameOffsetY +
+          endgameCueMotion.frameOffsetY +
           clearClimbBackdropMotion.frameOffsetY +
           nearMissBackdropMotion.frameOffsetY,
       )
       .setScale(
         breakthroughCueMotion.frameScaleX +
           (killboxCueMotion.frameScaleX - 1) +
+          (endgameCueMotion.frameScaleX - 1) +
           nearMissBackdropMotion.frameScaleBoostX +
           (clearClimbBackdropMotion.frameScaleX - 1),
         breakthroughCueMotion.frameScaleY +
           (killboxCueMotion.frameScaleY - 1) +
+          (endgameCueMotion.frameScaleY - 1) +
           nearMissBackdropMotion.frameScaleBoostY +
           (clearClimbBackdropMotion.frameScaleY - 1),
       );
@@ -3961,6 +3980,88 @@ export class GameScene extends Phaser.Scene {
       frameOffsetY: -4 - stairStepPulse * 2,
       frameScaleX: 1.012,
       frameScaleY: 0.992,
+    };
+  }
+
+  private getEndgameBackdropMotion(
+    endgameCue: EndgameDriftCue | null,
+    time: number,
+  ): {
+    bottomBandAngle: number;
+    bottomBandOffsetX: number;
+    frameOffsetX: number;
+    frameOffsetY: number;
+    frameScaleX: number;
+    frameScaleY: number;
+    glowOffsetX: number;
+    glowOffsetY: number;
+    topBandAngle: number;
+    topBandOffsetX: number;
+  } {
+    if (
+      endgameCue === null ||
+      (endgameCue.id !== 'late-sweep' &&
+        endgameCue.id !== 'sweep-lock' &&
+        endgameCue.id !== 'aftershock')
+    ) {
+      return {
+        glowOffsetX: 0,
+        glowOffsetY: 0,
+        topBandOffsetX: 0,
+        bottomBandOffsetX: 0,
+        topBandAngle: 0,
+        bottomBandAngle: 0,
+        frameOffsetX: 0,
+        frameOffsetY: 0,
+        frameScaleX: 1,
+        frameScaleY: 1,
+      };
+    }
+
+    const sway = Math.sin(time / 170);
+    const clamp = Math.cos(time / 210);
+
+    if (endgameCue.id === 'aftershock') {
+      return {
+        glowOffsetX: ENDGAME_AFTERSHOCK_GLOW_OFFSET_X + clamp * 10,
+        glowOffsetY: ENDGAME_AFTERSHOCK_GLOW_OFFSET_Y + sway * 4,
+        topBandOffsetX: 20 + clamp * 10,
+        bottomBandOffsetX: -24 - clamp * 9,
+        topBandAngle: 3.9,
+        bottomBandAngle: -3.4,
+        frameOffsetX: 8 + clamp * 4,
+        frameOffsetY: -1 + sway * 1.5,
+        frameScaleX: 1.02,
+        frameScaleY: 0.984,
+      };
+    }
+
+    if (endgameCue.id === 'sweep-lock') {
+      return {
+        glowOffsetX: ENDGAME_SWEEP_LOCK_GLOW_OFFSET_X + sway * 12,
+        glowOffsetY: ENDGAME_SWEEP_LOCK_GLOW_OFFSET_Y + clamp * 5,
+        topBandOffsetX: -26 + sway * 10,
+        bottomBandOffsetX: 32 - sway * 8,
+        topBandAngle: -5.1,
+        bottomBandAngle: 4.3,
+        frameOffsetX: -12 + sway * 4,
+        frameOffsetY: -2 + clamp,
+        frameScaleX: 1.024,
+        frameScaleY: 0.982,
+      };
+    }
+
+    return {
+      glowOffsetX: ENDGAME_LATE_SWEEP_GLOW_OFFSET_X + sway * 10,
+      glowOffsetY: ENDGAME_LATE_SWEEP_GLOW_OFFSET_Y - clamp * 6,
+      topBandOffsetX: -18 + sway * 8,
+      bottomBandOffsetX: 22 - sway * 7,
+      topBandAngle: -3.7,
+      bottomBandAngle: 3.1,
+      frameOffsetX: -8 + sway * 3,
+      frameOffsetY: -3 - clamp,
+      frameScaleX: 1.016,
+      frameScaleY: 0.988,
     };
   }
 

@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #272
+Updated By: Codex Run #273
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: `36.2-37.6s` late-sweep penceresini ikinci bir cross-lane sonuc ile buyutmek
+- run mode: `integration`
+- ana hedef: `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK HOLD` ayrimini sahne motion'u ve death snapshot tonunda da ayri okunur hale getirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,15 +26,14 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `mutation`
-- ana hedef: `36.2-37.6s` late sweep'i tek parca crossback whiplash olmaktan cikarip ikinci bir bounded closure ile yeni bir karar anina cevirmek
-- `project/game/src/game/balance.ts` late-sweep zincirine yeni `0.6s` `SWEEP LOCK` slice'i ekledi; ilk `0.8s` `LATE SWEEP` halen `18deg` / `0.08s` ile capraz kirarken son `0.6s` `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha sıkı tutuyor
-- ayni runtime slice `32-40s` band'ini `fold-carry -> release stretch -> rebound hold -> rebound punish -> late sweep -> sweep lock -> aftershock` zincirine ceviriyor; ilk caprazdan sonra ayni lane'e erken geri sizmak artik daha net bir maliyet tasiyor
-- `project/game/src/game/runPhase.ts` yeni `SWEEP LOCK` cue truth'unu detail, badge, death summary ve retry goal zincirine ekledi; `ENDGAME DRIFT` artik `late sweep`ten dogrudan `aftershock`a atlamiyor
-- `project/game/src/game/GameScene.ts` endgame shift hint'ini ve cue intensity haritasini bu yeni halka ile hizaladi; `rebound-punish` intensity boslugu da kapanmis oldu
-- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni sweep-lock rotation/lag/controller kontratini deterministic regression altina aldi
+- run mode: `integration`
+- ana hedef: `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK HOLD` ayrimini sahne motion'u ve death snapshot tonunda da ayri okunur hale getirmek
+- `project/game/src/game/GameScene.ts` endgame cue'lari icin yeni backdrop motion truth'u ekledi; `late sweep` artik daha genis sola acilan crossback, `sweep lock` daha sert ikinci clamp, `aftershock` ise karsi yone agir bir follow-through olarak glow/band/frame hareketinde ayrisiyor
+- ayni sahne entegrasyonu runtime'i degistirmeden `36-39s` band'inin motion imzasini ayirdi; mevcut late-band chain copy disinda da okunur hale geldi
+- `project/game/src/game/deathPresentation.ts` `late-sweep`, `sweep-lock` ve `aftershock` olumleri icin ayri snapshot palette'leri ekledi; retry block, callout ve title artik bu uc halkayi ayni late-game death overlay'inde farkli tonlarla tasiyor
+- `project/game/scripts/telemetry-check.ts` bu yeni snapshot kontratini regression altina aldi; `late sweep`, `sweep lock` ve `aftershock` icin ayri overlay tone assert'leri eklendi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline yine `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
-- deterministic bucket dagilimi korundu: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.2s`
+- build halen mevcut bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
 ---
 
@@ -78,7 +77,8 @@ Yeni rejim:
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
 - `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND PUNISH` ve simdi `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
-- sonraki adim yeni runtime acmak degil; bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimini sahne/snapshot tarafinda da ayri okunur hale getir
+- bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
+- sonraki adim ayni late-sweep zincirini bir kez daha cilalamak degil; yeni bir runtime/gameplay delta sec
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

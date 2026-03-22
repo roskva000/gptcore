@@ -230,6 +230,7 @@ const getSnapshotTone = ({
 }): SnapshotTone => {
   const breakthroughCue = getBreakthroughCue(survivalTimeSeconds);
   const killboxCue = getKillboxCue(survivalTimeSeconds);
+  const endgameCue = getEndgameDriftCue(survivalTimeSeconds);
 
   if (breakthroughCue?.id === 'strafe-fork') {
     return {
@@ -293,6 +294,45 @@ const getSnapshotTone = ({
       promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#1f4357',
       promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#e7f8ff',
       titleTextColor: '#d5f2ff',
+    };
+  }
+
+  if (endgameCue?.id === 'late-sweep') {
+    return {
+      badgeBackgroundColor: '#5c3416',
+      badgeTextColor: '#fff0d4',
+      bodyTextColor: '#f5d7b8',
+      calloutBackgroundColor: '#4b2714',
+      calloutTextColor: '#ffd5a3',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5c3416',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff3df',
+      titleTextColor: '#ffe7bf',
+    };
+  }
+
+  if (endgameCue?.id === 'sweep-lock') {
+    return {
+      badgeBackgroundColor: '#6d2a1c',
+      badgeTextColor: '#fff1dd',
+      bodyTextColor: '#f4cbc0',
+      calloutBackgroundColor: '#592117',
+      calloutTextColor: '#ffbda1',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#6d2a1c',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff2e8',
+      titleTextColor: '#ffd8cd',
+    };
+  }
+
+  if (endgameCue?.id === 'aftershock') {
+    return {
+      badgeBackgroundColor: '#4f2331',
+      badgeTextColor: '#ffe4ec',
+      bodyTextColor: '#f0cad6',
+      calloutBackgroundColor: '#401a26',
+      calloutTextColor: '#ffadc4',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#4f2331',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#ffeaf1',
+      titleTextColor: '#ffd8e3',
     };
   }
 

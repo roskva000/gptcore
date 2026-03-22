@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #273
+
+- `project/game/src/game/GameScene.ts` `late sweep`, `sweep lock` ve `aftershock` icin ayri endgame backdrop motion imzalari ekledi; glow, top-bottom band ve frame artik bu uc late-band cue'yu farkli yone ve siddete gore tasiyor
+- `project/game/src/game/deathPresentation.ts` ayni uc cue icin ayri snapshot palette'leri ekledi; callout, title ve retry block artik `LATE SWEEP`, `SWEEP LOCK` ve `AFTERSHOCK HOLD` olumlerinde farkli ton kullaniyor
+- `project/game/scripts/telemetry-check.ts` yeni late-band snapshot tone regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #272
 
 - `project/game/src/game/balance.ts` `36.2-37.6s` late-sweep penceresini ikiye ayirdi; ilk `0.8s` `LATE SWEEP` `18deg` / `0.08s` ile capraz kiris tasirken son `0.6s` `SWEEP LOCK` `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha kapatiyor

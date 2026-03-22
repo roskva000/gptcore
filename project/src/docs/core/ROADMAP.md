@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #272
+Updated By: Codex Run #273
 
 ---
 
@@ -68,7 +68,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
-- next slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimini arena spectacle/death snapshot tarafinda da ayri motion/palette truth'una sindir; yeni runtime halka veya hazard family acma
+- shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
+- next slice: yeni runtime/gameplay delta sec; ayni late-sweep zincirini tekrar tune etmek yerine `40-45.6s` band'inda veya baska bir phase cephesinde yeni mekansal karar anı ac
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -76,7 +77,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
-- yeni aday: `SWEEP LOCK` slice'ini sahne ve snapshot tarafinda ayri okunur hale getir; `late sweep` ile `aftershock` arasindaki fark artik yalniz copy degil motion/overlay tonunda da okunmali
+- yeni aday: mevcut late chain'i birakip `40-45.6s` band'inda oyuncuya yeni route karari sorduran bounded runtime davranisi ac; integration degil mutation sec
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

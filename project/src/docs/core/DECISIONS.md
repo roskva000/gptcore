@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #273]
+
+Decision:
+`integration` modunda mevcut `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK HOLD` zincirini runtime'i degistirmeden sahne motion'u ve death snapshot tonunda ayristir.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu gosteriyordu: Run #272 yeni `SWEEP LOCK` runtime sonucunu acti ama oyuncu bu gec karar zincirini hala agirlikla HUD/copy uzerinden okuyordu. Bu turda dogru adim yeni mutation degil, mevcut late-band farkini `GameScene.ts` ve `deathPresentation.ts` icinde ayri motion/palette truth'una sindirmekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` yeni endgame backdrop motion helper'i ile `late sweep`, `sweep lock` ve `aftershock` cue'larina ayri glow/band/frame imzalari verdi. `project/game/src/game/deathPresentation.ts` bu uc cue icin ayri snapshot palette'leri ekledi. `project/game/scripts/telemetry-check.ts` yeni overlay tone kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni motion/palette ayriminin cheap drama, gereksiz overlay gurultusu veya readability kaybi urettigini gosterirse yalniz offset/angle/scale siddeti ve snapshot ton yogunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni endgame manager'i, overlay framework'u, orchestration/readiness katmani ya da yeni threat family acilmaz.
+
 ### [Run #272]
 
 Decision:

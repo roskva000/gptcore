@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #272:
+Current deterministic survival headline after Run #273:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #272:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+endgame_sweep_lock_spectacle_snapshot_surface:
+current: Run #273 `project/game/src/game/GameScene.ts` `late sweep`, `sweep lock` ve `aftershock` icin ayri glow/band/frame motion truth'u uyguluyor; `project/game/src/game/deathPresentation.ts` da bu uc cue olumunu farkli callout/title/prompt palette'leriyle tonluyor. Gec crossback zinciri artik yalniz HUD/copy degil sahne ve death overlay tonu uzerinden de ayri okunuyor
+baseline: Run #272 state'inde `SWEEP LOCK` runtime, HUD ve retry truth'u vardi ama `late sweep`, `sweep lock` ve `aftershock` ayni late-band gorsel diline fazla yakin kaliyor; ikinci closure ile son clamp sahnede ve snapshot tonunda yeterince ayrismiyordu
+target: sonraki browser veya manuel gozlem oyuncunun `36-39s` band'inda `LATE SWEEP`, `SWEEP LOCK` ve `AFTERSHOCK HOLD` farkini yalniz text degil motion ve death snapshot tonundan da ayirt ettigini gostersin; yeni ton cheap drama veya readability gurultusu yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_sweep_lock_surface:
 current: Run #272 `project/game/src/game/balance.ts` `36.2-37.6s` late-sweep penceresini `0.8s` `LATE SWEEP` ve `0.6s` `SWEEP LOCK` olarak ikiye ayiriyor; ilk dilim `18deg` / `0.08s` ile capraz kiris tasirken ikinci dilim `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha sıkı tutuyor. `project/game/src/game/runPhase.ts` bu ayrimi detail/cue/badge/death/retry truth'una tasiyor

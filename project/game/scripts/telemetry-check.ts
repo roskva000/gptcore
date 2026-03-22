@@ -984,6 +984,106 @@ assert.equal(
   'Next lane: BREAK LEFT\nRematch the rebound hold and carry it to 60s clear in +26.2s\nRetry: Space, Enter, tap/click, or move',
   'Late endgame retry prompt should frame the active ring as the rematch target without falling back to a generic next-beat line.',
 );
+const lateSweepDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
+  survivalTimeSeconds: 36.4,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 5,
+    totalRuns: 5,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 9100,
+    retryCount: 5,
+    recentDeathTimes: [20.1, 29.7, 33.8, 34.5, 36.4],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '38.2s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  lateSweepDeathPresentation.calloutBackgroundColor,
+  '#4b2714',
+  'Deaths inside late sweep should keep a warm crossback tone so the first wide turn reads differently from the tighter sweep lock that follows.',
+);
+assert.equal(
+  lateSweepDeathPresentation.promptBackgroundColor,
+  '#5c3416',
+  'Deaths inside late sweep should tint the retry block around the first cross-lane whip instead of falling back to the generic endgame palette.',
+);
+const sweepLockDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 37.1,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 6,
+    totalRuns: 6,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 10200,
+    retryCount: 6,
+    recentDeathTimes: [20.1, 29.7, 33.8, 34.5, 36.4, 37.1],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '38.2s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  sweepLockDeathPresentation.calloutBackgroundColor,
+  '#592117',
+  'Deaths inside sweep lock should shift into a hotter clamp tone so the second late-band closure reads differently from the opening late sweep.',
+);
+assert.equal(
+  sweepLockDeathPresentation.titleTextColor,
+  '#ffd8cd',
+  'Deaths inside sweep lock should brighten the title around the tighter lock palette so the overlay keeps the second closure legible.',
+);
+assert.equal(
+  sweepLockDeathPresentation.promptBackgroundColor,
+  '#6d2a1c',
+  'Deaths inside sweep lock should keep the retry block on the tighter clamp palette so the overlay stays aligned with the failed second closure.',
+);
+const aftershockDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 0, offsetY: -1, label: 'up' },
+  survivalTimeSeconds: 38,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 7,
+    totalRuns: 7,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 11600,
+    retryCount: 7,
+    recentDeathTimes: [20.1, 29.7, 33.8, 34.5, 36.4, 37.1, 38.0],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '39.1s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK DOWN',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  aftershockDeathPresentation.calloutBackgroundColor,
+  '#401a26',
+  'Deaths inside aftershock should move into a heavier clamp tone so the final late-band follow-through reads differently from sweep lock.',
+);
+assert.equal(
+  aftershockDeathPresentation.titleTextColor,
+  '#ffd8e3',
+  'Deaths inside aftershock should brighten the title around the heavier clamp palette instead of reusing the sweep-lock tone.',
+);
+assert.equal(
+  aftershockDeathPresentation.promptBackgroundColor,
+  '#4f2331',
+  'Deaths inside aftershock should keep the retry block on the post-sweep clamp palette so the overlay stays aligned with the final late-band hold.',
+);
 const clearClimbDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: 0, offsetY: -1, label: 'up' },
   survivalTimeSeconds: 50,
