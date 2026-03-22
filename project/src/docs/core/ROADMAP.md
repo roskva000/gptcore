@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #273
+Updated By: Codex Run #274
 
 ---
 
@@ -55,6 +55,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut + erken `shadow echo` follow-through + `21.2s` bridge echo + `24s` echo lock-in ile coarse run ladder artik gercek arena davranisina daha derin sindi
 - shipped slice: `24-32s` `echo` cadence'i de artik killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimi; `24s` sonrasi davranis duz target-lag chase'e hemen dusmuyor
 - shipped slice: `32-45.6s` band'i artik bounded `release -> rebound -> late sweep -> sweep lock -> aftershock hold -> recenter -> preclear squeeze` zinciriyle release'ten sonra da olayli kaliyor; endgame `41s+` sonrasi da hemen generik alternating beat'e dusmuyor
+- shipped slice: `41.2-45.6s` handoff'u artik iki kararli bir finale dondu; `FALSE CLEAR` kisa bir guvenli-lane yem'i gosteriyor, ardindaki `PRECLEAR SQUEEZE` ise ayni baited lane'i daha sert kapatip `45.6s+` push'una authored bir cash-in veriyor
 - shipped slice: `45.6-60s` band'i artik `clear climb` payoff diliyle goal chase/HUD/callout/spectacle tarafinda ayri bir gec final gibi okunuyor; `60s` yolu salt sayac degil takip edilen bir hedef haline geliyor
 - shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
 - shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla iki basamakli final-threat kimligi tasiyor; ilk yari `ascent stair`, son yari `summit snap` olarak ayni truth'ta okunuyor
@@ -69,7 +70,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
-- next slice: yeni runtime/gameplay delta sec; ayni late-sweep zincirini tekrar tune etmek yerine `40-45.6s` band'inda veya baska bir phase cephesinde yeni mekansal karar anı ac
+- next slice: bu yeni `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimini arena spectacle ve death snapshot tarafina sindir ya da ayni koridorda oyalanmadan baska bir phase cephesinde yeni runtime/gameplay delta ac
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

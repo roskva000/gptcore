@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #274]
+
+Decision:
+`mutation` modunda `41.2-45.6s` handoff'unu iki bounded halkaya bol; kisa bir `FALSE CLEAR` bait'i ac, ardindaki `PRECLEAR SQUEEZE`i daha sert bir late-run cash-in haline getir.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu gosteriyordu: `RECENTER -> PRECLEAR` handoff'u hala fazla duz devam hissi veriyordu. Yeni hazard family acmadan ve ayni `36-39s` zincirini tekrar polish etmeden en yuksek etkili mutation; oyuncuya 40'larda once sahte bir reopen, sonra da bu reopen'u bozan ikinci bir route karari sormakti.
+
+Impact:
+`project/game/src/game/balance.ts` `1.6s`lik `FALSE CLEAR` (`10deg`, `0.12s`) ve `2.8s`lik daha sert `PRECLEAR SQUEEZE` (`18deg`, `0.06s`) tanimladi. `project/game/src/game/runPhase.ts` yeni cue'yu detail/badge/death/retry truth'una bagladi; `project/game/src/game/GameScene.ts` endgame phase hint'ini bu yeni zincire hizaladi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `FALSE CLEAR` bait'inin okunur bir fake reopen yerine cheap feint, belirsiz fairness kaybi veya `PRECLEAR` ile birbirine karisan anlamsiz zigzag urettigini gosterirse yalniz pencere sureleri ile `rotation/lag` siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni endgame manager'i, overlay framework'u, readiness/preflight/orchestration katmani ya da yeni threat family acilmaz.
+
 ### [Run #273]
 
 Decision:

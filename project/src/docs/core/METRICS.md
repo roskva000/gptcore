@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #273:
+Current deterministic survival headline after Run #274:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #273:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+endgame_false_clear_precognition_surface:
+current: Run #274 `project/game/src/game/balance.ts` `41.2-42.8s` araliginda yeni `FALSE CLEAR` slice'i aciyor; drift `10deg` travel ve `0.12s` lag ile kisa bir safer-lane yem'i gosteriyor. `project/game/src/game/runPhase.ts` bunu `FALSE CLEAR` cue, badge, death summary ve retry goal truth'una tasiyor
+baseline: Run #273 state'inde `RECENTER` sonrasinda `41.2-45.6s` tek parca `PRECLEAR SQUEEZE` olarak okuyordu; gec handoff yeni bir route sorusu sormadan fold-back baskisina devam ediyor, oyuncuya gecici bir reopen yem'i vermiyordu
+target: sonraki browser veya manuel gozlem oyuncunun `41-43s` band'ini artik kisa bir fake reopen olarak anlattigini gostersin; bu bait cheap zigzag veya fairness kaybi gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_sweep_lock_spectacle_snapshot_surface:
 current: Run #273 `project/game/src/game/GameScene.ts` `late sweep`, `sweep lock` ve `aftershock` icin ayri glow/band/frame motion truth'u uyguluyor; `project/game/src/game/deathPresentation.ts` da bu uc cue olumunu farkli callout/title/prompt palette'leriyle tonluyor. Gec crossback zinciri artik yalniz HUD/copy degil sahne ve death overlay tonu uzerinden de ayri okunuyor

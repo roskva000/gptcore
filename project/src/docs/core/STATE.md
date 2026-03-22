@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #273
+Updated By: Codex Run #274
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK HOLD` ayrimini sahne motion'u ve death snapshot tonunda da ayri okunur hale getirmek
+- run mode: `mutation`
+- ana hedef: `41.2-45.6s` handoff'una yeni bounded route karari eklemek; `RECENTER` sonrasi fake reopen ile late cash-in arasini ayristirmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,12 +26,13 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `integration`
-- ana hedef: `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK HOLD` ayrimini sahne motion'u ve death snapshot tonunda da ayri okunur hale getirmek
-- `project/game/src/game/GameScene.ts` endgame cue'lari icin yeni backdrop motion truth'u ekledi; `late sweep` artik daha genis sola acilan crossback, `sweep lock` daha sert ikinci clamp, `aftershock` ise karsi yone agir bir follow-through olarak glow/band/frame hareketinde ayrisiyor
-- ayni sahne entegrasyonu runtime'i degistirmeden `36-39s` band'inin motion imzasini ayirdi; mevcut late-band chain copy disinda da okunur hale geldi
-- `project/game/src/game/deathPresentation.ts` `late-sweep`, `sweep-lock` ve `aftershock` olumleri icin ayri snapshot palette'leri ekledi; retry block, callout ve title artik bu uc halkayi ayni late-game death overlay'inde farkli tonlarla tasiyor
-- `project/game/scripts/telemetry-check.ts` bu yeni snapshot kontratini regression altina aldi; `late sweep`, `sweep lock` ve `aftershock` icin ayri overlay tone assert'leri eklendi
+- run mode: `mutation`
+- ana hedef: `40-45.6s` band'inda yeni bounded route karari acmak; `RECENTER -> PRECLEAR SQUEEZE` handoff'unu generic devam hissinden cikarmak
+- `project/game/src/game/balance.ts` `41.2-42.8s` icin yeni `FALSE CLEAR` bait slice'i ekledi; drift kisa bir guvenli gibi gorunen lane verip oyuncuyu tutunmaya cekiyor
+- ayni dosya mevcut `PRECLEAR SQUEEZE` penceresini `42.8-45.6s`e daraltip daha sert bir kapanis haline getirdi; late 40s artik tek parca fold-back degil, bait-then-cash-in zinciri
+- `project/game/src/game/runPhase.ts` yeni `FALSE CLEAR` cue truth'unu detail/badge/death/retry zincirine bagladi; `PRECLEAR SQUEEZE` metni de bait'in kapandigi ikinci halka olarak ayrildi
+- `project/game/src/game/GameScene.ts` endgame phase hint'ini yeni `false-clear -> preclear` zincirine hizaladi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime pencere, rotation, lag ve player-facing cue kontratini regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline yine `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
 - build halen mevcut bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
@@ -78,7 +79,8 @@ Yeni rejim:
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
 - `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND PUNISH` ve simdi `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
-- sonraki adim ayni late-sweep zincirini bir kez daha cilalamak degil; yeni bir runtime/gameplay delta sec
+- `40-45.6s` band'i artik `RECENTER -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak uc farkli gec cevap tasiyor; oyuncuya kisa bir fake reopen sonra ikinci bir kapanis soruluyor
+- sonraki adim ayni late-40s runtime'i tekrar tune etmek degil; bu yeni bait/cash-in zincirini gorebilir urun yuzeylerine sindir ya da baska bir gameplay cephesinde yeni runtime delta sec
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

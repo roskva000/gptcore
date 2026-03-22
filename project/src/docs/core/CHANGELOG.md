@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #274
+
+- `project/game/src/game/balance.ts` `41.2-45.6s` band'ini ikiye boldu; yeni `FALSE CLEAR` bait slice'i kisa bir reopen hissi verirken `PRECLEAR SQUEEZE` artik `42.8-45.6s` araliginda daha sert bir kapanis olarak calisiyor
+- `project/game/src/game/runPhase.ts` yeni `FALSE CLEAR` cue'sunu detail, badge, death summary ve retry goal truth'una ekledi; `PRECLEAR SQUEEZE` metni bait'in cash-in halkasi olacak sekilde ayrildi
+- `project/game/src/game/GameScene.ts` endgame shift hint'ini `recenter -> false clear -> preclear` zincirine hizaladi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni late-run runtime/controller kontratini deterministic regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #273
 
 - `project/game/src/game/GameScene.ts` `late sweep`, `sweep lock` ve `aftershock` icin ayri endgame backdrop motion imzalari ekledi; glow, top-bottom band ve frame artik bu uc late-band cue'yu farkli yone ve siddete gore tasiyor

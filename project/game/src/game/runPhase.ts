@@ -11,6 +11,7 @@ import {
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
+  DRIFT_FALSE_CLEAR_WINDOW_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
   DRIFT_RELEASE_WINDOW_SECONDS,
@@ -79,6 +80,7 @@ export type EndgameDriftCueId =
   | 'sweep-lock'
   | 'aftershock'
   | 'recenter'
+  | 'false-clear'
   | 'preclear';
 
 export type EndgameDriftCue = {
@@ -130,7 +132,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane, then cross clean, and push for 60s.',
+      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, keeps that crossed lane tight with a short sweep lock, then hands off to an aftershock clamp, a short recenter handoff, a false-clear bait, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane, do not bite on the fake reopen, then push for 60s.',
   },
   {
     id: 'overtime',
@@ -181,8 +183,12 @@ const DRIFT_RECENTER_WINDOW_START_SECONDS =
   DRIFT_AFTERSHOCK_WINDOW_END_SECONDS;
 const DRIFT_RECENTER_WINDOW_END_SECONDS =
   DRIFT_RECENTER_WINDOW_START_SECONDS + DRIFT_RECENTER_WINDOW_SECONDS;
-const DRIFT_PRECLEAR_WINDOW_START_SECONDS =
+const DRIFT_FALSE_CLEAR_WINDOW_START_SECONDS =
   DRIFT_RECENTER_WINDOW_END_SECONDS;
+const DRIFT_FALSE_CLEAR_WINDOW_END_SECONDS =
+  DRIFT_FALSE_CLEAR_WINDOW_START_SECONDS + DRIFT_FALSE_CLEAR_WINDOW_SECONDS;
+const DRIFT_PRECLEAR_WINDOW_START_SECONDS =
+  DRIFT_FALSE_CLEAR_WINDOW_END_SECONDS;
 const DRIFT_PRECLEAR_WINDOW_END_SECONDS =
   DRIFT_PRECLEAR_WINDOW_START_SECONDS + DRIFT_PRECLEAR_WINDOW_SECONDS;
 
@@ -391,6 +397,21 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
   }
 
   if (
+    progressSeconds >= DRIFT_FALSE_CLEAR_WINDOW_START_SECONDS &&
+    progressSeconds < DRIFT_FALSE_CLEAR_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'false-clear',
+      title: 'FALSE CLEAR LIVE',
+      hudLabel: 'FALSE CLEAR',
+      snapshotLabel: 'FALSE CLEAR',
+      rematchLabel: 'the false-clear bait',
+      accentColor: 0xd8fff4,
+      body: 'Recenter opens just enough air to bait a hold. Drift briefly shows a safer lane, then preclear snaps back across it; take the baited reopen only if you are ready to cut again.',
+    };
+  }
+
+  if (
     progressSeconds >= DRIFT_PRECLEAR_WINDOW_START_SECONDS &&
     progressSeconds < DRIFT_PRECLEAR_WINDOW_END_SECONDS
   ) {
@@ -400,8 +421,8 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       hudLabel: 'PRECLEAR LIVE',
       snapshotLabel: 'PRECLEAR SQUEEZE',
       rematchLabel: 'the preclear squeeze',
-      accentColor: 0xd8fff4,
-      body: 'Recenter does not settle the lane. Drift folds back toward the reopened side and keeps a bounded squeeze on the run so 45s+ still feels live before the long 60s push.',
+      accentColor: 0xfff0c7,
+      body: 'The fake reopen cashes in here. Preclear squeezes back across the baited lane and keeps the run under bounded pressure so 45s+ still feels earned before the long 60s push.',
     };
   }
 
@@ -621,7 +642,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, preclear, plus a clear-climb summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, false clear, preclear, plus a clear-climb summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

@@ -16,6 +16,9 @@ import {
   DRIFT_CLEAR_CLIMB_ASCENT_TARGET_LAG_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS,
+  DRIFT_FALSE_CLEAR_ROTATION_DEGREES,
+  DRIFT_FALSE_CLEAR_TARGET_LAG_SECONDS,
+  DRIFT_FALSE_CLEAR_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_SUMMIT_ROTATION_DEGREES,
   DRIFT_CLEAR_CLIMB_SUMMIT_TARGET_LAG_SECONDS,
   DRIFT_PRECLEAR_ROTATION_DEGREES,
@@ -621,8 +624,13 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(42),
-  'Recenter does not settle the lane. Drift folds back toward the reopened side and keeps a bounded squeeze on the run so 45s+ still feels live before the long 60s push. Next phase at 60s.',
-  'The 41s+ band should surface its own preclear squeeze so the endgame does not flatten back into generic drift right after recenter ends.',
+  'Recenter opens just enough air to bait a hold. Drift briefly shows a safer lane, then preclear snaps back across it; take the baited reopen only if you are ready to cut again. Next phase at 60s.',
+  'The first 41s+ slice should surface its own false-clear bait so the endgame does not flatten back into generic drift right after recenter ends.',
+);
+assert.equal(
+  getRunPhaseDetailText(44),
+  'The fake reopen cashes in here. Preclear squeezes back across the baited lane and keeps the run under bounded pressure so 45s+ still feels earned before the long 60s push. Next phase at 60s.',
+  'The second 41s+ slice should surface a distinct preclear squeeze so the baited reopen cashes in before clear climb.',
 );
 assert.equal(
   getRunPhaseDetailText(50),
@@ -728,15 +736,28 @@ assert.deepEqual(
 assert.deepEqual(
   getEndgameDriftCue(42),
   {
+    id: 'false-clear',
+    title: 'FALSE CLEAR LIVE',
+    hudLabel: 'FALSE CLEAR',
+    snapshotLabel: 'FALSE CLEAR',
+    rematchLabel: 'the false-clear bait',
+    accentColor: 0xd8fff4,
+    body: 'Recenter opens just enough air to bait a hold. Drift briefly shows a safer lane, then preclear snaps back across it; take the baited reopen only if you are ready to cut again.',
+  },
+  'The first post-recenter slice should expose a false-clear bait so the 41s+ band asks for a fresh route read before preclear cashes in.',
+);
+assert.deepEqual(
+  getEndgameDriftCue(44),
+  {
     id: 'preclear',
     title: 'PRECLEAR SQUEEZE LIVE',
     hudLabel: 'PRECLEAR LIVE',
     snapshotLabel: 'PRECLEAR SQUEEZE',
     rematchLabel: 'the preclear squeeze',
-    accentColor: 0xd8fff4,
-    body: 'Recenter does not settle the lane. Drift folds back toward the reopened side and keeps a bounded squeeze on the run so 45s+ still feels live before the long 60s push.',
+    accentColor: 0xfff0c7,
+    body: 'The fake reopen cashes in here. Preclear squeezes back across the baited lane and keeps the run under bounded pressure so 45s+ still feels earned before the long 60s push.',
   },
-  'The post-recenter 40s band should expose a bounded preclear cue so the run still feels under authored pressure before the long 60s climb.',
+  'The second 41s+ slice should expose a distinct preclear squeeze so the false-clear bait cashes in before the long 60s climb.',
 );
 assert.deepEqual(
   getEndgameClearClimbState(50),
@@ -826,8 +847,13 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseReachedBadgeText(42),
+  'FALSE CLEAR',
+  'Deaths right after recenter should expose the false-clear bait badge so the 41s band does not flatten back into generic endgame wording.',
+);
+assert.equal(
+  getRunPhaseReachedBadgeText(44),
   'PRECLEAR SQUEEZE',
-  'Deaths after recenter should expose the preclear squeeze badge so 41s+ failures stay attributable before the long clear climb.',
+  'Deaths after the false-clear bait should expose the preclear squeeze badge so 43s+ failures stay attributable before the long clear climb.',
 );
 assert.equal(
   getRunPhaseReachedBadgeText(50),
@@ -886,8 +912,13 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDeathSummaryText(42),
-  'PRECLEAR SQUEEZE snapped inside ENDGAME DRIFT. 18.0s short of OVERTIME.',
-  'The post-recenter squeeze should carry through to the death summary so 41s+ deaths still point at the authored late-run miss.',
+  'FALSE CLEAR snapped inside ENDGAME DRIFT. 18.0s short of OVERTIME.',
+  'The false-clear bait should carry through to the death summary so 41s+ deaths still point at the baited late-run miss.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(44),
+  'PRECLEAR SQUEEZE snapped inside ENDGAME DRIFT. 16.0s short of OVERTIME.',
+  'The post-bait squeeze should carry through to the death summary so 43s+ deaths still point at the authored late-run miss.',
 );
 assert.equal(
   getRunPhaseDeathSummaryText(50),
@@ -941,8 +972,13 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseRetryGoalText(42),
-  'Rematch the preclear squeeze and carry it to 60s clear in +18.0s',
-  'The post-recenter squeeze should become the retry target so the 41s+ band still sells a concrete rematch hook.',
+  'Rematch the false-clear bait and carry it to 60s clear in +18.0s',
+  'The false-clear bait should become the retry target so the first 41s handoff sells a concrete rematch hook.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(44),
+  'Rematch the preclear squeeze and carry it to 60s clear in +16.0s',
+  'The post-bait squeeze should become the retry target so the late 40s band still sells a concrete rematch hook.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(50),
@@ -1258,7 +1294,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, preclear, plus a clear-climb summit snap keep the 40s alive.',
+    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane, sweep lock keeps that crossed route tight for one more beat, and aftershock, recenter, false clear, preclear, plus a clear-climb summit snap keep the 40s alive.',
   },
   'Endgame should announce the authored late-run chain instead of sounding like a disconnected late-run reset.',
 );
@@ -1990,10 +2026,35 @@ assert.deepEqual(
     ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
   ),
   {
-    x: -0.978,
-    y: -0.208,
+    x: -0.985,
+    y: -0.174,
   },
-  'The preclear squeeze should fold back toward the reopened lane so 41s+ reads like a fresh authored pinch instead of generic drift.',
+  'The false-clear bait should briefly reopen the safer lane so the first 41s slice asks for a fresh route read instead of blending into recenter.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds:
+          DRIFT_SWEEP_WINDOW_START_SECONDS +
+          DRIFT_SWEEP_WINDOW_SECONDS +
+          DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+          DRIFT_RECENTER_WINDOW_SECONDS +
+          DRIFT_FALSE_CLEAR_WINDOW_SECONDS +
+          0.1,
+        variant: 'drift',
+        runSpawnCount: 5,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.951,
+    y: 0.309,
+  },
+  'The preclear squeeze should cash in across the baited lane so the late 40s read like a fresh authored pinch instead of generic drift.',
 );
 assert.deepEqual(
   Object.fromEntries(
@@ -2209,8 +2270,22 @@ assert.equal(
       0.1,
     variant: 'drift',
   }),
+  DRIFT_FALSE_CLEAR_TARGET_LAG_SECONDS,
+  'The false-clear bait should keep its own bounded lag so the first 41s slice reads like a tempting reopen instead of recenter copy.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds:
+      DRIFT_SWEEP_WINDOW_START_SECONDS +
+      DRIFT_SWEEP_WINDOW_SECONDS +
+      DRIFT_AFTERSHOCK_WINDOW_SECONDS +
+      DRIFT_RECENTER_WINDOW_SECONDS +
+      DRIFT_FALSE_CLEAR_WINDOW_SECONDS +
+      0.1,
+    variant: 'drift',
+  }),
   DRIFT_PRECLEAR_TARGET_LAG_SECONDS,
-  'The preclear squeeze should keep its own bounded lag so the 41s+ pressure reads as a new authored pinch instead of recenter copy.',
+  'The preclear squeeze should keep its own tighter lag so the false-clear bait cashes in as a fresh authored pinch.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -2310,9 +2385,14 @@ assert.equal(
   'The recenter handoff should stay firmer than generic drift but softer than aftershock so the 40s transition feels like a controlled release instead of another full clamp.',
 );
 assert.equal(
+  DRIFT_FALSE_CLEAR_ROTATION_DEGREES,
+  10,
+  'The false-clear bait should stay milder than recenter so the reopened lane feels tempting without reading like a full reset.',
+);
+assert.equal(
   DRIFT_PRECLEAR_ROTATION_DEGREES,
-  12,
-  'The preclear squeeze should stay milder than recenter so the late 40s pressure reads like a controlled fold-back instead of another full sweep.',
+  18,
+  'The preclear squeeze should hit harder than the false-clear bait so the late 40s pressure cashes in as a real lane close instead of another soft reopen.',
 );
 assert.equal(
   DRIFT_CLEAR_CLIMB_ASCENT_ROTATION_DEGREES,
@@ -4182,7 +4262,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 4\.4s preclear squeeze at 12deg with 0\.10s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

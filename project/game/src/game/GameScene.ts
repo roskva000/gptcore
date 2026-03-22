@@ -3851,7 +3851,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, and a preclear squeeze keep the 40s lane under pressure.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a false-clear bait, and a preclear squeeze keep the 40s lane under pressure.';
     }
 
     if (phaseId === 'overtime') {
