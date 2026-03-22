@@ -231,6 +231,7 @@ const getSnapshotTone = ({
   const breakthroughCue = getBreakthroughCue(survivalTimeSeconds);
   const killboxCue = getKillboxCue(survivalTimeSeconds);
   const endgameCue = getEndgameDriftCue(survivalTimeSeconds);
+  const clearClimbState = getEndgameClearClimbState(survivalTimeSeconds);
 
   if (breakthroughCue?.id === 'strafe-fork') {
     return {
@@ -359,6 +360,45 @@ const getSnapshotTone = ({
       promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#6a2320',
       promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff0eb',
       titleTextColor: '#ffddd4',
+    };
+  }
+
+  if (clearClimbState?.id === 'ascent-stair') {
+    return {
+      badgeBackgroundColor: '#5a3618',
+      badgeTextColor: '#fff1d9',
+      bodyTextColor: '#f2dbc0',
+      calloutBackgroundColor: '#472812',
+      calloutTextColor: '#ffd6a1',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a3618',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff4e1',
+      titleTextColor: '#ffe7c1',
+    };
+  }
+
+  if (clearClimbState?.id === 'ridge-cut') {
+    return {
+      badgeBackgroundColor: '#183c59',
+      badgeTextColor: '#e3f5ff',
+      bodyTextColor: '#c7e5f2',
+      calloutBackgroundColor: '#143147',
+      calloutTextColor: '#a3e2ff',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#183c59',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#eaf8ff',
+      titleTextColor: '#d5efff',
+    };
+  }
+
+  if (clearClimbState?.id === 'summit-snap') {
+    return {
+      badgeBackgroundColor: '#5a1d2c',
+      badgeTextColor: '#ffe5eb',
+      bodyTextColor: '#f1cad4',
+      calloutBackgroundColor: '#471523',
+      calloutTextColor: '#ffadc4',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a1d2c',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#ffeaf0',
+      titleTextColor: '#ffd7e1',
     };
   }
 

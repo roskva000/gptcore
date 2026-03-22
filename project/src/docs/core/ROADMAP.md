@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #276
+Updated By: Codex Run #277
 
 ---
 
@@ -62,6 +62,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
 - shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla uc basamakli final-threat kimligi tasiyor; `ascent stair` climb lane'i yukari tasiyor, `ridge cut` ayni lane'i summit oncesi capraz kesiyor, `summit snap` ise son saniyeleri daha sert kapatiyor
 - shipped slice: `ascent stair -> ridge cut -> summit snap` rejimi artik HUD/detail/badge/retry goal ve arena glow/aura/band/frame hareketinde de ayri okunuyor; final stretch ekranda uc farkli niyet tasiyor
+- shipped slice: ayni clear-climb rejimi artik canli cue hafizasinda da tek generic halka gibi davranmiyor; `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` kendi hint/callout anonslarini ayri ayri tetikliyor
+- shipped slice: death snapshot tonu da artik clear-climb icinde tek renk degil; ascent warm climb, ridge cold cut, summit hot snap palette'iyle final stretch overlay tarafinda da uc ayri niyet tasiyor
 - shipped slice: `near miss` artik tek-frame pulse degil; `CHASE LIVE` HUD countdown'u ve support/retry prompt kancasi ile kisa omurlu bir earned risk-odul penceresi aciyor
 - shipped slice: ayni `near miss chase` aktifken arena backdrop'u da kisa bir heat pulse'a giriyor; oyuncu pencereyi yalniz copy degil sahnedeki sicaklik degisiminden de ayirt ediyor
 - shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
@@ -73,7 +75,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
-- next slice: yeni `ridge cut` runtime halkasini death snapshot tonunda da ayri okunur hale getir ya da baska bir phase cephesinde yeni runtime/gameplay delta ac; `41-45.6s` koridoruna geri donme
+- next slice: clear-climb entegrasyonu kapandi; siradaki dogru adim yeni bir runtime/gameplay delta. `45.6-60s` veya `41-45.6s` sayilarina geri donmeden `10-18s` ya da baska bos phase cephesinde yeni bounded karar ani ac
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -81,7 +83,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda summit oncesi yeni runtime basinç alindi; sonraki secim ya bu son stretch'in snapshot/readability tarafini sindirmek ya da yeni arena cephe ailesine gecmek
-- yeni aday: late chain'i birakip `45.6-60s` clear-climb veya `10-18s` breakthrough icinde yeni bounded runtime davranisi ac; ayni `41-45.6s` sayilarini bir kez daha tune etme
+- clear climb tarafinda integration tamamlandi; yeni aday `10-18s` breakthrough koridorunda killbox'a baglanan yeni bounded runtime davranisi acmak. Ayni `41-60s` sayilarini bir kez daha tune etme
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

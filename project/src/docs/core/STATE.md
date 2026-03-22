@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #276
+Updated By: Codex Run #277
 
 ---
 
@@ -26,15 +26,14 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `mutation`
-- ana hedef: `45.6s+` clear-climb finalini yeni bir route karari ile buyutmek
-- `project/game/src/game/balance.ts` clear climb'i iki parcadan uce cikardi; `45.6-50.4s` `ASCENT STAIR`, `50.4-52.4s` yeni `RIDGE CUT`, `52.4-60s` daha sert `SUMMIT SNAP` olarak akiyor
-- ayni dosya yeni `ridge cut` penceresini `22deg` travel ve `0.07s` target lag ile summit oncesi ayri bir cross-lane cevap anina cevirdi; summit snap de `28deg` / `0.02s` ile daha sert final cash-in oldu
-- `project/game/src/game/runPhase.ts` yeni final beat'i HUD/detail/badge/death summary/retry goal truth'una tasidi; clear-climb olumleri artik generic `CLEAR CLIMB` yerine aktif halka olan `ASCENT STAIR`, `RIDGE CUT` veya `SUMMIT SNAP` ile okunuyor
-- `project/game/src/game/GameScene.ts` clear-climb hint, goal badge ve backdrop motion'unu yeni uc halkaya hizaladi; ridge cut artik ayri bir sahne salinimi ve mavi-accent ara closure olarak okunuyor
-- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini regression altina aldi
+- run mode: `integration`
+- ana hedef: yeni `RIDGE CUT` halkasini clear-climb finalinde snapshot tonu ve canli cue gecisleri tarafinda ayri okunur hale getirmek
+- `project/game/src/game/GameScene.ts` clear-climb cue hafizasini tek generic `clear-climb` etiketi yerine halka-spesifik `ASCENT STAIR` / `RIDGE CUT` / `SUMMIT SNAP` id'lerine bagladi; boylece final stretch bir kez acilip susmuyor, uc halka da kendi anonsunu tekrar uretiyor
+- ayni dosya bu entegrasyonla `RIDGE CUT` ve `SUMMIT SNAP`in yeni runtime farkini canli hint/callout akisinda da gorunur tuttu; yeni sayisal tune yapilmadi
+- `project/game/src/game/deathPresentation.ts` clear-climb snapshot tonunu uc halka icin ayirdi; ascent daha sicak climb, ridge daha soguk cross-cut, summit daha sert final snap tonu tasiyor
+- `project/game/scripts/telemetry-check.ts` clear-climb snapshot palette kontratini regression altina aldi; ascent/ridge/summit olumleri artik farkli overlay tonlariyla kilitli
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline yine `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
-- build halen mevcut bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
+- build halen mevcut Vite bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
 ---
 
@@ -81,7 +80,7 @@ Yeni rejim:
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak uc farkli gec cevap tasiyor; oyuncuya kisa bir fake reopen sonra ikinci bir kapanis soruluyor
 - `45.6-60s` clear climb artik `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkali bir final stretch; summit oncesi yeni bir route degistirme anı kazandi
-- sonraki adim bu yeni clear-climb halkalarini sayisal olarak tekrar tune etmek degil; yeni acilan halka oyuncuya snapshot/ton tarafinda daha da net okunuyorsa onu sindir
+- bu yeni clear-climb halkalari artik canli cue gecisi ve death snapshot tonunda da ayri okunuyor; ayni koridorda tekrar sayisal polish'e donme
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

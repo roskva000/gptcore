@@ -1281,6 +1281,86 @@ assert.equal(
   'Final-stretch retry prompt should push the player straight back toward the missed named clear-climb beat instead of generic overtime phrasing.',
 );
 assert.equal(
+  clearClimbDeathPresentation.calloutBackgroundColor,
+  '#472812',
+  'Ascent-stair deaths should keep the snapshot on a warm climb tone so the opening clear-climb push reads differently from the later ridge cut and summit snap.',
+);
+assert.equal(
+  clearClimbDeathPresentation.promptBackgroundColor,
+  '#5a3618',
+  'Ascent-stair deaths should tint the retry block around the climb beat instead of falling back to the generic clear-climb palette.',
+);
+const ridgeCutDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: -1, offsetY: 0, label: 'left' },
+  survivalTimeSeconds: 51,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 6,
+    totalRuns: 6,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 10400,
+    retryCount: 6,
+    recentDeathTimes: [20.1, 29.7, 42.0, 47.4, 50.0, 51.0],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '54.3s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  ridgeCutDeathPresentation.badge,
+  'RIDGE CUT',
+  'Mid clear-climb deaths should surface the ridge cut badge so the new route-change beat stays attributable on the death screen.',
+);
+assert.equal(
+  ridgeCutDeathPresentation.calloutBackgroundColor,
+  '#143147',
+  'Ridge-cut deaths should shift into a colder cross-lane tone so the middle clear-climb cut reads differently from the ascent and summit beats.',
+);
+assert.equal(
+  ridgeCutDeathPresentation.promptBackgroundColor,
+  '#183c59',
+  'Ridge-cut deaths should tint the retry block around the cross-lane cut so the missed route answer stays concrete.',
+);
+const summitSnapDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 54,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 7,
+    totalRuns: 7,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 11700,
+    retryCount: 7,
+    recentDeathTimes: [20.1, 29.7, 42.0, 47.4, 50.0, 51.0, 54.0],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '54.3s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  summitSnapDeathPresentation.badge,
+  'SUMMIT SNAP',
+  'Late clear-climb deaths should surface the summit snap badge so the final seconds stay attributable instead of collapsing into one generic clear-climb miss.',
+);
+assert.equal(
+  summitSnapDeathPresentation.calloutBackgroundColor,
+  '#471523',
+  'Summit-snap deaths should move into a hotter finish tone so the final snapback reads differently from the ridge cut that sets it up.',
+);
+assert.equal(
+  summitSnapDeathPresentation.promptBackgroundColor,
+  '#5a1d2c',
+  'Summit-snap deaths should keep the retry block on the final snap palette so the failed finish window stays explicit.',
+);
+assert.equal(
   getRunPhaseTimelineText(20),
   [
     '0-10s OPENING WINDOW | 10-18s BREAKTHROUGH',

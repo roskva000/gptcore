@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #276:
+Current deterministic survival headline after Run #277:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #276:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+clear_climb_snapshot_cue_integration_surface:
+current: Run #277 `project/game/src/game/GameScene.ts` clear-climb cue hafizasini halka-spesifik `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` id'lerine bagliyor; final stretch artik tek seferlik generic clear-climb anonsu yerine halka degistiginde yeni hint/callout uretiyor. `project/game/src/game/deathPresentation.ts` ayni uc halka icin ayri snapshot palette'i kullaniyor; ascent warm climb, ridge cold cross-cut, summit hot snap tonu tasiyor
+baseline: Run #276 state'inde runtime/HUD/backdrop uc halkayi ayiriyordu ama `GameScene.ts` cue hafizasi bunlari tek `clear-climb` etiketi altinda tuttugu icin son stretch player-facing tekrar anonsunda tam ayrismiyordu; death snapshot tonu da clear-climb icinde halka-spesifik degildi
+target: sonraki browser veya manuel gozlem oyuncunun `45.6-60s` finalini artik uc farkli clear-climb halkasi olarak anlattigini gostersin; yeni cue tekrar anonslari spam gibi okunmamali, snapshot palette farklari da cheap drama degil netlik uretmeli
+validation: `npm run telemetry:check`, `npm run build`
 
 clear_climb_ridge_cut_surface:
 current: Run #276 `project/game/src/game/balance.ts` clear climb'i `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkaya boluyor; yeni `RIDGE CUT` `50.4-52.4s` araliginda `22deg` travel ve `0.07s` lag ile climb lane'ini summit oncesi capraz kesiyor. `project/game/src/game/runPhase.ts` ayni beat'i detail/badge/death-retry truth'una tasiyor ve `project/game/src/game/GameScene.ts` goal badge ile backdrop motion'unu yeni halkaya hizaliyor

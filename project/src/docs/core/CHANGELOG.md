@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #277
+
+- `project/game/src/game/GameScene.ts` clear-climb cue hafizasini generic `clear-climb` yerine `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` id'leriyle tuttu; final stretch artik uc halkayi da ayri hint/callout olarak anonsluyor
+- `project/game/src/game/deathPresentation.ts` clear-climb snapshot tonunu uc halkaya ayirdi; ascent warm climb, ridge cold cut, summit hot snap palette'i kazandi
+- `project/game/scripts/telemetry-check.ts` yeni clear-climb snapshot palette regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #276
 
 - `project/game/src/game/balance.ts` `45.6-60s` clear climb'i uc halkaya boldu; `ASCENT STAIR` `4.8s`e cekildi, araya yeni `2.0s`lik `RIDGE CUT` beat'i eklendi ve `SUMMIT SNAP` `28deg` / `0.02s` ile daha sert finale dondu

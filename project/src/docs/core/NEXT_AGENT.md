@@ -2,50 +2,49 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #276 ile `CLEAR CLIMB` artik `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkali bir runtime finale donustu. Yeni gameplay delta acildi; ayni sayilari tekrar mikro-tune etme.
+Bu turda Run #277 ile `CLEAR CLIMB`in yeni uc halkali finali player-facing entegrasyonunu aldi. `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` artik hem canli cue gecisinde hem death snapshot tonunda ayri okunuyor. Ayni `45.6-60s` sayilarini tekrar tune etme.
 
 Audit notu:
 - mevcut net verdict `bureaucracy-risk`
-- bu tur source deltasi gameplay/runtime agirlikliydi; siradaki run yeni halkayi oyunda daha net sindirmeli veya ancak gercekten gerekiyorsa yeni gameplay delta secmeli
-- `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan closure gibi kullanma; yalniz stratejik/baseline degisikligi varsa ac
-- `telemetry-check.ts` ancak yeni player-facing kontrati kilitlemek icin buyusun; validation ana is olmasin
+- bu integration turu runtime degistirmeden mevcut clear-climb deltasini sindirdi; siradaki dogru adim yeni runtime/gameplay delta
+- `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan closure gibi kullanma; yalniz gercek run sonucu gerekiyorsa ac
+- `telemetry-check.ts` ancak yeni player-facing veya runtime kontrati kilitlemek icin buyusun; validation ana is olmasin
 
 Dikkat:
-- `FALSE CLEAR` veya `PRECLEAR SQUEEZE` koridoruna geri donme
-- `RIDGE CUT` runtime sayilarini ayni turda tekrar sayisal polish koridoruna sokma
+- `FALSE CLEAR`, `PRECLEAR SQUEEZE` veya `CLEAR CLIMB` sayilarina geri donup mikro-polish yapma
 - yeni orchestration / readiness / preflight / manager katmani acma
+- shell/retention/panel copy koridoruna dagilip gameplay delta'yi erteleme
 - deterministic baseline'i gereksiz sarsma
-- shell/retention tarafina dagilip gameplay delta'yi erteleme
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Yeni `RIDGE CUT` halkasini death snapshot ve clear-climb final tonu tarafinda da ayri okunur hale getir; `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` zinciri HUD disinda da net ayristirilsin.**
+**`BREAKTHROUGH` sonunu killbox girisine daha keskin baglayan yeni bounded runtime karar ani ac; `10-18s` band'i killbox oncesi bir authored handoff daha kazansin.**
 
 Hedef:
-Runtime acildi ama death snapshot tonu halen clear-climb icinde yeterince halka-spesifik degil. Siradaki dogru adim yeni sayi tune'u degil; `RIDGE CUT` ile `SUMMIT SNAP`i snapshot/callout/prompt tonunda da ayristirip final stretch'in tum yuzeylerde uc farkli niyet tasimasini saglamak.
+`CLEAR CLIMB` integration kapandi. Siradaki dogru hamle yeni bir gameplay/runtime delta ve bunu farkli bir phase cephesinde acmak. En uygun aday `BREAKTHROUGH`un sonu: `STRAFE FORK -> SURGE SNAP` sonrasinda `18s KILLBOX`e gecmeden hemen once yeni bir bounded cevap anı ekleyip erken-mid run'i daha olayli hale getirmek.
 
 Acilabilecek bagli yuzeyler:
-1. `deathPresentation.ts` icinde `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` icin ayri snapshot palette/callout/prompt tonlari tanimla; en azindan ridge ve summit birbirine karismasin
-2. gerekiyorsa `GameScene.ts` veya `runPhase.ts` uzerinden clear-climb callout / goal badge / live hint tonunu bu yeni snapshot ayrimiyla hizala, ama runtime sayilarina dokunma
-3. `telemetry-check.ts` assert'lerini yalniz yeni snapshot/player-facing kontrat kadar buyut
+1. `balance.ts` icinde `16.6-18.0s` civarinda yeni tek bir bounded breakthrough-to-killbox handoff slice'i tanimla; yeni hazard family acma
+2. `runPhase.ts` uzerinden bu yeni beat'e detail/badge/death summary/retry goal truth'u ver
+3. gerekiyorsa `GameScene.ts` ile ayni beat'i hint/callout/spectacle tarafinda sindir
+4. `telemetry-check.ts` yalniz yeni runtime ve player-facing kontrat kadar buyusun
 
 Yapma:
-- `45.6-60s` runtime pencerelerini yeniden bolme veya sayisal siddetleri tekrar tune etme
-- yeni threat family / manager / overlay framework acma
-- stratejik degisim yokken docs paketini gereksiz buyutme
+- `41-60s` koridoruna geri donme
+- yeni overlay/framework/manager katmani acma
+- shell veya retention cilasini ana is haline getirme
 
 ---
 
 ## Success Criteria
 
-- `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` snapshot / prompt / badge tonunda da birbirinden ayirt edilir
-- yeni integration runtime'i degistirmeden final stretch'i daha anlatilabilir yapar
-- source deltasi yine oyun-yuzeyi agirlikli kalir; docs veya telemetry run'i golgelemez
+- `10-18s` koridoru yeni bir bounded karar ani kazanir ve killbox girisi daha authored hissedilir
+- source deltasi gameplay/runtime agirlikli kalir; telemetry yardimci rolde kalir
 - deterministic survival headline `30.2s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

@@ -444,7 +444,12 @@ export class GameScene extends Phaser.Scene {
   private lastShownRunPhaseId: RunPhaseId | null = null;
   private lastShownBreakthroughCueId: BreakthroughCue['id'] | null = null;
   private lastShownKillboxCueId: KillboxCue['id'] | null = null;
-  private lastShownEndgameDriftCueId: EndgameDriftCue['id'] | 'clear-climb' | null = null;
+  private lastShownEndgameDriftCueId:
+    | EndgameDriftCue['id']
+    | 'ascent-stair'
+    | 'ridge-cut'
+    | 'summit-snap'
+    | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
@@ -3486,7 +3491,12 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    const cueId = endgameCue?.id ?? 'clear-climb';
+    const cueId = endgameCue?.id ?? clearClimbState?.id ?? null;
+
+    if (cueId === null) {
+      this.lastShownEndgameDriftCueId = null;
+      return;
+    }
 
     if (cueId === this.lastShownEndgameDriftCueId) {
       return;

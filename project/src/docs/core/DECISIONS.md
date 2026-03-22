@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #277]
+
+Decision:
+`integration` modunda `CLEAR CLIMB`in uc halkali finalini sayisal olarak yeniden tune etmeden canli cue gecisi ve death snapshot tonu tarafinda ayristir.
+
+Reason:
+Run #276 yeni `RIDGE CUT` runtime farkini acti ama `GameScene.ts` clear-climb cue hafizasini tek generic id ile tuttugu icin `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` gecisleri player-facing olarak yeniden anonslanmiyordu. Audit'in istedigi dogru adim yeni mutation degil, acilmis runtime deltasini oyuncu yuzeyinde temiz sindirmekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` clear-climb cue hafizasini halka-spesifik id'lere cevirdi; final stretch artik her halka degisiminde ayri hint/callout uretiyor. `project/game/src/game/deathPresentation.ts` `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` icin ayri snapshot palette'leri ekledi. `project/game/scripts/telemetry-check.ts` bu yeni clear-climb snapshot tonlarini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem clear-climb cue tekrar anonslarinin spam urettigini ya da yeni snapshot palette'lerinin ucuz drama / readability kaybi yarattigini gosterirse yalniz ilgili tone siddeti ve cue tekrar yogunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni overlay manager'i, readiness/preflight/orchestration katmani ya da ayni final sayilarina yeni runtime slice acilmaz.
+
 ### [Run #276]
 
 Decision:
