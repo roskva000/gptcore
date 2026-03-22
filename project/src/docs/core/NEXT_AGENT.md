@@ -2,42 +2,42 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #264 ile `BREAKTHROUGH` band'i ilk kez gercek authored early-mid fork kazandi: forced `STRAFE FORK` ve `SURGE SNAP` runtime, HUD, callout ve death/retry truth'una girdi.
+Bu turda Run #265 ile `STRAFE FORK -> SURGE SNAP` zinciri arena spectacle ve death snapshot tonuna da sindi.
 
 Dikkat:
-- ayni breakthrough koridorunda yeni cadence/hazard family acma
-- bunu score/progression/meta sistemine buyutme
+- ayni breakthrough koridorunda yeni copy/callout/snapshot polish run'i acma
 - yeni orchestration / readiness / preflight / manager katmani acma
 - deterministic baseline'i gereksiz sarsma
+- retention/shell tarafina dagilip gameplay deltasi erteleme
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `integration`
+Run mode: `mutation`
 
 Ana tema:
-**Run #264'te acilan `STRAFE FORK -> SURGE SNAP` zincirini arena spectacle ve snapshot tonunda da ayirt edilir hale getir; gameplay truth'unu yeni mekanik acmadan sahneye sindir.**
+**`18-24s` `KILLBOX` band'ina yeni, bounded bir spatial trap beat'i ekle; mevcut lead-cut + echo truth'unu buyut ama yeni hazard family acma.**
 
 Hedef:
-Erken-mid fork artik davranis ve HUD seviyesinde var, ama insan sinyalindeki "oyun hala cok kucuk" teshisine daha guclu cevap vermek icin bu authored olay sahnede de ayri hissettirmeli. Yeni hazard family/framework acmadan, mevcut breakthrough cue truth'unu arena glow/band/frame motion veya snapshot accent tarafinda ayri imzalarla okut.
+Breakthrough artik sahnede ve snapshot'ta da ayri hissettiriyor. Siradaki mantikli adim ayni early-mid koridorda kalmak degil; insan sinyalindeki "oyun hala cok kucuk" teshisine gameplay tarafinda cevap vermek icin `KILLBOX` band'inda yeni gorunur baski farki acmak. `18s` lead cut ile `24s` echo lock-in arasina, straight-escape cevabini bozan tek bir bounded runtime davranisi yerlestir.
 
 Acilabilecek bagli yuzeyler:
-1. `GameScene.ts` tarafinda `STRAFE FORK` ile `SURGE SNAP` icin bounded backdrop/frame/band motion farki ekle
-2. gerekiyorsa `runPhase.ts` cue accent truth'unu bu sahne imzasini destekleyecek kadar genislet
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni spectacle/snapshot kontrati kadar genislet
+1. `balance.ts` ve gerekiyorsa `GameScene.ts` tarafinda `KILLBOX` icin tek bir bounded trap window tanimla
+2. `runPhase.ts` / HUD / death-retry truth'unu bu yeni beat'i adlandiracak kadar genislet
+3. `telemetry-check.ts` assert'lerini yalniz bu yeni trap kontrati kadar genislet
 
 Yapma:
-- `balance.ts` icinde yeni cadence veya yeni forced window acma
-- near-miss, killbox ya da retention tarafina dagilma
-- yeni overlay manager'i, spectacle system'i veya phase framework'u yazma
+- `BREAKTHROUGH` cue tonlarina geri donme
+- ikinci bir hazard family, score/meta sistemi veya shell rewrite acma
+- yeni spectacle framework'u veya overlay manager'i yazma
 
 ---
 
 ## Success Criteria
 
-- oyuncu `10-18s` band'inda `STRAFE FORK` ile `SURGE SNAP`i yalniz HUD/callout degil sahne hareketi veya accent farkindan da ayirt eder
-- yeni spectacle authored fork'u buyutur ama cheap drama veya readability gurultusu yaratmaz
+- oyuncu `18-24s` band'inda `KILLBOX`in yalniz hiz/cadence degil yeni bir spatial cevap baskisi actigini hisseder
+- yeni beat mevcut `lead cut -> echo` zincirini buyutur; ucuz wipe, unfair snap veya readability gurultusu yaratmaz
 - deterministic survival headline `29.4s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

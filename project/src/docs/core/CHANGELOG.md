@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #265
+
+- `project/game/src/game/GameScene.ts` breakthrough cue aktifken arena spectacle'i cue-spesifik motion ile buyuttu; `STRAFE FORK` ile `SURGE SNAP` backdrop glow, top-bottom band ve frame offset/angle/scale tarafinda artik ayri imzalar tasiyor
+- ayni dosya death overlay'de `deathPresentation` tonunu callout/badge/title/body/prompt renklerine uyguluyor; breakthrough snapshot'i generic game-over paletine donmuyor
+- `project/game/src/game/deathPresentation.ts` `STRAFE FORK` ve `SURGE SNAP` icin ayri snapshot accent paletleri ekledi; near-miss prompt override'i bu cue-aware tonla uyumlu kaldi
+- `project/game/scripts/telemetry-check.ts` strafe ve surge olumleri icin yeni callout/prompt/title accent regression'lerini ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #264
 
 - `project/game/src/game/balance.ts` `BREAKTHROUGH` icin ilk authored early-mid fork'u ekledi; `12.0-13.4s` forced `STRAFE FORK`, `15.0-16.6s` forced `SURGE SNAP` window'lari artik cadence beklemeden devreye giriyor

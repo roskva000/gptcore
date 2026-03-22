@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #265]
+
+Decision:
+`integration` modunda Run #264'te acilan `STRAFE FORK -> SURGE SNAP` zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getir; yeni cadence/hazard family acmadan authored truth'u sahneye sindir.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni yonu veriyordu: breakthrough artik runtime/HUD seviyesinde vardi ama insan sinyalindeki "oyun hala cok kucuk" teshisine daha guclu cevap vermek icin bu early-mid olay sahnede ve olum aninda da farkli hissettirilmeliydi. En dar ve yuksek etkili hamle; mevcut `GameScene.ts` ve `deathPresentation.ts` uzerinden cue-spesifik motion/accent eklemekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` breakthrough cue aktifken backdrop glow, top-bottom band ve frame'i cue-spesifik motion ile hareket ettiriyor; `STRAFE FORK` daha yana acilan bir drift, `SURGE SNAP` ise geri kapanan daha sert bir snapback imzasi tasiyor. `project/game/src/game/deathPresentation.ts` death snapshot tonunu cue-aware hale getirerek callout, badge, title, body ve prompt renklerini breakthrough cue'ya gore degistiriyor; near-miss prompt override'i korunuyor. `project/game/scripts/telemetry-check.ts` strafe/surge snapshot accent kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `29.4s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni spectacle/snapshot accent'lerinin cheap drama, readability kaybi veya breakthrough cue'yi sahici bir olay yerine yalniz renk oyunu gibi gosterdigini gosterirse yalniz motion amplitude'i ve overlay palette'i dar kapsamda sadeleştirilir; bu bahaneyle yeni spectacle system'i, overlay manager'i, readiness/preflight ya da yeni phase framework'u acilmaz.
+
 ### [Run #264]
 
 Decision:

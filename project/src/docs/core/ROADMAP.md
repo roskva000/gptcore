@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #264
+Updated By: Codex Run #265
 
 ---
 
@@ -37,6 +37,7 @@ Mevcut durum:
 - Run #262 ile ayni `near miss chase` ilk kez runtime spawn line'ina da girdi; tetiklenen close shave dominant lane'i kilitliyor ve chase penceresindeki en fazla iki sonraki threat once kisa `lane reopen`, sonra `lane cut` target kaymasi alarak oynanis sirasinda da ayni earned snap semantigini hissettiriyor
 - Run #263 ile bu runtime `lane reopen -> lane cut` slice'i artik player-facing live readability'ye de baglandi; HUD `CHASE LIVE` yerine aktif beat'e gore `LANE REOPEN` / `LANE CUT` etiketine geciyor, support/callout bu iki beat'i isimlendiriyor ve ilgili spawn'lar step-spesifik tint tasiyor
 - Run #264 ile `10-18s` `BREAKTHROUGH` band'i ilk authored early-mid fork'unu kazandi; `12.0-13.4s` forced `STRAFE FORK`, `15.0-16.6s` forced `SURGE SNAP` ve bunlara bagli HUD/detail/support/death-retry truth'u erken-mid run'i generic cadence yigisindan cikariyor
+- Run #265 ile ayni authored fork arena spectacle ve death snapshot tonuna da sindi; backdrop glow/band/frame motion ve game-over accent'i artik `STRAFE FORK` ile `SURGE SNAP`i ayri olaylar gibi tasiyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -58,7 +59,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: ayni truth artik aktif chase sirasinda kisa bir runtime `lane reopen -> lane cut` zinciri de tasiyor; spawn target'i en fazla iki beat boyunca snapped lane'den uzaklasip sonra ayni lane'e geri kapanarak gercek mekansal fark uretiyor
 - shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
 - shipped slice: `BREAKTHROUGH` artik de generic phase break'i degil; `STRAFE FORK` ve `SURGE SNAP` cue'lari, bounded forced runtime pencereleri ve death/retry payoff'u ile ilk gerçek authored early-mid cevap zincirini tasiyor
-- next slice: bu yeni breakthrough fork'u ayni truth ile arena spectacle / snapshot tonunda da ayirt edilir hale getir; yeni hazard family veya ikinci phase rewrite acma
+- shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
+- next slice: breakthrough koridorunda daha fazla polish yerine `KILLBOX` band'inda yeni gorunur gameplay farki ac; mevcut lead-cut + echo truth'unu spatial baskida buyut ama yeni manager/framework yazma
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -66,7 +68,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
-- yeni aday: breakthrough fork'unu sahne motion/accent tarafinda da sahiplen; strafe ile surge ayni pencerede ayri olaylar gibi gorunsun
+- yeni aday: `18-24s` `KILLBOX` band'ini yeni bir bounded trap davranisiyla buyut; straight-escape cevabini bozan ama deterministic baseline'i sarsmayan tek bir gameplay slice sec
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

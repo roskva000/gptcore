@@ -15,6 +15,7 @@ import {
   getNearMissChaseSnapshotSummaryText,
 } from './nearMiss.ts';
 import {
+  getBreakthroughCue,
   getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDeathSummaryText,
@@ -37,14 +38,42 @@ type DeathPresentationParams = {
 
 export type DeathPresentation = {
   badge: string | null;
+  badgeBackgroundColor: string;
+  badgeTextColor: string;
   body: string;
+  bodyTextColor: string;
   callout: string;
+  calloutBackgroundColor: string;
+  calloutTextColor: string;
   hasNearMissChaseSnapshot: boolean;
   prompt: string;
   promptBackgroundColor: string;
   promptTextColor: string;
   stats: string;
   title: string;
+  titleTextColor: string;
+};
+
+type SnapshotTone = {
+  badgeBackgroundColor: string;
+  badgeTextColor: string;
+  bodyTextColor: string;
+  calloutBackgroundColor: string;
+  calloutTextColor: string;
+  promptBackgroundColor: string;
+  promptTextColor: string;
+  titleTextColor: string;
+};
+
+const DEFAULT_SNAPSHOT_TONE: SnapshotTone = {
+  badgeBackgroundColor: '#123f36',
+  badgeTextColor: '#d8fff4',
+  bodyTextColor: '#b8cde0',
+  calloutBackgroundColor: '#2f0d12',
+  calloutTextColor: '#ff8a73',
+  promptBackgroundColor: '#123f36',
+  promptTextColor: '#d8fff4',
+  titleTextColor: '#f5f7ff',
 };
 
 const getProgressLine = ({
@@ -191,6 +220,52 @@ const getStatsText = (sessionTelemetry: GameplayTelemetry): string =>
     `Validation ${getValidationProgressText(sessionTelemetry)} | Retry ${getAverageRetryDelayText(sessionTelemetry)}`,
   ].join('\n');
 
+const getSnapshotTone = ({
+  survivalTimeSeconds,
+  hasNearMissChaseSnapshot,
+}: {
+  survivalTimeSeconds: number;
+  hasNearMissChaseSnapshot: boolean;
+}): SnapshotTone => {
+  const breakthroughCue = getBreakthroughCue(survivalTimeSeconds);
+
+  if (breakthroughCue?.id === 'strafe-fork') {
+    return {
+      badgeBackgroundColor: '#5a2b1b',
+      badgeTextColor: '#ffe7c8',
+      bodyTextColor: '#f2cdb2',
+      calloutBackgroundColor: '#4b2418',
+      calloutTextColor: '#ffc8a1',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a2b1b',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff0d8',
+      titleTextColor: '#ffe3c1',
+    };
+  }
+
+  if (breakthroughCue?.id === 'surge-snap') {
+    return {
+      badgeBackgroundColor: '#6a3916',
+      badgeTextColor: '#fff0c1',
+      bodyTextColor: '#f6d8a6',
+      calloutBackgroundColor: '#5a3114',
+      calloutTextColor: '#ffd78d',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#6a3916',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff4cf',
+      titleTextColor: '#ffe9b2',
+    };
+  }
+
+  return {
+    ...DEFAULT_SNAPSHOT_TONE,
+    promptBackgroundColor: hasNearMissChaseSnapshot
+      ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND
+      : DEFAULT_SNAPSHOT_TONE.promptBackgroundColor,
+    promptTextColor: hasNearMissChaseSnapshot
+      ? NEAR_MISS_CHASE_SNAPSHOT_TEXT
+      : DEFAULT_SNAPSHOT_TONE.promptTextColor,
+  };
+};
+
 export const getDeathPresentation = ({
   hitDirection,
   survivalTimeSeconds,
@@ -202,34 +277,47 @@ export const getDeathPresentation = ({
   escapePromptTitle,
   nearMissChainCount,
   nearMissPromptText,
-}: DeathPresentationParams): DeathPresentation => ({
-  badge: getBadgeText({
-    isNewBest,
+}: DeathPresentationParams): DeathPresentation => {
+  const hasNearMissChaseSnapshot = nearMissPromptText !== null;
+  const tone = getSnapshotTone({
     survivalTimeSeconds,
-    reachedSurvivalGoal,
-    nearMissChainCount,
-  }),
-  body: getBodyText({
-    survivalTimeSeconds,
-    isNewBest,
-    bestSurvivalTimeText,
-    reachedSurvivalGoal,
-    nearMissChainCount,
-  }),
-  callout: 'DEATH SNAPSHOT',
-  hasNearMissChaseSnapshot: nearMissPromptText !== null,
-  prompt: getPromptText({
-    escapePromptTitle,
-    retryPromptText,
-    survivalTimeSeconds,
-    nearMissPromptText,
-  }),
-  promptBackgroundColor:
-    nearMissPromptText === null ? '#123f36' : NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND,
-  promptTextColor: nearMissPromptText === null ? '#d8fff4' : NEAR_MISS_CHASE_SNAPSHOT_TEXT,
-  stats: getStatsText(sessionTelemetry),
-  title: getTitleTextWithNearMissChase({
-    hitDirection,
-    nearMissChainCount,
-  }),
-});
+    hasNearMissChaseSnapshot,
+  });
+
+  return {
+    badge: getBadgeText({
+      isNewBest,
+      survivalTimeSeconds,
+      reachedSurvivalGoal,
+      nearMissChainCount,
+    }),
+    badgeBackgroundColor: tone.badgeBackgroundColor,
+    badgeTextColor: tone.badgeTextColor,
+    body: getBodyText({
+      survivalTimeSeconds,
+      isNewBest,
+      bestSurvivalTimeText,
+      reachedSurvivalGoal,
+      nearMissChainCount,
+    }),
+    bodyTextColor: tone.bodyTextColor,
+    callout: 'DEATH SNAPSHOT',
+    calloutBackgroundColor: tone.calloutBackgroundColor,
+    calloutTextColor: tone.calloutTextColor,
+    hasNearMissChaseSnapshot,
+    prompt: getPromptText({
+      escapePromptTitle,
+      retryPromptText,
+      survivalTimeSeconds,
+      nearMissPromptText,
+    }),
+    promptBackgroundColor: tone.promptBackgroundColor,
+    promptTextColor: tone.promptTextColor,
+    stats: getStatsText(sessionTelemetry),
+    title: getTitleTextWithNearMissChase({
+      hitDirection,
+      nearMissChainCount,
+    }),
+    titleTextColor: tone.titleTextColor,
+  };
+};

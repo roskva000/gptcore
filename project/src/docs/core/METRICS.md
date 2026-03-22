@@ -7,12 +7,18 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #264:
+Current deterministic survival headline after Run #265:
 - `29.4s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+
+breakthrough_spectacle_snapshot_surface:
+current: Run #265 `project/game/src/game/GameScene.ts` breakthrough cue aktifken backdrop glow, band ve frame motion'unu cue-spesifik offset/angle/scale imzalariyla hareket ettiriyor; `project/game/src/game/deathPresentation.ts` da `STRAFE FORK` ve `SURGE SNAP` olumlerini ayri callout/badge/title/body/prompt paletleriyle tonluyor
+baseline: Run #264 state'inde breakthrough fork runtime/HUD/callout/death-retry truth'una baglanmisti ama arena spectacle ve death snapshot tonunda iki cue halen yeterince benzeşebilirdi; authored olay daha cok text ve runtime hareketinden okunuyordu
+target: sonraki browser veya manuel gozlem oyuncunun `10-18s` band'inda `STRAFE FORK` ile `SURGE SNAP`i yalniz HUD/copy degil sahne motion'u ve olum overlay accent'inden de ayirt edebildigini gostersin; yeni ton cheap drama ya da readability gurultusu yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 breakthrough_authored_fork_surface:
 current: Run #264 `project/game/src/game/balance.ts` `12.0-13.4s` araliginda forced `STRAFE FORK`, `15.0-16.6s` araliginda forced `SURGE SNAP` window'larini aciyor; `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni cue truth'unu HUD/detail/support/callout/death-retry zincirine tasiyor

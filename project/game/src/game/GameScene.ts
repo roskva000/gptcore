@@ -158,6 +158,10 @@ const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
 const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_X = -34;
 const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_Y = -10;
+const BREAKTHROUGH_STRAFE_GLOW_OFFSET_X = 24;
+const BREAKTHROUGH_STRAFE_GLOW_OFFSET_Y = -8;
+const BREAKTHROUGH_SURGE_GLOW_OFFSET_X = -28;
+const BREAKTHROUGH_SURGE_GLOW_OFFSET_Y = -4;
 const NEAR_MISS_BACKDROP_PULSE_MS = 150;
 const HELD_MOVEMENT_ACTION_DELAY_MS = 180;
 const OBSTACLE_DEPTH = COLLISION_READY_OBSTACLE_DEPTH;
@@ -349,6 +353,20 @@ export class GameScene extends Phaser.Scene {
   };
   private resetKeyboardState(): void {
     this.input.keyboard?.resetKeys();
+  }
+
+  private applyDefaultOverlayTone(): void {
+    this.fatalCallout
+      .setBackgroundColor('#2f0d12')
+      .setColor('#ff8a73');
+    this.overlayBadge
+      .setBackgroundColor('#123f36')
+      .setColor('#d8fff4');
+    this.overlayTitle.setColor('#f5f7ff');
+    this.overlayBody.setColor('#b8cde0');
+    this.overlayPrompt
+      .setBackgroundColor('#123f36')
+      .setColor('#d8fff4');
   }
   private player!: Phaser.Physics.Arcade.Image;
   private obstacles!: Phaser.Physics.Arcade.Group;
@@ -1160,16 +1178,20 @@ export class GameScene extends Phaser.Scene {
       progressSeconds,
       pulseMs: time,
     });
+    const breakthroughCue = this.phase === 'playing' ? getBreakthroughCue(this.survivalTime) : null;
     const breakthroughOnsetIntensity =
       this.phase === 'playing' ? getRunPhaseOnsetIntensity(this.survivalTime, 'breakthrough') : 0;
     const endgameCue = this.phase === 'playing' ? getEndgameDriftCue(this.survivalTime) : null;
     const clearClimbState =
       this.phase === 'playing' ? getEndgameClearClimbState(this.survivalTime) : null;
+    const breakthroughCueIntensity = this.getBreakthroughCueIntensity(breakthroughCue);
     const endgameCueIntensity = this.getEndgameDriftCueIntensity(endgameCue);
     const clearClimbIntensity = this.getEndgameClearClimbIntensity(clearClimbState);
     const nearMissChaseIntensity = this.getNearMissChaseBackdropIntensity(time);
     const breakthroughOnsetAlphaBoost = breakthroughOnsetIntensity * 0.2;
     const breakthroughOnsetScaleBoost = breakthroughOnsetIntensity * 0.2;
+    const breakthroughCueAlphaBoost = breakthroughCueIntensity * 0.15;
+    const breakthroughCueScaleBoost = breakthroughCueIntensity * 0.08;
     const breakthroughTellColor = 0xffc18a;
     const endgameCueAlphaBoost = endgameCueIntensity * 0.18;
     const endgameCueScaleBoost = endgameCueIntensity * 0.12;
@@ -1179,11 +1201,14 @@ export class GameScene extends Phaser.Scene {
     const nearMissChaseScaleBoost = nearMissChaseIntensity * 0.1;
     const endgameCueColor =
       endgameCue?.accentColor ?? clearClimbState?.accentColor ?? spectacle.glowColor;
+    const breakthroughCueMotion = this.getBreakthroughBackdropMotion(breakthroughCue, time);
     const clearClimbBackdropMotion = this.getClearClimbBackdropMotion(clearClimbState, time);
     const nearMissBackdropMotion = this.getNearMissBackdropMotion(time, nearMissChaseIntensity);
     const accentColor =
       breakthroughOnsetIntensity > 0
         ? breakthroughTellColor
+        : breakthroughCue !== null
+          ? breakthroughCue.accentColor
         : nearMissChaseIntensity > 0
           ? NEAR_MISS_CHASE_ACCENT_COLOR
           : endgameCueIntensity > 0 || clearClimbIntensity > 0
@@ -1194,9 +1219,11 @@ export class GameScene extends Phaser.Scene {
     this.backdropGlow
       .setPosition(
         ARENA_WIDTH / 2 +
+          breakthroughCueMotion.glowOffsetX +
           clearClimbBackdropMotion.glowOffsetX +
           nearMissBackdropMotion.glowOffsetX,
         ARENA_HEIGHT / 2 +
+          breakthroughCueMotion.glowOffsetY +
           clearClimbBackdropMotion.glowOffsetY +
           nearMissBackdropMotion.glowOffsetY,
       )
@@ -1204,6 +1231,7 @@ export class GameScene extends Phaser.Scene {
         accentColor,
         spectacle.glowAlpha +
           breakthroughOnsetAlphaBoost +
+          breakthroughCueAlphaBoost +
           endgameCueAlphaBoost +
           clearClimbAlphaBoost +
           nearMissChaseAlphaBoost,
@@ -1211,6 +1239,7 @@ export class GameScene extends Phaser.Scene {
       .setScale(
         spectacle.glowScale +
           breakthroughOnsetScaleBoost +
+          breakthroughCueScaleBoost +
           endgameCueScaleBoost +
           clearClimbScaleBoost +
           nearMissChaseScaleBoost,
@@ -1218,21 +1247,25 @@ export class GameScene extends Phaser.Scene {
     this.backdropAura
       .setPosition(
         ARENA_WIDTH / 2 +
+          breakthroughCueMotion.glowOffsetX * 0.7 +
           clearClimbBackdropMotion.glowOffsetX * 0.7 +
           nearMissBackdropMotion.glowOffsetX * 0.6,
         ARENA_HEIGHT / 2 +
+          breakthroughCueMotion.glowOffsetY * 0.7 +
           clearClimbBackdropMotion.glowOffsetY * 0.6 +
           nearMissBackdropMotion.glowOffsetY * 0.6,
       )
       .setStrokeStyle(
         4 +
           breakthroughOnsetIntensity * 2 +
+          breakthroughCueIntensity * 1.4 +
           endgameCueIntensity * 1.6 +
           clearClimbIntensity +
           nearMissChaseIntensity * 1.1,
         accentColor,
         spectacle.auraAlpha +
           breakthroughOnsetAlphaBoost +
+          breakthroughCueAlphaBoost +
           endgameCueAlphaBoost +
           clearClimbAlphaBoost +
           nearMissChaseAlphaBoost,
@@ -1240,6 +1273,7 @@ export class GameScene extends Phaser.Scene {
       .setScale(
         spectacle.auraScale +
           breakthroughOnsetScaleBoost +
+          breakthroughCueScaleBoost +
           endgameCueScaleBoost +
           clearClimbScaleBoost +
           nearMissChaseScaleBoost * 0.9,
@@ -1247,15 +1281,21 @@ export class GameScene extends Phaser.Scene {
     this.backdropTopBand
       .setPosition(
         ARENA_WIDTH / 2 +
+          breakthroughCueMotion.topBandOffsetX +
           clearClimbBackdropMotion.topBandOffsetX +
           nearMissBackdropMotion.topBandOffsetX,
         0,
       )
-      .setAngle(clearClimbBackdropMotion.topBandAngle + nearMissBackdropMotion.topBandAngle)
+      .setAngle(
+        breakthroughCueMotion.topBandAngle +
+          clearClimbBackdropMotion.topBandAngle +
+          nearMissBackdropMotion.topBandAngle,
+      )
       .setFillStyle(
         accentColor,
         spectacle.edgeAlpha +
           breakthroughOnsetAlphaBoost +
+          breakthroughCueAlphaBoost * 0.94 +
           endgameCueAlphaBoost * 0.92 +
           clearClimbAlphaBoost * 0.86 +
           nearMissChaseAlphaBoost * 0.7,
@@ -1263,23 +1303,28 @@ export class GameScene extends Phaser.Scene {
     this.backdropBottomBand
       .setPosition(
         ARENA_WIDTH / 2 +
+          breakthroughCueMotion.bottomBandOffsetX +
           clearClimbBackdropMotion.bottomBandOffsetX +
           nearMissBackdropMotion.bottomBandOffsetX,
         ARENA_HEIGHT,
       )
       .setAngle(
-        clearClimbBackdropMotion.bottomBandAngle + nearMissBackdropMotion.bottomBandAngle,
+        breakthroughCueMotion.bottomBandAngle +
+          clearClimbBackdropMotion.bottomBandAngle +
+          nearMissBackdropMotion.bottomBandAngle,
       )
       .setFillStyle(
         accentColor,
         spectacle.edgeAlpha * 0.88 +
           breakthroughOnsetAlphaBoost * 0.88 +
+          breakthroughCueAlphaBoost * 0.82 +
           endgameCueAlphaBoost * 0.8 +
           clearClimbAlphaBoost * 0.76 +
           nearMissChaseAlphaBoost * 0.62,
       );
     this.backdropGrid.setAlpha(
       spectacle.gridAlpha +
+        breakthroughCueAlphaBoost * 0.16 +
         endgameCueAlphaBoost * 0.28 +
         clearClimbAlphaBoost * 0.22 +
         nearMissChaseAlphaBoost * 0.18,
@@ -1288,6 +1333,7 @@ export class GameScene extends Phaser.Scene {
       .setStrokeStyle(
         3 +
           breakthroughOnsetIntensity +
+          breakthroughCueIntensity * 0.9 +
           endgameCueIntensity * 0.8 +
           clearClimbIntensity * 0.7 +
           nearMissChaseIntensity * 0.9,
@@ -1300,21 +1346,28 @@ export class GameScene extends Phaser.Scene {
               : spectacle.frameColor,
         spectacle.frameAlpha +
           breakthroughOnsetAlphaBoost +
+          breakthroughCueAlphaBoost +
           endgameCueAlphaBoost +
           clearClimbAlphaBoost +
           nearMissChaseAlphaBoost,
       )
       .setPosition(
         ARENA_WIDTH / 2 +
+          breakthroughCueMotion.frameOffsetX +
           clearClimbBackdropMotion.frameOffsetX +
           nearMissBackdropMotion.frameOffsetX,
         ARENA_HEIGHT / 2 +
+          breakthroughCueMotion.frameOffsetY +
           clearClimbBackdropMotion.frameOffsetY +
           nearMissBackdropMotion.frameOffsetY,
       )
       .setScale(
-        clearClimbBackdropMotion.frameScaleX + nearMissBackdropMotion.frameScaleBoostX,
-        clearClimbBackdropMotion.frameScaleY + nearMissBackdropMotion.frameScaleBoostY,
+        breakthroughCueMotion.frameScaleX +
+          nearMissBackdropMotion.frameScaleBoostX +
+          (clearClimbBackdropMotion.frameScaleX - 1),
+        breakthroughCueMotion.frameScaleY +
+          nearMissBackdropMotion.frameScaleBoostY +
+          (clearClimbBackdropMotion.frameScaleY - 1),
       );
   }
 
@@ -1565,6 +1618,7 @@ export class GameScene extends Phaser.Scene {
     this.pointerSteeringNeedsRelease = false;
     this.previousMovementInputState = movementInputState;
     this.overlay.setVisible(true);
+    this.applyDefaultOverlayTone();
     this.fatalCallout.setVisible(false).setText('');
     this.overlayBadge.setVisible(false).setText('');
     this.setOverlayLayout(false);
@@ -1625,6 +1679,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.resumeActiveObstacleSpawnGraceTweens();
     this.overlay.setVisible(false);
+    this.applyDefaultOverlayTone();
     this.fatalCallout.setVisible(false).setText('');
     this.overlayBadge.setVisible(false).setText('');
     this.setOverlayLayout(false);
@@ -1702,6 +1757,7 @@ export class GameScene extends Phaser.Scene {
     this.fatalSpotlightConnector.setAlpha(0).setVisible(false);
     this.fatalSpotlightLabel.setAlpha(0).setVisible(false).setText('');
     this.overlay.setVisible(false);
+    this.applyDefaultOverlayTone();
     this.fatalCallout.setVisible(false).setText('');
     this.overlayBadge.setVisible(false).setText('');
     this.setOverlayLayout(false);
@@ -2293,22 +2349,27 @@ export class GameScene extends Phaser.Scene {
     this.setOverlayLayout(hasOverlayBadge);
     this.fatalCallout
       .setText(deathPresentation.callout)
+      .setBackgroundColor(deathPresentation.calloutBackgroundColor)
+      .setColor(deathPresentation.calloutTextColor)
       .setVisible(true);
     this.overlayBadge
       .setText(deathPresentation.badge ?? '')
+      .setBackgroundColor(deathPresentation.badgeBackgroundColor)
+      .setColor(deathPresentation.badgeTextColor)
       .setVisible(hasOverlayBadge);
-    this.overlayTitle.setText(deathPresentation.title).setVisible(true);
+    this.overlayTitle
+      .setText(deathPresentation.title)
+      .setColor(deathPresentation.titleTextColor)
+      .setVisible(true);
     this.overlayBody
       .setText(deathPresentation.body)
+      .setColor(deathPresentation.bodyTextColor)
       .setVisible(true);
     this.overlayPrompt
       .setText(deathPresentation.prompt)
       .setBackgroundColor(deathPresentation.promptBackgroundColor)
       .setColor(deathPresentation.promptTextColor)
       .setVisible(true);
-    this.fatalCallout.setColor(
-      deathPresentation.hasNearMissChaseSnapshot ? '#7ce8d7' : '#ff8a73',
-    );
     this.overlayStats
       .setText(deathPresentation.stats)
       .setVisible(true);
@@ -3724,6 +3785,14 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  private getBreakthroughCueIntensity(breakthroughCue: BreakthroughCue | null): number {
+    if (breakthroughCue === null) {
+      return 0;
+    }
+
+    return breakthroughCue.id === 'surge-snap' ? 0.88 : 0.76;
+  }
+
   private getEndgameClearClimbIntensity(
     clearClimbState: ReturnType<typeof getEndgameClearClimbState>,
   ): number {
@@ -3800,6 +3869,68 @@ export class GameScene extends Phaser.Scene {
       frameOffsetY: -4 - stairStepPulse * 2,
       frameScaleX: 1.012,
       frameScaleY: 0.992,
+    };
+  }
+
+  private getBreakthroughBackdropMotion(
+    breakthroughCue: BreakthroughCue | null,
+    time: number,
+  ): {
+    bottomBandAngle: number;
+    bottomBandOffsetX: number;
+    frameOffsetX: number;
+    frameOffsetY: number;
+    frameScaleX: number;
+    frameScaleY: number;
+    glowOffsetX: number;
+    glowOffsetY: number;
+    topBandAngle: number;
+    topBandOffsetX: number;
+  } {
+    if (breakthroughCue === null) {
+      return {
+        glowOffsetX: 0,
+        glowOffsetY: 0,
+        topBandOffsetX: 0,
+        bottomBandOffsetX: 0,
+        topBandAngle: 0,
+        bottomBandAngle: 0,
+        frameOffsetX: 0,
+        frameOffsetY: 0,
+        frameScaleX: 1,
+        frameScaleY: 1,
+      };
+    }
+
+    const sway = Math.sin(time / 170);
+    const rebound = Math.cos(time / 210);
+
+    if (breakthroughCue.id === 'surge-snap') {
+      return {
+        glowOffsetX: BREAKTHROUGH_SURGE_GLOW_OFFSET_X + sway * 10,
+        glowOffsetY: BREAKTHROUGH_SURGE_GLOW_OFFSET_Y + rebound * 6,
+        topBandOffsetX: -18 + sway * 9,
+        bottomBandOffsetX: 22 - sway * 8,
+        topBandAngle: -3.8,
+        bottomBandAngle: 3.2,
+        frameOffsetX: -9 + sway * 4,
+        frameOffsetY: -2,
+        frameScaleX: 1.018,
+        frameScaleY: 0.986,
+      };
+    }
+
+    return {
+      glowOffsetX: BREAKTHROUGH_STRAFE_GLOW_OFFSET_X + sway * 12,
+      glowOffsetY: BREAKTHROUGH_STRAFE_GLOW_OFFSET_Y - rebound * 5,
+      topBandOffsetX: 16 + sway * 8,
+      bottomBandOffsetX: -14 - sway * 6,
+      topBandAngle: 3.1,
+      bottomBandAngle: -2.5,
+      frameOffsetX: 7 + sway * 3,
+      frameOffsetY: -3,
+      frameScaleX: 1.014,
+      frameScaleY: 0.99,
     };
   }
 

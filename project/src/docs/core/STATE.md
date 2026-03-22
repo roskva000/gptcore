@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #264
+Updated By: Codex Run #265
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `mutation`
-- ana hedef: `BREAKTHROUGH` band'ini ilk gercek authored early-mid spatial fork'a cevirmek; `strafe -> surge` artik bounded bir cevap zinciri gibi okunuyor
+- run mode: `integration`
+- ana hedef: `STRAFE FORK -> SURGE SNAP` zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,13 +26,12 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `mutation`
-- ana hedef: `BREAKTHROUGH` band'ini ilk gercek authored early-mid spatial fork'a cevirmek; `strafe` ve `surge` yalniz isimli cadence olmaktan cikip tek bir bounded cevap zincirine baglandi
-- `project/game/src/game/balance.ts` `12.0-13.4s` icin forced `STRAFE FORK`, `15.0-16.6s` icin forced `SURGE SNAP` window'larini ekledi; strafe daha sert cross-lane cut aliyor, surge ise kisa forward lead ile yeniden kapanan cevap cizgisine donuyor
-- ayni dosya bu breakthrough pencereleri bittiginde normal cadence'e geri donuyor; yeni hazard family, spawn manager'i veya phase rewrite acilmadi
-- `project/game/src/game/runPhase.ts` breakthrough cue truth'unu ekledi; HUD/detail/support, death summary, badge ve retry-goal artik `STRAFE FORK` ile `SURGE SNAP` isimlerini tek kaynaktan okuyor
-- `project/game/src/game/GameScene.ts` breakthrough cue canliya girdiginde bounded hint + beat callout basiyor, phase HUD'ina aktif cue etiketini ekliyor ve ilk `10s` sonrasi breakthrough hint'ini yeni authored zincire hizaliyor
-- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni breakthrough fork kontratini ve guncel deterministic baseline'i kayda aldi
+- run mode: `integration`
+- ana hedef: Run #264'te acilan `STRAFE FORK -> SURGE SNAP` zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getirmek
+- `project/game/src/game/GameScene.ts` breakthrough cue aktifken backdrop glow, top-bottom band ve frame'i cue-spesifik offset/angle/motion ile hareket ettiriyor; `STRAFE FORK` lane'i yana acan daha sicak bir kayma, `SURGE SNAP` ise geri kapanan daha sert bir snapback imzasi tasiyor
+- ayni dosya death overlay acildiginda `deathPresentation` tonunu callout/badge/title/body/prompt renklerine uyguluyor; breakthrough olumleri artik generic game-over paletine donmuyor
+- `project/game/src/game/deathPresentation.ts` snapshot tonunu cue-aware hale getirdi; `STRAFE FORK` ve `SURGE SNAP` olumleri ayri accent paletleri alip near-miss prompt override'i ile uyumlu kaldi
+- `project/game/scripts/telemetry-check.ts` yeni snapshot accent kontratini regression altina aldi; strafe ve surge olumleri artik farkli callout/prompt/title tonlari bekliyor
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
 
 ---
@@ -75,8 +74,8 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` olarak adlandirilmis erken-mid spatial cevap zinciri tasiyor
-- bu slice gameplay + HUD + callout + death/retry truth'una baglandi; siradaki mantikli adim ayni truth'u arena spectacle ve snapshot tonunda da ayirt edilir kilmak, yeni cadence ailesi acmak degil
-- ayni tema etrafinda kal; score/meta/tooling veya baska phase polish koridorlarina dagilma
+- `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
+- bu slice artik gameplay + HUD + callout + spectacle + death snapshot tonuna baglandi; ayni breakthrough koridorunda yeni copy cilasi yerine yeni gorunur gameplay deltasi secilmeli
+- score/meta/tooling veya ayni early-mid spectacle cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

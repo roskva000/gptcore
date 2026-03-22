@@ -313,6 +313,51 @@ assert.equal(
   'Death overlay title should keep the hit direction explicit for readability.',
 );
 assert.equal(
+  deathPresentation.calloutBackgroundColor,
+  '#4b2418',
+  'Deaths inside the strafe fork should warm the snapshot callout so the authored breakthrough beat owns the overlay tone.',
+);
+assert.equal(
+  deathPresentation.promptBackgroundColor,
+  '#5a2b1b',
+  'Deaths inside the strafe fork should tint the retry block around the same fork accent instead of falling back to the generic game-over palette.',
+);
+const surgeSnapDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 15.2,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 4,
+    totalRuns: 4,
+    firstDeathTime: 8.4,
+    totalRetryDelayMs: 5600,
+    retryCount: 4,
+    recentDeathTimes: [8.4, 10.2, 12.3, 15.2],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '15.8s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  surgeSnapDeathPresentation.calloutBackgroundColor,
+  '#5a3114',
+  'Deaths inside the surge snap should shift the snapshot callout to a hotter snapback tone so the second authored breakthrough beat reads differently from the strafe opener.',
+);
+assert.equal(
+  surgeSnapDeathPresentation.titleTextColor,
+  '#ffe9b2',
+  'Deaths inside the surge snap should brighten the title around the hotter snapback accent instead of reusing the strafe palette.',
+);
+assert.equal(
+  surgeSnapDeathPresentation.promptBackgroundColor,
+  '#6a3916',
+  'Deaths inside the surge snap should keep the retry block on the same snapback palette so the overlay tone matches the authored beat that failed.',
+);
+assert.equal(
   getNearMissChaseImpactLabelText('left', false),
   'LEFT SNAP',
   'Near-miss impact labels should turn the generic direction tag into a snapped-lane marker.',
