@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #282:
+Current deterministic survival headline after Run #283:
 - `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #282:
 - validation export last run `36.9s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+clear_climb_ledge_feint_surface:
+current: Run #283 `project/game/src/game/balance.ts` `45.6-52.4s` clear-climb stretch'ini `1.8s` `ASCENT STAIR`, yeni `2.2s` `LEDGE FEINT`, `2.8s` `RIDGE CUT` ve `SUMMIT SNAP` olarak ayiriyor; yeni beat `20deg` travel ve `0.05s` lag ile ridge oncesi fake-safe hold yaratiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor
+baseline: Run #282 state'inde `45.6-52.4s` clear-climb ilk yarisi `ASCENT STAIR -> RIDGE CUT` olarak uc halkaliydi; ridge oncesi ayri bir flatten/feint sonucu olmadigi icin ascent bazen fazla tek parca okunabiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `45.6-52.4s` band'ini artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT` zinciri olarak anlattigini gostersin; yeni ledge-feint beat'i cheap stall, named-beat gurultusu veya ridge-cut ile karisan anlamsiz bir ara slice gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 endgame_center_pin_surface:
 current: Run #282 `project/game/src/game/balance.ts` `39.0-41.2s` handoff'u `1.2s` `RECENTER` ve yeni `1.0s` `CENTER PIN` olarak ayiriyor; yeni beat `24deg` travel ve `0.05s` lag ile merkez hattini tekrar kapatip `FALSE CLEAR` oncesi yeni bir bounded cut-back soruyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor

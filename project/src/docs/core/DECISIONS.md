@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #283]
+
+Decision:
+`mutation` modunda `45.6-52.4s` clear-climb stretch'ini dort halkaya bol; `ASCENT STAIR` ile `RIDGE CUT` arasina yeni `LEDGE FEINT` beat'i ekleyip ridge oncesi yeni bounded route cikisi ac.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni yone bakiyordu: ayni `39.0-42.8s` late-handoff koridoruna geri donmeden yeni runtime/gameplay delta acmak gerekiyordu. En yuksek etkili ve en dar secim; `ASCENT STAIR`in fazla tek parca okunan ilk yarisini `ascent -> ledge feint -> ridge cut` zincirine cevirip `60s` kovalamacasina ridge oncesi yeni bir earned exit zamani eklemekti.
+
+Impact:
+`project/game/src/game/balance.ts` clear-climb'i `1.8s` `ASCENT STAIR`, yeni `2.2s` `LEDGE FEINT`, `2.8s` `RIDGE CUT` ve `SUMMIT SNAP` olarak yeniden zamanladi; ledge feint `20deg` rotation ve `0.05s` lag ile fake-safe hold yaratirken ridge cut `49.6s`e kaydi. `project/game/src/game/runPhase.ts` yeni `LEDGE FEINT LIVE` cue'sunu detail/HUD/badge/death summary/rematch truth'una ekledi ve clear-climb macro anlatimini guncelledi. `project/game/src/game/GameScene.ts` ledge-feint icin ayri goal-chip arkaplani, cue intensity ve backdrop motion imzasi verdi. `project/game/src/game/deathPresentation.ts` `LEDGE FEINT` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve player-facing truth'u regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `LEDGE FEINT` beat'inin ridge oncesi okunur fake-safe hold yerine cheap stall, named-beat gurultusu ya da `RIDGE CUT` ile birbirine karisan anlamsiz bir ara dilim urettigini gosterirse yalniz `LEDGE FEINT` pencere suresi ile `rotation/lag` siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `45.6-49.6s` koridorunda tone/snapshot polish zinciri acilmaz.
+
 ### [Run #282]
 
 Decision:

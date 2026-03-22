@@ -100,10 +100,13 @@ export const DRIFT_FALSE_CLEAR_TARGET_LAG_SECONDS = 0.12;
 export const DRIFT_PRECLEAR_WINDOW_SECONDS = 2.8;
 export const DRIFT_PRECLEAR_ROTATION_DEGREES = 18;
 export const DRIFT_PRECLEAR_TARGET_LAG_SECONDS = 0.06;
-export const DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_SECONDS = 4.8;
+export const DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_SECONDS = 1.8;
 export const DRIFT_CLEAR_CLIMB_ASCENT_ROTATION_DEGREES = 16;
 export const DRIFT_CLEAR_CLIMB_ASCENT_TARGET_LAG_SECONDS = 0.12;
-export const DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_SECONDS = 2;
+export const DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_SECONDS = 2.2;
+export const DRIFT_CLEAR_CLIMB_LEDGE_ROTATION_DEGREES = 20;
+export const DRIFT_CLEAR_CLIMB_LEDGE_TARGET_LAG_SECONDS = 0.05;
+export const DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_SECONDS = 2.8;
 export const DRIFT_CLEAR_CLIMB_RIDGE_ROTATION_DEGREES = 22;
 export const DRIFT_CLEAR_CLIMB_RIDGE_TARGET_LAG_SECONDS = 0.07;
 export const DRIFT_CLEAR_CLIMB_SUMMIT_ROTATION_DEGREES = 28;
@@ -335,20 +338,26 @@ export const DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS =
   DRIFT_PRECLEAR_WINDOW_SECONDS;
 export const DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS =
   DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS + DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_SECONDS;
+export const DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_END_SECONDS =
+  DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS + DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_SECONDS;
 export const DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS =
-  DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS + DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_SECONDS;
+  DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_END_SECONDS + DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_SECONDS;
 
 const isDriftClearClimbAscentWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= DRIFT_CLEAR_CLIMB_WINDOW_START_SECONDS &&
   survivalTimeSeconds < DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS;
 
 const isDriftClearClimbRidgeWindow = (survivalTimeSeconds: number): boolean =>
-  survivalTimeSeconds >= DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS &&
+  survivalTimeSeconds >= DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_END_SECONDS &&
   survivalTimeSeconds < DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS;
 
 const isDriftClearClimbSummitWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= DRIFT_CLEAR_CLIMB_RIDGE_WINDOW_END_SECONDS &&
   survivalTimeSeconds < SURVIVAL_GOAL_SECONDS;
+
+const isDriftClearClimbLedgeWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS &&
+  survivalTimeSeconds < DRIFT_CLEAR_CLIMB_LEDGE_WINDOW_END_SECONDS;
 
 export const getRunPhasePressureProfile = (
   survivalTimeSeconds: number,
@@ -431,6 +440,7 @@ export const getObstacleVariant = ({
         isDriftFalseClearWindow(survivalTimeSeconds) ||
         isDriftPreclearWindow(survivalTimeSeconds) ||
         isDriftClearClimbAscentWindow(survivalTimeSeconds) ||
+        isDriftClearClimbLedgeWindow(survivalTimeSeconds) ||
         isDriftClearClimbRidgeWindow(survivalTimeSeconds) ||
         isDriftClearClimbSummitWindow(survivalTimeSeconds)
       ? 'drift'
@@ -667,6 +677,7 @@ export const getObstacleTravelDirection = ({
       isDriftFalseClearWindow(survivalTimeSeconds) ||
       isDriftPreclearWindow(survivalTimeSeconds) ||
       isDriftClearClimbAscentWindow(survivalTimeSeconds) ||
+      isDriftClearClimbLedgeWindow(survivalTimeSeconds) ||
       isDriftClearClimbRidgeWindow(survivalTimeSeconds) ||
       isDriftClearClimbSummitWindow(survivalTimeSeconds)) &&
     playerVelocity &&
@@ -679,7 +690,8 @@ export const getObstacleTravelDirection = ({
       isDriftReleaseWindow(survivalTimeSeconds) ||
       isDriftReboundHoldWindow(survivalTimeSeconds) ||
       isDriftFalseClearWindow(survivalTimeSeconds) ||
-      isDriftClearClimbAscentWindow(survivalTimeSeconds);
+      isDriftClearClimbAscentWindow(survivalTimeSeconds) ||
+      isDriftClearClimbLedgeWindow(survivalTimeSeconds);
     const rotationMagnitude = isDriftReleaseWindow(survivalTimeSeconds)
       ? isDriftReleaseFoldCarryWindow(survivalTimeSeconds)
         ? DRIFT_RELEASE_FOLD_CARRY_ROTATION_DEGREES
@@ -706,6 +718,8 @@ export const getObstacleTravelDirection = ({
               ? DRIFT_PRECLEAR_ROTATION_DEGREES
             : isDriftClearClimbAscentWindow(survivalTimeSeconds)
               ? DRIFT_CLEAR_CLIMB_ASCENT_ROTATION_DEGREES
+              : isDriftClearClimbLedgeWindow(survivalTimeSeconds)
+                ? DRIFT_CLEAR_CLIMB_LEDGE_ROTATION_DEGREES
               : isDriftClearClimbRidgeWindow(survivalTimeSeconds)
                 ? DRIFT_CLEAR_CLIMB_RIDGE_ROTATION_DEGREES
                 : DRIFT_CLEAR_CLIMB_SUMMIT_ROTATION_DEGREES;
@@ -806,6 +820,8 @@ export const getObstacleTargetLagSeconds = ({
       ? DRIFT_PRECLEAR_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftClearClimbAscentWindow(survivalTimeSeconds)
       ? DRIFT_CLEAR_CLIMB_ASCENT_TARGET_LAG_SECONDS
+    : variant === 'drift' && isDriftClearClimbLedgeWindow(survivalTimeSeconds)
+      ? DRIFT_CLEAR_CLIMB_LEDGE_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftClearClimbRidgeWindow(survivalTimeSeconds)
       ? DRIFT_CLEAR_CLIMB_RIDGE_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftClearClimbSummitWindow(survivalTimeSeconds)

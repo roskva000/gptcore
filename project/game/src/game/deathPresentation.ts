@@ -480,6 +480,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (clearClimbState?.id === 'ledge-feint') {
+    return {
+      badgeBackgroundColor: '#415d18',
+      badgeTextColor: '#f2ffdd',
+      bodyTextColor: '#dceec0',
+      calloutBackgroundColor: '#324912',
+      calloutTextColor: '#d5ff8a',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#415d18',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#f5ffe5',
+      titleTextColor: '#ebffd1',
+    };
+  }
+
   if (clearClimbState?.id === 'ridge-cut') {
     return {
       badgeBackgroundColor: '#183c59',

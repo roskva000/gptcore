@@ -453,6 +453,7 @@ export class GameScene extends Phaser.Scene {
   private lastShownEndgameDriftCueId:
     | EndgameDriftCue['id']
     | 'ascent-stair'
+    | 'ledge-feint'
     | 'ridge-cut'
     | 'summit-snap'
     | null = null;
@@ -3330,6 +3331,8 @@ export class GameScene extends Phaser.Scene {
           ? '#123f36'
           : clearClimbState.id === 'summit-snap'
             ? '#4a1620'
+            : clearClimbState.id === 'ledge-feint'
+              ? '#324912'
             : clearClimbState.id === 'ridge-cut'
               ? '#14374a'
               : '#4c2414',
@@ -3875,7 +3878,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'endgame') {
-      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a center pin, a false-clear bait, and a preclear squeeze feed a clear-climb ascent, a ridge cut, and the final summit snap.';
+      return 'Endgame drift is live. Killbox releases sideways, rebounds once, flips into a wider late sweep, sweep lock keeps the crossed lane tight for one more beat, then aftershock, recenter, a center pin, a false-clear bait, and a preclear squeeze feed a clear-climb ascent, a ledge feint, a ridge cut, and the final summit snap.';
     }
 
     if (phaseId === 'overtime') {
@@ -3967,6 +3970,10 @@ export class GameScene extends Phaser.Scene {
       return 0.92;
     }
 
+    if (clearClimbState.id === 'ledge-feint') {
+      return 0.88;
+    }
+
     if (clearClimbState.id === 'summit-snap') {
       return Math.max(0.38, 0.9 - secondsIntoClearClimb * 0.1);
     }
@@ -4035,6 +4042,23 @@ export class GameScene extends Phaser.Scene {
         frameOffsetY: -3,
         frameScaleX: 1.02,
         frameScaleY: 0.987,
+      };
+    }
+
+    if (clearClimbState.id === 'ledge-feint') {
+      const feintPulse = Math.sin(time / 165);
+
+      return {
+        glowOffsetX: CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X + feintPulse * 12,
+        glowOffsetY: CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y - 10 + Math.cos(time / 210) * 5,
+        topBandOffsetX: 12 + feintPulse * 10,
+        bottomBandOffsetX: -6 - feintPulse * 8,
+        topBandAngle: 1.6,
+        bottomBandAngle: -1.2,
+        frameOffsetX: 7 + feintPulse * 4,
+        frameOffsetY: -2,
+        frameScaleX: 1.015,
+        frameScaleY: 0.99,
       };
     }
 
