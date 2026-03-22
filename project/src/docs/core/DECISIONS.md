@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #270]
+
+Decision:
+`integration` modunda `FOLD SNAP -> DRIFT RELEASE` handoff'unu yeni threat family acmadan iki asamali release davranisina cevir; ilk `32.0-32.8s` slice'i fold-snap mirasi tasiyan daha sert bir `fold-carry` cut olarak kullan, kalan `0.8s`i daha yumusak release stretch ile rebound'a devret.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni boslugu gosteriyordu: Run #269 yeni `FOLD SNAP` karar anini acti ama `32s` drift release henuz bu son kapanistan dogan spesifik bir cevap gibi degil, daha genel bir lateral acilis gibi okuyordu. En dar ve yuksek etkili entegrasyon; ayni drift penceresi icinde kisa bir miras slice'i tanimlayip bunu `runPhase` ve deterministic kontrat tarafina sindirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` drift release'in ilk `0.8s`ini `18deg` ve `0.14s` ile `fold-carry` slice'ina cevirdi; release'in kalan `0.8s`i `14deg` ve `0.18s` ile rebound oncesi ayri bir stretch olarak kaliyor. `project/game/src/game/runPhase.ts` `RELEASE CUT` ve `ENDGAME DRIFT` anlatimini fold-snap'ten acilan lateral cevap gercegine hizaladi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni `fold-carry -> release stretch` runtime kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem ilk `32s` cut'inin okunur fold-snap crack'i yerine cheap snapback, unfair lane yirtigi veya rebound'a gecisi bulaniklastiran gereksiz sertlik urettigini gosterirse yalniz `fold-carry` slice'inin sure/rotation/lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni drift manager'i, orchestration/readiness katmani ya da yeni threat family acilmaz.
+
 ### [Run #269]
 
 Decision:

@@ -22,7 +22,10 @@ import {
   DRIFT_PRECLEAR_TARGET_LAG_SECONDS,
   DRIFT_PRECLEAR_WINDOW_SECONDS,
   DRIFT_OBSTACLE_CADENCE,
+  DRIFT_RELEASE_FOLD_CARRY_ROTATION_DEGREES,
+  DRIFT_RELEASE_FOLD_CARRY_WINDOW_SECONDS,
   DRIFT_RELEASE_ROTATION_DEGREES,
+  DRIFT_RELEASE_TARGET_LAG_SECONDS,
   DRIFT_RECENTER_ROTATION_DEGREES,
   DRIFT_RECENTER_TARGET_LAG_SECONDS,
   DRIFT_RECENTER_WINDOW_SECONDS,
@@ -624,7 +627,7 @@ assert.deepEqual(
     snapshotLabel: 'RELEASE CUT',
     rematchLabel: 'the release cut',
     accentColor: 0x7ce8ff,
-    body: 'Killbox opens sideways here. Stretch the release lane before the rebound clamps onto the same answer.',
+    body: 'Fold snap cracks open sideways here. Cut off the snapped fold first, then stretch the release lane before the rebound clamps onto the same opened side.',
   },
   'The first endgame cue should mark the lateral release so the killbox handoff stays explicit on the HUD.',
 );
@@ -1083,7 +1086,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('endgame'),
   {
     title: 'ENDGAME DRIFT LIVE',
-    body: 'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
+    body: 'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
   },
   'Endgame should announce the authored late-run chain instead of sounding like a disconnected late-run reset.',
 );
@@ -1645,10 +1648,29 @@ assert.deepEqual(
     ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
   ),
   {
+    x: -0.951,
+    y: -0.309,
+  },
+  'The first drift release should cut harder off the fold-snap side so 32s feels like that final killbox clamp cracking open into a new lateral response.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_FOLD_CARRY_WINDOW_SECONDS + 0.1,
+        variant: 'drift',
+        runSpawnCount: DRIFT_OBSTACLE_CADENCE,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
     x: -0.97,
     y: -0.242,
   },
-  'The first drift release should cut away from the killbox fold direction so 32s feels like the trap opening into a new lateral response.',
+  'Once the fold-carry slice ends, release should relax back to the milder drift cut instead of staying permanently over-rotated.',
 );
 assert.deepEqual(
   Object.fromEntries(
@@ -1889,8 +1911,16 @@ assert.equal(
     survivalTimeSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS + 0.1,
     variant: 'drift',
   }),
-  ECHO_OBSTACLE_TARGET_LAG_SECONDS,
-  'The first drift release should inherit the echo lag briefly so the endgame onset feels like a handoff out of killbox instead of a cold reset.',
+  KILLBOX_FOLD_SNAP_TARGET_LAG_SECONDS,
+  'The first drift release should inherit fold-snap lag so the endgame onset feels like a direct handoff out of the last killbox clamp instead of a cold reset.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_FOLD_CARRY_WINDOW_SECONDS + 0.1,
+    variant: 'drift',
+  }),
+  DRIFT_RELEASE_TARGET_LAG_SECONDS,
+  'Once the fold-carry slice passes, release should loosen slightly while still staying tighter than the old echo-style handoff.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -1980,9 +2010,24 @@ assert.equal(
   'Killbox fold snap should sit between seal snap and normal echo cadence so the 24-32s band gains a clear bounded clamp without inventing a new threat family.',
 );
 assert.equal(
+  DRIFT_RELEASE_FOLD_CARRY_ROTATION_DEGREES,
+  18,
+  'The fold-carry slice should hit harder than the rest of release so the first 32s cut reads like inherited killbox pressure cracking open.',
+);
+assert.equal(
   DRIFT_RELEASE_ROTATION_DEGREES,
   14,
-  'The first drift handoff should stay milder than the full drift sweep so the release reads as a continuation of killbox rather than an instant hard reset.',
+  'The later release stretch should settle below the fold-carry cut and the full drift sweep so the handoff keeps shape without turning into an instant hard reset.',
+);
+assert.equal(
+  DRIFT_RELEASE_TARGET_LAG_SECONDS,
+  0.18,
+  'The later release stretch should keep a tighter lag than old echo handoff while still opening more than the inherited fold-carry slice.',
+);
+assert.equal(
+  DRIFT_RELEASE_FOLD_CARRY_WINDOW_SECONDS,
+  0.8,
+  'The fold-carry slice should stay short so the handoff gains a visible inherited crack without turning release into a full second killbox beat.',
 );
 assert.equal(
   DRIFT_AFTERSHOCK_ROTATION_DEGREES,
@@ -3867,7 +3912,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 1\.6s killbox-release handoff at 14deg, a 1\.4s rebound at 28deg with 0\.16s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 4\.4s preclear squeeze at 12deg with 0\.10s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 1\.4s rebound at 28deg with 0\.16s lag, a 1\.4s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 4\.4s preclear squeeze at 12deg with 0\.10s lag, then forced clear-climb drift from 45\.6s with a 6\.4s ascent stair at 16deg and 0\.12s lag before a summit snap at 26deg with 0\.03s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

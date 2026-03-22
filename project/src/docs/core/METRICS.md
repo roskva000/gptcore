@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #269:
+Current deterministic survival headline after Run #270:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #269:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+killbox_drift_release_handoff_surface:
+current: Run #270 `project/game/src/game/balance.ts` `32.0-33.6s` release penceresini iki asamali hale getiriyor; ilk `0.8s` `fold-carry` slice'i `18deg` rotation ve `0.14s` lag ile `FOLD SNAP` mirasini dogrudan tasiyor, kalan `0.8s` ise `14deg` / `0.18s` ile rebound oncesi release stretch olarak aciliyor. `project/game/src/game/runPhase.ts` ayni handoff'u `Fold snap cracks open sideways here` truth'una tasiyor
+baseline: Run #269 state'inde `32s` release cut killbox'tan gelen genel bir lateral acilis tasiyordu ama ilk drift cevabi `FOLD SNAP` tarafindan miras alinan ayri bir crack gibi degildi; handoff gameplay ve copy tarafinda daha genel okunuyordu
+target: sonraki browser veya manuel gozlem oyuncunun `27-33s` band'ini artik `fold snap -> fold-carry cut -> release stretch` zinciri olarak anlattigini gostersin; ilk `32s` cut cheap snapback veya unfair wipe gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_fold_snap_surface:
 current: Run #269 `project/game/src/game/balance.ts` `27.2-28.4s` araliginda yeni bounded `FOLD SNAP` penceresi aciyor; `echo` varyanti bu beat'te `14deg` rotation ve `0.14s` hedef lag ile lock-in sonrasi lane'i bir kez daha sıkıyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/support/badge/death-retry ve snapshot tone truth'una tasiyor

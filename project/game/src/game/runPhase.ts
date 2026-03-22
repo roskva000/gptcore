@@ -300,7 +300,7 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
       snapshotLabel: 'RELEASE CUT',
       rematchLabel: 'the release cut',
       accentColor: 0x7ce8ff,
-      body: 'Killbox opens sideways here. Stretch the release lane before the rebound clamps onto the same answer.',
+      body: 'Fold snap cracks open sideways here. Cut off the snapped fold first, then stretch the release lane before the rebound clamps onto the same opened side.',
     };
   }
 
@@ -589,7 +589,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Killbox releases sideways into drift. The first bend rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {

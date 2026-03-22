@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #269
+Updated By: Codex Run #270
 
 ---
 
@@ -65,7 +65,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `BREAKTHROUGH` artik de generic phase break'i degil; `STRAFE FORK` ve `SURGE SNAP` cue'lari, bounded forced runtime pencereleri ve death/retry payoff'u ile ilk gerçek authored early-mid cevap zincirini tasiyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
-- next slice: killbox `FOLD SNAP` handoff'unu `32s` `DRIFT` onset'ine bagla; release cut'in ilk saniyelerini bu yeni kapanistan dogan daha net bir lateral cevap gibi hissettir
+- shipped slice: `32.0-33.6s` `DRIFT` onset'i artik tek parca generik release degil; ilk `0.8s` `fold-carry` cut'i son `FOLD SNAP`ten devralinan daha sert lateral crack'i tasiyor, kalan `0.8s` ise bu acilisi release stretch olarak drift zincirine devrediyor
+- next slice: `33.6-35.0s` rebound'u ayni acilan lane uzerinde ikinci bir authored karar anina cevir; yeni hazard family acmadan release zincirinin ortasina tek bounded runtime cevap ekle
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -73,7 +74,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
-- yeni aday: `FOLD SNAP` sonrasi `32s` release cut'i bir onceki kapanisa daha dogrudan cevap veren bounded drift slice'i olarak sertlestir; yeni hazard family acma
+- yeni aday: `33.6-35.0s` rebound tarafini release'ten miras kalan acik lane uzerinde kisa bir `hold-or-cross` kararina cevir; yeni hazard family acma
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

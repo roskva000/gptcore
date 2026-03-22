@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #270
+
+- `project/game/src/game/balance.ts` `32.0-33.6s` drift release'i iki asamali hale getirdi; ilk `0.8s` artik `18deg` / `0.14s` ile `FOLD SNAP` mirasi tasiyan `fold-carry` cut, kalan `0.8s` ise `14deg` / `0.18s` ile rebound oncesi release stretch olarak calisiyor
+- `project/game/src/game/runPhase.ts` `RELEASE CUT` ve `ENDGAME DRIFT` copy'sini fold-snap'ten acilan lateral cevap gercegine hizaladi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni `fold-carry -> release stretch` kontratini deterministic regression'a ekledi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #269
 
 - `project/game/src/game/balance.ts` `27.2-28.4s` icin yeni bounded `FOLD SNAP` penceresi ekledi; `echo` varyanti bu slice'ta `14deg` rotation ve `0.14s` hedef lag ile post-lock-in lane'i tekrar sikiyor

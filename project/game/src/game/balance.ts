@@ -57,7 +57,10 @@ export const ECHO_OBSTACLE_TINT = 0x8ad9ff;
 export const DRIFT_OBSTACLE_UNLOCK_SECONDS = 32;
 export const DRIFT_OBSTACLE_CADENCE = 7;
 export const DRIFT_RELEASE_WINDOW_SECONDS = 1.6;
+export const DRIFT_RELEASE_FOLD_CARRY_WINDOW_SECONDS = 0.8;
+export const DRIFT_RELEASE_FOLD_CARRY_ROTATION_DEGREES = 18;
 export const DRIFT_RELEASE_ROTATION_DEGREES = 14;
+export const DRIFT_RELEASE_TARGET_LAG_SECONDS = 0.18;
 export const DRIFT_REBOUND_WINDOW_SECONDS = 1.4;
 export const DRIFT_REBOUND_ROTATION_DEGREES = 28;
 export const DRIFT_REBOUND_TARGET_LAG_SECONDS = 0.16;
@@ -169,6 +172,11 @@ const isKillboxEchoCadenceWindow = (survivalTimeSeconds: number): boolean =>
 const isDriftReleaseWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= DRIFT_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
+
+const isDriftReleaseFoldCarryWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= DRIFT_OBSTACLE_UNLOCK_SECONDS &&
+  survivalTimeSeconds <
+    DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_FOLD_CARRY_WINDOW_SECONDS;
 
 const isDriftReboundWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS &&
@@ -545,7 +553,9 @@ export const getObstacleTravelDirection = ({
       isDriftPreclearWindow(survivalTimeSeconds) ||
       isDriftClearClimbAscentWindow(survivalTimeSeconds);
     const rotationMagnitude = isDriftReleaseWindow(survivalTimeSeconds)
-      ? DRIFT_RELEASE_ROTATION_DEGREES
+      ? isDriftReleaseFoldCarryWindow(survivalTimeSeconds)
+        ? DRIFT_RELEASE_FOLD_CARRY_ROTATION_DEGREES
+        : DRIFT_RELEASE_ROTATION_DEGREES
       : isDriftReboundWindow(survivalTimeSeconds)
         ? DRIFT_REBOUND_ROTATION_DEGREES
         : isDriftSweepWindow(survivalTimeSeconds)
@@ -627,7 +637,9 @@ export const getObstacleTargetLagSeconds = ({
         ? KILLBOX_SEAL_SNAP_TARGET_LAG_SECONDS
         : Math.max(getSpawnTargetLagSeconds(survivalTimeSeconds), ECHO_OBSTACLE_TARGET_LAG_SECONDS)
     : variant === 'drift' && isDriftReleaseWindow(survivalTimeSeconds)
-      ? ECHO_OBSTACLE_TARGET_LAG_SECONDS
+      ? isDriftReleaseFoldCarryWindow(survivalTimeSeconds)
+        ? KILLBOX_FOLD_SNAP_TARGET_LAG_SECONDS
+        : DRIFT_RELEASE_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftReboundWindow(survivalTimeSeconds)
       ? DRIFT_REBOUND_TARGET_LAG_SECONDS
     : variant === 'drift' && isDriftSweepWindow(survivalTimeSeconds)

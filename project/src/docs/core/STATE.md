@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #269
+Updated By: Codex Run #270
 
 ---
 
@@ -26,12 +26,12 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `mutation`
-- ana hedef: `24-32s` killbox lock-in band'ini tek yeni authored beat ile tekrar karar anina cevirmek
-- `project/game/src/game/balance.ts` `27.2-28.4s` araliginda yeni bounded `FOLD SNAP` penceresi ekliyor; mevcut `echo` ailesi bu slice'ta `14deg` rotation ve `0.14s` lag ile normal killbox cadence'inden daha sert kapanarak `32s` drift release oncesi yeni bir rota kirilmasi uretiyor
-- `project/game/src/game/runPhase.ts` killbox detail/support/badge/death-retry truth'unu `FOLD SNAP` ile genisletiyor; `24s` lock-in artik generik echo paragrafi degil, `fold snap` ile tekrar sikilan bir authored handoff olarak okunuyor
-- `project/game/src/game/deathPresentation.ts` `FOLD SNAP` olumleri icin ayri snapshot tone veriyor; post-lock-in kapanis daha soguk echo-tightening palette'i ile onceki sicak `PINCH LOCK` / `SEAL SNAP` tonlarindan ayriliyor
-- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime kontratini ve guncel deterministic baseline'i kayda aldi
+- run mode: `integration`
+- ana hedef: `FOLD SNAP -> 32s DRIFT RELEASE` handoff'unu ayni authored zincirin tek cevabi gibi hissettirmek
+- `project/game/src/game/balance.ts` drift onset'ine kisa bir `fold-carry` slice ekliyor; `32.0-32.8s` araliginda ilk release cut artik `18deg` rotation ve `0.14s` lag ile dogrudan `FOLD SNAP` mirasi tasiyor, release'in kalan `0.8s`i ise `14deg` / `0.18s` ile bu acilisi yumuşatmadan drift'e devrediyor
+- ayni dosya killbox son kapanisindan drift release'e gecisi tam reset olmaktan cikariyor; ilk endgame cevabi artik yalniz generic `killbox-release handoff` degil, fold-snap'ten kopan belirgin bir lateral crack olarak davraniyor
+- `project/game/src/game/runPhase.ts` `RELEASE CUT` ve `ENDGAME DRIFT` anlatimini fold-snap'ten acilan lateral cevap gercegine hizaladi; HUD/support/death-retry truth'u artik release'i son killbox kapanisindan dogan devam olarak okuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni `fold-carry -> release stretch` kontratini kayda aldi; assertler ilk `32s` cut'inin daha sert, kalan release'in daha yumusak kalmasini ayri ayri kilitliyor
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
 - deterministic bucket dagilimi korundu: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.2s`
 
@@ -76,8 +76,8 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
-- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-32s` lock-in band'i de `FOLD SNAP` ile ikinci bir authored rota kirilmasi tasiyor
-- killbox authored trap'i artik `32s` drift release'e daha bagli hissediliyor; sonraki adim ayni beat'i cila etmek degil, bu yeni handoff'u `DRIFT` onset tarafinda somut bir cevapla sindirmek
+- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-32s` lock-in band'i `FOLD SNAP` ve artik bunun `32s`deki fold-carry release cevabi ile tek zincir gibi calisiyor
+- sonraki adim ayni handoff'u copy/spectacle cilasina cekmek degil; erken `DRIFT` zincirinde `REBOUND` tarafina yeni bir runtime karar ani ekleyip `32-35s` band'ini ikinci kez authored yapmak
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle
