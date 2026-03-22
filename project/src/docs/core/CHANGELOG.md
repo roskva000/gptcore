@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## Run #267
+
+- `project/game/src/game/balance.ts` `22.4-23.6s` icin yeni bounded `SEAL SNAP` penceresi ekledi; `echo` varyanti bu slice'ta `18deg` snapback rotation ve `0.10s` hedef lag ile bridge echo sonrasi toparlanma hattini tekrar kapatiyor
+- ayni dosya killbox spatial zincirini `lead cut -> shadow echo -> pinch lock -> bridge echo -> seal snap -> echo lock-in` hattina buyuttu; yeni hazard family acilmadi
+- `project/game/src/game/runPhase.ts` killbox icin yeni `SEAL SNAP` cue truth'unu ekledi; phase detail/support, fallback badge, death summary ve retry goal bu ikinci kapanisi artik isimlendiriyor
+- `project/game/src/game/GameScene.ts` killbox shift hint'ini ve live cue akislarini yeni `SEAL SNAP` beat'ine hizaladi
+- `project/game/src/game/deathPresentation.ts` `SEAL SNAP` olumleri icin ozel snapshot tone ekledi
+- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` guncel deterministic baseline'i (`30.3s avg / 10.0s first death / 0% early`, validation export `30.1s`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #266
 
 - `project/game/src/game/balance.ts` `20.6-21.6s` icin yeni bounded `PINCH LOCK` penceresi ekledi; killbox `lead` varyanti bu slice'ta `26deg` rotation ve `0.18s` forward lead ile straight-escape lane'ini ikinci kez geri bukuyor

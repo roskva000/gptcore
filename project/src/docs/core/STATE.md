@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #266
+Updated By: Codex Run #267
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `STRAFE FORK -> SURGE SNAP` zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getirmek
+- run mode: `mutation`
+- ana hedef: `KILLBOX` icinde `bridge echo` sonrasi toparlanma hattini tekrar kapatan yeni bir bounded runtime beat acmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -27,14 +27,14 @@ Ama urunun asıl eksigi:
 
 Bugunki ilerleme:
 - run mode: `mutation`
-- ana hedef: `18-24s` `KILLBOX` band'ina straight-escape cevabini bozan bounded bir yeni trap beat'i eklemek
-- `project/game/src/game/balance.ts` `20.6-21.6s` civarinda yeni `PINCH LOCK` penceresi aciyor; mevcut hazard family'leri koruyup `lead` varyantini daha sert `26deg` rotation ve `0.18s` forward lead ile ikinci kez lane'e geri bukuyor
-- ayni dosya killbox variant secimini bu yeni bounded pencereye bagliyor; `lead cut -> echo follow-through -> pinch lock -> bridge echo -> echo lock-in` zinciri artik tek killbox spatial state'i gibi akiyor
-- `project/game/src/game/runPhase.ts` `PINCH LOCK` cue truth'unu HUD/detail/support/badge/death summary/retry goal yardimcilarina yaydi; killbox artik generik faz fallback'i yerine named bounded bir trap halkasi da tasiyor
-- `project/game/src/game/GameScene.ts` yeni killbox cue icin live hint ve beat callout gosteriyor; phase HUD'i aktifken `PINCH LOCK` etiketini ve accent rengini tasiyor
-- `project/game/src/game/deathPresentation.ts` killbox `PINCH LOCK` olumlerine ozel snapshot tonu ekledi; cue aktifken game-over palette'i generic killbox tonuna dusmuyor
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `29.4s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
-- deterministic bucket dagilimi killbox mutasyonuyla dar bicimde kaydi: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `34.8s`
+- ana hedef: `21.2-24s` `KILLBOX` kozusunda bridge echo sonrasi oyuncuya verilen kisa toparlanma adimini tekrar bozan yeni bir route-break acmak
+- `project/game/src/game/balance.ts` `22.4-23.6s` araliginda yeni bounded `SEAL SNAP` penceresi ekliyor; mevcut `echo` family'sini koruyup hareketi `18deg` snapback rotation ve `0.10s` hedef lag ile sertlestiriyor
+- ayni dosya killbox spatial zincirini `lead cut -> shadow echo -> pinch lock -> bridge echo -> seal snap -> echo lock-in` hattina buyutuyor; yeni manager veya hazard family acilmadi
+- `project/game/src/game/runPhase.ts` `SEAL SNAP` cue truth'unu HUD/detail/support/badge/death summary/retry goal katmanina tasiyor; killbox artik tek pinch halkasiyla yetinmeyen iki asamali kapanis semantigi tasiyor
+- `project/game/src/game/GameScene.ts` killbox shift hint'ini yeni zincire hizaliyor; live callout ve HUD cue bu ikinci kapanisi ayri beat olarak okutuyor
+- `project/game/src/game/deathPresentation.ts` `SEAL SNAP` olumlerine ozel snapshot tonu ekliyor; late killbox kapanisi generic palette'e dusmuyor
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.3s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
+- deterministic bucket dagilimi korunuyor: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.1s`
 
 ---
 
@@ -77,8 +77,8 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
-- `KILLBOX` artik yalniz lead cut + echo follow-through degil; bounded `PINCH LOCK` halkasi ile `20s` band'inda straight-escape cevabini ikinci kez bozuyor
-- bu slice artik gameplay + HUD + callout + death snapshot tonuna baglandi; ayni killbox beat'ini sonsuz copy cilasina cevirme, bagli ama yeni bir gorunur entegrasyon sec
+- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` degil; `bridge echo` sonrasi `SEAL SNAP` ile `24s` oncesi toparlanma hattini tekrar kapatiyor
+- bu slice artik runtime + HUD + death-retry truth'una baglandi; sonraki adim ayni beat etrafinda docs veya copy yiginmak degil, okunurlugu yuksek ama dar bir entegrasyon secmek
 - score/meta/tooling veya ayni early-mid spectacle cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

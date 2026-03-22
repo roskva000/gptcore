@@ -270,6 +270,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (killboxCue?.id === 'seal-snap') {
+    return {
+      badgeBackgroundColor: '#69311c',
+      badgeTextColor: '#fff1d6',
+      bodyTextColor: '#f2d2b2',
+      calloutBackgroundColor: '#552718',
+      calloutTextColor: '#ffc18a',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#69311c',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff3dd',
+      titleTextColor: '#ffe1bf',
+    };
+  }
+
   return {
     ...DEFAULT_SNAPSHOT_TONE,
     promptBackgroundColor: hasNearMissChaseSnapshot

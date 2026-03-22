@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #266
+Updated By: Codex Run #267
 
 ---
 
@@ -39,6 +39,7 @@ Mevcut durum:
 - Run #264 ile `10-18s` `BREAKTHROUGH` band'i ilk authored early-mid fork'unu kazandi; `12.0-13.4s` forced `STRAFE FORK`, `15.0-16.6s` forced `SURGE SNAP` ve bunlara bagli HUD/detail/support/death-retry truth'u erken-mid run'i generic cadence yigisindan cikariyor
 - Run #265 ile ayni authored fork arena spectacle ve death snapshot tonuna da sindi; backdrop glow/band/frame motion ve game-over accent'i artik `STRAFE FORK` ile `SURGE SNAP`i ayri olaylar gibi tasiyor
 - Run #266 ile `18-24s` `KILLBOX` band'i yeni bounded `PINCH LOCK` beat'ini kazandi; `20.6-21.6s` araliginda `lead` varyanti daha sert rotation ve ozel forward lead ile straight-escape cevabini ikinci kez bukuyor, ayni truth HUD/callout/death-retry zincirinde de isimli bir halka olarak okunuyor
+- Run #267 ile ayni `KILLBOX` zinciri `22.4-23.6s` `SEAL SNAP` halkasini kazandi; bridge echo'nun verdigi kisa toparlanma adimi `18deg` snapback ve `0.10s` lag ile tekrar kapanıyor, boylece `24s` lock-in oncesi ikinci bir route break daha olusuyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -61,7 +62,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
 - shipped slice: `BREAKTHROUGH` artik de generic phase break'i degil; `STRAFE FORK` ve `SURGE SNAP` cue'lari, bounded forced runtime pencereleri ve death/retry payoff'u ile ilk gerçek authored early-mid cevap zincirini tasiyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
-- next slice: `PINCH LOCK` artik runtime/HUD/death-retry truth'unda var; bunu arena spectacle ve snapshot tone tarafinda da killbox zincirine sindir ya da `21.2-24s` bridge/lock-in elini ayni beat'in okunurluguna baglayan tek bir entegrasyon sec. Yeni hazard family ya da framework acma
+- next slice: `SEAL SNAP` artik runtime/HUD/death-retry truth'unda var; bunu arena spectacle ve snapshot tone tarafinda killbox zincirine sindir ve `bridge echo -> seal snap -> 24s lock-in` elini tek authored trap gibi okut. Yeni hazard family ya da framework acma
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -69,7 +70,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
-- yeni aday: `PINCH LOCK` sonrasi `bridge echo -> echo lock-in` elini arena/snapshot tarafinda da ayirt edilir kil; killbox zinciri tek authored trap olarak daha buyuk hissetsin
+- yeni aday: `bridge echo -> SEAL SNAP -> echo lock-in` elini arena/snapshot tarafinda da ayirt edilir kil; killbox zinciri tek authored trap olarak daha buyuk hissetsin
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

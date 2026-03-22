@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #267]
+
+Decision:
+`mutation` modunda `KILLBOX` zincirine `bridge echo` sonrasi ikinci bir bounded kapanis ekle; yeni hazard family acmadan `22.4-23.6s` band'inda oyuncunun toparlanma rotasini tekrar bozan `SEAL SNAP` runtime davranisi uret.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni boslugu isaret ediyordu: siradaki dogru adim yeni spectacle/copy degil, mevcut killbox ladder icinde yeni bir karar ani daha acmakti. `bridge echo` oyuncuya kisa bir nefes veriyor ama `24s` lock-in oncesi bu toparlanmayi ikinci kez bozan ayri bir davranis yoktu; en yuksek etkili hareket mevcut `echo` truth'unu bounded snapback penceresiyle sertlestirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `22.4-23.6s` araliginda yeni `SEAL SNAP` penceresi ekledi; `echo` varyanti bu slice'ta `18deg` rotation ve `0.10s` lag ile bridge echo sonrasi recovery lane'ini tekrar kapatiyor. `project/game/src/game/runPhase.ts` killbox cue truth'unu `SEAL SNAP` title/body/hudLabel/snapshot/rematch kontratiyla genisletti; killbox detail ve phase-shift anlatimi yeni zincire hizalandi. `project/game/src/game/GameScene.ts` killbox shift hint'ini ve live cue akislarini buna gore guncelledi. `project/game/src/game/deathPresentation.ts` `SEAL SNAP` olumleri icin ayri snapshot tone ekledi. `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime kontratini ve guncel deterministic baseline'i kayda aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `30.3s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `SEAL SNAP` penceresinin okunur ikinci kapanis yerine ucuz zigzag, unfair snapback veya bridge echo farkini bulaniklastiran gürültü urettigini gosterirse yalniz pencere suresi, rotation siddeti ve hedef lag dar kapsamda sadeleştirilir; bu bahaneyle yeni phase manager'i, overlay/orchestration/readiness katmani ya da yeni hazard family acilmaz.
+
 ### [Run #266]
 
 Decision:

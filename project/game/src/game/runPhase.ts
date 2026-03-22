@@ -3,6 +3,8 @@ import {
   BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_SECONDS,
+  KILLBOX_SEAL_SNAP_WINDOW_START_SECONDS,
+  KILLBOX_SEAL_SNAP_WINDOW_SECONDS,
   STRAFE_OBSTACLE_UNLOCK_SECONDS,
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
@@ -53,7 +55,7 @@ export type BreakthroughCue = {
   title: string;
 };
 
-export type KillboxCueId = 'pinch-lock';
+export type KillboxCueId = 'pinch-lock' | 'seal-snap';
 
 export type KillboxCue = {
   accentColor: number;
@@ -114,7 +116,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: LEAD_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xff9eb1,
     detail:
-      'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape before bridge echo seals 24s lock-in, then echo cadence keeps folding the lane while speed pins straight escapes. Break your line late and escape sideways.',
+      'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, and a seal snap shuts it again just before 24s lock-in while cadence keeps folding the lane. Break your line late and escape sideways.',
   },
   {
     id: 'endgame',
@@ -149,6 +151,8 @@ const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
 const KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS =
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS + KILLBOX_PINCH_LOCK_WINDOW_SECONDS;
+const KILLBOX_SEAL_SNAP_WINDOW_END_SECONDS =
+  KILLBOX_SEAL_SNAP_WINDOW_START_SECONDS + KILLBOX_SEAL_SNAP_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_START_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_END_SECONDS =
@@ -213,19 +217,31 @@ export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | n
 export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
   if (
     progressSeconds < KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS ||
-    progressSeconds >= KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS
+    progressSeconds >= KILLBOX_SEAL_SNAP_WINDOW_END_SECONDS
   ) {
     return null;
   }
 
+  if (progressSeconds < KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS) {
+    return {
+      id: 'pinch-lock',
+      title: 'PINCH LOCK LIVE',
+      hudLabel: 'PINCH LOCK',
+      snapshotLabel: 'PINCH LOCK',
+      rematchLabel: 'the pinch lock',
+      accentColor: 0xffd6a5,
+      body: 'Killbox bends back here. A bounded lead lock pinches the straight escape, then bridge echo gives one step back before the final close. Hold the first sidestep and stay ready to cut late again.',
+    };
+  }
+
   return {
-    id: 'pinch-lock',
-    title: 'PINCH LOCK LIVE',
-    hudLabel: 'PINCH LOCK',
-    snapshotLabel: 'PINCH LOCK',
-    rematchLabel: 'the pinch lock',
-    accentColor: 0xffd6a5,
-    body: 'Killbox bends back here. A bounded lead lock pinches the straight escape just before bridge echo seals the lane; hold the first sidestep, then break late again before 24s lock-in.',
+    id: 'seal-snap',
+    title: 'SEAL SNAP LIVE',
+    hudLabel: 'SEAL SNAP',
+    snapshotLabel: 'SEAL SNAP',
+    rematchLabel: 'the seal snap',
+    accentColor: 0xffc18a,
+    body: 'Bridge echo gives back a step, then seal snap shuts the lane again before 24s lock-in. Take the brief reopen, then cut late across the snapback instead of holding the first recovery line.',
   };
 };
 
@@ -551,7 +567,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'killbox':
       return {
         title: 'KILLBOX LIVE',
-        body: 'A hard lead cut opens the trap, shadow echoes fold the lane, a bounded pinch lock bends back into the straight escape, then bridge echo seals the lane into 24s lock-in.',
+        body: 'A hard lead cut opens the trap, shadow echoes fold the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, then seal snap shuts the lane again before 24s lock-in.',
       };
     case 'endgame':
       return {

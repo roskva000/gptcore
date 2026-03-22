@@ -3793,7 +3793,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'killbox') {
-      return 'Killbox is live. The first lead cut opens the trap, a bounded pinch lock bends back into the straight escape, then bridge echo seals the lane into 24s lock-in while cadence keeps folding it.';
+      return 'Killbox is live. The first lead cut opens the trap, pinch lock bends back into the straight escape, bridge echo gives one step back, then seal snap shuts it again before 24s lock-in while cadence keeps folding it.';
     }
 
     if (phaseId === 'endgame') {

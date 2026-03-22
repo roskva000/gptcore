@@ -7,14 +7,20 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #266:
-- `29.4s` average survival
+Current deterministic survival headline after Run #267:
+- `30.3s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
-- validation export snapshot `34.8s` average survival
+- validation export snapshot `30.1s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+killbox_seal_snap_surface:
+current: Run #267 `project/game/src/game/balance.ts` `22.4-23.6s` araliginda yeni bounded `SEAL SNAP` penceresi aciyor; `echo` varyanti bu beat'te `18deg` snapback rotation ve `0.10s` hedef lag ile bridge echo sonrasi verilen kisa toparlanma adimini tekrar kapatiyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni beat'i HUD/support/callout/death-retry truth'una tasiyor
+baseline: Run #266 state'inde killbox band'i `lead cut -> shadow echo -> pinch lock -> bridge echo -> echo lock-in` zinciri tasiyordu ama `22-24s` civarinda bridge echo'nun verdigi kisa recovery step'ini ikinci kez kapatan ayri bir bounded snapback yoktu; oyuncu fazla kolay duzeltme hissi alabiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `22-24s` band'ini artik yalniz bridge echo degil, toparlanma adiminin tekrar shut edildigi ayri bir `SEAL SNAP` olayi gibi anlattigini gostersin; bu slice unfair wipe ya da cheap zigzag gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_pinch_lock_surface:
 current: Run #266 `project/game/src/game/balance.ts` `20.6-21.6s` araliginda yeni bounded `PINCH LOCK` penceresi aciyor; `lead` varyanti bu beat'te `26deg` rotation ve `0.18s` forward lead ile straight-escape lane'ine ikinci kez geri bukuluyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni beat'i HUD/support/callout/death-retry truth'una tasiyor
