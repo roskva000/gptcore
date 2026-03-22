@@ -1,6 +1,8 @@
 import {
   BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS,
   BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS,
+  KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS,
+  KILLBOX_PINCH_LOCK_WINDOW_SECONDS,
   STRAFE_OBSTACLE_UNLOCK_SECONDS,
   DRIFT_AFTERSHOCK_WINDOW_SECONDS,
   DRIFT_CLEAR_CLIMB_ASCENT_WINDOW_END_SECONDS,
@@ -46,6 +48,18 @@ export type BreakthroughCue = {
   body: string;
   hudLabel: string;
   id: BreakthroughCueId;
+  rematchLabel: string;
+  snapshotLabel: string;
+  title: string;
+};
+
+export type KillboxCueId = 'pinch-lock';
+
+export type KillboxCue = {
+  accentColor: number;
+  body: string;
+  hudLabel: string;
+  id: KillboxCueId;
   rematchLabel: string;
   snapshotLabel: string;
   title: string;
@@ -100,7 +114,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: LEAD_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xff9eb1,
     detail:
-      'Lead cuts hit first, shadow echoes keep scissoring the lane into 24s echo lock-in, then echo cadence keeps folding the lane while speed pins straight escapes. Break your line late and escape sideways.',
+      'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape before bridge echo seals 24s lock-in, then echo cadence keeps folding the lane while speed pins straight escapes. Break your line late and escape sideways.',
   },
   {
     id: 'endgame',
@@ -133,6 +147,8 @@ const BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS =
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS = SURGE_OBSTACLE_UNLOCK_SECONDS;
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
+const KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS =
+  KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS + KILLBOX_PINCH_LOCK_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_START_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_END_SECONDS =
@@ -192,6 +208,25 @@ export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | n
   }
 
   return null;
+};
+
+export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
+  if (
+    progressSeconds < KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS ||
+    progressSeconds >= KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS
+  ) {
+    return null;
+  }
+
+  return {
+    id: 'pinch-lock',
+    title: 'PINCH LOCK LIVE',
+    hudLabel: 'PINCH LOCK',
+    snapshotLabel: 'PINCH LOCK',
+    rematchLabel: 'the pinch lock',
+    accentColor: 0xffd6a5,
+    body: 'Killbox bends back here. A bounded lead lock pinches the straight escape just before bridge echo seals the lane; hold the first sidestep, then break late again before 24s lock-in.',
+  };
 };
 
 export const getEndgameClearClimbState = (
@@ -344,6 +379,7 @@ export const getRunPhaseDetailText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
   const breakthroughCue =
     currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
+  const killboxCue = currentPhase.id === 'killbox' ? getKillboxCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
@@ -354,6 +390,10 @@ export const getRunPhaseDetailText = (progressSeconds: number): string => {
 
   if (breakthroughCue !== null) {
     return `${breakthroughCue.body} Next phase at ${nextPhase.startSeconds}s.`;
+  }
+
+  if (killboxCue !== null) {
+    return `${killboxCue.body} Next phase at ${nextPhase.startSeconds}s.`;
   }
 
   if (endgameCue !== null) {
@@ -371,6 +411,7 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase } = getRunPhaseState(progressSeconds);
   const breakthroughCue =
     currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
+  const killboxCue = currentPhase.id === 'killbox' ? getKillboxCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
@@ -381,6 +422,10 @@ export const getRunPhaseSupportText = (progressSeconds: number): string => {
 
   if (breakthroughCue !== null) {
     return `${currentPhase.title} ${breakthroughCue.hudLabel}: ${breakthroughCue.body} Next shift ${nextPhase.startSeconds}s.`;
+  }
+
+  if (killboxCue !== null) {
+    return `${currentPhase.title} ${killboxCue.hudLabel}: ${killboxCue.body} Next shift ${nextPhase.startSeconds}s.`;
   }
 
   if (endgameCue !== null) {
@@ -398,6 +443,7 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
   const { currentPhase } = getRunPhaseState(progressSeconds);
   const breakthroughCue =
     currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
+  const killboxCue = currentPhase.id === 'killbox' ? getKillboxCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
@@ -406,7 +452,7 @@ export const getRunPhaseReachedBadgeText = (progressSeconds: number): string | n
     case 'breakthrough':
       return breakthroughCue?.snapshotLabel ?? 'BREAKTHROUGH';
     case 'killbox':
-      return 'KILLBOX';
+      return killboxCue?.snapshotLabel ?? 'KILLBOX';
     case 'endgame':
       return clearClimbState?.snapshotLabel ?? endgameCue?.snapshotLabel ?? 'ENDGAME';
     case 'overtime':
@@ -420,6 +466,7 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
   const breakthroughCue =
     currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
+  const killboxCue = currentPhase.id === 'killbox' ? getKillboxCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
@@ -434,6 +481,10 @@ export const getRunPhaseDeathSummaryText = (progressSeconds: number): string => 
 
   if (breakthroughCue !== null) {
     return `${breakthroughCue.snapshotLabel} snapped inside ${currentPhase.title}. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
+  }
+
+  if (killboxCue !== null) {
+    return `${killboxCue.snapshotLabel} snapped inside ${currentPhase.title}. ${secondsUntilNextPhase.toFixed(1)}s short of ${nextPhase.title}.`;
   }
 
   if (endgameCue !== null) {
@@ -451,6 +502,7 @@ export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
   const { currentPhase, nextPhase, secondsUntilNextPhase } = getRunPhaseState(progressSeconds);
   const breakthroughCue =
     currentPhase.id === 'breakthrough' ? getBreakthroughCue(progressSeconds) : null;
+  const killboxCue = currentPhase.id === 'killbox' ? getKillboxCue(progressSeconds) : null;
   const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(progressSeconds) : null;
   const clearClimbState =
     currentPhase.id === 'endgame' ? getEndgameClearClimbState(progressSeconds) : null;
@@ -465,6 +517,10 @@ export const getRunPhaseRetryGoalText = (progressSeconds: number): string => {
 
   if (breakthroughCue !== null) {
     return `Rematch ${breakthroughCue.rematchLabel} and carry it to ${nextPhase.title} in +${secondsUntilNextPhase.toFixed(1)}s`;
+  }
+
+  if (killboxCue !== null) {
+    return `Rematch ${killboxCue.rematchLabel} and carry it to ${nextPhase.title} in +${secondsUntilNextPhase.toFixed(1)}s`;
   }
 
   if (endgameCue !== null) {
@@ -495,7 +551,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'killbox':
       return {
         title: 'KILLBOX LIVE',
-        body: 'A hard lead cut opens the trap, shadow echoes fold the lane into 24s echo lock-in, then the live echo cadence keeps the trap folding while speed pins straight escapes.',
+        body: 'A hard lead cut opens the trap, shadow echoes fold the lane, a bounded pinch lock bends back into the straight escape, then bridge echo seals the lane into 24s lock-in.',
       };
     case 'endgame':
       return {

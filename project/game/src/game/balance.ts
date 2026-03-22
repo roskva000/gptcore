@@ -31,6 +31,10 @@ export const KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS = 0.22;
 export const KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES = 18;
 export const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS = 1.2;
 export const KILLBOX_ECHO_FOLLOW_THROUGH_ROTATION_DEGREES = 12;
+export const KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS = 20.6;
+export const KILLBOX_PINCH_LOCK_WINDOW_SECONDS = 1;
+export const KILLBOX_PINCH_LOCK_TARGET_LEAD_SECONDS = 0.18;
+export const KILLBOX_PINCH_LOCK_ROTATION_DEGREES = 26;
 export const KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS = 21.2;
 export const KILLBOX_ECHO_BRIDGE_WINDOW_SECONDS = 1.2;
 export const KILLBOX_ECHO_BRIDGE_ROTATION_DEGREES = 10;
@@ -107,6 +111,8 @@ const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   SURGE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
 const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_END_SECONDS =
   KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS + KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS;
+const KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS =
+  KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS + KILLBOX_PINCH_LOCK_WINDOW_SECONDS;
 const KILLBOX_ECHO_BRIDGE_WINDOW_END_SECONDS =
   KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS + KILLBOX_ECHO_BRIDGE_WINDOW_SECONDS;
 const KILLBOX_ECHO_HANDOFF_WINDOW_END_SECONDS =
@@ -115,6 +121,10 @@ const KILLBOX_ECHO_HANDOFF_WINDOW_END_SECONDS =
 const isKillboxEchoBridgeWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS &&
   survivalTimeSeconds < KILLBOX_ECHO_BRIDGE_WINDOW_END_SECONDS;
+
+export const isKillboxPinchLockWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS &&
+  survivalTimeSeconds < KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS;
 
 const isBreakthroughStrafeForkWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
@@ -288,6 +298,8 @@ export const getObstacleVariant = ({
         isKillboxEchoBridgeWindow(survivalTimeSeconds) ||
         isKillboxEchoFollowThroughWindow(survivalTimeSeconds)
       ? 'echo'
+    : isKillboxPinchLockWindow(survivalTimeSeconds)
+      ? 'lead'
     : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS
       ? 'lead'
@@ -425,21 +437,25 @@ export const getObstacleTravelDirection = ({
   if (
     variant === 'lead' &&
     survivalTimeSeconds !== undefined &&
-    survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS &&
+    (survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS ||
+      isKillboxPinchLockWindow(survivalTimeSeconds)) &&
     playerVelocity &&
     (playerVelocity.x !== 0 || playerVelocity.y !== 0)
   ) {
     const movementDirection = normalize(playerVelocity);
     const crossProduct =
       baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
+    const rotationMagnitude = isKillboxPinchLockWindow(survivalTimeSeconds)
+      ? KILLBOX_PINCH_LOCK_ROTATION_DEGREES
+      : KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES;
     const rotationDegrees =
       crossProduct === 0
         ? Math.floor(runSpawnCount / LEAD_OBSTACLE_CADENCE) % 2 === 0
-          ? KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES
-          : -KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES
+          ? rotationMagnitude
+          : -rotationMagnitude
         : crossProduct > 0
-          ? KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES
-          : -KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES;
+          ? rotationMagnitude
+          : -rotationMagnitude;
 
     return normalize(rotate(baseDirection, rotationDegrees));
   }
@@ -570,7 +586,9 @@ export const getObstacleTargetLagSeconds = ({
     ? -BREAKTHROUGH_SURGE_SNAP_TARGET_LEAD_SECONDS
     : variant === 'lead'
     ? -(
-        survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS
+        isKillboxPinchLockWindow(survivalTimeSeconds)
+          ? KILLBOX_PINCH_LOCK_TARGET_LEAD_SECONDS
+          : survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS
           ? KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS
           : LEAD_OBSTACLE_TARGET_LEAD_SECONDS
       )

@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## Run #266
+
+- `project/game/src/game/balance.ts` `20.6-21.6s` icin yeni bounded `PINCH LOCK` penceresi ekledi; killbox `lead` varyanti bu slice'ta `26deg` rotation ve `0.18s` forward lead ile straight-escape lane'ini ikinci kez geri bukuyor
+- ayni dosya killbox variant secimini `lead cut -> echo follow-through -> pinch lock -> bridge echo -> echo lock-in` zincirine bagladi; yeni hazard family acilmadi
+- `project/game/src/game/runPhase.ts` killbox icin yeni `PINCH LOCK` cue truth'unu ekledi; phase detail/support, fallback badge, death summary ve retry goal bu bounded halkayi adlandiriyor
+- `project/game/src/game/GameScene.ts` yeni cue aktifken bounded hint + beat callout basiyor ve phase HUD'ina `PINCH LOCK` etiketi ile accent rengini tasiyor
+- `project/game/src/game/deathPresentation.ts` `PINCH LOCK` olumleri icin ozel snapshot tone ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni killbox controller anlatimini ve guncel deterministic snapshot'lari (`29.4s avg / 10.0s first death / 0% early`, validation export `34.8s`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #265
 
 - `project/game/src/game/GameScene.ts` breakthrough cue aktifken arena spectacle'i cue-spesifik motion ile buyuttu; `STRAFE FORK` ile `SURGE SNAP` backdrop glow, top-bottom band ve frame offset/angle/scale tarafinda artik ayri imzalar tasiyor

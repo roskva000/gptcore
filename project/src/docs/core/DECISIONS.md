@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #266]
+
+Decision:
+`mutation` modunda `18-24s` `KILLBOX` band'ina bounded `PINCH LOCK` beat'i ekle; yeni hazard family acmadan mevcut `lead -> echo` truth'unu straight-escape cevabini ikinci kez bozan tek bir runtime halkayla buyut.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni yone bakiyordu: breakthrough artik sahnede ve snapshot'ta da buyumustu, siradaki dar ama gorunur oyun hamlesi yeni copy/spectacle polish'i degil killbox band'inda gercek spatial baski farki acmakti. En yuksek etkili hareket; mevcut `lead` varyantini kisa bir pencerede tekrar sertlestirip ayni truth'u `runPhase` ve death/retry yardimcilarina isimli cue olarak sindirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `20.6-21.6s` araliginda `PINCH LOCK` penceresi ekledi; `lead` varyanti bu slice'ta `26deg` rotation ve `0.18s` forward lead ile ikinci bir geri-bukus olusturuyor. `project/game/src/game/runPhase.ts` killbox cue truth'unu `PINCH LOCK` title/body/hudLabel/snapshot/rematch kontrati olarak ekledi. `project/game/src/game/GameScene.ts` bu cue'yu live hint ve beat callout olarak gosteriyor, HUD accent'ini tasiyor. `project/game/src/game/deathPresentation.ts` cue aktifken ozel snapshot tone kullaniyor. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve guncel deterministic baseline'i kayda aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `29.4s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem bu yeni killbox beat'inin ucuz wipe, unfair pinch ya da readability gurultusu urettigini gosterirse yalniz pencere suresi, rotation siddeti ve target lead dar kapsamda sadeleştirilir; bu bahaneyle yeni hazard family, yeni phase framework'u, overlay manager'i ya da readiness/preflight/orchestration katmani acilmaz.
+
 ### [Run #265]
 
 Decision:

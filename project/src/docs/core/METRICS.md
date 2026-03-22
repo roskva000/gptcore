@@ -7,12 +7,20 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #265:
+Current deterministic survival headline after Run #266:
 - `29.4s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
+- validation export snapshot `34.8s` average survival
+- deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+killbox_pinch_lock_surface:
+current: Run #266 `project/game/src/game/balance.ts` `20.6-21.6s` araliginda yeni bounded `PINCH LOCK` penceresi aciyor; `lead` varyanti bu beat'te `26deg` rotation ve `0.18s` forward lead ile straight-escape lane'ine ikinci kez geri bukuluyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/GameScene.ts` ayni beat'i HUD/support/callout/death-retry truth'una tasiyor
+baseline: Run #265 state'inde killbox band'i `lead cut -> echo follow-through -> bridge echo -> echo lock-in` zinciri tasiyordu ama `20s` ortasinda oyuncunun ilk sidestep cevabini tekrar bozan adlandirilmis ikinci bir trap halkasi yoktu; straight-escape cevabi fazla stabil kalabiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `20-22s` civarini artik yalniz echo koprusu degil, lane'in ikinci kez geri bukuldugu ayri bir `PINCH LOCK` olayi gibi anlattigini gostersin; bu slice unfair wipe ya da cheap zigzag gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 breakthrough_spectacle_snapshot_surface:
 current: Run #265 `project/game/src/game/GameScene.ts` breakthrough cue aktifken backdrop glow, band ve frame motion'unu cue-spesifik offset/angle/scale imzalariyla hareket ettiriyor; `project/game/src/game/deathPresentation.ts` da `STRAFE FORK` ve `SURGE SNAP` olumlerini ayri callout/badge/title/body/prompt paletleriyle tonluyor

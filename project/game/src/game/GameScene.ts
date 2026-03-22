@@ -94,6 +94,7 @@ import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   ENDGAME_CLEAR_CLIMB_START_SECONDS,
   getBreakthroughCue,
+  getKillboxCue,
   getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDetailText,
@@ -104,6 +105,7 @@ import {
   getRunPhaseSupportText,
   getRunPhaseTimelineText,
   type BreakthroughCue,
+  type KillboxCue,
   type EndgameDriftCue,
   type RunPhaseId,
 } from './runPhase.ts';
@@ -425,6 +427,7 @@ export class GameScene extends Phaser.Scene {
   private lastAnnouncedRunBeatLabel: string | null = null;
   private lastShownRunPhaseId: RunPhaseId | null = null;
   private lastShownBreakthroughCueId: BreakthroughCue['id'] | null = null;
+  private lastShownKillboxCueId: KillboxCue['id'] | null = null;
   private lastShownEndgameDriftCueId: EndgameDriftCue['id'] | 'clear-climb' | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
@@ -1065,6 +1068,7 @@ export class GameScene extends Phaser.Scene {
     this.updateRunPhaseHud();
     this.maybeShowRunPhaseShiftHint(activeRunElapsedMs);
     this.maybeShowBreakthroughCue(activeRunElapsedMs);
+    this.maybeShowKillboxCue(activeRunElapsedMs);
     this.maybeShowEndgameDriftCue(activeRunElapsedMs);
     this.updatePersonalBestChase();
     this.updateNearMissTracking(activeRunElapsedMs);
@@ -1552,6 +1556,7 @@ export class GameScene extends Phaser.Scene {
     this.beatCalloutHideAtElapsedMs = null;
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownBreakthroughCueId = null;
+    this.lastShownKillboxCueId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnRerolls = 0;
     this.runSpawnCount = 0;
@@ -1723,6 +1728,7 @@ export class GameScene extends Phaser.Scene {
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownRunPhaseId = null;
     this.lastShownBreakthroughCueId = null;
+    this.lastShownKillboxCueId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnCount = 0;
     this.tweens.killTweensOf([
@@ -3261,6 +3267,7 @@ export class GameScene extends Phaser.Scene {
     const { currentPhase } = getRunPhaseState(this.survivalTime);
     const breakthroughCue =
       currentPhase.id === 'breakthrough' ? getBreakthroughCue(this.survivalTime) : null;
+    const killboxCue = currentPhase.id === 'killbox' ? getKillboxCue(this.survivalTime) : null;
     const endgameCue = currentPhase.id === 'endgame' ? getEndgameDriftCue(this.survivalTime) : null;
     const clearClimbState =
       currentPhase.id === 'endgame' ? getEndgameClearClimbState(this.survivalTime) : null;
@@ -3269,6 +3276,8 @@ export class GameScene extends Phaser.Scene {
       .setText(
         breakthroughCue !== null
           ? `${phaseStatusText} | ${breakthroughCue.hudLabel}`
+          : killboxCue !== null
+            ? `${phaseStatusText} | ${killboxCue.hudLabel}`
           : endgameCue !== null
           ? `${phaseStatusText} | ${endgameCue.hudLabel}`
           : clearClimbState !== null
@@ -3278,6 +3287,7 @@ export class GameScene extends Phaser.Scene {
       .setColor(
         colorToCssHex(
           breakthroughCue?.accentColor ??
+            killboxCue?.accentColor ??
             endgameCue?.accentColor ??
             clearClimbState?.accentColor ??
             currentPhase.accentColor,
@@ -3288,6 +3298,7 @@ export class GameScene extends Phaser.Scene {
       .setColor(
         colorToCssHex(
           breakthroughCue?.accentColor ??
+            killboxCue?.accentColor ??
             endgameCue?.accentColor ??
             clearClimbState?.accentColor ??
             currentPhase.accentColor,
@@ -3358,6 +3369,40 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.beatCalloutText);
     this.beatCalloutText
       .setText(`${breakthroughCue.title}\n${breakthroughCue.body}`)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.92,
+      duration: 160,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private maybeShowKillboxCue(activeRunElapsedMs: number): void {
+    const killboxCue = getKillboxCue(this.survivalTime);
+
+    if (killboxCue === null) {
+      this.lastShownKillboxCueId = null;
+      return;
+    }
+
+    if (killboxCue.id === this.lastShownKillboxCueId) {
+      return;
+    }
+
+    this.lastShownKillboxCueId = killboxCue.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.hintText
+      .setText(`${killboxCue.title}\n${killboxCue.body}`)
+      .setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + FIRST_TARGET_HINT_DURATION_MS;
+    this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${killboxCue.title}\n${killboxCue.body}`)
       .setAlpha(1)
       .setScale(0.94)
       .setVisible(true);
@@ -3748,7 +3793,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'killbox') {
-      return 'Killbox is live. The first lead cut opens the trap, shadow echoes fold the lane into 24s lock-in, then live echo cadence keeps the trap folding while speed crushes straight escapes.';
+      return 'Killbox is live. The first lead cut opens the trap, a bounded pinch lock bends back into the straight escape, then bridge echo seals the lane into 24s lock-in while cadence keeps folding it.';
     }
 
     if (phaseId === 'endgame') {
@@ -4200,8 +4245,18 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    const killboxCue = getKillboxCue(this.survivalTime);
     const endgameCue = getEndgameDriftCue(this.survivalTime);
     const clearClimbState = getEndgameClearClimbState(this.survivalTime);
+
+    if (killboxCue !== null) {
+      this.beatCalloutText
+        .setText(`${killboxCue.title}\n${killboxCue.body}`)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
 
     if (endgameCue !== null && endgameCue.id !== 'release') {
       this.beatCalloutText

@@ -16,6 +16,7 @@ import {
 } from './nearMiss.ts';
 import {
   getBreakthroughCue,
+  getKillboxCue,
   getEndgameClearClimbState,
   getEndgameDriftCue,
   getRunPhaseDeathSummaryText,
@@ -228,6 +229,7 @@ const getSnapshotTone = ({
   hasNearMissChaseSnapshot: boolean;
 }): SnapshotTone => {
   const breakthroughCue = getBreakthroughCue(survivalTimeSeconds);
+  const killboxCue = getKillboxCue(survivalTimeSeconds);
 
   if (breakthroughCue?.id === 'strafe-fork') {
     return {
@@ -252,6 +254,19 @@ const getSnapshotTone = ({
       promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#6a3916',
       promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff4cf',
       titleTextColor: '#ffe9b2',
+    };
+  }
+
+  if (killboxCue?.id === 'pinch-lock') {
+    return {
+      badgeBackgroundColor: '#5d3318',
+      badgeTextColor: '#fff0cf',
+      bodyTextColor: '#f3d7b0',
+      calloutBackgroundColor: '#4a2816',
+      calloutTextColor: '#ffd6a5',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5d3318',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff2d8',
+      titleTextColor: '#ffe7c6',
     };
   }
 

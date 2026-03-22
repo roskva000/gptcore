@@ -2,42 +2,42 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #265 ile `STRAFE FORK -> SURGE SNAP` zinciri arena spectacle ve death snapshot tonuna da sindi.
+Bu turda Run #266 ile `KILLBOX` band'i bounded `PINCH LOCK` beat'ini kazandi; runtime + HUD + death-retry truth'u artik bu yeni halkayi tasiyor.
 
 Dikkat:
-- ayni breakthrough koridorunda yeni copy/callout/snapshot polish run'i acma
+- ayni killbox beat'i etrafinda salt copy churn veya docs kapanisi yapma
 - yeni orchestration / readiness / preflight / manager katmani acma
 - deterministic baseline'i gereksiz sarsma
-- retention/shell tarafina dagilip gameplay deltasi erteleme
+- retention/shell tarafina dagilip yeni killbox slice'ini yari yolda birakma
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**`18-24s` `KILLBOX` band'ina yeni, bounded bir spatial trap beat'i ekle; mevcut lead-cut + echo truth'unu buyut ama yeni hazard family acma.**
+**Yeni `PINCH LOCK` beat'ini arena spectacle ve death snapshot tonuna da sindir; `lead cut -> pinch lock -> bridge echo` zinciri ekranda ve olum aninda daha tek bir authored killbox trap'i gibi okunsun.**
 
 Hedef:
-Breakthrough artik sahnede ve snapshot'ta da ayri hissettiriyor. Siradaki mantikli adim ayni early-mid koridorda kalmak degil; insan sinyalindeki "oyun hala cok kucuk" teshisine gameplay tarafinda cevap vermek icin `KILLBOX` band'inda yeni gorunur baski farki acmak. `18s` lead cut ile `24s` echo lock-in arasina, straight-escape cevabini bozan tek bir bounded runtime davranisi yerlestir.
+Yeni gameplay beat acildi ama killbox zinciri henuz breakthrough kadar sahne/overlay imzasina sahip degil. Siradaki dar ve mantikli adim, yeni mechanic acmadan `PINCH LOCK` halkasini arena motion ve snapshot accent tarafinda ayirt edilir kilmak; killbox `20-24s` band'i text-first degil, tek bir bagli authored trap gibi hissedilmeli.
 
 Acilabilecek bagli yuzeyler:
-1. `balance.ts` ve gerekiyorsa `GameScene.ts` tarafinda `KILLBOX` icin tek bir bounded trap window tanimla
-2. `runPhase.ts` / HUD / death-retry truth'unu bu yeni beat'i adlandiracak kadar genislet
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni trap kontrati kadar genislet
+1. `GameScene.ts` tarafinda killbox cue aktifken backdrop glow/band/frame motion'unu `PINCH LOCK` ve gerekiyorsa `bridge echo` tarafinda ayirt et
+2. `deathPresentation.ts` veya ilgili overlay truth'unda `PINCH LOCK` snapshot tonunu killbox zincirine daha belirgin bagla; generic killbox paletine dusme
+3. `telemetry-check.ts` assert'lerini yalniz yeni spectacle/snapshot kontrati kadar genislet
 
 Yapma:
-- `BREAKTHROUGH` cue tonlarina geri donme
-- ikinci bir hazard family, score/meta sistemi veya shell rewrite acma
+- yeni killbox mechanic'i, ikinci bir hazard family, score/meta sistemi veya shell rewrite acma
 - yeni spectacle framework'u veya overlay manager'i yazma
+- deterministic survival headline'i bozacak killbox rebalance'a kayma
 
 ---
 
 ## Success Criteria
 
-- oyuncu `18-24s` band'inda `KILLBOX`in yalniz hiz/cadence degil yeni bir spatial cevap baskisi actigini hisseder
-- yeni beat mevcut `lead cut -> echo` zincirini buyutur; ucuz wipe, unfair snap veya readability gurultusu yaratmaz
+- oyuncu `20-24s` band'inda `PINCH LOCK`i yalniz HUD metninden degil arena motion'u ve death snapshot tonundan da ayirt eder
+- killbox zinciri `lead cut -> pinch lock -> bridge echo` olarak daha bagli ve anlatilabilir hissedilir; ucuz drama veya readability gurultusu yaratmaz
 - deterministic survival headline `29.4s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir
