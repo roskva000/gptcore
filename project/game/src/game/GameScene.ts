@@ -93,6 +93,7 @@ import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   ENDGAME_CLEAR_CLIMB_START_SECONDS,
+  OVERTIME_AUTHORED_WINDOW_END_SECONDS,
   getBreakthroughCue,
   getEndgameClearClimbState,
   getEndgameDriftCue,
@@ -461,6 +462,7 @@ export class GameScene extends Phaser.Scene {
     | 'banked-air'
     | 'cash-out'
     | 'house-cut'
+    | 'due-now'
     | null = null;
   private runSpawnRerolls = 0;
   private runSpawnCount = 0;
@@ -3325,7 +3327,7 @@ export class GameScene extends Phaser.Scene {
     const overtimeOpenerState = getOvertimeOpenerState(this.survivalTime);
     this.goalStatusText.setText(
       overtimeOpenerState !== null
-        ? `${overtimeOpenerState.threatLabel} | ${(68 - this.survivalTime).toFixed(1)}s to 68s HOLD`
+        ? `${overtimeOpenerState.threatLabel} | ${(OVERTIME_AUTHORED_WINDOW_END_SECONDS - this.survivalTime).toFixed(1)}s to 72s HOLD`
         : clearClimbState === null
         ? getSurvivalGoalChaseText({
             currentSurvivalTime: this.survivalTime,
@@ -3344,6 +3346,8 @@ export class GameScene extends Phaser.Scene {
         overtimeOpenerState !== null
           ? overtimeOpenerState.id === 'banked-air'
             ? '#183f39'
+            : overtimeOpenerState.id === 'due-now'
+              ? '#5a1e16'
             : overtimeOpenerState.id === 'house-cut'
               ? '#4a1f2f'
             : '#5a3317'
@@ -3557,7 +3561,7 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.beatCalloutText);
     this.beatCalloutText
       .setText(
-        `${endgameCue?.title ?? clearClimbState?.title ?? 'ENDGAME DRIFT'}\n${endgameCue?.body ?? clearClimbState?.body ?? ''}`,
+        `${endgameCue?.title ?? clearClimbState?.title ?? overtimeOpenerState?.title ?? 'ENDGAME DRIFT'}\n${endgameCue?.body ?? clearClimbState?.body ?? overtimeOpenerState?.body ?? ''}`,
       )
       .setAlpha(1)
       .setScale(0.94)
@@ -3743,7 +3747,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSurvivalGoalHintText(): string {
-    return `${SURVIVAL_GOAL_SECONDS}s clear!\nBanked air opens first, cash out snaps it back, then house cut keeps the taxed lane alive through 68s.`;
+    return `${SURVIVAL_GOAL_SECONDS}s clear!\nBanked air opens first, cash out snaps it back, house cut keeps the taxed lane alive, then due now cashes the first soft reopen back in through 72s.`;
   }
 
   private getCurrentPlayingHintText(): string {
@@ -3917,7 +3921,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (phaseId === 'overtime') {
-      return 'Overtime is live. Banked air briefly reopens the clear lane, cash out snaps back across it, then house cut keeps that taxed lane alive before score-only pressure takes over.';
+      return 'Overtime is live. Banked air briefly reopens the clear lane, cash out snaps back across it, house cut keeps that taxed lane alive, then due now cashes the first soft reopen back in before score-only pressure takes over.';
     }
 
     return null;

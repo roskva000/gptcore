@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #286:
+Current deterministic survival headline after Run #287:
 - `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #286:
 - validation export last run `36.9s`
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+overtime_due_now_surface:
+current: Run #287 `project/game/src/game/balance.ts` `68.0-72.0s` band'ini yeni `DUE NOW` slice'iyla buyutuyor; beat `24deg` travel ve `0.04s` lag ile `HOUSE CUT` sonrasi yumusayan reopen'u tekrar cash ediyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni consequence'i detail/HUD/death-retry, live callout ve snapshot tonu tarafina da tasiyor
+baseline: Run #286 state'inde `68.0s+` sonrasi overtime carry bitince faz generic score baskisina geri dusuyordu; `HOUSE CUT` arkasinda ikinci bir bounded consequence veya ayri player-facing truth yoktu
+target: sonraki browser veya manuel gozlem oyuncunun `68.0-72.0s` band'ini artik `DUE NOW` final cash-in olarak anlattigini gostersin; yeni beat cheap wipe, anlamsiz named-beat gurultusu veya `HOUSE CUT`in tekrarina benzeyen bir slice gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 overtime_carry_surface:
 current: Run #286 `project/game/src/game/balance.ts` `64.0-68.0s` band'ini yeni `HOUSE CUT` slice'iyla buyutuyor; beat `18deg` travel ve `0.08s` lag ile `CASH OUT` tarafinda kapanmis lane'i birkac saniye daha taxed tutuyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni carry'yi detail/HUD/death-retry, live callout ve snapshot tonu tarafina da tasiyor

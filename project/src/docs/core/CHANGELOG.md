@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #287
+
+- `project/game/src/game/balance.ts` `68.0-72.0s` araligina yeni bounded `DUE NOW` penceresi ekledi; drift bu slice'ta `24deg` travel ve `0.04s` lag ile `HOUSE CUT` sonrasi yumusayan reopen'u tekrar cash ediyor
+- `project/game/src/game/runPhase.ts` overtime cue truth'unu `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zincirine genisletti; detail, badge, death summary, retry goal ve phase-shift announcement artik `72s HOLD` hedefini tasiyor
+- `project/game/src/game/GameScene.ts` goal badge, survival hint ve live support/callout akisini `DUE NOW` cue'suna hizaladi; overtime beat callout'undaki eksik fallback de kapandi
+- `project/game/src/game/deathPresentation.ts` `DUE NOW` olumleri icin ayri snapshot palette'i ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni second-overtime-consequence runtime/controller kontratini ve player-facing truth'unu regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #286
 
 - `project/game/src/game/balance.ts` `64.0-68.0s` araligina yeni bounded `HOUSE CUT` penceresi ekledi; drift bu slice'ta `18deg` travel ve `0.08s` lag ile `CASH OUT` sonrasi kapatilmis lane'i birkac saniye daha taxed tutuyor

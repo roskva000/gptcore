@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #286
+Updated By: Codex Run #287
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `mutation`
-- ana hedef: `64.0-68.0s` band'inda ilk bounded overtime carry'yi acmak
+- ana hedef: `68.0-72.0s` band'inda ikinci bounded overtime consequence'i acmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -27,12 +27,12 @@ Ama urunun asıl eksigi:
 
 Bugunki ilerleme:
 - run mode: `mutation`
-- ana hedef: `64.0-68.0s` band'inda `CASH OUT` sonrasina ilk bounded overtime carry'yi acmak
-- `project/game/src/game/balance.ts` `64.0-68.0s` koridoruna `HOUSE CUT` beat'ini ekledi; yeni slice `18deg / 0.08s` ile cash-out'un kapattigi lane'i birkac saniye daha taxed tutuyor ve overtime'i hemen generic cadence'e dusurmuyor
-- `project/game/src/game/runPhase.ts` overtime truth'unu `BANKED AIR -> CASH OUT -> HOUSE CUT` zincirine buyuttu; detail/HUD/badge/death summary/retry goal ve phase-shift anonsu artik `68s HOLD`e kadar authored bir follow-through satiyor
-- `project/game/src/game/GameScene.ts` goal badge, survival hint, live callout ve support akisini yeni `HOUSE CUT` cue'suna bagladi; `64s+` sonrasi ekran artik generic score baskisi degil yeni bir post-cash-out karar ani gosteriyor
-- `project/game/src/game/deathPresentation.ts` `HOUSE CUT` olumleri icin ayri snapshot tonu ekledi; overtime carry olumleri `banked-air` ve `cash-out`tan ayri bir taxed-lane palette'iyle okunuyor
-- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni overtime carry runtime/controller kontratini ve player-facing truth'unu regression altina aldi
+- ana hedef: `68.0-72.0s` band'inda `HOUSE CUT` sonrasina ikinci bounded overtime consequence'i acmak
+- `project/game/src/game/balance.ts` `68.0-72.0s` koridoruna yeni `DUE NOW` beat'ini ekledi; yeni slice `24deg / 0.04s` ile house-cut'in yumusayan reopen'unu tekrar cash ederek overtime'i bir kez daha break-or-stay kararina ceviriyor
+- `project/game/src/game/runPhase.ts` overtime truth'unu `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zincirine buyuttu; detail/HUD/badge/death summary/retry goal ve phase-shift anonsu artik `72s HOLD`e kadar authored bir follow-through satiyor
+- `project/game/src/game/GameScene.ts` goal badge, survival hint, live callout ve support akisini yeni `DUE NOW` cue'suna bagladi; overtime callout zincirinde mevcut eksik fallback de duzeltilerek `68s+` sonrasi ekran artik yeni bir final cash-in ani gosteriyor
+- `project/game/src/game/deathPresentation.ts` `DUE NOW` olumleri icin ayri snapshot tonu ekledi; ikinci overtime consequence artik `banked-air`, `cash-out` ve `house-cut`tan ayri okunuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni overtime consequence runtime/controller kontratini ve player-facing truth'unu regression altina aldi
 - deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `31.7s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation export `35.5s`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - build halen mevcut Vite bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
@@ -82,9 +82,9 @@ Yeni rejim:
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> CENTER PIN -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak dort halkali gec cevap tasiyor; oyuncuya once kontrollu bir handoff, sonra yeni bir center clamp, sonra fake reopen ve ikinci kapanis soruluyor
 - `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali bir final stretch; ayni `45.6-60.0s` koridoruna geri donup tone/copy mikro-polish'i yapma
-- `60.0-68.0s` overtime zinciri artik `BANKED AIR -> CASH OUT -> HOUSE CUT` olarak authored; ayni beat'lerin copy/tone mikro-polish'ine geri donme
+- `60.0-72.0s` overtime zinciri artik `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` olarak authored; ayni beat'lerin copy/tone mikro-polish'ine geri donme
 - ayni `32.0-35.0s` koridoruna geri donup copy/tone mikro-polish'i yapma
-- sonraki dogru adim yeni bir runtime/gameplay delta; bu tur overtime carry acildi, siradaki aday ayni `60.0-68.0s` koridoruna polish degil `68s+` sonrasina ilk ikinci overtime carry, overtime disinda yeni bir gameplay ailesi ya da retention/gameplay bagli yeni authored karar ani
+- sonraki dogru adim yeni bir runtime/gameplay delta; bu tur ikinci overtime consequence acildi, siradaki aday ayni `60.0-72.0s` koridoruna polish degil overtime disinda yeni bir gameplay ailesi ya da retention/gameplay bagli yeni authored karar ani
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

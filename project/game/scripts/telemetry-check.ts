@@ -102,6 +102,10 @@ import {
   OVERTIME_CARRY_TARGET_LAG_SECONDS,
   OVERTIME_CARRY_WINDOW_END_SECONDS,
   OVERTIME_CARRY_WINDOW_SECONDS,
+  OVERTIME_DUE_NOW_ROTATION_DEGREES,
+  OVERTIME_DUE_NOW_TARGET_LAG_SECONDS,
+  OVERTIME_DUE_NOW_WINDOW_END_SECONDS,
+  OVERTIME_DUE_NOW_WINDOW_SECONDS,
   OVERTIME_OPENER_BANKED_ROTATION_DEGREES,
   OVERTIME_OPENER_BANKED_TARGET_LAG_SECONDS,
   OVERTIME_OPENER_BANKED_WINDOW_END_SECONDS,
@@ -831,12 +835,12 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDetailText(60.6),
-  'The clear is banked, but overtime does not flatten. Drift briefly reopens the cleared lane for 1.2s; take the free air now because cash out is already lining up behind it. Carry the authored overtime through 68.0s.',
+  'The clear is banked, but overtime does not flatten. Drift briefly reopens the cleared lane for 1.2s; take the free air now because cash out is already lining up behind it. Carry the authored overtime through 72.0s.',
   'The first post-clear detail should expose banked air so 60s clear cashes directly into a new route read instead of generic overtime copy.',
 );
 assert.equal(
   getRunPhaseDetailText(62.6),
-  'The overtime cash-out is live. Drift snaps back across the reopened clear lane and keeps score pressure earned for 1.4s more; do not overhold the banked air you just won. Carry the authored overtime through 68.0s.',
+  'The overtime cash-out is live. Drift snaps back across the reopened clear lane and keeps score pressure earned for 1.4s more; do not overhold the banked air you just won. Carry the authored overtime through 72.0s.',
   'The second overtime detail should expose the cash-out snap so the opener stays authored after the initial reopen.',
 );
 assert.deepEqual(
@@ -1095,14 +1099,28 @@ assert.deepEqual(
     snapshotLabel: 'HOUSE CUT',
     rematchLabel: 'the house cut',
     threatLabel: 'HOUSE CUT',
-    body: 'House cut is live. Cash out does not fully let go; drift keeps taxing the cashed lane for 3.9s more, so leave the first soft reopen and break late before raw overtime pressure takes over.',
+    body: 'House cut is live. Cash out does not fully let go; drift keeps taxing the cashed lane for 3.9s more, so leave the first soft reopen and break late because due now is still waiting behind the carry.',
   },
   'The first post-cash-out slice should expose a bounded house-cut carry so 64s+ adds one more tellable overtime decision instead of flattening immediately.',
 );
-assert.equal(
+assert.deepEqual(
   getOvertimeOpenerState(68.1),
+  {
+    id: 'due-now',
+    title: 'DUE NOW LIVE',
+    hudLabel: 'DUE NOW',
+    accentColor: 0xff8d73,
+    snapshotLabel: 'DUE NOW',
+    rematchLabel: 'the due-now snap',
+    threatLabel: 'DUE NOW',
+    body: 'Due now is live. House cut finally cashes the first soft reopen back in for 3.9s more; break off the taxed lane now because raw overtime pressure takes over once this last snap resolves.',
+  },
+  'The second overtime consequence should expose a due-now snap so 68s+ keeps selling a concrete break-or-stay decision instead of falling straight into generic overtime.',
+);
+assert.equal(
+  getOvertimeOpenerState(72.1),
   null,
-  'The overtime carry should stay bounded so 68s+ can finally fall back to raw overtime pressure after the authored follow-through resolves.',
+  'The authored overtime chain should stay bounded so 72s+ can finally fall back to raw overtime pressure after the second consequence resolves.',
 );
 assert.equal(
   getEndgameDriftCue(35.4),
@@ -1138,6 +1156,11 @@ assert.equal(
   getRunPhaseReachedBadgeText(64.1),
   'HOUSE CUT',
   'Deaths just after the opener should surface the overtime carry so 64s+ stays attributable instead of flattening to generic overtime.',
+);
+assert.equal(
+  getRunPhaseReachedBadgeText(68.1),
+  'DUE NOW',
+  'Deaths in the second overtime consequence should surface the due-now snap so 68s+ failures still point at a concrete break-or-stay miss.',
 );
 assert.equal(
   getRunPhaseReachedBadgeText(22.8),
@@ -1316,18 +1339,23 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseDeathSummaryText(60.6),
-  'BANKED AIR snapped inside OVERTIME. 7.4s short of 68s HOLD.',
+  'BANKED AIR snapped inside OVERTIME. 11.4s short of 72s HOLD.',
   'Early overtime deaths should frame the miss as the banked-air reopen so 60s clear immediately turns into a new tellable route decision.',
 );
 assert.equal(
   getRunPhaseDeathSummaryText(62.6),
-  'CASH OUT snapped inside OVERTIME. 5.4s short of 68s HOLD.',
+  'CASH OUT snapped inside OVERTIME. 9.4s short of 72s HOLD.',
   'Second-slice overtime deaths should frame the miss as the cash-out snap so the opener does not collapse into generic overtime wording.',
 );
 assert.equal(
   getRunPhaseDeathSummaryText(64.1),
-  'HOUSE CUT snapped inside OVERTIME. 3.9s short of 68s HOLD.',
+  'HOUSE CUT snapped inside OVERTIME. 7.9s short of 72s HOLD.',
   'The overtime carry should reach the death summary so 64s+ failures still point at a concrete post-cash-out decision.',
+);
+assert.equal(
+  getRunPhaseDeathSummaryText(68.1),
+  'DUE NOW snapped inside OVERTIME. 3.9s short of 72s HOLD.',
+  'The second overtime consequence should reach the death summary so 68s+ failures still point at a concrete late-overtime cash-in.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(20),
@@ -1421,18 +1449,23 @@ assert.equal(
 );
 assert.equal(
   getRunPhaseRetryGoalText(60.6),
-  'Rematch the banked-air reopen and hold 68s in +7.4s',
+  'Rematch the banked-air reopen and hold 72s in +11.4s',
   'Early overtime retry guidance should sell the first post-clear reopen directly instead of dropping to generic push-your-best wording.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(62.6),
-  'Rematch the cash-out snap and hold 68s in +5.4s',
+  'Rematch the cash-out snap and hold 72s in +9.4s',
   'Second-slice overtime retry guidance should sell the cash-out snap directly so the opener stays a replay hook after the reopen.',
 );
 assert.equal(
   getRunPhaseRetryGoalText(64.1),
-  'Rematch the house cut and hold 68s in +3.9s',
+  'Rematch the house cut and hold 72s in +7.9s',
   'The overtime carry should become the retry target so 64s+ gains a concrete post-cash-out rematch hook.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(68.1),
+  'Rematch the due-now snap and hold 72s in +3.9s',
+  'The second overtime consequence should become the retry target so 68s+ gains one more concrete rematch hook before raw overtime pressure takes over.',
 );
 const lateEndgameDeathPresentation = getDeathPresentation({
   hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
@@ -1921,12 +1954,12 @@ assert.equal(
 );
 assert.equal(
   bankedAirDeathPresentation.body,
-  'Run 60.6s. Best 60.0s.\nBANKED AIR snapped inside OVERTIME. 7.4s short of 68s HOLD.',
+  'Run 60.6s. Best 60.0s.\nBANKED AIR snapped inside OVERTIME. 11.4s short of 72s HOLD.',
   'Post-clear death body should explain the missed overtime opener instead of flattening to generic overtime reached wording.',
 );
 assert.equal(
   bankedAirDeathPresentation.prompt,
-  'Next lane: BREAK UP\nRematch the banked-air reopen and hold 68s in +7.4s\nRetry: Space, Enter, tap/click, or move',
+  'Next lane: BREAK UP\nRematch the banked-air reopen and hold 72s in +11.4s\nRetry: Space, Enter, tap/click, or move',
   'Post-clear retry prompt should sell the banked-air reopen directly instead of only saying to push past the goal.',
 );
 assert.equal(
@@ -2001,12 +2034,12 @@ assert.equal(
 );
 assert.equal(
   houseCutDeathPresentation.body,
-  'Run 64.1s. Best 64.8s.\nHOUSE CUT snapped inside OVERTIME. 3.9s short of 68s HOLD.',
+  'Run 64.1s. Best 64.8s.\nHOUSE CUT snapped inside OVERTIME. 7.9s short of 72s HOLD.',
   'House-cut deaths should explain the missed overtime carry instead of flattening back to generic overtime reached wording.',
 );
 assert.equal(
   houseCutDeathPresentation.prompt,
-  'Next lane: BREAK LEFT\nRematch the house cut and hold 68s in +3.9s\nRetry: Space, Enter, tap/click, or move',
+  'Next lane: BREAK LEFT\nRematch the house cut and hold 72s in +7.9s\nRetry: Space, Enter, tap/click, or move',
   'House-cut deaths should push the retry prompt straight back toward the bounded overtime carry instead of generic push-your-best copy.',
 );
 assert.equal(
@@ -2018,6 +2051,51 @@ assert.equal(
   houseCutDeathPresentation.promptBackgroundColor,
   '#4f2435',
   'House-cut deaths should tint the retry block around the carry palette so the post-cash-out follow-through stays concrete.',
+);
+const dueNowDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 68.1,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 12,
+    totalRuns: 12,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 18400,
+    retryCount: 12,
+    recentDeathTimes: [42.0, 46.0, 50.0, 54.0, 57.0, 60.0, 60.6, 62.6, 64.1, 68.1],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '69.0s',
+  reachedSurvivalGoal: true,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK RIGHT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  dueNowDeathPresentation.badge,
+  'DUE NOW',
+  'Deaths inside the second overtime consequence should surface the due-now beat so 68s+ failures stay attributable on the death screen.',
+);
+assert.equal(
+  dueNowDeathPresentation.body,
+  'Run 68.1s. Best 69.0s.\nDUE NOW snapped inside OVERTIME. 3.9s short of 72s HOLD.',
+  'Due-now deaths should explain the late overtime cash-in instead of flattening back to generic overtime wording.',
+);
+assert.equal(
+  dueNowDeathPresentation.prompt,
+  'Next lane: BREAK RIGHT\nRematch the due-now snap and hold 72s in +3.9s\nRetry: Space, Enter, tap/click, or move',
+  'Due-now deaths should point the retry prompt straight back at the second overtime consequence instead of generic overtime copy.',
+);
+assert.equal(
+  dueNowDeathPresentation.calloutBackgroundColor,
+  '#471913',
+  'Due-now deaths should shift into a hotter final-overtime tone so the second consequence reads differently from house cut.',
+);
+assert.equal(
+  dueNowDeathPresentation.promptBackgroundColor,
+  '#5a2218',
+  'Due-now deaths should tint the retry block around the late-overtime cash-in so the final authored slice stays concrete.',
 );
 assert.equal(
   getRunPhaseTimelineText(20),
@@ -2293,7 +2371,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('overtime'),
   {
     title: 'OVERTIME LIVE',
-    body: '60s is cleared, but overtime opens with earned movement: banked air briefly reopens the clear lane, cash out snaps back across it, then house cut keeps the snapped lane taxed before the run settles into raw score pressure.',
+    body: '60s is cleared, but overtime opens with earned movement: banked air briefly reopens the clear lane, cash out snaps back across it, house cut keeps the snapped lane taxed, then due now cashes the first soft reopen back in before the run settles into raw score pressure.',
   },
   'Overtime should announce the earned opener directly so 60s clear does not dissolve into generic score-only overtime on contact.',
 );
@@ -3597,6 +3675,14 @@ assert.equal(
   'The house cut should relax off cash-out into a taxed-lane carry so the first 64s+ seconds stay authored instead of collapsing immediately.',
 );
 assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: OVERTIME_DUE_NOW_WINDOW_END_SECONDS - 0.1,
+    variant: 'drift',
+  }),
+  OVERTIME_DUE_NOW_TARGET_LAG_SECONDS,
+  'The due-now snap should tighten lag again so the second overtime consequence cashes the soft reopen back in before raw score pressure takes over.',
+);
+assert.equal(
   OVERTIME_OPENER_BANKED_WINDOW_SECONDS,
   1.8,
   'The banked-air reopen should stay brief so 60s clear turns into a bounded overtime decision instead of a long drift coast.',
@@ -3612,6 +3698,11 @@ assert.equal(
   'The house-cut carry should stay bounded so overtime gains one follow-through decision without becoming a permanent authored lane tax.',
 );
 assert.equal(
+  OVERTIME_DUE_NOW_WINDOW_SECONDS,
+  4,
+  'The due-now snap should stay bounded so overtime gains a second concrete consequence without turning late overtime into a permanent authored lane.',
+);
+assert.equal(
   OVERTIME_OPENER_BANKED_ROTATION_DEGREES,
   14,
   'The banked-air reopen should stay gentler than summit snap so the player feels a real release after clearing 60s.',
@@ -3625,6 +3716,11 @@ assert.equal(
   OVERTIME_CARRY_ROTATION_DEGREES,
   18,
   'The house-cut carry should ease off cash-out without flattening so the taxed lane still reads as live before raw overtime pressure takes over.',
+);
+assert.equal(
+  OVERTIME_DUE_NOW_ROTATION_DEGREES,
+  24,
+  'The due-now snap should hit harder than house cut so the second overtime consequence feels like a final cash-in instead of more of the same carry.',
 );
 assert.equal(
   KILLBOX_ECHO_CADENCE_ROTATION_DEGREES,
@@ -5649,7 +5745,7 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag, a 1\.2s lock drag from 29\.2s at 20deg with 0\.09s lag, before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.6s rebound hold at 28deg with 0\.16s lag, then a 0\.45s rebound cross at 16deg with 0\.14s lag, then a 0\.35s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 1\.2s recenter handoff at 18deg with 0\.08s lag, a 1\.0s center pin at 40\.2s with 24deg travel and 0\.05s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 1\.8s ascent stair at 16deg and 0\.12s lag, a 2\.2s ledge feint at 47\.4s with 20deg and 0\.05s lag, a 2\.8s ridge cut at 49\.6s with 22deg and 0\.07s lag, a 2\.4s crest veer at 52\.4s with 18deg and 0\.04s lag, then a summit snap at 28deg with 0\.02s lag, then a 1\.8s banked-air reopen from 60\.0s at 14deg with 0\.10s lag before a 2\.2s cash-out snap at 61\.8s with 26deg and 0\.03s lag, then a 4\.0s house cut from 64\.0s at 18deg with 0\.08s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag, a 1\.2s lock drag from 29\.2s at 20deg with 0\.09s lag, before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.6s rebound hold at 28deg with 0\.16s lag, then a 0\.45s rebound cross at 16deg with 0\.14s lag, then a 0\.35s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 1\.2s recenter handoff at 18deg with 0\.08s lag, a 1\.0s center pin at 40\.2s with 24deg travel and 0\.05s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 1\.8s ascent stair at 16deg and 0\.12s lag, a 2\.2s ledge feint at 47\.4s with 20deg and 0\.05s lag, a 2\.8s ridge cut at 49\.6s with 22deg and 0\.07s lag, a 2\.4s crest veer at 52\.4s with 18deg and 0\.04s lag, then a summit snap at 28deg with 0\.02s lag, then a 1\.8s banked-air reopen from 60\.0s at 14deg with 0\.10s lag before a 2\.2s cash-out snap at 61\.8s with 26deg and 0\.03s lag, then a 4\.0s house cut from 64\.0s at 18deg with 0\.08s lag, then a 4\.0s due-now snap from 68\.0s at 24deg with 0\.04s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(

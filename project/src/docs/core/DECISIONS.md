@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #287]
+
+Decision:
+`mutation` modunda `68.0-72.0s` band'ina ikinci bir overtime consequence ekle; `HOUSE CUT` sonrasini generic score baskisina dusurmek yerine `DUE NOW` final cash-in'ine cevir.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni boslugu gosteriyordu: Run #286 `64.0-68.0s` carry'yi acti ama `68s+` sonrasi yeniden duz overtime'a dusuyordu. En yuksek etkili dar secim; ayni koridoru mikro-polish etmeden `HOUSE CUT` arkasina bir bounded second-consequence ekleyip overtime'i `72s HOLD`e kadar anlatilabilir ucuncu katmana tasimakti.
+
+Impact:
+`project/game/src/game/balance.ts` `68.0-72.0s` band'ina `4.0s` `DUE NOW` (`24deg`, `0.04s`) drift kontrati ekledi. `project/game/src/game/runPhase.ts` overtime truth'unu `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zincirine buyuttu ve `72s HOLD` retry/death hedefini tanimladi. `project/game/src/game/GameScene.ts` goal badge, survival hint, live callout ve support akisini yeni consequence cue'suna hizaladi; overtime beat callout'undaki eksik fallback'i de kapatti. `project/game/src/game/deathPresentation.ts` `DUE NOW` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni overtime consequence runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `DUE NOW` beat'inin yeni bir late-overtime break-or-stay karari yerine cheap overtime wipe, anlamsiz named-beat gurultusu ya da `HOUSE CUT`in tekrarina benzeyen bir cash-in urettigini gosterirse yalniz `DUE NOW` sure, rotation ve lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `60.0-72.0s` koridorunda copy/snapshot polish zinciri acilmaz.
+
 ### [Run #286]
 
 Decision:

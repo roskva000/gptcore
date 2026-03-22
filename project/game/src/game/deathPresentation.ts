@@ -580,6 +580,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (overtimeOpenerState?.id === 'due-now') {
+    return {
+      badgeBackgroundColor: '#5a2218',
+      badgeTextColor: '#fff0e8',
+      bodyTextColor: '#f2d0c5',
+      calloutBackgroundColor: '#471913',
+      calloutTextColor: '#ffb59f',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5a2218',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff2ed',
+      titleTextColor: '#ffdcd2',
+    };
+  }
+
   return {
     ...DEFAULT_SNAPSHOT_TONE,
     promptBackgroundColor: hasNearMissChaseSnapshot
