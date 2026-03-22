@@ -7,15 +7,21 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #279:
-- `30.8s` average survival
+Current deterministic survival headline after Run #280:
+- `31.7s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
-- validation export snapshot `37.1s` average survival
+- validation export snapshot `35.5s` average survival
 - validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
-- deterministic buckets `0 / 4 / 13 / 7` (`under10 / 10-20 / 20-30 / sim-cap`)
+- deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+killbox_lock_drag_surface:
+current: Run #280 `project/game/src/game/balance.ts` `29.2-30.4s` araliginda yeni bounded `LOCK DRAG` penceresi aciyor; `echo` varyanti bu beat'te `20deg` travel ve `0.09s` lag ile `FOLD SNAP` sonrasi ayni folded lane'i bir beat daha tasiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/death-retry, backdrop motion ve snapshot tonu tarafina da tasiyor
+baseline: Run #279 state'inde `24-32s` killbox tail'i `echo lock-in -> FOLD SNAP -> release` akisi tasiyordu ama `28.4-32.0s` band'i yeni bir bounded route-break sormadan daha generic echo cadence'e duzlesebiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `24-32s` band'ini artik `FOLD SNAP -> LOCK DRAG -> RELEASE CUT` zinciri olarak anlattigini gostersin; yeni beat cheap zigzag, unfair wipe veya gereksiz named-beat gurultusu gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_onset_handoff_surface:
 current: Run #279 `project/game/src/game/runPhase.ts` `18.0-20.6s` killbox onset'ini `LEAD CUT` ve `ECHO FOLLOW` cue'lariyla player-facing tarafta isimlendiriyor; `project/game/src/game/GameScene.ts` ayni zinciri killbox shift hint'i, first-death hedef hint'i ve cue-aware backdrop motion ile tasiyor. `project/game/src/game/deathPresentation.ts` `LEAD CUT` ile `ECHO FOLLOW` olumleri icin ayri snapshot tone kullaniyor

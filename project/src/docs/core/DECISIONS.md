@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #280]
+
+Decision:
+`mutation` modunda `24-32s` killbox lock-in band'ine yeni `LOCK DRAG` halkasi ekle; `FOLD SNAP` sonrasi duz cadence'e donen boslugu drift release oncesi son bir bounded route-break olarak kullan.
+
+Reason:
+`AUDIT.md` ve `NEXT_AGENT.md` ayni yone bakiyordu: yeni runtime/gameplay delta gerekiyordu ama bunu `16.6-20.6s` onset koridoruna geri donmeden yapmak gerekiyordu. En yuksek etkili ve en dar secim; mevcut killbox tail'ini `29.2-30.4s` civarinda ikinci bir echo clamp ile buyutup `32s` release'i daha earned bir handoff'a cevirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `LOCK DRAG` icin yeni runtime window, rotation ve lag kontrati ekledi. `project/game/src/game/runPhase.ts` killbox cue/detail/death-retry truth'unu yeni halka ile genisletti ve `KILLBOX LIVE` phase-shift anlatimini guncelledi. `project/game/src/game/GameScene.ts` yeni beat'e ayri cue intensity/backdrop motion verdi. `project/game/src/game/deathPresentation.ts` `LOCK DRAG` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime kontratiyla guncel deterministic baseline'i kilitledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.7s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `LOCK DRAG` beat'inin okunur son killbox closure yerine cheap zigzag, unfair last-second wipe ya da `32s` release'i bulaniklastiran gurultu urettigini gosterirse yalniz `LOCK DRAG` pencere suresi ile `rotation/lag` siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `24-32s` koridorunda yeni copy/snapshot polish zinciri acilmaz.
+
 ### [Run #279]
 
 Decision:

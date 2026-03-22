@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #280
+
+- `project/game/src/game/balance.ts` `29.2-30.4s` araligina yeni bounded `LOCK DRAG` penceresi ekledi; `echo` varyanti bu slice'ta `20deg` rotation ve `0.09s` target lag ile ayni folded lane'i drift release oncesi bir beat daha kilitli tutuyor
+- `project/game/src/game/runPhase.ts` killbox cue truth'unu `LOCK DRAG LIVE` halkasiyla genisletti; detail, support, badge, death summary ve retry goal artik `24-32s` tail'ini de isimli bir kapanis olarak tasiyor
+- `project/game/src/game/GameScene.ts` killbox cue intensity map'ine ve backdrop motion'una `LOCK DRAG` imzasini ekledi
+- `project/game/src/game/deathPresentation.ts` `LOCK DRAG` olumleri icin ayri snapshot paleti ekledi
+- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni killbox-tail controller kontratini ve guncel deterministic baseline'i (`31.7s avg / 10.0s first death / 0% early`, validation export `35.5s`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #279
 
 - `project/game/src/game/runPhase.ts` killbox onset'ine yeni `LEAD CUT` ve `ECHO FOLLOW` cue'larini ekledi; `18.0-20.6s` artik generic `KILLBOX` paragrafina dusmeden `GATE CUT` handoff'unu killbox'in ilk iki halkasina bagliyor

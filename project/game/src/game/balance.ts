@@ -56,6 +56,10 @@ export const KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS = 27.2;
 export const KILLBOX_FOLD_SNAP_WINDOW_SECONDS = 1.2;
 export const KILLBOX_FOLD_SNAP_ROTATION_DEGREES = 14;
 export const KILLBOX_FOLD_SNAP_TARGET_LAG_SECONDS = 0.14;
+export const KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS = 29.2;
+export const KILLBOX_LOCK_DRAG_WINDOW_SECONDS = 1.2;
+export const KILLBOX_LOCK_DRAG_ROTATION_DEGREES = 20;
+export const KILLBOX_LOCK_DRAG_TARGET_LAG_SECONDS = 0.09;
 export const KILLBOX_ECHO_CADENCE_ROTATION_DEGREES = 6;
 export const ECHO_OBSTACLE_TINT = 0x8ad9ff;
 export const DRIFT_OBSTACLE_UNLOCK_SECONDS = 32;
@@ -150,6 +154,8 @@ const KILLBOX_ECHO_HANDOFF_WINDOW_END_SECONDS =
   ECHO_OBSTACLE_UNLOCK_SECONDS + KILLBOX_ECHO_HANDOFF_WINDOW_SECONDS;
 const KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS =
   KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS + KILLBOX_FOLD_SNAP_WINDOW_SECONDS;
+const KILLBOX_LOCK_DRAG_WINDOW_END_SECONDS =
+  KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS + KILLBOX_LOCK_DRAG_WINDOW_SECONDS;
 
 const isKillboxEchoBridgeWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS &&
@@ -166,6 +172,10 @@ export const isKillboxSealSnapWindow = (survivalTimeSeconds: number): boolean =>
 export const isKillboxFoldSnapWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS &&
   survivalTimeSeconds < KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS;
+
+export const isKillboxLockDragWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS &&
+  survivalTimeSeconds < KILLBOX_LOCK_DRAG_WINDOW_END_SECONDS;
 
 const isBreakthroughStrafeForkWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
@@ -395,6 +405,7 @@ export const getObstacleVariant = ({
         isKillboxEchoBridgeWindow(survivalTimeSeconds) ||
         isKillboxSealSnapWindow(survivalTimeSeconds) ||
         isKillboxFoldSnapWindow(survivalTimeSeconds) ||
+        isKillboxLockDragWindow(survivalTimeSeconds) ||
         isKillboxEchoFollowThroughWindow(survivalTimeSeconds)
       ? 'echo'
     : isBreakthroughGateCutWindow(survivalTimeSeconds)
@@ -571,6 +582,7 @@ export const getObstacleTravelDirection = ({
       isKillboxEchoBridgeWindow(survivalTimeSeconds) ||
       isKillboxSealSnapWindow(survivalTimeSeconds) ||
       isKillboxFoldSnapWindow(survivalTimeSeconds) ||
+      isKillboxLockDragWindow(survivalTimeSeconds) ||
       isKillboxEchoCadenceWindow(survivalTimeSeconds)) &&
     playerVelocity &&
     (playerVelocity.x !== 0 || playerVelocity.y !== 0)
@@ -586,6 +598,8 @@ export const getObstacleTravelDirection = ({
           ? KILLBOX_SEAL_SNAP_ROTATION_DEGREES
         : isKillboxFoldSnapWindow(survivalTimeSeconds)
           ? KILLBOX_FOLD_SNAP_ROTATION_DEGREES
+        : isKillboxLockDragWindow(survivalTimeSeconds)
+          ? KILLBOX_LOCK_DRAG_ROTATION_DEGREES
         : isKillboxEchoHandoffWindow(survivalTimeSeconds)
           ? KILLBOX_ECHO_HANDOFF_ROTATION_DEGREES
           : KILLBOX_ECHO_CADENCE_ROTATION_DEGREES;
@@ -719,6 +733,8 @@ export const getObstacleTargetLagSeconds = ({
     : variant === 'echo'
     ? isKillboxFoldSnapWindow(survivalTimeSeconds)
       ? KILLBOX_FOLD_SNAP_TARGET_LAG_SECONDS
+      : isKillboxLockDragWindow(survivalTimeSeconds)
+        ? KILLBOX_LOCK_DRAG_TARGET_LAG_SECONDS
       : isKillboxSealSnapWindow(survivalTimeSeconds)
         ? KILLBOX_SEAL_SNAP_TARGET_LAG_SECONDS
         : Math.max(getSpawnTargetLagSeconds(survivalTimeSeconds), ECHO_OBSTACLE_TARGET_LAG_SECONDS)

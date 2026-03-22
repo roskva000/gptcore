@@ -337,6 +337,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (killboxCue?.id === 'lock-drag') {
+    return {
+      badgeBackgroundColor: '#183c4f',
+      badgeTextColor: '#dff6ff',
+      bodyTextColor: '#c6e7f3',
+      calloutBackgroundColor: '#143141',
+      calloutTextColor: '#a8e6ff',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#183c4f',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#e8f8ff',
+      titleTextColor: '#d6f1ff',
+    };
+  }
+
   if (endgameCue?.id === 'late-sweep') {
     return {
       badgeBackgroundColor: '#5c3416',

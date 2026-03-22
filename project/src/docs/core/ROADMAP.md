@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #279
+Updated By: Codex Run #280
 
 ---
 
@@ -47,6 +47,7 @@ Mevcut durum:
 - Run #275 ile `41.2-45.6s` `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi sahne ve death snapshot tarafina da sindi; false clear artik daha serin bir reopen motion/palette'i, preclear ise daha sert bir close motion/palette'i tasiyor
 - Run #276 ile `45.6-60s` clear climb finali uc halkaya cikti; `50.4-52.4s` yeni `RIDGE CUT` beat'i `ASCENT STAIR` ile `SUMMIT SNAP` arasina girip summit oncesi yeni bir route degistirme anı acti
 - Run #278 ile `16.6-18.0s` breakthrough finali yeni `GATE CUT` handoff'unu kazandi; `SURGE SNAP` sonrasi lane `14deg` / `0.12s` lead ile bir kez daha bükülüyor ve killbox artik daha authored bir giris aliyor
+- Run #280 ile `24-32s` lock-in tail'i yeni `LOCK DRAG` beat'ini kazandi; `29.2-30.4s` araliginda echo ayni folded lane'i `20deg` / `0.09s` ile bir beat daha tasiyip `32s` release oncesi generic cadence'e dusmeyi engelliyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -72,12 +73,13 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
 - shipped slice: `BREAKTHROUGH` artik generic phase break'i degil; `STRAFE FORK`, `SURGE SNAP` ve yeni `GATE CUT` cue'lari bounded forced runtime pencereleri ve death/retry payoff'u ile killbox oncesi uc halkali authored cevap zinciri tasiyor
 - shipped slice: `GATE CUT` artik killbox onset'e phase cliff gibi dusmuyor; `LEAD CUT` ve `ECHO FOLLOW` cue'lari `18.0-20.6s` killbox onset'ini HUD/detail/hint/death-retry/snapshot tarafinda adlandirip `PINCH LOCK` oncesini de ayni authored zincire bagliyor
+- shipped slice: `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG` olarak uc closure halkasi tasiyor; `29.2-30.4s` band'i generic echo paragrafina donmeden release handoff'una son bir route-break sorusu bagliyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
-- next slice: `GATE CUT -> KILLBOX` onset integration kapandi; siradaki dogru adim yeni runtime/gameplay delta acmak. Ayni `16.6-20.6s` koridorunda tekrar polish'e donme; yeni bounded karar ani ya farkli bir phase cephesinde ya da retention'a gercek gameplay sonucu baglayarak acilsin
+- next slice: `24-32s` killbox tail mutation'i kapandi; siradaki dogru adim `32.0-36.2s` release/rebound cephesinde yeni bounded runtime karari acmak. Ayni `27.2-30.4s` koridorunda tekrar polish'e donme
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families

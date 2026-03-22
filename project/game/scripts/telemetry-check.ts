@@ -63,6 +63,8 @@ import {
   KILLBOX_FOLD_SNAP_TARGET_LAG_SECONDS,
   KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS,
   KILLBOX_FOLD_SNAP_WINDOW_SECONDS,
+  KILLBOX_LOCK_DRAG_TARGET_LAG_SECONDS,
+  KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS,
   KILLBOX_ECHO_BRIDGE_ROTATION_DEGREES,
   KILLBOX_ECHO_BRIDGE_WINDOW_START_SECONDS,
   KILLBOX_ECHO_CADENCE_ROTATION_DEGREES,
@@ -578,6 +580,36 @@ assert.equal(
   foldSnapDeathPresentation.promptBackgroundColor,
   '#1f4357',
   'Deaths inside fold snap should keep the retry block on the echo-tightening palette so the overlay stays aligned with the failed post-lock-in beat.',
+);
+const lockDragDeathPresentation = getDeathPresentation({
+  hitDirection: { offsetX: 1, offsetY: 0, label: 'right' },
+  survivalTimeSeconds: 29.6,
+  sessionTelemetry: {
+    ...createEmptyTelemetry(),
+    totalDeaths: 8,
+    totalRuns: 8,
+    firstDeathTime: 10,
+    totalRetryDelayMs: 10900,
+    retryCount: 8,
+    recentDeathTimes: [10.4, 14.8, 18.6, 20.1, 21.7, 24.4, 27.6, 29.6],
+  },
+  isNewBest: false,
+  bestSurvivalTimeText: '31.4s',
+  reachedSurvivalGoal: false,
+  retryPromptText: 'Space, Enter, tap/click, or move',
+  escapePromptTitle: 'BREAK LEFT',
+  nearMissChainCount: null,
+  nearMissPromptText: null,
+});
+assert.equal(
+  lockDragDeathPresentation.calloutBackgroundColor,
+  '#143141',
+  'Deaths inside lock drag should keep a colder locked-lane callout tone so the last pre-release clamp reads differently from fold snap.',
+);
+assert.equal(
+  lockDragDeathPresentation.promptBackgroundColor,
+  '#183c4f',
+  'Deaths inside lock drag should keep the retry block on the dragged-lock palette so the final 24-32s beat stays explicit in the snapshot.',
 );
 assert.equal(
   getNearMissChaseImpactLabelText('left', false),
@@ -1554,6 +1586,24 @@ assert.equal(
   'Killbox support text should surface the later fold snap while it is live so the 24-32s band keeps a readable bounded decision point.',
 );
 assert.deepEqual(
+  getKillboxCue(29.6),
+  {
+    id: 'lock-drag',
+    title: 'LOCK DRAG LIVE',
+    hudLabel: 'LOCK DRAG',
+    snapshotLabel: 'LOCK DRAG',
+    rematchLabel: 'the lock drag',
+    accentColor: 0x9ee4ff,
+    body: 'Fold snap does not let go cleanly. Echo drags the same locked lane one beat longer before drift release; stay off the slack-looking reopen and hold the late cut that opens 32s.',
+  },
+  'Killbox should expose a bounded lock-drag cue after fold snap so the 24-32s band does not flatten back into generic cadence before drift release.',
+);
+assert.equal(
+  getRunPhaseSupportText(29.6),
+  'KILLBOX LOCK DRAG: Fold snap does not let go cleanly. Echo drags the same locked lane one beat longer before drift release; stay off the slack-looking reopen and hold the late cut that opens 32s. Next shift 32s.',
+  'Killbox support text should surface the final pre-release lock drag so the late killbox handoff stays readable all the way to 32s.',
+);
+assert.deepEqual(
   getBreakthroughCue(12.4),
   {
     id: 'strafe-fork',
@@ -1653,6 +1703,16 @@ assert.equal(
   'Retry guidance should send the player back to the shadow-echo follow-through so the killbox onset remains a readable chain instead of a silent bridge.',
 );
 assert.equal(
+  getRunPhaseDeathSummaryText(29.6),
+  'LOCK DRAG snapped inside KILLBOX. 2.4s short of ENDGAME DRIFT.',
+  'Deaths inside the lock drag should explain the last killbox clamp instead of flattening the 24-32s tail into generic killbox phrasing.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(29.6),
+  'Rematch the lock drag and carry it to ENDGAME DRIFT in +2.4s',
+  'Retry guidance should send the player back to the final dragged lock so the player reads 32s as the next immediate release prize.',
+);
+assert.equal(
   getRunPhaseDeathSummaryText(15.2),
   'SURGE SNAP snapped inside BREAKTHROUGH. 2.8s short of KILLBOX.',
   'Deaths inside the surge snapback should explain the missed authored early-mid beat instead of generic breakthrough phrasing.',
@@ -1684,7 +1744,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('killbox'),
   {
     title: 'KILLBOX LIVE',
-    body: 'Gate cut hands straight into killbox. A hard lead cut bends that entry, shadow echo keeps the same lane folding, pinch lock cashes it back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap tightens the echo lane once more before drift release.',
+    body: 'Gate cut hands straight into killbox. A hard lead cut bends that entry, shadow echo keeps the same lane folding, pinch lock cashes it back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap and lock drag keep the echo lane pinned before drift release.',
   },
   'Killbox should announce the post-gate-cut handoff explicitly instead of dropping into a generic late speed bump at the phase boundary.',
 );
@@ -1876,6 +1936,14 @@ assert.equal(
   }),
   'echo',
   'Killbox should force a later fold snap inside the 24-32s lock-in band so cadence gains one more bounded decision point before drift release.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS + 0.1,
+    runSpawnCount: 2,
+  }),
+  'echo',
+  'Killbox should force a final lock drag after fold snap so the 24-32s tail keeps asking for one last route change before drift release.',
 );
 assert.equal(
   getObstacleVariant({
@@ -2263,6 +2331,25 @@ assert.deepEqual(
       getObstacleTravelDirection({
         spawnPoint: { x: 856, y: 300 },
         targetPoint: { x: 400, y: 300 },
+        playerVelocity: { x: 0, y: -214 },
+        survivalTimeSeconds: KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS + 0.1,
+        variant: 'echo',
+        runSpawnCount: 2,
+      }),
+    ).map(([axis, value]) => [axis, Number(value.toFixed(3))]),
+  ),
+  {
+    x: -0.94,
+    y: 0.342,
+  },
+  'The killbox lock drag should hold the same folded lane with a stronger late scissor so the 24-32s tail does not reopen into generic cadence before drift release.',
+);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(
+      getObstacleTravelDirection({
+        spawnPoint: { x: 856, y: 300 },
+        targetPoint: { x: 400, y: 300 },
         survivalTimeSeconds: 22,
         variant: 'lead',
         runSpawnCount: LEAD_OBSTACLE_CADENCE,
@@ -2635,6 +2722,14 @@ assert.equal(
   }),
   KILLBOX_FOLD_SNAP_TARGET_LAG_SECONDS,
   'The killbox fold snap should tighten lag so the later 24-32s beat reads like a fresh lane clamp instead of another soft cadence echo.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: KILLBOX_LOCK_DRAG_WINDOW_START_SECONDS + 0.1,
+    variant: 'echo',
+  }),
+  KILLBOX_LOCK_DRAG_TARGET_LAG_SECONDS,
+  'The killbox lock drag should keep a firmer late lag so the final pre-release beat stays more locked than normal echo cadence.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -4734,13 +4829,13 @@ assert.equal(
   40,
   'Deterministic survival snapshot should stay long enough to exercise the 32s drift mutation.',
 );
-assert.equal(survivalReport.averageSurvivalTimeSeconds, 30.8, 'Average survival snapshot regressed.');
+assert.equal(survivalReport.averageSurvivalTimeSeconds, 31.7, 'Average survival snapshot regressed.');
 assert.equal(survivalReport.firstDeathTimeSeconds, 10, 'First death snapshot regressed.');
 assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap changed unexpectedly.');
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 4\.8s ascent stair at 16deg and 0\.12s lag, a 2\.0s ridge cut at 50\.4s with 22deg and 0\.07s lag, then a summit snap at 28deg with 0\.02s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag, a 1\.2s lock drag from 29\.2s at 20deg with 0\.09s lag, before killbox cadence echoes keep 6deg lane-fold travel through 32s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.7s rebound hold at 28deg with 0\.16s lag, then a 0\.7s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 2\.2s recenter handoff at 20deg with 0\.06s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 4\.8s ascent stair at 16deg and 0\.12s lag, a 2\.0s ridge cut at 50\.4s with 22deg and 0\.07s lag, then a summit snap at 28deg with 0\.02s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(
@@ -4748,8 +4843,8 @@ assert.deepEqual(
   {
     under10Seconds: 0,
     between10And20Seconds: 4,
-    between20And30Seconds: 13,
-    reachedSimulationCap: 7,
+    between20And30Seconds: 11,
+    reachedSimulationCap: 9,
   },
   'Survival bucket distribution regressed.',
 );
@@ -4759,10 +4854,10 @@ assert.ok(
   ),
   'Deterministic survival sample should include at least one post-32s run so the drift mutation is actually exercised.',
 );
-assert.equal(survivalReport.averageSpawnCount, 37, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 38.4, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.6, 'Spawn reroll snapshot changed unexpectedly.');
-assert.equal(seed3TrajectoryReport.deathTimeSeconds, 40, 'Seed #3 trajectory baseline drifted.');
-assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 51, 'Seed #3 spawn count changed unexpectedly.');
+assert.equal(seed3TrajectoryReport.deathTimeSeconds, 36.6, 'Seed #3 trajectory baseline drifted.');
+assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 45, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(
   seed3TrajectoryReport.spawnRerollsBeforeDeath,
   1,
@@ -4858,7 +4953,7 @@ assert.equal(
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=37.1s | first_death=28.9s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=36.8s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 30.8s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=35.5s | first_death=28.9s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=37.0s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 31.7s avg / 10.0s first death / 0% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(
@@ -4873,7 +4968,7 @@ assert.equal(
     totalSpawnRerolls: 3,
     lastSurvivalTime: 30,
   }),
-  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/35/89 | deterministic survival 30.8s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=24.1s | first_death=6.3s | early_death_rate=20% | avg_retry=n/a | spawn_saves=3 | last_run=30.0s | validation=5/5 runs, review early deaths | baseline=pacing 10/35/89 | deterministic survival 31.7s avg / 10.0s first death / 0% early',
   'Validation export should report only completed runs even if a fresh start increased totalRuns beyond totalDeaths.',
 );
 assert.equal(
@@ -4887,7 +4982,7 @@ assert.equal(
     earlyDeathsUnderTarget: 1,
     lastSurvivalTime: 9.96,
   }),
-  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/35/89 | deterministic survival 30.8s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=1 | deaths=1 | avg_survival=10.0s | first_death=10.0s | early_death_rate=100% | avg_retry=n/a | spawn_saves=0 | last_run=10.0s | validation=1/5 runs | baseline=pacing 10/35/89 | deterministic survival 31.7s avg / 10.0s first death / 0% early',
   'Telemetry exports should keep under-10s deaths flagged even when UI-facing times round up to 10.0s.',
 );
 assert.equal(

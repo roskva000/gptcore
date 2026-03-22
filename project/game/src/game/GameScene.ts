@@ -3927,6 +3927,10 @@ export class GameScene extends Phaser.Scene {
       return 0;
     }
 
+    if (killboxCue.id === 'lock-drag') {
+      return 0.88;
+    }
+
     if (killboxCue.id === 'seal-snap') {
       return 0.94;
     }
@@ -4270,6 +4274,21 @@ export class GameScene extends Phaser.Scene {
 
     const whip = Math.sin(time / 150);
     const clamp = Math.cos(time / 210);
+
+    if (killboxCue.id === 'lock-drag') {
+      return {
+        glowOffsetX: KILLBOX_SEAL_GLOW_OFFSET_X + whip * 10,
+        glowOffsetY: KILLBOX_ECHO_FOLLOW_GLOW_OFFSET_Y + clamp * 4,
+        topBandOffsetX: -18 + whip * 10,
+        bottomBandOffsetX: 24 - whip * 9,
+        topBandAngle: -4.1,
+        bottomBandAngle: 3.6,
+        frameOffsetX: -8 + whip * 4,
+        frameOffsetY: -2 + clamp,
+        frameScaleX: 1.02,
+        frameScaleY: 0.984,
+      };
+    }
 
     if (killboxCue.id === 'seal-snap') {
       return {
