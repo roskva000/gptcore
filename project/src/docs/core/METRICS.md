@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #270:
+Current deterministic survival headline after Run #271:
 - `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -15,6 +15,12 @@ Current deterministic survival headline after Run #270:
 - pacing snapshot `10 / 35 / 89`
 - validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+endgame_rebound_punish_surface:
+current: Run #271 `project/game/src/game/balance.ts` `33.6-35.0s` rebound penceresini `0.7s` `REBOUND HOLD` ve `0.7s` `REBOUND PUNISH` olarak ikiye ayiriyor; ilk dilim release side'i `28deg` / `0.16s` ile tasirken ikinci dilim `22deg` / `0.10s` ile ayni lane'i tekrar kapatiyor. `project/game/src/game/runPhase.ts` bu ayrimi detail/cue/badge/death/retry truth'una tasiyor
+baseline: Run #270 state'inde `33.6-35.0s` rebound tek parca same-lane sustain gibi okuyordu; release'ten acilan yone tutunmanin ayri bir son maliyeti henuz yoktu ve oyuncu icin `hold-or-cross` karari yeterince belirgin degildi
+target: sonraki browser veya manuel gozlem oyuncunun `32-35s` band'ini artik `release stretch -> rebound hold -> rebound punish` zinciri olarak anlattigini gostersin; ikinci dilim cheap snapback veya unfair wipe gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_drift_release_handoff_surface:
 current: Run #270 `project/game/src/game/balance.ts` `32.0-33.6s` release penceresini iki asamali hale getiriyor; ilk `0.8s` `fold-carry` slice'i `18deg` rotation ve `0.14s` lag ile `FOLD SNAP` mirasini dogrudan tasiyor, kalan `0.8s` ise `14deg` / `0.18s` ile rebound oncesi release stretch olarak aciliyor. `project/game/src/game/runPhase.ts` ayni handoff'u `Fold snap cracks open sideways here` truth'una tasiyor

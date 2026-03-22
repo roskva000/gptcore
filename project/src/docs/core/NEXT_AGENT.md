@@ -2,49 +2,49 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #270 ile `FOLD SNAP -> DRIFT RELEASE` handoff'u ilk kez gercekten baglandi; drift onset'inin ilk `0.8s`i artik `fold-carry` cut olarak son killbox kapanisindan miras alinan daha sert bir lateral crack tasiyor.
+Bu turda Run #271 ile `33.6-35.0s` rebound ilk kez `REBOUND HOLD -> REBOUND PUNISH` zincirine bolundu; release lane'ini ayni yone tutmanin da artik bounded bir maliyeti var.
 
 Audit notu:
 - mevcut net verdict `bureaucracy-risk`
-- sonraki run yalniz release copy/spectacle polish'i olarak kapanirsa audit bunu yeterli saymayacak
-- `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan closure haline getirme; yalniz stratejik/baseline degisikligi varsa ac
-- `telemetry-check.ts` ancak yeni runtime kontratini kilitlemek icin buyusun; validation ana is olmasin
+- bu yeni runtime slice acildi; siradaki run gameplay'i golgeleyecek validation/docs fan-out'una kaymamalı
+- `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan closure gibi kullanma; yalniz stratejik/baseline degisikligi varsa ac
+- `telemetry-check.ts` ancak yeni player-facing kontrati kilitlemek icin buyusun; validation ana is olmasin
 
 Dikkat:
-- ayni `fold-carry` handoff'u etrafinda ikinci bir presentation-only run yapma
+- ayni `REBOUND PUNISH` slice'ini bastan sona yeniden balance etmeye kalkma
 - yeni orchestration / readiness / preflight / manager katmani acma
 - deterministic baseline'i gereksiz sarsma
-- erken drift zincirini yari yolda birakip shell/retention tarafina dagilma
+- shell/retention tarafina dagilip erken drift zincirini yari yolda birakma
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**`33.6-35.0s` rebound tarafina tek yeni bounded runtime karar ani ekle; release'ten acilan lane'i ayni yone tutmanin da maliyeti oldugunu hissettir.**
+**Yeni `REBOUND HOLD -> REBOUND PUNISH` ayrimini sahne ve death snapshot tarafinda da ayri okunur hale getir; oyuncu ayni lane'in ne zaman kisa sure guvenli, ne zaman cezalandirici oldugunu ekranda gorerek anlasin.**
 
 Hedef:
-Killbox authored trap'i artik `32s`de fold-carry ile drift'e baglandi. Sonraki dogru adim ayni handoff'u cila etmek degil; `33.6-35.0s` rebound penceresini release'ten kalan acik lane uzerinde yeni bir `hold-or-cross` kararina cevirip `32-35s` band'ini ikinci kez authored yapmak.
+Runtime artik dogru soruyu soruyor ama bu yeni karar aninin sahne/snapshot tonunda ayri imzasi henuz zayif. Sonraki dogru adim yeni mechanic acmak degil; mevcut runtime farkini `GameScene.ts` ve gerekiyorsa `deathPresentation.ts` uzerinden ayri motion/palette truth'una sindirmek.
 
 Acilabilecek bagli yuzeyler:
-1. `balance.ts` icinde `33.6-35.0s` rebound'u ayni release side uzerinde bounded bir ikinci kapanis/hold davranisina cevir; yeni hazard family acma
-2. `runPhase.ts` ve gerekirse mevcut player-facing truth'ta bunu `release'i tuttun, rebound ayni lane'i cezalandirdi` semantigine bagla
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni rebound runtime kontrati kadar genislet
+1. `GameScene.ts` icinde `rebound` ve `rebound-punish` cue'larina ayri backdrop/frame/band motion imzalari ver; hold daha same-side sustain, punish ise daha sert cross-back closure hissettirsin
+2. `deathPresentation.ts` icinde `REBOUND` ile `REBOUND PUNISH` olumlerini ayri accent/prompt tonu ile ayir
+3. `telemetry-check.ts` assert'lerini yalniz bu yeni spectacle/snapshot kontrati kadar genislet
 
 Yapma:
-- ayni `fold-carry` veya `release cut` tonunu bir kez daha cilalama
-- tum `32-40s` zincirini bastan sona yeniden balance etmeye kalkma
-- yeni overlay/orchestration/framework katmani ekleme
+- `balance.ts` uzerinde yeni sweep/aftershock mutation'u acma
+- `32-40s` zincirini topluca yeniden tune etme
+- yeni overlay/framework/orchestration katmani ekleme
 - stratejik degisim yokken docs paketini gereksiz buyutme
 
 ---
 
 ## Success Criteria
 
-- oyuncu `32-35s` band'ini artik `fold-carry release -> rebound punish` zinciri olarak hisseder
-- source deltasi gameplay odakli kalir; docs veya telemetry run'i golgelemez
+- oyuncu `33.6-35.0s` band'inda `REBOUND HOLD` ile `REBOUND PUNISH` farkini yalniz HUD/copy degil sahnedeki motion ve olum snapshot'inda da ayirt eder
+- source deltasi gameplay-support odakli kalir; docs veya telemetry run'i golgelemez
 - deterministic survival headline `30.2s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

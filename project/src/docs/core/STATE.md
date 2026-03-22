@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #270
+Updated By: Codex Run #271
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `mutation`
-- ana hedef: `24-32s` killbox lock-in band'ina tek bir yeni bounded gameplay karari eklemek
+- ana hedef: `33.6-35.0s` rebound penceresini `hold-or-cross` kararina cevirmek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,13 +26,13 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `integration`
-- ana hedef: `FOLD SNAP -> 32s DRIFT RELEASE` handoff'unu ayni authored zincirin tek cevabi gibi hissettirmek
-- `project/game/src/game/balance.ts` drift onset'ine kisa bir `fold-carry` slice ekliyor; `32.0-32.8s` araliginda ilk release cut artik `18deg` rotation ve `0.14s` lag ile dogrudan `FOLD SNAP` mirasi tasiyor, release'in kalan `0.8s`i ise `14deg` / `0.18s` ile bu acilisi yumuşatmadan drift'e devrediyor
-- ayni dosya killbox son kapanisindan drift release'e gecisi tam reset olmaktan cikariyor; ilk endgame cevabi artik yalniz generic `killbox-release handoff` degil, fold-snap'ten kopan belirgin bir lateral crack olarak davraniyor
-- `project/game/src/game/runPhase.ts` `RELEASE CUT` ve `ENDGAME DRIFT` anlatimini fold-snap'ten acilan lateral cevap gercegine hizaladi; HUD/support/death-retry truth'u artik release'i son killbox kapanisindan dogan devam olarak okuyor
-- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni `fold-carry -> release stretch` kontratini kayda aldi; assertler ilk `32s` cut'inin daha sert, kalan release'in daha yumusak kalmasini ayri ayri kilitliyor
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
+- run mode: `mutation`
+- ana hedef: `33.6-35.0s` rebound penceresini tek parca same-lane sustain olmaktan cikarip `hold-or-cross` kararina cevirmek
+- `project/game/src/game/balance.ts` rebound'u iki bounded dilime boldu: ilk `0.7s` `REBOUND HOLD` hala release side'i uzerinde `28deg` / `0.16s` ile tasiyor, kalan `0.7s` ise `REBOUND PUNISH` olarak `22deg` / `0.10s` ile ayni lane'i tekrar kapatip capraz cikisi zorluyor
+- ayni runtime slice `32-35s` band'ini `fold-carry -> release stretch -> rebound hold -> rebound punish` zincirine ceviriyor; release'ten acilan yone sonsuza kadar tutunmak artik bedelsiz degil
+- `project/game/src/game/runPhase.ts` endgame detail, cue, badge, death summary ve retry goal truth'unu yeni `REBOUND HOLD` / `REBOUND PUNISH` ayrimina hizaladi; oyuncu bu pencerede neyi tutup ne zaman caprazlamasi gerektigini daha net okuyor
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni rebound split kontratini regression altina aldi; rotation, lag, player-facing cue ve deterministic proxy anlatimi bu yeni karar anini kilitliyor
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline yine `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
 - deterministic bucket dagilimi korundu: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.2s`
 
 ---
@@ -76,8 +76,8 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
-- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-32s` lock-in band'i `FOLD SNAP` ve artik bunun `32s`deki fold-carry release cevabi ile tek zincir gibi calisiyor
-- sonraki adim ayni handoff'u copy/spectacle cilasina cekmek degil; erken `DRIFT` zincirinde `REBOUND` tarafina yeni bir runtime karar ani ekleyip `32-35s` band'ini ikinci kez authored yapmak
+- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-32s` lock-in band'i `FOLD SNAP`, `32s`deki fold-carry release cevabi ve simdi bunun `REBOUND HOLD -> REBOUND PUNISH` devami ile tek zincir gibi calisiyor
+- sonraki adim ayni rebound'u sadece copy/spectacle cilasina cekmek degil; ya bu yeni punish'i sahne/snapshot tarafinda ayri okunur hale getir ya da `36.2s+` tarafina benzer dar bir runtime sonuc daha ac
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

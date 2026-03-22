@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #271
+
+- `project/game/src/game/balance.ts` `33.6-35.0s` rebound penceresini ikiye ayirdi; ilk `0.7s` `REBOUND HOLD` release side'i `28deg` / `0.16s` ile tasirken kalan `0.7s` `REBOUND PUNISH` ayni lane'i `22deg` / `0.10s` ile tekrar kapatiyor
+- `project/game/src/game/runPhase.ts` endgame detail, cue, badge, death summary ve retry goal truth'unu `REBOUND HOLD` / `REBOUND PUNISH` ayrimina hizaladi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni rebound split runtime/cue kontratini deterministic regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #270
 
 - `project/game/src/game/balance.ts` `32.0-33.6s` drift release'i iki asamali hale getirdi; ilk `0.8s` artik `18deg` / `0.14s` ile `FOLD SNAP` mirasi tasiyan `fold-carry` cut, kalan `0.8s` ise `14deg` / `0.18s` ile rebound oncesi release stretch olarak calisiyor

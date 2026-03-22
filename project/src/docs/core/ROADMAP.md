@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #270
+Updated By: Codex Run #271
 
 ---
 
@@ -42,6 +42,7 @@ Mevcut durum:
 - Run #267 ile ayni `KILLBOX` zinciri `22.4-23.6s` `SEAL SNAP` halkasini kazandi; bridge echo'nun verdigi kisa toparlanma adimi `18deg` snapback ve `0.10s` lag ile tekrar kapanıyor, boylece `24s` lock-in oncesi ikinci bir route break daha olusuyor
 - Run #268 ile ayni killbox authored trap'i sahne ve snapshot tonunda da parcalandi; `PINCH LOCK` ile `SEAL SNAP` artik backdrop glow/band/frame motion'u ve death overlay palette'i tarafinda da ayri imza tasiyor
 - Run #269 ile `24-32s` killbox fold rejimi ilk yeni runtime karar anini kazandi; `27.2-28.4s` `FOLD SNAP` penceresi `echo lock-in` sonrasi lane'i `14deg` rotation ve `0.14s` lag ile tekrar sikiyor, boylece drift release oncesi lock-in band'i generik cadence'e dusmuyor
+- Run #271 ile `33.6-35.0s` rebound penceresi ilk kez iki kararli bir zincire dondu; ilk `0.7s` `REBOUND HOLD` release side'i tasirken kalan `0.7s` `REBOUND PUNISH` ayni lane'i `22deg` / `0.10s` ile tekrar kapatiyor ve `32-35s` band'ini gercek `hold-or-cross` sorusuna ceviriyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -65,8 +66,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `BREAKTHROUGH` artik de generic phase break'i degil; `STRAFE FORK` ve `SURGE SNAP` cue'lari, bounded forced runtime pencereleri ve death/retry payoff'u ile ilk gerçek authored early-mid cevap zincirini tasiyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
-- shipped slice: `32.0-33.6s` `DRIFT` onset'i artik tek parca generik release degil; ilk `0.8s` `fold-carry` cut'i son `FOLD SNAP`ten devralinan daha sert lateral crack'i tasiyor, kalan `0.8s` ise bu acilisi release stretch olarak drift zincirine devrediyor
-- next slice: `33.6-35.0s` rebound'u ayni acilan lane uzerinde ikinci bir authored karar anina cevir; yeni hazard family acmadan release zincirinin ortasina tek bounded runtime cevap ekle
+- shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
+- next slice: bu yeni `REBOUND PUNISH`i arena spectacle/death snapshot tarafinda da ayri okunur yap veya `36.2s+` late-sweep tarafina benzer dar bir runtime halka ekle; yeni hazard family acma
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -74,7 +75,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda yeni phase acmadan gercek runtime basinç alindi; sonraki secim ya bu son stretch'i gorsel/spectacle okunurlugunda kuvvetlendirmek ya da yeni arena cephe ailesine gecmek
-- yeni aday: `33.6-35.0s` rebound tarafini release'ten miras kalan acik lane uzerinde kisa bir `hold-or-cross` kararina cevir; yeni hazard family acma
+- yeni aday: `REBOUND PUNISH` slice'ini sahne ve snapshot tarafinda ayri okunur hale getir veya `late sweep` oncesi/sonrasi tek dar behavioural consequence ac; yeni hazard family acma
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #271]
+
+Decision:
+`mutation` modunda `33.6-35.0s` rebound penceresini iki bounded halkaya bol; ilk `0.7s`i ayni release side'i tasiyan `REBOUND HOLD`, kalan `0.7s`i ise ayni lane'i tekrar kapatan `REBOUND PUNISH` olarak kullan.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni boslugu gosteriyordu: `FOLD SNAP -> DRIFT RELEASE` handoff'u baglandi ama `33.6-35.0s` rebound hala tek parca same-lane sustain gibi okuyordu. Oyuncunun ayni yone tutunmasinin da maliyetini hissettiren en dar ve en yuksek etkili mutation; yeni hazard family acmadan rebound icinde ikinci bir karar ani tanimlamakti.
+
+Impact:
+`project/game/src/game/balance.ts` rebound'u `0.7s` `REBOUND HOLD` (`28deg`, `0.16s`) ve `0.7s` `REBOUND PUNISH` (`22deg`, `0.10s`) olarak ikiye ayirdi; ikinci dilim ayni release lane'ini tekrar kapatip capraz cikisi zorluyor. `project/game/src/game/runPhase.ts` endgame detail/cue/badge/death/retry truth'unu bu yeni ayrima hizaladi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` runtime, cue ve deterministic controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem yeni `REBOUND PUNISH` slice'inin okunur hold-or-cross karari yerine cheap snapback, unfair lane yankisi veya `late sweep` oncesi gurultulu bir erken kapaniş urettigini gosterirse yalniz `REBOUND PUNISH` sure/rotation/lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni endgame manager'i, orchestration/readiness katmani ya da yeni threat family acilmaz.
+
 ### [Run #270]
 
 Decision:

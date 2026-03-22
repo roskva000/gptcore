@@ -17,6 +17,7 @@ import {
   DRIFT_SWEEP_WINDOW_START_SECONDS,
   DRIFT_SWEEP_WINDOW_SECONDS,
   DRIFT_OBSTACLE_UNLOCK_SECONDS,
+  DRIFT_REBOUND_HOLD_WINDOW_SECONDS,
   DRIFT_REBOUND_WINDOW_SECONDS,
   LEAD_OBSTACLE_UNLOCK_SECONDS,
   SURGE_OBSTACLE_UNLOCK_SECONDS,
@@ -72,6 +73,7 @@ export type KillboxCue = {
 export type EndgameDriftCueId =
   | 'release'
   | 'rebound'
+  | 'rebound-punish'
   | 'late-sweep'
   | 'aftershock'
   | 'recenter'
@@ -126,7 +128,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: DRIFT_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xc8ff9a,
     detail:
-      'Killbox fold releases sideways, rebounds once, then drift whips the lane through a wider late sweep, an aftershock clamp, a short recenter handoff, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane and push for 60s.',
+      'Killbox fold releases sideways, holds the rebound once, then punishes the same lane before drift whips across a wider late sweep, an aftershock clamp, a short recenter handoff, and a preclear squeeze before clear climb starts stair-stepping upward and snapping back near the summit. Stretch the release lane, then cross clean, and push for 60s.',
   },
   {
     id: 'overtime',
@@ -159,6 +161,8 @@ const KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS =
   KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS + KILLBOX_FOLD_SNAP_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_START_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
+const DRIFT_REBOUND_HOLD_WINDOW_END_SECONDS =
+  DRIFT_REBOUND_WINDOW_START_SECONDS + DRIFT_REBOUND_HOLD_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_END_SECONDS =
   DRIFT_REBOUND_WINDOW_START_SECONDS + DRIFT_REBOUND_WINDOW_SECONDS;
 const DRIFT_RELEASE_WINDOW_END_SECONDS =
@@ -305,14 +309,26 @@ export const getEndgameDriftCue = (progressSeconds: number): EndgameDriftCue | n
   }
 
   if (progressSeconds < DRIFT_REBOUND_WINDOW_END_SECONDS) {
+    if (progressSeconds < DRIFT_REBOUND_HOLD_WINDOW_END_SECONDS) {
+      return {
+        id: 'rebound',
+        title: 'REBOUND HOLD LIVE',
+        hudLabel: 'REBOUND HOLD',
+        snapshotLabel: 'REBOUND',
+        rematchLabel: 'the rebound hold',
+        accentColor: 0xc8ff9a,
+        body: 'The first rebound still rides the release side. Hold the opened lane briefly, then get ready to cross before the same-side punish snaps shut.',
+      };
+    }
+
     return {
-      id: 'rebound',
-      title: 'REBOUND LIVE',
-      hudLabel: 'REBOUND LIVE',
-      snapshotLabel: 'REBOUND',
-      rematchLabel: 'the rebound hold',
-      accentColor: 0xc8ff9a,
-      body: 'The first rebound stays on the release side. Hold the opened lane before the wider sweep flips back across it.',
+      id: 'rebound-punish',
+      title: 'REBOUND PUNISH LIVE',
+      hudLabel: 'REBOUND PUNISH',
+      snapshotLabel: 'REBOUND PUNISH',
+      rematchLabel: 'the rebound punish',
+      accentColor: 0xfff0c7,
+      body: 'The release lane stops being safe here. Cross back out before rebound punish pinches the same side shut ahead of the wider sweep.',
     };
   }
 
@@ -589,7 +605,7 @@ export const getRunPhaseShiftAnnouncement = (
       return {
         title: 'ENDGAME DRIFT LIVE',
         body:
-          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebounds once, a wider sweep flips back across the lane, then aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
+          'Fold snap cracks open sideways into drift. The first bend keeps that opened side alive, rebound hold briefly sustains it, rebound punish pinches the same lane shut, then a wider sweep flips back across the lane before aftershock, recenter, preclear, and a clear-climb summit snap keep the 40s alive.',
       };
     case 'overtime':
       return {
