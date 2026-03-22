@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #278]
+
+Decision:
+`mutation` modunda `BREAKTHROUGH` finaline yeni `GATE CUT` halkasi ekle; `16.6-18.0s` band'ini killbox oncesi son bounded karar ani olarak kullan.
+
+Reason:
+`AUDIT.md` ile `NEXT_AGENT.md` ayni seyi istiyordu: clear-climb integration kapandi, siradaki dogru adim yeni runtime/gameplay delta idi. En yuksek etkili ve en az dagitan secim; `STRAFE FORK -> SURGE SNAP` zincirini killbox onset'ine phase cliff olmadan baglayan tek bir pre-killbox lead handoff'u acmakti.
+
+Impact:
+`project/game/src/game/balance.ts` `16.6-18.0s` icin yeni `GATE CUT` penceresi ekledi; obstacle bu aralikta `14deg` rotation ve `0.12s` forward lead ile bounded `lead` davranisina geciyor. `project/game/src/game/runPhase.ts` yeni cue'yu detail/HUD/badge/death summary/retry goal truth'una tasidi. `project/game/src/game/GameScene.ts` breakthrough hint ve backdrop motion'unu yeni beat'e hizaladi. `project/game/src/game/deathPresentation.ts` `GATE CUT` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve guncel deterministic baseline'i kilitledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `30.8s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `GATE CUT` beat'inin okunur pre-killbox handoff yerine cheap prefire, anlamsiz tekrar ya da killbox onset'iyle birbirine karisan gurultulu bir clamp urettigini gosterirse yalniz `GATE CUT` sure/rotation/lead siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni lead manager'i, overlay framework'u, readiness/preflight/orchestration katmani ya da ayni koridora ikinci bir yeni family acilmaz.
+
 ### [Run #277]
 
 Decision:

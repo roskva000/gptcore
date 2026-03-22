@@ -23,6 +23,10 @@ export const BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES = 20;
 export const BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS = 1.6;
 export const BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES = 16;
 export const BREAKTHROUGH_SURGE_SNAP_TARGET_LEAD_SECONDS = 0.08;
+export const BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS = 16.6;
+export const BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS = 1.4;
+export const BREAKTHROUGH_GATE_CUT_ROTATION_DEGREES = 14;
+export const BREAKTHROUGH_GATE_CUT_TARGET_LEAD_SECONDS = 0.12;
 export const LEAD_OBSTACLE_UNLOCK_SECONDS = 18;
 export const LEAD_OBSTACLE_CADENCE = 9;
 export const LEAD_OBSTACLE_TARGET_LEAD_SECONDS = 0.14;
@@ -132,6 +136,8 @@ const BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS =
   STRAFE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS;
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   SURGE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
+const BREAKTHROUGH_GATE_CUT_WINDOW_END_SECONDS =
+  BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS + BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS;
 const KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_END_SECONDS =
   KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS + KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS;
 const KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS =
@@ -168,6 +174,10 @@ const isBreakthroughStrafeForkWindow = (survivalTimeSeconds: number): boolean =>
 const isBreakthroughSurgeSnapWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS;
+
+const isBreakthroughGateCutWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS &&
+  survivalTimeSeconds < BREAKTHROUGH_GATE_CUT_WINDOW_END_SECONDS;
 
 const isKillboxEchoFollowThroughWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS &&
@@ -387,6 +397,8 @@ export const getObstacleVariant = ({
         isKillboxFoldSnapWindow(survivalTimeSeconds) ||
         isKillboxEchoFollowThroughWindow(survivalTimeSeconds)
       ? 'echo'
+    : isBreakthroughGateCutWindow(survivalTimeSeconds)
+      ? 'lead'
     : isKillboxPinchLockWindow(survivalTimeSeconds)
       ? 'lead'
     : survivalTimeSeconds >= LEAD_OBSTACLE_UNLOCK_SECONDS &&
@@ -526,7 +538,8 @@ export const getObstacleTravelDirection = ({
   if (
     variant === 'lead' &&
     survivalTimeSeconds !== undefined &&
-    (survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS ||
+    (isBreakthroughGateCutWindow(survivalTimeSeconds) ||
+      survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS ||
       isKillboxPinchLockWindow(survivalTimeSeconds)) &&
     playerVelocity &&
     (playerVelocity.x !== 0 || playerVelocity.y !== 0)
@@ -534,9 +547,11 @@ export const getObstacleTravelDirection = ({
     const movementDirection = normalize(playerVelocity);
     const crossProduct =
       baseDirection.x * movementDirection.y - baseDirection.y * movementDirection.x;
-    const rotationMagnitude = isKillboxPinchLockWindow(survivalTimeSeconds)
-      ? KILLBOX_PINCH_LOCK_ROTATION_DEGREES
-      : KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES;
+    const rotationMagnitude = isBreakthroughGateCutWindow(survivalTimeSeconds)
+      ? BREAKTHROUGH_GATE_CUT_ROTATION_DEGREES
+      : isKillboxPinchLockWindow(survivalTimeSeconds)
+        ? KILLBOX_PINCH_LOCK_ROTATION_DEGREES
+        : KILLBOX_FORCED_LEAD_CUT_ROTATION_DEGREES;
     const rotationDegrees =
       crossProduct === 0
         ? Math.floor(runSpawnCount / LEAD_OBSTACLE_CADENCE) % 2 === 0
@@ -693,7 +708,9 @@ export const getObstacleTargetLagSeconds = ({
     ? -BREAKTHROUGH_SURGE_SNAP_TARGET_LEAD_SECONDS
     : variant === 'lead'
     ? -(
-        isKillboxPinchLockWindow(survivalTimeSeconds)
+        isBreakthroughGateCutWindow(survivalTimeSeconds)
+          ? BREAKTHROUGH_GATE_CUT_TARGET_LEAD_SECONDS
+          : isKillboxPinchLockWindow(survivalTimeSeconds)
           ? KILLBOX_PINCH_LOCK_TARGET_LEAD_SECONDS
           : survivalTimeSeconds < KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS
           ? KILLBOX_FORCED_LEAD_TARGET_LEAD_SECONDS

@@ -4,7 +4,7 @@ import { ENDGAME_CLEAR_CLIMB_START_SECONDS } from './runPhase.ts';
 export const TELEMETRY_RECENT_RUN_LIMIT = 4;
 export const VALIDATION_SAMPLE_RUN_TARGET = 5;
 export const VALIDATION_BASELINE_TEXT =
-  'baseline=pacing 10/35/89 | deterministic survival 30.2s avg / 10.0s first death / 0% early';
+  'baseline=pacing 10/35/89 | deterministic survival 30.8s avg / 10.0s first death / 0% early';
 
 export type GameplayTelemetry = {
   totalRuns: number;

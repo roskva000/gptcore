@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #277
+Updated By: Codex Run #278
 
 ---
 
@@ -46,6 +46,7 @@ Mevcut durum:
 - Run #272 ile `36.2-37.6s` late-sweep penceresi de ikinci bir bounded sonuca kavustu; ilk `0.8s` `LATE SWEEP` capraz kirisi aciyor, son `0.6s` `SWEEP LOCK` ise `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha kapatip `aftershock` oncesi yeni bir gec-karar maliyeti uretiyor
 - Run #275 ile `41.2-45.6s` `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi sahne ve death snapshot tarafina da sindi; false clear artik daha serin bir reopen motion/palette'i, preclear ise daha sert bir close motion/palette'i tasiyor
 - Run #276 ile `45.6-60s` clear climb finali uc halkaya cikti; `50.4-52.4s` yeni `RIDGE CUT` beat'i `ASCENT STAIR` ile `SUMMIT SNAP` arasina girip summit oncesi yeni bir route degistirme anı acti
+- Run #278 ile `16.6-18.0s` breakthrough finali yeni `GATE CUT` handoff'unu kazandi; `SURGE SNAP` sonrasi lane `14deg` / `0.12s` lead ile bir kez daha bükülüyor ve killbox artik daha authored bir giris aliyor
 
 Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 
@@ -69,13 +70,13 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
 - shipped slice: ayni truth artik aktif chase sirasinda kisa bir runtime `lane reopen -> lane cut` zinciri de tasiyor; spawn target'i en fazla iki beat boyunca snapped lane'den uzaklasip sonra ayni lane'e geri kapanarak gercek mekansal fark uretiyor
 - shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
-- shipped slice: `BREAKTHROUGH` artik de generic phase break'i degil; `STRAFE FORK` ve `SURGE SNAP` cue'lari, bounded forced runtime pencereleri ve death/retry payoff'u ile ilk gerçek authored early-mid cevap zincirini tasiyor
+- shipped slice: `BREAKTHROUGH` artik generic phase break'i degil; `STRAFE FORK`, `SURGE SNAP` ve yeni `GATE CUT` cue'lari bounded forced runtime pencereleri ve death/retry payoff'u ile killbox oncesi uc halkali authored cevap zinciri tasiyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
 - shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
 - shipped slice: `32.0-35.0s` `DRIFT` onset'i artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound punish` zinciri ayni lane'i once acip sonra cezalandiriyor
 - shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
-- next slice: clear-climb entegrasyonu kapandi; siradaki dogru adim yeni bir runtime/gameplay delta. `45.6-60s` veya `41-45.6s` sayilarina geri donmeden `10-18s` ya da baska bos phase cephesinde yeni bounded karar ani ac
+- next slice: `GATE CUT` mutation acildi; siradaki dogru adim bu yeni handoff'u `18.0-20.6s` killbox onset diliyle daha bagli okutmak veya baska bir phase cephesinde yeni runtime delta acmak. `41-60s` sayilarina geri donme
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -83,7 +84,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
 - ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
 - clear climb tarafinda summit oncesi yeni runtime basinç alindi; sonraki secim ya bu son stretch'in snapshot/readability tarafini sindirmek ya da yeni arena cephe ailesine gecmek
-- clear climb tarafinda integration tamamlandi; yeni aday `10-18s` breakthrough koridorunda killbox'a baglanan yeni bounded runtime davranisi acmak. Ayni `41-60s` sayilarini bir kez daha tune etme
+- clear climb tarafinda integration tamamlandi; breakthrough koridoru artik `GATE CUT` ile killbox'a baglandi. Yeni aday ya bu pre-killbox handoff'un killbox onset okunurlugunu sindirmek ya da farkli bir gameplay cephesinde yeni bounded runtime davranisi acmak
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir

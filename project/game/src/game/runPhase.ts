@@ -1,4 +1,6 @@
 import {
+  BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS,
+  BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS,
   BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS,
   BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS,
   KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS,
@@ -49,7 +51,7 @@ export type RunPhaseShiftAnnouncement = {
   title: string;
 };
 
-export type BreakthroughCueId = 'strafe-fork' | 'surge-snap';
+export type BreakthroughCueId = 'strafe-fork' | 'surge-snap' | 'gate-cut';
 
 export type BreakthroughCue = {
   accentColor: number;
@@ -118,7 +120,8 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     title: 'BREAKTHROUGH',
     startSeconds: TARGET_FIRST_DEATH_SECONDS,
     accentColor: 0xffc18a,
-    detail: 'Cadence tightens and strafe/surge wake up. Snap into open space before lead wakes up.',
+    detail:
+      'Cadence tightens and strafe/surge wake up. A short gate cut leans the lane into killbox before full lead pressure arrives.',
   },
   {
     id: 'killbox',
@@ -159,6 +162,8 @@ const BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS =
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS = SURGE_OBSTACLE_UNLOCK_SECONDS;
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
+const BREAKTHROUGH_GATE_CUT_WINDOW_END_SECONDS =
+  BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS + BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS;
 const KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS =
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS + KILLBOX_PINCH_LOCK_WINDOW_SECONDS;
 const KILLBOX_SEAL_SNAP_WINDOW_END_SECONDS =
@@ -228,6 +233,21 @@ export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | n
       rematchLabel: 'the surge snapback',
       accentColor: 0xffd38a,
       body: 'The fork cashes in here. Surge rushes back through the reopened lane with a forward snap; break across the closing line before killbox wakes up.',
+    };
+  }
+
+  if (
+    progressSeconds >= BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS &&
+    progressSeconds < BREAKTHROUGH_GATE_CUT_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'gate-cut',
+      title: 'GATE CUT LIVE',
+      hudLabel: 'GATE CUT',
+      snapshotLabel: 'GATE CUT',
+      rematchLabel: 'the gate cut',
+      accentColor: 0xffb1a3,
+      body: 'Surge narrows into a gate cut here. A bounded lead angle clips the recovery lane one last time; leave the reopened route early so killbox wakes up on a bent entry.',
     };
   }
 
@@ -647,7 +667,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'breakthrough':
       return {
         title: 'BREAKTHROUGH LIVE',
-        body: 'Gate broken. A bounded strafe fork opens the early-mid lane, then surge snaps back through it before killbox wakes up.',
+        body: 'Gate broken. A bounded strafe fork opens the early-mid lane, surge snaps back through it, then a short gate cut bends the route into killbox.',
       };
     case 'killbox':
       return {

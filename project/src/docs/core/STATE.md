@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #277
+Updated By: Codex Run #278
 
 ---
 
@@ -11,7 +11,7 @@ Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
 - run mode: `mutation`
-- ana hedef: `CLEAR CLIMB` finaline yeni bounded bir runtime karar ani ekleyip `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` zincirini acmak
+- ana hedef: `BREAKTHROUGH` sonunu `KILLBOX` girisine daha keskin baglayan yeni bir bounded runtime karar ani acmak
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,13 +26,14 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `integration`
-- ana hedef: yeni `RIDGE CUT` halkasini clear-climb finalinde snapshot tonu ve canli cue gecisleri tarafinda ayri okunur hale getirmek
-- `project/game/src/game/GameScene.ts` clear-climb cue hafizasini tek generic `clear-climb` etiketi yerine halka-spesifik `ASCENT STAIR` / `RIDGE CUT` / `SUMMIT SNAP` id'lerine bagladi; boylece final stretch bir kez acilip susmuyor, uc halka da kendi anonsunu tekrar uretiyor
-- ayni dosya bu entegrasyonla `RIDGE CUT` ve `SUMMIT SNAP`in yeni runtime farkini canli hint/callout akisinda da gorunur tuttu; yeni sayisal tune yapilmadi
-- `project/game/src/game/deathPresentation.ts` clear-climb snapshot tonunu uc halka icin ayirdi; ascent daha sicak climb, ridge daha soguk cross-cut, summit daha sert final snap tonu tasiyor
-- `project/game/scripts/telemetry-check.ts` clear-climb snapshot palette kontratini regression altina aldi; ascent/ridge/summit olumleri artik farkli overlay tonlariyla kilitli
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline yine `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
+- run mode: `mutation`
+- ana hedef: `STRAFE FORK -> SURGE SNAP` sonrasina yeni `GATE CUT` halkasi ekleyip `16.6-18.0s` band'ini killbox oncesi son authored karar anina cevirmek
+- `project/game/src/game/balance.ts` yeni `GATE CUT` penceresini acti; `16.6-18.0s` araliginda obstacle bounded `lead` davranisina geciyor ve `14deg` rotation ile `0.12s` forward lead uzerinden killbox oncesi lane'i bir kez daha bukuyor
+- `project/game/src/game/runPhase.ts` breakthrough truth'unu uc halkaya cikardi; `GATE CUT LIVE` detail, HUD label, badge, death summary ve retry hedefi artik `BREAKTHROUGH` sonunu generic countdown yerine isimli bir handoff olarak tasiyor
+- `project/game/src/game/GameScene.ts` breakthrough hint metnini, cue intensity'sini ve backdrop motion'unu yeni handoff beat'ine hizaladi; `10-18s` artik strafe/surge'den sonra killbox'a sert bir giris egimi de tasiyor
+- `project/game/src/game/deathPresentation.ts` `GATE CUT` olumleri icin ayri snapshot tonu ekledi; bu yeni pre-killbox kopus overlay tarafinda generic breakthrough tonuna dusmuyor
+- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime/controller kontratini ve guncel deterministic baseline'i regression altina aldi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.8s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
 - build halen mevcut Vite bundle-size warning'ini veriyor ama yeni regression veya compile hatasi yok
 
 ---
@@ -75,12 +76,11 @@ Yeni rejim:
 # What The Next Runs Must Do
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
-- `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
+- `BREAKTHROUGH` artik `STRAFE FORK -> SURGE SNAP -> GATE CUT` olarak uc halkali; killbox girisi phase cliff yerine authored handoff gibi hissettirmeli
 - `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-40s` zinciri `FOLD SNAP`, `fold-carry`, `REBOUND HOLD -> REBOUND PUNISH` ve simdi `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` devamiyla tek authored handoff gibi calisiyor
 - bu yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik sahne ve death snapshot tarafinda da ayri okunuyor
 - `40-45.6s` band'i artik `RECENTER -> FALSE CLEAR -> PRECLEAR SQUEEZE` olarak uc farkli gec cevap tasiyor; oyuncuya kisa bir fake reopen sonra ikinci bir kapanis soruluyor
-- `45.6-60s` clear climb artik `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkali bir final stretch; summit oncesi yeni bir route degistirme anı kazandi
-- bu yeni clear-climb halkalari artik canli cue gecisi ve death snapshot tonunda da ayri okunuyor; ayni koridorda tekrar sayisal polish'e donme
+- `45.6-60s` clear climb artik `ASCENT STAIR -> RIDGE CUT -> SUMMIT SNAP` olarak uc halkali bir final stretch; bu entegrasyon kapanmis durumda, ayni koridorda tekrar sayisal polish'e donme
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

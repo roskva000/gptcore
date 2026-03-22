@@ -7,14 +7,21 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #277:
-- `30.2s` average survival
+Current deterministic survival headline after Run #278:
+- `30.8s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
-- validation export snapshot `30.2s` average survival
-- deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+- validation export snapshot `37.1s` average survival
+- validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
+- deterministic buckets `0 / 4 / 13 / 7` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+breakthrough_gate_cut_surface:
+current: Run #278 `project/game/src/game/balance.ts` `16.6-18.0s` araliginda yeni bounded `GATE CUT` penceresi aciyor; obstacle bu aralikta `lead` varyantiyle `14deg` travel ve `0.12s` forward lead kullanarak `SURGE SNAP`ten killbox onset'ine son bir lane bukusu tasiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/detail/callout/death-retry ve snapshot tonu tarafina da tasiyor
+baseline: Run #277 state'inde `BREAKTHROUGH` yalniz `STRAFE FORK -> SURGE SNAP` zincirini tasiyordu; `16.6-18.0s` koridoru killbox onset'ine phase cliff gibi dusuyor, erken-mid authored chain son bir bagli karar ani uretmiyordu
+target: sonraki browser veya manuel gozlem oyuncunun `10-18s` band'ini artik `STRAFE FORK -> SURGE SNAP -> GATE CUT` zinciri olarak anlattigini gostersin; yeni handoff cheap prefire, unfair bend veya killbox onset'inin gurultulu kopyasi gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 clear_climb_snapshot_cue_integration_surface:
 current: Run #277 `project/game/src/game/GameScene.ts` clear-climb cue hafizasini halka-spesifik `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` id'lerine bagliyor; final stretch artik tek seferlik generic clear-climb anonsu yerine halka degistiginde yeni hint/callout uretiyor. `project/game/src/game/deathPresentation.ts` ayni uc halka icin ayri snapshot palette'i kullaniyor; ascent warm climb, ridge cold cross-cut, summit hot snap tonu tasiyor

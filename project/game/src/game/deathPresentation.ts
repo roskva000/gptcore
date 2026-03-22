@@ -259,6 +259,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (breakthroughCue?.id === 'gate-cut') {
+    return {
+      badgeBackgroundColor: '#5d2c28',
+      badgeTextColor: '#ffe6df',
+      bodyTextColor: '#f1cec8',
+      calloutBackgroundColor: '#4a221f',
+      calloutTextColor: '#ffb8ac',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#5d2c28',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#fff0eb',
+      titleTextColor: '#ffdcd4',
+    };
+  }
+
   if (killboxCue?.id === 'pinch-lock') {
     return {
       badgeBackgroundColor: '#5b3418',

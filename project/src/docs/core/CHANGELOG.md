@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #278
+
+- `project/game/src/game/balance.ts` `16.6-18.0s` araligina yeni bounded `GATE CUT` penceresi ekledi; `lead` varyanti `14deg` rotation ve `0.12s` forward lead ile `SURGE SNAP`ten killbox onset'ine son bir lane bukusu tasiyor
+- `project/game/src/game/runPhase.ts` breakthrough cue truth'unu `GATE CUT LIVE` halkasiyla genisletti; detail, badge, death summary ve retry goal artik bu pre-killbox handoff'u da isimlendiriyor
+- `project/game/src/game/GameScene.ts` breakthrough hint metnini, cue intensity'sini ve backdrop motion'unu yeni `GATE CUT` cue'suna hizaladi
+- `project/game/src/game/deathPresentation.ts` `GATE CUT` olumleri icin ayri snapshot palette'i ekledi
+- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni breakthrough controller kontratini ve guncel deterministic baseline'i (`30.8s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #277
 
 - `project/game/src/game/GameScene.ts` clear-climb cue hafizasini generic `clear-climb` yerine `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` id'leriyle tuttu; final stretch artik uc halkayi da ayri hint/callout olarak anonsluyor
