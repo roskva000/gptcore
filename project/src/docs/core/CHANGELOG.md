@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #269
+
+- `project/game/src/game/balance.ts` `27.2-28.4s` icin yeni bounded `FOLD SNAP` penceresi ekledi; `echo` varyanti bu slice'ta `14deg` rotation ve `0.14s` hedef lag ile post-lock-in lane'i tekrar sikiyor
+- `project/game/src/game/runPhase.ts` killbox detail/support/badge/death-retry truth'unu `FOLD SNAP` cue'su ile genisletti; `24-32s` band'i artik generik echo paragrafi degil, yeni bir bounded route break tasiyor
+- `project/game/src/game/deathPresentation.ts` `FOLD SNAP` olumleri icin ayri snapshot accent paleti ekledi
+- `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni killbox controller kontratini ve guncel deterministic baseline'i (`30.2s avg / 10.0s first death / 0% early`, validation export `30.2s`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #268
 
 - `project/game/src/game/GameScene.ts` killbox cue aktifken arena spectacle'i cue-spesifik motion ile buyuttu; `PINCH LOCK` ve `SEAL SNAP` artik backdrop glow, top-bottom band ve frame offset/angle/scale tarafinda ayri imzalar tasiyor

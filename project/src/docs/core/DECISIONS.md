@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #269]
+
+Decision:
+`mutation` modunda `24-32s` killbox lock-in band'ina tek bir bounded `FOLD SNAP` beat'i ekle; yeni hazard family acmadan echo rejimini drift release oncesi bir kez daha authored karar anina cevir.
+
+Reason:
+`AUDIT.md` ve onceki `NEXT_AGENT.md` ayni boslugu gosteriyordu: siradaki dogru adim yeni spectacle degil, killbox'in `24s` sonrasi tekrar duz cadence'e dusen hissini kiracak yeni bir runtime davranis acmakti. En dar ve yuksek etkili hareket; mevcut `echo` ailesi icinde kisa bir pencere daha tanimlayip ayni truth'u `runPhase` ve death/retry yardimcilarina isimli cue olarak sindirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `27.2-28.4s` icin yeni `FOLD SNAP` penceresi ekledi; `echo` varyanti bu slice'ta `14deg` rotation ve `0.14s` lag ile lock-in sonrasi lane'i tekrar sikiyor. `project/game/src/game/runPhase.ts` killbox detail/support/badge/death summary ve retry goal'u `FOLD SNAP` cue truth'u ile genisletti. `project/game/src/game/deathPresentation.ts` bu yeni beat icin ayri snapshot tone ekledi. `project/game/src/game/telemetry.ts`, `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime kontratini ve guncel deterministic baseline'i kayda aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; headline `30.2s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `FOLD SNAP` penceresinin okunur post-lock-in karar ani yerine cheap zigzag, unfair clamp veya killbox cadence'ini bulaniklastiran bir gürültu urettigini gosterirse yalniz pencere suresi, rotation siddeti ve target lag dar kapsamda sadeleştirilir; bu bahaneyle yeni phase/orchestration/readiness katmani ya da yeni hazard family acilmaz.
+
 ### [Run #268]
 
 Decision:

@@ -7,14 +7,20 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #268:
-- `30.3s` average survival
+Current deterministic survival headline after Run #269:
+- `30.2s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
-- validation export snapshot `30.1s` average survival
+- validation export snapshot `30.2s` average survival
 - deterministic buckets `0 / 6 / 10 / 8` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+killbox_fold_snap_surface:
+current: Run #269 `project/game/src/game/balance.ts` `27.2-28.4s` araliginda yeni bounded `FOLD SNAP` penceresi aciyor; `echo` varyanti bu beat'te `14deg` rotation ve `0.14s` hedef lag ile lock-in sonrasi lane'i bir kez daha sıkıyor. `project/game/src/game/runPhase.ts` ve `project/game/src/game/deathPresentation.ts` ayni beat'i HUD/support/badge/death-retry ve snapshot tone truth'una tasiyor
+baseline: Run #268 state'inde killbox `24-32s` band'i echo lock-in sonrasi surekli bir lane-fold rejimi tasiyordu ama `27-28s` civarinda cadence'i yeniden authored karar anina ceviren ayri bir bounded kapanis yoktu; drift release oncesi band duzlesebiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun `24-32s` killbox handoff'unu artik yalniz echo cadence degil, lock-in sonrasi bir kez daha kapanan ayri bir `FOLD SNAP` olayi olarak anlattigini gostersin; bu slice unfair wipe veya cheap zigzag gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_trap_spectacle_snapshot_surface:
 current: Run #268 `project/game/src/game/GameScene.ts` `PINCH LOCK` ve `SEAL SNAP` icin ayri backdrop glow/band/frame motion imzalari uyguluyor; `project/game/src/game/deathPresentation.ts` da bu iki killbox olumunu farkli callout/title/prompt paletleriyle tonluyor. Killbox authored trap artik runtime/HUD truth'una ek olarak sahne ve death snapshot tarafinda da iki farkli kapanis karakteri tasiyor

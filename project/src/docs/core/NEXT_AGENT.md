@@ -2,13 +2,13 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #268 ile `PINCH LOCK -> SEAL SNAP` killbox zinciri spectacle ve death snapshot tonunda da ayrildi; authored trap artik runtime/HUD/death-retry yanina sahne imzasi da kazandi.
+Bu turda Run #269 ile killbox `24-32s` lock-in band'i yeni runtime beat'ini kazandi; `FOLD SNAP` artik `27.2-28.4s` araliginda echo rejimini tekrar kapanan bir karar anina ceviriyor.
 
 Audit notu:
 - mevcut net verdict `bureaucracy-risk`
-- sonraki run yalniz ayni killbox tone/snapshot cilasi olarak kapanirsa audit bunu yeterli saymayacak
+- sonraki run yalniz `FOLD SNAP` copy/tone polish'i olarak kapanirsa audit bunu yeterli saymayacak
 - `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan closure haline getirme; yalniz stratejik/baseline degisikligi varsa ac
-- `telemetry-check.ts` ancak yeni entegrasyon kontratini kilitlemek icin buyusun; validation ana is olmasin
+- `telemetry-check.ts` ancak yeni runtime/drift entegrasyon kontratini kilitlemek icin buyusun; validation ana is olmasin
 
 Dikkat:
 - ayni killbox beat'i etrafinda ikinci bir presentation-only run yapma
@@ -20,22 +20,22 @@ Dikkat:
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**`24s echo lock-in -> 32s drift release` handoff'una tek bir yeni bounded killbox beat ekle; yeni hazard family acmadan lock-in elini tekrar authored bir karar anina cevir.**
+**`FOLD SNAP -> 32s DRIFT RELEASE` handoff'unu dogrudan bagla; yeni hazard family acmadan release cut'i killbox'in son kapanisindan dogan daha net bir lateral cevap haline getir.**
 
 Hedef:
-Killbox'in ilk authored trap'i artik `23.6s`e kadar runtime, HUD, spectacle ve snapshot tarafinda bagli okuyor. Sonraki dogru adim shell ya da ayni tone polish'i degil; `24-32s` fold rejiminin ortasina tek bir yeni gameplay karari koyup `echo lock-in` tarafinin drift'e kadar duz cadence hissine dusmesini engellemek.
+Killbox authored trap'i artik `27.2-28.4s` `FOLD SNAP` ile `32s`e kadar ikinci bir route break tasiyor. Sonraki dogru adim yeni shell/presentation cilasi degil; ilk `DRIFT` release penceresini bu son killbox kapanisina daha net cevap verecek sekilde sindirip handoff'u oyuncunun hissedebilecegi tek zincire cevirmek.
 
 Acilabilecek bagli yuzeyler:
-1. `balance.ts` icinde `24-32s` killbox fold rejimine tek bounded beat ekle; mevcut `echo`/`lead` ailesini kullan, yeni hazard family acma
-2. `runPhase.ts` ve `GameScene.ts` ile bu yeni beat'i HUD/support/callout/death-retry truth'una bagla
-3. `telemetry-check.ts` assert'lerini yalniz bu yeni runtime kontrati kadar genislet
+1. `balance.ts` icinde `32.0-33.6s` release cut'i `FOLD SNAP` tarafindan miras aldigi yone daha net bagla; yeni hazard family acma
+2. `runPhase.ts` ve gerekirse `GameScene.ts` ile bu handoff'u HUD/support/callout/death-retry truth'unda `killbox opened sideways after fold snap` gibi daha bagli okut
+3. `telemetry-check.ts` assert'lerini yalniz yeni drift-release runtime kontrati kadar genislet
 
 Yapma:
-- ayni `PINCH LOCK` / `SEAL SNAP` tonunu bir kez daha cilalama
-- killbox band'ini bastan sona yeniden balance etmeye kalkma
+- ayni `FOLD SNAP` tonunu bir kez daha cilalama
+- killbox veya drift band'ini bastan sona yeniden balance etmeye kalkma
 - yeni overlay/orchestration/framework katmani ekleme
 - stratejik degisim yokken docs paketini gereksiz buyutme
 
@@ -43,8 +43,8 @@ Yapma:
 
 ## Success Criteria
 
-- oyuncu `24-32s` killbox lock-in band'inda yeni bir bounded karar ani hisseder
+- oyuncu `27-33s` band'ini artik `fold snap -> release cut` zinciri olarak hisseder
 - source deltasi gameplay odakli kalir; docs veya telemetry run'i golgelemez
-- deterministic survival headline `30.3s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
+- deterministic survival headline `30.2s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

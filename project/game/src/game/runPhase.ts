@@ -1,6 +1,8 @@
 import {
   BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS,
   BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS,
+  KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS,
+  KILLBOX_FOLD_SNAP_WINDOW_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS,
   KILLBOX_PINCH_LOCK_WINDOW_SECONDS,
   KILLBOX_SEAL_SNAP_WINDOW_START_SECONDS,
@@ -55,7 +57,7 @@ export type BreakthroughCue = {
   title: string;
 };
 
-export type KillboxCueId = 'pinch-lock' | 'seal-snap';
+export type KillboxCueId = 'pinch-lock' | 'seal-snap' | 'fold-snap';
 
 export type KillboxCue = {
   accentColor: number;
@@ -116,7 +118,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: LEAD_OBSTACLE_UNLOCK_SECONDS,
     accentColor: 0xff9eb1,
     detail:
-      'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, and a seal snap shuts it again just before 24s lock-in while cadence keeps folding the lane. Break your line late and escape sideways.',
+      'Lead cuts hit first, shadow echoes keep scissoring the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, seal snap shuts it again just before 24s lock-in, and a later fold snap tightens the echo lane once more before drift release. Break your line late and keep changing across the fold.',
   },
   {
     id: 'endgame',
@@ -153,6 +155,8 @@ const KILLBOX_PINCH_LOCK_WINDOW_END_SECONDS =
   KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS + KILLBOX_PINCH_LOCK_WINDOW_SECONDS;
 const KILLBOX_SEAL_SNAP_WINDOW_END_SECONDS =
   KILLBOX_SEAL_SNAP_WINDOW_START_SECONDS + KILLBOX_SEAL_SNAP_WINDOW_SECONDS;
+const KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS =
+  KILLBOX_FOLD_SNAP_WINDOW_START_SECONDS + KILLBOX_FOLD_SNAP_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_START_SECONDS =
   DRIFT_OBSTACLE_UNLOCK_SECONDS + DRIFT_RELEASE_WINDOW_SECONDS;
 const DRIFT_REBOUND_WINDOW_END_SECONDS =
@@ -217,7 +221,7 @@ export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | n
 export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
   if (
     progressSeconds < KILLBOX_PINCH_LOCK_WINDOW_START_SECONDS ||
-    progressSeconds >= KILLBOX_SEAL_SNAP_WINDOW_END_SECONDS
+    progressSeconds >= KILLBOX_FOLD_SNAP_WINDOW_END_SECONDS
   ) {
     return null;
   }
@@ -234,14 +238,26 @@ export const getKillboxCue = (progressSeconds: number): KillboxCue | null => {
     };
   }
 
+  if (progressSeconds < KILLBOX_SEAL_SNAP_WINDOW_END_SECONDS) {
+    return {
+      id: 'seal-snap',
+      title: 'SEAL SNAP LIVE',
+      hudLabel: 'SEAL SNAP',
+      snapshotLabel: 'SEAL SNAP',
+      rematchLabel: 'the seal snap',
+      accentColor: 0xffc18a,
+      body: 'Bridge echo gives back a step, then seal snap shuts the lane again before 24s lock-in. Take the brief reopen, then cut late across the snapback instead of holding the first recovery line.',
+    };
+  }
+
   return {
-    id: 'seal-snap',
-    title: 'SEAL SNAP LIVE',
-    hudLabel: 'SEAL SNAP',
-    snapshotLabel: 'SEAL SNAP',
-    rematchLabel: 'the seal snap',
-    accentColor: 0xffc18a,
-    body: 'Bridge echo gives back a step, then seal snap shuts the lane again before 24s lock-in. Take the brief reopen, then cut late across the snapback instead of holding the first recovery line.',
+    id: 'fold-snap',
+    title: 'FOLD SNAP LIVE',
+    hudLabel: 'FOLD SNAP',
+    snapshotLabel: 'FOLD SNAP',
+    rematchLabel: 'the fold snap',
+    accentColor: 0xbcecff,
+    body: 'Lock-in settles into echo cadence, then fold snap tightens the lane one more time before drift release. Do not hold the first fold; cut back across the tightening echo and reopen space for 32s.',
   };
 };
 
@@ -567,7 +583,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'killbox':
       return {
         title: 'KILLBOX LIVE',
-        body: 'A hard lead cut opens the trap, shadow echoes fold the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, then seal snap shuts the lane again before 24s lock-in.',
+        body: 'A hard lead cut opens the trap, shadow echoes fold the lane, a bounded pinch lock bends back into the straight escape, bridge echo gives one step back, seal snap shuts the lane again before 24s lock-in, then fold snap tightens the echo lane once more before drift release.',
       };
     case 'endgame':
       return {

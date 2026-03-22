@@ -1,6 +1,6 @@
 # STATE.md
 Last Updated: 2026-03-22
-Updated By: Codex Run #268
+Updated By: Codex Run #269
 
 ---
 
@@ -10,8 +10,8 @@ Oyun artik sadece survival-core bakim fazinda degil.
 Yeni resmi durum: **Autonomous Expansion**.
 
 Bu turda aktif hedef secildi:
-- run mode: `integration`
-- ana hedef: `KILLBOX` icindeki `PINCH LOCK -> SEAL SNAP` zincirini arena spectacle ve death snapshot tonunda da ayirt edilir hale getirmek
+- run mode: `mutation`
+- ana hedef: `24-32s` killbox lock-in band'ina tek bir yeni bounded gameplay karari eklemek
 
 Eldeki cekirdek:
 - deterministic survival tabani ayakta
@@ -26,14 +26,14 @@ Ama urunun asıl eksigi:
 - oyuncuya tekrar denemek icin daha fazla neden verilmelidir
 
 Bugunki ilerleme:
-- run mode: `integration`
-- ana hedef: `20.6-23.6s` `KILLBOX` trap'inin iki bounded kapanisini sahne ve snapshot tonunda da ayirt edilir hale getirmek
-- `project/game/src/game/GameScene.ts` artik `PINCH LOCK` ve `SEAL SNAP` icin ayri backdrop glow, top-bottom band ve frame motion imzalari kullaniyor; killbox canli state'i tek renkli generic fold yerine iki farkli kapanis karakteri tasiyor
-- ayni dosya cue rengini near-miss heat'in ustune tasiyarak killbox trap aktifken arena spectacle'in authored kapanisi daha net sahiplenmesini sagliyor
-- `project/game/src/game/deathPresentation.ts` `PINCH LOCK` ile `SEAL SNAP` olumlerini farkli snapshot palette'lerine ayiriyor; pinch daha sicak clamp tonu tasirken seal snap daha sert ve daha hot close-out tonu kullaniyor
-- `project/game/scripts/telemetry-check.ts` yeni killbox snapshot tone kontratini regression altina aliyor; gereksiz validation buyumesi yapilmadi
-- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.3s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
-- deterministic bucket dagilimi korundu: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.1s`
+- run mode: `mutation`
+- ana hedef: `24-32s` killbox lock-in band'ini tek yeni authored beat ile tekrar karar anina cevirmek
+- `project/game/src/game/balance.ts` `27.2-28.4s` araliginda yeni bounded `FOLD SNAP` penceresi ekliyor; mevcut `echo` ailesi bu slice'ta `14deg` rotation ve `0.14s` lag ile normal killbox cadence'inden daha sert kapanarak `32s` drift release oncesi yeni bir rota kirilmasi uretiyor
+- `project/game/src/game/runPhase.ts` killbox detail/support/badge/death-retry truth'unu `FOLD SNAP` ile genisletiyor; `24s` lock-in artik generik echo paragrafi degil, `fold snap` ile tekrar sikilan bir authored handoff olarak okunuyor
+- `project/game/src/game/deathPresentation.ts` `FOLD SNAP` olumleri icin ayri snapshot tone veriyor; post-lock-in kapanis daha soguk echo-tightening palette'i ile onceki sicak `PINCH LOCK` / `SEAL SNAP` tonlarindan ayriliyor
+- `project/game/scripts/telemetry-reports.ts`, `project/game/src/game/telemetry.ts` ve `project/game/scripts/telemetry-check.ts` yeni runtime kontratini ve guncel deterministic baseline'i kayda aldi
+- deterministic validation yesil kaldi: `npm run telemetry:check` ve `npm run build` basarili; headline `30.2s avg / 10.0s first death / 0% early`, pacing `10 / 35 / 89`, validation summary `5 runs | first death 19.6s | early 0% | 5/5 runs, target met`
+- deterministic bucket dagilimi korundu: `10-20s: 6`, `20-30s: 10`, `40s cap: 8`; validation export ortalamasi `30.2s`
 
 ---
 
@@ -76,8 +76,8 @@ Yeni rejim:
 
 - kucuk ama guvenli is degil, gorunur tema tabanli urun hamlesi uret
 - `BREAKTHROUGH` artik generic phase metni degil; `STRAFE FORK` ile `SURGE SNAP` sahnede ve death snapshot'ta da ayri kimlik tasiyor
-- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` degil; `SEAL SNAP` de runtime, HUD, spectacle ve death snapshot tonunda ayri halka olarak okunuyor
-- killbox authored trap'i `24s` oncesine kadar daha bagli hissediliyor; sonraki adim ayni yuzeyi bir kez daha cila etmek degil, `24-32s` lock-in eline yeni bir bounded gameplay karari tasimak
+- `KILLBOX` artik yalniz lead cut + `PINCH LOCK` + `SEAL SNAP` degil; `24-32s` lock-in band'i de `FOLD SNAP` ile ikinci bir authored rota kirilmasi tasiyor
+- killbox authored trap'i artik `32s` drift release'e daha bagli hissediliyor; sonraki adim ayni beat'i cila etmek degil, bu yeni handoff'u `DRIFT` onset tarafinda somut bir cevapla sindirmek
 - score/meta/tooling veya shell cilasi koridoruna geri donme
 - browser/telemetry/build ile temel guveni koru
 - yalnizca gerekli hafizayi guncelle

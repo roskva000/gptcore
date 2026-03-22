@@ -283,6 +283,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (killboxCue?.id === 'fold-snap') {
+    return {
+      badgeBackgroundColor: '#1f4357',
+      badgeTextColor: '#e0f7ff',
+      bodyTextColor: '#c7e7f5',
+      calloutBackgroundColor: '#173648',
+      calloutTextColor: '#9ee4ff',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#1f4357',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#e7f8ff',
+      titleTextColor: '#d5f2ff',
+    };
+  }
+
   return {
     ...DEFAULT_SNAPSHOT_TONE,
     promptBackgroundColor: hasNearMissChaseSnapshot
