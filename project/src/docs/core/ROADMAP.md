@@ -1,131 +1,60 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #290
+Updated By: God Weekly Architecture Pass
 
 ---
 
 # NOW
 
-Aktif faz `Autonomous Expansion`.
-Bu fazin amaci oyunu human sample beklemeden 5-10 run icinde belirgin bicimde buyutmektir.
+Aktif faz `Autonomous Expansion`, aktif haftalik alt-faz `Identity And Retention Breakout`.
 
-Mevcut durum:
-- deterministic ve browser guard tabani yeterli
-- son donem mutation / presentation birikimi var
-- sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
-- Run #290 ile death/retry overlay'i ayni authored truth'u koruyup daha kompakt hiyerarsiye indi; body tekrar eden progress satirini kaybetti, retry bloğu kisaldi ve session stats tek satira toplandi
-- Run #289 ile `10-18s` breakthrough artik `STRAFE FORK -> HINGE FEINT -> SURGE SNAP -> GATE CUT` zinciri tasiyor; `13.4s+` sonrasi ilk kez sahte bir sakinlesme beat'i aciliyor ve surge snapback daha earned okunuyor
-- Run #288 ile `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT -> RELEASE CUT` zinciri tasiyor; `30.4s+` sonrasi ilk kez yumusayan lane'i tekrar kesen son bir bounded handoff uretiyor
-- Run #287 ile overtime artik `60.0-72.0s` boyunca `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zinciri tasiyor; `68s+` sonrasi ilk kez ikinci bounded overtime consequence uretiyor
-- Run #241 ile coarse phase ladder aktif gameplay pressure'a baglandi
-- Run #242 ile `BREAKTHROUGH` onset'i warm backdrop burst + phase callout + compact hint zinciriyle ekranda okunur bir arena olayi haline geldi
-- Run #243 ile `KILLBOX` onset'i ilk zorunlu `lead` cut, daha agresif target lead ve acili trajectory kirilmasi ile gercek bir spatial trap anina donustu
-- Run #244 ile bu trap tek ambush olarak kalmadi; killbox onset'inin hemen arkasina kisa bir `shadow echo` follow-through'u girdi
-- Run #245 ile `KILLBOX` band'i `21.2s` bridge echo ve `24s` echo lock-in penceresiyle erken pinch'ten normal cadence'e baglandi; 18-24s artik daha tutarli bir spatial state gibi okunuyor
-- Run #246 ile `24-32s` `echo` cadence'i killbox icin kalici `lane-fold` rejimine dondu; faz artik `24s` sonrasinda duz chase'e dusmeden `DRIFT` onset'ine kadar ayni spatial dili tasiyor
-- Run #247 ile `32s` `DRIFT` onset'i artik killbox'tan kopuk reset degil; ilk drift `1.6s`lik lateral release cut'i ve kisa miras `echo` lag'i ile ayni trap rejiminden dogan yeni bir cevap gibi giriyor
-- Run #248 ile `32-40s` endgame band'i tek acilis cut'i olmaktan cikti; `33.6-35.0s` rebound ve `36.2-37.6s` late sweep pencereleri release'i bagli bir spatial zincire cevirdi
-- Run #249 ile ayni `32-40s` zinciri ilk kez player-facing olarak da parcalandi; HUD status/detail, hint, bounded callout ve arena spectacle artik `release -> rebound -> late sweep` halkalarini ayri ayri okutuyor
-- Run #250 ile bu zincir game-over/rematch yuzeyine de sindi; gec olumler artik generic `ENDGAME` veya stale `10s BROKEN` etiketi yerine aktif halka badge'i, cue-spesifik death summary ve dogrudan rematch hedefi tasiyor
-- Run #251 ile `37.6-40s` band'i tekrar buyutuldu; `late sweep` sonrasina bounded `aftershock hold` clamp'i eklendi ve endgame finali generic alternating drift'e hemen dusmeyen dort halkali bir zincire donustu
-- Run #252 ile bu final `40s+` eline de baglandi; `aftershock hold` sonrasina bounded `recenter` handoff'u girerek `39.0-41.2s` band'ini generic drift boslugu yerine kontrollu bir late-run devam haline getirdi
-- Run #253 ile `41.2-45.6s` band'i de bounded `preclear squeeze` halkasiyla buyudu; `recenter` biter bitmez generic drift'e donmek yerine drift yeniden acilan lane'e `12deg` fold-back ve `0.10s` lag ile basinç kurup `45s+` elini daha bagli hale getiriyor
-- Run #254 ile `45.6-60s` band'i ilk kez ayri bir `clear climb` payoff'u kazandi; goal badge, phase detail/support, live hint/callout ve spectacle artik `preclear squeeze` sonrasinda generic clear countdown'a degil adlandirilmis gec-final chase'ine bagli
-- Run #255 ile ayni `clear climb` truth'u death/retry payoff'una da sindi; `45.6s+` olumler artik `CLEAR CLIMB` badge'i, `60s CLEAR`e kalan fark ve tek satirlik rematch hedefiyle final push olarak okunuyor
-- Run #256 ile `45.6-60s` band'i ilk gercek runtime davranisini kazandi; clear climb boyunca drift artik forced final-threat rejimine giriyor ve `45.6-52.0s` `ascent stair` ile `52.0-60.0s` `summit snap` pencereleri son stretch'i generic cadence'den ayiriyor
-- Run #257 ile ayni clear-climb truth'u arena spectacle ve live readability tarafinda da parcalandi; HUD/callout `ASCENT STAIR` ile `SUMMIT SNAP`i ayri ayri gosteriyor, backdrop glow/band/frame motion'u da bu iki final davranisa gore yone degistiriyor
-- Run #258 ile insan sinyalindeki pozitif `near miss` anlari kisa omurlu bir replay kancasina tasindi; yakin gecis artik `CHASE LIVE` countdown'u, support satiri ve death snapshot retry prompt'u uzerinden kisa bir earned follow-up penceresi tasiyor
-- Run #259 ile ayni `near miss chase` truth'u sahneye de sindi; aktif pencere backdrop glow/aura/band/frame uzerinden kisa bir teal heat state'i tasiyor ve death snapshot prompt'u generic overlay yerine bu earned state'in accent'iyle aciliyor
-- Run #260 ile ayni `near miss chase` truth'u death snapshot body/badge tarafina da sindi; game-over artik yalniz tinted prompt degil, `CHASE SNAP` badge'i ve earned kopus satiri ile bu kisa pencerenin nerede koptugunu daha net anlatiyor
-- Run #261 ile bu kopus hit anina da sindi; impact marker, fatal spotlight ve overlay title near-miss aktifken generic yon etiketi yerine `snapped lane` dili ve teal accent ile ayni truth'u tasiyor
-- Run #262 ile ayni `near miss chase` ilk kez runtime spawn line'ina da girdi; tetiklenen close shave dominant lane'i kilitliyor ve chase penceresindeki en fazla iki sonraki threat once kisa `lane reopen`, sonra `lane cut` target kaymasi alarak oynanis sirasinda da ayni earned snap semantigini hissettiriyor
-- Run #263 ile bu runtime `lane reopen -> lane cut` slice'i artik player-facing live readability'ye de baglandi; HUD `CHASE LIVE` yerine aktif beat'e gore `LANE REOPEN` / `LANE CUT` etiketine geciyor, support/callout bu iki beat'i isimlendiriyor ve ilgili spawn'lar step-spesifik tint tasiyor
-- Run #264 ile `10-18s` `BREAKTHROUGH` band'i ilk authored early-mid fork'unu kazandi; `12.0-13.4s` forced `STRAFE FORK`, `15.0-16.6s` forced `SURGE SNAP` ve bunlara bagli HUD/detail/support/death-retry truth'u erken-mid run'i generic cadence yigisindan cikariyor
-- Run #265 ile ayni authored fork arena spectacle ve death snapshot tonuna da sindi; backdrop glow/band/frame motion ve game-over accent'i artik `STRAFE FORK` ile `SURGE SNAP`i ayri olaylar gibi tasiyor
-- Run #266 ile `18-24s` `KILLBOX` band'i yeni bounded `PINCH LOCK` beat'ini kazandi; `20.6-21.6s` araliginda `lead` varyanti daha sert rotation ve ozel forward lead ile straight-escape cevabini ikinci kez bukuyor, ayni truth HUD/callout/death-retry zincirinde de isimli bir halka olarak okunuyor
-- Run #267 ile ayni `KILLBOX` zinciri `22.4-23.6s` `SEAL SNAP` halkasini kazandi; bridge echo'nun verdigi kisa toparlanma adimi `18deg` snapback ve `0.10s` lag ile tekrar kapanıyor, boylece `24s` lock-in oncesi ikinci bir route break daha olusuyor
-- Run #268 ile ayni killbox authored trap'i sahne ve snapshot tonunda da parcalandi; `PINCH LOCK` ile `SEAL SNAP` artik backdrop glow/band/frame motion'u ve death overlay palette'i tarafinda da ayri imza tasiyor
-- Run #269 ile `24-32s` killbox fold rejimi ilk yeni runtime karar anini kazandi; `27.2-28.4s` `FOLD SNAP` penceresi `echo lock-in` sonrasi lane'i `14deg` rotation ve `0.14s` lag ile tekrar sikiyor, boylece drift release oncesi lock-in band'i generik cadence'e dusmuyor
-- Run #271 ile `33.6-35.0s` rebound penceresi ilk kez iki kararli bir zincire dondu; ilk `0.7s` `REBOUND HOLD` release side'i tasirken kalan `0.7s` `REBOUND PUNISH` ayni lane'i `22deg` / `0.10s` ile tekrar kapatiyor ve `32-35s` band'ini gercek `hold-or-cross` sorusuna ceviriyor
-- Run #272 ile `36.2-37.6s` late-sweep penceresi de ikinci bir bounded sonuca kavustu; ilk `0.8s` `LATE SWEEP` capraz kirisi aciyor, son `0.6s` `SWEEP LOCK` ise `24deg` / `0.05s` ile ayni crossed lane'i bir beat daha kapatip `aftershock` oncesi yeni bir gec-karar maliyeti uretiyor
-- Run #275 ile `41.2-45.6s` `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi sahne ve death snapshot tarafina da sindi; false clear artik daha serin bir reopen motion/palette'i, preclear ise daha sert bir close motion/palette'i tasiyor
-- Run #276 ile `45.6-60s` clear climb finali uc halkaya cikti; `50.4-52.4s` yeni `RIDGE CUT` beat'i `ASCENT STAIR` ile `SUMMIT SNAP` arasina girip summit oncesi yeni bir route degistirme anı acti
-- Run #278 ile `16.6-18.0s` breakthrough finali yeni `GATE CUT` handoff'unu kazandi; `SURGE SNAP` sonrasi lane `14deg` / `0.12s` lead ile bir kez daha bükülüyor ve killbox artik daha authored bir giris aliyor
-- Run #280 ile `24-32s` lock-in tail'i yeni `LOCK DRAG` beat'ini kazandi; `29.2-30.4s` araliginda echo ayni folded lane'i `20deg` / `0.09s` ile bir beat daha tasiyip `32s` release oncesi generic cadence'e dusmeyi engelliyor
-- Run #281 ile `33.6-35.0s` rebound zinciri uc halkaya cikti; `0.6s` `REBOUND HOLD` sonrasi yeni `0.45s` `REBOUND CROSS` lane'i ilk kez committed cross'a zorluyor, ardindaki `0.35s` `REBOUND PUNISH` ise ayni committed lane'i cash-in ederek `late sweep` oncesi daha olayli bir endgame onset uretiyor
-- Run #282 ile `39.0-41.2s` handoff ilk kez iki halkali oldu; `1.2s` `RECENTER` daha yumusak bir late handoff verirken yeni `1.0s` `CENTER PIN` merkez hattini `24deg` / `0.05s` ile tekrar kapatip `FALSE CLEAR` oncesi yeni bir bounded cut-back soruyor
-- Run #283 ile `45.6-52.4s` clear-climb stretch'i dort halkaya cikti; `ASCENT STAIR` `1.8s`e cekildi, araya yeni `2.2s`lik `LEDGE FEINT` beat'i eklendi, `RIDGE CUT` `49.6-52.4s`e kaydi ve final stretch ridge oncesi yeni bir fake-safe hold sorusu kazandi
-- Run #284 ile `52.4-60.0s` summit stretch'i de ikiye bolundu; yeni `52.4-54.8s` `CREST VEER` beat'i ridge cut sonrasi kisa bir reopen penceresi aciyor ve `SUMMIT SNAP` artik bu reopen'i cash-in eden ayri bir son kapanis gibi calisiyor
-- Run #285 ile `60.0-64.0s` band'i ilk authored overtime opener'ini kazandi; yeni `BANKED AIR -> CASH OUT` zinciri `60s CLEAR` sonrasini generic hot overtime yerine once kisa bir cleared-lane reopen, hemen ardindan bounded bir snapback kararina ceviriyor
+Bu haftanin stratejik okumasi:
+- son hafta gercek gameplay buyumesi oldu
+- ama buyume agirlikla ayni authored pressure ladder'ini genisleterek geldi
+- sistem closure ve validation maliyetini gerektiginden fazla beraber tasiyor
 
-Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
+Bu nedenle roadmap'in yeni ana ekseni:
+- oyuna ikinci buyuk aileyi acmak
+- retry istegini ve session kimligini buyutmek
+- mevcut ladder'a yeni halka eklemeyi varsayilan buyume modeli olmaktan cikarmak
 
----
+## Expansion Track A — Session Identity And Retry Desire
+- run'in sadece saniye koridorlariyla degil, session sonucu ve tekrar motivasyonuyla da buyudugu bir yapi kur
+- `near miss` gibi earned sinyalleri tek pencere olmaktan cikarip run-to-run hafiza veya kisa hedef duygusuna bagla
+- olum sonrasi motivasyonu overlay copy'siyle degil, yeniden baslama niyetiyle guclendir
+- hafif kal: agir progression, economy veya menu-agir meta acma
 
-# NEXT
-
-## Expansion Track A — Run Architecture
-- shipped slice: waiting forecast + active HUD phase status/detail + death/retry payoff + live pressure multipliers + `BREAKTHROUGH` onset tell'i + `KILLBOX` onset forced lead cut + erken `shadow echo` follow-through + `21.2s` bridge echo + `24s` echo lock-in ile coarse run ladder artik gercek arena davranisina daha derin sindi
-- shipped slice: `24-32s` `echo` cadence'i de artik killbox'in ayni spatial kimligini tasiyan tekrarli bir lane-fold rejimi; `24s` sonrasi davranis duz target-lag chase'e hemen dusmuyor
-- shipped slice: `32-45.6s` band'i artik bounded `release -> rebound -> late sweep -> sweep lock -> aftershock hold -> recenter -> preclear squeeze` zinciriyle release'ten sonra da olayli kaliyor; endgame `41s+` sonrasi da hemen generik alternating beat'e dusmuyor
-- shipped slice: `41.2-45.6s` handoff'u artik iki kararli bir finale dondu; `FALSE CLEAR` kisa bir guvenli-lane yem'i gosteriyor, ardindaki `PRECLEAR SQUEEZE` ise ayni baited lane'i daha sert kapatip `45.6s+` push'una authored bir cash-in veriyor
-- shipped slice: `45.6-60s` band'i artik `clear climb` payoff diliyle goal chase/HUD/callout/spectacle tarafinda ayri bir gec final gibi okunuyor; `60s` yolu salt sayac degil takip edilen bir hedef haline geliyor
-- shipped slice: death/retry payoff artik bu yedi halkadan hangisinde kopuldugunu ve hangi rematch hedefinin kacirildigini soyluyor; `clear climb` de buna dahil
-- shipped slice: `45.6-60s` clear climb artik forced drift davranisiyla uc basamakli final-threat kimligi tasiyor; `ascent stair` climb lane'i yukari tasiyor, `ridge cut` ayni lane'i summit oncesi capraz kesiyor, `summit snap` ise son saniyeleri daha sert kapatiyor
-- shipped slice: `ascent stair -> ridge cut -> summit snap` rejimi artik HUD/detail/badge/retry goal ve arena glow/aura/band/frame hareketinde de ayri okunuyor; final stretch ekranda uc farkli niyet tasiyor
-- shipped slice: ayni clear-climb rejimi artik canli cue hafizasinda da tek generic halka gibi davranmiyor; `ASCENT STAIR`, `RIDGE CUT` ve `SUMMIT SNAP` kendi hint/callout anonslarini ayri ayri tetikliyor
-- shipped slice: death snapshot tonu da artik clear-climb icinde tek renk degil; ascent warm climb, ridge cold cut, summit hot snap palette'iyle final stretch overlay tarafinda da uc ayri niyet tasiyor
-- shipped slice: `near miss` artik tek-frame pulse degil; `CHASE LIVE` HUD countdown'u ve support/retry prompt kancasi ile kisa omurlu bir earned risk-odul penceresi aciyor
-- shipped slice: ayni `near miss chase` aktifken arena backdrop'u da kisa bir heat pulse'a giriyor; oyuncu pencereyi yalniz copy degil sahnedeki sicaklik degisiminden de ayirt ediyor
-- shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
-- shipped slice: ayni truth artik aktif chase sirasinda kisa bir runtime `lane reopen -> lane cut` zinciri de tasiyor; spawn target'i en fazla iki beat boyunca snapped lane'den uzaklasip sonra ayni lane'e geri kapanarak gercek mekansal fark uretiyor
-- shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
-- shipped slice: `BREAKTHROUGH` artik generic phase break'i degil; `STRAFE FORK`, yeni `HINGE FEINT`, `SURGE SNAP` ve `GATE CUT` cue'lari bounded forced runtime pencereleri ve death/retry payoff'u ile killbox oncesi dort halkali authored cevap zinciri tasiyor
-- shipped slice: `HINGE FEINT` `13.4-15.0s` band'inda `STRAFE FORK` sonrasi kisa bir fake-hold soruyor; `strafe` target'i `0.14s` geriye dusup oyuncuya daha sakin gorunen ama surge oncesi cezalandirilabilir bir rota birakiyor
-- shipped slice: `GATE CUT` artik killbox onset'e phase cliff gibi dusmuyor; `LEAD CUT` ve `ECHO FOLLOW` cue'lari `18.0-20.6s` killbox onset'ini HUD/detail/hint/death-retry/snapshot tarafinda adlandirip `PINCH LOCK` oncesini de ayni authored zincire bagliyor
-- shipped slice: `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT` olarak dort closure halkasi tasiyor; `30.4-32.0s` band'i yumusayan lane'i bir kez daha kesip `RELEASE CUT`e earned bir final handoff satiyor
-- shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
-- shipped slice: `24-32s` lock-in band'i artik yalniz echo cadence degil; `27.2-28.4s` `FOLD SNAP` bu rejimi bir kez daha kapatip `32s` drift release oncesi yeni bir rota karari doguruyor
-- shipped slice: `32.0-41.2s` `DRIFT` zinciri artik tek release + rebound paragrafi degil; `fold-carry -> release stretch -> rebound hold -> rebound cross -> rebound punish -> late sweep -> sweep lock -> aftershock -> recenter -> center pin` ayni lane'i once aciyor, sonra committed cross istiyor, sonra birkac farkli closure/handoff halkasiyla ikinci yariyi olayli tutuyor
-- shipped slice: yeni `LATE SWEEP -> SWEEP LOCK -> AFTERSHOCK` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; gec crossback, ikinci closure ve son clamp yalniz HUD/copy degil sahne ve overlay tonu uzerinden de ayrisiyor
-- shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
-- shipped slice: `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali; yeni `CREST VEER` ridge cut sonrasi kisa bir reopen'u hem runtime hem HUD/snapshot/spectacle tarafinda ayri okutur
-- shipped slice: `60.0-72.0s` overtime artik generic hot pressure degil; `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zinciri `60s CLEAR` sonrasi ilk on iki saniyeyi runtime, HUD, death/retry ve snapshot tonu tarafinda authored bir payout + second-consequence zinciri olarak tasiyor
-- shipped slice: death/retry yuzeyi artik daha az veriyle ayni authored beat truth'unu satiyor; active cue, neden kopuldugu ve retry hedefi overlay'de daha hizli ayrisiyor
-- next slice: integration kapandi; siradaki dogru adim ayni overlay/layout koridorunu tekrar polish etmek degil yeni bir runtime/gameplay deltasi acmak
-- oyuncuya "bu run bir seye donustu" hissi ver
-
-## Expansion Track B — Arena + Threat Families
-- arena davranisini sadece mevcut beat ladder'dan ibaret bir ritim olmaktan cikar
-- yeni hazard family acmadan once mevcut phase pressure swap'larini daha okunur spatial davranislarla derinlestir
-- ozellikle `DRIFT` onset'iyle acilan lateral release zinciri artik runtime + player-facing + death/retry truth'una girdi; sonraki adim bu late finali `45-60s` basincla buyutmek veya yeni bir arena cephe ailesi acmak
-- clear climb tarafinda summit oncesi yeni runtime basinç alindi; sonraki secim ya bu son stretch'in snapshot/readability tarafini sindirmek ya da yeni arena cephe ailesine gecmek
-- clear climb tarafinda integration tamamlandi; breakthrough koridoru artik `GATE CUT` ile killbox'a baglandi. Yeni aday ya bu pre-killbox handoff'un killbox onset okunurlugunu sindirmek ya da farkli bir gameplay cephesinde yeni bounded runtime davranisi acmak
+## Expansion Track B — New Gameplay / Result Family
+- mevcut `BREAKTHROUGH -> OVERTIME` ladder'ina yeni cue eklemek yerine yeni bir sonuc mantigi veya risk/reward family ac
+- bu family tek sayisal pencere degil, oyunun bir denemeyi digerinden farkli hissettirecek bir davranis uretmeli
+- mevcut fairness ve okunurluk prensiplerini bozacak cheap chaos'a kacma
 
 ## Expansion Track C — UI / Shell Identity
 - HUD ve shell'i daha karakterli, daha oyunsal, daha canli hale getir
 - waiting / playing / death / retry durumlari arasinda daha sert kimlik farki kur
+- bunu yalniz stil calismasi olarak degil, aktif hedefler ve session hissiyle bagli tasarla
 
 ## Expansion Track D — Retention Hooks
 - tekrar denemeyi tetikleyen hafif meta, route, challenge veya earned payoff katmani ac
-- yakin gecislerin zaten pozitif insan sinyali verdigi unutulmasin; replay istegini yukselten dar ama oyunsal bir odak sec
-- aktif near-miss chase slice'i retained adaylardan biri; yakin vadede ayni koridora geri donmek yerine breakthrough fork'unun retry istegine katkisini guclendir
-- death/retry clutter turu kapandi; yakin vadede ayni overlay'e geri donmek yerine yeni bir runtime davranisiyla replay istegini buyut
+- yakin gecislerin pozitif sinyal verdigi unutulmasin ama sistemi yalniz `near miss` uzerine kurma
+- retention hamlesi bir docs/tooling teslimatina donusmemeli
 - agir progression bloat'a kacma
 
 ## Expansion Track E — Browser Validation In Practice
 - Chromium / smoke / validation-ready akisini cesur urun degisikliklerine daha yakin kullan
 - browser evidence'i gercek tasarim kararina bagla
+- yeni kontrat yoksa validation katmanini buyutme
 
 ---
 
 # BLOCKERS
 
 Eski anlamiyla blocker yok.
-Asagidakiler sadece dikkat notudur:
+Asagidakiler dikkat notudur:
 - browser otomasyonunun goremedigi hissi yuzeyleri tamamen yanlis okumamak
 - buyuk hamleleri dogrulamadan biriktirmemek
 - ayni anda cok fazla aile acip dagilmamak
+- closure ritualini tekrar varsayilan yapmak
 
 ---
 
@@ -134,6 +63,7 @@ Asagidakiler sadece dikkat notudur:
 - kapsamli refactor
 - yeni yonetim/framework katmanlari
 - yalniz docs / copy merkezli run'lar
+- ayni cue koridorlarina presentation-only halka ekleme
 - sadece fairness/readability mikro-fix zincirine geri donus
 
 ---
@@ -141,7 +71,7 @@ Asagidakiler sadece dikkat notudur:
 # SUCCESS MARKERS
 
 Roadmap dogru ilerliyorsa yakinda sunlar gorulmeli:
-- 3 run icinde belirgin gorsel/oyunsal fark
-- 5 run icinde tempo veya structure farki
-- 10 run icinde bugunkunden bariz daha farkli bir deneyim
-- audit dilinde `ritual-loop` yerine `expansion-live` sinyali
+- 3 run icinde yeni bir session/result farki
+- 5 run icinde shell veya retention cephesinde hissedilir kimlik artisi
+- 5-10 run icinde mevcut ladder disinda hatirlanabilir ikinci aile
+- audit dilinde `bureaucracy-risk` yerine `expansion-live` sinyali

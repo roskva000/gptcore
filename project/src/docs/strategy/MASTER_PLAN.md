@@ -1,6 +1,6 @@
 # MASTER_PLAN.md
-Last Updated: 2026-03-21
-Updated By: Partner + Strategic Reset
+Last Updated: 2026-03-23
+Updated By: God Weekly Architecture Pass
 
 ---
 
@@ -51,6 +51,14 @@ Exit Criteria:
 - en az 2-3 expansion family aktif olarak oyuna girmis olmali
 - docs fan-out default rituel olmaktan cikmali
 
+Current Weekly Subphase:
+`Phase 3B - Identity And Retention Breakout`
+
+Weekly Intent:
+- mevcut authored phase ladder'i tek buyume motoru olmaktan cikar
+- replay istegini session yapisi ve shell kimligiyle buyut
+- validation ve docs maliyetini urun etkisine gore sertce kis
+
 ## Phase 4 - Depth And Retention Systems
 Goal:
 Tutunma sinyali veren expansion'lari daha kalici sistemlere cevirmek.
@@ -76,18 +84,19 @@ Candidate Themes:
 
 # Weekly Priority Stack
 
-1. Visible product delta over safe maintenance
-2. Theme-based expansion over single narrow fixes
-3. Browser evidence over waiting for humans
-4. Minimum memory over ritualized docs
-5. Refactor only when it unlocks the next big leap
+1. Yeni urun ailesi over ayni ladder'a yeni halka
+2. Retry desire ve session identity over neat closure
+3. Visible product delta over safe maintenance
+4. Browser evidence over waiting for humans
+5. Minimum memory over ritualized docs
+6. Refactor only when it unlocks the next big leap
 
 ---
 
 # Non-Goals For Current Phase
 
 - human sample beklemek
-- ayni eski fairness/audio/mobile mikro-koridorlarinda oyalanmak
+- ayni mevcut cue koridorlarina presentation-first halka eklemek
 - sadece copy/panel/telemetry wording churn'u
 - docs rewrite'i ilerleme gibi sunmak
 - gereksiz framework / manager katmanlari

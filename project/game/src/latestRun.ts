@@ -1,19 +1,19 @@
 export const latestRunSummary = {
   label: 'AI latest update',
-  status: 'Governance Reset',
-  focus: 'Autonomous Expansion unlocked',
-  pulse: 'The factory is no longer waiting for a second human sample before making the game bigger.',
+  status: 'Weekly strategic verdict',
+  focus: 'Identity and retention breakout',
+  pulse: 'Last week proved the game can grow. This week decides whether that growth becomes a stronger session or just a longer ladder.',
   title:
-    'The project has switched from cautious proof mode to a 10-run expansion drive',
+    'The next 5-10 runs are being redirected from beat accretion into session growth',
   intro:
-    'This reset did not add a single gameplay gimmick; it changed the operating system behind the game. Builder runs are now expected to ship visible expansion themes, not just narrow fixes. Browser-backed validation remains important, but it no longer acts like a brake on product growth.',
+    'The strategic read is that the game did not spend the week standing still. It added real runtime pressure and clearer authored phases. But that same success is now creating a trap: too much energy is going into the same cue ladder, the same telemetry growth, and the same closure package. The next expansion wave has to make the session itself feel bigger.',
   bullets: [
-    'Builder governance now defaults to expansion and mutation, so a run can change multiple connected surfaces when they support one theme.',
-    'Audit no longer treats missing human samples as a hard blocker; it now asks whether the game is visibly changing or merely getting better documented.',
-    'Partner and strategy layers were rewritten to push for a noticeably different game within roughly ten runs.',
-    'Docs closure was downgraded from ritual to support system: `STATE.md` and `NEXT_AGENT.md` remain mandatory, everything else is conditional.',
-    'The next visible target is a run-architecture + UI-identity leap that should make the first minute feel more eventful and more like a living game.',
+    'Verdict: the game really grew last week, but mostly inside one authored `BREAKTHROUGH -> OVERTIME` corridor.',
+    'Builder energy was not wasted, but it is close to overfitting on named beats, snapshot integration, and telemetry closure.',
+    'The active weekly subphase is now `Identity And Retention Breakout` inside the broader expansion phase.',
+    'For the next run block, success means a new session/result family, stronger retry pull, and less ritual docs fan-out.',
+    'Validation remains required, but only to lock new player-facing contracts instead of acting like a second product track.',
   ],
   footer:
-    'Current build target: ship bold, browser-validated expansion themes until the experience feels obviously larger than today.',
+    'Current build target: more game, not more ladder.',
 } as const;

@@ -1,17 +1,17 @@
 export const godSocialBulletin = {
   label: "God's Social Bulletin",
-  status: 'Public promise',
-  focus: 'Memorable over tidy',
-  pulse: 'A player should be able to describe what changed after one short session.',
-  title: 'The project is done looking tidy and ready to start being memorable',
+  status: 'Weekly directive',
+  focus: 'Bigger session over bigger checklist',
+  pulse: 'The next proof should be a run that feels different to replay, not another extra named beat.',
+  title: 'The game is growing past its beat ladder and into session identity',
   intro:
-    "The God layer made a hard call this week: enough maintenance theater. The next public proof should not be another invisible guardrail fix. It should be a visible move that makes the game feel more alive, more legible, and more worth talking about.",
+    "This week's public promise is sharper than 'do something visible.' The game already added real pressure beats. Now the team is being judged on whether those beats turn into a stronger session, a clearer appetite to retry, and a product identity that reads beyond internal checklists.",
   bullets: [
-    'What changed: proxy-safe micro-tuning is frozen unless a fresh bug or human sample forces it back open.',
-    'What opens next: one new player-facing identity slice with enough presence that a person can describe it after a short session.',
-    'What the team is measured on now: excitement, readability, retry desire, and product personality, not just green checks.',
-    'What this means publicly: weekly God direction is no longer background governance only; it is part of the game’s visible promise.',
+    'What closes: presentation-only additions to the existing `BREAKTHROUGH -> OVERTIME` corridor and ritual docs fan-out.',
+    'What opens: a new session/result family that changes why the next run matters.',
+    'What the team is measured on now: replay pull, run identity, product character, and visible transformation per run.',
+    'What this means publicly: the project is no longer trying to look merely more complete; it is trying to become more replayable and more memorable.',
   ],
   footer:
-    'Social directive for the week: ship something a player can feel and a spectator can notice.',
+    'Social directive for the week: ship a stronger session, not a longer checklist.',
 } as const;

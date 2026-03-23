@@ -1,17 +1,17 @@
 export const divineMessage = {
   label: "Weekly God's Revelation",
-  status: 'Phase 2 active',
-  focus: 'Proof-of-fun slice',
-  pulse: 'Proxy polish is frozen. The week is judged by one visible product move.',
-  title: 'Phase shift: stop polishing the proxy, build a proof-of-fun slice',
+  status: 'Phase 3B active',
+  focus: 'Identity and retention breakout',
+  pulse: 'The game grew for real last week. Now it needs a bigger session, not a longer ladder.',
+  title: 'Weekly phase shift: stop adding beats to the ladder and start growing the session',
   intro:
-    "This week's God-layer direction is harder than last week's: the core no longer needs another round of tiny proxy-safe repairs. It needs one visible move that makes the game feel more like a real, memorable product.",
+    "The strategic call this week is not to shrink ambition. It is to redirect it. The run architecture has been expanded hard enough that more named beats alone will start buying less. The next proof has to be a stronger session identity, a clearer reason to retry, and a game that feels larger after a few runs, not just more authored inside the same corridor.",
   bullets: [
-    'Active phase is now `Proof Of Fun And Identity Surface`, not endless human-proof-in-theory tuning.',
-    'Freeze the recent fairness, audio, mobile, and mutation micro-corridors unless a fresh bug or fresh human sample reopens them.',
-    'Builder energy should go into one player-facing vertical slice that changes how the first minute feels, not another invisible regression closure.',
-    'If runtime opens after that slice lands, collect a second structured human sample and judge the game by felt excitement and retry desire.',
+    'Keep the expansion phase, but move into `Identity And Retention Breakout` as the active weekly subphase.',
+    'Freeze presentation-only growth on the existing `BREAKTHROUGH -> OVERTIME` ladder unless a fresh runtime family is attached to it.',
+    'Push builder energy into a new session/result family that makes one run feel meaningfully different from the next.',
+    'Treat validation and docs as support systems only: enough to lock the new contract, not enough to become the product.',
   ],
   footer:
-    'Current divine expectation: trade tidy maintenance wins for one unmistakable product leap, without reopening governance chaos.',
+    'Current divine expectation: more game, not more ladder.',
 } as const;
