@@ -58,6 +58,11 @@ export type RunSignatureMasteryStamp = {
   compactLine: string;
 };
 
+export type RunSignatureMasteryFollowThrough = {
+  statusLine: string;
+  detailLine: string;
+};
+
 type Point = {
   x: number;
   y: number;
@@ -211,6 +216,17 @@ const RUN_SIGNATURE_MASTERY_TARGETS = [
 
 const formatSeconds = (value: number): string => `${value.toFixed(1)}s`;
 
+const getLiveBestSurvivalTime = ({
+  bestSurvivalTime,
+  currentSurvivalTime,
+}: {
+  bestSurvivalTime: number | null;
+  currentSurvivalTime: number;
+}): number | null =>
+  bestSurvivalTime === null
+    ? currentSurvivalTime
+    : Math.max(bestSurvivalTime, currentSurvivalTime);
+
 export const createEmptyRunSignatureMasteryProgress = (): RunSignatureMasteryProgress => ({
   pinpoint: null,
   weave: null,
@@ -303,6 +319,41 @@ export const getRunSignatureMasteryStamp = ({
   }
 
   return null;
+};
+
+export const getRunSignatureMasteryFollowThrough = ({
+  signature,
+  bestSurvivalTime,
+  currentSurvivalTime,
+}: {
+  signature: RunSignature;
+  bestSurvivalTime: number | null;
+  currentSurvivalTime: number;
+}): RunSignatureMasteryFollowThrough | null => {
+  const liveBestSurvivalTime = getLiveBestSurvivalTime({
+    bestSurvivalTime,
+    currentSurvivalTime,
+  });
+
+  if (liveBestSurvivalTime === null) {
+    return null;
+  }
+
+  const nextGoal = getRunSignatureMasteryGoal({
+    signature,
+    bestSurvivalTime: liveBestSurvivalTime,
+  });
+
+  return {
+    statusLine:
+      nextGoal.targetSeconds === null
+        ? `${signature.shortLabel} CEILING LIVE`
+        : `${signature.shortLabel} NEXT ROUTE`,
+    detailLine:
+      nextGoal.targetSeconds === null
+        ? `Stamp held. ${nextGoal.detailLine}`
+        : `Stamp held. ${nextGoal.statusLine}. ${nextGoal.detailLine}`,
+  };
 };
 
 export const applyRunSignatureTargetLag = ({

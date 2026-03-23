@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #306:
+Current deterministic survival headline after Run #307:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -20,10 +20,16 @@ Current deterministic survival headline after Run #306:
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
 
+run_signature_mastery_follow_through_surface:
+current: Run #307 `project/game/src/game/runSignature.ts` aktif stamp vurulduktan sonra canli best uzerinden bir sonraki route hedefini veya mastered route ceiling baskisini `NEXT ROUTE / CEILING LIVE` follow-through'u olarak uretiyor; `project/game/src/game/GameScene.ts` bunu mevcut `RUN FEEL` detail satirinda gosteriyor
+baseline: Run #306 state'inde mastery stamp aktif run icinde earned bir an veriyordu ama stamp gectikten sonra `RUN FEEL` paneli tekrar daha generic lock/support diline donuyordu; route hedefi aktif run icinde surekli takip edilen bir sonuca tam baglanmiyordu
+target: sonraki browser veya net manuel gozlem oyuncunun mastery stamp sonrasinda `RUN FEEL` panelindeki follow-through'u hizli okuyabildigini ve bir sonraki hedefi aktif run icinde de takip ettigini gostersin; yeni satir `10.0s` / `18.0s` crossing anlarinda phase callout gurultusu ya da copy yigilmasi yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
+
 run_signature_mastery_stamp_surface:
-current: Run #306 `project/game/src/game/runSignature.ts` aktif signature'in run-basi best snapshot'ina gore bir sonraki milestone crossing'ini veya mastered-route new-best gecisini `STAMPED / NEW BEST` contract'i olarak uretiyor; `project/game/src/game/GameScene.ts` bunu aktif run icinde tek seferlik beat callout'u olarak basiyor
+current: Run #306 `project/game/src/game/runSignature.ts` aktif signature'in run-basi best snapshot'ina gore bir sonraki milestone crossing'ini veya mastered-route new-best gecisini `STAMPED / NEW BEST` contract'i olarak uretiyor; `project/game/src/game/GameScene.ts` bunu aktif run icinde tek seferlik beat callout'u olarak basiyor. Run #307 bu stamp'i `RUN FEEL` follow-through'u ile tamamliyor
 baseline: Run #305 state'inde signature route mastery waiting intro, pulse CTA, waiting telemetry ve game-over support'ta gorunur hale gelmisti ama hedef vuruldugu an aktif run icinde hicbir earned payoff yoktu; route hedefi hala daha cok shell-level bir promise gibi kaliyordu
-target: sonraki browser veya net manuel gozlem oyuncunun route hedefi gectigi anda kisa mastery stamp anonsunu net ve earned okudugunu gostersin; yeni surface breakthrough/killbox/clear-climb callout'lariyla kavga etmemeli, cheap popup ya da gurultulu garnish gibi okunmamali
+target: sonraki browser veya net manuel gozlem oyuncunun route hedefi gectigi anda kisa mastery stamp anonsunu ve hemen ardindan gelen HUD follow-through'unu net ve earned okudugunu gostersin; yeni surface breakthrough/killbox/clear-climb callout'lariyla kavga etmemeli, cheap popup ya da gurultulu garnish gibi okunmamali
 validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_mastery_surface:

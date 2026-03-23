@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #307]
+
+Decision:
+`integration` modunda mastery stamp sonrasinda bir sonraki route hedefini mevcut `RUN FEEL` panelinin detail satirinda kompakt bir follow-through olarak tut.
+
+Reason:
+`NEXT_AGENT.md`, `STATE.md` ve stratejik yon ayni boslugu tasiyordu: Run #306 ile hedef vuruldugu an earned bir stamp acildi ama stamp gecer gecmez aktif HUD tekrar daha generic bir kilit satirina dusuyordu. Audit uyarisi nedeniyle yeni panel, yeni overlay, yeni validation harness veya yeni orchestration katmani acmadan en dogru hamle; mevcut signature mastery verisinden canli sonraki hedefi uretip ayni HUD yuzeyinde tutmakti.
+
+Impact:
+`project/game/src/game/runSignature.ts` mevcut mastery state ve canli survival time uzerinden `NEXT ROUTE / CEILING LIVE` follow-through'unu ureten `getRunSignatureMasteryFollowThrough` helper'ini kazandi. `project/game/src/game/GameScene.ts` `RUN FEEL` panelinin detail satirinda stamp sonrasi bu follow-through'u gosteriyor; mastery hedefi vurulduktan sonra panel artik generic lock metnine donmuyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; build mevcut buyuk bundle uyarisini aynen koruyor.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni follow-through detail satirinin mastery stamp ile birlikte fazla yogunlastigini, `10.0s` / `18.0s` crossing anlarinda mevcut phase callout'lariyla kavga ettigini ya da retention yerine copy gurultusu urettigini gosterirse yalniz `runSignature.ts` ve `GameScene.ts` icindeki detail satiri siddeti/uzunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni panel, yeni manager/orchestration/readiness/preflight katmani veya mevcut ladder'a yeni beat acilmaz.
+
 ### [Run #306]
 
 Decision:

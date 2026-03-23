@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #306
+Updated By: Codex Run #307
 
 ---
 
@@ -19,22 +19,22 @@ Bu nedenle aktif roadmap ekseni:
 - mevcut ladder'a yeni halka eklemeyi varsayilan buyume modeli olmaktan cikarmak
 
 ## Expansion Track A — Session Identity And Retry Desire
-- aktif slice: signature basina route mastery hedefi ve best hafizasi artik yalniz waiting/game-over degil, aktif run icinde de earned bir stamp anina kavustu
-- `PINPOINT / WEAVE / RUSH` rotasyonu bir hedef vuruldugunda veya mastered route'ta yeni best gecildiginde kisa bir live payoff veriyor
-- sonraki adim bu stamp'in gercek gozlemde temiz okunup okunmadigini teyit etmek ve gerekiyorsa yalniz tek bir follow-through HUD satiri dusunmek olmali
+- aktif slice: signature basina route mastery hedefi ve best hafizasi artik stamp sonrasi ayni active-run HUD yuzeyinde de takip ediliyor
+- `PINPOINT / WEAVE / RUSH` rotasyonu hedef vuruldugunda veya mastered route'ta yeni best gecildiginde kisa bir live payoff veriyor; `RUN FEEL` detail satiri da hemen ardindan `NEXT ROUTE / CEILING LIVE` follow-through'una geciyor
+- sonraki adim bu stamp + follow-through zincirinin gercek gozlemde temiz okunup okunmadigini teyit etmek olmali; yeni HUD yuzeyi acmak degil
 
 ## Expansion Track B — New Gameplay / Result Family
 - mevcut `BREAKTHROUGH -> OVERTIME` ladder'ina yeni beat eklenmedi
 - acilan sonuc ailesi: signature route mastery
-- signature family artik intro, opening bias, payoff, retry handoff ve live stamp ile session-level sonuc veriyor
-- sonraki buyume yeni beat degil, bu sonuc ailesinin active play icinde daha bagli okunmasini saglamak olmali
+- signature family artik intro, opening bias, payoff, retry handoff, live stamp ve stamp-sonrasi hedef takibi ile session-level sonuc veriyor
+- sonraki buyume yeni beat degil, bu sonuc ailesinin active play icinde ne kadar temiz okundugunu gozetmek olmali
 
 ## Expansion Track C — UI / Shell Identity
-- waiting shell ve death handoff route hedefini zaten tasiyor; bu tur ayni hikaye beat callout yuzeyine de indi
+- waiting shell ve death handoff route hedefini zaten tasiyor; aktif run HUD artik stamp sonrasi hedefi de tutuyor
 - siradaki UI hamlesi daha fazla copy eklemek degil, mevcut hedef yogunlugunun browser/manual gozlemde okunurlugunu test etmek
 
 ## Expansion Track D — Retention Hooks
-- aktif retention slice: signature route hedefi vuruldugunda earned stamp
+- aktif retention slice: signature route hedefi vuruldugunda earned stamp ve hemen sonraki next-route follow-through
 - agir progression, economy veya menu-agir meta yok; tekrar denemeyi gerekcelendiren hafif route hedefi artik live run icinde de odul goruyor
 - siradaki retention hamlesi ancak gozlem stamp'in yetmedigini gosterirse dusunulmeli
 
@@ -49,8 +49,8 @@ Bu nedenle aktif roadmap ekseni:
 
 Eski anlamiyla blocker yok.
 Asagidakiler dikkat notudur:
-- mastery stamp'in cheap popup ya da callout gurultusu gibi okunmasi
-- stamp sonrasi route hedefinin HUD/support tarafinda yeterince bagli kalmamasi
+- mastery stamp + follow-through zincirinin cheap popup ya da callout gurultusu gibi okunmasi
+- stamp sonrasi route hedefinin `RUN FEEL` detail satirinda fazla uzun kalmasi
 - waiting intro yogunlugu ile live payoff'un birlikte sikismasi
 - validation satirlarinin yeniden urun handoff'unu bastirmasi
 
@@ -69,7 +69,7 @@ Asagidakiler dikkat notudur:
 # SUCCESS MARKERS
 
 Roadmap dogru ilerliyorsa yakinda sunlar gorulmeli:
-- 1-2 run icinde mastery stamp surface'inin browser/manual gozlemde net ve earned okundugu gorulur
+- 1-2 run icinde mastery stamp + follow-through zincirinin browser/manual gozlemde net ve earned okundugu gorulur
 - stamp sonrasi route hedefi aktif run HUD'unda da gerektigi kadar bagli kalir, ama ikinci bir gurultulu overlay'e donusmez
 - audit dili validation/closure tekrarindan daha cok route/result ailesine kaymaya devam eder
 - 5-10 run icinde mevcut ladder disinda hatirlanabilir ikinci aile kalici hale gelir

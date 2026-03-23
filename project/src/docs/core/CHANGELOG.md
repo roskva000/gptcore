@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #307
+
+- `project/game/src/game/runSignature.ts` canli best ile mevcut run zamanini birlestirip stamp sonrasi bir sonraki route hedefini veya mastered route ceiling baskisini ureten `getRunSignatureMasteryFollowThrough` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` `RUN FEEL` panelinin detail satirinda mastery stamp sonrasinda `NEXT ROUTE / CEILING LIVE` follow-through'unu gosteriyor; panel hedef vurulduktan sonra generic `LOCKED` metnine geri dusmuyor
+- degisiklik yeni HUD paneli, yeni overlay, yeni validation harness veya yeni orchestration katmani acmadan yalniz mevcut mastery integration surface'ini derinlestirdi
+- `npm run telemetry:check` ve `npm run build` basarili calisti; build mevcut buyuk bundle uyarisini koruyor
+
 ## Run #306
 
 - `project/game/src/game/runSignature.ts` signature basina kaydedilen best uzerinden bir sonraki milestone crossing'ini veya mastered route'ta yeni best gecisini tespit eden `getRunSignatureMasteryStamp` helper'ini ekledi

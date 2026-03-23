@@ -96,6 +96,7 @@ import {
   getRunSignatureLockPayoff,
   getRunSignatureLockPayoffSpawnDelayMultiplier,
   getRunSignatureLockPayoffSpeedMultiplier,
+  getRunSignatureMasteryFollowThrough,
   getRunSignatureMasteryGoal,
   getRunSignatureMasteryStamp,
   getRunSignatureLockPayoffTargetPoint,
@@ -4694,6 +4695,15 @@ export class GameScene extends Phaser.Scene {
     const openingCue = this.getActiveRunSignatureOpeningCue();
     const reminder = this.getActiveRunSignatureReminder();
     const lockPayoff = this.getActiveRunSignatureLockPayoff();
+    const masteryStamp = this.getActiveRunSignatureMasteryStamp();
+    const masteryFollowThrough =
+      masteryStamp === null
+        ? null
+        : getRunSignatureMasteryFollowThrough({
+            signature: this.currentRunSignature,
+            bestSurvivalTime: this.runSignatureMastery[this.currentRunSignature.id],
+            currentSurvivalTime: this.survivalTime,
+          });
     const openingActive = openingSecondsRemaining > 0.01;
     const lockPayoffSecondsRemaining = Math.max(
       RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS - this.survivalTime,
@@ -4760,6 +4770,8 @@ export class GameScene extends Phaser.Scene {
         ? `${openingCue.title} is live. ${liveBeatLabel} is the current read; let the first collision-ready lane carry the signature on purpose.`
         : reminder !== null
           ? `${reminder.title} is still steering the route. ${liveBeatLabel} is active; hold that read before the opening window shuts.`
+          : masteryFollowThrough !== null
+            ? `${masteryFollowThrough.statusLine}. ${masteryFollowThrough.detailLine}`
           : lockPayoffActive && lockPayoff !== null
             ? `${lockPayoff.title} is live for ${lockPayoffSecondsRemaining.toFixed(1)}s. ${lockPayoff.statusLine}`
           : openingActive
