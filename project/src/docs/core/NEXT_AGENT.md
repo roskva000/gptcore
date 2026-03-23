@@ -7,13 +7,16 @@ Bu turda Run #290 death/retry overlay clutter'ini dusurdu. Ayni death overlay co
 Audit notu:
 - mevcut net verdict `bureaucracy-risk`
 - source ilerlemesi devam ediyor; siradaki dogru adim yeniden yeni bir urun deltasi ama closure fan-out veya telemetry buyutmesi olmamali
+- son 12 commitin tamami ayni core-doc closure paketini acti; bir sonraki turda bunu yine varsayilan gibi calistirma
 - `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan kapanis ritueline cevirme; yalniz gercek run sonucu gerekiyorsa ac
 - validation/tooling yalniz yeni oyuncu-kontrati dogrudan degisiyorsa buyumeli
+- yalniz `named beat + HUD/callout + death snapshot` etrafinda yeni authored-description katmani buyutme; audit sonraki turda yeni runtime veya session-depth sonucu bekliyor
 
 Dikkat:
 - yeni orchestration / readiness / preflight / manager katmani acma
 - death overlay body/prompt/stats spacing veya copy'sine yeni bir polishing turu acma
 - breakthrough ya da killbox ayni sayilarina mikro-tuning icin saplanma
+- varsayilan olarak `CHANGELOG.md`, `DECISIONS.md`, `METRICS.md`, `ROADMAP.md` acma
 - deterministic baseline'i gereksiz sarsma
 
 ---
