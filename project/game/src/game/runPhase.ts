@@ -1,6 +1,8 @@
 import {
   BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS,
   BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS,
+  BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS,
+  BREAKTHROUGH_HINGE_FEINT_WINDOW_SECONDS,
   BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS,
   BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS,
   KILLBOX_ECHO_FOLLOW_THROUGH_WINDOW_SECONDS,
@@ -70,7 +72,7 @@ export type RunPhaseShiftAnnouncement = {
   title: string;
 };
 
-export type BreakthroughCueId = 'strafe-fork' | 'surge-snap' | 'gate-cut';
+export type BreakthroughCueId = 'strafe-fork' | 'hinge-feint' | 'surge-snap' | 'gate-cut';
 
 export type BreakthroughCue = {
   accentColor: number;
@@ -162,7 +164,7 @@ const RUN_PHASES: RunPhaseDefinition[] = [
     startSeconds: TARGET_FIRST_DEATH_SECONDS,
     accentColor: 0xffc18a,
     detail:
-      'Cadence tightens and strafe/surge wake up. A short gate cut leans the lane into killbox before full lead pressure arrives.',
+      'Cadence tightens and strafe/surge wake up. A short hinge feint fakes a calmer hold between the fork and surge, then gate cut leans the lane into killbox before full lead pressure arrives.',
   },
   {
     id: 'killbox',
@@ -201,6 +203,8 @@ const formatRangeLabel = (phase: RunPhaseDefinition, nextPhase: RunPhaseDefiniti
 const RUN_PHASE_ONSET_DURATION_SECONDS = 1.6;
 const BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS =
   STRAFE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS;
+const BREAKTHROUGH_HINGE_FEINT_WINDOW_END_SECONDS =
+  BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS + BREAKTHROUGH_HINGE_FEINT_WINDOW_SECONDS;
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS = SURGE_OBSTACLE_UNLOCK_SECONDS;
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   BREAKTHROUGH_SURGE_SNAP_WINDOW_START_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
@@ -274,6 +278,21 @@ export const getBreakthroughCue = (progressSeconds: number): BreakthroughCue | n
       rematchLabel: 'the strafe fork',
       accentColor: 0xffb88a,
       body: 'Breakthrough peels sideways here. A bounded strafe fork reopens one lane first; take the fresh air before surge snaps the answer shut.',
+    };
+  }
+
+  if (
+    progressSeconds >= BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS &&
+    progressSeconds < BREAKTHROUGH_HINGE_FEINT_WINDOW_END_SECONDS
+  ) {
+    return {
+      id: 'hinge-feint',
+      title: 'HINGE FEINT LIVE',
+      hudLabel: 'HINGE FEINT',
+      snapshotLabel: 'HINGE FEINT',
+      rematchLabel: 'the hinge feint',
+      accentColor: 0xc8ffd8,
+      body: 'The fork softens into a hinge feint here. The lane looks safer for one beat while the target drags behind your line; do not overhold the calmer air because surge is already lining up the snapback.',
     };
   }
 
@@ -953,7 +972,7 @@ export const getRunPhaseShiftAnnouncement = (
     case 'breakthrough':
       return {
         title: 'BREAKTHROUGH LIVE',
-        body: 'Gate broken. A bounded strafe fork opens the early-mid lane, surge snaps back through it, then a short gate cut bends the route into killbox.',
+        body: 'Gate broken. A bounded strafe fork opens the early-mid lane, hinge feint fakes a short hold, surge snaps back through it, then a short gate cut bends the route into killbox.',
       };
     case 'killbox':
       return {

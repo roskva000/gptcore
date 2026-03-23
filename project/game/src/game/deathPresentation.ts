@@ -255,6 +255,19 @@ const getSnapshotTone = ({
     };
   }
 
+  if (breakthroughCue?.id === 'hinge-feint') {
+    return {
+      badgeBackgroundColor: '#214235',
+      badgeTextColor: '#e2fff0',
+      bodyTextColor: '#caecd8',
+      calloutBackgroundColor: '#183127',
+      calloutTextColor: '#aef0cb',
+      promptBackgroundColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_BACKGROUND : '#214235',
+      promptTextColor: hasNearMissChaseSnapshot ? NEAR_MISS_CHASE_SNAPSHOT_TEXT : '#edfff5',
+      titleTextColor: '#dcffe9',
+    };
+  }
+
   if (breakthroughCue?.id === 'surge-snap') {
     return {
       badgeBackgroundColor: '#6a3916',

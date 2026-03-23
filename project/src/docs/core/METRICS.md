@@ -7,17 +7,23 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #288:
+Current deterministic survival headline after Run #289:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
 - `40s` simulation cap with live post-`32s` drift coverage
 - pacing snapshot `10 / 35 / 89`
-- average spawn count `38.8`
-- validation export snapshot `37.1s` average survival
+- average spawn count `38.9`
+- validation export snapshot `36.7s` average survival
 - validation export last run `40.0s`
-- validation summary `5 runs | first death 28.9s | early 0% | 5/5 runs, target met`
-- deterministic buckets `0 / 4 / 11 / 9` (`under10 / 10-20 / 20-30 / sim-cap`)
+- validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
+- deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+breakthrough_hinge_feint_surface:
+current: Run #289 `project/game/src/game/balance.ts` `13.4-15.0s` band'ini yeni `HINGE FEINT` slice'iyla buyutuyor; beat `8deg` cross-lane travel ve `0.14s` target lag ile `STRAFE FORK` sonrasi lane'i kisa bir fake-hold'a ceviriyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni ara beat'i detail/HUD/death-retry, live spectacle ve snapshot tonu tarafina da tasiyor
+baseline: Run #288 state'inde breakthrough `STRAFE FORK -> SURGE SNAP -> GATE CUT` olarak uc halkaliydi; `13.4-15.0s` araliginda fork ile snapback arasinda isimli bir sahte-guven beat'i veya ayri player-facing truth yoktu
+target: sonraki browser veya manuel gozlem oyuncunun `13.4-15.0s` band'ini artik `HINGE FEINT` fake-hold'u olarak anlattigini gostersin; yeni beat ucuz yavaslama, named-beat gurultusu veya `STRAFE FORK`un sulandirilmis tekrari gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 killbox_slack_cut_surface:
 current: Run #288 `project/game/src/game/balance.ts` `30.4-32.0s` band'ini yeni `SLACK CUT` slice'iyla buyutuyor; beat `16deg` travel ve `0.06s` lag ile `LOCK DRAG` sonrasi yumusayan lane'i tekrar kesiyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni handoff'u detail/HUD/death-retry, live spectacle ve snapshot tonu tarafina da tasiyor

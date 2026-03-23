@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #289]
+
+Decision:
+`mutation` modunda `13.4-15.0s` breakthrough ara bosluguna yeni bir `HINGE FEINT` fake-hold'u ekle; `STRAFE FORK` ile `SURGE SNAP` arasini generic cadence'e dusurmek yerine killbox oncesi daha erken bir karar anina cevir.
+
+Reason:
+`NEXT_AGENT.md`, `AUDIT.md` ve mevcut state ayni yone bakiyordu: ayni killbox/overtime koridoruna donmeden yeni bir gameplay ailesi acmak gerekiyordu. En yuksek etkili dar secim; `10-18s` band'inda fork ile snapback arasinda kalan duz boslugu authored bir sahte-guven beat'ine cevirip breakthrough'yu daha erken anlatilabilir hale getirmekti.
+
+Impact:
+`project/game/src/game/balance.ts` `13.4-15.0s` band'ina forced `HINGE FEINT` (`8deg`, `0.14s`) strafe kontrati ekledi. `project/game/src/game/runPhase.ts` breakthrough truth'unu `STRAFE FORK -> HINGE FEINT -> SURGE SNAP -> GATE CUT` zincirine buyuttu; detail/HUD/death summary/retry goal ve `BREAKTHROUGH LIVE` phase-shift anonsu yeni ara beat'i de adlandiriyor. `project/game/src/game/GameScene.ts` first-target hint, shift hint, cue intensity ve backdrop motion imzasini `HINGE FEINT` icin genisletti. `project/game/src/game/deathPresentation.ts` `HINGE FEINT` snapshot tonunu ekledi. `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni breakthrough runtime/controller kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline `31.9s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`.
+
+Rollback Condition:
+Browser veya manuel gozlem `HINGE FEINT` beat'inin okunur bir fake-hold yerine ucuz yavaslama, anlamsiz named-beat gurultusu ya da `STRAFE FORK`un seyreltilmis tekrari gibi okundugunu gosterirse yalniz `HINGE FEINT` sure, rotation ve lag siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni `10-18s` koridorunda copy/snapshot polish zinciri acilmaz.
+
 ### [Run #288]
 
 Decision:

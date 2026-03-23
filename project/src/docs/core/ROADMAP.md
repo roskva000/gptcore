@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #288
+Updated By: Codex Run #289
 
 ---
 
@@ -13,6 +13,7 @@ Mevcut durum:
 - deterministic ve browser guard tabani yeterli
 - son donem mutation / presentation birikimi var
 - sistem fazla dar calistigi icin urun sivriligi henuz hedef seviyede degil
+- Run #289 ile `10-18s` breakthrough artik `STRAFE FORK -> HINGE FEINT -> SURGE SNAP -> GATE CUT` zinciri tasiyor; `13.4s+` sonrasi ilk kez sahte bir sakinlesme beat'i aciliyor ve surge snapback daha earned okunuyor
 - Run #288 ile `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT -> RELEASE CUT` zinciri tasiyor; `30.4s+` sonrasi ilk kez yumusayan lane'i tekrar kesen son bir bounded handoff uretiyor
 - Run #287 ile overtime artik `60.0-72.0s` boyunca `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zinciri tasiyor; `68s+` sonrasi ilk kez ikinci bounded overtime consequence uretiyor
 - Run #241 ile coarse phase ladder aktif gameplay pressure'a baglandi
@@ -78,7 +79,8 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: ayni `near miss chase` death snapshot'ta artik `CHASE SNAP` badge'i, body summary'si, impact marker'i, fatal spotlight'i ve overlay title'i ile prompt disinda da sahipleniliyor
 - shipped slice: ayni truth artik aktif chase sirasinda kisa bir runtime `lane reopen -> lane cut` zinciri de tasiyor; spawn target'i en fazla iki beat boyunca snapped lane'den uzaklasip sonra ayni lane'e geri kapanarak gercek mekansal fark uretiyor
 - shipped slice: bu runtime beat artik live readability katmaninda da ayri ayri okunuyor; bounded callout, support ve spawn tint'i `reopen` ile `cut` arasindaki farki ayni truth'ta tasiyor
-- shipped slice: `BREAKTHROUGH` artik generic phase break'i degil; `STRAFE FORK`, `SURGE SNAP` ve yeni `GATE CUT` cue'lari bounded forced runtime pencereleri ve death/retry payoff'u ile killbox oncesi uc halkali authored cevap zinciri tasiyor
+- shipped slice: `BREAKTHROUGH` artik generic phase break'i degil; `STRAFE FORK`, yeni `HINGE FEINT`, `SURGE SNAP` ve `GATE CUT` cue'lari bounded forced runtime pencereleri ve death/retry payoff'u ile killbox oncesi dort halkali authored cevap zinciri tasiyor
+- shipped slice: `HINGE FEINT` `13.4-15.0s` band'inda `STRAFE FORK` sonrasi kisa bir fake-hold soruyor; `strafe` target'i `0.14s` geriye dusup oyuncuya daha sakin gorunen ama surge oncesi cezalandirilabilir bir rota birakiyor
 - shipped slice: `GATE CUT` artik killbox onset'e phase cliff gibi dusmuyor; `LEAD CUT` ve `ECHO FOLLOW` cue'lari `18.0-20.6s` killbox onset'ini HUD/detail/hint/death-retry/snapshot tarafinda adlandirip `PINCH LOCK` oncesini de ayni authored zincire bagliyor
 - shipped slice: `24-32s` killbox tail'i artik `echo lock-in -> FOLD SNAP -> LOCK DRAG -> SLACK CUT` olarak dort closure halkasi tasiyor; `30.4-32.0s` band'i yumusayan lane'i bir kez daha kesip `RELEASE CUT`e earned bir final handoff satiyor
 - shipped slice: breakthrough fork'u artik arena spectacle / snapshot tonunda da ayri imzalar tasiyor; early-mid authored olay yalniz HUD/callout degil sahne ve olum tonu uzerinden de okunuyor
@@ -88,7 +90,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - shipped slice: `FALSE CLEAR -> PRECLEAR SQUEEZE` ayrimi artik arena spectacle ve death snapshot tarafinda da ayri motion/palette truth'u tasiyor; late 40s bait ile cash-in yalniz HUD degil sahne ve overlay tonu uzerinden de ayrisiyor
 - shipped slice: `45.6-60s` clear climb artik `ASCENT STAIR -> LEDGE FEINT -> RIDGE CUT -> CREST VEER -> SUMMIT SNAP` olarak bes halkali; yeni `CREST VEER` ridge cut sonrasi kisa bir reopen'u hem runtime hem HUD/snapshot/spectacle tarafinda ayri okutur
 - shipped slice: `60.0-72.0s` overtime artik generic hot pressure degil; `BANKED AIR -> CASH OUT -> HOUSE CUT -> DUE NOW` zinciri `60s CLEAR` sonrasi ilk on iki saniyeyi runtime, HUD, death/retry ve snapshot tonu tarafinda authored bir payout + second-consequence zinciri olarak tasiyor
-- next slice: `SLACK CUT` acildi; siradaki dogru adim ayni `24-32s` veya `60.0-72.0s` koridoruna polish icin geri donmek degil, farkli bir gameplay ailesi, retention/gameplay bagli yeni authored karar ani ya da baska bir arena davranis mutasyonu acmak
+- next slice: breakthrough ara boslugu artik authored; siradaki dogru adim ayni `10-18s`, `24-32s` veya `60.0-72.0s` koridorlarini tekrar polish etmek degil, oyuncunun olum anini ve retry kararini daha temiz okutacak yeni bir UX/gameplay deltasi acmak
 - oyuncuya "bu run bir seye donustu" hissi ver
 
 ## Expansion Track B — Arena + Threat Families
@@ -106,6 +108,7 @@ Bu roadmap artik mikro freeze listesi degil, genisleme eksenidir.
 - tekrar denemeyi tetikleyen hafif meta, route, challenge veya earned payoff katmani ac
 - yakin gecislerin zaten pozitif insan sinyali verdigi unutulmasin; replay istegini yukselten dar ama oyunsal bir odak sec
 - aktif near-miss chase slice'i retained adaylardan biri; yakin vadede ayni koridora geri donmek yerine breakthrough fork'unun retry istegine katkisini guclendir
+- breakthrough runtime zinciri buyudu; yakin vadede ayni sayilari tekrar tune etmek yerine death/retry clutter'ini azaltan ve yeni authored beat'leri daha temiz okutan bir integration adimi daha degerli
 - agir progression bloat'a kacma
 
 ## Expansion Track E — Browser Validation In Practice

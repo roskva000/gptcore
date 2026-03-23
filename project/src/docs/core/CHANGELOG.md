@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #289
+
+- `project/game/src/game/balance.ts` `13.4-15.0s` araligina yeni bounded `HINGE FEINT` penceresi ekledi; `strafe` varyanti bu slice'ta `8deg` cross-lane travel ve `0.14s` target lag ile `STRAFE FORK` sonrasi sahte bir sakin-hold yem'i kuruyor
+- `project/game/src/game/runPhase.ts` breakthrough cue truth'unu `STRAFE FORK -> HINGE FEINT -> SURGE SNAP -> GATE CUT` zincirine genisletti; detail, badge, death summary, retry goal ve phase-shift announcement artik yeni fake-hold halkasini da tasiyor
+- `project/game/src/game/GameScene.ts` first-target hint'ini, breakthrough shift hint'ini, cue intensity map'ini ve backdrop motion'una `HINGE FEINT` imzasini ekledi
+- `project/game/src/game/deathPresentation.ts` `HINGE FEINT` olumleri icin ayri snapshot palette'i ekledi
+- `project/game/scripts/telemetry-reports.ts` ve `project/game/scripts/telemetry-check.ts` yeni breakthrough runtime/controller kontratini ve guncel deterministic snapshot'i (`31.9s avg / 10.0s first death / 0% early`, avg spawn `38.9`, validation export `36.7s`, first death `29.3s`) regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #288
 
 - `project/game/src/game/balance.ts` `30.4-32.0s` araligina yeni bounded `SLACK CUT` penceresi ekledi; `echo` varyanti bu slice'ta `16deg` travel ve `0.06s` lag ile `LOCK DRAG` sonrasi yumusayan lane'i tekrar kesip `32s` drift release'i daha earned hale getiriyor

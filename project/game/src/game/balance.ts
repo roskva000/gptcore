@@ -20,6 +20,10 @@ export const STRAFE_OBSTACLE_ROTATION_DEGREES = 14;
 export const STRAFE_OBSTACLE_TINT = 0xffb88a;
 export const BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS = 1.4;
 export const BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES = 20;
+export const BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS = 13.4;
+export const BREAKTHROUGH_HINGE_FEINT_WINDOW_SECONDS = 1.6;
+export const BREAKTHROUGH_HINGE_FEINT_ROTATION_DEGREES = 8;
+export const BREAKTHROUGH_HINGE_FEINT_TARGET_LAG_SECONDS = 0.14;
 export const BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS = 1.6;
 export const BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES = 16;
 export const BREAKTHROUGH_SURGE_SNAP_TARGET_LEAD_SECONDS = 0.08;
@@ -166,6 +170,8 @@ const KILLBOX_FORCED_LEAD_WINDOW_END_SECONDS =
   LEAD_OBSTACLE_UNLOCK_SECONDS + KILLBOX_FORCED_LEAD_WINDOW_SECONDS;
 const BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS =
   STRAFE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS;
+const BREAKTHROUGH_HINGE_FEINT_WINDOW_END_SECONDS =
+  BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS + BREAKTHROUGH_HINGE_FEINT_WINDOW_SECONDS;
 const BREAKTHROUGH_SURGE_SNAP_WINDOW_END_SECONDS =
   SURGE_OBSTACLE_UNLOCK_SECONDS + BREAKTHROUGH_SURGE_SNAP_WINDOW_SECONDS;
 const BREAKTHROUGH_GATE_CUT_WINDOW_END_SECONDS =
@@ -214,6 +220,10 @@ export const isKillboxSlackCutWindow = (survivalTimeSeconds: number): boolean =>
 const isBreakthroughStrafeForkWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS;
+
+const isBreakthroughHingeFeintWindow = (survivalTimeSeconds: number): boolean =>
+  survivalTimeSeconds >= BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS &&
+  survivalTimeSeconds < BREAKTHROUGH_HINGE_FEINT_WINDOW_END_SECONDS;
 
 const isBreakthroughSurgeSnapWindow = (survivalTimeSeconds: number): boolean =>
   survivalTimeSeconds >= SURGE_OBSTACLE_UNLOCK_SECONDS &&
@@ -530,6 +540,8 @@ export const getObstacleVariant = ({
     : survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
   survivalTimeSeconds < BREAKTHROUGH_STRAFE_FORK_WINDOW_END_SECONDS
       ? 'strafe'
+    : isBreakthroughHingeFeintWindow(survivalTimeSeconds)
+      ? 'strafe'
     : survivalTimeSeconds >= STRAFE_OBSTACLE_UNLOCK_SECONDS &&
   runSpawnCount > 0 &&
   runSpawnCount % STRAFE_OBSTACLE_CADENCE === 0
@@ -617,16 +629,24 @@ export const getObstacleTravelDirection = ({
         ? Math.floor(runSpawnCount / STRAFE_OBSTACLE_CADENCE) % 2 === 0
           ? isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
             ? BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : isBreakthroughHingeFeintWindow(survivalTimeSeconds ?? 0)
+              ? BREAKTHROUGH_HINGE_FEINT_ROTATION_DEGREES
             : STRAFE_OBSTACLE_ROTATION_DEGREES
           : isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
             ? -BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : isBreakthroughHingeFeintWindow(survivalTimeSeconds ?? 0)
+              ? -BREAKTHROUGH_HINGE_FEINT_ROTATION_DEGREES
             : -STRAFE_OBSTACLE_ROTATION_DEGREES
         : crossProduct > 0
           ? isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
             ? -BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : isBreakthroughHingeFeintWindow(survivalTimeSeconds ?? 0)
+              ? -BREAKTHROUGH_HINGE_FEINT_ROTATION_DEGREES
             : -STRAFE_OBSTACLE_ROTATION_DEGREES
           : isBreakthroughStrafeForkWindow(survivalTimeSeconds ?? 0)
             ? BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES
+            : isBreakthroughHingeFeintWindow(survivalTimeSeconds ?? 0)
+              ? BREAKTHROUGH_HINGE_FEINT_ROTATION_DEGREES
             : STRAFE_OBSTACLE_ROTATION_DEGREES;
 
     return normalize(rotate(baseDirection, rotationDegrees));
@@ -853,6 +873,9 @@ export const getObstacleTargetLagSeconds = ({
   survivalTimeSeconds: number;
   variant: ObstacleVariant;
 }): number =>
+  variant === 'strafe' && isBreakthroughHingeFeintWindow(survivalTimeSeconds)
+    ? BREAKTHROUGH_HINGE_FEINT_TARGET_LAG_SECONDS
+    : 
   variant === 'surge' && isBreakthroughSurgeSnapWindow(survivalTimeSeconds)
     ? -BREAKTHROUGH_SURGE_SNAP_TARGET_LEAD_SECONDS
     : variant === 'lead'

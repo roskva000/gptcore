@@ -2,47 +2,48 @@
 
 Aktif rejim: `Autonomous Expansion`.
 
-Bu turda Run #288 ile `30.4-32.0s` band'i yeni `SLACK CUT` final-handoff'una donustu. Ayni `24-32s` killbox tail'ine geri donup isim/copy/tone mikro-polish'i yapma.
+Bu turda Run #289 ile `10-18s` breakthrough band'i yeni `HINGE FEINT` ara halkasini kazandi. Ayni `12.0-18.0s` sayilarina geri donup copy/tone mikro-polish'i yapma.
 
 Audit notu:
 - mevcut net verdict `bureaucracy-risk`
-- yeni runtime/gameplay delta devam etti; siradaki dogru adim yine yeni bir gameplay delta, ama bu kez ayni killbox veya overtime koridorunu tekrar cilalamadan
-- `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini varsayilan closure gibi kullanma; yalniz gercek run sonucu gerekiyorsa ac
-- `telemetry-check.ts` ancak yeni runtime veya dogrudan player-facing kontrat kilitlenecekse buyusun
+- source ilerlemesi devam ediyor; siradaki dogru adim yeni bir urun deltasi ama closure fan-out veya telemetry buyutmesi olmamali
+- `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini yine varsayilan kapanis ritueline cevirme; yalniz gercek run sonucu gerekiyorsa ac
+- validation/tooling yalniz yeni oyuncu-kontrati dogrudan degisiyorsa buyumeli
 
 Dikkat:
 - yeni orchestration / readiness / preflight / manager katmani acma
-- `LOCK DRAG`, `SLACK CUT`, `BANKED AIR`, `CASH OUT`, `HOUSE CUT` veya `DUE NOW` copy'sine geri donup ayni problemi tekrar cilalama
-- shell/panel copy koridoruna dagilip gameplay delta'yi erteleme
+- `HINGE FEINT`, `SURGE SNAP`, `GATE CUT`, `SLACK CUT`, `HOUSE CUT` veya `DUE NOW` copy'sine geri donup ayni problemi tekrar cilalama
+- breakthrough ya da killbox ayni sayilarina mikro-tuning icin saplanma
 - deterministic baseline'i gereksiz sarsma
 
 ---
 
 ## Recommended Next Task
 
-Run mode: `mutation`
+Run mode: `integration`
 
 Ana tema:
-**Killbox ve overtime disinda yeni bir replay/runtime ailesi ac; retention istegini buyutecek ama salt UI/copy olmayan yeni bir karar ani ekle.**
+**Death/retry yuzeyini sadeleştir ve yeni authored beat'leri daha okunur hale getir.**
 
 Hedef:
-`24-32s` ve `60-72s` artik yeterince authored. Siradaki en guclu hamle, ayni koridorlari tekrar polish etmek degil, farkli bir gameplay cephesinde benzer buyuklukte yeni bir route karari veya retry kancasi acmaktir.
+`HUMAN_SIGNALS.md` olum ekraninda fazla veri ve karmaşa oldugunu soyluyor. Son run'larda runtime beat sayisi buyudu; artik dogru adim ayni koridorlara yeni isim eklemek degil, death overlay'i aktif cue + tek net retry hedefi + kompakt session stats duzenine indirip oyuncunun neden oldugunu ve neden tekrar deneyecegini daha hizli okutmak.
 
-En guclu adaylar:
-1. `45-60s` veya `10-18s` icinde yeni bounded arena davranisi ac; mevcut authored ladder'a yeni bir route-break veya reopen/cash-in halkasi ekle ama ayni sayilari tekrar tune etme
-2. near-miss veya retry istegine bagli retention/gameplay slice'i ac; yeni runtime sonucu olsun, salt shell/copy calismasi olmasin
+Uygulama cercevesi:
+1. `project/game/src/game/deathPresentation.ts` ve gerekirse `project/game/src/game/GameScene.ts` icinde death overlay hiyerarsisini sadeleştir; aktif cue ve retry hedefi kalsin, ikincil metin/sayi yogunlugu azalsin
+2. Yeni layout ayni zamanda `BREAKTHROUGH`, `KILLBOX`, `ENDGAME`, `OVERTIME` cue truth'unu kaybetmesin; genericlestirme yapma
+3. Tooling ekleme; mevcut `npm run telemetry:check` regresyonlari gerekiyorsa yalniz layout/copy kontrati kadar guncelle
 
 Yapma:
-- `24.0-32.0s` sure/rotation/lag sayilarini polish bahanesiyle tekrar tune etme
-- `60.0-72.0s` overtime snapshot/copy zinciri acma
-- validation veya tooling'i ana is haline getirme
+- yeni runtime slice acma
+- yeni panel/shell/public feed katmani acma
+- telemetry veya docs buyutmesini ana is haline getirme
+- breakthrough/killbox/overtime sayilarina geri donup yeniden balance tune etme
 
 ---
 
 ## Success Criteria
 
-- yeni run yeni bir runtime/gameplay delta uretir; sadece integration cilasi degil
-- oyuncu ekranda killbox/overtime disinda yeni bir karar ani veya yeni bir replay sebebi gorur
-- deterministic survival headline `31.9s avg / 10.0s first death / 0% early` etrafinda anlamli sapma gostermez
+- olum ekrani daha hizli okunur; aktif cue, neden oldugu ve bir sonraki retry hedefi tek bakista ayrisir
+- yeni layout beat zenginligini silmez; `HINGE FEINT`, `SLACK CUT`, `CLEAR CLIMB`, `OVERTIME` gibi authored truth'lar genericlesmez
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

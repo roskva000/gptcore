@@ -166,6 +166,8 @@ const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_X = -34;
 const CLEAR_CLIMB_BACKDROP_SUMMIT_OFFSET_Y = -10;
 const BREAKTHROUGH_STRAFE_GLOW_OFFSET_X = 24;
 const BREAKTHROUGH_STRAFE_GLOW_OFFSET_Y = -8;
+const BREAKTHROUGH_HINGE_GLOW_OFFSET_X = 10;
+const BREAKTHROUGH_HINGE_GLOW_OFFSET_Y = -12;
 const BREAKTHROUGH_SURGE_GLOW_OFFSET_X = -28;
 const BREAKTHROUGH_SURGE_GLOW_OFFSET_Y = -4;
 const BREAKTHROUGH_GATE_GLOW_OFFSET_X = -8;
@@ -3745,7 +3747,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getFirstDeathTargetHintText(): string {
-    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nBREAKTHROUGH is live. The strafe fork opens first, surge snaps back, then gate cut bends the lane into killbox before the first lead cut lands.`;
+    return `${TARGET_FIRST_DEATH_SECONDS}s broken!\nBREAKTHROUGH is live. The strafe fork opens first, hinge feint fakes a short hold, surge snaps back, then gate cut bends the lane into killbox before the first lead cut lands.`;
   }
 
   private getSurvivalGoalHintText(): string {
@@ -3911,7 +3913,7 @@ export class GameScene extends Phaser.Scene {
 
   private getRunPhaseShiftHintText(phaseId: RunPhaseId): string | null {
     if (phaseId === 'breakthrough') {
-      return 'Breakthrough is live. The lane forks sideways first, then surge snaps back through it before killbox.';
+      return 'Breakthrough is live. The lane forks sideways first, hinge feint softens it for a beat, then surge snaps back through it before killbox.';
     }
 
     if (phaseId === 'killbox') {
@@ -3967,7 +3969,13 @@ export class GameScene extends Phaser.Scene {
       return 0;
     }
 
-    return breakthroughCue.id === 'gate-cut' ? 0.92 : breakthroughCue.id === 'surge-snap' ? 0.88 : 0.76;
+    return breakthroughCue.id === 'gate-cut'
+      ? 0.92
+      : breakthroughCue.id === 'surge-snap'
+        ? 0.88
+        : breakthroughCue.id === 'hinge-feint'
+          ? 0.72
+          : 0.76;
   }
 
   private getKillboxCueIntensity(killboxCue: KillboxCue | null): number {
@@ -4339,6 +4347,21 @@ export class GameScene extends Phaser.Scene {
 
     const sway = Math.sin(time / 170);
     const rebound = Math.cos(time / 210);
+
+    if (breakthroughCue.id === 'hinge-feint') {
+      return {
+        glowOffsetX: BREAKTHROUGH_HINGE_GLOW_OFFSET_X + sway * 9,
+        glowOffsetY: BREAKTHROUGH_HINGE_GLOW_OFFSET_Y - rebound * 4,
+        topBandOffsetX: 8 + sway * 7,
+        bottomBandOffsetX: -10 - sway * 6,
+        topBandAngle: 1.8,
+        bottomBandAngle: -1.6,
+        frameOffsetX: 3 + sway * 3,
+        frameOffsetY: -4 - rebound,
+        frameScaleX: 1.013,
+        frameScaleY: 0.991,
+      };
+    }
 
     if (breakthroughCue.id === 'gate-cut') {
       return {

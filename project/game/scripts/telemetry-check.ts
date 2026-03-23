@@ -8,6 +8,8 @@ import {
   BREAKTHROUGH_GATE_CUT_TARGET_LEAD_SECONDS,
   BREAKTHROUGH_GATE_CUT_WINDOW_SECONDS,
   BREAKTHROUGH_GATE_CUT_WINDOW_START_SECONDS,
+  BREAKTHROUGH_HINGE_FEINT_TARGET_LAG_SECONDS,
+  BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS,
   BREAKTHROUGH_STRAFE_FORK_ROTATION_DEGREES,
   BREAKTHROUGH_STRAFE_FORK_WINDOW_SECONDS,
   BREAKTHROUGH_SURGE_SNAP_ROTATION_DEGREES,
@@ -2280,6 +2282,19 @@ assert.deepEqual(
   'Breakthrough should expose an authored strafe-fork cue once the 12s window opens so early-mid play reads like a named spatial event.',
 );
 assert.deepEqual(
+  getBreakthroughCue(14),
+  {
+    id: 'hinge-feint',
+    title: 'HINGE FEINT LIVE',
+    hudLabel: 'HINGE FEINT',
+    snapshotLabel: 'HINGE FEINT',
+    rematchLabel: 'the hinge feint',
+    accentColor: 0xc8ffd8,
+    body: 'The fork softens into a hinge feint here. The lane looks safer for one beat while the target drags behind your line; do not overhold the calmer air because surge is already lining up the snapback.',
+  },
+  'Breakthrough should expose a hinge-feint cue between fork and surge so the early-mid chain gains a fake-hold decision instead of jumping straight from reopen to snapback.',
+);
+assert.deepEqual(
   getBreakthroughCue(15.2),
   {
     id: 'surge-snap',
@@ -2314,6 +2329,11 @@ assert.equal(
   getRunPhaseDetailText(12.4),
   'Breakthrough peels sideways here. A bounded strafe fork reopens one lane first; take the fresh air before surge snaps the answer shut. Next phase at 18s.',
   'Breakthrough detail text should describe the authored strafe fork instead of falling back to generic cadence copy during the live cue window.',
+);
+assert.equal(
+  getRunPhaseSupportText(14),
+  'BREAKTHROUGH HINGE FEINT: The fork softens into a hinge feint here. The lane looks safer for one beat while the target drags behind your line; do not overhold the calmer air because surge is already lining up the snapback. Next shift 18s.',
+  'Breakthrough support text should surface the fake-hold hinge feint so the player can read the calm-before-snap beat instead of only the fork and surge endpoints.',
 );
 assert.equal(
   getRunPhaseSupportText(15.2),
@@ -2391,6 +2411,16 @@ assert.equal(
   'Retry guidance should send the player back to slack cut so the final killbox handoff stays concrete right before 32s.',
 );
 assert.equal(
+  getRunPhaseDeathSummaryText(14),
+  'HINGE FEINT snapped inside BREAKTHROUGH. 4.0s short of KILLBOX.',
+  'Deaths inside the hinge feint should explain the fake-safe beat explicitly instead of collapsing it into generic breakthrough phrasing.',
+);
+assert.equal(
+  getRunPhaseRetryGoalText(14),
+  'Rematch the hinge feint and carry it to KILLBOX in +4.0s',
+  'Retry guidance should send the player back to the hinge feint so the new early-mid decision stays visible as its own rematch target.',
+);
+assert.equal(
   getRunPhaseDeathSummaryText(15.2),
   'SURGE SNAP snapped inside BREAKTHROUGH. 2.8s short of KILLBOX.',
   'Deaths inside the surge snapback should explain the missed authored early-mid beat instead of generic breakthrough phrasing.',
@@ -2414,7 +2444,7 @@ assert.deepEqual(
   getRunPhaseShiftAnnouncement('breakthrough'),
   {
     title: 'BREAKTHROUGH LIVE',
-    body: 'Gate broken. A bounded strafe fork opens the early-mid lane, surge snaps back through it, then a short gate cut bends the route into killbox.',
+    body: 'Gate broken. A bounded strafe fork opens the early-mid lane, hinge feint fakes a short hold, surge snaps back through it, then a short gate cut bends the route into killbox.',
   },
   'The first major phase shift should announce the authored early-mid fork instead of only saying that generic pressure has increased.',
 );
@@ -2516,8 +2546,8 @@ assert.equal(
     survivalTimeSeconds: 14.9,
     runSpawnCount: 4,
   }),
-  'standard',
-  'Surge obstacles should stay locked until the run has moved past the flat opener and into mid-run play.',
+  'strafe',
+  'Breakthrough should hold the new hinge-feint strafe through 14.9s so the fake-safe beat stays authored right until surge wakes up.',
 );
 assert.equal(
   getObstacleVariant({
@@ -2542,6 +2572,14 @@ assert.equal(
   }),
   'strafe',
   'The regular strafe cadence should still resume after the bounded fork window instead of disappearing once the authored opener ends.',
+);
+assert.equal(
+  getObstacleVariant({
+    survivalTimeSeconds: BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS + 0.1,
+    runSpawnCount: 2,
+  }),
+  'strafe',
+  'Breakthrough should force a hinge-feint strafe inside the 13.4-15.0s window so the new fake-hold beat does not depend on cadence luck.',
 );
 assert.equal(
   getObstacleVariant({
@@ -3499,6 +3537,14 @@ assert.deepEqual(
     y: -0.375,
   },
   'Alternating drift beats should sweep to the opposite side so the new mutation does not lock into a single repeated lane.',
+);
+assert.equal(
+  getObstacleTargetLagSeconds({
+    survivalTimeSeconds: BREAKTHROUGH_HINGE_FEINT_WINDOW_START_SECONDS + 0.2,
+    variant: 'strafe',
+  }),
+  BREAKTHROUGH_HINGE_FEINT_TARGET_LAG_SECONDS,
+  'The breakthrough hinge feint should trail behind the player slightly so the fake-safe hold reads differently from both the fork reopen and the surge snapback.',
 );
 assert.equal(
   getObstacleTargetLagSeconds({
@@ -5857,16 +5903,16 @@ assert.equal(survivalReport.bestSurvivalTimeSeconds, 40, 'Best survival cap chan
 assert.equal(survivalReport.earlyDeathRatePercent, 0, 'Early death rate snapshot regressed.');
 assert.match(
   survivalReport.controller,
-  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag, a 1\.2s lock drag from 29\.2s at 20deg with 0\.09s lag, then a 1\.6s slack cut from 30\.4s at 16deg with 0\.06s lag before drift release cracks the lane at 32\.0s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.6s rebound hold at 28deg with 0\.16s lag, then a 0\.45s rebound cross at 16deg with 0\.14s lag, then a 0\.35s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 1\.2s recenter handoff at 18deg with 0\.08s lag, a 1\.0s center pin at 40\.2s with 24deg travel and 0\.05s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 1\.8s ascent stair at 16deg and 0\.12s lag, a 2\.2s ledge feint at 47\.4s with 20deg and 0\.05s lag, a 2\.8s ridge cut at 49\.6s with 22deg and 0\.07s lag, a 2\.4s crest veer at 52\.4s with 18deg and 0\.04s lag, then a summit snap at 28deg with 0\.02s lag, then a 1\.8s banked-air reopen from 60\.0s at 14deg with 0\.10s lag before a 2\.2s cash-out snap at 61\.8s with 26deg and 0\.03s lag, then a 4\.0s house cut from 64\.0s at 18deg with 0\.08s lag, then a 4\.0s due-now snap from 68\.0s at 24deg with 0\.04s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
+  /projected-path forward-alignment rerolls above 0\.5 dot through 6s \(80px-equivalent penalty\), projected-path lane-stack rerolls within 160px above 0\.55 dot through 6s \(120px-equivalent penalty\), .*near-player same-edge rerolls within 96px and 180px lateral below score 190 through 6s, deep same-side follow-up sweeps stay reroll-eligible out to 340px, retreat-pinch rerolls within 60px above 0\.35 forward alignment when the new spawn seals the rear lane within 200px through 10s, mid-run projected-stack rerolls within 75px above 0\.92 alignment from 10s to 13s, breakthrough forces a 1\.4s strafe fork from 12s at 20deg cross-lane travel, then a 1\.6s hinge feint from 13\.4s at 8deg with 0\.14s target lag, then a 1\.6s surge snap from 15s at 16deg with 0\.08s forward lead, then a 1\.4s gate cut from 16\.6s at 14deg with 0\.12s forward lead before cadence resumes, strafe obstacles every 8th spawn from 12s with 14deg cross-lane travel, surge obstacles every 5th spawn from 15s with 1\.14x speed, killbox onset forces a 1\.4s lead cut with 0\.22s forward target lead, then a 1\.2s echo follow-through with 12deg scissor travel, a 1\.0s pinch lock from 20\.6s at 26deg with 0\.18s forward target lead, a 1\.2s bridge echo at 21\.2s with 10deg travel, a 1\.2s seal snap from 22\.4s at 18deg with 0\.10s lag, a 1\.4s echo lock-in from 24s with 6deg travel, then a 1\.2s fold snap from 27\.2s at 14deg with 0\.14s lag, a 1\.2s lock drag from 29\.2s at 20deg with 0\.09s lag, then a 1\.6s slack cut from 30\.4s at 16deg with 0\.06s lag before drift release cracks the lane at 32\.0s, lead obstacles every 9th spawn from 18s with 0\.14s forward target lead, echo obstacles every 6th spawn from 24s with 0\.22s target lag, drift obstacles every 7th spawn from 32s with a 0\.8s fold-carry cut at 18deg and 0\.14s lag, then a 0\.8s release stretch at 14deg with 0\.18s lag, a 0\.6s rebound hold at 28deg with 0\.16s lag, then a 0\.45s rebound cross at 16deg with 0\.14s lag, then a 0\.35s rebound punish at 22deg with 0\.10s lag, a 0\.8s late sweep from 36\.2s at 18deg with 0\.08s lag, then a 0\.6s sweep lock at 37\.0s with 24deg travel and 0\.05s lag before a 1\.4s aftershock clamp at 30deg with 0\.04s lag, followed by a 1\.2s recenter handoff at 18deg with 0\.08s lag, a 1\.0s center pin at 40\.2s with 24deg travel and 0\.05s lag, a 1\.6s false-clear bait at 41\.2s with 10deg travel and 0\.12s lag, then a 2\.8s preclear squeeze at 42\.8s with 18deg travel and 0\.06s lag, then forced clear-climb drift from 45\.6s with a 1\.8s ascent stair at 16deg and 0\.12s lag, a 2\.2s ledge feint at 47\.4s with 20deg and 0\.05s lag, a 2\.8s ridge cut at 49\.6s with 22deg and 0\.07s lag, a 2\.4s crest veer at 52\.4s with 18deg and 0\.04s lag, then a summit snap at 28deg with 0\.02s lag, then a 1\.8s banked-air reopen from 60\.0s at 14deg with 0\.10s lag before a 2\.2s cash-out snap at 61\.8s with 26deg and 0\.03s lag, then a 4\.0s house cut from 64\.0s at 18deg with 0\.08s lag, then a 4\.0s due-now snap from 68\.0s at 24deg with 0\.04s lag, .*11px visible-arena hit margin, and 96px offscreen cull margin/,
   'Deterministic survival proxy no longer matches runtime spawn-selection, killbox-to-drift handoff, collision, and cull guards.',
 );
 assert.deepEqual(
   survivalReport.survivalBuckets,
   {
     under10Seconds: 0,
-    between10And20Seconds: 4,
-    between20And30Seconds: 11,
-    reachedSimulationCap: 9,
+    between10And20Seconds: 5,
+    between20And30Seconds: 8,
+    reachedSimulationCap: 11,
   },
   'Survival bucket distribution regressed.',
 );
@@ -5876,10 +5922,10 @@ assert.ok(
   ),
   'Deterministic survival sample should include at least one post-32s run so the drift mutation is actually exercised.',
 );
-assert.equal(survivalReport.averageSpawnCount, 38.8, 'Average spawn count snapshot changed unexpectedly.');
+assert.equal(survivalReport.averageSpawnCount, 38.9, 'Average spawn count snapshot changed unexpectedly.');
 assert.equal(survivalReport.averageSpawnRerolls, 0.6, 'Spawn reroll snapshot changed unexpectedly.');
-assert.equal(seed3TrajectoryReport.deathTimeSeconds, 36.8, 'Seed #3 trajectory baseline drifted.');
-assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 45, 'Seed #3 spawn count changed unexpectedly.');
+assert.equal(seed3TrajectoryReport.deathTimeSeconds, 34.3, 'Seed #3 trajectory baseline drifted.');
+assert.equal(seed3TrajectoryReport.spawnsBeforeDeath, 41, 'Seed #3 spawn count changed unexpectedly.');
 assert.equal(
   seed3TrajectoryReport.spawnRerollsBeforeDeath,
   1,
@@ -5970,12 +6016,12 @@ assert.deepEqual(
 );
 assert.equal(
   validationReport.validationSummary,
-  '5 runs | first death 28.9s | early 0% | 5/5 runs, target met',
+  '5 runs | first death 29.3s | early 0% | 5/5 runs, target met',
   'Validation export summary regressed.',
 );
 assert.equal(
   validationReport.validationReport,
-  'validation_sample | runs=5 | deaths=5 | avg_survival=37.1s | first_death=28.9s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=40.0s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 31.7s avg / 10.0s first death / 0% early',
+  'validation_sample | runs=5 | deaths=5 | avg_survival=36.7s | first_death=29.3s | early_death_rate=0% | avg_retry=n/a | spawn_saves=4 | last_run=40.0s | validation=5/5 runs, target met | baseline=pacing 10/35/89 | deterministic survival 31.7s avg / 10.0s first death / 0% early',
   'Validation export contract changed unexpectedly.',
 );
 assert.equal(
