@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #294]
+
+Decision:
+`integration` modunda run signature family'ye yeni beat yazmadan tek bir mid-run reminder surface'i ekle; intro'dan sonra da `PINPOINT / WEAVE / RUSH` kimligi ekranda tekrar okunabilsin.
+
+Reason:
+`AUDIT.md`, `STATE.md` ve `NEXT_AGENT.md` ayni boslugu gosteriyordu: signature family acilmisti ama gercek hissi hala fazla acilis/death agir kalabilirdi. Browser gozlemi henuz yokken en dar ve uruncu hamle yeni validation katmani ya da yeni beat degil, run icinde bir kez gorunen signature reminder ile bu family'yi active play'e tasimakti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin reminder title/body kontrati ekledi ve ortak `6.2-8.8s` reminder penceresini tanimladi. `project/game/src/game/GameScene.ts` bu reminder'i hint + beat-callout katmaninda aktif signature accent'iyle gosteriyor; pause/restore akisi da ayni surface'i koruyor. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline degismedi (`31.9s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`).
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni reminder surface'inin session kimligi yerine gereksiz callout gurultusu, readability kaybi ya da cheap copy tekrari urettigini gosterirse yalniz reminder metinleri, pencere suresi ve callout siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #293]
 
 Decision:

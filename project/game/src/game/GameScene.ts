@@ -92,9 +92,11 @@ import {
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
+  getActiveRunSignatureReminder,
   applyRunSignatureTargetLag,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
+  type RunSignatureReminder,
   type RunSignature,
 } from './runSignature.ts';
 import {
@@ -165,6 +167,7 @@ const RUN_BEAT_CALLOUT_DURATION_MS = 1700;
 const RUN_PHASE_SHIFT_CALLOUT_DURATION_MS = 1900;
 const ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS = 1500;
 const RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS = 1500;
+const RUN_SIGNATURE_REMINDER_CALLOUT_DURATION_MS = 1600;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
 const CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_X = -14;
@@ -463,6 +466,7 @@ export class GameScene extends Phaser.Scene {
   private lastShownRunPhaseId: RunPhaseId | null = null;
   private lastShownBreakthroughCueId: BreakthroughCue['id'] | null = null;
   private lastShownKillboxCueId: KillboxCue['id'] | null = null;
+  private lastShownRunSignatureReminderId: string | null = null;
   private lastShownEndgameDriftCueId:
     | EndgameDriftCue['id']
     | 'ascent-stair'
@@ -1113,6 +1117,7 @@ export class GameScene extends Phaser.Scene {
     this.updateBestText();
     this.updateRunPhaseHud();
     this.maybeShowRunPhaseShiftHint(activeRunElapsedMs);
+    this.maybeShowRunSignatureReminder(activeRunElapsedMs);
     this.maybeShowBreakthroughCue(activeRunElapsedMs);
     this.maybeShowKillboxCue(activeRunElapsedMs);
     this.maybeShowEndgameDriftCue(activeRunElapsedMs);
@@ -1737,6 +1742,7 @@ export class GameScene extends Phaser.Scene {
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownBreakthroughCueId = null;
     this.lastShownKillboxCueId = null;
+    this.lastShownRunSignatureReminderId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnRerolls = 0;
     this.runSpawnCount = 0;
@@ -1764,6 +1770,44 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.beatCalloutText);
     this.beatCalloutText
       .setText(`${this.currentRunSignature.label}\n${this.currentRunSignature.introBody}`)
+      .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+      .setColor(this.currentRunSignature.accentTextColor)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.92,
+      duration: 150,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private getActiveRunSignatureReminder(): RunSignatureReminder | null {
+    return getActiveRunSignatureReminder({
+      signature: this.currentRunSignature,
+      survivalTimeSeconds: this.survivalTime,
+    });
+  }
+
+  private maybeShowRunSignatureReminder(activeRunElapsedMs: number): void {
+    const reminder = this.getActiveRunSignatureReminder();
+
+    if (reminder === null || reminder.id === this.lastShownRunSignatureReminderId) {
+      return;
+    }
+
+    this.lastShownRunSignatureReminderId = reminder.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.hintText
+      .setText(`${reminder.title}\n${reminder.body}`)
+      .setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + RUN_SIGNATURE_REMINDER_CALLOUT_DURATION_MS;
+    this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + RUN_SIGNATURE_REMINDER_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${reminder.title}\n${reminder.body}`)
       .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
       .setColor(this.currentRunSignature.accentTextColor)
       .setAlpha(1)
@@ -3911,6 +3955,12 @@ export class GameScene extends Phaser.Scene {
       return this.getFirstDeathTargetHintText();
     }
 
+    const signatureReminder = this.getActiveRunSignatureReminder();
+
+    if (signatureReminder !== null) {
+      return `${signatureReminder.title}\n${signatureReminder.body}`;
+    }
+
     const { currentPhase } = getRunPhaseState(this.survivalTime);
     const breakthroughCue =
       currentPhase.id === 'breakthrough' ? getBreakthroughCue(this.survivalTime) : null;
@@ -4951,6 +5001,19 @@ export class GameScene extends Phaser.Scene {
     if (signatureIntroActive) {
       this.beatCalloutText
         .setText(`${this.currentRunSignature.label}\n${this.currentRunSignature.introBody}`)
+        .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+        .setColor(this.currentRunSignature.accentTextColor)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
+
+    const signatureReminder = this.getActiveRunSignatureReminder();
+
+    if (signatureReminder !== null) {
+      this.beatCalloutText
+        .setText(`${signatureReminder.title}\n${signatureReminder.body}`)
         .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
         .setColor(this.currentRunSignature.accentTextColor)
         .setAlpha(0.92)

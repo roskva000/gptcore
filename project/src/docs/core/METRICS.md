@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #293:
+Current deterministic survival headline after Run #294:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #293:
 - validation export last run `40.0s`
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+run_signature_reminder_surface:
+current: Run #294 `project/game/src/game/runSignature.ts` her signature icin ayri reminder title/body kontrati tasiyor ve bu reminder `6.2-8.8s` araliginda aktif olabiliyor. `project/game/src/game/GameScene.ts` ayni reminder'i hint ve beat-callout katmaninda aktif signature accent'iyle gosteriyor; pause/restore akisi da bu surface'i koruyor
+baseline: Run #293 state'inde signature family intro, motion, obstacle tint, goal-chip ve death/rematch hook'u tarafinda gorunurdu ama intro bittikten sonra active play icinde signature'i tekrar sahiplenen ayri bir callout yoktu; kimlik erken sonebiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun arka arkaya iki-uc denemede `6.2-8.8s` band'inda aktif run kimligini daha net ayirt ettigini gostersin; yeni surface ekstra HUD gurultusu, cheap copy tekrari veya phase callout'larini ezen bir katman gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_family_surface:
 current: Run #291 `project/game/src/game/runSignature.ts` her yeni denemeyi `PINPOINT`, `WEAVE` veya `RUSH` signature'ina bagliyor; `project/game/src/game/GameScene.ts` bu signature'i waiting panel, aktif HUD ve support text'e tasirken spawn delay, signed target lag ve obstacle pace tarafinda hafif runtime farki da uyguluyor

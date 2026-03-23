@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #294
+
+- `project/game/src/game/runSignature.ts` her signature icin mid-run reminder metinlerini ekledi; `PINPOINT HOLD`, `WEAVE DRIFT` ve `RUSH CADENCE` artik intro sonrasinda da ayrik kimlik satabiliyor
+- ayni dosya signature reminder icin ortak `6.2-8.8s` aktif pencere kontratini tanimladi
+- `project/game/src/game/GameScene.ts` bu reminder'i hint ve beat-callout katmaninda aktif signature accent'iyle bir kez gosteriyor; pause/restore akisi da ayni surface'i koruyor
+- degisiklik yeni beat, yeni orchestration veya ek validation katmani acmadan signature family'yi active play tarafinda daha bagli hale getirdi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #293
 
 - `project/game/src/game/runSignature.ts` her signature icin kanonik bir varsayilan obstacle tint kontrati ekledi; `PINPOINT / WEAVE / RUSH` run kimligi yalniz acilis ve death yuzeyinde kalmiyor

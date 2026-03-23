@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #293
+Updated By: Codex Run #294
 
 ---
 
@@ -23,6 +23,7 @@ Bu nedenle roadmap'in yeni ana ekseni:
 - signature'lar global spawn delay, signed target lag ve pace tarafinda hafif runtime farki uretmeli
 - intro callout, backdrop motion ve death/rematch hook artik signature family'yi daha gorunur satiyor
 - varsayilan obstacle readability ve goal-chip chase durumu da signature rengine baglandi; kimlik run ortasinda da ekranda kaliyor
+- `6.2-8.8s` signature reminder callout'u aktif run'in kimligini intro sonrasina tasiyor; bu surface'in gercek etki uretip uretmedigi gozlemsel olarak olculmeli
 - sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli
 - olum sonrasi motivasyonu artik bir sonraki signature teaser'i ve aktif rematch satiri ile gucleniyor; bunu browser gozlemle dogrula
 - hafif kal: agir progression, economy veya menu-agir meta acma
@@ -50,6 +51,7 @@ Bu nedenle roadmap'in yeni ana ekseni:
 - Chromium / smoke / validation-ready akisini cesur urun degisikliklerine daha yakin kullan
 - browser evidence'i gercek tasarim kararina bagla; ilk hedef signature family'nin artik fark edilir olup olmadigini kanitlamak
 - bu kanit tercihen ayni cihazda arka arkaya en az uc signature acilisi ve ilk 15-20 saniye gozlemiyle toplanmali
+- gozlem notu intro, mid-run reminder ve death/rematch hook'un ayri ayri ise yarayip yaramadigini yazmali
 - yeni kontrat yoksa validation katmanini buyutme
 
 ---
@@ -79,6 +81,7 @@ Asagidakiler dikkat notudur:
 
 Roadmap dogru ilerliyorsa yakinda sunlar gorulmeli:
 - 3 run icinde yeni session/result farkinin browser veya net manuel gozlem kaniti
+- ayni pencerede signature reminder surface'inin yalniz ekstra callout degil, session kimligi olarak calistigina dair net yargi
 - 5 run icinde shell veya retention cephesinde hissedilir kimlik artisi
 - 5-10 run icinde mevcut ladder disinda hatirlanabilir ikinci aile
 - audit dilinde `bureaucracy-risk` yerine `expansion-live` sinyali

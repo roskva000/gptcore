@@ -8,6 +8,8 @@ export type RunSignature = {
   waitingBody: string;
   supportLine: string;
   introBody: string;
+  reminderTitle: string;
+  reminderBody: string;
   rematchLine: string;
   overlayCallout: string;
   accentColor: number;
@@ -28,6 +30,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     waitingBody: 'Tighter lead and shorter lag.\nCut later, trust smaller air, and keep the lane honest.',
     supportLine: 'PINPOINT RUN: tighter lead is live. Cut later and protect smaller air.',
     introBody: 'Tighter lead opens first. Cut later, trust smaller air, and let the lane stay narrow for one more beat.',
+    reminderTitle: 'PINPOINT HOLD',
+    reminderBody: 'The lane stays tight on purpose. Cut later, trust the smaller gap, and do not spend the reopen early.',
     rematchLine: 'PINPOINT REMATCH: cut later and protect smaller air.',
     overlayCallout: 'PINPOINT SNAPSHOT',
     accentColor: 0xffc18a,
@@ -46,6 +50,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     waitingBody: 'Shots reach a little wider before they settle.\nStay fluid, re-center less, and let the lane breathe once.',
     supportLine: 'WEAVE RUN: wider lag is live. Stay fluid and do not over-correct the reopen.',
     introBody: 'Wider lag opens the route. Stay fluid, re-center less, and let the lane breathe before you cash it back in.',
+    reminderTitle: 'WEAVE DRIFT',
+    reminderBody: 'The lane wants one extra breath. Stay fluid, re-center less, and cash the reopen in a beat later.',
     rematchLine: 'WEAVE REMATCH: stay fluid and let the lane breathe once.',
     overlayCallout: 'WEAVE SNAPSHOT',
     accentColor: 0x8ff0d9,
@@ -64,6 +70,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     waitingBody: 'Cadence lands earlier and pressure keeps closer pace.\nTrade comfort for rhythm and keep moving before the snap.',
     supportLine: 'RUSH RUN: earlier cadence is live. Keep moving before the lane can settle.',
     introBody: 'Earlier cadence lands immediately. Trade comfort for rhythm and move before the lane can settle.',
+    reminderTitle: 'RUSH CADENCE',
+    reminderBody: 'Pressure arrives early. Trade comfort for rhythm and move before the lane can settle under you.',
     rematchLine: 'RUSH REMATCH: move early and keep the lane from settling.',
     overlayCallout: 'RUSH SNAPSHOT',
     accentColor: 0xff8aa1,
@@ -94,3 +102,35 @@ export const getRunSignatureObstacleTint = ({
   signature: RunSignature;
   baseTint: number | null;
 }): number => baseTint ?? signature.obstacleTint;
+
+export type RunSignatureReminder = {
+  id: string;
+  title: string;
+  body: string;
+};
+
+const RUN_SIGNATURE_REMINDER_WINDOW = {
+  startSeconds: 6.2,
+  endSeconds: 8.8,
+} as const;
+
+export const getActiveRunSignatureReminder = ({
+  signature,
+  survivalTimeSeconds,
+}: {
+  signature: RunSignature;
+  survivalTimeSeconds: number;
+}): RunSignatureReminder | null => {
+  if (
+    survivalTimeSeconds < RUN_SIGNATURE_REMINDER_WINDOW.startSeconds ||
+    survivalTimeSeconds >= RUN_SIGNATURE_REMINDER_WINDOW.endSeconds
+  ) {
+    return null;
+  }
+
+  return {
+    id: `${signature.id}-reminder`,
+    title: signature.reminderTitle,
+    body: signature.reminderBody,
+  };
+};
