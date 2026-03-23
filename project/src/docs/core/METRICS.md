@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #291:
+Current deterministic survival headline after Run #293:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -29,6 +29,12 @@ run_signature_integration_surface:
 current: Run #292 `project/game/src/game/GameScene.ts` run basinda signature-ozel intro callout'u ve ilk saniyelerde signature-ozel backdrop motion'u gosteriyor; `project/game/src/game/deathPresentation.ts` aktif run signature callout'unu ve signature rematch satirini death snapshot'a tasiyor; game-over support satiri bir sonraki signature'i teaser olarak gosteriyor
 baseline: Run #291 state'inde signature family waiting panel, aktif HUD ve runtime tuning tarafinda vardi ama run acilisi ile death/retry yuzeyinde halen fazla yumusak kalabiliyordu
 target: sonraki browser veya manuel gozlem oyuncunun arka arkaya iki-uc denemede signature farkini artik yalniz copy degil, acilis motion'u ve retry hook'u uzerinden de ayirt edebildigini gostersin; yeni surface cheap polish ya da readability kaybi gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
+
+run_signature_readability_surface:
+current: Run #293 `project/game/src/game/runSignature.ts` her signature icin varsayilan obstacle tint kontrati tasiyor; `project/game/src/game/GameScene.ts` collision-ready standard obstacle'lari ve default goal-chip chase durumunu aktif signature rengine bagliyor. Authored variant ve near-miss tint'leri kendi okunurluk onceligini koruyor
+baseline: Run #292 state'inde signature family intro, motion ve death/rematch hook'u tarafinda daha gorunurdu ama run ortasinda varsayilan obstacle ve chase HUD halen ortak renk diline geri donuyordu; signature hissi cue ladder tarafinda sonebiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun ilk 15-20 saniyede arka arkaya iki-uc denemeyi yalniz intro copy'sinden degil obstacle/HUD renk dili uzerinden de ayirt edebildigini gostersin; yeni surface authored variant contrast'ini ezmemeli ve cheap palette churn'u gibi okunmamali
 validation: `npm run telemetry:check`, `npm run build`
 
 death_retry_overlay_compaction_surface:

@@ -13,6 +13,7 @@ export type RunSignature = {
   accentColor: number;
   accentBackgroundColor: string;
   accentTextColor: string;
+  obstacleTint: number;
   spawnDelayMultiplier: number;
   obstacleSpeedMultiplier: number;
   targetLagOffsetSeconds: number;
@@ -32,6 +33,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     accentColor: 0xffc18a,
     accentBackgroundColor: '#5a2b1b',
     accentTextColor: '#ffe7c8',
+    obstacleTint: 0xf6bf86,
     spawnDelayMultiplier: 1.03,
     obstacleSpeedMultiplier: 0.99,
     targetLagOffsetSeconds: -0.035,
@@ -49,6 +51,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     accentColor: 0x8ff0d9,
     accentBackgroundColor: '#173b31',
     accentTextColor: '#d7fff2',
+    obstacleTint: 0x8fe7da,
     spawnDelayMultiplier: 0.98,
     obstacleSpeedMultiplier: 1.01,
     targetLagOffsetSeconds: 0.045,
@@ -66,6 +69,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     accentColor: 0xff8aa1,
     accentBackgroundColor: '#561d23',
     accentTextColor: '#ffe1e7',
+    obstacleTint: 0xff9baa,
     spawnDelayMultiplier: 0.96,
     obstacleSpeedMultiplier: 1.025,
     targetLagOffsetSeconds: -0.01,
@@ -82,3 +86,11 @@ export const applyRunSignatureTargetLag = ({
   baseTargetLagSeconds: number;
   signature: RunSignature;
 }): number => Math.max(0, baseTargetLagSeconds + signature.targetLagOffsetSeconds);
+
+export const getRunSignatureObstacleTint = ({
+  signature,
+  baseTint,
+}: {
+  signature: RunSignature;
+  baseTint: number | null;
+}): number => baseTint ?? signature.obstacleTint;

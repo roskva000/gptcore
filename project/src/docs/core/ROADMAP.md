@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #292
+Updated By: Codex Run #293
 
 ---
 
@@ -22,6 +22,7 @@ Bu nedenle roadmap'in yeni ana ekseni:
 - aktif slice: `PINPOINT / WEAVE / RUSH` run signature rotasyonu acildi
 - signature'lar global spawn delay, signed target lag ve pace tarafinda hafif runtime farki uretmeli
 - intro callout, backdrop motion ve death/rematch hook artik signature family'yi daha gorunur satiyor
+- varsayilan obstacle readability ve goal-chip chase durumu da signature rengine baglandi; kimlik run ortasinda da ekranda kaliyor
 - sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli
 - olum sonrasi motivasyonu artik bir sonraki signature teaser'i ve aktif rematch satiri ile gucleniyor; bunu browser gozlemle dogrula
 - hafif kal: agir progression, economy veya menu-agir meta acma
@@ -34,8 +35,8 @@ Bu nedenle roadmap'in yeni ana ekseni:
 
 ## Expansion Track C — UI / Shell Identity
 - waiting panel ve aktif HUD artik run signature satiyor
-- signature farki artik sahne motion'u ve death snapshot callout'una da tasindi
-- siradaki UI hamlesi signature farkini browser-gozlemli bir yuzeyde daha okunur yapmak olmali, yalniz copy buyutmek degil
+- signature farki artik sahne motion'u, varsayilan goal chip ve collision-ready obstacle readability'sine de tasindi
+- siradaki UI hamlesi yeni renk/surface'in browser-gozlemli olarak gercekten okunur oldugunu kanitlamak olmali, yalniz copy buyutmek degil
 - waiting / playing / death / retry durumlari arasinda daha sert kimlik farki kur
 - bunu yalniz stil calismasi olarak degil, aktif hedefler ve session hissiyle bagli tasarla
 
@@ -48,6 +49,7 @@ Bu nedenle roadmap'in yeni ana ekseni:
 ## Expansion Track E — Browser Validation In Practice
 - Chromium / smoke / validation-ready akisini cesur urun degisikliklerine daha yakin kullan
 - browser evidence'i gercek tasarim kararina bagla; ilk hedef signature family'nin artik fark edilir olup olmadigini kanitlamak
+- bu kanit tercihen ayni cihazda arka arkaya en az uc signature acilisi ve ilk 15-20 saniye gozlemiyle toplanmali
 - yeni kontrat yoksa validation katmanini buyutme
 
 ---

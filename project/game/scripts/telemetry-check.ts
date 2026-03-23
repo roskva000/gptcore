@@ -242,6 +242,7 @@ import {
 import {
   applyRunSignatureTargetLag,
   getRunSignatureForRunNumber,
+  getRunSignatureObstacleTint,
 } from '../src/game/runSignature.ts';
 import {
   createBalanceSnapshotReport,
@@ -6232,6 +6233,22 @@ assert.equal(
   ),
   0.225,
   'Weave route should widen the signed target lag for the full-run pressure signature.',
+);
+assert.equal(
+  getRunSignatureObstacleTint({
+    signature: getRunSignatureForRunNumber(0),
+    baseTint: null,
+  }),
+  0xf6bf86,
+  'Pinpoint runs should tint default obstacles so the route identity stays visible after the intro callout ends.',
+);
+assert.equal(
+  getRunSignatureObstacleTint({
+    signature: getRunSignatureForRunNumber(1),
+    baseTint: getObstacleTint('surge'),
+  }),
+  getObstacleTint('surge'),
+  'Signature tinting should not override authored obstacle variants that already carry a gameplay-specific readable color.',
 );
 
 console.log(

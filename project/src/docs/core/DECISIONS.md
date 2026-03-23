@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #293]
+
+Decision:
+`integration` modunda run signature family'yi yeni beat yazmadan run ortasi readability tarafina tasi; varsayilan obstacle ve chase HUD rengi aktif signature kimligini de tasisin.
+
+Reason:
+`AUDIT.md`, `STATE.md` ve `NEXT_AGENT.md` ayni boslugu gosteriyordu: signature family acilmisti ama hissi halen fazla intro/death-yuzeyi agir kalabilirdi. Dogru dar hamle yeni cue eklemek degil, oyuncunun aktif kacis aninda da `PINPOINT / WEAVE / RUSH` farkini gorecegi tek bir surface'i derinlestirmekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin kanonik obstacle tint kontrati ekledi. `project/game/src/game/GameScene.ts` collision-ready varsayilan obstacle'lari ve default goal-chip chase durumunu aktif signature renkleriyle gosteriyor; authored variant tint'leri ve near-miss readability onceligi korunuyor. `project/game/scripts/telemetry-check.ts` yeni signature obstacle tint kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline degismedi (`31.9s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`).
+
+Rollback Condition:
+Browser veya manuel gozlem signature tint'lerinin aktif kacis okunurlugunu bozdugunu, authored variant renklerini bastirdigini veya yalniz renk churn'u gibi okundugunu gosterirse yalniz `runSignature.ts` obstacle tint degerleri ve `GameScene.ts` varsayilan goal-chip renkleri dar kapsamda sadeleştirilir; bu bahaneyle yeni orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #292]
 
 Decision:

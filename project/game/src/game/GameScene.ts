@@ -94,6 +94,7 @@ import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   applyRunSignatureTargetLag,
   getRunSignatureForRunNumber,
+  getRunSignatureObstacleTint,
   type RunSignature,
 } from './runSignature.ts';
 import {
@@ -2032,10 +2033,13 @@ export class GameScene extends Phaser.Scene {
       | null;
     const readyTint =
       nearMissChaseSpawnStep === null
-        ? getObstacleTint(
-            (obstacle.getData('variant') as ReturnType<typeof getObstacleVariant> | undefined) ??
-              'standard',
-          )
+        ? getRunSignatureObstacleTint({
+            signature: this.currentRunSignature,
+            baseTint: getObstacleTint(
+              (obstacle.getData('variant') as ReturnType<typeof getObstacleVariant> | undefined) ??
+                'standard',
+            ),
+          })
         : getNearMissChaseStepTint(nearMissChaseSpawnStep);
     obstacle
       .setAlpha(visualState.alpha)
@@ -3473,7 +3477,7 @@ export class GameScene extends Phaser.Scene {
         overtimeOpenerState !== null
           ? colorToCssHex(overtimeOpenerState.accentColor)
           : clearClimbState === null
-            ? '#d8fff4'
+            ? this.currentRunSignature.accentTextColor
             : colorToCssHex(clearClimbState.accentColor),
       )
       .setBackgroundColor(
@@ -3486,7 +3490,7 @@ export class GameScene extends Phaser.Scene {
               ? '#4a1f2f'
             : '#5a3317'
           : clearClimbState === null
-          ? '#123f36'
+          ? this.currentRunSignature.accentBackgroundColor
           : clearClimbState.id === 'crest-veer'
             ? '#3a2954'
           : clearClimbState.id === 'summit-snap'

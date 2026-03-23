@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #293
+
+- `project/game/src/game/runSignature.ts` her signature icin kanonik bir varsayilan obstacle tint kontrati ekledi; `PINPOINT / WEAVE / RUSH` run kimligi yalniz acilis ve death yuzeyinde kalmiyor
+- `project/game/src/game/GameScene.ts` collision-ready standard obstacle'lari aktif signature tint'iyle gosteriyor; authored variant ve near-miss tint'leri yine kendi readability onceligini koruyor
+- ayni dosya default goal-chip chase durumunu da signature renklerine tasidi; run ortasinda signature kimligi HUD tarafinda da kalici hale geldi
+- `project/game/scripts/telemetry-check.ts` yeni signature obstacle tint fallback kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #292
 
 - `project/game/src/game/runSignature.ts` her signature icin acilis ve rematch metinlerini ekledi; `PINPOINT / WEAVE / RUSH` artik yalniz waiting panel etiketi degil
