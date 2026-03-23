@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #298]
+
+Decision:
+`integration` modunda run signature family'yi transient callout zincirinden cikarip opening boyunca yasayan tek bir HUD surface'i ile sabitle.
+
+Reason:
+`AUDIT.md`, `STATE.md` ve `NEXT_AGENT.md` ayni riski gosteriyordu: signature family source'ta buyuyor ama gercek oyuncu hissinde hala fazla yumusak kalabilir. Yeni beat, yeni orchestration veya yeni validation katmani acmak yerine en dar uruncu hamle; intro + opening cue + reminder arasinda dagilan kimligi opening penceresi boyunca gorunen kompakt bir HUD panelinde toplamakti.
+
+Impact:
+`project/game/src/game/GameScene.ts` aktif run icin sol HUD'da signature-ozel `RUN FEEL` paneli ekledi. Panel `0-8.8s` opening penceresinin ilerleyisini progress band'iyle, `PINPOINT / WEAVE / RUSH` lock durumunu baslikta ve aktif cue/reminder/support truth'unu detay satirinda tasiyor. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni `RUN FEEL` panelinin signature farkini netlestirmek yerine gereksiz HUD gurultusu, mobile/desktop ust bilgi yigilmasi veya yalniz UX cilasi gibi okundugunu gosterirse yalniz `GameScene.ts` icindeki panel yerlesimi, metin siddeti ve gorunurluk suresi dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #297]
 
 Decision:

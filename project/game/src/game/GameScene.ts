@@ -98,6 +98,7 @@ import {
   getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
+  RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
   type RunSignatureOpeningCue,
   type RunSignatureReminder,
   type RunSignature,
@@ -435,6 +436,10 @@ export class GameScene extends Phaser.Scene {
   private waitingPulseLabel!: Phaser.GameObjects.Text;
   private beatCalloutText!: Phaser.GameObjects.Text;
   private hintText!: Phaser.GameObjects.Text;
+  private signatureStatusPanel!: Phaser.GameObjects.Rectangle;
+  private signatureStatusProgress!: Phaser.GameObjects.Rectangle;
+  private signatureStatusLabel!: Phaser.GameObjects.Text;
+  private signatureStatusDetail!: Phaser.GameObjects.Text;
   private nearMissText!: Phaser.GameObjects.Text;
   private supportText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
@@ -745,6 +750,42 @@ export class GameScene extends Phaser.Scene {
       )
       .setDepth(3)
       .setOrigin(0.5, 0);
+
+    this.signatureStatusPanel = this.add
+      .rectangle(24, 198, 320, 72, 0x08131d, 0.84)
+      .setDepth(4)
+      .setOrigin(0, 0)
+      .setStrokeStyle(2, this.currentRunSignature.accentColor, 0.88)
+      .setVisible(false);
+
+    this.signatureStatusProgress = this.add
+      .rectangle(30, 258, 0, 6, this.currentRunSignature.accentColor, 0.95)
+      .setDepth(4)
+      .setOrigin(0, 0.5)
+      .setVisible(false);
+
+    this.signatureStatusLabel = this.add
+      .text(40, 212, '', {
+        color: this.currentRunSignature.accentTextColor,
+        fontFamily: 'Trebuchet MS',
+        fontSize: '14px',
+        fontStyle: 'bold',
+      })
+      .setDepth(5)
+      .setVisible(false);
+
+    this.signatureStatusDetail = this.add
+      .text(40, 234, '', {
+        color: '#b8cde0',
+        fontFamily: 'Trebuchet MS',
+        fontSize: '12px',
+        lineSpacing: 4,
+        wordWrap: {
+          width: 288,
+        },
+      })
+      .setDepth(5)
+      .setVisible(false);
 
     this.nearMissText = this.add
       .text(ARENA_WIDTH / 2, 208, '', {
@@ -1121,6 +1162,7 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setText(`${this.survivalTime.toFixed(1)}s`);
     this.updateBestText();
     this.updateRunPhaseHud();
+    this.updateRunSignatureStatusHud();
     this.maybeShowRunPhaseShiftHint(activeRunElapsedMs);
     this.maybeShowRunSignatureReminder(activeRunElapsedMs);
     this.maybeShowBreakthroughCue(activeRunElapsedMs);
@@ -3894,6 +3936,11 @@ export class GameScene extends Phaser.Scene {
     this.goalStatusText.setVisible(this.phase === 'playing');
     this.phaseStatusText.setVisible(this.phase === 'playing');
     this.phaseDetailText.setVisible(this.phase === 'playing');
+    const signatureHudVisible = this.phase === 'playing';
+    this.signatureStatusPanel.setVisible(signatureHudVisible);
+    this.signatureStatusProgress.setVisible(signatureHudVisible);
+    this.signatureStatusLabel.setVisible(signatureHudVisible);
+    this.signatureStatusDetail.setVisible(signatureHudVisible);
     this.supportText.setDepth(
       this.phase === 'paused' || this.phase === 'gameOver'
         ? OVERLAY_SUPPORT_TEXT_DEPTH
@@ -4166,6 +4213,52 @@ export class GameScene extends Phaser.Scene {
     }
 
     return `${this.currentRunSignature.supportLine}\n${getRunPhaseSupportText(this.survivalTime)}`;
+  }
+
+  private updateRunSignatureStatusHud(): void {
+    if (this.phase !== 'playing') {
+      return;
+    }
+
+    const openingProgress = Phaser.Math.Clamp(
+      this.survivalTime / RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+      0,
+      1,
+    );
+    const openingSecondsRemaining = Math.max(
+      RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS - this.survivalTime,
+      0,
+    );
+    const openingCue = this.getActiveRunSignatureOpeningCue();
+    const reminder = this.getActiveRunSignatureReminder();
+    const openingActive = openingSecondsRemaining > 0.01;
+    const nextBiasedSpawnIndex = Phaser.Math.Clamp(this.runSpawnCount + 1, 1, 3);
+
+    this.signatureStatusPanel
+      .setStrokeStyle(2, this.currentRunSignature.accentColor, openingActive ? 0.92 : 0.5)
+      .setFillStyle(this.currentRunSignature.accentColor, openingActive ? 0.12 : 0.05);
+    this.signatureStatusProgress
+      .setFillStyle(this.currentRunSignature.accentColor, openingActive ? 0.96 : 0.55)
+      .setDisplaySize(308 * openingProgress, 6)
+      .setAlpha(openingActive ? 1 : 0.82);
+    this.signatureStatusLabel
+      .setText(
+        openingActive
+          ? `RUN FEEL | ${this.currentRunSignature.shortLabel} | ${openingSecondsRemaining.toFixed(1)}s TO LOCK`
+          : `RUN FEEL | ${this.currentRunSignature.shortLabel} | LOCKED`,
+      )
+      .setColor(this.currentRunSignature.accentTextColor);
+
+    const detailText =
+      openingCue !== null
+        ? `${openingCue.title} is live. The first collision-ready lane is carrying the signature on purpose.`
+        : reminder !== null
+          ? `${reminder.title} is still steering the route. Hold the same read before the opening window shuts.`
+          : openingActive
+            ? `Opening bias is still shaping spawn ${nextBiasedSpawnIndex}. ${this.currentRunSignature.supportLine}`
+            : `${this.currentRunSignature.supportLine} Signature pressure is now part of the full run.`;
+
+    this.signatureStatusDetail.setText(detailText);
   }
 
   private getUpcomingRunSignature(): RunSignature {

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #298
+
+- `project/game/src/game/GameScene.ts` aktif run icin sol HUD'da signature-ozel bir `RUN FEEL` paneli ekledi
+- ayni panel opening window ilerleyisini progress band'iyle, `PINPOINT / WEAVE / RUSH` lock durumunu baslikta ve aktif cue/reminder/support truth'unu detay satirinda tasiyor
+- degisiklik yeni beat, yeni telemetry kontrati veya yeni orchestration katmani acmadan yalniz mevcut run signature integration surface'ini derinlestirdi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #297
 
 - `project/game/src/game/runSignature.ts` her signature icin ilk `2-3` opening spawn'a ozel agirlik veren `openingSpawnWeightMultipliers` kontratini ekledi
