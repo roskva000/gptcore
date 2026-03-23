@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #300]
+
+Decision:
+`integration` modunda run signature family'yi HUD/copy agirliligindan biraz daha cikar ve opening window boyunca signature-ozel arena rota projeksiyonu ekle.
+
+Reason:
+`STRATEGIC_STATE.md`, `HUMAN_SIGNALS.md`, `STATE.md` ve `NEXT_AGENT.md` ayni sorunu gosteriyordu: `PINPOINT / WEAVE / RUSH` family source'ta buyuyor ama gercek oyuncu hissinde hala label/copy gibi kalma riski tasiyor. Audit de ayni problemi yeni validation/tooling halkasiyla buyutmeyi istemiyordu. Bu nedenle yeni beat, yeni orchestration veya yeni telemetry kontrati acmadan en uruncu hamle; signature baskisini panel ve callout'un disina tasiyip acilis aninda sahneye yazmakti.
+
+Impact:
+`project/game/src/game/GameScene.ts` opening window boyunca signature'a gore degisen arena rota projeksiyonu ciziyor. `PINPOINT` daralan kilit raylari, `WEAVE` dalgali cift hat, `RUSH` ise ileri iten chevron akisi ile ilk `8.8s` baskisini dogrudan sahneye tasiyor; yuzey opening lock sonrasi kendini kapatiyor ve authored ladder ile yarisan kalici bir layer'a donusmuyor. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni rota projeksiyonunun signature farkini netlestirmek yerine cheap spectacle, mobile/desktop gurultusu, readability kaybi ya da unfair acilis hissi urettigini gosterirse yalniz `GameScene.ts` icindeki cizgi yogunlugu, alpha, yerlesim ve acilis suresi dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #299]
 
 Decision:

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #300
+
+- `project/game/src/game/GameScene.ts` opening window boyunca signature-ozel arena rota projeksiyonu ekledi
+- `PINPOINT` acilista daralan kilit raylari, `WEAVE` dalgali cift hat, `RUSH` ise ileri iten chevron akisi cizerek signature baskisini panel/copy disina tasiyor
+- yeni projeksiyon yalniz ilk `8.8s` boyunca yasiyor ve signature lock sonrasi kapanarak authored ladder ile yarisan kalici bir layer'a donusmuyor
+- degisiklik yeni beat, yeni telemetry kontrati veya yeni orchestration katmani acmadan yalniz mevcut run signature integration surface'ini derinlestirdi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #299
 
 - `project/game/src/game/runSignature.ts` her signature icin `openingBeatLabels` ve `openingLockLine` kontratini ekledi; `PINPOINT`, `WEAVE` ve `RUSH` ilk uc opening baskisini artik kisa route etiketleriyle adlandiriyor

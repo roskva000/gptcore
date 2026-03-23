@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #299:
+Current deterministic survival headline after Run #300:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -20,10 +20,16 @@ Current deterministic survival headline after Run #299:
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
 
+run_signature_opening_route_projection_surface:
+current: Run #300 `project/game/src/game/GameScene.ts` opening window boyunca signature-ozel arena rota projeksiyonu ciziyor; `PINPOINT` daralan kilit raylari, `WEAVE` dalgali cift hat, `RUSH` ise ileri iten chevron akisi ile ilk `8.8s` signature baskisini sahnede de gorunur kiliyor
+baseline: Run #299 state'inde intro, opening cue, `RUN FEEL` paneli ve beat chips signature farkini HUD/callout tarafinda tasiyordu ama acilis baskisinin sahne icindeki sekli hala yeterince dogrudan gosterilmiyordu; kimlik copy ve panel uzerinde kalabilirdi
+target: sonraki browser veya net manuel gozlem oyuncunun arka arkaya iki-uc signature acilisinda opening rota projeksiyonunu yalniz spectacle degil, ilk baskinin karakterini daha hizli okutan bir surface olarak ayirt ettigini gostersin; yeni cizgiler mobile/desktop'ta cheap garnish, gurultu veya unfair acilis hissi yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
+
 run_signature_opening_beat_chip_surface:
 current: Run #299 `project/game/src/game/runSignature.ts` her signature icin uc adimli opening beat label'i ve lock satiri tasiyor; `project/game/src/game/GameScene.ts` `RUN FEEL` panelinde bu uc beat'i ayri chips olarak gosteriyor ve aktif beat'i, tamamlanan beat'leri ve lock durumunu ayni yuzeyde tutuyor
 baseline: Run #298 state'inde `RUN FEEL` paneli opening progress, lock durumu ve signature-ozel detay metni tasiyordu ama ilk uc baskinin sekli tek bakista ayri okunmuyordu; oyuncu paragrafi okumadan signature acilisinin ritmini tam ayiramayabilirdi
-target: sonraki browser veya net manuel gozlem oyuncunun arka arkaya iki-uc signature acilisinda ilk uc baskiyi artik beat chips uzerinden daha hizli ayirt ettigini gostersin; yeni yuzey mobile/desktop'ta HUD gurultusu veya yalniz UX garnish'i gibi okunmamali
+target: sonraki browser veya net manuel gozlem oyuncunun arka arkaya iki-uc signature acilisinda ilk uc baskiyi artik beat chips ve rota projeksiyonu birlikteyken daha hizli ayirt ettigini gostersin; yeni yuzey mobile/desktop'ta HUD gurultusu veya yalniz UX garnish'i gibi okunmamali
 validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_opening_hud_surface:

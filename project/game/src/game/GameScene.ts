@@ -508,6 +508,7 @@ export class GameScene extends Phaser.Scene {
   private backdropTopBand!: Phaser.GameObjects.Rectangle;
   private backdropBottomBand!: Phaser.GameObjects.Rectangle;
   private backdropGrid!: Phaser.GameObjects.Graphics;
+  private backdropSignatureRoute!: Phaser.GameObjects.Graphics;
   private backdropFrame!: Phaser.GameObjects.Rectangle;
 
   constructor() {
@@ -1288,6 +1289,12 @@ export class GameScene extends Phaser.Scene {
       this.backdropGrid.lineBetween(0, y, ARENA_WIDTH, y);
     }
 
+    this.backdropSignatureRoute = this.add
+      .graphics()
+      .setDepth(-2.5)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setVisible(false);
+
     this.backdropFrame = this.add
       .rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_WIDTH - 24, ARENA_HEIGHT - 24)
       .setDepth(-2)
@@ -1497,6 +1504,7 @@ export class GameScene extends Phaser.Scene {
         clearClimbAlphaBoost * 0.22 +
         nearMissChaseAlphaBoost * 0.18,
     );
+    this.updateRunSignatureRouteProjection(time);
     this.backdropFrame
       .setStrokeStyle(
         3 +
@@ -1654,6 +1662,127 @@ export class GameScene extends Phaser.Scene {
       frameScaleBoostX: 0.012 * intensity,
       frameScaleBoostY: -0.008 * intensity,
     };
+  }
+
+  private strokeSignatureRoutePath(points: Array<{ x: number; y: number }>): void {
+    if (points.length < 2) {
+      return;
+    }
+
+    this.backdropSignatureRoute.beginPath();
+    this.backdropSignatureRoute.moveTo(points[0]!.x, points[0]!.y);
+
+    for (let index = 1; index < points.length; index += 1) {
+      const point = points[index]!;
+      this.backdropSignatureRoute.lineTo(point.x, point.y);
+    }
+
+    this.backdropSignatureRoute.strokePath();
+  }
+
+  private updateRunSignatureRouteProjection(time: number): void {
+    this.backdropSignatureRoute.clear();
+
+    if (
+      (this.phase !== 'playing' && this.phase !== 'paused' && this.phase !== 'gameOver') ||
+      this.survivalTime >= RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS
+    ) {
+      this.backdropSignatureRoute.setVisible(false);
+      return;
+    }
+
+    const openingIntensity = Phaser.Math.Clamp(
+      1 - this.survivalTime / RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+      0,
+      1,
+    );
+
+    if (openingIntensity <= 0.01) {
+      this.backdropSignatureRoute.setVisible(false);
+      return;
+    }
+
+    this.backdropSignatureRoute.setVisible(true);
+
+    const centerX = ARENA_WIDTH / 2;
+    const centerY = ARENA_HEIGHT / 2;
+    const pulse = 0.78 + (Math.sin(time / 180) * 0.5 + 0.5) * 0.34;
+    const swing = Math.cos(time / 240);
+    const lineAlpha = (0.16 + openingIntensity * 0.28) * pulse;
+    const fillAlpha = 0.05 + openingIntensity * 0.12;
+
+    this.backdropSignatureRoute.lineStyle(3, this.currentRunSignature.accentColor, lineAlpha);
+
+    if (this.currentRunSignature.id === 'pinpoint') {
+      const laneInset = 112 - openingIntensity * 24;
+      const focusY = centerY - 18 - openingIntensity * 18;
+      const topClampY = 86 + swing * 8;
+      const bottomClampY = ARENA_HEIGHT - 86 - swing * 6;
+
+      this.strokeSignatureRoutePath([
+        { x: centerX - laneInset, y: topClampY },
+        { x: centerX - 62, y: focusY - 44 },
+        { x: centerX - 34, y: focusY + 34 },
+        { x: centerX - 18, y: bottomClampY },
+      ]);
+      this.strokeSignatureRoutePath([
+        { x: centerX + laneInset, y: topClampY },
+        { x: centerX + 62, y: focusY - 44 },
+        { x: centerX + 34, y: focusY + 34 },
+        { x: centerX + 18, y: bottomClampY },
+      ]);
+      this.backdropSignatureRoute.fillStyle(this.currentRunSignature.accentColor, fillAlpha * 1.1);
+      this.backdropSignatureRoute.fillCircle(centerX, focusY, 10 + openingIntensity * 8);
+      this.backdropSignatureRoute.fillCircle(centerX, focusY - 52, 4 + openingIntensity * 3);
+      return;
+    }
+
+    if (this.currentRunSignature.id === 'weave') {
+      const amplitude = 56 + openingIntensity * 30;
+      const laneGap = 84;
+      const phaseShift = time / 280;
+      const leftPath: Array<{ x: number; y: number }> = [];
+      const rightPath: Array<{ x: number; y: number }> = [];
+
+      for (let y = 64; y <= ARENA_HEIGHT - 64; y += 52) {
+        const waveOffset = Math.sin(y / 86 + phaseShift) * amplitude;
+        leftPath.push({
+          x: centerX - laneGap + waveOffset,
+          y,
+        });
+        rightPath.push({
+          x: centerX + laneGap - waveOffset,
+          y,
+        });
+      }
+
+      this.strokeSignatureRoutePath(leftPath);
+      this.strokeSignatureRoutePath(rightPath);
+      this.backdropSignatureRoute.fillStyle(this.currentRunSignature.accentColor, fillAlpha);
+      this.backdropSignatureRoute.fillCircle(centerX - amplitude * 0.18, centerY - 54, 8);
+      this.backdropSignatureRoute.fillCircle(centerX + amplitude * 0.18, centerY + 54, 8);
+      return;
+    }
+
+    const chevronCount = 4;
+    const chevronSpacing = 88;
+    const startY = 104 + swing * 10;
+    const drift = Math.sin(time / 210) * 10;
+
+    for (let index = 0; index < chevronCount; index += 1) {
+      const y = startY + index * chevronSpacing;
+      const width = 164 - index * 18 + openingIntensity * 18;
+      const depth = 32 + openingIntensity * 10;
+
+      this.strokeSignatureRoutePath([
+        { x: centerX - width + drift, y: y - depth },
+        { x: centerX - 18 + drift * 0.45, y },
+        { x: centerX + width + drift, y: y - depth },
+      ]);
+    }
+
+    this.backdropSignatureRoute.fillStyle(this.currentRunSignature.accentColor, fillAlpha * 0.96);
+    this.backdropSignatureRoute.fillCircle(centerX + drift * 0.4, centerY - 8, 11 + openingIntensity * 5);
   }
 
   private handlePointerPrimaryAction(pointer: Phaser.Input.Pointer): void {

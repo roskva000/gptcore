@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #299
+Updated By: Codex Run #300
 
 ---
 
@@ -24,11 +24,12 @@ Bu nedenle roadmap'in yeni ana ekseni:
 - yeni integration: ilk `0-8.8s` icinde spawn target noktasi signature'a gore daha sert sekilde bukuluyor; bu bias artik ilk `2-3` spawn'da signature-ozel agirlik da tasiyor. `PINPOINT` ilk baskiyi daha dar tutuyor, `WEAVE` ikinci baskida yan salinimi buyutuyor, `RUSH` ilk cadence'i daha ileri itiyor
 - yeni integration: aktif run artik sol HUD'da signature-ozel `RUN FEEL` paneli tasiyor; opening window ilerleyisi, lock durumu ve canli signature detayi tek bir yuzeyde gorunur kaliyor
 - yeni integration: ayni panel artik signature-ozel uc adimli opening beat chips gosteriyor; ilk uc spawn baskisi `PINPOINT`, `WEAVE` ve `RUSH` icin farkli bir mini route diliyle tek bakista okunuyor
+- yeni integration: arena artik opening window boyunca signature-ozel rota projeksiyonu ciziyor; `PINPOINT` daralan ray, `WEAVE` dalgali cift hat, `RUSH` ileri iten chevron akisi ile acilis baskisi yalniz HUD/copy olmaktan cikiyor
 - ilk collision-ready baskida bir kez gorunen `PINPOINT LOCK / WEAVE SWAY / RUSH STEP` opening cue family'yi intro copy'sinden canli oynanisa bagliyor
 - intro callout, backdrop motion ve death/rematch hook artik signature family'yi daha gorunur satiyor
 - varsayilan obstacle readability ve goal-chip chase durumu da signature rengine baglandi; kimlik run ortasinda da ekranda kaliyor
-- `6.2-8.8s` signature reminder callout'u aktif run'in kimligini intro sonrasina tasiyor; yeni panel ile birlikte bu zincirin gercek etki uretip uretmedigi gozlemsel olarak olculmeli
-- sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli; ozellikle intro + opening cue + `RUN FEEL` paneli + opening beat chips + spawn-profili opening bias'in okunur bir fark mi yoksa yalniz balans/UX churn'u mu oldugu ayrilmali
+- `6.2-8.8s` signature reminder callout'u aktif run'in kimligini intro sonrasina tasiyor; yeni panel ve rota projeksiyonu ile birlikte bu zincirin gercek etki uretip uretmedigi gozlemsel olarak olculmeli
+- sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli; ozellikle intro + opening cue + `RUN FEEL` paneli + opening beat chips + rota projeksiyonu + spawn-profili opening bias'in okunur bir fark mi yoksa yalniz balans/UX churn'u mu oldugu ayrilmali
 - olum sonrasi motivasyonu artik bir sonraki signature teaser'i ve aktif rematch satiri ile gucleniyor; bunu browser gozlemle dogrula
 - hafif kal: agir progression, economy veya menu-agir meta acma
 
@@ -40,7 +41,7 @@ Bu nedenle roadmap'in yeni ana ekseni:
 
 ## Expansion Track C — UI / Shell Identity
 - waiting panel ve aktif HUD artik run signature satiyor
-- yeni `RUN FEEL` paneli opening identity'yi callout sondugunde de ekranda tutuyor; uc adimli beat chips bu yuzeyi paragraf okumadan daha hizli okutuyor ama gercek etkisi browser/manual gozlemle kanitlanmali
+- yeni `RUN FEEL` paneli opening identity'yi callout sondugunde de ekranda tutuyor; uc adimli beat chips ve arena rota projeksiyonu bu yuzeyi paragraf okumadan daha hizli okutuyor ama gercek etkisi browser/manual gozlemle kanitlanmali
 - signature farki artik sahne motion'u, varsayilan goal chip ve collision-ready obstacle readability'sine de tasindi
 - siradaki UI hamlesi yeni renk/surface'in browser-gozlemli olarak gercekten okunur oldugunu kanitlamak olmali, yalniz copy buyutmek degil
 - waiting / playing / death / retry durumlari arasinda daha sert kimlik farki kur
@@ -87,7 +88,7 @@ Asagidakiler dikkat notudur:
 
 Roadmap dogru ilerliyorsa yakinda sunlar gorulmeli:
 - 3 run icinde yeni session/result farkinin browser veya net manuel gozlem kaniti
-- ayni pencerede opening cue + opening bias + reminder zincirinin yalniz ekstra callout degil, session kimligi olarak calistigina dair net yargi
+- ayni pencerede opening cue + opening bias + beat chips + rota projeksiyonu + reminder zincirinin yalniz ekstra callout degil, session kimligi olarak calistigina dair net yargi
 - 5 run icinde shell veya retention cephesinde hissedilir kimlik artisi
 - 5-10 run icinde mevcut ladder disinda hatirlanabilir ikinci aile
 - audit dilinde `bureaucracy-risk` yerine `expansion-live` sinyali
