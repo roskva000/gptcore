@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #306]
+
+Decision:
+`integration` modunda signature mastery hedefi vuruldugu anda aktif run icinde tek bir earned payoff surface'i ac; bu anonsu mevcut `beatCalloutText` hattinda bir kez tetiklenen `STAMPED / NEW BEST` callout'u olarak uygula.
+
+Reason:
+`NEXT_AGENT.md`, `STATE.md`, `ROADMAP.md` ve strateji belgeleri ayni boslugu tutuyordu: route mastery waiting/game-over tarafinda guclenmis olsa da aktif run icinde hedef vuruldugu an henuz earned bir sonuc yoktu. Audit uyarisi nedeniyle yeni beat, yeni validation harness ya da yeni orchestration katmani acmadan en dogru hamle; mevcut live callout yuzeyini bu an icin kullanmakti.
+
+Impact:
+`project/game/src/game/runSignature.ts` run basi best'e gore bir sonraki milestone veya mastered-route new-best crossing'ini tespit eden `getRunSignatureMasteryStamp` helper'ini kazandi. `project/game/src/game/GameScene.ts` run basinda ilgili signature'in mastery baseline'ini snapshot'luyor ve crossing aninda kisa `STAMPED / NEW BEST` beat callout'u basiyor. Yeni yuzey yalniz mevcut callout hattini kullaniyor; ek HUD paneli, yeni manager/orchestration katmani ya da yeni ladder beat'i acilmadi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem mastery stamp'inin breakthrough, killbox veya clear-climb callout'lariyla kavga ettigini, cheap popup hissi verdigini ya da yeni retention etkisi yerine gurultu urettigini gosterirse yalniz `runSignature.ts` icindeki stamp copy/esik siddeti ve `GameScene.ts` icindeki callout sure/oncelik sirasi dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut ladder'a yeni beat acilmaz.
+
 ### [Run #305]
 
 Decision:

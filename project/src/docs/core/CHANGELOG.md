@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #306
+
+- `project/game/src/game/runSignature.ts` signature basina kaydedilen best uzerinden bir sonraki milestone crossing'ini veya mastered route'ta yeni best gecisini tespit eden `getRunSignatureMasteryStamp` helper'ini ekledi
+- `project/game/src/game/GameScene.ts` run basinda ilgili signature'in mastery baseline'ini snapshot'liyor; `10.0s`, `18.0s`, `32.0s`, `45.6s`, `60.0s` hedeflerinden biri ya da mastered-route new-best gecildigi anda bunu kisa `STAMPED / NEW BEST` beat callout'u olarak bir kez gosteriyor
+- yeni payoff mevcut `beatCalloutText` yuzeyini kullaniyor; ek HUD paneli, yeni manager, yeni orchestration katmani veya yeni ladder beat'i acilmadi
+- mastery stamp trigger'i update akisinin sonuna alinerek ayni frame'deki phase/beat callout'larina ezdirilmemeye calisildi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #305
 
 - `project/game/src/game/runSignature.ts` signature basina hafif `route mastery` milestone'lari ekledi; `10.0s`, `18.0s`, `32.0s`, `45.6s` ve `60.0s` artik her signature icin ayri takip edilen hedeflere donusuyor

@@ -97,6 +97,7 @@ import {
   getRunSignatureLockPayoffSpawnDelayMultiplier,
   getRunSignatureLockPayoffSpeedMultiplier,
   getRunSignatureMasteryGoal,
+  getRunSignatureMasteryStamp,
   getRunSignatureLockPayoffTargetPoint,
   getRunSignatureOpeningCue,
   applyRunSignatureTargetLag,
@@ -109,6 +110,7 @@ import {
   RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
   type RunSignatureLockPayoff,
   type RunSignatureMasteryProgress,
+  type RunSignatureMasteryStamp,
   type RunSignatureOpeningCue,
   type RunSignatureReminder,
   type RunSignature,
@@ -184,6 +186,7 @@ const RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS = 1500;
 const RUN_SIGNATURE_OPENING_CUE_DURATION_MS = 1450;
 const RUN_SIGNATURE_REMINDER_CALLOUT_DURATION_MS = 1600;
 const RUN_SIGNATURE_LOCK_PAYOFF_CALLOUT_DURATION_MS = 1500;
+const RUN_SIGNATURE_MASTERY_STAMP_CALLOUT_DURATION_MS = 1350;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
 const CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_X = -14;
@@ -492,6 +495,7 @@ export class GameScene extends Phaser.Scene {
   private lastShownRunSignatureOpeningCueId: string | null = null;
   private lastShownRunSignatureReminderId: string | null = null;
   private lastShownRunSignatureLockPayoffId: string | null = null;
+  private lastShownRunSignatureMasteryStampId: string | null = null;
   private lastShownEndgameDriftCueId:
     | EndgameDriftCue['id']
     | 'ascent-stair'
@@ -511,6 +515,7 @@ export class GameScene extends Phaser.Scene {
   private runSignatureMastery: RunSignatureMasteryProgress =
     createEmptyRunSignatureMasteryProgress();
   private currentRunSignature: RunSignature = getRunSignatureForRunNumber(0);
+  private currentRunSignatureMasteryBestAtStart: number | null = null;
   private lastValidationReport: string | null = null;
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
   private feedbackAudioContext: FeedbackAudioContext = null;
@@ -1226,6 +1231,7 @@ export class GameScene extends Phaser.Scene {
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.updateArenaBeatSpectacle(time);
     this.updateRunBeatAnnouncement(activeRunElapsedMs);
+    this.maybeShowRunSignatureMasteryStamp(activeRunElapsedMs);
 
     if (
       this.playingHintHideAtElapsedMs !== null &&
@@ -2039,6 +2045,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.currentRunSignature = this.getUpcomingRunSignature();
+    this.currentRunSignatureMasteryBestAtStart =
+      this.runSignatureMastery[this.currentRunSignature.id];
     this.resetArenaForRun();
     this.setPhase('playing');
     this.movementHoldActionStartedAt = null;
@@ -2074,6 +2082,7 @@ export class GameScene extends Phaser.Scene {
     this.lastShownRunSignatureOpeningCueId = null;
     this.lastShownRunSignatureReminderId = null;
     this.lastShownRunSignatureLockPayoffId = null;
+    this.lastShownRunSignatureMasteryStampId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnRerolls = 0;
     this.runSpawnCount = 0;
@@ -2167,6 +2176,14 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
+  private getActiveRunSignatureMasteryStamp(): RunSignatureMasteryStamp | null {
+    return getRunSignatureMasteryStamp({
+      signature: this.currentRunSignature,
+      bestSurvivalTime: this.currentRunSignatureMasteryBestAtStart,
+      currentSurvivalTime: this.survivalTime,
+    });
+  }
+
   private maybeShowRunSignatureReminder(activeRunElapsedMs: number): void {
     const reminder = this.getActiveRunSignatureReminder();
 
@@ -2215,6 +2232,34 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.beatCalloutText);
     this.beatCalloutText
       .setText(`${lockPayoff.title}\n${lockPayoff.body}`)
+      .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+      .setColor(this.currentRunSignature.accentTextColor)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.92,
+      duration: 150,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private maybeShowRunSignatureMasteryStamp(activeRunElapsedMs: number): void {
+    const masteryStamp = this.getActiveRunSignatureMasteryStamp();
+
+    if (masteryStamp === null || masteryStamp.id === this.lastShownRunSignatureMasteryStampId) {
+      return;
+    }
+
+    this.lastShownRunSignatureMasteryStampId = masteryStamp.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.beatCalloutHideAtElapsedMs =
+      activeRunElapsedMs + RUN_SIGNATURE_MASTERY_STAMP_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${masteryStamp.title}\n${masteryStamp.body}`)
       .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
       .setColor(this.currentRunSignature.accentTextColor)
       .setAlpha(1)
@@ -5658,6 +5703,22 @@ export class GameScene extends Phaser.Scene {
     if (signatureLockPayoff !== null) {
       this.beatCalloutText
         .setText(`${signatureLockPayoff.title}\n${signatureLockPayoff.body}`)
+        .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+        .setColor(this.currentRunSignature.accentTextColor)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
+
+    const masteryStamp = this.getActiveRunSignatureMasteryStamp();
+
+    if (
+      masteryStamp !== null &&
+      masteryStamp.id === this.lastShownRunSignatureMasteryStampId
+    ) {
+      this.beatCalloutText
+        .setText(`${masteryStamp.title}\n${masteryStamp.body}`)
         .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
         .setColor(this.currentRunSignature.accentTextColor)
         .setAlpha(0.92)

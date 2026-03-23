@@ -50,6 +50,14 @@ export type RunSignatureMasteryGoal = {
   compactLine: string;
 };
 
+export type RunSignatureMasteryStamp = {
+  id: string;
+  title: string;
+  body: string;
+  statusLine: string;
+  compactLine: string;
+};
+
 type Point = {
   x: number;
   y: number;
@@ -249,6 +257,52 @@ export const getRunSignatureMasteryGoal = ({
     detailLine: `Best ${formatSeconds(bestSurvivalTime)} on this route. Need +${improvementNeeded.toFixed(1)}s more to bank the next mark.`,
     compactLine: `${signature.shortLabel} target ${nextTarget.label} | Best ${formatSeconds(bestSurvivalTime)} | +${improvementNeeded.toFixed(1)}s`,
   };
+};
+
+export const getRunSignatureMasteryStamp = ({
+  signature,
+  bestSurvivalTime,
+  currentSurvivalTime,
+}: {
+  signature: RunSignature;
+  bestSurvivalTime: number | null;
+  currentSurvivalTime: number;
+}): RunSignatureMasteryStamp | null => {
+  const nextTarget =
+    RUN_SIGNATURE_MASTERY_TARGETS.find(
+      (target) => bestSurvivalTime === null || bestSurvivalTime < target.seconds - 0.04,
+    ) ?? null;
+
+  if (nextTarget !== null && currentSurvivalTime >= nextTarget.seconds - 0.04) {
+    const firstStamp = bestSurvivalTime === null;
+    const bestPrefix = firstStamp ? 'First mark landed.' : `Best was ${formatSeconds(bestSurvivalTime)}.`;
+
+    return {
+      id: `${signature.id}-mastery-target-${nextTarget.seconds.toFixed(1)}`,
+      title: `${signature.shortLabel} STAMPED`,
+      body: `${nextTarget.label} banked. ${bestPrefix} Keep this route alive and turn the stamp into the next line.`,
+      statusLine: `${signature.shortLabel} STAMPED | ${nextTarget.label}`,
+      compactLine: `${signature.shortLabel} stamped ${nextTarget.label}`,
+    };
+  }
+
+  if (
+    bestSurvivalTime !== null &&
+    currentSurvivalTime >= bestSurvivalTime + 0.04 &&
+    bestSurvivalTime >= SURVIVAL_GOAL_SECONDS - 0.04
+  ) {
+    const improvement = Math.max(currentSurvivalTime - bestSurvivalTime, 0.1);
+
+    return {
+      id: `${signature.id}-mastery-best-${bestSurvivalTime.toFixed(1)}`,
+      title: `${signature.shortLabel} NEW BEST`,
+      body: `Old ceiling ${formatSeconds(bestSurvivalTime)} is cleared. Bank +${improvement.toFixed(1)}s more and push this mastered route higher.`,
+      statusLine: `${signature.shortLabel} NEW BEST | +${improvement.toFixed(1)}s`,
+      compactLine: `${signature.shortLabel} new best | +${improvement.toFixed(1)}s`,
+    };
+  }
+
+  return null;
 };
 
 export const applyRunSignatureTargetLag = ({

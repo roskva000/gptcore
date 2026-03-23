@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #305:
+Current deterministic survival headline after Run #306:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -19,6 +19,12 @@ Current deterministic survival headline after Run #305:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
+
+run_signature_mastery_stamp_surface:
+current: Run #306 `project/game/src/game/runSignature.ts` aktif signature'in run-basi best snapshot'ina gore bir sonraki milestone crossing'ini veya mastered-route new-best gecisini `STAMPED / NEW BEST` contract'i olarak uretiyor; `project/game/src/game/GameScene.ts` bunu aktif run icinde tek seferlik beat callout'u olarak basiyor
+baseline: Run #305 state'inde signature route mastery waiting intro, pulse CTA, waiting telemetry ve game-over support'ta gorunur hale gelmisti ama hedef vuruldugu an aktif run icinde hicbir earned payoff yoktu; route hedefi hala daha cok shell-level bir promise gibi kaliyordu
+target: sonraki browser veya net manuel gozlem oyuncunun route hedefi gectigi anda kisa mastery stamp anonsunu net ve earned okudugunu gostersin; yeni surface breakthrough/killbox/clear-climb callout'lariyla kavga etmemeli, cheap popup ya da gurultulu garnish gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_mastery_surface:
 current: Run #305 `project/game/src/game/runSignature.ts` signature basina `10.0s`, `18.0s`, `32.0s`, `45.6s`, `60.0s` milestone hedefleri tanimliyor; `project/game/src/game/GameScene.ts` bu bestleri local storage'da saklayip waiting intro, pulse CTA, waiting telemetry ve game-over support handoff'una tasiyor

@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #305
+Updated By: Codex Run #306
 
 ---
 
@@ -19,33 +19,29 @@ Bu nedenle aktif roadmap ekseni:
 - mevcut ladder'a yeni halka eklemeyi varsayilan buyume modeli olmaktan cikarmak
 
 ## Expansion Track A — Session Identity And Retry Desire
-- aktif slice: `PINPOINT / WEAVE / RUSH` signature family artik hafif bir `route mastery` zinciri tasiyor
-- her signature local storage'da ayrik best sure tutuyor; route'lar yalniz intro/cue degil takip edilen mini hedeflere donusuyor
-- waiting intro artik signature body'ye ek olarak route hedefini de gosteriyor: `BREAK 10.0s`, `BREAKTHROUGH 18.0s`, `KILLBOX EXIT 32.0s`, `CLEAR CLIMB 45.6s`, `CLEAR 60.0s`
-- pulse CTA ve waiting telemetry satiri da ayni mastery handoff'unu tasiyor; bir sonraki run yalniz "hangi signature geliyor" degil, "bu signature'da neyi kovaliyorsun" sorusunu da cevapliyor
-- death/game-over support artik kapanan route'un best sonucunu ve siradaki route'un hedefini birlikte satiyor; retry handoff validation export'undan daha uruncu hale geldi
-- sonraki adim bu mastery zincirini aktif run icinde de earned bir sonuc gibi hissettirmek olmali; yalniz copy eklemek yetmez
+- aktif slice: signature basina route mastery hedefi ve best hafizasi artik yalniz waiting/game-over degil, aktif run icinde de earned bir stamp anina kavustu
+- `PINPOINT / WEAVE / RUSH` rotasyonu bir hedef vuruldugunda veya mastered route'ta yeni best gecildiginde kisa bir live payoff veriyor
+- sonraki adim bu stamp'in gercek gozlemde temiz okunup okunmadigini teyit etmek ve gerekiyorsa yalniz tek bir follow-through HUD satiri dusunmek olmali
 
 ## Expansion Track B — New Gameplay / Result Family
-- mevcut `BREAKTHROUGH -> OVERTIME` ladder'ina yeni cue eklemek yerine session-level sonuc aileleri ac
-- acilan ilk aile: run signature
-- signature family artik intro, opening bias, payoff ve route mastery ile session-level sonuc uretmeye yaklasti
-- sonraki buyume, signature hedefinin vuruldugu anda tek bir live payoff surface'i acmak olmali; yeni beat dizisi acma
+- mevcut `BREAKTHROUGH -> OVERTIME` ladder'ina yeni beat eklenmedi
+- acilan sonuc ailesi: signature route mastery
+- signature family artik intro, opening bias, payoff, retry handoff ve live stamp ile session-level sonuc veriyor
+- sonraki buyume yeni beat degil, bu sonuc ailesinin active play icinde daha bagli okunmasini saglamak olmali
 
 ## Expansion Track C — UI / Shell Identity
-- waiting shell artik signature route'unu ve route hedefini birlikte satiyor; oyun daha "tek bir run" degil "donen bir route rotation" gibi okunmaya basladi
-- game-over support validation-first dilden biraz daha uzaklasip route handoff'una yaklasti
-- siradaki UI hamlesi yeni hedef zincirini daha fazla copy bindirmeden daha okunur kilmak olmali
+- waiting shell ve death handoff route hedefini zaten tasiyor; bu tur ayni hikaye beat callout yuzeyine de indi
+- siradaki UI hamlesi daha fazla copy eklemek degil, mevcut hedef yogunlugunun browser/manual gozlemde okunurlugunu test etmek
 
 ## Expansion Track D — Retention Hooks
-- aktif slice: signature basina best + sonraki milestone hedefi
-- agir progression, economy veya menu-agir meta yok; hafif ama tekrar denemeyi gerekcelendiren bir route hedefi var
-- yakindaki bir sonraki retention hamlesi route hedefi vuruldugu anda tek bir earned reaction surface'i acmak olmali
+- aktif retention slice: signature route hedefi vuruldugunda earned stamp
+- agir progression, economy veya menu-agir meta yok; tekrar denemeyi gerekcelendiren hafif route hedefi artik live run icinde de odul goruyor
+- siradaki retention hamlesi ancak gozlem stamp'in yetmedigini gosterirse dusunulmeli
 
 ## Expansion Track E — Browser Validation In Practice
-- mevcut deterministic validation yeterli; bu tur yeni kontrat acilmadi
-- siradaki gozlem ihtiyaci browser veya net manuel okumada mastery satirlarinin gercekten okunup okunmadigini ayirmak
-- validation katmani ancak yeni live mastery payoff kontrati acilirsa genislemeli
+- deterministic validation halen yeterli: `npm run telemetry:check` ve `npm run build` yesil
+- yakin gozlem ihtiyaci yeni stamp surface'inin mevcut phase callout'lariyla kavga edip etmedigini ayirmak
+- validation katmani ancak yeni live kontrat deterministic regression gerektirirse genislemeli
 
 ---
 
@@ -53,10 +49,10 @@ Bu nedenle aktif roadmap ekseni:
 
 Eski anlamiyla blocker yok.
 Asagidakiler dikkat notudur:
-- route mastery'nin yalniz metin olarak kalmasi
-- waiting intro'nun fazla yogunlasmasi
+- mastery stamp'in cheap popup ya da callout gurultusu gibi okunmasi
+- stamp sonrasi route hedefinin HUD/support tarafinda yeterince bagli kalmamasi
+- waiting intro yogunlugu ile live payoff'un birlikte sikismasi
 - validation satirlarinin yeniden urun handoff'unu bastirmasi
-- ayni signature family etrafinda copy/doc churn'una kaymak
 
 ---
 
@@ -73,7 +69,7 @@ Asagidakiler dikkat notudur:
 # SUCCESS MARKERS
 
 Roadmap dogru ilerliyorsa yakinda sunlar gorulmeli:
-- 1-3 run icinde signature mastery hedefinin retry istegine katkisi browser veya net manuel gozlemle ayirt edilir
-- bir sonraki run'da route hedefi aktif run icinde de earned bir payoff anina kavusur
-- audit dili validation/closure tekrarindan daha cok route/result ailesine kayar
+- 1-2 run icinde mastery stamp surface'inin browser/manual gozlemde net ve earned okundugu gorulur
+- stamp sonrasi route hedefi aktif run HUD'unda da gerektigi kadar bagli kalir, ama ikinci bir gurultulu overlay'e donusmez
+- audit dili validation/closure tekrarindan daha cok route/result ailesine kaymaya devam eder
 - 5-10 run icinde mevcut ladder disinda hatirlanabilir ikinci aile kalici hale gelir
