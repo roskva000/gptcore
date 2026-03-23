@@ -78,24 +78,6 @@ const DEFAULT_SNAPSHOT_TONE: SnapshotTone = {
   titleTextColor: '#f5f7ff',
 };
 
-const getProgressLine = ({
-  survivalTimeSeconds,
-  reachedSurvivalGoal,
-}: {
-  survivalTimeSeconds: number;
-  reachedSurvivalGoal: boolean;
-}): string => {
-  if (reachedSurvivalGoal) {
-    return `${SURVIVAL_GOAL_SECONDS}s clear banked. Push your best.`;
-  }
-
-  if (hasReachedFirstDeathTarget(survivalTimeSeconds)) {
-    return `${TARGET_FIRST_DEATH_SECONDS}s gate cleared. ${SURVIVAL_GOAL_SECONDS}s is still live.`;
-  }
-
-  return `Break ${TARGET_FIRST_DEATH_SECONDS}s, then chase ${SURVIVAL_GOAL_SECONDS}.`;
-};
-
 const getBadgeText = ({
   isNewBest,
   survivalTimeSeconds,
@@ -165,13 +147,11 @@ const getBodyText = ({
   survivalTimeSeconds,
   isNewBest,
   bestSurvivalTimeText,
-  reachedSurvivalGoal,
   nearMissChainCount,
 }: {
   survivalTimeSeconds: number;
   isNewBest: boolean;
   bestSurvivalTimeText: string;
-  reachedSurvivalGoal: boolean;
   nearMissChainCount: number | null;
 }): string => {
   const roundedSurvivalTime = survivalTimeSeconds.toFixed(1);
@@ -180,17 +160,11 @@ const getBodyText = ({
     : `Run ${roundedSurvivalTime}s. Best ${bestSurvivalTimeText}.`;
 
   const phaseLine = getRunPhaseDeathSummaryText(survivalTimeSeconds);
-  const progressLine = getProgressLine({ survivalTimeSeconds, reachedSurvivalGoal });
-
   if (nearMissChainCount !== null) {
     return [
       runLine,
       `${getNearMissChaseSnapshotSummaryText(nearMissChainCount)} ${phaseLine}`,
     ].join('\n');
-  }
-
-  if (phaseLine === progressLine) {
-    return [runLine, progressLine].join('\n');
   }
 
   return [runLine, phaseLine].join('\n');
@@ -216,18 +190,13 @@ const getPromptText = ({
       ? `${retryTargetText} | ${getNextRunHorizonBeatText(survivalTimeSeconds)}`
       : retryTargetText;
 
-  return [
-    `Next lane: ${escapePromptTitle}`,
-    nearMissPromptText ?? retryPlanText,
-    `Retry: ${retryPromptText}`,
-  ].join('\n');
+  return [`Next lane ${escapePromptTitle}`, nearMissPromptText ?? retryPlanText, `Retry ${retryPromptText}`].join(
+    '\n',
+  );
 };
 
 const getStatsText = (sessionTelemetry: GameplayTelemetry): string =>
-  [
-    `Recent ${getRecentDeathTimesText(sessionTelemetry)}`,
-    `Validation ${getValidationProgressText(sessionTelemetry)} | Retry ${getAverageRetryDelayText(sessionTelemetry)}`,
-  ].join('\n');
+  `Recent ${getRecentDeathTimesText(sessionTelemetry)} | Retry ${getAverageRetryDelayText(sessionTelemetry)} | ${getValidationProgressText(sessionTelemetry)}`;
 
 const getSnapshotTone = ({
   survivalTimeSeconds,
@@ -661,7 +630,6 @@ export const getDeathPresentation = ({
       survivalTimeSeconds,
       isNewBest,
       bestSurvivalTimeText,
-      reachedSurvivalGoal,
       nearMissChainCount,
     }),
     bodyTextColor: tone.bodyTextColor,

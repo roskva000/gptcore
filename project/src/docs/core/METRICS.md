@@ -19,6 +19,12 @@ Current deterministic survival headline after Run #289:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 
+death_retry_overlay_compaction_surface:
+current: Run #290 `project/game/src/game/deathPresentation.ts` death overlay body'yi iki satirlik sonuc + active beat ozeti olarak tutuyor, retry blok etiketlerini kisaltiyor ve stats'i tek satirlik `Recent | Retry | Validation` formatina indiriyor. `project/game/src/game/GameScene.ts` body/prompt/stats tipografisini ve Y yerlesimini sikistirarak olum ekrani clutter'ini dusuruyor
+baseline: Run #289 state'inde death overlay ayni authored truth'u korusa da body progress tekrarini tasiyor, prompt daha uzun etiketler kullaniyor ve session stats iki satirlik telemetry duvarina kayiyordu
+target: sonraki browser veya manuel gozlem oyuncunun olum ekraninda aktif cue, neden oldugu ve bir sonraki retry hedefini daha hizli okudugunu gostersin; kisalma authored beat'leri genericlestirmemeli
+validation: `npm run telemetry:check`, `npm run build`
+
 breakthrough_hinge_feint_surface:
 current: Run #289 `project/game/src/game/balance.ts` `13.4-15.0s` band'ini yeni `HINGE FEINT` slice'iyla buyutuyor; beat `8deg` cross-lane travel ve `0.14s` target lag ile `STRAFE FORK` sonrasi lane'i kisa bir fake-hold'a ceviriyor. `project/game/src/game/runPhase.ts`, `project/game/src/game/GameScene.ts` ve `project/game/src/game/deathPresentation.ts` ayni ara beat'i detail/HUD/death-retry, live spectacle ve snapshot tonu tarafina da tasiyor
 baseline: Run #288 state'inde breakthrough `STRAFE FORK -> SURGE SNAP -> GATE CUT` olarak uc halkaliydi; `13.4-15.0s` araliginda fork ile snapback arasinda isimli bir sahte-guven beat'i veya ayri player-facing truth yoktu

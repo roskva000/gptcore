@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #290]
+
+Decision:
+`integration` modunda death/retry overlay'ini sadeleştir; mevcut authored beat truth'unu koruyup body/prompt/stats hiyerarsisini daha kompakt hale getir.
+
+Reason:
+`HUMAN_SIGNALS.md` olum ekraninda fazla veri ve karmaşa oldugunu acikca soyluyordu. `NEXT_AGENT.md` ve audit yonlendirmesi bu turda yeni runtime slice degil, son run'larda buyuyen beat sayisini oyuncuya daha temiz okutan bir integration hamlesi gerektigini gosterdi.
+
+Impact:
+`project/game/src/game/deathPresentation.ts` progress tekrarini body'den cikardi, retry blok etiketlerini kisaltti ve stats'i tek satirlik `Recent | Retry | Validation` formatina indirdi. `project/game/src/game/GameScene.ts` overlay body/prompt/stats tipografisini ve Y yerlesimini sIkistirdi. `project/game/scripts/telemetry-check.ts` yalniz degisen prompt/stats kontratini guncelledi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline degismedi (`31.9s avg / 10.0s first death / 0% early`).
+
+Rollback Condition:
+Browser veya manuel gozlem yeni overlay'in aktif cue veya retry hedefini gizledigini, ya da kisaltilmis stats'in gerekli session baglamini fazla zayiflattigini gosterirse yalniz text yogunlugu ve layout spacing dar kapsamda yeniden dengelenir; bu bahaneyle yeni panel, manager, orchestration/readiness/preflight katmani veya ikinci bir docs/tooling genislemesi acilmaz.
+
 ### [Run #289]
 
 Decision:

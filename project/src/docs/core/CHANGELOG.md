@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #290
+
+- `project/game/src/game/deathPresentation.ts` death overlay body'sinden tekrar eden progress satirini cikardi; result + active beat ozeti kaldi, retry blok etiketleri `Next lane` / `Retry` olarak kisaldi
+- ayni dosya overlay stats'ini iki satirlik telemetry duvarindan tek satirlik `Recent | Retry | Validation` ozetine indirdi
+- `project/game/src/game/GameScene.ts` death overlay body/prompt/stats tipografisini ve dikey yerlesimini sikistirdi; prompt ve stats bloklari daha az yer kapliyor
+- `project/game/scripts/telemetry-check.ts` yeni compact prompt/stats player-facing kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #289
 
 - `project/game/src/game/balance.ts` `13.4-15.0s` araligina yeni bounded `HINGE FEINT` penceresi ekledi; `strafe` varyanti bu slice'ta `8deg` cross-lane travel ve `0.14s` target lag ile `STRAFE FORK` sonrasi sahte bir sakin-hold yem'i kuruyor

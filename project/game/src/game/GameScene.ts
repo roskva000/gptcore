@@ -888,25 +888,25 @@ export class GameScene extends Phaser.Scene {
         align: 'center',
         color: '#b8cde0',
         fontFamily: 'Trebuchet MS',
-        fontSize: '22px',
-        lineSpacing: 8,
+        fontSize: '20px',
+        lineSpacing: 6,
       })
       .setDepth(11)
       .setOrigin(0.5)
       .setVisible(false);
 
     this.overlayPrompt = this.add
-      .text(ARENA_WIDTH / 2, 382, '', {
+      .text(ARENA_WIDTH / 2, 374, '', {
         align: 'center',
         backgroundColor: '#123f36',
         color: '#d8fff4',
         fontFamily: 'Trebuchet MS',
-        fontSize: '20px',
+        fontSize: '18px',
         fontStyle: 'bold',
-        lineSpacing: 6,
+        lineSpacing: 5,
         padding: {
-          x: 16,
-          y: 10,
+          x: 14,
+          y: 8,
         },
       })
       .setDepth(11)
@@ -914,12 +914,11 @@ export class GameScene extends Phaser.Scene {
       .setVisible(false);
 
     this.overlayStats = this.add
-      .text(ARENA_WIDTH / 2, 452, '', {
+      .text(ARENA_WIDTH / 2, 432, '', {
         align: 'center',
         color: '#8db7cb',
         fontFamily: 'Trebuchet MS',
-        fontSize: '16px',
-        lineSpacing: 6,
+        fontSize: '14px',
       })
       .setDepth(11)
       .setOrigin(0.5)
@@ -2469,10 +2468,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private setOverlayLayout(hasBadge: boolean): void {
-    this.overlayTitle.setY(hasBadge ? 228 : 220);
-    this.overlayBody.setY(hasBadge ? 314 : 300);
-    this.overlayPrompt.setY(hasBadge ? 396 : 382);
-    this.overlayStats.setY(hasBadge ? 466 : 452);
+    this.overlayTitle.setY(hasBadge ? 224 : 216);
+    this.overlayBody.setY(hasBadge ? 304 : 292);
+    this.overlayPrompt.setY(hasBadge ? 378 : 366);
+    this.overlayStats.setY(hasBadge ? 434 : 422);
   }
 
   private deactivateObstacle(obstacle: Phaser.Physics.Arcade.Image): void {

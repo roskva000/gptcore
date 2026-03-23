@@ -355,7 +355,7 @@ assert.equal(
 );
 assert.equal(
   nearMissPromptDeathPresentation.prompt,
-  'Next lane: BREAK RIGHT\n2x near-miss chase snapped. Reopen that lane.\nRetry: Space, Enter, tap/click, or move',
+  'Next lane BREAK RIGHT\n2x near-miss chase snapped. Reopen that lane.\nRetry Space, Enter, tap/click, or move',
   'A live near-miss chase should take over the retry middle line so the death screen feeds straight back into another risky run.',
 );
 assert.equal(
@@ -718,12 +718,12 @@ assert.equal(
 );
 assert.equal(
   deathPresentation.prompt,
-  'Next lane: BREAK RIGHT\nRematch the strafe fork and carry it to KILLBOX in +5.7s | Next beat: 15s surge\nRetry: Space, Enter, tap/click, or move',
+  'Next lane BREAK RIGHT\nRematch the strafe fork and carry it to KILLBOX in +5.7s | Next beat: 15s surge\nRetry Space, Enter, tap/click, or move',
   'Death overlay prompt should pair the next coarse retry target with the immediate beat and retry affordance in one compact block.',
 );
 assert.equal(
   deathPresentation.stats,
-  'Recent 8.4s, 10.2s, 12.3s\nValidation 3/5 runs | Retry 1.4s',
+  'Recent 8.4s, 10.2s, 12.3s | Retry 1.4s | 3/5 runs',
   'Death overlay stats should keep recent runs and retry pace visible without reopening the full telemetry wall.',
 );
 assert.equal(
@@ -1535,7 +1535,7 @@ assert.equal(
 );
 assert.equal(
   lateEndgameDeathPresentation.prompt,
-  'Next lane: BREAK LEFT\nRematch the rebound hold and carry it to 60s clear in +26.2s\nRetry: Space, Enter, tap/click, or move',
+  'Next lane BREAK LEFT\nRematch the rebound hold and carry it to 60s clear in +26.2s\nRetry Space, Enter, tap/click, or move',
   'Late endgame retry prompt should frame the active ring as the rematch target without falling back to a generic next-beat line.',
 );
 const reboundCrossDeathPresentation = getDeathPresentation({
@@ -1810,7 +1810,7 @@ assert.equal(
 );
 assert.equal(
   clearClimbDeathPresentation.prompt,
-  'Next lane: BREAK DOWN\nRematch the ascent stair and carry it to 60s clear in +14.0s\nRetry: Space, Enter, tap/click, or move',
+  'Next lane BREAK DOWN\nRematch the ascent stair and carry it to 60s clear in +14.0s\nRetry Space, Enter, tap/click, or move',
   'Final-stretch retry prompt should push the player straight back toward the missed named clear-climb beat instead of generic overtime phrasing.',
 );
 assert.equal(
@@ -1995,7 +1995,7 @@ assert.equal(
 );
 assert.equal(
   bankedAirDeathPresentation.prompt,
-  'Next lane: BREAK UP\nRematch the banked-air reopen and hold 72s in +11.4s\nRetry: Space, Enter, tap/click, or move',
+  'Next lane BREAK UP\nRematch the banked-air reopen and hold 72s in +11.4s\nRetry Space, Enter, tap/click, or move',
   'Post-clear retry prompt should sell the banked-air reopen directly instead of only saying to push past the goal.',
 );
 assert.equal(
@@ -2075,7 +2075,7 @@ assert.equal(
 );
 assert.equal(
   houseCutDeathPresentation.prompt,
-  'Next lane: BREAK LEFT\nRematch the house cut and hold 72s in +7.9s\nRetry: Space, Enter, tap/click, or move',
+  'Next lane BREAK LEFT\nRematch the house cut and hold 72s in +7.9s\nRetry Space, Enter, tap/click, or move',
   'House-cut deaths should push the retry prompt straight back toward the bounded overtime carry instead of generic push-your-best copy.',
 );
 assert.equal(
@@ -2120,7 +2120,7 @@ assert.equal(
 );
 assert.equal(
   dueNowDeathPresentation.prompt,
-  'Next lane: BREAK RIGHT\nRematch the due-now snap and hold 72s in +3.9s\nRetry: Space, Enter, tap/click, or move',
+  'Next lane BREAK RIGHT\nRematch the due-now snap and hold 72s in +3.9s\nRetry Space, Enter, tap/click, or move',
   'Due-now deaths should point the retry prompt straight back at the second overtime consequence instead of generic overtime copy.',
 );
 assert.equal(
