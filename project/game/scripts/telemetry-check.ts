@@ -241,8 +241,10 @@ import {
 } from '../src/game/telemetry.ts';
 import {
   applyRunSignatureTargetLag,
+  getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
+  RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
 } from '../src/game/runSignature.ts';
 import {
   createBalanceSnapshotReport,
@@ -6249,6 +6251,63 @@ assert.equal(
   }),
   getObstacleTint('surge'),
   'Signature tinting should not override authored obstacle variants that already carry a gameplay-specific readable color.',
+);
+const clampSignaturePoint = (point: { x: number; y: number }) =>
+  clampPointToArena(point, { margin: OBSTACLE_COLLISION_RADIUS });
+const playerPosition = { x: 400, y: 300 };
+const playerVelocity = { x: 180, y: 0 };
+const baseTargetPoint = { x: 360, y: 300 };
+assert.deepEqual(
+  getRunSignatureOpeningTargetPoint({
+    signature: getRunSignatureForRunNumber(0),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 1,
+    playerPosition,
+    playerVelocity,
+    baseTargetPoint,
+    clampTargetPoint: clampSignaturePoint,
+  }),
+  baseTargetPoint,
+  'Signature opening bias should end cleanly once the opening window closes.',
+);
+assert.equal(
+  getRunSignatureOpeningTargetPoint({
+    signature: getRunSignatureForRunNumber(0),
+    survivalTimeSeconds: 0,
+    runSpawnCount: 1,
+    playerPosition,
+    playerVelocity,
+    baseTargetPoint,
+    clampTargetPoint: clampSignaturePoint,
+  }).x,
+  378,
+  'Pinpoint runs should pull the early target closer to the player so the opening lane stays tighter.',
+);
+assert.equal(
+  getRunSignatureOpeningTargetPoint({
+    signature: getRunSignatureForRunNumber(1),
+    survivalTimeSeconds: 0,
+    runSpawnCount: 1,
+    playerPosition,
+    playerVelocity,
+    baseTargetPoint,
+    clampTargetPoint: clampSignaturePoint,
+  }).y,
+  278,
+  'Weave runs should bend the opening target laterally so the first few dodges stay fluid instead of purely faster.',
+);
+assert.equal(
+  getRunSignatureOpeningTargetPoint({
+    signature: getRunSignatureForRunNumber(2),
+    survivalTimeSeconds: 0,
+    runSpawnCount: 1,
+    playerPosition,
+    playerVelocity,
+    baseTargetPoint,
+    clampTargetPoint: clampSignaturePoint,
+  }).x,
+  380,
+  'Rush runs should push the opening target forward so early cadence lands closer to the player line.',
 );
 
 console.log(

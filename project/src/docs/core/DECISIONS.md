@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #295]
+
+Decision:
+`mutation` modunda run signature family'yi yeni beat yazmadan ilk `0-8.8s` oynanisa tasiyan signature-ozel opening target bias'i ekle.
+
+Reason:
+`AUDIT.md`, `HUMAN_SIGNALS.md` ve mevcut `STATE.md` ayni boslugu gosteriyordu: `PINPOINT / WEAVE / RUSH` family'si daha cok callout/HUD/snapshot zincirinde buyuyor, gercek oynanis farki ise hala fazla yumusak kalabiliyordu. Yeni orchestration ya da bir baska validation katmani acmadan en uruncu hamle; signature kimligini ilk spawn'larda somutlastiran dar bir runtime mutasyonu eklemekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin opening target pull/lateral/forward bias kontratini ekledi ve bunu `0-8.8s` acilis penceresine bagladi. `project/game/src/game/GameScene.ts` near-miss override yokken bu bias'i spawn target hesabina uyguluyor; `PINPOINT` lane'i daraltiyor, `WEAVE` lateral akis aciyor, `RUSH` erken cadence'i ileri itiyor. `project/game/scripts/telemetry-check.ts` yeni opening bias kontratini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline degismedi (`31.9s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`).
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni opening bias'in okunur run kimligi yerine unfair acilis, cheap balans churn'u ya da near-miss chase route'larini bulaniklastiran bir yan etki urettigini gosterirse yalniz `runSignature.ts` icindeki opening pull/lateral/forward degerleri dar kapsamda sadeleştirilir; bu bahaneyle yeni orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #294]
 
 Decision:

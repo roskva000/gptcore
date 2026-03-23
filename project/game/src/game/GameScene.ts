@@ -94,6 +94,7 @@ import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   getActiveRunSignatureReminder,
   applyRunSignatureTargetLag,
+  getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
   type RunSignatureReminder,
@@ -2179,7 +2180,19 @@ export class GameScene extends Phaser.Scene {
     });
     const targetPoint =
       nearMissChaseSpawnPlan === null
-        ? baseTargetPoint
+        ? getRunSignatureOpeningTargetPoint({
+            signature: this.currentRunSignature,
+            survivalTimeSeconds: currentSurvivalTimeSeconds,
+            runSpawnCount: this.runSpawnCount,
+            playerPosition: { x: this.player.x, y: this.player.y },
+            playerVelocity: {
+              x: playerBody.velocity.x,
+              y: playerBody.velocity.y,
+            },
+            baseTargetPoint,
+            clampTargetPoint: (point) =>
+              clampPointToArena(point, { margin: PLAYER_COLLISION_RADIUS }),
+          })
         : clampPointToArena(
             {
               x: baseTargetPoint.x + nearMissChaseSpawnPlan.targetOffset.x,

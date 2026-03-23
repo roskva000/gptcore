@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #295
+
+- `project/game/src/game/runSignature.ts` her signature icin yeni opening target bias kontratini ekledi; `PINPOINT` erken hedefi oyuncuya cekiyor, `WEAVE` ilk target'i lateral kaydiriyor, `RUSH` ise hedefi ileri iterek erken cadence'i daha somut hissettiriyor
+- ayni dosya bu bias'i ortak `0-8.8s` opening penceresine bagladi; yeni beat veya yeni orchestration katmani acilmadi
+- `project/game/src/game/GameScene.ts` standart spawn target hesabinda bu yeni signature bias'i uyguluyor; near-miss chase override'i yine kendi davranisini koruyor
+- `project/game/scripts/telemetry-check.ts` yeni opening bias kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #294
 
 - `project/game/src/game/runSignature.ts` her signature icin mid-run reminder metinlerini ekledi; `PINPOINT HOLD`, `WEAVE DRIFT` ve `RUSH CADENCE` artik intro sonrasinda da ayrik kimlik satabiliyor

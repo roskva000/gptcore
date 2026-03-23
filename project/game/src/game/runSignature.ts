@@ -19,6 +19,14 @@ export type RunSignature = {
   spawnDelayMultiplier: number;
   obstacleSpeedMultiplier: number;
   targetLagOffsetSeconds: number;
+  openingTargetPullPx: number;
+  openingLateralShiftPx: number;
+  openingForwardShiftPx: number;
+};
+
+type Point = {
+  x: number;
+  y: number;
 };
 
 const RUN_SIGNATURES: readonly RunSignature[] = [
@@ -41,6 +49,9 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     spawnDelayMultiplier: 1.03,
     obstacleSpeedMultiplier: 0.99,
     targetLagOffsetSeconds: -0.035,
+    openingTargetPullPx: 18,
+    openingLateralShiftPx: 0,
+    openingForwardShiftPx: 0,
   },
   {
     id: 'weave',
@@ -61,6 +72,9 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     spawnDelayMultiplier: 0.98,
     obstacleSpeedMultiplier: 1.01,
     targetLagOffsetSeconds: 0.045,
+    openingTargetPullPx: 0,
+    openingLateralShiftPx: 22,
+    openingForwardShiftPx: 0,
   },
   {
     id: 'rush',
@@ -81,6 +95,9 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     spawnDelayMultiplier: 0.96,
     obstacleSpeedMultiplier: 1.025,
     targetLagOffsetSeconds: -0.01,
+    openingTargetPullPx: 0,
+    openingLateralShiftPx: 0,
+    openingForwardShiftPx: 20,
   },
 ] as const;
 
@@ -109,10 +126,91 @@ export type RunSignatureReminder = {
   body: string;
 };
 
+export const RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS = 8.8;
+
 const RUN_SIGNATURE_REMINDER_WINDOW = {
   startSeconds: 6.2,
-  endSeconds: 8.8,
+  endSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
 } as const;
+
+const clamp = (value: number, min: number, max: number): number =>
+  Math.min(Math.max(value, min), max);
+
+const normalize = (point: Point): Point => {
+  const magnitude = Math.hypot(point.x, point.y);
+
+  if (magnitude <= 0.0001) {
+    return { x: 0, y: 0 };
+  }
+
+  return {
+    x: point.x / magnitude,
+    y: point.y / magnitude,
+  };
+};
+
+const scalePoint = (point: Point, magnitude: number): Point => ({
+  x: point.x * magnitude,
+  y: point.y * magnitude,
+});
+
+const addPoints = (left: Point, right: Point): Point => ({
+  x: left.x + right.x,
+  y: left.y + right.y,
+});
+
+export const getRunSignatureOpeningTargetPoint = ({
+  signature,
+  survivalTimeSeconds,
+  runSpawnCount,
+  playerPosition,
+  playerVelocity,
+  baseTargetPoint,
+  clampTargetPoint,
+}: {
+  signature: RunSignature;
+  survivalTimeSeconds: number;
+  runSpawnCount: number;
+  playerPosition: Point;
+  playerVelocity: Point;
+  baseTargetPoint: Point;
+  clampTargetPoint: (point: Point) => Point;
+}): Point => {
+  if (survivalTimeSeconds >= RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS) {
+    return baseTargetPoint;
+  }
+
+  const openingWeight = clamp(
+    1 - survivalTimeSeconds / RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    0,
+    1,
+  );
+  const targetToPlayer = normalize({
+    x: playerPosition.x - baseTargetPoint.x,
+    y: playerPosition.y - baseTargetPoint.y,
+  });
+  const rawForward = normalize(playerVelocity);
+  const fallbackForward =
+    rawForward.x === 0 && rawForward.y === 0 ? targetToPlayer : rawForward;
+  const lateralDirection = runSpawnCount % 2 === 0 ? 1 : -1;
+  const lateral = {
+    x: -fallbackForward.y * lateralDirection,
+    y: fallbackForward.x * lateralDirection,
+  };
+
+  const adjustedPoint = addPoints(
+    addPoints(
+      baseTargetPoint,
+      scalePoint(targetToPlayer, signature.openingTargetPullPx * openingWeight),
+    ),
+    addPoints(
+      scalePoint(lateral, signature.openingLateralShiftPx * openingWeight),
+      scalePoint(fallbackForward, signature.openingForwardShiftPx * openingWeight),
+    ),
+  );
+
+  return clampTargetPoint(adjustedPoint);
+};
 
 export const getActiveRunSignatureReminder = ({
   signature,
