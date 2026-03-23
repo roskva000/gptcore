@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #296:
+Current deterministic survival headline after Run #297:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,7 @@ Current deterministic survival headline after Run #296:
 - validation export last run `40.0s`
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
+- browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
 
 run_signature_opening_contract_surface:
 current: Run #296 `project/game/src/game/runSignature.ts` her signature icin ilk canli baskiyi adlandiran `opening cue` kontrati tasiyor ve opening target bias siddetini derinlestiriyor; `project/game/src/game/GameScene.ts` ilk collision-ready baskida `PINPOINT LOCK`, `WEAVE SWAY` veya `RUSH STEP` callout'unu gostererek signature'i intro copy'sinden canli oynanisa bagliyor
@@ -26,9 +27,9 @@ target: sonraki browser veya net manuel gozlem oyuncunun ilk `8-10s` icinde arka
 validation: `npm run telemetry:check`, `npm run build`, `npm run telemetry:validation-ready -- --with-smoke`
 
 run_signature_opening_runtime_surface:
-current: Run #296 `project/game/src/game/runSignature.ts` her signature icin `0-8.8s` acilis penceresinde daha sert target bias kontrati tasiyor; `project/game/src/game/GameScene.ts` standart spawn target hesabinda bunu uygulayarak `PINPOINT` lane'i daha fazla daraltiyor, `WEAVE` ilk dodge hattini daha belirgin lateral aciyor, `RUSH` ise erken cadence'i daha ileri itiyor
-baseline: Run #295 state'inde signature family opening bias tasiyordu ama siddeti daha hafifti ve ilk gercek baski ani ayri bir opening cue ile baglanmiyordu
-target: sonraki browser veya manuel gozlem oyuncunun ilk `8-10s` icinde arka arkaya iki-uc denemeyi yalniz intro copy'sinden degil ilk spawn baskisinin sekli uzerinden de ayirt edebildigini gostersin; yeni bias unfair acilis, cheap balans churn'u veya near-miss route'larini ezen bir katman gibi okunmamali
+current: Run #297 `project/game/src/game/runSignature.ts` her signature icin `openingSpawnWeightMultipliers` kontrati tasiyor; `project/game/src/game/GameScene.ts` standart spawn target hesabinda bunu uygulayarak `PINPOINT` ilk iki baskiyi daha sert oyuncuya cekiyor, `WEAVE` ikinci baskida lateral salinimi buyutuyor, `RUSH` ilk baskida cadence'i daha one itiyor
+baseline: Run #296 state'inde signature family opening bias tasiyordu ama ilk `2-3` spawn icinde signature'a gore ayri bir agirlik profili yoktu; fark daha cok tekil target ofseti gibi okunabilirdi
+target: sonraki browser veya manuel gozlem oyuncunun ilk `8-10s` icinde arka arkaya iki-uc denemeyi yalniz intro copy'sinden degil ilk spawn ciftinin sekli uzerinden de ayirt edebildigini gostersin; yeni bias unfair acilis, cheap balans churn'u veya near-miss route'larini ezen bir katman gibi okunmamali
 validation: `npm run telemetry:check`, `npm run build`, `npm run telemetry:validation-ready -- --with-smoke`
 
 run_signature_reminder_surface:

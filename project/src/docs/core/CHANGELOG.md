@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #297
+
+- `project/game/src/game/runSignature.ts` her signature icin ilk `2-3` opening spawn'a ozel agirlik veren `openingSpawnWeightMultipliers` kontratini ekledi
+- ayni dosya mevcut opening target bias'i bu agirlikla birlestirdi; `PINPOINT` ilk iki baskida daha dar, `WEAVE` ikinci baskida daha lateral, `RUSH` ilk baskida daha one yuklenen acilis ritmi veriyor
+- degisiklik yeni beat, yeni orchestration veya yeni shell katmani acmadan yalniz mevcut `opening runtime` surface'ini derinlestirdi
+- `project/game/scripts/telemetry-check.ts` guncellenen `PINPOINT` ve `RUSH` ilk baski target noktalarini ve `WEAVE` ikinci baski salinimini regression altina aldi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #296
 
 - `project/game/src/game/runSignature.ts` her signature icin ilk canli baskiyi adlandiran `opening cue` kontratini ekledi; `PINPOINT LOCK`, `WEAVE SWAY` ve `RUSH STEP` artik intro copy'sinden ayrik bir ilk-baski truth'u tasiyor

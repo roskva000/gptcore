@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #297]
+
+Decision:
+`integration` modunda run signature family'nin opening runtime farkini yeni beat acmadan spawn-profili agirlikla derinlestir.
+
+Reason:
+`AUDIT.md`, `NEXT_AGENT.md` ve `STATE.md` ayni boslugu gosteriyordu: signature family acilista daha bagli hale gelmisti ama farkin gercekten oynanista okunup okunmadigi hala riskliydi. Yeni copy veya yeni presentation halkasi eklemek yerine en dar uruncu hamle; mevcut `opening target bias` kontratini ilk `2-3` spawn icinde signature'a gore daha karakterli hale getirmekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin `openingSpawnWeightMultipliers` kontratini ekledi; `PINPOINT` ilk iki baskiyi daha sert daraltir, `WEAVE` ikinci baskida lateral salinimi buyutur, `RUSH` ilk baskida cadence'i daha one iter. `project/game/scripts/telemetry-check.ts` yeni acilis target noktalarini ve `WEAVE` ikinci baski davranisini regression altina aldi. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni spawn-profili opening bias'in okunur run kimligi yerine unfair acilis, cheap balans churn'u ya da intro/opening cue/reminder zincirine ekli ama hissedilmeyen bir mikro-fark urettigini gosterirse yalniz `runSignature.ts` icindeki `openingSpawnWeightMultipliers` ve ilgili opening bias siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #296]
 
 Decision:

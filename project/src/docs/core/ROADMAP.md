@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #296
+Updated By: Codex Run #297
 
 ---
 
@@ -21,12 +21,12 @@ Bu nedenle roadmap'in yeni ana ekseni:
 ## Expansion Track A — Session Identity And Retry Desire
 - aktif slice: `PINPOINT / WEAVE / RUSH` run signature rotasyonu acildi
 - signature'lar global spawn delay, signed target lag ve pace tarafinda hafif runtime farki uretmeli
-- yeni integration: ilk `0-8.8s` icinde spawn target noktasi daha sert sekilde signature'a gore bukuluyor; `PINPOINT` hedefi daha fazla daraltiyor, `WEAVE` lateral akis acisini buyutuyor, `RUSH` erken cadence'i daha ileri itiyor
+- yeni integration: ilk `0-8.8s` icinde spawn target noktasi signature'a gore daha sert sekilde bukuluyor; bu bias artik ilk `2-3` spawn'da signature-ozel agirlik da tasiyor. `PINPOINT` ilk baskiyi daha dar tutuyor, `WEAVE` ikinci baskida yan salinimi buyutuyor, `RUSH` ilk cadence'i daha ileri itiyor
 - ilk collision-ready baskida bir kez gorunen `PINPOINT LOCK / WEAVE SWAY / RUSH STEP` opening cue family'yi intro copy'sinden canli oynanisa bagliyor
 - intro callout, backdrop motion ve death/rematch hook artik signature family'yi daha gorunur satiyor
 - varsayilan obstacle readability ve goal-chip chase durumu da signature rengine baglandi; kimlik run ortasinda da ekranda kaliyor
 - `6.2-8.8s` signature reminder callout'u aktif run'in kimligini intro sonrasina tasiyor; bu surface'in gercek etki uretip uretmedigi gozlemsel olarak olculmeli
-- sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli; ozellikle opening cue + opening target bias'in okunur bir fark mi yoksa yalniz balans churn'u mu oldugu ayrilmali
+- sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli; ozellikle opening cue + spawn-profili opening bias'in okunur bir fark mi yoksa yalniz balans churn'u mu oldugu ayrilmali
 - olum sonrasi motivasyonu artik bir sonraki signature teaser'i ve aktif rematch satiri ile gucleniyor; bunu browser gozlemle dogrula
 - hafif kal: agir progression, economy veya menu-agir meta acma
 
@@ -53,7 +53,8 @@ Bu nedenle roadmap'in yeni ana ekseni:
 - Chromium / smoke / validation-ready akisini cesur urun degisikliklerine daha yakin kullan
 - browser evidence'i gercek tasarim kararina bagla; ilk hedef signature family'nin artik fark edilir olup olmadigini kanitlamak
 - bu kanit tercihen ayni cihazda arka arkaya en az uc signature acilisi ve ilk 15-20 saniye gozlemiyle toplanmali
-- gozlem notu intro, opening cue, opening target bias, mid-run reminder ve death/rematch hook'un ayri ayri ise yarayip yaramadigini yazmali
+- gozlem notu intro, opening cue, spawn-profili opening target bias, mid-run reminder ve death/rematch hook'un ayri ayri ise yarayip yaramadigini yazmali
+- mevcut deterministic/browser hattinda `npm run telemetry:validation-ready -- --with-smoke` yesil; eksik olan sey smoke degil gercek oynanis gozlemi
 - yeni kontrat yoksa validation katmanini buyutme
 
 ---

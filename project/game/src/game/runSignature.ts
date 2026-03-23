@@ -24,6 +24,7 @@ export type RunSignature = {
   openingTargetPullPx: number;
   openingLateralShiftPx: number;
   openingForwardShiftPx: number;
+  openingSpawnWeightMultipliers: readonly [number, number, number];
 };
 
 type Point = {
@@ -56,6 +57,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingTargetPullPx: 24,
     openingLateralShiftPx: 0,
     openingForwardShiftPx: 0,
+    openingSpawnWeightMultipliers: [1.25, 1.25, 1.1],
   },
   {
     id: 'weave',
@@ -81,6 +83,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingTargetPullPx: 0,
     openingLateralShiftPx: 30,
     openingForwardShiftPx: 0,
+    openingSpawnWeightMultipliers: [1, 1.2, 1.1],
   },
   {
     id: 'rush',
@@ -106,6 +109,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingTargetPullPx: 0,
     openingLateralShiftPx: 0,
     openingForwardShiftPx: 28,
+    openingSpawnWeightMultipliers: [1.25, 1.1, 1],
   },
 ] as const;
 
@@ -199,6 +203,10 @@ export const getRunSignatureOpeningTargetPoint = ({
     0,
     1,
   );
+  const openingSpawnWeight =
+    signature.openingSpawnWeightMultipliers[
+      clamp(runSpawnCount - 1, 0, signature.openingSpawnWeightMultipliers.length - 1)
+    ] ?? 1;
   const targetToPlayer = normalize({
     x: playerPosition.x - baseTargetPoint.x,
     y: playerPosition.y - baseTargetPoint.y,
@@ -215,11 +223,17 @@ export const getRunSignatureOpeningTargetPoint = ({
   const adjustedPoint = addPoints(
     addPoints(
       baseTargetPoint,
-      scalePoint(targetToPlayer, signature.openingTargetPullPx * openingWeight),
+      scalePoint(
+        targetToPlayer,
+        signature.openingTargetPullPx * openingWeight * openingSpawnWeight,
+      ),
     ),
     addPoints(
-      scalePoint(lateral, signature.openingLateralShiftPx * openingWeight),
-      scalePoint(fallbackForward, signature.openingForwardShiftPx * openingWeight),
+      scalePoint(lateral, signature.openingLateralShiftPx * openingWeight * openingSpawnWeight),
+      scalePoint(
+        fallbackForward,
+        signature.openingForwardShiftPx * openingWeight * openingSpawnWeight,
+      ),
     ),
   );
 

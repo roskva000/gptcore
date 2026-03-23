@@ -6303,8 +6303,8 @@ assert.equal(
     baseTargetPoint,
     clampTargetPoint: clampSignaturePoint,
   }).x,
-  384,
-  'Pinpoint runs should pull the early target closer to the player so the opening lane stays tighter.',
+  390,
+  'Pinpoint runs should pull the first opening target even closer to the player so the opening lane reads tighter immediately.',
 );
 assert.equal(
   getRunSignatureOpeningTargetPoint({
@@ -6321,6 +6321,19 @@ assert.equal(
 );
 assert.equal(
   getRunSignatureOpeningTargetPoint({
+    signature: getRunSignatureForRunNumber(1),
+    survivalTimeSeconds: 0,
+    runSpawnCount: 2,
+    playerPosition,
+    playerVelocity,
+    baseTargetPoint,
+    clampTargetPoint: clampSignaturePoint,
+  }).y,
+  336,
+  'Weave runs should lean the second opening target harder across the player line so the first dodge pair reads like a sideways sway instead of a single nudge.',
+);
+assert.equal(
+  getRunSignatureOpeningTargetPoint({
     signature: getRunSignatureForRunNumber(2),
     survivalTimeSeconds: 0,
     runSpawnCount: 1,
@@ -6329,8 +6342,8 @@ assert.equal(
     baseTargetPoint,
     clampTargetPoint: clampSignaturePoint,
   }).x,
-  388,
-  'Rush runs should push the opening target forward so early cadence lands closer to the player line.',
+  395,
+  'Rush runs should push the first opening target further forward so the opening cadence lands on top of the player line immediately.',
 );
 
 console.log(
