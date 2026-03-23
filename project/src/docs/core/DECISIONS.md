@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #305]
+
+Decision:
+`mutation` modunda `PINPOINT / WEAVE / RUSH` rotasyonunu hafif bir `route mastery` zinciriyle session-level retry hedefine cevir; signature basina best sure tut ve waiting / game-over handoff'una bir sonraki route hedefini yaz.
+
+Reason:
+`AUDIT.md`, `STRATEGIC_STATE.md`, `STATE.md` ve insan sinyali ayni boslugu gosteriyordu: signature family opening ve payoff tarafinda buyuyor ama tekrar deneme istegi hala yeterince session-level bir hedefe baglanmiyor. Yeni beat, yeni validation harness veya yeni orchestration katmani acmadan en uruncu hamle; her signature'i kendi kucuk "banked route" hedefi olan bir rotaya cevirmekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` signature basina milestone hedefleri (`10.0s`, `18.0s`, `32.0s`, `45.6s`, `60.0s`) ve bu hedefleri anlatan mastery helper'larini kazandi. `project/game/src/game/GameScene.ts` bu state'i local storage'da sakliyor, run bitisinde guncelliyor, waiting intro/pulse/telemetry satirlarina ve game-over support handoff'una bagliyor. Retry zinciri artik yalniz `NEXT` preview degil, "hangi route'ta neyi kovaliyorsun" sorusuna da cevap veriyor. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni mastery zincirinin route hedefi yerine copy gurultusu, waiting intro sismesi veya anlamsiz meta hissi urettigini gosterirse yalniz `runSignature.ts` ve `GameScene.ts` icindeki hedef satiri siddeti, satir yogunlugu ve milestone copy'si dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da ayni ladder'a yeni beat acilmaz.
+
 ### [Run #304]
 
 Decision:

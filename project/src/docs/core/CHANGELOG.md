@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #305
+
+- `project/game/src/game/runSignature.ts` signature basina hafif `route mastery` milestone'lari ekledi; `10.0s`, `18.0s`, `32.0s`, `45.6s` ve `60.0s` artik her signature icin ayri takip edilen hedeflere donusuyor
+- `project/game/src/game/GameScene.ts` bu mastery state'ini local storage'da saklayip run sonunda guncelliyor; telemetry reset ayni hafizayi da sifirliyor
+- waiting intro, pulse CTA ve waiting telemetry satiri artik siradaki signature icin yalniz `RUN FEEL` copy'si degil, aktif route hedefi + mevcut best bilgisini de tasiyor
+- game-over support artik kapanan route'un best sonucunu ve siradaki route'un hedefini birlikte satiyor; validation export dili retry handoff'un onune gecmiyor
+- degisiklik yeni ladder beat'i, yeni runtime kontrati veya yeni validation harness acmadan session identity / retry desire cephesini buyuttu
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #304
 
 - `project/game/src/game/GameScene.ts` signature rota projeksiyonunu opening sonrasindaki `8.8-10.6s` payoff penceresine uzatti

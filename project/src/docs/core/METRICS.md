@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #304:
+Current deterministic survival headline after Run #305:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -19,6 +19,12 @@ Current deterministic survival headline after Run #304:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
+
+run_signature_mastery_surface:
+current: Run #305 `project/game/src/game/runSignature.ts` signature basina `10.0s`, `18.0s`, `32.0s`, `45.6s`, `60.0s` milestone hedefleri tanimliyor; `project/game/src/game/GameScene.ts` bu bestleri local storage'da saklayip waiting intro, pulse CTA, waiting telemetry ve game-over support handoff'una tasiyor
+baseline: Run #304 state'inde signature family intro, opening cue, payoff ve payoff projeksiyonu ile daha bagliydi ama her run icin "bu signature'da bir sonraki hedef ne" sorusunun session-level cevabi yoktu; retry istegi hala daha cok hissi ve presentation tarafina yaslaniyordu
+target: sonraki browser veya net manuel gozlem oyuncunun siradaki route'u yalniz bir renk/label farki olarak degil, takip edilen ayri bir hedef gibi okudugunu gostersin; yeni mastery satirlari waiting intro sismesi, copy gurultusu veya cheap meta hissi yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_lock_payoff_projection_surface:
 current: Run #304 `project/game/src/game/GameScene.ts` opening rota projeksiyonunu `8.8-10.6s` payoff penceresine tasiyor; `PINPOINT` dar kilit clamp'i, `WEAVE` capraz sway handoff'u, `RUSH` ileri binen shove chevron'lari cizerek signature payoff'ini sahne diliyle de gorunur kiliyor

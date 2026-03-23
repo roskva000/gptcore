@@ -1,3 +1,5 @@
+import { SURVIVAL_GOAL_SECONDS, TARGET_FIRST_DEATH_SECONDS } from './balance.ts';
+
 export type RunSignatureId = 'pinpoint' | 'weave' | 'rush';
 
 export type RunSignature = {
@@ -37,6 +39,15 @@ export type RunSignature = {
   lockSpawnWeightMultipliers: readonly [number, number];
   lockSpawnDelayMultipliers: readonly [number, number];
   lockObstacleSpeedMultiplier: number;
+};
+
+export type RunSignatureMasteryProgress = Record<RunSignatureId, number | null>;
+
+export type RunSignatureMasteryGoal = {
+  targetSeconds: number | null;
+  statusLine: string;
+  detailLine: string;
+  compactLine: string;
 };
 
 type Point = {
@@ -166,6 +177,79 @@ export const getRunSignatureForRunNumber = (runNumber: number): RunSignature =>
 
 export const getRunSignatureRetryPreviewText = (signature: RunSignature): string =>
   `${signature.shortLabel} NEXT: ${signature.retryPreviewLine}`;
+
+const RUN_SIGNATURE_MASTERY_TARGETS = [
+  {
+    seconds: TARGET_FIRST_DEATH_SECONDS,
+    label: `BREAK ${TARGET_FIRST_DEATH_SECONDS.toFixed(1)}s`,
+  },
+  {
+    seconds: 18,
+    label: 'BREAKTHROUGH 18.0s',
+  },
+  {
+    seconds: 32,
+    label: 'KILLBOX EXIT 32.0s',
+  },
+  {
+    seconds: 45.6,
+    label: 'CLEAR CLIMB 45.6s',
+  },
+  {
+    seconds: SURVIVAL_GOAL_SECONDS,
+    label: `CLEAR ${SURVIVAL_GOAL_SECONDS.toFixed(1)}s`,
+  },
+] as const;
+
+const formatSeconds = (value: number): string => `${value.toFixed(1)}s`;
+
+export const createEmptyRunSignatureMasteryProgress = (): RunSignatureMasteryProgress => ({
+  pinpoint: null,
+  weave: null,
+  rush: null,
+});
+
+export const getRunSignatureMasteryGoal = ({
+  signature,
+  bestSurvivalTime,
+}: {
+  signature: RunSignature;
+  bestSurvivalTime: number | null;
+}): RunSignatureMasteryGoal => {
+  const nextTarget =
+    RUN_SIGNATURE_MASTERY_TARGETS.find(
+      (target) => bestSurvivalTime === null || bestSurvivalTime < target.seconds - 0.04,
+    ) ?? null;
+
+  if (nextTarget === null) {
+    const bestText = bestSurvivalTime === null ? 'n/a' : formatSeconds(bestSurvivalTime);
+
+    return {
+      targetSeconds: null,
+      statusLine: `${signature.shortLabel} MASTERED | BEST ${bestText}`,
+      detailLine: `${formatSeconds(SURVIVAL_GOAL_SECONDS)} clear is already stamped on this route. Push the ceiling higher and turn mastery into a new personal line.`,
+      compactLine: `${signature.shortLabel} mastered | Best ${bestText}`,
+    };
+  }
+
+  if (bestSurvivalTime === null) {
+    return {
+      targetSeconds: nextTarget.seconds,
+      statusLine: `${signature.shortLabel} TARGET | ${nextTarget.label}`,
+      detailLine: 'No stamped run yet on this route. Put the first mark down, then cash the rotation back in.',
+      compactLine: `${signature.shortLabel} target ${nextTarget.label} | Best n/a`,
+    };
+  }
+
+  const improvementNeeded = Math.max(nextTarget.seconds - bestSurvivalTime, 0.1);
+
+  return {
+    targetSeconds: nextTarget.seconds,
+    statusLine: `${signature.shortLabel} TARGET | ${nextTarget.label}`,
+    detailLine: `Best ${formatSeconds(bestSurvivalTime)} on this route. Need +${improvementNeeded.toFixed(1)}s more to bank the next mark.`,
+    compactLine: `${signature.shortLabel} target ${nextTarget.label} | Best ${formatSeconds(bestSurvivalTime)} | +${improvementNeeded.toFixed(1)}s`,
+  };
+};
 
 export const applyRunSignatureTargetLag = ({
   baseTargetLagSeconds,

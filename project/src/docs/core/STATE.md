@@ -1,53 +1,52 @@
 # STATE.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #304
+Updated By: Codex Run #305
 
 ---
 
 # Current Product State
 
-Bu tur `run mode: integration`.
+Bu tur `run mode: mutation`.
 
 Oyun halen **Autonomous Expansion** ve **Identity And Retention Breakout** alt-fazi icinde.
-Bu tur tek ana hedef secildi: **run signature `lock payoff` penceresini arena icinde de daha okunur hale getirip opening sonrasi earned sonucu yalniz HUD/copy olmaktan cikarmak**.
+Bu tur tek ana hedef secildi: **`PINPOINT / WEAVE / RUSH` rotasyonunu hafif bir signature mastery zinciriyle session-level retry hedefi haline getirmek**.
 
 Yeni gercek:
-- `PINPOINT / WEAVE / RUSH` payoff'i artik yalniz hint, beat callout ve `RUN FEEL` panelinde degil; `backdropSignatureRoute` da opening sonrasi `8.8-10.6s` penceresinde signature-ozel bir payoff sekline geciyor
-- `PINPOINT` payoff projeksiyonu daralan raylari merkezde kilit kutusu ve asagi inen son clamp izine ceviriyor; elde edilen squeeze daha net bir kapanis gibi okunuyor
-- `WEAVE` payoff projeksiyonu cift dalga rotasini caprazlanan bir sway handoff'una ceviriyor; acilis nefesi payoff penceresinde bir kez daha gorunur kaliyor
-- `RUSH` payoff projeksiyonu opening chevron'larini daha one binen uc kademeli shove izine ceviriyor; erken cadence sadece HUD satiri degil sahne hareketi olarak da devam ediyor
-- degisiklik mevcut `lock payoff` kontratini derinlestirdi; yeni beat, yeni manager veya yeni validation katmani acilmadi
+- her signature artik local storage uzerinden kendi en iyi suresini tutuyor; `PINPOINT`, `WEAVE` ve `RUSH` yalniz acilis hissi degil, ayri takip edilen route'lara donustu
+- waiting intro artik sonraki signature icin yalniz `RUN FEEL` copy'si gostermiyor; route'un aktif hedefini (`BREAK 10.0s`, `BREAKTHROUGH 18.0s`, `KILLBOX EXIT 32.0s`, `CLEAR CLIMB 45.6s`, `CLEAR 60.0s`) ve mevcut best durumunu da panel, pulse ve telemetry satirinda tasiyor
+- game-over support artik validation export'u ana handoff gibi one surmuyor; kapanan route'un yeni veya mevcut best sonucunu ve siradaki route'un mastery hedefini birlikte satiyor
+- telemetry reset artik telemetry ile beraber signature mastery hafizasini da sifirliyor; session reset ile route hedefleri birbirinden kopmuyor
+- yeni beat, yeni runtime ladder halkasi, yeni orchestration katmani veya yeni validation harness acilmadi
 - `npm run telemetry:check` ve `npm run build` yesil; build halen buyuk bundle uyarisi veriyor ama yeni regression yok
 
 Hala acik eksik:
-- yeni payoff projeksiyonunun gercek oyuncu hissinde earned netlik mi, yoksa cheap spectacle mi urettigi browser/manual gozlemle hala kanitlanmadi
-- `8.8-10.6s` payoff projeksiyonu ile ilk `10-18s` breakthrough cue'lari arasindaki gecis desktop/mobil tarafta fazla yogun okunabilir
-- signature family hala session-level retry desire'i gercekten artiriyor mu, yoksa yalniz ilk 10 saniyeyi daha karakterli mi yapiyor, net degil
+- mastery surface su an waiting ve death handoff'ta guclu; aktif run icinde route hedefinin vuruldugu anin yeterince earned hissedilip hissedilmedigi henuz zayif
+- waiting panelde `RUN FEEL + target` metin yogunlugu desktop/mobil tarafta browser gozlemle ayrica kontrol edilmedi
+- signature mastery retry istegini gercekten artiriyor mu, yoksa yalniz UI framing seviyesinde mi kaliyor, henuz gozlemsel kanit yok
 
 ---
 
 # Active Product Fronts
 
-1. Yeni payoff projeksiyonunun browser veya net manuel gozlemde signature sonucunu gercekten netlestirip netlestirmedigini kanitlamak
-2. Intro -> opening cue -> opening rota projeksiyonu -> `RUN FEEL` paneli -> payoff projeksiyonu -> breakthrough gecisinin nerede guclu, nerede gurultulu oldugunu ayirmak
-3. Signature family'yi retry desire tarafinda yalniz tek bir sonraki hamleyle buyutmek; ayni ladder'a yeni halka eklememek
-4. Validation ve core-doc closure'u hafif tutmak
+1. signature mastery hedeflerinin retry istegini artirdigini live run ve game-over handoff'ta daha net hissettirmek
+2. waiting intro'daki yeni target zincirinin okunurlugunu korumak; copy yogunlugu ile gorsel netlik arasinda dogru dengeyi bulmak
+3. signature family'yi yalniz opening identity degil, farkli route sonucuna donusturmek
+4. validation ve core-doc closure'u hafif tutmak
 
 ---
 
 # Active Risks
 
-1. Payoff projeksiyonu hala fazla yumusak veya fazla stilize kalirsa gercek gameplay sonucu yerine sadece ekstra garnish gibi okunabilir.
-2. Payoff penceresi fazla yogun okunursa `10s` breakthrough onset'i ile cakisip erken run clarity'sini bozabilir.
-3. Signature tuning bahanesiyle tekrar ayni ladder beat'lerine donme riski var.
-4. Validation ve core-doc closure tekrar varsayilan teslimat paketi haline gelebilir.
+1. mastery zinciri yeterince earned his vermezse yeni hedefler UI copy'si gibi okunabilir.
+2. waiting intro paneli yeni target detayiyla fazla yogunlasirsa `RUN FEEL` ile `THREAT HORIZON` arasinda bilgi sikismasi yaratabilir.
+3. bu yeni retention slice bahane edilip ayni signature family etrafinda gereksiz copy churn'u veya docs churn'u uretebilir.
+4. validation dili tekrar product handoff'un onune gecerse audit `bureaucracy-risk` teshisini korur.
 
 ---
 
 # What The Next Runs Must Do
 
-- arka arkaya birkac run'da intro, opening cue, opening rota projeksiyonu, `RUN FEEL` paneli ve yeni payoff projeksiyonunu gozlemle; ozellikle payoff sekli signature'a gore ayirt ediliyor mu bak
-- `PINPOINT / WEAVE / RUSH` payoff projeksiyonlarindan hangisinin net, hangisinin yumusak veya gurultulu kaldigini not et
-- fark hala yumusaksa yeni beat acmadan yalniz tek bir payoff surface'ini daralt veya sadeleştir; once payoff projeksiyon yogunlugu, sonra payoff suresi, sonra HUD siddeti
-- telemetry ve docs'u yalniz degisen kontrat kadar guncelle
-- mevcut `10-72s` cue zincirine yeni named beat ekleme
+- signature mastery'nin aktif run icinde de earned bir sonuc gibi hissedilmesi icin yalniz tek bir live surface ac
+- waiting/game-over hedef zincirini browser veya net manuel gozlemle karsilastir; hangi satirlar gercekten okunuyor, hangileri gurultu kaliyor ayir
+- yeni ladder beat'i, yeni telemetry kontrati veya yeni orchestration katmani acma
+- telemetry ve docs'u yalniz degisen oyuncu kontrati kadar guncelle

@@ -96,9 +96,11 @@ import {
   getRunSignatureLockPayoff,
   getRunSignatureLockPayoffSpawnDelayMultiplier,
   getRunSignatureLockPayoffSpeedMultiplier,
+  getRunSignatureMasteryGoal,
   getRunSignatureLockPayoffTargetPoint,
   getRunSignatureOpeningCue,
   applyRunSignatureTargetLag,
+  createEmptyRunSignatureMasteryProgress,
   getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
@@ -106,6 +108,7 @@ import {
   RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS,
   RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
   type RunSignatureLockPayoff,
+  type RunSignatureMasteryProgress,
   type RunSignatureOpeningCue,
   type RunSignatureReminder,
   type RunSignature,
@@ -235,6 +238,7 @@ const FATAL_LABEL_MIN_X_PX = 20;
 const FATAL_LABEL_MAX_X_PX = ARENA_WIDTH - 20;
 const TELEMETRY_STORAGE_KEY = 'survive-60-seconds-telemetry-v1';
 const SESSION_TELEMETRY_STORAGE_KEY = 'survive-60-seconds-session-telemetry-v1';
+const RUN_SIGNATURE_MASTERY_STORAGE_KEY = 'survive-60-seconds-signature-mastery-v1';
 const VALIDATION_REPORT_STORAGE_KEY = 'survive-60-seconds-last-validation-report-v1';
 const CAPTURED_GAMEPLAY_KEYS = [
   Phaser.Input.Keyboard.KeyCodes.SPACE,
@@ -504,6 +508,8 @@ export class GameScene extends Phaser.Scene {
   private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
+  private runSignatureMastery: RunSignatureMasteryProgress =
+    createEmptyRunSignatureMasteryProgress();
   private currentRunSignature: RunSignature = getRunSignatureForRunNumber(0);
   private lastValidationReport: string | null = null;
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
@@ -679,6 +685,9 @@ export class GameScene extends Phaser.Scene {
         fontFamily: 'Trebuchet MS',
         fontSize: '16px',
         lineSpacing: 6,
+        wordWrap: {
+          width: 500,
+        },
       })
       .setDepth(3)
       .setOrigin(0.5);
@@ -701,6 +710,9 @@ export class GameScene extends Phaser.Scene {
         fontFamily: 'Trebuchet MS',
         fontSize: '14px',
         lineSpacing: 5,
+        wordWrap: {
+          width: 500,
+        },
       })
       .setDepth(3)
       .setOrigin(0.5);
@@ -724,6 +736,9 @@ export class GameScene extends Phaser.Scene {
         fontFamily: 'Trebuchet MS',
         fontSize: '15px',
         fontStyle: 'bold',
+        wordWrap: {
+          width: 340,
+        },
       })
       .setDepth(3)
       .setOrigin(0.5)
@@ -1019,6 +1034,7 @@ export class GameScene extends Phaser.Scene {
 
     this.telemetry = this.loadTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage);
     this.sessionTelemetry = this.loadTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage);
+    this.runSignatureMastery = this.loadRunSignatureMastery(window.localStorage);
     this.lastValidationReport = this.loadValidationReport();
     this.telemetryText = this.add
       .text(ARENA_WIDTH - 24, 20, '', {
@@ -1952,8 +1968,10 @@ export class GameScene extends Phaser.Scene {
 
     this.telemetry = createEmptyTelemetry();
     this.sessionTelemetry = createEmptyTelemetry();
+    this.runSignatureMastery = createEmptyRunSignatureMasteryProgress();
     this.saveTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage, this.telemetry);
     this.saveTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage, this.sessionTelemetry);
+    this.saveRunSignatureMastery(window.localStorage, this.runSignatureMastery);
     this.clearValidationReport();
     this.updateTelemetryText();
 
@@ -3777,6 +3795,30 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  private loadRunSignatureMastery(
+    storage: Pick<Storage, 'getItem'>,
+  ): RunSignatureMasteryProgress {
+    const fallback = createEmptyRunSignatureMasteryProgress();
+
+    try {
+      const rawProgress = storage.getItem(RUN_SIGNATURE_MASTERY_STORAGE_KEY);
+
+      if (!rawProgress) {
+        return fallback;
+      }
+
+      const parsedProgress = JSON.parse(rawProgress) as Partial<RunSignatureMasteryProgress>;
+
+      return {
+        pinpoint: this.readNullableNumber(parsedProgress.pinpoint),
+        weave: this.readNullableNumber(parsedProgress.weave),
+        rush: this.readNullableNumber(parsedProgress.rush),
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
   private saveTelemetry(
     storageKey: string,
     storage: Pick<Storage, 'setItem'>,
@@ -3786,6 +3828,17 @@ export class GameScene extends Phaser.Scene {
       storage.setItem(storageKey, JSON.stringify(telemetry));
     } catch {
       // Local telemetry is best-effort only.
+    }
+  }
+
+  private saveRunSignatureMastery(
+    storage: Pick<Storage, 'setItem'>,
+    progress: RunSignatureMasteryProgress,
+  ): void {
+    try {
+      storage.setItem(RUN_SIGNATURE_MASTERY_STORAGE_KEY, JSON.stringify(progress));
+    } catch {
+      // Signature mastery persistence is best-effort only.
     }
   }
 
@@ -3893,8 +3946,13 @@ export class GameScene extends Phaser.Scene {
       ...this.sessionTelemetry.recentDeathTimes,
     ].slice(0, TELEMETRY_RECENT_RUN_LIMIT);
 
+    const currentSignatureBest = this.runSignatureMastery[this.currentRunSignature.id];
+    this.runSignatureMastery[this.currentRunSignature.id] =
+      currentSignatureBest === null ? survivalTime : Math.max(currentSignatureBest, survivalTime);
+
     this.saveTelemetry(TELEMETRY_STORAGE_KEY, window.localStorage, this.telemetry);
     this.saveTelemetry(SESSION_TELEMETRY_STORAGE_KEY, window.sessionStorage, this.sessionTelemetry);
+    this.saveRunSignatureMastery(window.localStorage, this.runSignatureMastery);
     this.updateTelemetryText();
 
     console.info('[telemetry] run_end', {
@@ -4234,24 +4292,30 @@ export class GameScene extends Phaser.Scene {
     this.updateGoalStatusText();
     this.updateRunPhaseHud();
     const upcomingRunSignature = this.getUpcomingRunSignature();
+    const upcomingRunSignatureMastery = getRunSignatureMasteryGoal({
+      signature: upcomingRunSignature,
+      bestSurvivalTime: this.runSignatureMastery[upcomingRunSignature.id],
+    });
     this.waitingIntroEyebrow
       .setText(upcomingRunSignature.waitingEyebrow)
       .setColor(upcomingRunSignature.accentTextColor);
     this.waitingIntroTitle.setText(getWaitingIntroTitleText(getBestSurvivalTime(this.telemetry)));
     this.waitingHorizonLabel.setText('RUN FEEL');
     this.waitingHorizonText
-      .setText(upcomingRunSignature.waitingBody)
+      .setText(`${upcomingRunSignature.waitingBody}\n${upcomingRunSignatureMastery.statusLine}`)
       .setColor(upcomingRunSignature.accentTextColor);
     this.waitingPhaseLabel.setText('THREAT HORIZON');
     this.waitingPhaseText.setText(
-      `${getRunHorizonText(getBestSurvivalTime(this.telemetry) ?? 0)}\n${getRunPhaseTimelineText(getBestSurvivalTime(this.telemetry) ?? 0)}`,
+      `${getRunHorizonText(getBestSurvivalTime(this.telemetry) ?? 0)}\n${getRunPhaseTimelineText(getBestSurvivalTime(this.telemetry) ?? 0)}\n${upcomingRunSignatureMastery.detailLine}`,
     );
     this.waitingIntroAccent.setFillStyle(upcomingRunSignature.accentColor, 0.9);
     this.waitingIntroPanel.setStrokeStyle(2, upcomingRunSignature.accentColor, 0.95);
     this.waitingPulseCore.setFillStyle(upcomingRunSignature.accentColor, 0.28);
     this.waitingPulseRing.setStrokeStyle(3, upcomingRunSignature.accentColor, 0.68);
     this.waitingPulseLabel
-      .setText(`${getPrimaryLaunchActionPromptText()}\n${upcomingRunSignature.label}`)
+      .setText(
+        `${getPrimaryLaunchActionPromptText()}\n${upcomingRunSignature.label}\n${upcomingRunSignatureMastery.compactLine}`,
+      )
       .setColor(upcomingRunSignature.accentTextColor);
     this.telemetryText.setText(this.getTelemetryLinesForCurrentPhase().join('\n'));
     this.telemetryText.setVisible(this.phase !== 'paused' && this.phase !== 'gameOver');
@@ -4353,6 +4417,7 @@ export class GameScene extends Phaser.Scene {
     return [
       'Local telemetry',
       this.getWaitingProgressLine(),
+      this.getWaitingSignatureMasteryLine(),
       this.getWaitingRiskLine(),
       this.getValidationExportLine(),
       this.getWaitingLifetimeLine(),
@@ -4360,7 +4425,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getBaseSupportText(): string {
-    return `Opening window: break ${TARGET_FIRST_DEATH_SECONDS}s, then climb the phase ladder to ${SURVIVAL_GOAL_SECONDS}s. C summary | V export | R reset between runs.`;
+    const upcomingRunSignature = this.getUpcomingRunSignature();
+    const masteryGoal = getRunSignatureMasteryGoal({
+      signature: upcomingRunSignature,
+      bestSurvivalTime: this.runSignatureMastery[upcomingRunSignature.id],
+    });
+
+    return `Opening window: break ${TARGET_FIRST_DEATH_SECONDS}s, then climb the phase ladder to ${SURVIVAL_GOAL_SECONDS}s. ${masteryGoal.compactLine}. C summary | V export | R reset between runs.`;
   }
 
   private getRetryActionText(): string {
@@ -5666,6 +5737,16 @@ export class GameScene extends Phaser.Scene {
     return `First death ${getFirstDeathTimeText(this.sessionTelemetry)} | Early <${TARGET_FIRST_DEATH_SECONDS}s ${getEarlyDeathRate(this.sessionTelemetry)}% | Retry ${getAverageRetryDelayText(this.sessionTelemetry)}`;
   }
 
+  private getWaitingSignatureMasteryLine(): string {
+    const upcomingRunSignature = this.getUpcomingRunSignature();
+    const masteryGoal = getRunSignatureMasteryGoal({
+      signature: upcomingRunSignature,
+      bestSurvivalTime: this.runSignatureMastery[upcomingRunSignature.id],
+    });
+
+    return `Signature target ${masteryGoal.compactLine}`;
+  }
+
   private getWaitingLifetimeLine(): string {
     if (this.telemetry.totalDeaths === 0) {
       return `Lifetime runs ${this.telemetry.totalRuns} | Spawn saves ${this.sessionTelemetry.totalSpawnRerolls} session / ${this.telemetry.totalSpawnRerolls} lifetime`;
@@ -5725,13 +5806,21 @@ export class GameScene extends Phaser.Scene {
   private getGameOverSupportText(): string {
     const upcomingRunSignature = this.getUpcomingRunSignature();
     const routeTeaser = getRunSignatureRetryPreviewText(upcomingRunSignature);
-    const handoffLine = `${this.currentRunSignature.shortLabel} closed. ${routeTeaser}`;
+    const currentSignatureMastery = getRunSignatureMasteryGoal({
+      signature: this.currentRunSignature,
+      bestSurvivalTime: this.runSignatureMastery[this.currentRunSignature.id],
+    });
+    const upcomingSignatureMastery = getRunSignatureMasteryGoal({
+      signature: upcomingRunSignature,
+      bestSurvivalTime: this.runSignatureMastery[upcomingRunSignature.id],
+    });
+    const handoffLine = `${currentSignatureMastery.compactLine}. ${routeTeaser}`;
 
     if (this.lastValidationReport) {
-      return `${handoffLine} Press V to refresh the saved validation export after a new ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
+      return `${handoffLine} ${upcomingSignatureMastery.compactLine}. Press V to refresh the saved validation export after a new ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
     }
 
-    return `${handoffLine} Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample to save a validation export.`;
+    return `${handoffLine} ${upcomingSignatureMastery.compactLine}. Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample to save a validation export.`;
   }
 
   private getLastRunTimeText(telemetry: GameplayTelemetry): string {
