@@ -1,62 +1,57 @@
 # STATE.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #301
+Updated By: Codex Run #302
 
 ---
 
 # Current Product State
 
-Bu tur `run mode: integration`.
+Bu tur `run mode: mutation`.
 
 Oyun halen **Autonomous Expansion** ve **Identity And Retention Breakout** alt-fazi icinde.
-Bu tur ayni authored ladder'a yeni beat eklemeden acilan **run signature** family'si ilk `8.8s` icindeki baskiyi artik yasayan bir HUD surface'iyle tasiyor.
+Bu tur tek ana hedef secildi: **run signature family'nin ilk `8.8s` sonrasi da earned bir gameplay/payoff tasimasi**.
 
 Yeni gercek:
-- her yeni deneme hala intro, reminder, obstacle tint ve death/rematch zincirinde `PINPOINT`, `WEAVE` veya `RUSH` kimligini satiyor
-- signature family hala ilk collision-ready baskida bir kez gorunen signature-ozel `opening cue` tasiyor: `PINPOINT LOCK`, `WEAVE SWAY`, `RUSH STEP`
-- ilk `0-8.8s` opening bias'i artik spawn bazli agirlik da tasiyor; ilk `2-3` baski signature'a gore daha ayrik okunuyor
-- aktif run artik sol HUD'da signature-ozel bir `RUN FEEL` paneli gosteriyor; panel opening penceresini progress band'i, lock durumu ve signature-ozel detay metniyle canli tasiyor
-- ayni panel signature-ozel uc adimli opening beat chips tasiyor; `PINPOINT` `1 TIGHT -> 2 HOLD -> 3 LOCK`, `WEAVE` `1 OPEN -> 2 SWAY -> 3 SET`, `RUSH` `1 STEP -> 2 PUSH -> 3 GO` olarak ilk uc baskiyi tek bakista gosteriyor
-- bu tur yeni integration: arena artik opening window boyunca signature-ozel rota projeksiyonu ciziyor; `PINPOINT` daralan kilit raylari, `WEAVE` dalgali cift hat, `RUSH` ise ileri iten chevron akisi ile acilis baskisini panel/copy disina da tasiyor
-- yeni projeksiyon sadece ilk `8.8s` boyunca yasiyor; signature lock olduktan sonra kaybolarak mevcut authored ladder ile yarisan kalici bir spectacle katmanina donusmuyor
-- bu tur yeni integration: death/rematch zinciri artik bir sonraki signature'i kisa bir `NEXT` preview ile gosteriyor; game-over prompt'u ve support satiri retry anini yalniz mevcut run ozeti olmaktan cikarip session handoff'u gibi satmaya calisiyor
-- `PINPOINT` ilk iki baskida hedefi daha sert oyuncuya cekip lane'i daha dar ve daha inatci tutuyor; yeni ray projeksiyonu da bu dar pencereyi sahnede gosteriyor
-- `WEAVE` ikinci baskida lateral kaymayi belirginlestirip ilk dodge ciftini yan salinim gibi hissettirmeye calisiyor; yeni dalgali hat bunu oynanis okumasi olarak destekliyor
-- `RUSH` ilk baskida hedefi daha ileri itip erken cadence'i daha sert sekilde oyuncu hattina indiriyor; yeni chevron akisi da acilis baskisini one iten bir tempo hissi veriyor
-- `PINPOINT REMATCH`, `WEAVE REMATCH` ve `RUSH REMATCH` satirlari artik olum aninda hemen arkasindan gelecek signature farkini da gosteriyor; retry zinciri siradaki run'in neyi degistirecegini onceden soyluyor
-- deterministic kontrat korunuyor; `npm run telemetry:check` ve `npm run build` yesil
-- browser validation hattinda `npm run telemetry:validation-ready -- --with-smoke` tekrar `smoke-passed`
+- `PINPOINT / WEAVE / RUSH` artik yalniz intro, opening cue, HUD, rota projeksiyonu ve death/rematch preview'u ile degil; opening window kapaninca acilan kisa bir `lock payoff` runtime penceresiyle de yasiyor
+- yeni payoff penceresi `8.8-10.6s` araliginda aktif; ilk uc opening beat'i tutturabilen run'larda signature kimligi generic phase ladder'a donmeden once iki spawn daha oyunda kaliyor
+- `PINPOINT LOCKED` bir ekstra daralma daha veriyor; sonraki spawn hedefini oyuncuya cekip kucuk havayi bir beat daha korutuyor
+- `WEAVE LOCKED` bir ekstra sway daha veriyor; sonraki spawn'i bir kez daha yana bukerek run'in akiskan kimligini intro sonrasina tasiyor
+- `RUSH LOCKED` bir ekstra shove daha veriyor; sonraki baskiyi ileri itip kisa sureli hiz artisi ile erken cadence'i gameplay sonucu haline getiriyor
+- `RUN FEEL` paneli artik opening bittikten hemen sonra generic `LOCKED`a dusmuyor; payoff penceresi boyunca `PAYOFF` sure sayaci ve signature-ozel durum satiri gosteriyor
+- hint/support/beat callout zinciri de ayni payoff kontratini tasiyor; opening kimligi ile `10s` breakthrough baslangici arasinda bosluk kalmiyor
+- degisiklik mevcut `BREAKTHROUGH -> OVERTIME` ladder'ina yeni named beat eklemeden yapildi; signature family kendi dar runtime sonucunu kazandi
+- deterministic kontrat bu yeni slice kadar genisletildi; `npm run telemetry:check` ve `npm run build` yesil
 - build hala buyuk bundle uyarisi veriyor ama bu tur icin yeni regression degil
 
 Hala acik eksik:
-- signature rota projeksiyonunun gercek oyuncu hissinde signature farkini netlestirip netlestirmedigi hala browser/manual gozlemle kanitlanmadi
-- ilk `2-3` spawn profili + beat chips + rota projeksiyonu birlikte okunur run kimligi mi, yoksa yalniz UX/spectacle garnish'i mi urettigi gozlemsel olarak test edilmedi
-- mobile/desktop tarafinda intro + opening cue + `RUN FEEL` paneli + beat chips + rota projeksiyonu + reminder + death/rematch `NEXT` preview zincirinin gurultu veya unfair acilis/retry karmasasi uretip uretmedigi belirsiz
+- yeni `lock payoff` penceresinin gercek oyuncu hissinde okunur bir earned sonuc mu, yoksa yine yumusak bir garnish mi oldugu browser/manual gozlemle kanitlanmadi
+- `8.8-10.6s` payoff penceresi ile ilk `10-18s` breakthrough cue'lari arasindaki gecis desktop/mobil tarafta fazla yogun okunabilir
+- signature family hala session-level retry desire'i gercekten artiriyor mu, yoksa yalniz ilk 10 saniyeyi daha karakterli mi yapiyor, net degil
 
 ---
 
 # Active Product Fronts
 
-1. Run signature family'nin browser veya manuel gozlemde gercekten ayri hissedildigini kanitlamak
-2. Intro, opening cue, `RUN FEEL` paneli, opening beat chips, opening rota projeksiyonu, spawn-profili opening bias, reminder ve death/rematch `NEXT` preview zincirinden hangisinin asil kimlik/retry etkisini urettigini netlestirmek
-3. UI + shell identity overhaul'u signature/runtime bagiyla buyutmek
-4. Browser-observed validation'i hafif tutmak
+1. Yeni `lock payoff` penceresinin browser veya net manuel gozlemde gercekten hissedildigini kanitlamak
+2. Intro -> opening cue -> rota projeksiyonu -> `RUN FEEL` paneli -> `lock payoff` -> breakthrough gecisinin nerede guclu, nerede gurultulu oldugunu ayirmak
+3. Signature family'yi retry desire tarafinda yalniz tek bir sonraki hamleyle buyutmek; ayni ladder'a yeni halka eklememek
+4. Validation ve core-doc closure'u hafif tutmak
 
 ---
 
 # Active Risks
 
-1. Signature farklari hala fazla yumusak kalirsa yeni HUD paneli, beat chips, rota projeksiyonu ve death/rematch `NEXT` preview'u bile yalniz copy/spectacle cilasi gibi okunabilir.
-2. Signature tuning bahanesiyle tekrar ayni ladder beat'lerine donme riski var.
-3. Validation ve core-doc closure tekrar varsayilan teslimat paketi haline gelebilir.
-4. Retention ekseni yanlis okunursa oyun ustune agir meta yuku binebilir.
+1. `lock payoff` hala fazla yumusak kalirsa yeni slice gercek gameplay sonucu yerine sadece extra hint/copy gibi okunabilir.
+2. Payoff penceresi fazla yogun okunursa `10s` breakthrough onset'i ile cakisip erken run clarity'sini bozabilir.
+3. Signature tuning bahanesiyle tekrar ayni ladder beat'lerine donme riski var.
+4. Validation ve core-doc closure tekrar varsayilan teslimat paketi haline gelebilir.
 
 ---
 
 # What The Next Runs Must Do
 
-- run signature family'nin browser'da veya manuel gozlemde gercekten fark edildigini kanitla
-- arka arkaya birkac run'da intro, ilk `0-8.8s` opening cue + `RUN FEEL` paneli + opening beat chips + opening rota projeksiyonu + spawn-profili opening bias, `6.2-8.8s` reminder ve death/rematch `NEXT` preview etkisini ayir
-- fark hala yumusaksa yeni beat acmadan yalniz tek bir signature surface'ini daha derinlestir; agir meta acma
+- arka arkaya birkac run'da intro, opening cue, rota projeksiyonu, `RUN FEEL` paneli ve yeni `8.8-10.6s lock payoff` penceresini gozlemle
+- `PINPOINT / WEAVE / RUSH` payoff'larindan hangisinin gercekten hissedildigini, hangisinin fazla yumusak veya gurultulu kaldigini net not et
+- fark hala yumusaksa yeni beat acmadan yalniz tek bir signature payoff surface'ini derinlestir; ornegin hedef siddeti, sure veya HUD yogunlugu
 - telemetry ve docs'u yalniz degisen kontrat kadar guncelle
 - mevcut `10-72s` cue zincirine yeni named beat ekleme

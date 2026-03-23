@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #302]
+
+Decision:
+`mutation` modunda run signature family'yi opening sonrasi kisa bir earned gameplay sonucu ile buyut; `8.8-10.6s` araliginda signature-ozel `lock payoff` penceresi ac.
+
+Reason:
+`AUDIT.md`, `HUMAN_SIGNALS.md`, `ROADMAP.md` ve mevcut state ayni riski tutuyordu: signature family giderek daha iyi satiliyor ama hala fazla shell/copy tarafinda kalip oyunu daha buyuk gostermek yerine daha iyi anlatma tuzagina dusme ihtimali var. Yeni validation katmani veya ayni ladder'a yeni beat eklemek yerine en uruncu hamle; opening kimligini bir beat daha gameplay sonucu haline getirip intro ile breakthrough onset'i arasindaki boslugu earned bir signature payoff ile doldurmakti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin `LOCKED` payoff kontrati, kisa post-opening target/speed farki ve helper'lari kazandi. `project/game/src/game/GameScene.ts` bu kontrati sonraki `2` spawn'a uyguluyor; `RUN FEEL` paneli, hint/support ve beat callout zinciri payoff penceresini sureli bir durum olarak tasiyor. `project/game/scripts/telemetry-check.ts` yeni payoff helper'larini deterministic regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni `lock payoff` penceresinin signature hissini netlestirmek yerine opening ustune fazla gurultu bindirdigini, `10s` breakthrough onset'i ile cakistigini veya gameplay sonucu yerine yalniz ekstra garnish gibi okundugunu gosterirse yalniz `runSignature.ts` ve `GameScene.ts` icindeki payoff suresi, target siddeti, hiz carpani ve HUD yogunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut `10-72s` ladder'a yeni beat acilmaz.
+
 ### [Run #301]
 
 Decision:

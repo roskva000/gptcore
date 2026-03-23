@@ -241,10 +241,14 @@ import {
 } from '../src/game/telemetry.ts';
 import {
   applyRunSignatureTargetLag,
+  getRunSignatureLockPayoff,
+  getRunSignatureLockPayoffSpeedMultiplier,
+  getRunSignatureLockPayoffTargetPoint,
   getRunSignatureOpeningCue,
   getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
+  RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS,
   RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
 } from '../src/game/runSignature.ts';
 import {
@@ -6344,6 +6348,74 @@ assert.equal(
   }).x,
   395,
   'Rush runs should push the first opening target further forward so the opening cadence lands on top of the player line immediately.',
+);
+assert.deepEqual(
+  getRunSignatureLockPayoff({
+    signature: getRunSignatureForRunNumber(0),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 3,
+  }),
+  {
+    id: 'pinpoint-lock-payoff',
+    title: 'PINPOINT LOCKED',
+    body: 'Opening held. One tighter squeeze still follows before breakthrough. Protect the smaller air for two more reads.',
+    statusLine:
+      'One tighter squeeze is still live before breakthrough. Protect the smaller air for two more reads.',
+  },
+  'Surviving the shared opening window should unlock a short pinpoint payoff instead of dropping straight back to generic route text.',
+);
+assert.deepEqual(
+  getRunSignatureLockPayoff({
+    signature: getRunSignatureForRunNumber(1),
+    survivalTimeSeconds: RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+  }),
+  null,
+  'Signature lock payoff should end cleanly before the broader breakthrough ladder takes over.',
+);
+assert.equal(
+  getRunSignatureLockPayoffTargetPoint({
+    signature: getRunSignatureForRunNumber(0),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+    playerPosition,
+    playerVelocity,
+    baseTargetPoint,
+    clampTargetPoint: clampSignaturePoint,
+  }).x,
+  375.4,
+  'Pinpoint lock payoff should keep one tighter post-opening squeeze alive for the next spawn before breakthrough.',
+);
+assert.equal(
+  getRunSignatureLockPayoffTargetPoint({
+    signature: getRunSignatureForRunNumber(1),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+    playerPosition,
+    playerVelocity,
+    baseTargetPoint,
+    clampTargetPoint: clampSignaturePoint,
+  }).y,
+  320,
+  'Weave lock payoff should keep one wider post-opening sway alive so the route identity carries past the intro window.',
+);
+assert.equal(
+  getRunSignatureLockPayoffSpeedMultiplier({
+    signature: getRunSignatureForRunNumber(2),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+  }),
+  1.04,
+  'Rush lock payoff should briefly speed the next shove up so the route identity lands as gameplay, not only HUD copy.',
+);
+assert.equal(
+  getRunSignatureLockPayoffSpeedMultiplier({
+    signature: getRunSignatureForRunNumber(2),
+    survivalTimeSeconds: RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+  }),
+  1,
+  'Rush lock payoff speed should fall back to the baseline once the short payoff window ends.',
 );
 
 console.log(

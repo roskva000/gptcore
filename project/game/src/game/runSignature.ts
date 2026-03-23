@@ -28,6 +28,14 @@ export type RunSignature = {
   openingSpawnWeightMultipliers: readonly [number, number, number];
   openingBeatLabels: readonly [string, string, string];
   openingLockLine: string;
+  lockTitle: string;
+  lockBody: string;
+  lockStatusLine: string;
+  lockTargetPullPx: number;
+  lockLateralShiftPx: number;
+  lockForwardShiftPx: number;
+  lockSpawnWeightMultipliers: readonly [number, number];
+  lockObstacleSpeedMultiplier: number;
 };
 
 type Point = {
@@ -64,6 +72,14 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingSpawnWeightMultipliers: [1.25, 1.25, 1.1],
     openingBeatLabels: ['1 TIGHT', '2 HOLD', '3 LOCK'],
     openingLockLine: 'Tighter route is locked in. Keep protecting the smaller air.',
+    lockTitle: 'PINPOINT LOCKED',
+    lockBody: 'Opening held. One tighter squeeze still follows before breakthrough. Protect the smaller air for two more reads.',
+    lockStatusLine: 'One tighter squeeze is still live before breakthrough. Protect the smaller air for two more reads.',
+    lockTargetPullPx: 14,
+    lockLateralShiftPx: 0,
+    lockForwardShiftPx: 0,
+    lockSpawnWeightMultipliers: [1.1, 0.8],
+    lockObstacleSpeedMultiplier: 1,
   },
   {
     id: 'weave',
@@ -93,6 +109,14 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingSpawnWeightMultipliers: [1, 1.2, 1.1],
     openingBeatLabels: ['1 OPEN', '2 SWAY', '3 SET'],
     openingLockLine: 'Wider lane read is locked in. Stay fluid before the cash-in.',
+    lockTitle: 'WEAVE LOCKED',
+    lockBody: 'Opening held. One wider sway still follows before breakthrough. Let the lane breathe once more, then cash it back in.',
+    lockStatusLine: 'One wider sway is still live before breakthrough. Let the lane breathe once more, then cash it back in.',
+    lockTargetPullPx: 0,
+    lockLateralShiftPx: 20,
+    lockForwardShiftPx: 0,
+    lockSpawnWeightMultipliers: [1, 0.85],
+    lockObstacleSpeedMultiplier: 1.01,
   },
   {
     id: 'rush',
@@ -122,6 +146,14 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingSpawnWeightMultipliers: [1.25, 1.1, 1],
     openingBeatLabels: ['1 STEP', '2 PUSH', '3 GO'],
     openingLockLine: 'Earlier cadence is locked in. Keep moving before the lane settles.',
+    lockTitle: 'RUSH LOCKED',
+    lockBody: 'Opening held. One earlier shove still follows before breakthrough. Move before the lane can settle under you.',
+    lockStatusLine: 'One earlier shove is still live before breakthrough. Move before the lane can settle under you.',
+    lockTargetPullPx: 0,
+    lockLateralShiftPx: 0,
+    lockForwardShiftPx: 20,
+    lockSpawnWeightMultipliers: [1.05, 0.85],
+    lockObstacleSpeedMultiplier: 1.04,
   },
 ] as const;
 
@@ -159,7 +191,15 @@ export type RunSignatureOpeningCue = {
   body: string;
 };
 
+export type RunSignatureLockPayoff = {
+  id: string;
+  title: string;
+  body: string;
+  statusLine: string;
+};
+
 export const RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS = 8.8;
+export const RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS = 10.6;
 
 const RUN_SIGNATURE_REMINDER_WINDOW = {
   startSeconds: 6.2,
@@ -295,3 +335,117 @@ export const getActiveRunSignatureReminder = ({
     body: signature.reminderBody,
   };
 };
+
+export const getRunSignatureLockPayoff = ({
+  signature,
+  survivalTimeSeconds,
+  runSpawnCount,
+}: {
+  signature: RunSignature;
+  survivalTimeSeconds: number;
+  runSpawnCount: number;
+}): RunSignatureLockPayoff | null => {
+  if (
+    survivalTimeSeconds < RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS ||
+    survivalTimeSeconds >= RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS ||
+    runSpawnCount < 3 ||
+    runSpawnCount > 5
+  ) {
+    return null;
+  }
+
+  return {
+    id: `${signature.id}-lock-payoff`,
+    title: signature.lockTitle,
+    body: signature.lockBody,
+    statusLine: signature.lockStatusLine,
+  };
+};
+
+export const getRunSignatureLockPayoffTargetPoint = ({
+  signature,
+  survivalTimeSeconds,
+  runSpawnCount,
+  playerPosition,
+  playerVelocity,
+  baseTargetPoint,
+  clampTargetPoint,
+}: {
+  signature: RunSignature;
+  survivalTimeSeconds: number;
+  runSpawnCount: number;
+  playerPosition: Point;
+  playerVelocity: Point;
+  baseTargetPoint: Point;
+  clampTargetPoint: (point: Point) => Point;
+}): Point => {
+  const lockPayoff = getRunSignatureLockPayoff({
+    signature,
+    survivalTimeSeconds,
+    runSpawnCount,
+  });
+
+  if (lockPayoff === null) {
+    return baseTargetPoint;
+  }
+
+  const payoffWeight = clamp(
+    1 -
+      (survivalTimeSeconds - RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS) /
+        (RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS - RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS),
+    0,
+    1,
+  );
+  const lockSpawnWeight =
+    signature.lockSpawnWeightMultipliers[
+      clamp(runSpawnCount - 4, 0, signature.lockSpawnWeightMultipliers.length - 1)
+    ] ?? 1;
+  const targetToPlayer = normalize({
+    x: playerPosition.x - baseTargetPoint.x,
+    y: playerPosition.y - baseTargetPoint.y,
+  });
+  const rawForward = normalize(playerVelocity);
+  const fallbackForward =
+    rawForward.x === 0 && rawForward.y === 0 ? targetToPlayer : rawForward;
+  const lateralDirection = runSpawnCount % 2 === 0 ? 1 : -1;
+  const lateral = {
+    x: -fallbackForward.y * lateralDirection,
+    y: fallbackForward.x * lateralDirection,
+  };
+
+  const adjustedPoint = addPoints(
+    addPoints(
+      baseTargetPoint,
+      scalePoint(
+        targetToPlayer,
+        signature.lockTargetPullPx * payoffWeight * lockSpawnWeight,
+      ),
+    ),
+    addPoints(
+      scalePoint(lateral, signature.lockLateralShiftPx * payoffWeight * lockSpawnWeight),
+      scalePoint(
+        fallbackForward,
+        signature.lockForwardShiftPx * payoffWeight * lockSpawnWeight,
+      ),
+    ),
+  );
+
+  return clampTargetPoint(adjustedPoint);
+};
+
+export const getRunSignatureLockPayoffSpeedMultiplier = ({
+  signature,
+  survivalTimeSeconds,
+  runSpawnCount,
+}: {
+  signature: RunSignature;
+  survivalTimeSeconds: number;
+  runSpawnCount: number;
+}): number =>
+  getRunSignatureLockPayoff({
+    signature,
+    survivalTimeSeconds,
+    runSpawnCount,
+  }) === null
+    ? 1
+    : signature.lockObstacleSpeedMultiplier;

@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #301:
+Current deterministic survival headline after Run #302:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -19,6 +19,12 @@ Current deterministic survival headline after Run #301:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
+
+run_signature_lock_payoff_surface:
+current: Run #302 `project/game/src/game/runSignature.ts` opening window sonrasina `8.8-10.6s` araliginda kisa bir `lock payoff` kontrati ekliyor; `project/game/src/game/GameScene.ts` bunu sonraki `2` spawn'a target/speed farki, `RUN FEEL` paneline sureli `PAYOFF` durumu ve hint/support/beat callout zincirine `LOCKED` callout'u olarak tasiyor
+baseline: Run #301 state'inde signature family intro, opening cue, opening bias, beat chips, rota projeksiyonu, reminder ve death/rematch `NEXT` preview ile daha bagliydi ama opening kapandigi anda gercek gameplay sonucu generic phase ladder'a birakiyordu; earned bir post-opening signature sonucu yoktu
+target: sonraki browser veya net manuel gozlem oyuncunun `PINPOINT / WEAVE / RUSH` acilislarini yalniz ilk `8.8s` etiketiyle degil, hemen ardindan gelen kisacik payoff penceresiyle de ayirt ettigini gostersin; yeni pencere `10s` breakthrough onset'i ile cakisip gurultu, unfair acilis veya cheap garnish hissi uretmemeli
+validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_retry_handoff_surface:
 current: Run #301 `project/game/src/game/deathPresentation.ts` game-over prompt'unda mevcut signature rematch planinin altina bir sonraki signature icin kisa `NEXT` preview satiri ekliyor; `project/game/src/game/GameScene.ts` support satiri da mevcut signature kapanisini ve siradaki signature handoff'unu birlikte satiyor

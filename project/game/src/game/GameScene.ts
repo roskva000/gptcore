@@ -93,13 +93,18 @@ import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   getActiveRunSignatureReminder,
+  getRunSignatureLockPayoff,
+  getRunSignatureLockPayoffSpeedMultiplier,
+  getRunSignatureLockPayoffTargetPoint,
   getRunSignatureOpeningCue,
   applyRunSignatureTargetLag,
   getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
   getRunSignatureRetryPreviewText,
+  RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS,
   RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+  type RunSignatureLockPayoff,
   type RunSignatureOpeningCue,
   type RunSignatureReminder,
   type RunSignature,
@@ -174,6 +179,7 @@ const ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS = 1500;
 const RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS = 1500;
 const RUN_SIGNATURE_OPENING_CUE_DURATION_MS = 1450;
 const RUN_SIGNATURE_REMINDER_CALLOUT_DURATION_MS = 1600;
+const RUN_SIGNATURE_LOCK_PAYOFF_CALLOUT_DURATION_MS = 1500;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
 const CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_X = -14;
@@ -480,6 +486,7 @@ export class GameScene extends Phaser.Scene {
   private lastShownKillboxCueId: KillboxCue['id'] | null = null;
   private lastShownRunSignatureOpeningCueId: string | null = null;
   private lastShownRunSignatureReminderId: string | null = null;
+  private lastShownRunSignatureLockPayoffId: string | null = null;
   private lastShownEndgameDriftCueId:
     | EndgameDriftCue['id']
     | 'ascent-stair'
@@ -1192,6 +1199,7 @@ export class GameScene extends Phaser.Scene {
     this.updateRunSignatureStatusHud();
     this.maybeShowRunPhaseShiftHint(activeRunElapsedMs);
     this.maybeShowRunSignatureReminder(activeRunElapsedMs);
+    this.maybeShowRunSignatureLockPayoff(activeRunElapsedMs);
     this.maybeShowBreakthroughCue(activeRunElapsedMs);
     this.maybeShowKillboxCue(activeRunElapsedMs);
     this.maybeShowEndgameDriftCue(activeRunElapsedMs);
@@ -1946,6 +1954,7 @@ export class GameScene extends Phaser.Scene {
     this.lastShownKillboxCueId = null;
     this.lastShownRunSignatureOpeningCueId = null;
     this.lastShownRunSignatureReminderId = null;
+    this.lastShownRunSignatureLockPayoffId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnRerolls = 0;
     this.runSpawnCount = 0;
@@ -2031,6 +2040,14 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
+  private getActiveRunSignatureLockPayoff(): RunSignatureLockPayoff | null {
+    return getRunSignatureLockPayoff({
+      signature: this.currentRunSignature,
+      survivalTimeSeconds: this.survivalTime,
+      runSpawnCount: this.runSpawnCount,
+    });
+  }
+
   private maybeShowRunSignatureReminder(activeRunElapsedMs: number): void {
     const reminder = this.getActiveRunSignatureReminder();
 
@@ -2048,6 +2065,37 @@ export class GameScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.beatCalloutText);
     this.beatCalloutText
       .setText(`${reminder.title}\n${reminder.body}`)
+      .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+      .setColor(this.currentRunSignature.accentTextColor)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.92,
+      duration: 150,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private maybeShowRunSignatureLockPayoff(activeRunElapsedMs: number): void {
+    const lockPayoff = this.getActiveRunSignatureLockPayoff();
+
+    if (lockPayoff === null || lockPayoff.id === this.lastShownRunSignatureLockPayoffId) {
+      return;
+    }
+
+    this.lastShownRunSignatureLockPayoffId = lockPayoff.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.hintText
+      .setText(`${lockPayoff.title}\n${lockPayoff.body}`)
+      .setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + RUN_SIGNATURE_LOCK_PAYOFF_CALLOUT_DURATION_MS;
+    this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + RUN_SIGNATURE_LOCK_PAYOFF_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${lockPayoff.title}\n${lockPayoff.body}`)
       .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
       .setColor(this.currentRunSignature.accentTextColor)
       .setAlpha(1)
@@ -2423,7 +2471,7 @@ export class GameScene extends Phaser.Scene {
     });
     const targetPoint =
       nearMissChaseSpawnPlan === null
-        ? getRunSignatureOpeningTargetPoint({
+        ? getRunSignatureLockPayoffTargetPoint({
             signature: this.currentRunSignature,
             survivalTimeSeconds: currentSurvivalTimeSeconds,
             runSpawnCount: this.runSpawnCount,
@@ -2432,7 +2480,19 @@ export class GameScene extends Phaser.Scene {
               x: playerBody.velocity.x,
               y: playerBody.velocity.y,
             },
-            baseTargetPoint,
+            baseTargetPoint: getRunSignatureOpeningTargetPoint({
+              signature: this.currentRunSignature,
+              survivalTimeSeconds: currentSurvivalTimeSeconds,
+              runSpawnCount: this.runSpawnCount,
+              playerPosition: { x: this.player.x, y: this.player.y },
+              playerVelocity: {
+                x: playerBody.velocity.x,
+                y: playerBody.velocity.y,
+              },
+              baseTargetPoint,
+              clampTargetPoint: (point) =>
+                clampPointToArena(point, { margin: PLAYER_COLLISION_RADIUS }),
+            }),
             clampTargetPoint: (point) =>
               clampPointToArena(point, { margin: PLAYER_COLLISION_RADIUS }),
           })
@@ -2457,7 +2517,12 @@ export class GameScene extends Phaser.Scene {
     const velocity = new Phaser.Math.Vector2(travelDirection.x, travelDirection.y).scale(
       getObstacleSpeed(currentSurvivalTimeSeconds) *
         getObstacleSpeedMultiplier(obstacleVariant) *
-        this.currentRunSignature.obstacleSpeedMultiplier,
+        this.currentRunSignature.obstacleSpeedMultiplier *
+        getRunSignatureLockPayoffSpeedMultiplier({
+          signature: this.currentRunSignature,
+          survivalTimeSeconds: currentSurvivalTimeSeconds,
+          runSpawnCount: this.runSpawnCount,
+        }),
     );
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     const collisionGraceMs = getSpawnCollisionGraceMs(currentSurvivalTimeSeconds);
@@ -4225,9 +4290,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     const signatureReminder = this.getActiveRunSignatureReminder();
+    const signatureLockPayoff = this.getActiveRunSignatureLockPayoff();
 
     if (signatureReminder !== null) {
       return `${signatureReminder.title}\n${signatureReminder.body}`;
+    }
+
+    if (signatureLockPayoff !== null) {
+      return `${signatureLockPayoff.title}\n${signatureLockPayoff.body}`;
     }
 
     const { currentPhase } = getRunPhaseState(this.survivalTime);
@@ -4375,6 +4445,12 @@ export class GameScene extends Phaser.Scene {
       );
     }
 
+    const signatureLockPayoff = this.getActiveRunSignatureLockPayoff();
+
+    if (signatureLockPayoff !== null) {
+      return `${signatureLockPayoff.statusLine}\n${getRunPhaseSupportText(this.survivalTime)}`;
+    }
+
     return `${this.currentRunSignature.supportLine}\n${getRunPhaseSupportText(this.survivalTime)}`;
   }
 
@@ -4394,7 +4470,13 @@ export class GameScene extends Phaser.Scene {
     );
     const openingCue = this.getActiveRunSignatureOpeningCue();
     const reminder = this.getActiveRunSignatureReminder();
+    const lockPayoff = this.getActiveRunSignatureLockPayoff();
     const openingActive = openingSecondsRemaining > 0.01;
+    const lockPayoffSecondsRemaining = Math.max(
+      RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS - this.survivalTime,
+      0,
+    );
+    const lockPayoffActive = lockPayoff !== null && !openingActive;
     const nextBiasedSpawnIndex = Phaser.Math.Clamp(this.runSpawnCount + 1, 1, 3);
     const activeBeatIndex = Phaser.Math.Clamp(this.runSpawnCount, 0, 2);
 
@@ -4409,7 +4491,9 @@ export class GameScene extends Phaser.Scene {
       .setText(
         openingActive
           ? `RUN FEEL | ${this.currentRunSignature.shortLabel} | ${openingSecondsRemaining.toFixed(1)}s TO LOCK`
-          : `RUN FEEL | ${this.currentRunSignature.shortLabel} | LOCKED`,
+          : lockPayoffActive
+            ? `RUN FEEL | ${this.currentRunSignature.shortLabel} | PAYOFF ${lockPayoffSecondsRemaining.toFixed(1)}s`
+            : `RUN FEEL | ${this.currentRunSignature.shortLabel} | LOCKED`,
       )
       .setColor(this.currentRunSignature.accentTextColor);
 
@@ -4453,6 +4537,8 @@ export class GameScene extends Phaser.Scene {
         ? `${openingCue.title} is live. ${liveBeatLabel} is the current read; let the first collision-ready lane carry the signature on purpose.`
         : reminder !== null
           ? `${reminder.title} is still steering the route. ${liveBeatLabel} is active; hold that read before the opening window shuts.`
+          : lockPayoffActive && lockPayoff !== null
+            ? `${lockPayoff.title} is live for ${lockPayoffSecondsRemaining.toFixed(1)}s. ${lockPayoff.statusLine}`
           : openingActive
             ? `${liveBeatLabel} is shaping spawn ${nextBiasedSpawnIndex}. Next beat: ${nextBeatLabel}. ${this.currentRunSignature.supportLine}`
             : `${this.currentRunSignature.openingLockLine} ${this.currentRunSignature.supportLine}`;
@@ -5381,6 +5467,19 @@ export class GameScene extends Phaser.Scene {
     if (signatureReminder !== null) {
       this.beatCalloutText
         .setText(`${signatureReminder.title}\n${signatureReminder.body}`)
+        .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+        .setColor(this.currentRunSignature.accentTextColor)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
+
+    const signatureLockPayoff = this.getActiveRunSignatureLockPayoff();
+
+    if (signatureLockPayoff !== null) {
+      this.beatCalloutText
+        .setText(`${signatureLockPayoff.title}\n${signatureLockPayoff.body}`)
         .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
         .setColor(this.currentRunSignature.accentTextColor)
         .setAlpha(0.92)

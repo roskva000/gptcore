@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## Run #302
+
+- `project/game/src/game/runSignature.ts` her signature icin opening sonrasi kisa bir `LOCKED` payoff kontrati ekledi; `PINPOINT` ekstra squeeze, `WEAVE` ekstra sway, `RUSH` ekstra shove + kisa hiz artisi tasiyor
+- `project/game/src/game/GameScene.ts` bu payoff'i `8.8-10.6s` araligindaki sonraki `2` spawn'a runtime target/speed farki olarak uyguladi; `RUN FEEL` paneli artik `PAYOFF` sure sayaci ve durum satiri gosteriyor
+- ayni dosya hint/support ve beat callout zincirini de payoff kontratina bagladi; opening kimligi intro sonrasinda generic phase text'ine dusmuyor
+- `project/game/scripts/telemetry-check.ts` yeni lock payoff helper'larini regression altina aldi
+- degisiklik yeni beat, yeni validation harness veya yeni orchestration katmani acmadan run signature family'yi gercek gameplay/payoff slice'i ile buyuttu
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #301
 
 - `project/game/src/game/runSignature.ts` her signature icin kisa bir retry preview satiri ekledi ve ortak `NEXT` handoff helper'i tanimladi
