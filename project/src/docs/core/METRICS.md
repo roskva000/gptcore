@@ -25,6 +25,12 @@ baseline: Run #290 state'inde her run ayni macro ladder'i tasiyor, shell tarafin
 target: sonraki browser veya manuel gozlem oyuncunun arka arkaya iki-uc denemede signature farkini sadece copy'den degil run'in acilis temposu ve lane baskisindan da ayirt edebildigini gostersin; yeni family fairness kaybi veya cheap difficulty mode gibi okunmamali
 validation: `npm run telemetry:check`, `npm run build`
 
+run_signature_integration_surface:
+current: Run #292 `project/game/src/game/GameScene.ts` run basinda signature-ozel intro callout'u ve ilk saniyelerde signature-ozel backdrop motion'u gosteriyor; `project/game/src/game/deathPresentation.ts` aktif run signature callout'unu ve signature rematch satirini death snapshot'a tasiyor; game-over support satiri bir sonraki signature'i teaser olarak gosteriyor
+baseline: Run #291 state'inde signature family waiting panel, aktif HUD ve runtime tuning tarafinda vardi ama run acilisi ile death/retry yuzeyinde halen fazla yumusak kalabiliyordu
+target: sonraki browser veya manuel gozlem oyuncunun arka arkaya iki-uc denemede signature farkini artik yalniz copy degil, acilis motion'u ve retry hook'u uzerinden de ayirt edebildigini gostersin; yeni surface cheap polish ya da readability kaybi gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
+
 death_retry_overlay_compaction_surface:
 current: Run #290 `project/game/src/game/deathPresentation.ts` death overlay body'yi iki satirlik sonuc + active beat ozeti olarak tutuyor, retry blok etiketlerini kisaltiyor ve stats'i tek satirlik `Recent | Retry | Validation` formatina indiriyor. `project/game/src/game/GameScene.ts` body/prompt/stats tipografisini ve Y yerlesimini sikistirarak olum ekrani clutter'ini dusuruyor
 baseline: Run #289 state'inde death overlay ayni authored truth'u korusa da body progress tekrarini tasiyor, prompt daha uzun etiketler kullaniyor ve session stats iki satirlik telemetry duvarina kayiyordu

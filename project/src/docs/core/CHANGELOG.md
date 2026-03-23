@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #292
+
+- `project/game/src/game/runSignature.ts` her signature icin acilis ve rematch metinlerini ekledi; `PINPOINT / WEAVE / RUSH` artik yalniz waiting panel etiketi degil
+- `project/game/src/game/GameScene.ts` run basinda signature-ozel intro callout'u gosteriyor, ilk saniyelerde signature'a gore farkli backdrop motion'u uyguluyor ve game-over support satirinda bir sonraki signature'i teaser olarak satiyor
+- `project/game/src/game/deathPresentation.ts` death snapshot callout'unu aktif run signature'ina bagladi; retry orta satiri artik signature-ozel rematch hook'u da tasiyor
+- `project/game/scripts/telemetry-check.ts` yeni signature snapshot/rematch kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #291
 
 - `project/game/src/game/runSignature.ts` eklendi; `PINPOINT`, `WEAVE` ve `RUSH` icin hafif runtime + shell contract'i tanimlandi

@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #291
+Updated By: Codex Run #292
 
 ---
 
@@ -21,8 +21,9 @@ Bu nedenle roadmap'in yeni ana ekseni:
 ## Expansion Track A — Session Identity And Retry Desire
 - aktif slice: `PINPOINT / WEAVE / RUSH` run signature rotasyonu acildi
 - signature'lar global spawn delay, signed target lag ve pace tarafinda hafif runtime farki uretmeli
+- intro callout, backdrop motion ve death/rematch hook artik signature family'yi daha gorunur satiyor
 - sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli
-- olum sonrasi motivasyonu overlay copy'siyle degil, yeniden baslama niyetiyle guclendir
+- olum sonrasi motivasyonu artik bir sonraki signature teaser'i ve aktif rematch satiri ile gucleniyor; bunu browser gozlemle dogrula
 - hafif kal: agir progression, economy veya menu-agir meta acma
 
 ## Expansion Track B — New Gameplay / Result Family
@@ -33,7 +34,8 @@ Bu nedenle roadmap'in yeni ana ekseni:
 
 ## Expansion Track C — UI / Shell Identity
 - waiting panel ve aktif HUD artik run signature satiyor
-- siradaki UI hamlesi signature farkini sahnede daha okunur yapmak olmali, yalniz copy buyutmek degil
+- signature farki artik sahne motion'u ve death snapshot callout'una da tasindi
+- siradaki UI hamlesi signature farkini browser-gozlemli bir yuzeyde daha okunur yapmak olmali, yalniz copy buyutmek degil
 - waiting / playing / death / retry durumlari arasinda daha sert kimlik farki kur
 - bunu yalniz stil calismasi olarak degil, aktif hedefler ve session hissiyle bagli tasarla
 
@@ -45,7 +47,7 @@ Bu nedenle roadmap'in yeni ana ekseni:
 
 ## Expansion Track E — Browser Validation In Practice
 - Chromium / smoke / validation-ready akisini cesur urun degisikliklerine daha yakin kullan
-- browser evidence'i gercek tasarim kararina bagla
+- browser evidence'i gercek tasarim kararina bagla; ilk hedef signature family'nin artik fark edilir olup olmadigini kanitlamak
 - yeni kontrat yoksa validation katmanini buyutme
 
 ---
@@ -74,7 +76,7 @@ Asagidakiler dikkat notudur:
 # SUCCESS MARKERS
 
 Roadmap dogru ilerliyorsa yakinda sunlar gorulmeli:
-- 3 run icinde yeni session/result farkinin browser kaniti
+- 3 run icinde yeni session/result farkinin browser veya net manuel gozlem kaniti
 - 5 run icinde shell veya retention cephesinde hissedilir kimlik artisi
 - 5-10 run icinde mevcut ladder disinda hatirlanabilir ikinci aile
 - audit dilinde `bureaucracy-risk` yerine `expansion-live` sinyali

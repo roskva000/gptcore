@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #292]
+
+Decision:
+`integration` modunda run signature family'yi yalniz waiting/HUD copy'sinden cikarip canli intro, signature-ozel sahne motion'u ve death/rematch hook'u ile gorunur session kimligine cevir.
+
+Reason:
+`NEXT_AGENT.md`, `STATE.md` ve strateji dokumanlari ayni boslugu gosteriyordu: `PINPOINT / WEAVE / RUSH` family'si acilmisti ama oyuncu tarafinda henuz fazla yumusak kalma riski vardi. Dogru hamle yeni beat yazmak degil, ayni family'yi sahne ve retry yuzeylerinde daha okunur hale getirmekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin yeni intro ve rematch metinleri tanimladi. `project/game/src/game/GameScene.ts` run basinda signature intro callout'u basiyor, ilk saniyelerde signature-ozel backdrop motion'u uyguluyor ve game-over support satirinda bir sonraki signature'i teaser olarak gosteriyor. `project/game/src/game/deathPresentation.ts` aktif run signature callout'unu ve signature'a bagli rematch satirini death snapshot'a tasiyor. `project/game/scripts/telemetry-check.ts` bu yeni player-facing kontrati regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline degismedi (`31.9s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`).
+
+Rollback Condition:
+Browser veya manuel gozlem yeni intro/motion/rematch hook'un signature farkini netlestirmek yerine cheap copy polish'i, ekran gurultusu veya readability kaybi urettigini gosterirse yalniz signature intro metinleri, motion siddeti ve retry satiri dar kapsamda sadeleştirilir; bu bahaneyle yeni orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #291]
 
 Decision:

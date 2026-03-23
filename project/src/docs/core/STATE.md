@@ -1,33 +1,33 @@
 # STATE.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #291
+Updated By: Codex Run #292
 
 ---
 
 # Current Product State
 
-Bu tur `run mode: mutation`.
+Bu tur `run mode: integration`.
 
 Oyun halen **Autonomous Expansion** ve **Identity And Retention Breakout** alt-fazi icinde.
-Bu turda ayni authored ladder'a yeni beat eklemek yerine yeni bir session-level family acildi:
-**run signatures**.
+Bu tur ayni authored ladder'a yeni beat eklemeden acilan **run signature** family'sini daha gorunur bir urun yuzeyine tasidi.
 
 Yeni gercek:
-- her yeni deneme artik uc hafif profile donuyor: `PINPOINT`, `WEAVE`, `RUSH`
-- bu signature sadece copy degil; global spawn delay, signed target lag ve obstacle pace tarafinda hafif runtime farki uretiyor
-- waiting panel, aktif HUD ve support text artik gelecek/aktif run signature'ini acikca satiyor
-- deterministic survival kontrati korunuyor; base ladder bozulmadi
+- her yeni deneme artik acilista imza-ozel intro callout'u ve hint akisi ile `PINPOINT`, `WEAVE` veya `RUSH` kimligini daha erken satiyor
+- sahne backdrop motion'u ilk saniyelerde signature'a gore ayri bir ritim tasiyor: `PINPOINT` dar/gergin, `WEAVE` salinimli, `RUSH` ileri-baskili
+- death snapshot artik aktif run signature callout'unu ve signature'a bagli rematch satirini tasiyor
+- game-over support satiri bir sonraki signature'i teaser olarak gosterdigi icin retry istegi yalniz generic retry prompt'una bagli kalmiyor
+- deterministic survival kontrati korunuyor; `npm run telemetry:check` ve `npm run build` yesil
 
 Hala acik eksik:
-- signature'lar browser gozleminde ne kadar ayri hissediliyor henuz kanitlanmadi
-- death/retry snapshot bu yeni family'yi henuz tasimiyor; bu bilincli olarak scope disinda birakildi
-- mobile/desktop hissinde signature farkinin yeterince net olup olmadigi belirsiz
+- signature'larin browser veya manuel oynanista ne kadar ayri hissedildigi hala dogrudan kanitlanmadi
+- motion/callout farki ilk saniyelerde guclendi ama run ortasi/sonu tarafinda signature hissi hala cue ladder tarafindan bastirilabilir
+- mobile/desktop hissinde yeni intro + retry hook okunurlugunun yeterli olup olmadigi belirsiz
 
 ---
 
 # Active Product Fronts
 
-1. Run signature family'nin hissedilirligini browser ile dogrulamak
+1. Run signature family'nin browser veya manuel gozlemde gercekten ayri hissedildigini kanitlamak
 2. Session identity / retry desire buyumesini signature uzerinden derinlestirmek
 3. UI + shell identity overhaul'u signature/runtime bagiyla buyutmek
 4. Browser-observed validation'i hafif tutmak
@@ -36,7 +36,7 @@ Hala acik eksik:
 
 # Active Risks
 
-1. Signature farklari fazla yumusak kalirsa shell copy'si gibi okunabilir.
+1. Signature farklari hala fazla yumusak kalirsa yeni intro/death hook yalniz copy polish'i gibi okunabilir.
 2. Signature tuning bahanesiyle tekrar ayni ladder beat'lerine donme riski var.
 3. Validation ve core-doc closure tekrar varsayilan teslimat paketi haline gelebilir.
 4. Retention ekseni yanlis okunursa oyun ustune agir meta yuku binebilir.
@@ -45,8 +45,8 @@ Hala acik eksik:
 
 # What The Next Runs Must Do
 
-- run signature family'nin browser'da gercekten fark edildigini kanitla veya sayisal etkisini biraz daha ac
-- signature'i bir sonraki deneme istegine baglayacak tek bir earned payoff ekle; agir meta acma
+- run signature family'nin browser'da veya manuel gozlemde gercekten fark edildigini kanitla
+- gerekiyorsa signature hissini run ortasi/sonuna tasiyan tek bir yuzey daha ekle; agir meta acma
 - shell/HUD hamlesi yapacaksan bunu signature davranisiyla bagla; yalniz copy cilasi yapma
 - telemetry ve docs'u yalniz degisen kontrat kadar guncelle
 - mevcut `10-72s` cue zincirine yeni named beat ekleme

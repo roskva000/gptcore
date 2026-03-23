@@ -311,11 +311,17 @@ const deathPresentation = getDeathPresentation({
   escapePromptTitle: 'BREAK RIGHT',
   nearMissChainCount: null,
   nearMissPromptText: null,
+  runSignature: getRunSignatureForRunNumber(0),
 });
 assert.equal(
   deathPresentation.callout,
-  'DEATH SNAPSHOT',
-  'Death overlay should open with a stable snapshot label instead of repeating the same lane wording in multiple places.',
+  'PINPOINT SNAPSHOT',
+  'Death overlay should carry the active run signature so the snapshot sells a readable session identity instead of a generic label.',
+);
+assert.equal(
+  deathPresentation.prompt,
+  'Next lane BREAK RIGHT\nPINPOINT REMATCH: cut later and protect smaller air. | Rematch the strafe fork and carry it to KILLBOX in +5.7s | Next beat: 15s surge\nRetry Space, Enter, tap/click, or move',
+  'Death prompt should feed the active run signature back into the retry plan so rematch intent stays tied to the session identity.',
 );
 assert.equal(
   deathPresentation.badge,
@@ -722,8 +728,8 @@ assert.equal(
 );
 assert.equal(
   deathPresentation.prompt,
-  'Next lane BREAK RIGHT\nRematch the strafe fork and carry it to KILLBOX in +5.7s | Next beat: 15s surge\nRetry Space, Enter, tap/click, or move',
-  'Death overlay prompt should pair the next coarse retry target with the immediate beat and retry affordance in one compact block.',
+  'Next lane BREAK RIGHT\nPINPOINT REMATCH: cut later and protect smaller air. | Rematch the strafe fork and carry it to KILLBOX in +5.7s | Next beat: 15s surge\nRetry Space, Enter, tap/click, or move',
+  'Death overlay prompt should carry the active run signature into the retry plan so rematch intent stays tied to a readable session identity.',
 );
 assert.equal(
   deathPresentation.stats,

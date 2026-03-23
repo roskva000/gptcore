@@ -163,6 +163,7 @@ const NEAR_MISS_STEP_CALLOUT_DURATION_MS = 1100;
 const RUN_BEAT_CALLOUT_DURATION_MS = 1700;
 const RUN_PHASE_SHIFT_CALLOUT_DURATION_MS = 1900;
 const ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS = 1500;
+const RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS = 1500;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
 const CLEAR_CLIMB_BACKDROP_RIDGE_OFFSET_X = -14;
@@ -1258,6 +1259,7 @@ export class GameScene extends Phaser.Scene {
     const endgameCueMotion = this.getEndgameBackdropMotion(endgameCue, time);
     const clearClimbBackdropMotion = this.getClearClimbBackdropMotion(clearClimbState, time);
     const nearMissBackdropMotion = this.getNearMissBackdropMotion(time, nearMissChaseIntensity);
+    const runSignatureBackdropMotion = this.getRunSignatureBackdropMotion(time);
     const accentColor =
       breakthroughOnsetIntensity > 0
         ? breakthroughTellColor
@@ -1279,13 +1281,15 @@ export class GameScene extends Phaser.Scene {
           killboxCueMotion.glowOffsetX +
           endgameCueMotion.glowOffsetX +
           clearClimbBackdropMotion.glowOffsetX +
-          nearMissBackdropMotion.glowOffsetX,
+          nearMissBackdropMotion.glowOffsetX +
+          runSignatureBackdropMotion.glowOffsetX,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.glowOffsetY +
           killboxCueMotion.glowOffsetY +
           endgameCueMotion.glowOffsetY +
           clearClimbBackdropMotion.glowOffsetY +
-          nearMissBackdropMotion.glowOffsetY,
+          nearMissBackdropMotion.glowOffsetY +
+          runSignatureBackdropMotion.glowOffsetY,
       )
       .setFillStyle(
         accentColor,
@@ -1313,13 +1317,15 @@ export class GameScene extends Phaser.Scene {
           killboxCueMotion.glowOffsetX * 0.74 +
           endgameCueMotion.glowOffsetX * 0.72 +
           clearClimbBackdropMotion.glowOffsetX * 0.7 +
-          nearMissBackdropMotion.glowOffsetX * 0.6,
+          nearMissBackdropMotion.glowOffsetX * 0.6 +
+          runSignatureBackdropMotion.glowOffsetX * 0.54,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.glowOffsetY * 0.7 +
           killboxCueMotion.glowOffsetY * 0.74 +
           endgameCueMotion.glowOffsetY * 0.7 +
           clearClimbBackdropMotion.glowOffsetY * 0.6 +
-          nearMissBackdropMotion.glowOffsetY * 0.6,
+          nearMissBackdropMotion.glowOffsetY * 0.6 +
+          runSignatureBackdropMotion.glowOffsetY * 0.5,
       )
       .setStrokeStyle(
         4 +
@@ -1354,7 +1360,8 @@ export class GameScene extends Phaser.Scene {
           killboxCueMotion.topBandOffsetX +
           endgameCueMotion.topBandOffsetX +
           clearClimbBackdropMotion.topBandOffsetX +
-          nearMissBackdropMotion.topBandOffsetX,
+          nearMissBackdropMotion.topBandOffsetX +
+          runSignatureBackdropMotion.topBandOffsetX,
         0,
       )
       .setAngle(
@@ -1362,7 +1369,8 @@ export class GameScene extends Phaser.Scene {
           killboxCueMotion.topBandAngle +
           endgameCueMotion.topBandAngle +
           clearClimbBackdropMotion.topBandAngle +
-          nearMissBackdropMotion.topBandAngle,
+          nearMissBackdropMotion.topBandAngle +
+          runSignatureBackdropMotion.topBandAngle,
       )
       .setFillStyle(
         accentColor,
@@ -1381,7 +1389,8 @@ export class GameScene extends Phaser.Scene {
           killboxCueMotion.bottomBandOffsetX +
           endgameCueMotion.bottomBandOffsetX +
           clearClimbBackdropMotion.bottomBandOffsetX +
-          nearMissBackdropMotion.bottomBandOffsetX,
+          nearMissBackdropMotion.bottomBandOffsetX +
+          runSignatureBackdropMotion.bottomBandOffsetX,
         ARENA_HEIGHT,
       )
       .setAngle(
@@ -1389,7 +1398,8 @@ export class GameScene extends Phaser.Scene {
           killboxCueMotion.bottomBandAngle +
           endgameCueMotion.bottomBandAngle +
           clearClimbBackdropMotion.bottomBandAngle +
-          nearMissBackdropMotion.bottomBandAngle,
+          nearMissBackdropMotion.bottomBandAngle +
+          runSignatureBackdropMotion.bottomBandAngle,
       )
       .setFillStyle(
         accentColor,
@@ -1441,25 +1451,29 @@ export class GameScene extends Phaser.Scene {
           killboxCueMotion.frameOffsetX +
           endgameCueMotion.frameOffsetX +
           clearClimbBackdropMotion.frameOffsetX +
-          nearMissBackdropMotion.frameOffsetX,
+          nearMissBackdropMotion.frameOffsetX +
+          runSignatureBackdropMotion.frameOffsetX,
         ARENA_HEIGHT / 2 +
           breakthroughCueMotion.frameOffsetY +
           killboxCueMotion.frameOffsetY +
           endgameCueMotion.frameOffsetY +
           clearClimbBackdropMotion.frameOffsetY +
-          nearMissBackdropMotion.frameOffsetY,
+          nearMissBackdropMotion.frameOffsetY +
+          runSignatureBackdropMotion.frameOffsetY,
       )
       .setScale(
         breakthroughCueMotion.frameScaleX +
           (killboxCueMotion.frameScaleX - 1) +
           (endgameCueMotion.frameScaleX - 1) +
           nearMissBackdropMotion.frameScaleBoostX +
-          (clearClimbBackdropMotion.frameScaleX - 1),
+          (clearClimbBackdropMotion.frameScaleX - 1) +
+          runSignatureBackdropMotion.frameScaleBoostX,
         breakthroughCueMotion.frameScaleY +
           (killboxCueMotion.frameScaleY - 1) +
           (endgameCueMotion.frameScaleY - 1) +
           nearMissBackdropMotion.frameScaleBoostY +
-          (clearClimbBackdropMotion.frameScaleY - 1),
+          (clearClimbBackdropMotion.frameScaleY - 1) +
+          runSignatureBackdropMotion.frameScaleBoostY,
       );
   }
 
@@ -1486,6 +1500,82 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.activatePrimaryAction('primary-key');
+  }
+
+  private getRunSignatureBackdropMotion(time: number): {
+    glowOffsetX: number;
+    glowOffsetY: number;
+    topBandOffsetX: number;
+    bottomBandOffsetX: number;
+    topBandAngle: number;
+    bottomBandAngle: number;
+    frameOffsetX: number;
+    frameOffsetY: number;
+    frameScaleBoostX: number;
+    frameScaleBoostY: number;
+  } {
+    if (this.phase !== 'playing') {
+      return {
+        glowOffsetX: 0,
+        glowOffsetY: 0,
+        topBandOffsetX: 0,
+        bottomBandOffsetX: 0,
+        topBandAngle: 0,
+        bottomBandAngle: 0,
+        frameOffsetX: 0,
+        frameOffsetY: 0,
+        frameScaleBoostX: 0,
+        frameScaleBoostY: 0,
+      };
+    }
+
+    const progressWindow = Phaser.Math.Clamp(1 - this.survivalTime / 18, 0.2, 1);
+    const pulse = Math.sin(time / 260);
+    const swing = Math.cos(time / 340);
+    const intensity = progressWindow * 0.8;
+
+    if (this.currentRunSignature.id === 'pinpoint') {
+      return {
+        glowOffsetX: swing * 6 * intensity,
+        glowOffsetY: -8 * intensity,
+        topBandOffsetX: pulse * 12 * intensity,
+        bottomBandOffsetX: -pulse * 10 * intensity,
+        topBandAngle: 2.2 * intensity,
+        bottomBandAngle: -1.8 * intensity,
+        frameOffsetX: swing * 2 * intensity,
+        frameOffsetY: -2 * intensity,
+        frameScaleBoostX: -0.006 * intensity,
+        frameScaleBoostY: 0.008 * intensity,
+      };
+    }
+
+    if (this.currentRunSignature.id === 'weave') {
+      return {
+        glowOffsetX: pulse * 16 * intensity,
+        glowOffsetY: swing * 8 * intensity,
+        topBandOffsetX: swing * 18 * intensity,
+        bottomBandOffsetX: -swing * 16 * intensity,
+        topBandAngle: pulse * 3.4 * intensity,
+        bottomBandAngle: -pulse * 3 * intensity,
+        frameOffsetX: pulse * 4 * intensity,
+        frameOffsetY: swing * 3 * intensity,
+        frameScaleBoostX: 0.008 * intensity,
+        frameScaleBoostY: 0.004 * intensity,
+      };
+    }
+
+    return {
+      glowOffsetX: 0,
+      glowOffsetY: -14 * intensity + pulse * 5 * intensity,
+      topBandOffsetX: 18 * intensity + swing * 10 * intensity,
+      bottomBandOffsetX: -16 * intensity - swing * 9 * intensity,
+      topBandAngle: 4.2 * intensity,
+      bottomBandAngle: -3.6 * intensity,
+      frameOffsetX: 3 * intensity,
+      frameOffsetY: -4 * intensity,
+      frameScaleBoostX: 0.012 * intensity,
+      frameScaleBoostY: -0.008 * intensity,
+    };
   }
 
   private handlePointerPrimaryAction(pointer: Phaser.Input.Pointer): void {
@@ -1658,9 +1748,33 @@ export class GameScene extends Phaser.Scene {
     this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
     this.playingHintHideAtElapsedMs = IN_RUN_HINT_DURATION_MS;
     this.recordRunStart();
+    this.showRunSignatureIntro();
     this.armPointerSteeringGuardAfterActivation(source, phaseBeforeActivation);
 
     this.scheduleNextSpawn(FIRST_SPAWN_DELAY_MS);
+  }
+
+  private showRunSignatureIntro(): void {
+    this.hintText
+      .setText(`${this.currentRunSignature.label}\n${this.currentRunSignature.introBody}`)
+      .setVisible(true);
+    this.playingHintHideAtElapsedMs = RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS;
+    this.beatCalloutHideAtElapsedMs = RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${this.currentRunSignature.label}\n${this.currentRunSignature.introBody}`)
+      .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+      .setColor(this.currentRunSignature.accentTextColor)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.92,
+      duration: 150,
+      ease: 'Quad.Out',
+    });
   }
 
   private pauseRunForFocusLoss(): void {
@@ -2367,6 +2481,7 @@ export class GameScene extends Phaser.Scene {
       escapePromptTitle: escapePrompt.title,
       nearMissChainCount: nearMissDeathSnapshotChainCount,
       nearMissPromptText: nearMissDeathPromptText,
+      runSignature: this.currentRunSignature,
     });
 
     this.setPhase('gameOver');
@@ -2478,7 +2593,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(true);
     this.hintText.setVisible(false);
     this.nearMissText.setVisible(false).setText('');
-    this.supportText.setText(this.getGameOverSupportText()).setVisible(false);
+    this.supportText.setText(this.getGameOverSupportText()).setVisible(true);
     this.updateHudChromeVisibility();
   }
 
@@ -3772,7 +3887,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getPlayingHintText(): string {
-    return `OPENING WINDOW\nStay moving, protect open air, and break ${TARGET_FIRST_DEATH_SECONDS}s clean.`;
+    return `${this.currentRunSignature.label}\n${this.currentRunSignature.introBody}`;
   }
 
   private getFirstDeathTargetHintText(): string {
@@ -4811,6 +4926,7 @@ export class GameScene extends Phaser.Scene {
 
     const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
     const nearMissStepAnnouncement = this.getActiveNearMissSpawnStep(activeRunElapsedMs);
+    const signatureIntroActive = activeRunElapsedMs < RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS;
 
     if (activeRunElapsedMs >= this.beatCalloutHideAtElapsedMs) {
       this.beatCalloutText.setVisible(false).setText('');
@@ -4822,6 +4938,17 @@ export class GameScene extends Phaser.Scene {
       const announcement = getNearMissChaseStepAnnouncement(nearMissStepAnnouncement);
       this.beatCalloutText
         .setText(`${announcement.title}\n${announcement.body}`)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
+
+    if (signatureIntroActive) {
+      this.beatCalloutText
+        .setText(`${this.currentRunSignature.label}\n${this.currentRunSignature.introBody}`)
+        .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+        .setColor(this.currentRunSignature.accentTextColor)
         .setAlpha(0.92)
         .setScale(1)
         .setVisible(true);
@@ -4956,11 +5083,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getGameOverSupportText(): string {
+    const upcomingRunSignature = this.getUpcomingRunSignature();
+    const routeTeaser = `${upcomingRunSignature.waitingEyebrow}: ${upcomingRunSignature.waitingBody.replace('\n', ' ')}`;
+
     if (this.lastValidationReport) {
-      return `Retry when ready. Press V to refresh the saved validation export after a new ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
+      return `${routeTeaser} Press V to refresh the saved validation export after a new ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
     }
 
-    return `Retry when ready. Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample to save a validation export.`;
+    return `${routeTeaser} Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample to save a validation export.`;
   }
 
   private getLastRunTimeText(telemetry: GameplayTelemetry): string {
