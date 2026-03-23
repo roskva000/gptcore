@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #295:
+Current deterministic survival headline after Run #296:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -19,11 +19,17 @@ Current deterministic survival headline after Run #295:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 
+run_signature_opening_contract_surface:
+current: Run #296 `project/game/src/game/runSignature.ts` her signature icin ilk canli baskiyi adlandiran `opening cue` kontrati tasiyor ve opening target bias siddetini derinlestiriyor; `project/game/src/game/GameScene.ts` ilk collision-ready baskida `PINPOINT LOCK`, `WEAVE SWAY` veya `RUSH STEP` callout'unu gostererek signature'i intro copy'sinden canli oynanisa bagliyor
+baseline: Run #295 state'inde signature family intro, obstacle tint, death/rematch hook, reminder ve opening target bias tasiyordu ama ilk gercek baski anini ayri bir player-facing contract sahiplenmiyordu; kimlik daha cok acilis metni ve hafif balans farki olarak okunabilirdi
+target: sonraki browser veya net manuel gozlem oyuncunun ilk `8-10s` icinde arka arkaya signature acilislarini yalniz intro metninden degil, ilk baskinin sekli ve opening cue uzerinden de ayirt edebildigini gostersin; yeni cue intro/reminder uzerine binen gereksiz HUD gurultusu gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`, `npm run telemetry:validation-ready -- --with-smoke`
+
 run_signature_opening_runtime_surface:
-current: Run #295 `project/game/src/game/runSignature.ts` her signature icin `0-8.8s` acilis penceresinde ayri target bias kontrati tasiyor; `project/game/src/game/GameScene.ts` standart spawn target hesabinda bunu uygulayarak `PINPOINT` lane'i daraltiyor, `WEAVE` ilk dodge hattini lateral aciyor, `RUSH` ise erken cadence'i oyuncu hattinin ilerisine itiyor
-baseline: Run #294 state'inde signature family intro, reminder, obstacle tint, goal-chip ve death/rematch hook'u tarafinda daha bagliydi ama acilis oynanisi hala buyuk oranda ayni target mantigini koruyor, kimlik cogu kez HUD/callout zincirinde okunuyordu
+current: Run #296 `project/game/src/game/runSignature.ts` her signature icin `0-8.8s` acilis penceresinde daha sert target bias kontrati tasiyor; `project/game/src/game/GameScene.ts` standart spawn target hesabinda bunu uygulayarak `PINPOINT` lane'i daha fazla daraltiyor, `WEAVE` ilk dodge hattini daha belirgin lateral aciyor, `RUSH` ise erken cadence'i daha ileri itiyor
+baseline: Run #295 state'inde signature family opening bias tasiyordu ama siddeti daha hafifti ve ilk gercek baski ani ayri bir opening cue ile baglanmiyordu
 target: sonraki browser veya manuel gozlem oyuncunun ilk `8-10s` icinde arka arkaya iki-uc denemeyi yalniz intro copy'sinden degil ilk spawn baskisinin sekli uzerinden de ayirt edebildigini gostersin; yeni bias unfair acilis, cheap balans churn'u veya near-miss route'larini ezen bir katman gibi okunmamali
-validation: `npm run telemetry:check`, `npm run build`
+validation: `npm run telemetry:check`, `npm run build`, `npm run telemetry:validation-ready -- --with-smoke`
 
 run_signature_reminder_surface:
 current: Run #294 `project/game/src/game/runSignature.ts` her signature icin ayri reminder title/body kontrati tasiyor ve bu reminder `6.2-8.8s` araliginda aktif olabiliyor. `project/game/src/game/GameScene.ts` ayni reminder'i hint ve beat-callout katmaninda aktif signature accent'iyle gosteriyor; pause/restore akisi da bu surface'i koruyor

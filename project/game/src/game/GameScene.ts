@@ -93,10 +93,12 @@ import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   getActiveRunSignatureReminder,
+  getRunSignatureOpeningCue,
   applyRunSignatureTargetLag,
   getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
+  type RunSignatureOpeningCue,
   type RunSignatureReminder,
   type RunSignature,
 } from './runSignature.ts';
@@ -168,6 +170,7 @@ const RUN_BEAT_CALLOUT_DURATION_MS = 1700;
 const RUN_PHASE_SHIFT_CALLOUT_DURATION_MS = 1900;
 const ENDGAME_DRIFT_CUE_CALLOUT_DURATION_MS = 1500;
 const RUN_SIGNATURE_INTRO_CALLOUT_DURATION_MS = 1500;
+const RUN_SIGNATURE_OPENING_CUE_DURATION_MS = 1450;
 const RUN_SIGNATURE_REMINDER_CALLOUT_DURATION_MS = 1600;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_X = 22;
 const CLEAR_CLIMB_BACKDROP_ASCENT_OFFSET_Y = -18;
@@ -467,6 +470,7 @@ export class GameScene extends Phaser.Scene {
   private lastShownRunPhaseId: RunPhaseId | null = null;
   private lastShownBreakthroughCueId: BreakthroughCue['id'] | null = null;
   private lastShownKillboxCueId: KillboxCue['id'] | null = null;
+  private lastShownRunSignatureOpeningCueId: string | null = null;
   private lastShownRunSignatureReminderId: string | null = null;
   private lastShownEndgameDriftCueId:
     | EndgameDriftCue['id']
@@ -1743,6 +1747,7 @@ export class GameScene extends Phaser.Scene {
     this.lastAnnouncedRunBeatLabel = null;
     this.lastShownBreakthroughCueId = null;
     this.lastShownKillboxCueId = null;
+    this.lastShownRunSignatureOpeningCueId = null;
     this.lastShownRunSignatureReminderId = null;
     this.lastShownEndgameDriftCueId = null;
     this.runSpawnRerolls = 0;
@@ -1780,6 +1785,43 @@ export class GameScene extends Phaser.Scene {
       targets: this.beatCalloutText,
       scale: 1,
       alpha: 0.92,
+      duration: 150,
+      ease: 'Quad.Out',
+    });
+  }
+
+  private getActiveRunSignatureOpeningCue(): RunSignatureOpeningCue | null {
+    return getRunSignatureOpeningCue({
+      signature: this.currentRunSignature,
+      survivalTimeSeconds: this.survivalTime,
+      runSpawnCount: this.runSpawnCount,
+    });
+  }
+
+  private maybeShowRunSignatureOpeningCue(activeRunElapsedMs: number): void {
+    const cue = this.getActiveRunSignatureOpeningCue();
+
+    if (cue === null || cue.id === this.lastShownRunSignatureOpeningCueId) {
+      return;
+    }
+
+    this.lastShownRunSignatureOpeningCueId = cue.id;
+    this.supportText.setText(this.getCurrentPlayingSupportText()).setVisible(true);
+    this.hintText.setText(`${cue.title}\n${cue.body}`).setVisible(true);
+    this.playingHintHideAtElapsedMs = activeRunElapsedMs + RUN_SIGNATURE_OPENING_CUE_DURATION_MS;
+    this.beatCalloutHideAtElapsedMs = activeRunElapsedMs + RUN_SIGNATURE_OPENING_CUE_DURATION_MS;
+    this.tweens.killTweensOf(this.beatCalloutText);
+    this.beatCalloutText
+      .setText(`${cue.title}\n${cue.body}`)
+      .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+      .setColor(this.currentRunSignature.accentTextColor)
+      .setAlpha(1)
+      .setScale(0.94)
+      .setVisible(true);
+    this.tweens.add({
+      targets: this.beatCalloutText,
+      scale: 1,
+      alpha: 0.9,
       duration: 150,
       ease: 'Quad.Out',
     });
@@ -2106,6 +2148,10 @@ export class GameScene extends Phaser.Scene {
     obstacle.setData('collisionUnlockElapsedMs', null);
     obstacle.setData('spawnGraceTween', null);
     this.applySpawnGraceVisualState(obstacle, true);
+
+    if (this.phase === 'playing' && obstacle.getData('nearMissChaseSpawnStep') === null) {
+      this.maybeShowRunSignatureOpeningCue(this.getActiveRunElapsedMs(this.time.now));
+    }
   }
 
   private spawnObstacle(): void {
@@ -5014,6 +5060,22 @@ export class GameScene extends Phaser.Scene {
     if (signatureIntroActive) {
       this.beatCalloutText
         .setText(`${this.currentRunSignature.label}\n${this.currentRunSignature.introBody}`)
+        .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
+        .setColor(this.currentRunSignature.accentTextColor)
+        .setAlpha(0.92)
+        .setScale(1)
+        .setVisible(true);
+      return;
+    }
+
+    const signatureOpeningCue = this.getActiveRunSignatureOpeningCue();
+
+    if (
+      signatureOpeningCue !== null &&
+      signatureOpeningCue.id === this.lastShownRunSignatureOpeningCueId
+    ) {
+      this.beatCalloutText
+        .setText(`${signatureOpeningCue.title}\n${signatureOpeningCue.body}`)
         .setBackgroundColor(this.currentRunSignature.accentBackgroundColor)
         .setColor(this.currentRunSignature.accentTextColor)
         .setAlpha(0.92)

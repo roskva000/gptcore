@@ -8,6 +8,8 @@ export type RunSignature = {
   waitingBody: string;
   supportLine: string;
   introBody: string;
+  openingTitle: string;
+  openingBody: string;
   reminderTitle: string;
   reminderBody: string;
   rematchLine: string;
@@ -38,6 +40,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     waitingBody: 'Tighter lead and shorter lag.\nCut later, trust smaller air, and keep the lane honest.',
     supportLine: 'PINPOINT RUN: tighter lead is live. Cut later and protect smaller air.',
     introBody: 'Tighter lead opens first. Cut later, trust smaller air, and let the lane stay narrow for one more beat.',
+    openingTitle: 'PINPOINT LOCK',
+    openingBody: 'The first lane stays tighter on purpose. Cut later, protect smaller air, and do not spend the reopen early.',
     reminderTitle: 'PINPOINT HOLD',
     reminderBody: 'The lane stays tight on purpose. Cut later, trust the smaller gap, and do not spend the reopen early.',
     rematchLine: 'PINPOINT REMATCH: cut later and protect smaller air.',
@@ -49,7 +53,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     spawnDelayMultiplier: 1.03,
     obstacleSpeedMultiplier: 0.99,
     targetLagOffsetSeconds: -0.035,
-    openingTargetPullPx: 18,
+    openingTargetPullPx: 24,
     openingLateralShiftPx: 0,
     openingForwardShiftPx: 0,
   },
@@ -61,6 +65,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     waitingBody: 'Shots reach a little wider before they settle.\nStay fluid, re-center less, and let the lane breathe once.',
     supportLine: 'WEAVE RUN: wider lag is live. Stay fluid and do not over-correct the reopen.',
     introBody: 'Wider lag opens the route. Stay fluid, re-center less, and let the lane breathe before you cash it back in.',
+    openingTitle: 'WEAVE SWAY',
+    openingBody: 'The first dodge wants one sideways breath. Stay fluid, re-center less, and cash the reopen in a beat later.',
     reminderTitle: 'WEAVE DRIFT',
     reminderBody: 'The lane wants one extra breath. Stay fluid, re-center less, and cash the reopen in a beat later.',
     rematchLine: 'WEAVE REMATCH: stay fluid and let the lane breathe once.',
@@ -73,7 +79,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     obstacleSpeedMultiplier: 1.01,
     targetLagOffsetSeconds: 0.045,
     openingTargetPullPx: 0,
-    openingLateralShiftPx: 22,
+    openingLateralShiftPx: 30,
     openingForwardShiftPx: 0,
   },
   {
@@ -84,6 +90,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     waitingBody: 'Cadence lands earlier and pressure keeps closer pace.\nTrade comfort for rhythm and keep moving before the snap.',
     supportLine: 'RUSH RUN: earlier cadence is live. Keep moving before the lane can settle.',
     introBody: 'Earlier cadence lands immediately. Trade comfort for rhythm and move before the lane can settle.',
+    openingTitle: 'RUSH STEP',
+    openingBody: 'The first snap lands early. Trade comfort for rhythm, move before the lane settles, and keep the cadence in front.',
     reminderTitle: 'RUSH CADENCE',
     reminderBody: 'Pressure arrives early. Trade comfort for rhythm and move before the lane can settle under you.',
     rematchLine: 'RUSH REMATCH: move early and keep the lane from settling.',
@@ -97,7 +105,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     targetLagOffsetSeconds: -0.01,
     openingTargetPullPx: 0,
     openingLateralShiftPx: 0,
-    openingForwardShiftPx: 20,
+    openingForwardShiftPx: 28,
   },
 ] as const;
 
@@ -121,6 +129,12 @@ export const getRunSignatureObstacleTint = ({
 }): number => baseTint ?? signature.obstacleTint;
 
 export type RunSignatureReminder = {
+  id: string;
+  title: string;
+  body: string;
+};
+
+export type RunSignatureOpeningCue = {
   id: string;
   title: string;
   body: string;
@@ -210,6 +224,26 @@ export const getRunSignatureOpeningTargetPoint = ({
   );
 
   return clampTargetPoint(adjustedPoint);
+};
+
+export const getRunSignatureOpeningCue = ({
+  signature,
+  survivalTimeSeconds,
+  runSpawnCount,
+}: {
+  signature: RunSignature;
+  survivalTimeSeconds: number;
+  runSpawnCount: number;
+}): RunSignatureOpeningCue | null => {
+  if (survivalTimeSeconds >= RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS || runSpawnCount > 2) {
+    return null;
+  }
+
+  return {
+    id: `${signature.id}-opening-cue`,
+    title: signature.openingTitle,
+    body: signature.openingBody,
+  };
 };
 
 export const getActiveRunSignatureReminder = ({

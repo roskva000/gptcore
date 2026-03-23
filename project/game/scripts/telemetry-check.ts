@@ -241,6 +241,7 @@ import {
 } from '../src/game/telemetry.ts';
 import {
   applyRunSignatureTargetLag,
+  getRunSignatureOpeningCue,
   getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
@@ -6252,6 +6253,28 @@ assert.equal(
   getObstacleTint('surge'),
   'Signature tinting should not override authored obstacle variants that already carry a gameplay-specific readable color.',
 );
+assert.deepEqual(
+  getRunSignatureOpeningCue({
+    signature: getRunSignatureForRunNumber(0),
+    survivalTimeSeconds: 0.8,
+    runSpawnCount: 1,
+  }),
+  {
+    id: 'pinpoint-opening-cue',
+    title: 'PINPOINT LOCK',
+    body: 'The first lane stays tighter on purpose. Cut later, protect smaller air, and do not spend the reopen early.',
+  },
+  'Pinpoint runs should expose an opening live cue once the first real pressure comes online.',
+);
+assert.equal(
+  getRunSignatureOpeningCue({
+    signature: getRunSignatureForRunNumber(2),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 1,
+  }),
+  null,
+  'Signature opening cues should stop once the shared opening window closes.',
+);
 const clampSignaturePoint = (point: { x: number; y: number }) =>
   clampPointToArena(point, { margin: OBSTACLE_COLLISION_RADIUS });
 const playerPosition = { x: 400, y: 300 };
@@ -6280,7 +6303,7 @@ assert.equal(
     baseTargetPoint,
     clampTargetPoint: clampSignaturePoint,
   }).x,
-  378,
+  384,
   'Pinpoint runs should pull the early target closer to the player so the opening lane stays tighter.',
 );
 assert.equal(
@@ -6293,7 +6316,7 @@ assert.equal(
     baseTargetPoint,
     clampTargetPoint: clampSignaturePoint,
   }).y,
-  278,
+  270,
   'Weave runs should bend the opening target laterally so the first few dodges stay fluid instead of purely faster.',
 );
 assert.equal(
@@ -6306,7 +6329,7 @@ assert.equal(
     baseTargetPoint,
     clampTargetPoint: clampSignaturePoint,
   }).x,
-  380,
+  388,
   'Rush runs should push the opening target forward so early cadence lands closer to the player line.',
 );
 

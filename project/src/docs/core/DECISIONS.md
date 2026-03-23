@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #296]
+
+Decision:
+`integration` modunda run signature family'nin ilk canli baskisini `opening cue` ile bagla ve ayni anda opening target bias'i bir tik derinlestir.
+
+Reason:
+`NEXT_AGENT.md`, `STATE.md` ve stratejik yon hala ayni riski gosteriyordu: signature family acilista daha cok intro/reminder/copy zinciri olarak okunabilir, gercek oynanis farki ise yeterince earned hissettirmeyebilirdi. Yeni beat veya yeni orchestration acmadan en dogru dar hamle; signature kimligini ilk collision-ready baskiya baglayan tek bir live cue eklemek ve zaten acik olan opening target bias'i biraz daha belirginlestirmekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin `openingTitle/openingBody` kontratini ekledi; `PINPOINT`, `WEAVE` ve `RUSH` opening bias degerleri de guclendirildi. `project/game/src/game/GameScene.ts` ilk collision-ready baskida bir kez gorunen `PINPOINT LOCK / WEAVE SWAY / RUSH STEP` callout'unu gosteriyor ve pause/restore akisinda ayni cue'yu koruyor. `project/game/scripts/telemetry-check.ts` yeni opening cue kontratini ve guncellenen opening target noktalarini regression altina aldi. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem opening cue'nun oynanisi netlestirmek yerine intro/reminder ustune binen gereksiz gurultu, cheap drama veya unfair acilis hissi urettigini gosterirse yalniz `runSignature.ts` icindeki opening cue copy'si ve opening bias siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #295]
 
 Decision:

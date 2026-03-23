@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #296
+
+- `project/game/src/game/runSignature.ts` her signature icin ilk canli baskiyi adlandiran `opening cue` kontratini ekledi; `PINPOINT LOCK`, `WEAVE SWAY` ve `RUSH STEP` artik intro copy'sinden ayrik bir ilk-baski truth'u tasiyor
+- ayni dosya `PINPOINT`, `WEAVE` ve `RUSH` icin opening target bias siddetini artirdi; yeni beat ya da yeni orchestration katmani acilmadi
+- `project/game/src/game/GameScene.ts` ilk collision-ready standard obstacle geldigi anda signature-ozel opening cue'yu hint ve beat-callout katmaninda bir kez gosteriyor; pause/restore akisi da ayni cue'yu koruyor
+- `project/game/scripts/telemetry-check.ts` yeni opening cue kontratini ve guncellenen opening target noktalarini regression altina aldi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #295
 
 - `project/game/src/game/runSignature.ts` her signature icin yeni opening target bias kontratini ekledi; `PINPOINT` erken hedefi oyuncuya cekiyor, `WEAVE` ilk target'i lateral kaydiriyor, `RUSH` ise hedefi ileri iterek erken cadence'i daha somut hissettiriyor
