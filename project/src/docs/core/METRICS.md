@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #302:
+Current deterministic survival headline after Run #303:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -19,6 +19,12 @@ Current deterministic survival headline after Run #302:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
+
+run_signature_lock_payoff_cadence_surface:
+current: Run #303 `project/game/src/game/runSignature.ts` signature-ozel iki adimli `lockSpawnDelayMultipliers` kontrati tasiyor; `project/game/src/game/GameScene.ts` bunu mevcut spawn scheduler'ine baglayip payoff penceresi acikken `PINPOINT` squeeze'i hafif bekletiyor, `WEAVE` sway'i bir tik one cekiyor, `RUSH` shove'u daha erken indiriyor
+baseline: Run #302 state'inde `lock payoff` yalniz target/speed farki, `RUN FEEL` payoff satiri ve lock callout'u tasiyordu; intro sonrasindaki ilk iki baskinin ritmi signature'a gore ayri bukulmuyordu ve slice halen yumusak okunabilirdi
+target: sonraki browser veya net manuel gozlem oyuncunun `8.8-10.6s` payoff penceresinde yalniz HUD/copy degil, ilk payoff baskisinin ne zaman indigini de ayirt ettigini gostersin; yeni cadence farki unfair acilis, breakthrough-onset gurultusu veya yalniz balans churn'u gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`, `npm run telemetry:validation-ready -- --with-smoke`
 
 run_signature_lock_payoff_surface:
 current: Run #302 `project/game/src/game/runSignature.ts` opening window sonrasina `8.8-10.6s` araliginda kisa bir `lock payoff` kontrati ekliyor; `project/game/src/game/GameScene.ts` bunu sonraki `2` spawn'a target/speed farki, `RUN FEEL` paneline sureli `PAYOFF` durumu ve hint/support/beat callout zincirine `LOCKED` callout'u olarak tasiyor

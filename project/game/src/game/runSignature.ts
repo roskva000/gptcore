@@ -35,6 +35,7 @@ export type RunSignature = {
   lockLateralShiftPx: number;
   lockForwardShiftPx: number;
   lockSpawnWeightMultipliers: readonly [number, number];
+  lockSpawnDelayMultipliers: readonly [number, number];
   lockObstacleSpeedMultiplier: number;
 };
 
@@ -79,6 +80,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     lockLateralShiftPx: 0,
     lockForwardShiftPx: 0,
     lockSpawnWeightMultipliers: [1.1, 0.8],
+    lockSpawnDelayMultipliers: [1.08, 1.04],
     lockObstacleSpeedMultiplier: 1,
   },
   {
@@ -116,6 +118,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     lockLateralShiftPx: 20,
     lockForwardShiftPx: 0,
     lockSpawnWeightMultipliers: [1, 0.85],
+    lockSpawnDelayMultipliers: [0.98, 0.95],
     lockObstacleSpeedMultiplier: 1.01,
   },
   {
@@ -153,6 +156,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     lockLateralShiftPx: 0,
     lockForwardShiftPx: 20,
     lockSpawnWeightMultipliers: [1.05, 0.85],
+    lockSpawnDelayMultipliers: [0.9, 0.94],
     lockObstacleSpeedMultiplier: 1.04,
   },
 ] as const;
@@ -449,3 +453,29 @@ export const getRunSignatureLockPayoffSpeedMultiplier = ({
   }) === null
     ? 1
     : signature.lockObstacleSpeedMultiplier;
+
+export const getRunSignatureLockPayoffSpawnDelayMultiplier = ({
+  signature,
+  survivalTimeSeconds,
+  runSpawnCount,
+}: {
+  signature: RunSignature;
+  survivalTimeSeconds: number;
+  runSpawnCount: number;
+}): number => {
+  if (
+    getRunSignatureLockPayoff({
+      signature,
+      survivalTimeSeconds,
+      runSpawnCount,
+    }) === null
+  ) {
+    return 1;
+  }
+
+  return (
+    signature.lockSpawnDelayMultipliers[
+      clamp(runSpawnCount - 4, 0, signature.lockSpawnDelayMultipliers.length - 1)
+    ] ?? 1
+  );
+};

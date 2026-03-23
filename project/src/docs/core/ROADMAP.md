@@ -1,6 +1,6 @@
 # ROADMAP.md
 Last Updated: 2026-03-23
-Updated By: Codex Run #302
+Updated By: Codex Run #303
 
 ---
 
@@ -27,19 +27,20 @@ Bu nedenle roadmap'in yeni ana ekseni:
 - yeni integration: arena artik opening window boyunca signature-ozel rota projeksiyonu ciziyor; `PINPOINT` daralan ray, `WEAVE` dalgali cift hat, `RUSH` ileri iten chevron akisi ile acilis baskisi yalniz HUD/copy olmaktan cikiyor
 - yeni integration: death/rematch zinciri artik bir sonraki signature'i kisa `NEXT` preview ile gosteriyor; retry aninda run family yalniz geriye bakmiyor, siradaki denemenin kimligini de satmaya basliyor
 - yeni mutation: opening window kapandiginda signature family `8.8-10.6s` araliginda kisa bir `lock payoff` penceresi aciyor; `PINPOINT` bir ekstra squeeze, `WEAVE` bir ekstra sway, `RUSH` bir ekstra shove tasiyor
-- ayni payoff penceresi `RUN FEEL` panelinde sureli `PAYOFF` durumu, hint/support zincirinde `LOCKED` callout'u ve runtime target/speed farkiyla tasiniyor; signature artik intro bitince generic phase text'ine dusmuyor
+- yeni integration: ayni payoff penceresi artik kisa bir signature-ozel cadence farki da tasiyor; `PINPOINT` squeeze'i hafif bekletiyor, `WEAVE` sway'i bir tik one cekiyor, `RUSH` shove'u daha erken indiriyor
+- ayni payoff penceresi `RUN FEEL` panelinde sureli `PAYOFF` durumu, hint/support zincirinde `LOCKED` callout'u ve runtime target/speed/cadence farkiyla tasiniyor; signature artik intro bitince generic phase text'ine dusmuyor
 - ilk collision-ready baskida bir kez gorunen `PINPOINT LOCK / WEAVE SWAY / RUSH STEP` opening cue family'yi intro copy'sinden canli oynanisa bagliyor
 - intro callout, backdrop motion ve death/rematch hook artik signature family'yi daha gorunur satiyor
 - varsayilan obstacle readability ve goal-chip chase durumu da signature rengine baglandi; kimlik run ortasinda da ekranda kaliyor
 - `6.2-8.8s` signature reminder callout'u aktif run'in kimligini intro sonrasina tasiyor; yeni panel ve rota projeksiyonu ile birlikte bu zincirin gercek etki uretip uretmedigi gozlemsel olarak olculmeli
-- sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli; ozellikle intro + opening cue + `RUN FEEL` paneli + opening beat chips + rota projeksiyonu + spawn-profili opening bias + yeni `lock payoff` + death/rematch `NEXT` preview'un okunur bir fark mi yoksa yalniz balans/UX churn'u mu oldugu ayrilmali
+- sonraki dogrulama signature'larin browser'da gercekten ayri his verip vermedigini olcmeli; ozellikle intro + opening cue + `RUN FEEL` paneli + opening beat chips + rota projeksiyonu + spawn-profili opening bias + target/speed/cadence tasiyan yeni `lock payoff` + death/rematch `NEXT` preview'un okunur bir fark mi yoksa yalniz balans/UX churn'u mu oldugu ayrilmali
 - olum sonrasi motivasyonu artik bir sonraki signature teaser'i ve aktif rematch satiri ile gucleniyor; bunu browser gozlemle dogrula
 - hafif kal: agir progression, economy veya menu-agir meta acma
 
 ## Expansion Track B — New Gameplay / Result Family
 - mevcut `BREAKTHROUGH -> OVERTIME` ladder'ina yeni cue eklemek yerine yeni bir sonuc mantigi veya risk/reward family ac
 - acilan ilk aile: run signature
-- yeni adim: bu family artik earned `lock payoff` tasiyor; sonraki hamle bu payoff'in gercek hissini kanitlamak veya yalniz tek bir signature sonucunu derinlestirmek olmali
+- yeni adim: bu family artik earned `lock payoff` ve dar cadence farki tasiyor; sonraki hamle bu payoff'in gercek hissini kanitlamak veya yalniz tek bir signature sonucunu derinlestirmek olmali
 - mevcut fairness ve okunurluk prensiplerini bozacak cheap chaos'a kacma
 
 ## Expansion Track C — UI / Shell Identity
@@ -61,7 +62,7 @@ Bu nedenle roadmap'in yeni ana ekseni:
 
 ## Expansion Track E — Browser Validation In Practice
 - Chromium / smoke / validation-ready akisini cesur urun degisikliklerine daha yakin kullan
-- browser evidence'i gercek tasarim kararina bagla; ilk hedef signature family'nin yeni `lock payoff` ile artik fark edilir olup olmadigini kanitlamak
+- browser evidence'i gercek tasarim kararina bagla; ilk hedef signature family'nin target/speed/cadence tasiyan yeni `lock payoff` ile artik fark edilir olup olmadigini kanitlamak
 - bu kanit tercihen ayni cihazda arka arkaya en az uc signature acilisi ve ilk 15-20 saniye gozlemiyle toplanmali
 - gozlem notu intro, opening cue, spawn-profili opening target bias, `8.8-10.6s lock payoff`, mid-run reminder ve death/rematch `NEXT` preview'un ayri ayri ise yarayip yaramadigini yazmali
 - mevcut deterministic/browser hattinda `npm run telemetry:validation-ready -- --with-smoke` yesil; eksik olan sey smoke degil gercek oynanis gozlemi

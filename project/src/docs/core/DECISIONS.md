@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #303]
+
+Decision:
+`integration` modunda run signature `lock payoff` penceresine dar bir cadence kontrati ekle; payoff artik yalniz hedef ofseti ve hiz farki degil, bir sonraki spawn zamanlamasini da signature'a gore kisa sureli buksun.
+
+Reason:
+`AUDIT.md`, `STATE.md`, `ROADMAP.md` ve mevcut `NEXT_AGENT.md` ayni boslugu tutuyordu: `PINPOINT / WEAVE / RUSH` payoff slice'i acildi ama halen fazla yumusak kalip intro sonrasinda copy/HUD agirlikli okunma riski tasiyordu. Yeni beat, yeni validation harness veya yeni orchestration katmani acmadan en uruncu dar hamle; mevcut payoff penceresini ikinci bir gameplay ekseniyle, yani kisa cadence farkiyla, daha somut hale getirmekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin iki adimli `lockSpawnDelayMultipliers` kontrati ve ilgili helper'i kazandi. `project/game/src/game/GameScene.ts` spawn scheduler'i bu kontrati mevcut signature spawn-delay carpaninin ustune yalniz payoff penceresi aktifken uyguluyor; `PINPOINT` squeeze'i hafif bekletiyor, `WEAVE` sway'i biraz one cekiyor, `RUSH` shove'u daha erken indiriyor. `project/game/scripts/telemetry-check.ts` yeni payoff cadence kontratini deterministic regression altina aldi. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni payoff cadence farkinin signature hissini netlestirmek yerine acilisi unfairlestirdigini, breakthrough onset'i ile gereksiz cakistigini veya yalniz balans churn'u gibi okundugunu gosterirse yalniz `runSignature.ts` ve `GameScene.ts` icindeki payoff delay carpanlari dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut `10-72s` ladder'a yeni beat acilmaz.
+
 ### [Run #302]
 
 Decision:

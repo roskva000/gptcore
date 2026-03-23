@@ -94,6 +94,7 @@ import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
   getActiveRunSignatureReminder,
   getRunSignatureLockPayoff,
+  getRunSignatureLockPayoffSpawnDelayMultiplier,
   getRunSignatureLockPayoffSpeedMultiplier,
   getRunSignatureLockPayoffTargetPoint,
   getRunSignatureOpeningCue,
@@ -2345,9 +2346,15 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnDelayMs(): number {
+    const survivalTimeSeconds = this.getCurrentSurvivalTimeSeconds();
     return Math.round(
-      getSpawnDelayMs(this.getCurrentSurvivalTimeSeconds()) *
-        this.currentRunSignature.spawnDelayMultiplier,
+      getSpawnDelayMs(survivalTimeSeconds) *
+        this.currentRunSignature.spawnDelayMultiplier *
+        getRunSignatureLockPayoffSpawnDelayMultiplier({
+          signature: this.currentRunSignature,
+          survivalTimeSeconds,
+          runSpawnCount: this.runSpawnCount,
+        }),
     );
   }
 

@@ -242,6 +242,7 @@ import {
 import {
   applyRunSignatureTargetLag,
   getRunSignatureLockPayoff,
+  getRunSignatureLockPayoffSpawnDelayMultiplier,
   getRunSignatureLockPayoffSpeedMultiplier,
   getRunSignatureLockPayoffTargetPoint,
   getRunSignatureOpeningCue,
@@ -6416,6 +6417,33 @@ assert.equal(
   }),
   1,
   'Rush lock payoff speed should fall back to the baseline once the short payoff window ends.',
+);
+assert.equal(
+  getRunSignatureLockPayoffSpawnDelayMultiplier({
+    signature: getRunSignatureForRunNumber(0),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+  }),
+  1.08,
+  'Pinpoint lock payoff should hold the next squeeze a fraction longer so the tighter read lands as a distinct cadence beat.',
+);
+assert.equal(
+  getRunSignatureLockPayoffSpawnDelayMultiplier({
+    signature: getRunSignatureForRunNumber(2),
+    survivalTimeSeconds: RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+  }),
+  0.9,
+  'Rush lock payoff should pull the next shove forward so the post-opening cadence still feels aggressive.',
+);
+assert.equal(
+  getRunSignatureLockPayoffSpawnDelayMultiplier({
+    signature: getRunSignatureForRunNumber(1),
+    survivalTimeSeconds: RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS,
+    runSpawnCount: 4,
+  }),
+  1,
+  'Signature payoff cadence should fall back to the baseline once the short lock window closes.',
 );
 
 console.log(

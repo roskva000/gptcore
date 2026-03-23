@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #303
+
+- `project/game/src/game/runSignature.ts` her signature icin `lock payoff` sirasinda kullanilan iki adimli dar bir spawn-delay kontrati ekledi
+- `PINPOINT` payoff sirasinda sonraki squeeze'i hafif bekletiyor, `WEAVE` sway'i biraz one cekiyor, `RUSH` ise sonraki shove'u daha erken indiriyor; payoff artik yalniz target/speed farki tasimiyor
+- `project/game/src/game/GameScene.ts` mevcut spawn scheduler'ini bu yeni payoff cadence helper'ina bagladi; degisiklik yeni beat, yeni manager veya yeni validation katmani acmadan mevcut signature payoff surface'ini derinlestirdi
+- `project/game/scripts/telemetry-check.ts` yeni payoff cadence kontratini regression altina aldi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #302
 
 - `project/game/src/game/runSignature.ts` her signature icin opening sonrasi kisa bir `LOCKED` payoff kontrati ekledi; `PINPOINT` ekstra squeeze, `WEAVE` ekstra sway, `RUSH` ekstra shove + kisa hiz artisi tasiyor
