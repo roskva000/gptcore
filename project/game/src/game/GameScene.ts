@@ -1695,7 +1695,7 @@ export class GameScene extends Phaser.Scene {
 
     if (
       (this.phase !== 'playing' && this.phase !== 'paused' && this.phase !== 'gameOver') ||
-      this.survivalTime >= RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS
+      this.survivalTime >= RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS
     ) {
       this.backdropSignatureRoute.setVisible(false);
       return;
@@ -1708,7 +1708,107 @@ export class GameScene extends Phaser.Scene {
     );
 
     if (openingIntensity <= 0.01) {
-      this.backdropSignatureRoute.setVisible(false);
+      const lockPayoffIntensity = Phaser.Math.Clamp(
+        1 -
+          (this.survivalTime - RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS) /
+            (RUN_SIGNATURE_LOCK_PAYOFF_WINDOW_END_SECONDS -
+              RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS),
+        0,
+        1,
+      );
+
+      if (lockPayoffIntensity <= 0.01) {
+        this.backdropSignatureRoute.setVisible(false);
+        return;
+      }
+
+      this.backdropSignatureRoute.setVisible(true);
+
+      const centerX = ARENA_WIDTH / 2;
+      const centerY = ARENA_HEIGHT / 2;
+      const pulse = 0.82 + (Math.sin(time / 160) * 0.5 + 0.5) * 0.3;
+      const drift = Math.cos(time / 220);
+      const lineAlpha = (0.24 + lockPayoffIntensity * 0.4) * pulse;
+      const fillAlpha = 0.08 + lockPayoffIntensity * 0.18;
+
+      this.backdropSignatureRoute.lineStyle(4, this.currentRunSignature.accentColor, lineAlpha);
+
+      if (this.currentRunSignature.id === 'pinpoint') {
+        const lockWidth = 56 + lockPayoffIntensity * 14;
+        const lockHeight = 152 + lockPayoffIntensity * 26;
+        const clampY = centerY - 16;
+        const tipY = centerY + 92;
+
+        this.strokeSignatureRoutePath([
+          { x: centerX - lockWidth, y: clampY - lockHeight * 0.5 },
+          { x: centerX - lockWidth + 10, y: clampY - 16 },
+          { x: centerX - 18, y: tipY - 26 },
+          { x: centerX - 8, y: tipY + 8 },
+        ]);
+        this.strokeSignatureRoutePath([
+          { x: centerX + lockWidth, y: clampY - lockHeight * 0.5 },
+          { x: centerX + lockWidth - 10, y: clampY - 16 },
+          { x: centerX + 18, y: tipY - 26 },
+          { x: centerX + 8, y: tipY + 8 },
+        ]);
+        this.backdropSignatureRoute.strokeRect(
+          centerX - 26,
+          clampY - 38 + drift * 4,
+          52,
+          76 + lockPayoffIntensity * 18,
+        );
+        this.backdropSignatureRoute.fillStyle(this.currentRunSignature.accentColor, fillAlpha * 1.18);
+        this.backdropSignatureRoute.fillCircle(centerX, clampY + 4, 8 + lockPayoffIntensity * 5);
+        this.backdropSignatureRoute.fillCircle(centerX, tipY + 18, 4 + lockPayoffIntensity * 2);
+        return;
+      }
+
+      if (this.currentRunSignature.id === 'weave') {
+        const sway = 54 + lockPayoffIntensity * 20;
+        const swayHeight = 78 + lockPayoffIntensity * 18;
+        const startY = centerY - 132;
+        const endY = centerY + 116;
+
+        this.strokeSignatureRoutePath([
+          { x: centerX - 70, y: startY },
+          { x: centerX - sway, y: centerY - swayHeight },
+          { x: centerX + sway * 0.42, y: centerY - 10 },
+          { x: centerX - sway * 0.24, y: centerY + swayHeight },
+          { x: centerX + 28, y: endY },
+        ]);
+        this.strokeSignatureRoutePath([
+          { x: centerX + 70, y: startY },
+          { x: centerX + sway, y: centerY - swayHeight },
+          { x: centerX - sway * 0.42, y: centerY - 10 },
+          { x: centerX + sway * 0.24, y: centerY + swayHeight },
+          { x: centerX - 28, y: endY },
+        ]);
+        this.backdropSignatureRoute.fillStyle(this.currentRunSignature.accentColor, fillAlpha);
+        this.backdropSignatureRoute.fillCircle(centerX - sway * 0.34, centerY - 42, 7);
+        this.backdropSignatureRoute.fillCircle(centerX + sway * 0.34, centerY + 40, 7);
+        this.backdropSignatureRoute.fillCircle(centerX + drift * 8, centerY + 118, 10);
+        return;
+      }
+
+      const chevronDepth = 38 + lockPayoffIntensity * 12;
+      const baseWidth = 148 + lockPayoffIntensity * 24;
+      const startY = centerY - 84;
+
+      for (let index = 0; index < 3; index += 1) {
+        const y = startY + index * 74;
+        const width = baseWidth - index * 18;
+        const forward = drift * 10 + index * 5;
+
+        this.strokeSignatureRoutePath([
+          { x: centerX - width, y: y - chevronDepth + forward * 0.2 },
+          { x: centerX - 20 + forward, y },
+          { x: centerX + width, y: y - chevronDepth + forward * 0.2 },
+        ]);
+      }
+
+      this.backdropSignatureRoute.fillStyle(this.currentRunSignature.accentColor, fillAlpha * 1.05);
+      this.backdropSignatureRoute.fillCircle(centerX + drift * 10, centerY + 86, 11 + lockPayoffIntensity * 4);
+      this.backdropSignatureRoute.fillCircle(centerX + drift * 6, centerY + 126, 6 + lockPayoffIntensity * 2);
       return;
     }
 

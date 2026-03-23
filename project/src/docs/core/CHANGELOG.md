@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Run #304
+
+- `project/game/src/game/GameScene.ts` signature rota projeksiyonunu opening sonrasindaki `8.8-10.6s` payoff penceresine uzatti
+- `PINPOINT` payoff'i dar bir kilit kutusu ve asagi inen clamp izi, `WEAVE` payoff'i caprazlanan sway handoff'u, `RUSH` payoff'i ise ileri binen uc kademeli shove chevron'lari ile ayri okunuyor
+- degisiklik yeni beat, yeni manager veya yeni validation katmani acmadan yalniz mevcut `lock payoff` integration surface'ini derinlestirdi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #303
 
 - `project/game/src/game/runSignature.ts` her signature icin `lock payoff` sirasinda kullanilan iki adimli dar bir spawn-delay kontrati ekledi

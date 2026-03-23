@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #303:
+Current deterministic survival headline after Run #304:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -19,6 +19,12 @@ Current deterministic survival headline after Run #303:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
+
+run_signature_lock_payoff_projection_surface:
+current: Run #304 `project/game/src/game/GameScene.ts` opening rota projeksiyonunu `8.8-10.6s` payoff penceresine tasiyor; `PINPOINT` dar kilit clamp'i, `WEAVE` capraz sway handoff'u, `RUSH` ileri binen shove chevron'lari cizerek signature payoff'ini sahne diliyle de gorunur kiliyor
+baseline: Run #303 state'inde payoff target/speed/cadence, `RUN FEEL` payoff satiri ve `LOCKED` callout'u tasiyordu ama arena projeksiyonu `8.8s` ile kesiliyor, payoff sonucu yine fazla HUD/copy agir okunabiliyordu
+target: sonraki browser veya net manuel gozlem oyuncunun `8.8-10.6s` araliginda payoff'in yalniz text degil sahne seklinden de `PINPOINT / WEAVE / RUSH` diye ayirt edildigini gostersin; yeni projeksiyon cheap spectacle, mobile/desktop gurultusu veya breakthrough-onset karmasi yaratmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_lock_payoff_cadence_surface:
 current: Run #303 `project/game/src/game/runSignature.ts` signature-ozel iki adimli `lockSpawnDelayMultipliers` kontrati tasiyor; `project/game/src/game/GameScene.ts` bunu mevcut spawn scheduler'ine baglayip payoff penceresi acikken `PINPOINT` squeeze'i hafif bekletiyor, `WEAVE` sway'i bir tik one cekiyor, `RUSH` shove'u daha erken indiriyor

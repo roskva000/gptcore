@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #304]
+
+Decision:
+`integration` modunda run signature `lock payoff` penceresini arena icinde de gorunur kil; opening rota projeksiyonunu `8.8-10.6s` payoff anina signature-ozel kilit sekilleriyle uzat.
+
+Reason:
+`AUDIT.md`, `STATE.md`, `ROADMAP.md`, `NEXT_AGENT.md` ve insan sinyali ayni boslugu tutuyordu: signature family giderek daha bagli ama payoff sonucu hala fazla HUD/copy agir okunabilir. Yeni beat, yeni validation harness veya yeni orchestration katmani acmadan en uruncu dar hamle; mevcut rota projeksiyonunu payoff penceresinde de earned bir sonuc gibi gostermekti.
+
+Impact:
+`project/game/src/game/GameScene.ts` `backdropSignatureRoute` surface'ini opening sonrasinda da yasatiyor. `PINPOINT` payoff'i dar kilit clamp'i, `WEAVE` payoff'i capraz sway handoff'u, `RUSH` payoff'i ileri binen shove chevron'lari ile ciziliyor; signature sonucu artik yalniz text/HUD degil sahne diliyle de okunuyor. Deterministic kontrat degismedi; `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni payoff projeksiyonunun signature sonucunu netlestirmek yerine cheap spectacle, mobile/desktop gurultusu veya `10s` breakthrough onset'i ile cakisan erken-run karmasi urettigini gosterirse yalniz `GameScene.ts` icindeki payoff projeksiyonu yogunlugu, alpha, geometri ve sure siddeti dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut `10-72s` ladder'a yeni beat acilmaz.
+
 ### [Run #303]
 
 Decision:
