@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #298:
+Current deterministic survival headline after Run #299:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -20,10 +20,16 @@ Current deterministic survival headline after Run #298:
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
 
+run_signature_opening_beat_chip_surface:
+current: Run #299 `project/game/src/game/runSignature.ts` her signature icin uc adimli opening beat label'i ve lock satiri tasiyor; `project/game/src/game/GameScene.ts` `RUN FEEL` panelinde bu uc beat'i ayri chips olarak gosteriyor ve aktif beat'i, tamamlanan beat'leri ve lock durumunu ayni yuzeyde tutuyor
+baseline: Run #298 state'inde `RUN FEEL` paneli opening progress, lock durumu ve signature-ozel detay metni tasiyordu ama ilk uc baskinin sekli tek bakista ayri okunmuyordu; oyuncu paragrafi okumadan signature acilisinin ritmini tam ayiramayabilirdi
+target: sonraki browser veya net manuel gozlem oyuncunun arka arkaya iki-uc signature acilisinda ilk uc baskiyi artik beat chips uzerinden daha hizli ayirt ettigini gostersin; yeni yuzey mobile/desktop'ta HUD gurultusu veya yalniz UX garnish'i gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
+
 run_signature_opening_hud_surface:
-current: Run #298 `project/game/src/game/GameScene.ts` aktif run icin signature-ozel `RUN FEEL` paneli gosteriyor; panel ilk `8.8s` opening penceresini progress band'iyle sayiyor, `PINPOINT / WEAVE / RUSH` lock durumunu baslikta tutuyor ve opening cue / reminder / support truth'unu ayni yuzeyde tasiyor
+current: Run #298 `project/game/src/game/GameScene.ts` aktif run icin signature-ozel `RUN FEEL` paneli gosteriyor; panel ilk `8.8s` opening penceresini progress band'iyle sayiyor, `PINPOINT / WEAVE / RUSH` lock durumunu baslikta tutuyor ve opening cue / reminder / support truth'unu ayni yuzeyde tasiyor. Run #299 bunu beat chips ile daha hizli okunur hale getirdi
 baseline: Run #297 state'inde signature family intro, opening cue, spawn-profili opening bias, reminder, obstacle/HUD renk dili ve death/rematch hook'u tarafinda vardi ama opening penceresinin tumunu tek bakista tutan kalici bir HUD yuzeyi yoktu; kimlik callout sondugunde yine yumusayabilirdi
-target: sonraki browser veya net manuel gozlem oyuncunun arka arkaya iki-uc signature acilisinda intro, opening cue ve spawn-profili farkini artik `RUN FEEL` paneliyle birlikte daha kolay ayirt ettigini gostersin; yeni panel mobile/desktop'ta HUD gurultusu veya yalniz UX cilasi gibi okunmamali
+target: sonraki browser veya net manuel gozlem oyuncunun arka arkaya iki-uc signature acilisinda intro, opening cue ve spawn-profili farkini artik `RUN FEEL` paneliyle birlikte daha kolay ayirt ettigini gostersin; yeni panel ve beat chips mobile/desktop'ta HUD gurultusu veya yalniz UX cilasi gibi okunmamali
 validation: `npm run telemetry:check`, `npm run build`
 
 run_signature_opening_contract_surface:

@@ -25,6 +25,8 @@ export type RunSignature = {
   openingLateralShiftPx: number;
   openingForwardShiftPx: number;
   openingSpawnWeightMultipliers: readonly [number, number, number];
+  openingBeatLabels: readonly [string, string, string];
+  openingLockLine: string;
 };
 
 type Point = {
@@ -58,6 +60,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingLateralShiftPx: 0,
     openingForwardShiftPx: 0,
     openingSpawnWeightMultipliers: [1.25, 1.25, 1.1],
+    openingBeatLabels: ['1 TIGHT', '2 HOLD', '3 LOCK'],
+    openingLockLine: 'Tighter route is locked in. Keep protecting the smaller air.',
   },
   {
     id: 'weave',
@@ -84,6 +88,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingLateralShiftPx: 30,
     openingForwardShiftPx: 0,
     openingSpawnWeightMultipliers: [1, 1.2, 1.1],
+    openingBeatLabels: ['1 OPEN', '2 SWAY', '3 SET'],
+    openingLockLine: 'Wider lane read is locked in. Stay fluid before the cash-in.',
   },
   {
     id: 'rush',
@@ -110,6 +116,8 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     openingLateralShiftPx: 0,
     openingForwardShiftPx: 28,
     openingSpawnWeightMultipliers: [1.25, 1.1, 1],
+    openingBeatLabels: ['1 STEP', '2 PUSH', '3 GO'],
+    openingLockLine: 'Earlier cadence is locked in. Keep moving before the lane settles.',
   },
 ] as const;
 

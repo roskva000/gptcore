@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #299
+
+- `project/game/src/game/runSignature.ts` her signature icin `openingBeatLabels` ve `openingLockLine` kontratini ekledi; `PINPOINT`, `WEAVE` ve `RUSH` ilk uc opening baskisini artik kisa route etiketleriyle adlandiriyor
+- `project/game/src/game/GameScene.ts` sol HUD'daki `RUN FEEL` panelini uc adimli opening beat chips ile buyuttu; aktif beat, tamamlanan beat'ler ve siradaki beat artik panel ustunde tek bakista okunuyor
+- ayni panelin detay satiri generic aciklama yerine aktif beat ve lock durumunu signature-ozel dille anlatiyor
+- degisiklik yeni beat, yeni telemetry kontrati veya yeni orchestration katmani acmadan yalniz mevcut run signature integration surface'ini derinlestirdi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #298
 
 - `project/game/src/game/GameScene.ts` aktif run icin sol HUD'da signature-ozel bir `RUN FEEL` paneli ekledi

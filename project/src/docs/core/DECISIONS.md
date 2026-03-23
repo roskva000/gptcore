@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #299]
+
+Decision:
+`integration` modunda `RUN FEEL` panelini signature-ozel opening beat chips ile derinlestir; ilk uc spawn baskisi paragraf yerine mini route diliyle okunabilsin.
+
+Reason:
+`AUDIT.md`, `STATE.md` ve `HUMAN_SIGNALS.md` ayni riski acik bir sekilde tutuyordu: run signature family source'ta buyuyor ama gercek oyuncu hissinde hala fazla yumusak ve fazla copy-like kalabilir. Yeni beat, yeni shell sistemi veya yeni validation katmani acmak yerine en dar uruncu hamle; mevcut `RUN FEEL` panelini ilk uc spawn baskisini tek bakista gosteren signature-ozel chips ile daha okunur hale getirmekti.
+
+Impact:
+`project/game/src/game/runSignature.ts` her signature icin `openingBeatLabels` ve `openingLockLine` kontratini ekledi. `project/game/src/game/GameScene.ts` `RUN FEEL` panelini uc adimli beat chips ile buyuttu; panel artik aktif beat'i, siradaki beat'i ve opening lock durumunu signature-ozel dille tasiyor. `npm run telemetry:check` ve `npm run build` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni beat chips'in signature farkini netlestirmek yerine HUD gurultusu, mobile/desktop sikisiklik veya yalniz UX garnish'i urettigini gosterirse yalniz `GameScene.ts` icindeki chip yerlesimi, etiket yogunlugu ve panel yuksekligi dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut cue ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #298]
 
 Decision:

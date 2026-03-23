@@ -440,6 +440,8 @@ export class GameScene extends Phaser.Scene {
   private signatureStatusProgress!: Phaser.GameObjects.Rectangle;
   private signatureStatusLabel!: Phaser.GameObjects.Text;
   private signatureStatusDetail!: Phaser.GameObjects.Text;
+  private signatureStatusBeatChips: Phaser.GameObjects.Rectangle[] = [];
+  private signatureStatusBeatLabels: Phaser.GameObjects.Text[] = [];
   private nearMissText!: Phaser.GameObjects.Text;
   private supportText!: Phaser.GameObjects.Text;
   private telemetryText!: Phaser.GameObjects.Text;
@@ -752,14 +754,14 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     this.signatureStatusPanel = this.add
-      .rectangle(24, 198, 320, 72, 0x08131d, 0.84)
+      .rectangle(24, 198, 320, 104, 0x08131d, 0.84)
       .setDepth(4)
       .setOrigin(0, 0)
       .setStrokeStyle(2, this.currentRunSignature.accentColor, 0.88)
       .setVisible(false);
 
     this.signatureStatusProgress = this.add
-      .rectangle(30, 258, 0, 6, this.currentRunSignature.accentColor, 0.95)
+      .rectangle(30, 294, 0, 6, this.currentRunSignature.accentColor, 0.95)
       .setDepth(4)
       .setOrigin(0, 0.5)
       .setVisible(false);
@@ -778,14 +780,37 @@ export class GameScene extends Phaser.Scene {
       .text(40, 234, '', {
         color: '#b8cde0',
         fontFamily: 'Trebuchet MS',
-        fontSize: '12px',
-        lineSpacing: 4,
+        fontSize: '11px',
+        lineSpacing: 3,
         wordWrap: {
           width: 288,
         },
       })
       .setDepth(5)
       .setVisible(false);
+
+    const signatureBeatChipPositions = [40, 144, 248];
+    this.signatureStatusBeatChips = signatureBeatChipPositions.map((x) =>
+      this.add
+        .rectangle(x, 274, 88, 24, this.currentRunSignature.accentColor, 0.08)
+        .setDepth(4)
+        .setOrigin(0, 0.5)
+        .setStrokeStyle(2, this.currentRunSignature.accentColor, 0.44)
+        .setVisible(false),
+    );
+    this.signatureStatusBeatLabels = signatureBeatChipPositions.map((x) =>
+      this.add
+        .text(x + 44, 274, '', {
+          align: 'center',
+          color: '#8db7cb',
+          fontFamily: 'Trebuchet MS',
+          fontSize: '11px',
+          fontStyle: 'bold',
+        })
+        .setDepth(5)
+        .setOrigin(0.5)
+        .setVisible(false),
+    );
 
     this.nearMissText = this.add
       .text(ARENA_WIDTH / 2, 208, '', {
@@ -3941,6 +3966,12 @@ export class GameScene extends Phaser.Scene {
     this.signatureStatusProgress.setVisible(signatureHudVisible);
     this.signatureStatusLabel.setVisible(signatureHudVisible);
     this.signatureStatusDetail.setVisible(signatureHudVisible);
+    for (const chip of this.signatureStatusBeatChips) {
+      chip.setVisible(signatureHudVisible);
+    }
+    for (const label of this.signatureStatusBeatLabels) {
+      label.setVisible(signatureHudVisible);
+    }
     this.supportText.setDepth(
       this.phase === 'paused' || this.phase === 'gameOver'
         ? OVERLAY_SUPPORT_TEXT_DEPTH
@@ -4233,6 +4264,7 @@ export class GameScene extends Phaser.Scene {
     const reminder = this.getActiveRunSignatureReminder();
     const openingActive = openingSecondsRemaining > 0.01;
     const nextBiasedSpawnIndex = Phaser.Math.Clamp(this.runSpawnCount + 1, 1, 3);
+    const activeBeatIndex = Phaser.Math.Clamp(this.runSpawnCount, 0, 2);
 
     this.signatureStatusPanel
       .setStrokeStyle(2, this.currentRunSignature.accentColor, openingActive ? 0.92 : 0.5)
@@ -4249,14 +4281,49 @@ export class GameScene extends Phaser.Scene {
       )
       .setColor(this.currentRunSignature.accentTextColor);
 
+    this.currentRunSignature.openingBeatLabels.forEach((beatLabel, index) => {
+      const chip = this.signatureStatusBeatChips[index];
+      const label = this.signatureStatusBeatLabels[index];
+      const beatCompleted = this.runSpawnCount > index + 1 || !openingActive;
+      const beatLive = openingActive && index === activeBeatIndex;
+      const beatPending = openingActive && index > activeBeatIndex;
+
+      chip
+        .setStrokeStyle(
+          2,
+          this.currentRunSignature.accentColor,
+          beatLive ? 0.94 : beatCompleted ? 0.72 : 0.3,
+        )
+        .setFillStyle(
+          this.currentRunSignature.accentColor,
+          beatLive ? 0.3 : beatCompleted ? 0.16 : beatPending ? 0.08 : 0.05,
+        );
+      label
+        .setText(beatLabel)
+        .setColor(
+          beatLive
+            ? this.currentRunSignature.accentTextColor
+            : beatCompleted
+              ? '#d7e8f5'
+              : '#7f9aad',
+        )
+        .setAlpha(beatPending ? 0.82 : 1);
+    });
+
+    const liveBeatLabel = this.currentRunSignature.openingBeatLabels[activeBeatIndex]!;
+    const nextBeatLabel =
+      this.currentRunSignature.openingBeatLabels[
+        Phaser.Math.Clamp(activeBeatIndex + 1, 0, this.currentRunSignature.openingBeatLabels.length - 1)
+      ]!;
+
     const detailText =
       openingCue !== null
-        ? `${openingCue.title} is live. The first collision-ready lane is carrying the signature on purpose.`
+        ? `${openingCue.title} is live. ${liveBeatLabel} is the current read; let the first collision-ready lane carry the signature on purpose.`
         : reminder !== null
-          ? `${reminder.title} is still steering the route. Hold the same read before the opening window shuts.`
+          ? `${reminder.title} is still steering the route. ${liveBeatLabel} is active; hold that read before the opening window shuts.`
           : openingActive
-            ? `Opening bias is still shaping spawn ${nextBiasedSpawnIndex}. ${this.currentRunSignature.supportLine}`
-            : `${this.currentRunSignature.supportLine} Signature pressure is now part of the full run.`;
+            ? `${liveBeatLabel} is shaping spawn ${nextBiasedSpawnIndex}. Next beat: ${nextBeatLabel}. ${this.currentRunSignature.supportLine}`
+            : `${this.currentRunSignature.openingLockLine} ${this.currentRunSignature.supportLine}`;
 
     this.signatureStatusDetail.setText(detailText);
   }
