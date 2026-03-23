@@ -240,6 +240,10 @@ import {
   isValidationReportCurrent,
 } from '../src/game/telemetry.ts';
 import {
+  applyRunSignatureTargetLag,
+  getRunSignatureForRunNumber,
+} from '../src/game/runSignature.ts';
+import {
   createBalanceSnapshotReport,
   createSeedTrajectoryReport,
   createSurvivalSnapshotReport,
@@ -6184,6 +6188,44 @@ assert.equal(
   ),
   false,
   'Saved validation exports should not read as current while the new session sample is still incomplete.',
+);
+assert.equal(
+  getRunSignatureForRunNumber(0).id,
+  'pinpoint',
+  'The first signature should open on the pinpoint route.',
+);
+assert.equal(
+  getRunSignatureForRunNumber(1).id,
+  'weave',
+  'The second signature should rotate into the weave route.',
+);
+assert.equal(
+  getRunSignatureForRunNumber(2).id,
+  'rush',
+  'The third signature should rotate into the rush route.',
+);
+assert.equal(
+  getRunSignatureForRunNumber(3).id,
+  'pinpoint',
+  'Run signatures should cycle cleanly after three runs.',
+);
+assert.equal(
+  applyRunSignatureTargetLag({
+    baseTargetLagSeconds: 0.02,
+    signature: getRunSignatureForRunNumber(0),
+  }),
+  0,
+  'Signed target lag should clamp at zero instead of producing negative aim lag.',
+);
+assert.equal(
+  Number(
+    applyRunSignatureTargetLag({
+      baseTargetLagSeconds: 0.18,
+      signature: getRunSignatureForRunNumber(1),
+    }).toFixed(3),
+  ),
+  0.225,
+  'Weave route should widen the signed target lag for the full-run pressure signature.',
 );
 
 console.log(

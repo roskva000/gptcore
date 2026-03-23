@@ -92,6 +92,11 @@ import {
 import { getArenaBeatSpectacle } from './arenaBeatSpectacle.ts';
 import { getRunBeatAnnouncement, getRunHorizonText } from './runHorizon.ts';
 import {
+  applyRunSignatureTargetLag,
+  getRunSignatureForRunNumber,
+  type RunSignature,
+} from './runSignature.ts';
+import {
   ENDGAME_CLEAR_CLIMB_START_SECONDS,
   OVERTIME_AUTHORED_WINDOW_END_SECONDS,
   getBreakthroughCue,
@@ -472,6 +477,7 @@ export class GameScene extends Phaser.Scene {
   private runSpawnCount = 0;
   private telemetry = createEmptyTelemetry();
   private sessionTelemetry = createEmptyTelemetry();
+  private currentRunSignature: RunSignature = getRunSignatureForRunNumber(0);
   private lastValidationReport: string | null = null;
   private nextSpawnTimer?: Phaser.Time.TimerEvent;
   private feedbackAudioContext: FeedbackAudioContext = null;
@@ -1607,6 +1613,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.currentRunSignature = this.getUpcomingRunSignature();
     this.resetArenaForRun();
     this.setPhase('playing');
     this.movementHoldActionStartedAt = null;
@@ -1891,7 +1898,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getSpawnDelayMs(): number {
-    return getSpawnDelayMs(this.getCurrentSurvivalTimeSeconds());
+    return Math.round(
+      getSpawnDelayMs(this.getCurrentSurvivalTimeSeconds()) *
+        this.currentRunSignature.spawnDelayMultiplier,
+    );
   }
 
   private getObstacleSpeed(): number {
@@ -1992,6 +2002,10 @@ export class GameScene extends Phaser.Scene {
       survivalTimeSeconds: currentSurvivalTimeSeconds,
       variant: obstacleVariant,
     });
+    const signedTargetLagSeconds = applyRunSignatureTargetLag({
+      baseTargetLagSeconds: spawnTargetLagSeconds,
+      signature: this.currentRunSignature,
+    });
     const baseTargetPoint = getSpawnTargetPoint({
       playerPosition: { x: this.player.x, y: this.player.y },
       playerVelocity: {
@@ -1999,7 +2013,7 @@ export class GameScene extends Phaser.Scene {
         y: playerBody.velocity.y,
       },
       playerReachabilityMargin: PLAYER_COLLISION_RADIUS,
-      targetLagSeconds: spawnTargetLagSeconds,
+      targetLagSeconds: signedTargetLagSeconds,
     });
     const targetPoint =
       nearMissChaseSpawnPlan === null
@@ -2024,7 +2038,8 @@ export class GameScene extends Phaser.Scene {
     });
     const velocity = new Phaser.Math.Vector2(travelDirection.x, travelDirection.y).scale(
       getObstacleSpeed(currentSurvivalTimeSeconds) *
-        getObstacleSpeedMultiplier(obstacleVariant),
+        getObstacleSpeedMultiplier(obstacleVariant) *
+        this.currentRunSignature.obstacleSpeedMultiplier,
     );
     const obstacleBody = obstacle.body as Phaser.Physics.Arcade.Body;
     const collisionGraceMs = getSpawnCollisionGraceMs(currentSurvivalTimeSeconds);
@@ -3328,14 +3343,15 @@ export class GameScene extends Phaser.Scene {
 
     const clearClimbState = getEndgameClearClimbState(this.survivalTime);
     const overtimeOpenerState = getOvertimeOpenerState(this.survivalTime);
+    const routePrefix = `${this.currentRunSignature.shortLabel} | `;
     this.goalStatusText.setText(
       overtimeOpenerState !== null
-        ? `${overtimeOpenerState.threatLabel} | ${(OVERTIME_AUTHORED_WINDOW_END_SECONDS - this.survivalTime).toFixed(1)}s to 72s HOLD`
+        ? `${routePrefix}${overtimeOpenerState.threatLabel} | ${(OVERTIME_AUTHORED_WINDOW_END_SECONDS - this.survivalTime).toFixed(1)}s to 72s HOLD`
         : clearClimbState === null
-        ? getSurvivalGoalChaseText({
-            currentSurvivalTime: this.survivalTime,
-          })
-        : `${clearClimbState.threatLabel} | ${(SURVIVAL_GOAL_SECONDS - this.survivalTime).toFixed(1)}s to ${SURVIVAL_GOAL_SECONDS}s`,
+          ? `${routePrefix}${getSurvivalGoalChaseText({
+              currentSurvivalTime: this.survivalTime,
+            })}`
+          : `${routePrefix}${clearClimbState.threatLabel} | ${(SURVIVAL_GOAL_SECONDS - this.survivalTime).toFixed(1)}s to ${SURVIVAL_GOAL_SECONDS}s`,
     );
     this.goalStatusText
       .setColor(
@@ -3379,19 +3395,20 @@ export class GameScene extends Phaser.Scene {
     const overtimeOpenerState =
       currentPhase.id === 'overtime' ? getOvertimeOpenerState(this.survivalTime) : null;
     const phaseStatusText = getRunPhaseStatusText(this.survivalTime);
+    const routePrefix = `${this.currentRunSignature.shortLabel} | `;
     this.phaseStatusText
       .setText(
         breakthroughCue !== null
-          ? `${phaseStatusText} | ${breakthroughCue.hudLabel}`
+          ? `${routePrefix}${phaseStatusText} | ${breakthroughCue.hudLabel}`
           : killboxCue !== null
-            ? `${phaseStatusText} | ${killboxCue.hudLabel}`
-          : endgameCue !== null
-          ? `${phaseStatusText} | ${endgameCue.hudLabel}`
-          : clearClimbState !== null
-            ? `${phaseStatusText} | ${clearClimbState.hudLabel}`
+            ? `${routePrefix}${phaseStatusText} | ${killboxCue.hudLabel}`
+            : endgameCue !== null
+              ? `${routePrefix}${phaseStatusText} | ${endgameCue.hudLabel}`
+              : clearClimbState !== null
+                ? `${routePrefix}${phaseStatusText} | ${clearClimbState.hudLabel}`
             : overtimeOpenerState !== null
-              ? `${phaseStatusText} | ${overtimeOpenerState.hudLabel}`
-            : phaseStatusText,
+              ? `${routePrefix}${phaseStatusText} | ${overtimeOpenerState.hudLabel}`
+              : `${routePrefix}${phaseStatusText}`,
       )
       .setColor(
         colorToCssHex(
@@ -3623,13 +3640,26 @@ export class GameScene extends Phaser.Scene {
     this.updateBestText();
     this.updateGoalStatusText();
     this.updateRunPhaseHud();
+    const upcomingRunSignature = this.getUpcomingRunSignature();
+    this.waitingIntroEyebrow
+      .setText(upcomingRunSignature.waitingEyebrow)
+      .setColor(upcomingRunSignature.accentTextColor);
     this.waitingIntroTitle.setText(getWaitingIntroTitleText(getBestSurvivalTime(this.telemetry)));
-    this.waitingHorizonText.setText(
-      getRunHorizonText(getBestSurvivalTime(this.telemetry) ?? 0),
-    );
+    this.waitingHorizonLabel.setText('RUN FEEL');
+    this.waitingHorizonText
+      .setText(upcomingRunSignature.waitingBody)
+      .setColor(upcomingRunSignature.accentTextColor);
+    this.waitingPhaseLabel.setText('THREAT HORIZON');
     this.waitingPhaseText.setText(
-      getRunPhaseTimelineText(getBestSurvivalTime(this.telemetry) ?? 0),
+      `${getRunHorizonText(getBestSurvivalTime(this.telemetry) ?? 0)}\n${getRunPhaseTimelineText(getBestSurvivalTime(this.telemetry) ?? 0)}`,
     );
+    this.waitingIntroAccent.setFillStyle(upcomingRunSignature.accentColor, 0.9);
+    this.waitingIntroPanel.setStrokeStyle(2, upcomingRunSignature.accentColor, 0.95);
+    this.waitingPulseCore.setFillStyle(upcomingRunSignature.accentColor, 0.28);
+    this.waitingPulseRing.setStrokeStyle(3, upcomingRunSignature.accentColor, 0.68);
+    this.waitingPulseLabel
+      .setText(`${getPrimaryLaunchActionPromptText()}\n${upcomingRunSignature.label}`)
+      .setColor(upcomingRunSignature.accentTextColor);
     this.telemetryText.setText(this.getTelemetryLinesForCurrentPhase().join('\n'));
     this.telemetryText.setVisible(this.phase !== 'paused' && this.phase !== 'gameOver');
     this.telemetryText.setAlpha(this.phase === 'playing' ? 0.9 : 1);
@@ -3892,7 +3922,7 @@ export class GameScene extends Phaser.Scene {
 
   private getCurrentPlayingSupportText(): string {
     if (this.survivalGoalReachedThisRun && getOvertimeOpenerState(this.survivalTime) === null) {
-      return `${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`;
+      return `${this.currentRunSignature.label}: ${SURVIVAL_GOAL_SECONDS}s clear. The core goal is done; stay alive and see how far the run can stretch.`;
     }
 
     const activeRunElapsedMs = this.getActiveRunElapsedMs(this.time.now);
@@ -3907,7 +3937,11 @@ export class GameScene extends Phaser.Scene {
       );
     }
 
-    return getRunPhaseSupportText(this.survivalTime);
+    return `${this.currentRunSignature.supportLine}\n${getRunPhaseSupportText(this.survivalTime)}`;
+  }
+
+  private getUpcomingRunSignature(): RunSignature {
+    return getRunSignatureForRunNumber(this.sessionTelemetry.totalRuns);
   }
 
   private getRunPhaseShiftHintText(phaseId: RunPhaseId): string | null {

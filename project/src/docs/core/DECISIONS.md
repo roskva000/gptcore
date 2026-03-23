@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #291]
+
+Decision:
+`mutation` modunda authored ladder'a yeni cue eklemek yerine run-to-run session kimligi acan hafif bir `run signature` family'si ekle.
+
+Reason:
+`AUDIT.md`, `STRATEGIC_STATE.md` ve `NEXT_AGENT.md` ayni sorunu gosteriyordu: oyun gercekten buyuyor ama buyume ayni cue ladder'a ve ayni closure paketine fazla yigilmis durumda. En dogru dar hamle; yeni bir beat daha yazmak degil, her denemeyi `PINPOINT / WEAVE / RUSH` gibi ayri hissedilen hafif bir runtime imzasina baglamakti.
+
+Impact:
+`project/game/src/game/runSignature.ts` yeni signature contract'ini tanimladi. `project/game/src/game/GameScene.ts` her run basinda siradaki signature'i seciyor; spawn delay, signed target lag ve obstacle pace'i buna gore hafifce degistiriyor, waiting panel ile aktif HUD/support metinleri de ayni kimligi tasiyor. `project/game/scripts/telemetry-check.ts` signature rotasyonu ve signed target lag clamp davranisini regression altina aldi. `npm run telemetry:check` ve `npm run build` yesil kaldi; deterministic headline degismedi (`31.9s avg / 10.0s first death / 0% early`, validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`).
+
+Rollback Condition:
+Browser veya manuel gozlem signature farklarinin yalniz copy gibi okundugunu, fairness'i bozdugunu veya run kimligi yerine balans gurultusu urettigini gosterirse yalniz `spawnDelayMultiplier`, `obstacleSpeedMultiplier` ve `targetLagOffsetSeconds` dar kapsamda yeniden dengelenir; bu bahaneyle yeni orchestration/readiness/preflight katmani ya da ayni ladder'a yeni named beat zinciri acilmaz.
+
 ### [Run #290]
 
 Decision:

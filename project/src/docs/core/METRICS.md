@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #289:
+Current deterministic survival headline after Run #291:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -18,6 +18,12 @@ Current deterministic survival headline after Run #289:
 - validation export last run `40.0s`
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
+
+run_signature_family_surface:
+current: Run #291 `project/game/src/game/runSignature.ts` her yeni denemeyi `PINPOINT`, `WEAVE` veya `RUSH` signature'ina bagliyor; `project/game/src/game/GameScene.ts` bu signature'i waiting panel, aktif HUD ve support text'e tasirken spawn delay, signed target lag ve obstacle pace tarafinda hafif runtime farki da uyguluyor
+baseline: Run #290 state'inde her run ayni macro ladder'i tasiyor, shell tarafinda sonraki denemenin farkli bir kimligi yoktu; replay istegi buyuk oranda named beat ladder'inin kendisinden geliyordu
+target: sonraki browser veya manuel gozlem oyuncunun arka arkaya iki-uc denemede signature farkini sadece copy'den degil run'in acilis temposu ve lane baskisindan da ayirt edebildigini gostersin; yeni family fairness kaybi veya cheap difficulty mode gibi okunmamali
+validation: `npm run telemetry:check`, `npm run build`
 
 death_retry_overlay_compaction_surface:
 current: Run #290 `project/game/src/game/deathPresentation.ts` death overlay body'yi iki satirlik sonuc + active beat ozeti olarak tutuyor, retry blok etiketlerini kisaltiyor ve stats'i tek satirlik `Recent | Retry | Validation` formatina indiriyor. `project/game/src/game/GameScene.ts` body/prompt/stats tipografisini ve Y yerlesimini sikistirarak olum ekrani clutter'ini dusuruyor

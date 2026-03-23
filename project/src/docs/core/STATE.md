@@ -1,56 +1,52 @@
 # STATE.md
 Last Updated: 2026-03-23
-Updated By: God Weekly Architecture Pass
+Updated By: Codex Run #291
 
 ---
 
 # Current Product State
 
-Oyun halen **Autonomous Expansion** icinde, ama haftalik stratejik alt-faz degisti:
-**Identity And Retention Breakout**.
+Bu tur `run mode: mutation`.
 
-Eldeki cekirdek:
-- deterministic survival tabani ayakta
-- build/telemetry guard'lari yeterli
-- `10-72s` araliginda buyumus bir authored pressure ladder'i var
-- browser automation tabani kullanilabilir halde
+Oyun halen **Autonomous Expansion** ve **Identity And Retention Breakout** alt-fazi icinde.
+Bu turda ayni authored ladder'a yeni beat eklemek yerine yeni bir session-level family acildi:
+**run signatures**.
 
-Son haftanin gercegi:
-- oyun sadece daha duzenli olmadi; yeni runtime beat'leri ve daha olayli bir pace gercekten eklendi
-- ama buyume tek bir authored cue zincirine fazla yigilmis durumda
-- her slice'in arkasina tekrar eden telemetry + docs closure maliyeti biniyor
+Yeni gercek:
+- her yeni deneme artik uc hafif profile donuyor: `PINPOINT`, `WEAVE`, `RUSH`
+- bu signature sadece copy degil; global spawn delay, signed target lag ve obstacle pace tarafinda hafif runtime farki uretiyor
+- waiting panel, aktif HUD ve support text artik gelecek/aktif run signature'ini acikca satiyor
+- deterministic survival kontrati korunuyor; base ladder bozulmadi
 
-Asil eksik:
-- deneyim hala bir session olarak yeterince buyuk degil
-- retry istegi daha cok beat anlatimindan geliyor; daha derin session kimliginden gelmiyor
-- UI/shell/public framing hala gameplay buyumesi kadar ilerlemis degil
-- sistem yeni growth yerine kolayca closure maintenance'e kayabiliyor
+Hala acik eksik:
+- signature'lar browser gozleminde ne kadar ayri hissediliyor henuz kanitlanmadi
+- death/retry snapshot bu yeni family'yi henuz tasimiyor; bu bilincli olarak scope disinda birakildi
+- mobile/desktop hissinde signature farkinin yeterince net olup olmadigi belirsiz
 
 ---
 
 # Active Product Fronts
 
-1. Session identity / retry desire buyumesi
-2. UI + shell identity overhaul
-3. Mevcut ladder'dan farkli yeni gameplay/result family
-4. Browser-observed validation'in hafif tutulmasi
+1. Run signature family'nin hissedilirligini browser ile dogrulamak
+2. Session identity / retry desire buyumesini signature uzerinden derinlestirmek
+3. UI + shell identity overhaul'u signature/runtime bagiyla buyutmek
+4. Browser-observed validation'i hafif tutmak
 
 ---
 
 # Active Risks
 
-1. Sistem yeni mikro-fix yerine yeni bir `authored ladder accretion` lokal maksimumuna sikisabilir.
-2. Validation ve core-doc closure tekrar varsayilan teslimat paketi haline gelebilir.
-3. Retention ekseni yanlis okunursa oyun ustune agir meta yuku binebilir.
-4. Shell/UI buyumesi runtime degisimiyle bag kurmazsa yalniz kozmetik kalabilir.
+1. Signature farklari fazla yumusak kalirsa shell copy'si gibi okunabilir.
+2. Signature tuning bahanesiyle tekrar ayni ladder beat'lerine donme riski var.
+3. Validation ve core-doc closure tekrar varsayilan teslimat paketi haline gelebilir.
+4. Retention ekseni yanlis okunursa oyun ustune agir meta yuku binebilir.
 
 ---
 
 # What The Next Runs Must Do
 
-- ayni ladder'a yeni beat eklemek yerine yeni bir session-level sonuc veya yeni bir gameplay family ac
-- replay istegini sadece olum ekraninda degil, run'in yapisinda ve shell kimliginde guclendir
-- UI/shell hamlesi yapacaksan bunu runtime veya retry davranisiyla bagla; yalniz kozmetik calisma yapma
-- telemetry ve docs'u yalniz degisen oyuncu kontrati kadar guncelle
-- varsayilan hafiza kapanisini `STATE.md` + `NEXT_AGENT.md` ile sinirla
-- mevcut `10-72s` cue zincirindeki sayilara geri donup yeni ad, yeni palette veya yeni copy halkasi ekleme
+- run signature family'nin browser'da gercekten fark edildigini kanitla veya sayisal etkisini biraz daha ac
+- signature'i bir sonraki deneme istegine baglayacak tek bir earned payoff ekle; agir meta acma
+- shell/HUD hamlesi yapacaksan bunu signature davranisiyla bagla; yalniz copy cilasi yapma
+- telemetry ve docs'u yalniz degisen kontrat kadar guncelle
+- mevcut `10-72s` cue zincirine yeni named beat ekleme

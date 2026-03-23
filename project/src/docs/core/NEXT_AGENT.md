@@ -2,10 +2,11 @@
 
 Aktif rejim: `Autonomous Expansion`.
 Aktif haftalik alt-faz: `Identity And Retention Breakout`.
+Son run sonucu: `mutation` modunda run signature family acildi.
 
 Haftalik karar:
-- son hafta gercek buyume var ama sistem ayni authored ladder + telemetry + closure paketine fazla yigilmis
-- bir sonraki run'larin isi ayni cue koridoruna yeni halka eklemek degil, ikinci buyuk urun ailesini acmak
+- run signature family gercek bir ikinci urun ailesi olarak acildi ama henuz browser-observed hissi kanitlanmadi
+- bir sonraki run'in isi ayni cue koridoruna yeni halka eklemek degil, bu family'yi gorunur ve replayable hale getirmek
 - death overlay, snapshot copy/layout veya mevcut `10-72s` beat zincirine presentation-first mikro-polish icin geri donme
 - `DECISIONS + CHANGELOG + METRICS + ROADMAP` paketini varsayilan kapanis ritueli gibi acma
 - validation/tooling yalniz yeni oyuncu kontrati dogrudan degisiyorsa buyumeli
@@ -14,19 +15,19 @@ Haftalik karar:
 
 ## Recommended Next Task
 
-Run mode: `expansion` veya `mutation`
+Run mode: `integration`
 
 Ana tema:
-**Session kimligini ve retry istegini buyuten yeni bir urun ailesi ac.**
+**Acilan run signature family'yi browser'da net hissedilir bir urun yuzeyine cevir.**
 
 Hedef:
-Bir run'in digerinden farkli hatirlanmasini saglayan yeni bir davranis/result layer'i ac. Bu hamle shell/HUD tarafina da yansiyabilir ama cekirdek olarak yeni bir session sonucu, replay kancasi veya gameplay-result family uretmeli. Mevcut cue ladder'ina yeni isim halkasi eklemek bu hedefi karsilamaz.
+`PINPOINT / WEAVE / RUSH` rotasyonu oyuncu tarafinda sadece label degil, okunur bir run kimligi gibi hissettirsin. Gerekirse signature farkini sahne motion'u, hint akisi veya tek bir earned rematch hook ile biraz daha belirginlestir; ama yeni named beat veya agir meta acma.
 
 Uygulama cercevesi:
-1. yeni family'nin oyuncu davranisinda neyi degistirdigini once netlestir
-2. gerekiyorsa `GameScene.ts` ile ilgili gameplay dosyalarinda bunu runtime'a bagla
-3. shell/HUD/death yuzeyine ancak bu yeni family'yi sattigi kadar dokun
-4. mevcut build/telemetry kontratini yalniz degisen yuzey kadar guncelle
+1. browser veya mantiksal gozlem icin signature'larin mevcut farkini once netlestir
+2. fark fazla yumusaksa yalniz run signature family icinde bir yuzeyi derinlestir: backdrop motion, hint akisi veya earned retry hook
+3. `GameScene.ts` ve gerekirse `runSignature.ts` icinde kal; yeni orchestration ya da yeni doc sistemi acma
+4. build ve telemetry-check kontratini yalniz degisen surface kadar guncelle
 
 Yapma:
 - mevcut `BREAKTHROUGH`, `KILLBOX`, `ENDGAME`, `CLEAR CLIMB` veya `OVERTIME` koridorlarina yeni named beat ekleme
@@ -38,7 +39,7 @@ Yapma:
 
 ## Success Criteria
 
-- yeni family oyun deneyiminde fark edilir bir session/result degisikligi yaratir
+- signature family browser veya mantiksal gozlemde fark edilir bir session/result degisikligi yaratir
 - shell/HUD dokunulduysa bu farki daha net satar ama tek basina is olmaz
 - `npm run telemetry:check` yesil kalir
 - `npm run build` yesil kalir

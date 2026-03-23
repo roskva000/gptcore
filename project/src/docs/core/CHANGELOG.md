@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #291
+
+- `project/game/src/game/runSignature.ts` eklendi; `PINPOINT`, `WEAVE` ve `RUSH` icin hafif runtime + shell contract'i tanimlandi
+- `project/game/src/game/GameScene.ts` her yeni run'da signature secip spawn delay, signed target lag ve obstacle pace'i buna gore hafifce degistirmeye basladi
+- waiting panel, pulse CTA, goal chip, phase HUD ve support text aktif/gelecek run signature'ini acikca gosterecek sekilde guncellendi
+- `project/game/scripts/telemetry-check.ts` signature rotasyonu ve target lag clamp kontratini regression altina aldi
+- `npm run telemetry:check` ve `npm run build` basarili calisti
+
 ## Run #290
 
 - `project/game/src/game/deathPresentation.ts` death overlay body'sinden tekrar eden progress satirini cikardi; result + active beat ozeti kaldi, retry blok etiketleri `Next lane` / `Retry` olarak kisaldi
