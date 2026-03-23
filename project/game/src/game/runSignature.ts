@@ -13,6 +13,7 @@ export type RunSignature = {
   reminderTitle: string;
   reminderBody: string;
   rematchLine: string;
+  retryPreviewLine: string;
   overlayCallout: string;
   accentColor: number;
   accentBackgroundColor: string;
@@ -48,6 +49,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     reminderTitle: 'PINPOINT HOLD',
     reminderBody: 'The lane stays tight on purpose. Cut later, trust the smaller gap, and do not spend the reopen early.',
     rematchLine: 'PINPOINT REMATCH: cut later and protect smaller air.',
+    retryPreviewLine: 'PINPOINT stays tighter. Cut later and trust smaller air again.',
     overlayCallout: 'PINPOINT SNAPSHOT',
     accentColor: 0xffc18a,
     accentBackgroundColor: '#5a2b1b',
@@ -76,6 +78,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     reminderTitle: 'WEAVE DRIFT',
     reminderBody: 'The lane wants one extra breath. Stay fluid, re-center less, and cash the reopen in a beat later.',
     rematchLine: 'WEAVE REMATCH: stay fluid and let the lane breathe once.',
+    retryPreviewLine: 'WEAVE opens wider. Let one sideways breath happen before the cash-in.',
     overlayCallout: 'WEAVE SNAPSHOT',
     accentColor: 0x8ff0d9,
     accentBackgroundColor: '#173b31',
@@ -104,6 +107,7 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
     reminderTitle: 'RUSH CADENCE',
     reminderBody: 'Pressure arrives early. Trade comfort for rhythm and move before the lane can settle under you.',
     rematchLine: 'RUSH REMATCH: move early and keep the lane from settling.',
+    retryPreviewLine: 'RUSH lands earlier. Move before the lane can settle again.',
     overlayCallout: 'RUSH SNAPSHOT',
     accentColor: 0xff8aa1,
     accentBackgroundColor: '#561d23',
@@ -123,6 +127,9 @@ const RUN_SIGNATURES: readonly RunSignature[] = [
 
 export const getRunSignatureForRunNumber = (runNumber: number): RunSignature =>
   RUN_SIGNATURES[((runNumber % RUN_SIGNATURES.length) + RUN_SIGNATURES.length) % RUN_SIGNATURES.length];
+
+export const getRunSignatureRetryPreviewText = (signature: RunSignature): string =>
+  `${signature.shortLabel} NEXT: ${signature.retryPreviewLine}`;
 
 export const applyRunSignatureTargetLag = ({
   baseTargetLagSeconds,

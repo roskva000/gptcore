@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## Run #301
+
+- `project/game/src/game/runSignature.ts` her signature icin kisa bir retry preview satiri ekledi ve ortak `NEXT` handoff helper'i tanimladi
+- `project/game/src/game/deathPresentation.ts` game-over prompt'una mevcut signature rematch planinin altina bir sonraki signature preview'sini ekledi
+- `project/game/src/game/GameScene.ts` game-over support satirini mevcut signature kapanisi + siradaki signature handoff'u olarak guncelledi; retry ekrani artik yalniz olumu ozetlemiyor, siradaki run farkini da onceden satiyor
+- degisiklik yeni beat, yeni telemetry kontrati veya yeni orchestration katmani acmadan yalniz mevcut run signature retry/integration surface'ini derinlestirdi
+- `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` basarili calisti
+
 ## Run #300
 
 - `project/game/src/game/GameScene.ts` opening window boyunca signature-ozel arena rota projeksiyonu ekledi

@@ -4,6 +4,20 @@ Bu dosya projede alinan onemli kararlari ve gerekcelerini icerir.
 
 ## Decision Log
 
+### [Run #301]
+
+Decision:
+`integration` modunda run signature family'nin retry handoff'unu guclendir; game-over prompt'u ve support satiri bir sonraki signature'i kisa bir `NEXT` preview ile gostersin.
+
+Reason:
+`AUDIT.md`, `HUMAN_SIGNALS.md` ve `NEXT_AGENT.md` ayni boslugu tutuyordu: signature family acilis tarafinda buyuyor ama retry istegi hala cabuk dusuyor ve death/rematch zinciri henuz session handoff'u gibi hissettirmiyor. Yeni beat, yeni meta veya yeni validation katmani acmadan en dogru dar uruncu hamle; game-over ekranini mevcut signature rematch satirindan bir sonraki signature preview'sine baglamakti.
+
+Impact:
+`project/game/src/game/runSignature.ts` signature-ozel kisa retry preview satirlari ve ortak `NEXT` metin helper'i kazandi. `project/game/src/game/deathPresentation.ts` game-over prompt'unda mevcut rematch planinin altina bir sonraki signature preview'sini ekliyor. `project/game/src/game/GameScene.ts` game-over support satirini mevcut signature kapanisi + siradaki signature handoff'u olarak guncelliyor. `npm run telemetry:check`, `npm run build` ve `npm run telemetry:validation-ready -- --with-smoke` yesil kaldi.
+
+Rollback Condition:
+Browser veya net manuel gozlem yeni death/rematch `NEXT` preview'unun retry istegini buyutmek yerine overlay gurultusu, okunurluk kaybi veya cheap copy churn'u urettigini gosterirse yalniz `runSignature.ts`, `deathPresentation.ts` ve `GameScene.ts` icindeki preview siddeti/satir yogunlugu dar kapsamda sadeleştirilir; bu bahaneyle yeni manager/orchestration/readiness/preflight katmani ya da mevcut `10-72s` ladder'a yeni beat acilmaz.
+
 ### [Run #300]
 
 Decision:

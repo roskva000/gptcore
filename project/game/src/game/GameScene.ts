@@ -98,6 +98,7 @@ import {
   getRunSignatureOpeningTargetPoint,
   getRunSignatureForRunNumber,
   getRunSignatureObstacleTint,
+  getRunSignatureRetryPreviewText,
   RUN_SIGNATURE_OPENING_WINDOW_END_SECONDS,
   type RunSignatureOpeningCue,
   type RunSignatureReminder,
@@ -2773,6 +2774,7 @@ export class GameScene extends Phaser.Scene {
     const nearMissDeathSnapshotChainCount =
       this.getNearMissDeathSnapshotChainCount(activeRunElapsedMs);
     const nearMissDeathPromptText = this.getNearMissDeathPromptText(activeRunElapsedMs);
+    const upcomingRunSignature = this.getUpcomingRunSignature();
     const deathPresentation = getDeathPresentation({
       hitDirection,
       survivalTimeSeconds: this.survivalTime,
@@ -2785,6 +2787,7 @@ export class GameScene extends Phaser.Scene {
       nearMissChainCount: nearMissDeathSnapshotChainCount,
       nearMissPromptText: nearMissDeathPromptText,
       runSignature: this.currentRunSignature,
+      upcomingRunSignature,
     });
 
     this.setPhase('gameOver');
@@ -5515,13 +5518,14 @@ export class GameScene extends Phaser.Scene {
 
   private getGameOverSupportText(): string {
     const upcomingRunSignature = this.getUpcomingRunSignature();
-    const routeTeaser = `${upcomingRunSignature.waitingEyebrow}: ${upcomingRunSignature.waitingBody.replace('\n', ' ')}`;
+    const routeTeaser = getRunSignatureRetryPreviewText(upcomingRunSignature);
+    const handoffLine = `${this.currentRunSignature.shortLabel} closed. ${routeTeaser}`;
 
     if (this.lastValidationReport) {
-      return `${routeTeaser} Press V to refresh the saved validation export after a new ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
+      return `${handoffLine} Press V to refresh the saved validation export after a new ${VALIDATION_SAMPLE_RUN_TARGET}-run sample.`;
     }
 
-    return `${routeTeaser} Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample to save a validation export.`;
+    return `${handoffLine} Press V after a fresh ${VALIDATION_SAMPLE_RUN_TARGET}-run sample to save a validation export.`;
   }
 
   private getLastRunTimeText(telemetry: GameplayTelemetry): string {

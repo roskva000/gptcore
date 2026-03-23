@@ -7,7 +7,7 @@
 
 # Key Metrics
 
-Current deterministic survival headline after Run #300:
+Current deterministic survival headline after Run #301:
 - `31.9s` average survival
 - `10.0s` first death
 - `%0` early death
@@ -19,6 +19,12 @@ Current deterministic survival headline after Run #300:
 - validation summary `5 runs | first death 29.3s | early 0% | 5/5 runs, target met`
 - deterministic buckets `0 / 5 / 8 / 11` (`under10 / 10-20 / 20-30 / sim-cap`)
 - browser validation ready snapshot `status=smoke-passed`, smoke `5/5 runs`, manual gameplay sample still missing
+
+run_signature_retry_handoff_surface:
+current: Run #301 `project/game/src/game/deathPresentation.ts` game-over prompt'unda mevcut signature rematch planinin altina bir sonraki signature icin kisa `NEXT` preview satiri ekliyor; `project/game/src/game/GameScene.ts` support satiri da mevcut signature kapanisini ve siradaki signature handoff'unu birlikte satiyor
+baseline: Run #300 state'inde signature family intro, opening cue, `RUN FEEL` paneli, beat chips, rota projeksiyonu ve death/rematch hook'u tasiyordu ama game-over aninda bir sonraki run kimligi yeterince erken satilmiyordu; retry zinciri daha cok mevcut run ozeti olarak kaliyordu
+target: sonraki browser veya net manuel gozlem oyuncunun death/rematch ekraninda yalniz mevcut signature'i tekrar okumadigini, siradaki signature farkini da onceden gorup retry istegini daha net hissettigini gostersin; yeni `NEXT` preview overlay gurultusu, cheap copy churn'u veya mobil/desktop sikisiklik yaratmamali
+validation: `npm run telemetry:check`, `npm run build`, `npm run telemetry:validation-ready -- --with-smoke`
 
 run_signature_opening_route_projection_surface:
 current: Run #300 `project/game/src/game/GameScene.ts` opening window boyunca signature-ozel arena rota projeksiyonu ciziyor; `PINPOINT` daralan kilit raylari, `WEAVE` dalgali cift hat, `RUSH` ise ileri iten chevron akisi ile ilk `8.8s` signature baskisini sahnede de gorunur kiliyor

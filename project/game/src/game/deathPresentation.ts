@@ -24,7 +24,7 @@ import {
   getRunPhaseReachedBadgeText,
   getRunPhaseRetryGoalText,
 } from './runPhase.ts';
-import type { RunSignature } from './runSignature.ts';
+import { getRunSignatureRetryPreviewText, type RunSignature } from './runSignature.ts';
 
 type DeathPresentationParams = {
   hitDirection: ImpactDirection;
@@ -38,6 +38,7 @@ type DeathPresentationParams = {
   nearMissChainCount: number | null;
   nearMissPromptText: string | null;
   runSignature?: RunSignature;
+  upcomingRunSignature?: RunSignature;
 };
 
 export type DeathPresentation = {
@@ -178,12 +179,14 @@ const getPromptText = ({
   survivalTimeSeconds,
   nearMissPromptText,
   runSignature,
+  upcomingRunSignature,
 }: {
   escapePromptTitle: string;
   retryPromptText: string;
   survivalTimeSeconds: number;
   nearMissPromptText: string | null;
   runSignature?: RunSignature;
+  upcomingRunSignature?: RunSignature;
 }): string => {
   const endgameCue = getEndgameDriftCue(survivalTimeSeconds);
   const clearClimbState = getEndgameClearClimbState(survivalTimeSeconds);
@@ -194,9 +197,14 @@ const getPromptText = ({
       ? `${retryTargetText} | ${getNextRunHorizonBeatText(survivalTimeSeconds)}`
       : retryTargetText;
 
+  const rematchLine =
+    nearMissPromptText ?? (runSignature ? `${runSignature.rematchLine} | ${retryPlanText}` : retryPlanText);
+  const retryPreviewLine =
+    upcomingRunSignature === undefined ? null : getRunSignatureRetryPreviewText(upcomingRunSignature);
+
   return [
     `Next lane ${escapePromptTitle}`,
-    nearMissPromptText ?? (runSignature ? `${runSignature.rematchLine} | ${retryPlanText}` : retryPlanText),
+    retryPreviewLine === null ? rematchLine : `${rematchLine}\n${retryPreviewLine}`,
     `Retry ${retryPromptText}`,
   ].join('\n');
 };
@@ -617,6 +625,7 @@ export const getDeathPresentation = ({
   nearMissChainCount,
   nearMissPromptText,
   runSignature,
+  upcomingRunSignature,
 }: DeathPresentationParams): DeathPresentation => {
   const hasNearMissChaseSnapshot = nearMissPromptText !== null;
   const tone = getSnapshotTone({
@@ -650,6 +659,7 @@ export const getDeathPresentation = ({
       survivalTimeSeconds,
       nearMissPromptText,
       runSignature,
+      upcomingRunSignature,
     }),
     promptBackgroundColor: tone.promptBackgroundColor,
     promptTextColor: tone.promptTextColor,
